@@ -184,7 +184,7 @@ func (p *OccupantAwarenessProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOccupantAwareness)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOccupantAwareness, "setCallback")
 	if _err != nil {
@@ -343,4 +343,82 @@ func (s *OccupantAwarenessStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOccupantAwarenessServer is the server-side interface that user implementations
+// provide to NewOccupantAwarenessStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOccupantAwarenessServer interface {
+	StartDetection(ctx context.Context) (OccupantAwarenessStatus, error)
+	StopDetection(ctx context.Context) (OccupantAwarenessStatus, error)
+	GetCapabilityForRole(ctx context.Context, occupantRole Role) (int32, error)
+	GetState(ctx context.Context, occupantRole Role, detectionCapability int32) (OccupantAwarenessStatus, error)
+	SetCallback(ctx context.Context, callback IOccupantAwarenessClientCallback) error
+	GetLatestDetection(ctx context.Context, detections OccupantDetections) error
+}
+
+type occupantAwarenessStubWrapper struct {
+	impl       IOccupantAwarenessServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *occupantAwarenessStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *occupantAwarenessStubWrapper) StartDetection(
+	ctx context.Context,
+) (OccupantAwarenessStatus, error) {
+	return w.impl.StartDetection(ctx)
+}
+
+func (w *occupantAwarenessStubWrapper) StopDetection(
+	ctx context.Context,
+) (OccupantAwarenessStatus, error) {
+	return w.impl.StopDetection(ctx)
+}
+
+func (w *occupantAwarenessStubWrapper) GetCapabilityForRole(
+	ctx context.Context,
+	occupantRole Role,
+) (int32, error) {
+	return w.impl.GetCapabilityForRole(ctx, occupantRole)
+}
+
+func (w *occupantAwarenessStubWrapper) GetState(
+	ctx context.Context,
+	occupantRole Role,
+	detectionCapability int32,
+) (OccupantAwarenessStatus, error) {
+	return w.impl.GetState(ctx, occupantRole, detectionCapability)
+}
+
+func (w *occupantAwarenessStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IOccupantAwarenessClientCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *occupantAwarenessStubWrapper) GetLatestDetection(
+	ctx context.Context,
+	detections OccupantDetections,
+) error {
+	return w.impl.GetLatestDetection(ctx, detections)
+}
+
+var _ IOccupantAwareness = (*occupantAwarenessStubWrapper)(nil)
+
+// NewOccupantAwarenessStub creates a server-side IOccupantAwareness wrapping the given
+// server implementation. The returned value satisfies IOccupantAwareness
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOccupantAwarenessStub(
+	impl IOccupantAwarenessServer,
+) IOccupantAwareness {
+	wrapper := &occupantAwarenessStubWrapper{impl: impl}
+	stub := &OccupantAwarenessStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

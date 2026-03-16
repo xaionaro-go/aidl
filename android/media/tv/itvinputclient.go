@@ -108,7 +108,7 @@ func (p *TvInputClientProxy) OnSessionCreated(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputClient)
 	_data.WriteString16(inputId)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := channel.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1319,4 +1319,312 @@ func (s *TvInputClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvInputClientServer is the server-side interface that user implementations
+// provide to NewTvInputClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInputClientServer interface {
+	OnSessionCreated(ctx context.Context, inputId string, token binder.IBinder, channel view.InputChannel, seq int32) error
+	OnSessionReleased(ctx context.Context, seq int32) error
+	OnSessionEvent(ctx context.Context, name string, args os.Bundle, seq int32) error
+	OnChannelRetuned(ctx context.Context, channelUri net.Uri, seq int32) error
+	OnAudioPresentationsChanged(ctx context.Context, AudioPresentations []tuner.AudioPresentation, seq int32) error
+	OnAudioPresentationSelected(ctx context.Context, presentationId int32, programId int32, seq int32) error
+	OnTracksChanged(ctx context.Context, tracks []TvTrackInfo, seq int32) error
+	OnTrackSelected(ctx context.Context, type_ int32, trackId string, seq int32) error
+	OnVideoAvailable(ctx context.Context, seq int32) error
+	OnVideoUnavailable(ctx context.Context, reason int32, seq int32) error
+	OnVideoFreezeUpdated(ctx context.Context, isFrozen bool, seq int32) error
+	OnContentAllowed(ctx context.Context, seq int32) error
+	OnContentBlocked(ctx context.Context, rating string, seq int32) error
+	OnLayoutSurface(ctx context.Context, left int32, top int32, right int32, bottom int32, seq int32) error
+	OnTimeShiftStatusChanged(ctx context.Context, status int32, seq int32) error
+	OnTimeShiftStartPositionChanged(ctx context.Context, timeMs int64, seq int32) error
+	OnTimeShiftCurrentPositionChanged(ctx context.Context, timeMs int64, seq int32) error
+	OnAitInfoUpdated(ctx context.Context, aitInfo AitInfo, seq int32) error
+	OnSignalStrength(ctx context.Context, stength int32, seq int32) error
+	OnCueingMessageAvailability(ctx context.Context, available bool, seq int32) error
+	OnTimeShiftMode(ctx context.Context, mode int32, seq int32) error
+	OnAvailableSpeeds(ctx context.Context, speeds []float32, seq int32) error
+	OnTvMessage(ctx context.Context, type_ int32, data os.Bundle, seq int32) error
+	OnTuned(ctx context.Context, channelUri net.Uri, seq int32) error
+	OnRecordingStopped(ctx context.Context, recordedProgramUri net.Uri, seq int32) error
+	OnError(ctx context.Context, error_ int32, seq int32) error
+	OnBroadcastInfoResponse(ctx context.Context, response BroadcastInfoResponse, seq int32) error
+	OnAdResponse(ctx context.Context, response AdResponse, seq int32) error
+	OnAdBufferConsumed(ctx context.Context, buffer AdBuffer, seq int32) error
+	OnTvInputSessionData(ctx context.Context, type_ string, data os.Bundle, seq int32) error
+}
+
+type tvInputClientStubWrapper struct {
+	impl       ITvInputClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInputClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInputClientStubWrapper) OnSessionCreated(
+	ctx context.Context,
+	inputId string,
+	token binder.IBinder,
+	channel view.InputChannel,
+	seq int32,
+) error {
+	return w.impl.OnSessionCreated(ctx, inputId, token, channel, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnSessionReleased(
+	ctx context.Context,
+	seq int32,
+) error {
+	return w.impl.OnSessionReleased(ctx, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnSessionEvent(
+	ctx context.Context,
+	name string,
+	args os.Bundle,
+	seq int32,
+) error {
+	return w.impl.OnSessionEvent(ctx, name, args, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnChannelRetuned(
+	ctx context.Context,
+	channelUri net.Uri,
+	seq int32,
+) error {
+	return w.impl.OnChannelRetuned(ctx, channelUri, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnAudioPresentationsChanged(
+	ctx context.Context,
+	AudioPresentations []tuner.AudioPresentation,
+	seq int32,
+) error {
+	return w.impl.OnAudioPresentationsChanged(ctx, AudioPresentations, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnAudioPresentationSelected(
+	ctx context.Context,
+	presentationId int32,
+	programId int32,
+	seq int32,
+) error {
+	return w.impl.OnAudioPresentationSelected(ctx, presentationId, programId, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnTracksChanged(
+	ctx context.Context,
+	tracks []TvTrackInfo,
+	seq int32,
+) error {
+	return w.impl.OnTracksChanged(ctx, tracks, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnTrackSelected(
+	ctx context.Context,
+	type_ int32,
+	trackId string,
+	seq int32,
+) error {
+	return w.impl.OnTrackSelected(ctx, type_, trackId, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnVideoAvailable(
+	ctx context.Context,
+	seq int32,
+) error {
+	return w.impl.OnVideoAvailable(ctx, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnVideoUnavailable(
+	ctx context.Context,
+	reason int32,
+	seq int32,
+) error {
+	return w.impl.OnVideoUnavailable(ctx, reason, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnVideoFreezeUpdated(
+	ctx context.Context,
+	isFrozen bool,
+	seq int32,
+) error {
+	return w.impl.OnVideoFreezeUpdated(ctx, isFrozen, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnContentAllowed(
+	ctx context.Context,
+	seq int32,
+) error {
+	return w.impl.OnContentAllowed(ctx, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnContentBlocked(
+	ctx context.Context,
+	rating string,
+	seq int32,
+) error {
+	return w.impl.OnContentBlocked(ctx, rating, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnLayoutSurface(
+	ctx context.Context,
+	left int32,
+	top int32,
+	right int32,
+	bottom int32,
+	seq int32,
+) error {
+	return w.impl.OnLayoutSurface(ctx, left, top, right, bottom, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnTimeShiftStatusChanged(
+	ctx context.Context,
+	status int32,
+	seq int32,
+) error {
+	return w.impl.OnTimeShiftStatusChanged(ctx, status, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnTimeShiftStartPositionChanged(
+	ctx context.Context,
+	timeMs int64,
+	seq int32,
+) error {
+	return w.impl.OnTimeShiftStartPositionChanged(ctx, timeMs, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnTimeShiftCurrentPositionChanged(
+	ctx context.Context,
+	timeMs int64,
+	seq int32,
+) error {
+	return w.impl.OnTimeShiftCurrentPositionChanged(ctx, timeMs, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnAitInfoUpdated(
+	ctx context.Context,
+	aitInfo AitInfo,
+	seq int32,
+) error {
+	return w.impl.OnAitInfoUpdated(ctx, aitInfo, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnSignalStrength(
+	ctx context.Context,
+	stength int32,
+	seq int32,
+) error {
+	return w.impl.OnSignalStrength(ctx, stength, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnCueingMessageAvailability(
+	ctx context.Context,
+	available bool,
+	seq int32,
+) error {
+	return w.impl.OnCueingMessageAvailability(ctx, available, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnTimeShiftMode(
+	ctx context.Context,
+	mode int32,
+	seq int32,
+) error {
+	return w.impl.OnTimeShiftMode(ctx, mode, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnAvailableSpeeds(
+	ctx context.Context,
+	speeds []float32,
+	seq int32,
+) error {
+	return w.impl.OnAvailableSpeeds(ctx, speeds, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnTvMessage(
+	ctx context.Context,
+	type_ int32,
+	data os.Bundle,
+	seq int32,
+) error {
+	return w.impl.OnTvMessage(ctx, type_, data, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnTuned(
+	ctx context.Context,
+	channelUri net.Uri,
+	seq int32,
+) error {
+	return w.impl.OnTuned(ctx, channelUri, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnRecordingStopped(
+	ctx context.Context,
+	recordedProgramUri net.Uri,
+	seq int32,
+) error {
+	return w.impl.OnRecordingStopped(ctx, recordedProgramUri, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnError(
+	ctx context.Context,
+	error_ int32,
+	seq int32,
+) error {
+	return w.impl.OnError(ctx, error_, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnBroadcastInfoResponse(
+	ctx context.Context,
+	response BroadcastInfoResponse,
+	seq int32,
+) error {
+	return w.impl.OnBroadcastInfoResponse(ctx, response, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnAdResponse(
+	ctx context.Context,
+	response AdResponse,
+	seq int32,
+) error {
+	return w.impl.OnAdResponse(ctx, response, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnAdBufferConsumed(
+	ctx context.Context,
+	buffer AdBuffer,
+	seq int32,
+) error {
+	return w.impl.OnAdBufferConsumed(ctx, buffer, seq)
+}
+
+func (w *tvInputClientStubWrapper) OnTvInputSessionData(
+	ctx context.Context,
+	type_ string,
+	data os.Bundle,
+	seq int32,
+) error {
+	return w.impl.OnTvInputSessionData(ctx, type_, data, seq)
+}
+
+var _ ITvInputClient = (*tvInputClientStubWrapper)(nil)
+
+// NewTvInputClientStub creates a server-side ITvInputClient wrapping the given
+// server implementation. The returned value satisfies ITvInputClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInputClientStub(
+	impl ITvInputClientServer,
+) ITvInputClient {
+	wrapper := &tvInputClientStubWrapper{impl: impl}
+	stub := &TvInputClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

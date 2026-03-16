@@ -194,3 +194,61 @@ func (s *CamInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICamInfoListenerServer is the server-side interface that user implementations
+// provide to NewCamInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICamInfoListenerServer interface {
+	OnCamInfoChanged(ctx context.Context, slotId int32, updatedCamInfo os.Bundle) error
+	OnSlotInfoChanged(ctx context.Context, slotId int32, updatedSlotInfo os.Bundle) error
+	OnNewTypeCamInsert(ctx context.Context, slotId int32, newCamType os.Bundle) error
+}
+
+type camInfoListenerStubWrapper struct {
+	impl       ICamInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *camInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *camInfoListenerStubWrapper) OnCamInfoChanged(
+	ctx context.Context,
+	slotId int32,
+	updatedCamInfo os.Bundle,
+) error {
+	return w.impl.OnCamInfoChanged(ctx, slotId, updatedCamInfo)
+}
+
+func (w *camInfoListenerStubWrapper) OnSlotInfoChanged(
+	ctx context.Context,
+	slotId int32,
+	updatedSlotInfo os.Bundle,
+) error {
+	return w.impl.OnSlotInfoChanged(ctx, slotId, updatedSlotInfo)
+}
+
+func (w *camInfoListenerStubWrapper) OnNewTypeCamInsert(
+	ctx context.Context,
+	slotId int32,
+	newCamType os.Bundle,
+) error {
+	return w.impl.OnNewTypeCamInsert(ctx, slotId, newCamType)
+}
+
+var _ ICamInfoListener = (*camInfoListenerStubWrapper)(nil)
+
+// NewCamInfoListenerStub creates a server-side ICamInfoListener wrapping the given
+// server implementation. The returned value satisfies ICamInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCamInfoListenerStub(
+	impl ICamInfoListenerServer,
+) ICamInfoListener {
+	wrapper := &camInfoListenerStubWrapper{impl: impl}
+	stub := &CamInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

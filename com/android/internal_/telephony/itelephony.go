@@ -17,6 +17,7 @@ import (
 	gba "github.com/xaionaro-go/binder/android/telephony/gba"
 	ims "github.com/xaionaro-go/binder/android/telephony/ims"
 	aidl "github.com/xaionaro-go/binder/android/telephony/ims/aidl"
+	satellite "github.com/xaionaro-go/binder/android/telephony/satellite"
 	"github.com/xaionaro-go/binder/binder"
 	internal "github.com/xaionaro-go/binder/com/android/ims/internal_"
 	"github.com/xaionaro-go/binder/parcel"
@@ -828,28 +829,28 @@ type ITelephony interface {
 	RequestIsEmergencyModeEnabled(ctx context.Context, receiver os.ResultReceiver) error
 	RequestIsSatelliteSupported(ctx context.Context, receiver os.ResultReceiver) error
 	RequestSatelliteCapabilities(ctx context.Context, receiver os.ResultReceiver) error
-	StartSatelliteTransmissionUpdates(ctx context.Context, resultCallback IIntegerConsumer, callback interface{}) error
-	StopSatelliteTransmissionUpdates(ctx context.Context, resultCallback IIntegerConsumer, callback interface{}) error
+	StartSatelliteTransmissionUpdates(ctx context.Context, resultCallback IIntegerConsumer, callback satellite.ISatelliteTransmissionUpdateCallback) error
+	StopSatelliteTransmissionUpdates(ctx context.Context, resultCallback IIntegerConsumer, callback satellite.ISatelliteTransmissionUpdateCallback) error
 	ProvisionSatelliteService(ctx context.Context, token string, provisionData []byte, callback IIntegerConsumer) (ondeviceintelligence.ICancellationSignal, error)
 	DeprovisionSatelliteService(ctx context.Context, token string, callback IIntegerConsumer) error
-	RegisterForSatelliteProvisionStateChanged(ctx context.Context, callback interface{}) (int32, error)
-	UnregisterForSatelliteProvisionStateChanged(ctx context.Context, callback interface{}) error
+	RegisterForSatelliteProvisionStateChanged(ctx context.Context, callback satellite.ISatelliteProvisionStateCallback) (int32, error)
+	UnregisterForSatelliteProvisionStateChanged(ctx context.Context, callback satellite.ISatelliteProvisionStateCallback) error
 	RequestIsSatelliteProvisioned(ctx context.Context, receiver os.ResultReceiver) error
-	RegisterForSatelliteModemStateChanged(ctx context.Context, callback interface{}) (int32, error)
-	UnregisterForModemStateChanged(ctx context.Context, callback interface{}) error
-	RegisterForIncomingDatagram(ctx context.Context, callback interface{}) (int32, error)
-	UnregisterForIncomingDatagram(ctx context.Context, callback interface{}) error
+	RegisterForSatelliteModemStateChanged(ctx context.Context, callback satellite.ISatelliteModemStateCallback) (int32, error)
+	UnregisterForModemStateChanged(ctx context.Context, callback satellite.ISatelliteModemStateCallback) error
+	RegisterForIncomingDatagram(ctx context.Context, callback satellite.ISatelliteDatagramCallback) (int32, error)
+	UnregisterForIncomingDatagram(ctx context.Context, callback satellite.ISatelliteDatagramCallback) error
 	PollPendingDatagrams(ctx context.Context, callback IIntegerConsumer) error
-	SendDatagram(ctx context.Context, datagramType int32, datagram interface{}, needFullScreenPointingUI bool, callback IIntegerConsumer) error
+	SendDatagram(ctx context.Context, datagramType int32, datagram satellite.SatelliteDatagram, needFullScreenPointingUI bool, callback IIntegerConsumer) error
 	GetSatelliteDisallowedReasons(ctx context.Context) ([]int32, error)
-	RegisterForSatelliteDisallowedReasonsChanged(ctx context.Context, callback interface{}) error
-	UnregisterForSatelliteDisallowedReasonsChanged(ctx context.Context, callback interface{}) error
+	RegisterForSatelliteDisallowedReasonsChanged(ctx context.Context, callback satellite.ISatelliteDisallowedReasonsCallback) error
+	UnregisterForSatelliteDisallowedReasonsChanged(ctx context.Context, callback satellite.ISatelliteDisallowedReasonsCallback) error
 	RequestIsCommunicationAllowedForCurrentLocation(ctx context.Context, subId int32, receiver os.ResultReceiver) error
 	RequestSatelliteAccessConfigurationForCurrentLocation(ctx context.Context, receiver os.ResultReceiver) error
 	RequestTimeForNextSatelliteVisibility(ctx context.Context, receiver os.ResultReceiver) error
 	RequestSelectedNbIotSatelliteSubscriptionId(ctx context.Context, receiver os.ResultReceiver) error
-	RegisterForSelectedNbIotSatelliteSubscriptionChanged(ctx context.Context, callback interface{}) (int32, error)
-	UnregisterForSelectedNbIotSatelliteSubscriptionChanged(ctx context.Context, callback interface{}) error
+	RegisterForSelectedNbIotSatelliteSubscriptionChanged(ctx context.Context, callback satellite.ISelectedNbIotSatelliteSubscriptionCallback) (int32, error)
+	UnregisterForSelectedNbIotSatelliteSubscriptionChanged(ctx context.Context, callback satellite.ISelectedNbIotSatelliteSubscriptionCallback) error
 	SetDeviceAlignedWithSatellite(ctx context.Context, isAligned bool) error
 	SetSatelliteServicePackageName(ctx context.Context, servicePackageName string, provisioned string) (bool, error)
 	SetSatelliteGatewayServicePackageName(ctx context.Context, servicePackageName string) (bool, error)
@@ -867,10 +868,10 @@ type ITelephony interface {
 	RemoveAttachRestrictionForCarrier(ctx context.Context, subId int32, reason int32, callback IIntegerConsumer) error
 	GetAttachRestrictionReasonsForCarrier(ctx context.Context, subId int32) ([]int32, error)
 	RequestNtnSignalStrength(ctx context.Context, receiver os.ResultReceiver) error
-	RegisterForNtnSignalStrengthChanged(ctx context.Context, callback interface{}) error
-	UnregisterForNtnSignalStrengthChanged(ctx context.Context, callback interface{}) error
-	RegisterForCapabilitiesChanged(ctx context.Context, callback interface{}) (int32, error)
-	UnregisterForCapabilitiesChanged(ctx context.Context, callback interface{}) error
+	RegisterForNtnSignalStrengthChanged(ctx context.Context, callback satellite.INtnSignalStrengthCallback) error
+	UnregisterForNtnSignalStrengthChanged(ctx context.Context, callback satellite.INtnSignalStrengthCallback) error
+	RegisterForCapabilitiesChanged(ctx context.Context, callback satellite.ISatelliteCapabilitiesCallback) (int32, error)
+	UnregisterForCapabilitiesChanged(ctx context.Context, callback satellite.ISatelliteCapabilitiesCallback) error
 	SetShouldSendDatagramToModemInDemoMode(ctx context.Context, shouldSendToModemInDemoMode bool) (bool, error)
 	SetDomainSelectionServiceOverride(ctx context.Context, componentName androidContent.ComponentName) (bool, error)
 	ClearDomainSelectionServiceOverride(ctx context.Context) (bool, error)
@@ -880,21 +881,21 @@ type ITelephony interface {
 	SetNullCipherNotificationsEnabled(ctx context.Context, enable bool) error
 	IsNullCipherNotificationsEnabled(ctx context.Context) (bool, error)
 	GetSatellitePlmnsForCarrier(ctx context.Context, subId int32) ([]string, error)
-	RegisterForSatelliteSupportedStateChanged(ctx context.Context, callback interface{}) (int32, error)
-	UnregisterForSatelliteSupportedStateChanged(ctx context.Context, callback interface{}) error
-	RegisterForCommunicationAllowedStateChanged(ctx context.Context, subId int32, callback interface{}) (int32, error)
-	UnregisterForCommunicationAllowedStateChanged(ctx context.Context, subId int32, callback interface{}) error
+	RegisterForSatelliteSupportedStateChanged(ctx context.Context, callback satellite.ISatelliteSupportedStateCallback) (int32, error)
+	UnregisterForSatelliteSupportedStateChanged(ctx context.Context, callback satellite.ISatelliteSupportedStateCallback) error
+	RegisterForCommunicationAllowedStateChanged(ctx context.Context, subId int32, callback satellite.ISatelliteCommunicationAllowedStateCallback) (int32, error)
+	UnregisterForCommunicationAllowedStateChanged(ctx context.Context, subId int32, callback satellite.ISatelliteCommunicationAllowedStateCallback) error
 	SetDatagramControllerBooleanConfig(ctx context.Context, reset bool, booleanType int32, enable bool) (bool, error)
 	SetIsSatelliteCommunicationAllowedForCurrentLocationCache(ctx context.Context, state string) (bool, error)
 	RequestSatelliteSessionStats(ctx context.Context, subId int32, receiver os.ResultReceiver) error
 	RequestSatelliteSubscriberProvisionStatus(ctx context.Context, result os.ResultReceiver) error
 	RequestSatelliteDisplayName(ctx context.Context, receiver os.ResultReceiver) error
-	ProvisionSatellite(ctx context.Context, list []interface{}, result os.ResultReceiver) error
+	ProvisionSatellite(ctx context.Context, list []satellite.SatelliteSubscriberInfo, result os.ResultReceiver) error
 	SetSatelliteSubscriberIdListChangedIntentComponent(ctx context.Context, name string) (bool, error)
 	SetTestEuiccUiComponent(ctx context.Context, componentName androidContent.ComponentName) error
 	GetTestEuiccUiComponent(ctx context.Context) (androidContent.ComponentName, error)
 	OverrideCarrierRoamingNtnEligibilityChanged(ctx context.Context, status bool, resetRequired bool) (bool, error)
-	DeprovisionSatellite(ctx context.Context, list []interface{}, result os.ResultReceiver) error
+	DeprovisionSatellite(ctx context.Context, list []satellite.SatelliteSubscriberInfo, result os.ResultReceiver) error
 	SetNtnSmsSupported(ctx context.Context, ntnSmsSupported bool) error
 	GetCarrierIdFromIdentifier(ctx context.Context, carrierIdentifier carrier.CarrierIdentifier) (int32, error)
 }
@@ -3236,7 +3237,7 @@ func (p *TelephonyProxy) RequestCellInfoUpdate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteString16(callingPkg)
 	_data.WriteString16(_identity.AttributionTag)
 
@@ -3269,7 +3270,7 @@ func (p *TelephonyProxy) RequestCellInfoUpdateWithWorkSource(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteString16(callingPkg)
 	_data.WriteString16(_identity.AttributionTag)
 
@@ -3974,7 +3975,7 @@ func (p *TelephonyProxy) RegisterMmTelFeatureCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerMmTelFeatureCallback")
 	if _err != nil {
@@ -4000,7 +4001,7 @@ func (p *TelephonyProxy) UnregisterImsFeatureCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterImsFeatureCallback")
 	if _err != nil {
@@ -4208,7 +4209,7 @@ func (p *TelephonyProxy) GetImsMmTelFeatureState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getImsMmTelFeatureState")
 	if _err != nil {
@@ -4315,7 +4316,7 @@ func (p *TelephonyProxy) RequestNetworkScan(
 	if _err := messenger.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(_identity.AttributionTag)
 
@@ -4766,7 +4767,7 @@ func (p *TelephonyProxy) RequestNumberVerification(
 		return _err
 	}
 	_data.WriteInt64(timeoutMillis)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "requestNumberVerification")
@@ -6841,7 +6842,7 @@ func (p *TelephonyProxy) GetCallForwarding(
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(callForwardingReason)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCallForwarding")
 	if _err != nil {
@@ -6874,7 +6875,7 @@ func (p *TelephonyProxy) SetCallForwarding(
 	if _err := callForwardingInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setCallForwarding")
 	if _err != nil {
@@ -6902,7 +6903,7 @@ func (p *TelephonyProxy) GetCallWaitingStatus(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCallWaitingStatus")
 	if _err != nil {
@@ -6932,7 +6933,7 @@ func (p *TelephonyProxy) SetCallWaitingStatus(
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteBool(enabled)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setCallWaitingStatus")
 	if _err != nil {
@@ -7033,7 +7034,7 @@ func (p *TelephonyProxy) SetSimPowerStateForSlotWithCallback(
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(slotIndex)
 	_data.WriteInt32(state)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setSimPowerStateForSlotWithCallback")
 	if _err != nil {
@@ -7856,7 +7857,7 @@ func (p *TelephonyProxy) RegisterImsRegistrationCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerImsRegistrationCallback")
 	if _err != nil {
@@ -7884,7 +7885,7 @@ func (p *TelephonyProxy) UnregisterImsRegistrationCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterImsRegistrationCallback")
 	if _err != nil {
@@ -7912,7 +7913,7 @@ func (p *TelephonyProxy) RegisterImsEmergencyRegistrationCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerImsEmergencyRegistrationCallback")
 	if _err != nil {
@@ -7940,7 +7941,7 @@ func (p *TelephonyProxy) UnregisterImsEmergencyRegistrationCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterImsEmergencyRegistrationCallback")
 	if _err != nil {
@@ -7968,7 +7969,7 @@ func (p *TelephonyProxy) GetImsMmTelRegistrationState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(consumer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, consumer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getImsMmTelRegistrationState")
 	if _err != nil {
@@ -7996,7 +7997,7 @@ func (p *TelephonyProxy) GetImsMmTelRegistrationTransportType(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(consumer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, consumer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getImsMmTelRegistrationTransportType")
 	if _err != nil {
@@ -8024,7 +8025,7 @@ func (p *TelephonyProxy) RegisterMmTelCapabilityCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerMmTelCapabilityCallback")
 	if _err != nil {
@@ -8052,7 +8053,7 @@ func (p *TelephonyProxy) UnregisterMmTelCapabilityCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterMmTelCapabilityCallback")
 	if _err != nil {
@@ -8152,7 +8153,7 @@ func (p *TelephonyProxy) IsMmTelCapabilitySupported(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(capability)
 	_data.WriteInt32(transportType)
 
@@ -8804,7 +8805,7 @@ func (p *TelephonyProxy) RegisterImsProvisioningChangedCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerImsProvisioningChangedCallback")
 	if _err != nil {
@@ -8832,7 +8833,7 @@ func (p *TelephonyProxy) UnregisterImsProvisioningChangedCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterImsProvisioningChangedCallback")
 	if _err != nil {
@@ -8860,7 +8861,7 @@ func (p *TelephonyProxy) RegisterFeatureProvisioningChangedCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerFeatureProvisioningChangedCallback")
 	if _err != nil {
@@ -8888,7 +8889,7 @@ func (p *TelephonyProxy) UnregisterFeatureProvisioningChangedCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterFeatureProvisioningChangedCallback")
 	if _err != nil {
@@ -9811,7 +9812,7 @@ func (p *TelephonyProxy) SetSystemSelectionChannels(
 		}
 	}
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setSystemSelectionChannels")
 	if _err != nil {
@@ -9907,7 +9908,7 @@ func (p *TelephonyProxy) EnqueueSmsPickResult(
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(callingAttributeTag)
-	_data.WriteStrongBinder(subIdResult.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, subIdResult.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "enqueueSmsPickResult")
 	if _err != nil {
@@ -10566,7 +10567,7 @@ func (p *TelephonyProxy) BootstrapAuthenticationRequest(
 		return _err
 	}
 	_data.WriteBool(forceBootStrapping)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "bootstrapAuthenticationRequest")
 	if _err != nil {
@@ -10784,7 +10785,7 @@ func (p *TelephonyProxy) RegisterRcsProvisioningCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerRcsProvisioningCallback")
 	if _err != nil {
@@ -10812,7 +10813,7 @@ func (p *TelephonyProxy) UnregisterRcsProvisioningCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterRcsProvisioningCallback")
 	if _err != nil {
@@ -11812,7 +11813,7 @@ func (p *TelephonyProxy) PurchasePremiumCapability(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(capability)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(subId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "purchasePremiumCapability")
@@ -11844,7 +11845,7 @@ func (p *TelephonyProxy) RegisterImsStateCallback(
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(feature)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerImsStateCallback")
@@ -11871,7 +11872,7 @@ func (p *TelephonyProxy) UnregisterImsStateCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterImsStateCallback")
 	if _err != nil {
@@ -12397,7 +12398,7 @@ func (p *TelephonyProxy) SetCellBroadcastIdRanges(
 			}
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "setCellBroadcastIdRanges")
 	if _err != nil {
@@ -12453,7 +12454,7 @@ func (p *TelephonyProxy) GetCarrierRestrictionStatus(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteStrongBinder(internalCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, internalCallback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "getCarrierRestrictionStatus")
@@ -12486,7 +12487,7 @@ func (p *TelephonyProxy) RequestSatelliteEnabled(
 	_data.WriteBool(enableSatellite)
 	_data.WriteBool(enableDemoMode)
 	_data.WriteBool(isEmergency)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "requestSatelliteEnabled")
 	if _err != nil {
@@ -12654,11 +12655,12 @@ func (p *TelephonyProxy) RequestSatelliteCapabilities(
 func (p *TelephonyProxy) StartSatelliteTransmissionUpdates(
 	ctx context.Context,
 	resultCallback IIntegerConsumer,
-	callback interface{},
+	callback satellite.ISatelliteTransmissionUpdateCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "startSatelliteTransmissionUpdates")
 	if _err != nil {
@@ -12681,11 +12683,12 @@ func (p *TelephonyProxy) StartSatelliteTransmissionUpdates(
 func (p *TelephonyProxy) StopSatelliteTransmissionUpdates(
 	ctx context.Context,
 	resultCallback IIntegerConsumer,
-	callback interface{},
+	callback satellite.ISatelliteTransmissionUpdateCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "stopSatelliteTransmissionUpdates")
 	if _err != nil {
@@ -12723,7 +12726,7 @@ func (p *TelephonyProxy) ProvisionSatelliteService(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "provisionSatelliteService")
 	if _err != nil {
@@ -12756,7 +12759,7 @@ func (p *TelephonyProxy) DeprovisionSatelliteService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteString16(token)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "deprovisionSatelliteService")
 	if _err != nil {
@@ -12778,11 +12781,12 @@ func (p *TelephonyProxy) DeprovisionSatelliteService(
 
 func (p *TelephonyProxy) RegisterForSatelliteProvisionStateChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteProvisionStateCallback,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerForSatelliteProvisionStateChanged")
 	if _err != nil {
@@ -12808,10 +12812,11 @@ func (p *TelephonyProxy) RegisterForSatelliteProvisionStateChanged(
 
 func (p *TelephonyProxy) UnregisterForSatelliteProvisionStateChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteProvisionStateCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterForSatelliteProvisionStateChanged")
 	if _err != nil {
@@ -12862,11 +12867,12 @@ func (p *TelephonyProxy) RequestIsSatelliteProvisioned(
 
 func (p *TelephonyProxy) RegisterForSatelliteModemStateChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteModemStateCallback,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerForSatelliteModemStateChanged")
 	if _err != nil {
@@ -12892,10 +12898,11 @@ func (p *TelephonyProxy) RegisterForSatelliteModemStateChanged(
 
 func (p *TelephonyProxy) UnregisterForModemStateChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteModemStateCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterForModemStateChanged")
 	if _err != nil {
@@ -12917,11 +12924,12 @@ func (p *TelephonyProxy) UnregisterForModemStateChanged(
 
 func (p *TelephonyProxy) RegisterForIncomingDatagram(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteDatagramCallback,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerForIncomingDatagram")
 	if _err != nil {
@@ -12947,10 +12955,11 @@ func (p *TelephonyProxy) RegisterForIncomingDatagram(
 
 func (p *TelephonyProxy) UnregisterForIncomingDatagram(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteDatagramCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterForIncomingDatagram")
 	if _err != nil {
@@ -12976,7 +12985,7 @@ func (p *TelephonyProxy) PollPendingDatagrams(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "pollPendingDatagrams")
 	if _err != nil {
@@ -12999,15 +13008,19 @@ func (p *TelephonyProxy) PollPendingDatagrams(
 func (p *TelephonyProxy) SendDatagram(
 	ctx context.Context,
 	datagramType int32,
-	datagram interface{},
+	datagram satellite.SatelliteDatagram,
 	needFullScreenPointingUI bool,
 	callback IIntegerConsumer,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(datagramType)
+	_data.WriteInt32(1)
+	if _err := datagram.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteBool(needFullScreenPointingUI)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "sendDatagram")
 	if _err != nil {
@@ -13068,10 +13081,11 @@ func (p *TelephonyProxy) GetSatelliteDisallowedReasons(
 
 func (p *TelephonyProxy) RegisterForSatelliteDisallowedReasonsChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteDisallowedReasonsCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerForSatelliteDisallowedReasonsChanged")
 	if _err != nil {
@@ -13093,10 +13107,11 @@ func (p *TelephonyProxy) RegisterForSatelliteDisallowedReasonsChanged(
 
 func (p *TelephonyProxy) UnregisterForSatelliteDisallowedReasonsChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteDisallowedReasonsCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterForSatelliteDisallowedReasonsChanged")
 	if _err != nil {
@@ -13236,11 +13251,12 @@ func (p *TelephonyProxy) RequestSelectedNbIotSatelliteSubscriptionId(
 
 func (p *TelephonyProxy) RegisterForSelectedNbIotSatelliteSubscriptionChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISelectedNbIotSatelliteSubscriptionCallback,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerForSelectedNbIotSatelliteSubscriptionChanged")
 	if _err != nil {
@@ -13266,10 +13282,11 @@ func (p *TelephonyProxy) RegisterForSelectedNbIotSatelliteSubscriptionChanged(
 
 func (p *TelephonyProxy) UnregisterForSelectedNbIotSatelliteSubscriptionChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISelectedNbIotSatelliteSubscriptionCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterForSelectedNbIotSatelliteSubscriptionChanged")
 	if _err != nil {
@@ -13765,7 +13782,7 @@ func (p *TelephonyProxy) AddAttachRestrictionForCarrier(
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(reason)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "addAttachRestrictionForCarrier")
 	if _err != nil {
@@ -13795,7 +13812,7 @@ func (p *TelephonyProxy) RemoveAttachRestrictionForCarrier(
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
 	_data.WriteInt32(reason)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "removeAttachRestrictionForCarrier")
 	if _err != nil {
@@ -13887,10 +13904,11 @@ func (p *TelephonyProxy) RequestNtnSignalStrength(
 
 func (p *TelephonyProxy) RegisterForNtnSignalStrengthChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.INtnSignalStrengthCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerForNtnSignalStrengthChanged")
 	if _err != nil {
@@ -13912,10 +13930,11 @@ func (p *TelephonyProxy) RegisterForNtnSignalStrengthChanged(
 
 func (p *TelephonyProxy) UnregisterForNtnSignalStrengthChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.INtnSignalStrengthCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterForNtnSignalStrengthChanged")
 	if _err != nil {
@@ -13937,11 +13956,12 @@ func (p *TelephonyProxy) UnregisterForNtnSignalStrengthChanged(
 
 func (p *TelephonyProxy) RegisterForCapabilitiesChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteCapabilitiesCallback,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerForCapabilitiesChanged")
 	if _err != nil {
@@ -13967,10 +13987,11 @@ func (p *TelephonyProxy) RegisterForCapabilitiesChanged(
 
 func (p *TelephonyProxy) UnregisterForCapabilitiesChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteCapabilitiesCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterForCapabilitiesChanged")
 	if _err != nil {
@@ -14266,11 +14287,12 @@ func (p *TelephonyProxy) GetSatellitePlmnsForCarrier(
 
 func (p *TelephonyProxy) RegisterForSatelliteSupportedStateChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteSupportedStateCallback,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerForSatelliteSupportedStateChanged")
 	if _err != nil {
@@ -14296,10 +14318,11 @@ func (p *TelephonyProxy) RegisterForSatelliteSupportedStateChanged(
 
 func (p *TelephonyProxy) UnregisterForSatelliteSupportedStateChanged(
 	ctx context.Context,
-	callback interface{},
+	callback satellite.ISatelliteSupportedStateCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterForSatelliteSupportedStateChanged")
 	if _err != nil {
@@ -14322,12 +14345,13 @@ func (p *TelephonyProxy) UnregisterForSatelliteSupportedStateChanged(
 func (p *TelephonyProxy) RegisterForCommunicationAllowedStateChanged(
 	ctx context.Context,
 	subId int32,
-	callback interface{},
+	callback satellite.ISatelliteCommunicationAllowedStateCallback,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "registerForCommunicationAllowedStateChanged")
 	if _err != nil {
@@ -14354,11 +14378,12 @@ func (p *TelephonyProxy) RegisterForCommunicationAllowedStateChanged(
 func (p *TelephonyProxy) UnregisterForCommunicationAllowedStateChanged(
 	ctx context.Context,
 	subId int32,
-	callback interface{},
+	callback satellite.ISatelliteCommunicationAllowedStateCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_data.WriteInt32(subId)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephony, "unregisterForCommunicationAllowedStateChanged")
 	if _err != nil {
@@ -14535,7 +14560,7 @@ func (p *TelephonyProxy) RequestSatelliteDisplayName(
 
 func (p *TelephonyProxy) ProvisionSatellite(
 	ctx context.Context,
-	list []interface{},
+	list []satellite.SatelliteSubscriberInfo,
 	result os.ResultReceiver,
 ) error {
 	_data := parcel.New()
@@ -14544,6 +14569,11 @@ func (p *TelephonyProxy) ProvisionSatellite(
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(list)))
+		for _, _item := range list {
+			if _err := _item.MarshalParcel(_data); _err != nil {
+				return _err
+			}
+		}
 	}
 	_data.WriteInt32(1)
 	if _err := result.MarshalParcel(_data); _err != nil {
@@ -14697,7 +14727,7 @@ func (p *TelephonyProxy) OverrideCarrierRoamingNtnEligibilityChanged(
 
 func (p *TelephonyProxy) DeprovisionSatellite(
 	ctx context.Context,
-	list []interface{},
+	list []satellite.SatelliteSubscriberInfo,
 	result os.ResultReceiver,
 ) error {
 	_data := parcel.New()
@@ -14706,6 +14736,11 @@ func (p *TelephonyProxy) DeprovisionSatellite(
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(list)))
+		for _, _item := range list {
+			if _err := _item.MarshalParcel(_data); _err != nil {
+				return _err
+			}
+		}
 	}
 	_data.WriteInt32(1)
 	if _err := result.MarshalParcel(_data); _err != nil {
@@ -22285,7 +22320,9 @@ func (s *TelephonyStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_resultCallback IIntegerConsumer
 		_ = _arg_resultCallback
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteTransmissionUpdateCallback
+		_ = _arg_callback
 		_err := s.Impl.StartSatelliteTransmissionUpdates(ctx, _arg_resultCallback, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22301,7 +22338,9 @@ func (s *TelephonyStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_resultCallback IIntegerConsumer
 		_ = _arg_resultCallback
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteTransmissionUpdateCallback
+		_ = _arg_callback
 		_err := s.Impl.StopSatelliteTransmissionUpdates(ctx, _arg_resultCallback, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22357,7 +22396,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteProvisionStateCallback
+		_ = _arg_callback
 		_result, _err := s.Impl.RegisterForSatelliteProvisionStateChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22371,7 +22412,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteProvisionStateCallback
+		_ = _arg_callback
 		_err := s.Impl.UnregisterForSatelliteProvisionStateChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22408,7 +22451,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteModemStateCallback
+		_ = _arg_callback
 		_result, _err := s.Impl.RegisterForSatelliteModemStateChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22422,7 +22467,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteModemStateCallback
+		_ = _arg_callback
 		_err := s.Impl.UnregisterForModemStateChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22435,7 +22482,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteDatagramCallback
+		_ = _arg_callback
 		_result, _err := s.Impl.RegisterForIncomingDatagram(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22449,7 +22498,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteDatagramCallback
+		_ = _arg_callback
 		_err := s.Impl.UnregisterForIncomingDatagram(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22481,7 +22532,18 @@ func (s *TelephonyStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_datagram interface{}
+		var _arg_datagram satellite.SatelliteDatagram
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_datagram.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_needFullScreenPointingUI, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -22515,7 +22577,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteDisallowedReasonsCallback
+		_ = _arg_callback
 		_err := s.Impl.RegisterForSatelliteDisallowedReasonsChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22528,7 +22592,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteDisallowedReasonsCallback
+		_ = _arg_callback
 		_err := s.Impl.UnregisterForSatelliteDisallowedReasonsChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22641,7 +22707,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISelectedNbIotSatelliteSubscriptionCallback
+		_ = _arg_callback
 		_result, _err := s.Impl.RegisterForSelectedNbIotSatelliteSubscriptionChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -22655,7 +22723,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISelectedNbIotSatelliteSubscriptionCallback
+		_ = _arg_callback
 		_err := s.Impl.UnregisterForSelectedNbIotSatelliteSubscriptionChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -23046,7 +23116,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.INtnSignalStrengthCallback
+		_ = _arg_callback
 		_err := s.Impl.RegisterForNtnSignalStrengthChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -23059,7 +23131,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.INtnSignalStrengthCallback
+		_ = _arg_callback
 		_err := s.Impl.UnregisterForNtnSignalStrengthChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -23072,7 +23146,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteCapabilitiesCallback
+		_ = _arg_callback
 		_result, _err := s.Impl.RegisterForCapabilitiesChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -23086,7 +23162,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteCapabilitiesCallback
+		_ = _arg_callback
 		_err := s.Impl.UnregisterForCapabilitiesChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -23243,7 +23321,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteSupportedStateCallback
+		_ = _arg_callback
 		_result, _err := s.Impl.RegisterForSatelliteSupportedStateChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -23257,7 +23337,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteSupportedStateCallback
+		_ = _arg_callback
 		_err := s.Impl.UnregisterForSatelliteSupportedStateChanged(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -23274,7 +23356,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteCommunicationAllowedStateCallback
+		_ = _arg_callback
 		_result, _err := s.Impl.RegisterForCommunicationAllowedStateChanged(ctx, _arg_subId, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -23292,7 +23376,9 @@ func (s *TelephonyStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback satellite.ISatelliteCommunicationAllowedStateCallback
+		_ = _arg_callback
 		_err = s.Impl.UnregisterForCommunicationAllowedStateChanged(ctx, _arg_subId, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -23424,7 +23510,7 @@ func (s *TelephonyStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_list []interface{}
+		var _arg_list []satellite.SatelliteSubscriberInfo
 		_ = _arg_list
 		var _arg_result os.ResultReceiver
 		{
@@ -23529,7 +23615,7 @@ func (s *TelephonyStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_list []interface{}
+		var _arg_list []satellite.SatelliteSubscriberInfo
 		_ = _arg_list
 		var _arg_result os.ResultReceiver
 		{
@@ -23595,4 +23681,3723 @@ func (s *TelephonyStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITelephonyServer is the server-side interface that user implementations
+// provide to NewTelephonyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITelephonyServer interface {
+	Dial(ctx context.Context, number string) error
+	Call(ctx context.Context, number string) error
+	IsRadioOn(ctx context.Context) (bool, error)
+	IsRadioOnWithFeature(ctx context.Context) (bool, error)
+	IsRadioOnForSubscriber(ctx context.Context, subId int32) (bool, error)
+	IsRadioOnForSubscriberWithFeature(ctx context.Context, subId int32) (bool, error)
+	SetCallComposerStatus(ctx context.Context, subId int32, status int32) error
+	GetCallComposerStatus(ctx context.Context, subId int32) (int32, error)
+	SupplyPinForSubscriber(ctx context.Context, subId int32, pin string) (bool, error)
+	SupplyPukForSubscriber(ctx context.Context, subId int32, puk string, pin string) (bool, error)
+	SupplyPinReportResultForSubscriber(ctx context.Context, subId int32, pin string) ([]int32, error)
+	SupplyPukReportResultForSubscriber(ctx context.Context, subId int32, puk string, pin string) ([]int32, error)
+	HandlePinMmi(ctx context.Context, dialString string) (bool, error)
+	HandleUssdRequest(ctx context.Context, subId int32, ussdRequest string, wrappedCallback os.ResultReceiver) error
+	HandlePinMmiForSubscriber(ctx context.Context, subId int32, dialString string) (bool, error)
+	ToggleRadioOnOff(ctx context.Context) error
+	ToggleRadioOnOffForSubscriber(ctx context.Context, subId int32) error
+	SetRadio(ctx context.Context, turnOn bool) (bool, error)
+	SetRadioForSubscriber(ctx context.Context, subId int32, turnOn bool) (bool, error)
+	SetRadioPower(ctx context.Context, turnOn bool) (bool, error)
+	RequestRadioPowerOffForReason(ctx context.Context, subId int32, reason int32) (bool, error)
+	ClearRadioPowerOffForReason(ctx context.Context, subId int32, reason int32) (bool, error)
+	GetRadioPowerOffReasons(ctx context.Context, subId int32) ([]interface{}, error)
+	UpdateServiceLocation(ctx context.Context) error
+	UpdateServiceLocationWithPackageName(ctx context.Context, callingPkg string) error
+	EnableLocationUpdates(ctx context.Context) error
+	DisableLocationUpdates(ctx context.Context) error
+	EnableDataConnectivity(ctx context.Context) (bool, error)
+	DisableDataConnectivity(ctx context.Context) (bool, error)
+	IsDataConnectivityPossible(ctx context.Context, subId int32) (bool, error)
+	GetCellLocation(ctx context.Context, callingPkg string) (network.CellIdentity, error)
+	GetNetworkCountryIsoForPhone(ctx context.Context, phoneId int32) (string, error)
+	GetNeighboringCellInfo(ctx context.Context, callingPkg string) ([]androidTelephony.NeighboringCellInfo, error)
+	GetCallState(ctx context.Context) (int32, error)
+	GetCallStateForSubscription(ctx context.Context, subId int32, featureId string) (int32, error)
+	GetDataActivity(ctx context.Context) (int32, error)
+	GetDataActivityForSubId(ctx context.Context, subId int32) (int32, error)
+	GetDataState(ctx context.Context) (int32, error)
+	GetDataStateForSubId(ctx context.Context, subId int32) (int32, error)
+	GetActivePhoneType(ctx context.Context) (int32, error)
+	GetActivePhoneTypeForSlot(ctx context.Context, slotIndex int32) (int32, error)
+	GetCdmaEriIconIndex(ctx context.Context) (int32, error)
+	GetCdmaEriIconIndexForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetCdmaEriIconMode(ctx context.Context) (int32, error)
+	GetCdmaEriIconModeForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetCdmaEriText(ctx context.Context) (string, error)
+	GetCdmaEriTextForSubscriber(ctx context.Context, subId int32) (string, error)
+	NeedsOtaServiceProvisioning(ctx context.Context) (bool, error)
+	SetVoiceMailNumber(ctx context.Context, subId int32, alphaTag string, number string) (bool, error)
+	SetVoiceActivationState(ctx context.Context, subId int32, activationState int32) error
+	SetDataActivationState(ctx context.Context, subId int32, activationState int32) error
+	GetVoiceActivationState(ctx context.Context, subId int32) (int32, error)
+	GetDataActivationState(ctx context.Context, subId int32) (int32, error)
+	GetVoiceMessageCountForSubscriber(ctx context.Context, subId int32) (int32, error)
+	IsConcurrentVoiceAndDataAllowed(ctx context.Context, subId int32) (bool, error)
+	GetVisualVoicemailSettings(ctx context.Context, subId int32) (os.Bundle, error)
+	GetVisualVoicemailPackageName(ctx context.Context, subId int32) (string, error)
+	EnableVisualVoicemailSmsFilter(ctx context.Context, subId int32, settings androidTelephony.VisualVoicemailSmsFilterSettings) error
+	DisableVisualVoicemailSmsFilter(ctx context.Context, subId int32) error
+	GetVisualVoicemailSmsFilterSettings(ctx context.Context, subId int32) (androidTelephony.VisualVoicemailSmsFilterSettings, error)
+	GetActiveVisualVoicemailSmsFilterSettings(ctx context.Context, subId int32) (androidTelephony.VisualVoicemailSmsFilterSettings, error)
+	SendVisualVoicemailSmsForSubscriber(ctx context.Context, callingAttributeTag string, subId int32, number string, port int32, text string, sentIntent app.PendingIntent) error
+	SendDialerSpecialCode(ctx context.Context, callingPackageName string, inputCode string) error
+	GetNetworkTypeForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetDataNetworkType(ctx context.Context) (int32, error)
+	GetDataNetworkTypeForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetVoiceNetworkTypeForSubscriber(ctx context.Context, subId int32) (int32, error)
+	HasIccCard(ctx context.Context) (bool, error)
+	HasIccCardUsingSlotIndex(ctx context.Context, slotIndex int32) (bool, error)
+	GetLteOnCdmaMode(ctx context.Context) (int32, error)
+	GetLteOnCdmaModeForSubscriber(ctx context.Context, subId int32) (int32, error)
+	GetAllCellInfo(ctx context.Context, callingPkg string) ([]network.CellInfo, error)
+	RequestCellInfoUpdate(ctx context.Context, subId int32, cb androidTelephony.ICellInfoCallback, callingPkg string) error
+	RequestCellInfoUpdateWithWorkSource(ctx context.Context, subId int32, cb androidTelephony.ICellInfoCallback, callingPkg string, ws interface{}) error
+	SetCellInfoListRate(ctx context.Context, rateInMillis int32, subId int32) error
+	IccOpenLogicalChannel(ctx context.Context, request IccLogicalChannelRequest) (androidTelephony.IccOpenLogicalChannelResponse, error)
+	IccCloseLogicalChannel(ctx context.Context, request IccLogicalChannelRequest) (bool, error)
+	IccTransmitApduLogicalChannelByPort(ctx context.Context, slotIndex int32, portIndex int32, channel int32, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
+	IccTransmitApduLogicalChannel(ctx context.Context, subId int32, channel int32, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
+	IccTransmitApduBasicChannelByPort(ctx context.Context, slotIndex int32, portIndex int32, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
+	IccTransmitApduBasicChannel(ctx context.Context, subId int32, cla int32, instruction int32, p1 int32, p2 int32, p3 int32, data string) (string, error)
+	IccExchangeSimIO(ctx context.Context, subId int32, fileID int32, command int32, p1 int32, p2 int32, p3 int32, filePath string) ([]byte, error)
+	SendEnvelopeWithStatus(ctx context.Context, subId int32, content string) (string, error)
+	NvReadItem(ctx context.Context, itemID int32) (string, error)
+	NvWriteItem(ctx context.Context, itemID int32, itemValue string) (bool, error)
+	NvWriteCdmaPrl(ctx context.Context, preferredRoamingList []byte) (bool, error)
+	ResetModemConfig(ctx context.Context, slotIndex int32) (bool, error)
+	RebootModem(ctx context.Context, slotIndex int32) (bool, error)
+	GetAllowedNetworkTypesBitmask(ctx context.Context, subId int32) (int32, error)
+	IsTetheringApnRequiredForSubscriber(ctx context.Context, subId int32) (bool, error)
+	EnableIms(ctx context.Context, slotId int32) error
+	DisableIms(ctx context.Context, slotId int32) error
+	ResetIms(ctx context.Context, slotIndex int32) error
+	RegisterMmTelFeatureCallback(ctx context.Context, slotId int32, callback internal.IImsServiceFeatureCallback) error
+	UnregisterImsFeatureCallback(ctx context.Context, callback internal.IImsServiceFeatureCallback) error
+	GetImsRegistration(ctx context.Context, slotId int32, feature int32) (aidl.IImsRegistration, error)
+	GetImsConfig(ctx context.Context, slotId int32, feature int32) (aidl.IImsConfig, error)
+	SetBoundImsServiceOverride(ctx context.Context, slotIndex int32, isCarrierService bool, featureTypes []int32, packageName string) (bool, error)
+	ClearCarrierImsServiceOverride(ctx context.Context, slotIndex int32) (bool, error)
+	GetBoundImsServicePackage(ctx context.Context, slotIndex int32, isCarrierImsService bool, featureType int32) (string, error)
+	GetImsMmTelFeatureState(ctx context.Context, subId int32, callback IIntegerConsumer) error
+	SetNetworkSelectionModeAutomatic(ctx context.Context, subId int32) error
+	GetCellNetworkScanResults(ctx context.Context, subId int32) (CellNetworkScanResult, error)
+	RequestNetworkScan(ctx context.Context, subId int32, renounceFineLocationAccess bool, request network.NetworkScanRequest, messenger os.Messenger, binder_ binder.IBinder) (int32, error)
+	StopNetworkScan(ctx context.Context, subId int32, scanId int32) error
+	SetNetworkSelectionModeManual(ctx context.Context, subId int32, operatorInfo OperatorInfo, persisSelection bool) (bool, error)
+	GetAllowedNetworkTypesForReason(ctx context.Context, subId int32, reason int32) (int64, error)
+	SetAllowedNetworkTypesForReason(ctx context.Context, subId int32, reason int32, allowedNetworkTypes int64) (bool, error)
+	GetDataEnabled(ctx context.Context, subId int32) (bool, error)
+	IsUserDataEnabled(ctx context.Context, subId int32) (bool, error)
+	IsDataEnabled(ctx context.Context, subId int32) (bool, error)
+	SetDataEnabledForReason(ctx context.Context, subId int32, reason int32, enable bool) error
+	IsDataEnabledForReason(ctx context.Context, subId int32, reason int32) (bool, error)
+	IsManualNetworkSelectionAllowed(ctx context.Context, subId int32) (bool, error)
+	SetImsRegistrationState(ctx context.Context, registered bool) error
+	GetCdmaMdn(ctx context.Context, subId int32) (string, error)
+	GetCdmaMin(ctx context.Context, subId int32) (string, error)
+	RequestNumberVerification(ctx context.Context, range_ androidTelephony.PhoneNumberRange, timeoutMillis int64, callback INumberVerificationCallback) error
+	GetCarrierPrivilegeStatus(ctx context.Context, subId int32) (int32, error)
+	GetCarrierPrivilegeStatusForUid(ctx context.Context, subId int32, uid int32) (int32, error)
+	CheckCarrierPrivilegesForPackage(ctx context.Context, subId int32, pkgName string) (int32, error)
+	CheckCarrierPrivilegesForPackageAnyPhone(ctx context.Context, pkgName string) (int32, error)
+	GetCarrierPackageNamesForIntentAndPhone(ctx context.Context, intent androidContent.Intent, phoneId int32) ([]string, error)
+	SetLine1NumberForDisplayForSubscriber(ctx context.Context, subId int32, alphaTag string, number string) (bool, error)
+	GetLine1NumberForDisplay(ctx context.Context, subId int32) (string, error)
+	GetLine1AlphaTagForDisplay(ctx context.Context, subId int32) (string, error)
+	GetMergedSubscriberIds(ctx context.Context, subId int32) ([]string, error)
+	GetMergedImsisFromGroup(ctx context.Context, subId int32) ([]string, error)
+	SetOperatorBrandOverride(ctx context.Context, subId int32, brand string) (bool, error)
+	SetRoamingOverride(ctx context.Context, subId int32, gsmRoamingList []string, gsmNonRoamingList []string, cdmaRoamingList []string, cdmaNonRoamingList []string) (bool, error)
+	NeedMobileRadioShutdown(ctx context.Context) (bool, error)
+	ShutdownMobileRadios(ctx context.Context) error
+	GetRadioAccessFamily(ctx context.Context, phoneId int32) (int32, error)
+	UploadCallComposerPicture(ctx context.Context, subscriptionId int32, contentType string, fd int32, callback os.ResultReceiver) error
+	EnableVideoCalling(ctx context.Context, enable bool) error
+	IsVideoCallingEnabled(ctx context.Context) (bool, error)
+	CanChangeDtmfToneLength(ctx context.Context, subId int32) (bool, error)
+	IsWorldPhone(ctx context.Context, subId int32) (bool, error)
+	IsTtyModeSupported(ctx context.Context) (bool, error)
+	IsRttSupported(ctx context.Context, subscriptionId int32) (bool, error)
+	IsHearingAidCompatibilitySupported(ctx context.Context) (bool, error)
+	IsImsRegistered(ctx context.Context, subId int32) (bool, error)
+	IsWifiCallingAvailable(ctx context.Context, subId int32) (bool, error)
+	IsVideoTelephonyAvailable(ctx context.Context, subId int32) (bool, error)
+	GetImsRegTechnologyForMmTel(ctx context.Context, subId int32) (int32, error)
+	GetDeviceId(ctx context.Context) (string, error)
+	GetDeviceIdWithFeature(ctx context.Context) (string, error)
+	GetImeiForSlot(ctx context.Context, slotIndex int32) (string, error)
+	GetPrimaryImei(ctx context.Context) (string, error)
+	GetTypeAllocationCodeForSlot(ctx context.Context, slotIndex int32) (string, error)
+	GetMeidForSlot(ctx context.Context, slotIndex int32) (string, error)
+	GetManufacturerCodeForSlot(ctx context.Context, slotIndex int32) (string, error)
+	GetDeviceSoftwareVersionForSlot(ctx context.Context, slotIndex int32) (string, error)
+	GetSubIdForPhoneAccountHandle(ctx context.Context, phoneAccountHandle telecom.PhoneAccountHandle) (int32, error)
+	GetPhoneAccountHandleForSubscriptionId(ctx context.Context, subscriptionId int32) (telecom.PhoneAccountHandle, error)
+	FactoryReset(ctx context.Context, subId int32) error
+	GetSimLocaleForSubscriber(ctx context.Context, subId int32) (string, error)
+	RequestModemActivityInfo(ctx context.Context, result os.ResultReceiver) error
+	GetServiceStateForSlot(ctx context.Context, slotIndex int32, renounceFineLocationAccess bool, renounceCoarseLocationAccess bool) (androidTelephony.ServiceState, error)
+	GetVoicemailRingtoneUri(ctx context.Context, accountHandle telecom.PhoneAccountHandle) (net.Uri, error)
+	SetVoicemailRingtoneUri(ctx context.Context, phoneAccountHandle telecom.PhoneAccountHandle, uri net.Uri) error
+	IsVoicemailVibrationEnabled(ctx context.Context, accountHandle telecom.PhoneAccountHandle) (bool, error)
+	SetVoicemailVibrationEnabled(ctx context.Context, phoneAccountHandle telecom.PhoneAccountHandle, enabled bool) error
+	GetPackagesWithCarrierPrivileges(ctx context.Context, phoneId int32) ([]string, error)
+	GetPackagesWithCarrierPrivilegesForAllPhones(ctx context.Context) ([]string, error)
+	GetAidForAppType(ctx context.Context, subId int32, appType int32) (string, error)
+	GetEsn(ctx context.Context, subId int32) (string, error)
+	GetCdmaPrlVersion(ctx context.Context, subId int32) (string, error)
+	GetTelephonyHistograms(ctx context.Context) ([]androidTelephony.TelephonyHistogram, error)
+	SetAllowedCarriers(ctx context.Context, carrierRestrictionRules androidTelephony.CarrierRestrictionRules) (int32, error)
+	GetAllowedCarriers(ctx context.Context) (androidTelephony.CarrierRestrictionRules, error)
+	GetSubscriptionCarrierId(ctx context.Context, subId int32) (int32, error)
+	GetSubscriptionCarrierName(ctx context.Context, subId int32) (string, error)
+	GetSubscriptionSpecificCarrierId(ctx context.Context, subId int32) (int32, error)
+	GetSubscriptionSpecificCarrierName(ctx context.Context, subId int32) (string, error)
+	GetCarrierIdFromMccMnc(ctx context.Context, slotIndex int32, mccmnc string, isSubscriptionMccMnc bool) (int32, error)
+	CarrierActionSetRadioEnabled(ctx context.Context, subId int32, enabled bool) error
+	CarrierActionReportDefaultNetworkStatus(ctx context.Context, subId int32, report bool) error
+	CarrierActionResetAll(ctx context.Context, subId int32) error
+	GetCallForwarding(ctx context.Context, subId int32, callForwardingReason int32, callback ICallForwardingInfoCallback) error
+	SetCallForwarding(ctx context.Context, subId int32, callForwardingInfo androidTelephony.CallForwardingInfo, callback IIntegerConsumer) error
+	GetCallWaitingStatus(ctx context.Context, subId int32, callback IIntegerConsumer) error
+	SetCallWaitingStatus(ctx context.Context, subId int32, enabled bool, callback IIntegerConsumer) error
+	GetClientRequestStats(ctx context.Context, subid int32) ([]androidTelephony.ClientRequestStats, error)
+	SetSimPowerStateForSlot(ctx context.Context, slotIndex int32, state int32) error
+	SetSimPowerStateForSlotWithCallback(ctx context.Context, slotIndex int32, state int32, callback IIntegerConsumer) error
+	GetForbiddenPlmns(ctx context.Context, subId int32, appType int32) ([]string, error)
+	SetForbiddenPlmns(ctx context.Context, subId int32, appType int32, fplmns []string) (int32, error)
+	GetEmergencyCallbackMode(ctx context.Context, subId int32) (bool, error)
+	GetSignalStrength(ctx context.Context, subId int32) (network.SignalStrength, error)
+	GetCardIdForDefaultEuicc(ctx context.Context, subId int32) (int32, error)
+	GetUiccCardsInfo(ctx context.Context) ([]androidTelephony.UiccCardInfo, error)
+	GetUiccSlotsInfo(ctx context.Context) ([]androidTelephony.UiccSlotInfo, error)
+	SwitchSlots(ctx context.Context, physicalSlots []int32) (bool, error)
+	SetSimSlotMapping(ctx context.Context, slotMapping []androidTelephony.UiccSlotMapping) (bool, error)
+	IsDataRoamingEnabled(ctx context.Context, subId int32) (bool, error)
+	SetDataRoamingEnabled(ctx context.Context, subId int32, isEnabled bool) error
+	GetCdmaRoamingMode(ctx context.Context, subId int32) (int32, error)
+	SetCdmaRoamingMode(ctx context.Context, subId int32, mode int32) (bool, error)
+	GetCdmaSubscriptionMode(ctx context.Context, subId int32) (int32, error)
+	SetCdmaSubscriptionMode(ctx context.Context, subId int32, mode int32) (bool, error)
+	SetCarrierTestOverride(ctx context.Context, subId int32, mccmnc string, imsi string, iccid string, gid1 string, gid2 string, plmn string, spn string, carrierPrivilegeRules string, apn string) error
+	SetCarrierServicePackageOverride(ctx context.Context, subId int32, carrierServicePackage string) error
+	GetCarrierIdListVersion(ctx context.Context, subId int32) (int32, error)
+	RefreshUiccProfile(ctx context.Context, subId int32) error
+	GetNumberOfModemsWithSimultaneousDataConnections(ctx context.Context, subId int32) (int32, error)
+	GetNetworkSelectionMode(ctx context.Context, subId int32) (int32, error)
+	IsInEmergencySmsMode(ctx context.Context) (bool, error)
+	GetRadioPowerState(ctx context.Context, slotIndex int32) (int32, error)
+	RegisterImsRegistrationCallback(ctx context.Context, subId int32, c aidl.IImsRegistrationCallback) error
+	UnregisterImsRegistrationCallback(ctx context.Context, subId int32, c aidl.IImsRegistrationCallback) error
+	RegisterImsEmergencyRegistrationCallback(ctx context.Context, subId int32, c aidl.IImsRegistrationCallback) error
+	UnregisterImsEmergencyRegistrationCallback(ctx context.Context, subId int32, c aidl.IImsRegistrationCallback) error
+	GetImsMmTelRegistrationState(ctx context.Context, subId int32, consumer IIntegerConsumer) error
+	GetImsMmTelRegistrationTransportType(ctx context.Context, subId int32, consumer IIntegerConsumer) error
+	RegisterMmTelCapabilityCallback(ctx context.Context, subId int32, c aidl.IImsCapabilityCallback) error
+	UnregisterMmTelCapabilityCallback(ctx context.Context, subId int32, c aidl.IImsCapabilityCallback) error
+	IsCapable(ctx context.Context, subId int32, capability int32, regTech int32) (bool, error)
+	IsAvailable(ctx context.Context, subId int32, capability int32, regTech int32) (bool, error)
+	IsMmTelCapabilitySupported(ctx context.Context, subId int32, callback IIntegerConsumer, capability int32, transportType int32) error
+	IsAdvancedCallingSettingEnabled(ctx context.Context, subId int32) (bool, error)
+	SetAdvancedCallingSettingEnabled(ctx context.Context, subId int32, isEnabled bool) error
+	IsVtSettingEnabled(ctx context.Context, subId int32) (bool, error)
+	SetVtSettingEnabled(ctx context.Context, subId int32, isEnabled bool) error
+	IsVoWiFiSettingEnabled(ctx context.Context, subId int32) (bool, error)
+	SetVoWiFiSettingEnabled(ctx context.Context, subId int32, isEnabled bool) error
+	IsCrossSimCallingEnabledByUser(ctx context.Context, subId int32) (bool, error)
+	SetCrossSimCallingEnabled(ctx context.Context, subId int32, isEnabled bool) error
+	IsVoWiFiRoamingSettingEnabled(ctx context.Context, subId int32) (bool, error)
+	SetVoWiFiRoamingSettingEnabled(ctx context.Context, subId int32, isEnabled bool) error
+	SetVoWiFiNonPersistent(ctx context.Context, subId int32, isCapable bool, mode int32) error
+	GetVoWiFiModeSetting(ctx context.Context, subId int32) (int32, error)
+	SetVoWiFiModeSetting(ctx context.Context, subId int32, mode int32) error
+	GetVoWiFiRoamingModeSetting(ctx context.Context, subId int32) (int32, error)
+	SetVoWiFiRoamingModeSetting(ctx context.Context, subId int32, mode int32) error
+	SetRttCapabilitySetting(ctx context.Context, subId int32, isEnabled bool) error
+	IsTtyOverVolteEnabled(ctx context.Context, subId int32) (bool, error)
+	GetEmergencyNumberList(ctx context.Context) (map[interface{}]interface{}, error)
+	IsEmergencyNumber(ctx context.Context, number string, exactMatch bool) (bool, error)
+	GetCertsFromCarrierPrivilegeAccessRules(ctx context.Context, subId int32) ([]string, error)
+	RegisterImsProvisioningChangedCallback(ctx context.Context, subId int32, callback aidl.IImsConfigCallback) error
+	UnregisterImsProvisioningChangedCallback(ctx context.Context, subId int32, callback aidl.IImsConfigCallback) error
+	RegisterFeatureProvisioningChangedCallback(ctx context.Context, subId int32, callback aidl.IFeatureProvisioningCallback) error
+	UnregisterFeatureProvisioningChangedCallback(ctx context.Context, subId int32, callback aidl.IFeatureProvisioningCallback) error
+	SetImsProvisioningStatusForCapability(ctx context.Context, subId int32, capability int32, tech int32, isProvisioned bool) error
+	GetImsProvisioningStatusForCapability(ctx context.Context, subId int32, capability int32, tech int32) (bool, error)
+	GetRcsProvisioningStatusForCapability(ctx context.Context, subId int32, capability int32, tech int32) (bool, error)
+	SetRcsProvisioningStatusForCapability(ctx context.Context, subId int32, capability int32, tech int32, isProvisioned bool) error
+	GetImsProvisioningInt(ctx context.Context, subId int32, key int32) (int32, error)
+	GetImsProvisioningString(ctx context.Context, subId int32, key int32) (string, error)
+	SetImsProvisioningInt(ctx context.Context, subId int32, key int32, value int32) (int32, error)
+	SetImsProvisioningString(ctx context.Context, subId int32, key int32, value string) (int32, error)
+	StartEmergencyCallbackMode(ctx context.Context) error
+	UpdateEmergencyNumberListTestMode(ctx context.Context, action int32, num voice.EmergencyNumber) error
+	GetEmergencyNumberListTestMode(ctx context.Context) ([]string, error)
+	GetEmergencyNumberDbVersion(ctx context.Context, subId int32) (int32, error)
+	NotifyOtaEmergencyNumberDbInstalled(ctx context.Context) error
+	UpdateOtaEmergencyNumberDbFilePath(ctx context.Context, otaParcelFileDescriptor int32) error
+	ResetOtaEmergencyNumberDbFilePath(ctx context.Context) error
+	EnableModemForSlot(ctx context.Context, slotIndex int32, enable bool) (bool, error)
+	SetMultiSimCarrierRestriction(ctx context.Context, isMultiSimCarrierRestricted bool) error
+	IsMultiSimSupported(ctx context.Context) (int32, error)
+	SwitchMultiSimConfig(ctx context.Context, numOfSims int32) error
+	DoesSwitchMultiSimConfigTriggerReboot(ctx context.Context, subId int32) (bool, error)
+	GetSlotsMapping(ctx context.Context) ([]androidTelephony.UiccSlotMapping, error)
+	GetRadioHalVersion(ctx context.Context) (int32, error)
+	GetHalVersion(ctx context.Context, service int32) (int32, error)
+	GetCurrentPackageName(ctx context.Context) (string, error)
+	IsApplicationOnUicc(ctx context.Context, subId int32, appType int32) (bool, error)
+	IsModemEnabledForSlot(ctx context.Context, slotIndex int32) (bool, error)
+	IsDataEnabledForApn(ctx context.Context, apnType int32, subId int32) (bool, error)
+	IsApnMetered(ctx context.Context, apnType int32, subId int32) (bool, error)
+	SetSystemSelectionChannels(ctx context.Context, specifiers []network.RadioAccessSpecifier, subId int32, resultCallback IBooleanConsumer) error
+	GetSystemSelectionChannels(ctx context.Context, subId int32) ([]network.RadioAccessSpecifier, error)
+	IsMvnoMatched(ctx context.Context, slotIndex int32, mvnoType int32, mvnoMatchData string) (bool, error)
+	EnqueueSmsPickResult(ctx context.Context, callingAttributeTag string, subIdResult IIntegerConsumer) error
+	ShowSwitchToManagedProfileDialog(ctx context.Context) error
+	GetMmsUserAgent(ctx context.Context, subId int32) (string, error)
+	GetMmsUAProfUrl(ctx context.Context, subId int32) (string, error)
+	SetMobileDataPolicyEnabled(ctx context.Context, subscriptionId int32, policy int32, enabled bool) error
+	IsMobileDataPolicyEnabled(ctx context.Context, subscriptionId int32, policy int32) (bool, error)
+	SetCepEnabled(ctx context.Context, isCepEnabled bool) error
+	NotifyRcsAutoConfigurationReceived(ctx context.Context, subId int32, config []byte, isCompressed bool) error
+	IsIccLockEnabled(ctx context.Context, subId int32) (bool, error)
+	SetIccLockEnabled(ctx context.Context, subId int32, enabled bool, password string) (int32, error)
+	ChangeIccLockPassword(ctx context.Context, subId int32, oldPassword string, newPassword string) (int32, error)
+	RequestUserActivityNotification(ctx context.Context) error
+	UserActivity(ctx context.Context) error
+	GetManualNetworkSelectionPlmn(ctx context.Context, subId int32) (string, error)
+	CanConnectTo5GInDsdsMode(ctx context.Context) (bool, error)
+	GetEquivalentHomePlmns(ctx context.Context, subId int32) ([]string, error)
+	SetVoNrEnabled(ctx context.Context, subId int32, enabled bool) (int32, error)
+	IsVoNrEnabled(ctx context.Context, subId int32) (bool, error)
+	SetNrDualConnectivityState(ctx context.Context, subId int32, nrDualConnectivityState int32) (int32, error)
+	IsNrDualConnectivityEnabled(ctx context.Context, subId int32) (bool, error)
+	IsRadioInterfaceCapabilitySupported(ctx context.Context, capability string) (bool, error)
+	SendThermalMitigationRequest(ctx context.Context, subId int32, thermalMitigationRequest androidTelephony.ThermalMitigationRequest) (int32, error)
+	BootstrapAuthenticationRequest(ctx context.Context, subId int32, appType int32, nafUrl net.Uri, securityProtocol gba.UaSecurityProtocolIdentifier, forceBootStrapping bool, callback androidTelephony.IBootstrapAuthenticationCallback) error
+	SetBoundGbaServiceOverride(ctx context.Context, subId int32, packageName string) (bool, error)
+	GetBoundGbaService(ctx context.Context, subId int32) (string, error)
+	SetGbaReleaseTimeOverride(ctx context.Context, subId int32, interval int32) (bool, error)
+	GetGbaReleaseTime(ctx context.Context, subId int32) (int32, error)
+	SetRcsClientConfiguration(ctx context.Context, subId int32, rcc ims.RcsClientConfiguration) error
+	IsRcsVolteSingleRegistrationCapable(ctx context.Context, subId int32) (bool, error)
+	RegisterRcsProvisioningCallback(ctx context.Context, subId int32, callback aidl.IRcsConfigCallback) error
+	UnregisterRcsProvisioningCallback(ctx context.Context, subId int32, callback aidl.IRcsConfigCallback) error
+	TriggerRcsReconfiguration(ctx context.Context, subId int32) error
+	SetRcsSingleRegistrationTestModeEnabled(ctx context.Context, enabled bool) error
+	GetRcsSingleRegistrationTestModeEnabled(ctx context.Context) (bool, error)
+	SetDeviceSingleRegistrationEnabledOverride(ctx context.Context, enabled string) error
+	GetDeviceSingleRegistrationEnabled(ctx context.Context) (bool, error)
+	SetCarrierSingleRegistrationEnabledOverride(ctx context.Context, subId int32, enabled string) (bool, error)
+	SendDeviceToDeviceMessage(ctx context.Context, message int32, value int32) error
+	SetActiveDeviceToDeviceTransport(ctx context.Context, transport string) error
+	SetDeviceToDeviceForceEnabled(ctx context.Context, isForceEnabled bool) error
+	GetCarrierSingleRegistrationEnabled(ctx context.Context, subId int32) (bool, error)
+	SetImsFeatureValidationOverride(ctx context.Context, subId int32, enabled string) (bool, error)
+	GetImsFeatureValidationOverride(ctx context.Context, subId int32) (bool, error)
+	GetMobileProvisioningUrl(ctx context.Context) (string, error)
+	RemoveContactFromEab(ctx context.Context, subId int32, contacts string) (int32, error)
+	GetContactFromEab(ctx context.Context, contact string) (string, error)
+	GetCapabilityFromEab(ctx context.Context, contact string) (string, error)
+	GetDeviceUceEnabled(ctx context.Context) (bool, error)
+	SetDeviceUceEnabled(ctx context.Context, isEnabled bool) error
+	AddUceRegistrationOverrideShell(ctx context.Context, subId int32, featureTags []string) (ims.RcsContactUceCapability, error)
+	RemoveUceRegistrationOverrideShell(ctx context.Context, subId int32, featureTags []string) (ims.RcsContactUceCapability, error)
+	ClearUceRegistrationOverrideShell(ctx context.Context, subId int32) (ims.RcsContactUceCapability, error)
+	GetLatestRcsContactUceCapabilityShell(ctx context.Context, subId int32) (ims.RcsContactUceCapability, error)
+	GetLastUcePidfXmlShell(ctx context.Context, subId int32) (string, error)
+	RemoveUceRequestDisallowedStatus(ctx context.Context, subId int32) (bool, error)
+	SetCapabilitiesRequestTimeout(ctx context.Context, subId int32, timeoutAfterMs int64) (bool, error)
+	SetSignalStrengthUpdateRequest(ctx context.Context, subId int32, request androidTelephony.SignalStrengthUpdateRequest) error
+	ClearSignalStrengthUpdateRequest(ctx context.Context, subId int32, request androidTelephony.SignalStrengthUpdateRequest) error
+	GetPhoneCapability(ctx context.Context) (radioConfig.PhoneCapability, error)
+	PrepareForUnattendedReboot(ctx context.Context) (int32, error)
+	GetSlicingConfig(ctx context.Context, callback os.ResultReceiver) error
+	IsPremiumCapabilityAvailableForPurchase(ctx context.Context, capability int32, subId int32) (bool, error)
+	PurchasePremiumCapability(ctx context.Context, capability int32, callback IIntegerConsumer, subId int32) error
+	RegisterImsStateCallback(ctx context.Context, subId int32, feature int32, cb IImsStateCallback) error
+	UnregisterImsStateCallback(ctx context.Context, cb IImsStateCallback) error
+	GetLastKnownCellIdentity(ctx context.Context, subId int32) (network.CellIdentity, error)
+	SetModemService(ctx context.Context, serviceName string) (bool, error)
+	GetModemService(ctx context.Context) (string, error)
+	IsProvisioningRequiredForCapability(ctx context.Context, subId int32, capability int32, tech int32) (bool, error)
+	IsRcsProvisioningRequiredForCapability(ctx context.Context, subId int32, capability int32, tech int32) (bool, error)
+	SetVoiceServiceStateOverride(ctx context.Context, subId int32, hasService bool) error
+	GetCarrierServicePackageNameForLogicalSlot(ctx context.Context, logicalSlotIndex int32) (string, error)
+	SetRemovableEsimAsDefaultEuicc(ctx context.Context, isDefault bool) error
+	IsRemovableEsimDefaultEuicc(ctx context.Context) (bool, error)
+	GetDefaultRespondViaMessageApplication(ctx context.Context, subId int32, updateIfNeeded bool) (androidContent.ComponentName, error)
+	GetSimStateForSlotIndex(ctx context.Context, slotIndex int32) (int32, error)
+	PersistEmergencyCallDiagnosticData(ctx context.Context, dropboxTag string, enableLogcat bool, logcatStartTimestampMillis int64, enableTelecomDump bool, enableTelephonyDump bool) error
+	SetNullCipherAndIntegrityEnabled(ctx context.Context, enabled bool) error
+	IsNullCipherAndIntegrityPreferenceEnabled(ctx context.Context) (bool, error)
+	GetCellBroadcastIdRanges(ctx context.Context, subId int32) ([]androidTelephony.CellBroadcastIdRange, error)
+	SetCellBroadcastIdRanges(ctx context.Context, subId int32, ranges []androidTelephony.CellBroadcastIdRange, callback IIntegerConsumer) error
+	IsDomainSelectionSupported(ctx context.Context) (bool, error)
+	GetCarrierRestrictionStatus(ctx context.Context, internalCallback IIntegerConsumer, packageName string) error
+	RequestSatelliteEnabled(ctx context.Context, enableSatellite bool, enableDemoMode bool, isEmergency bool, callback IIntegerConsumer) error
+	RequestIsSatelliteEnabled(ctx context.Context, receiver os.ResultReceiver) error
+	RequestIsDemoModeEnabled(ctx context.Context, receiver os.ResultReceiver) error
+	RequestIsEmergencyModeEnabled(ctx context.Context, receiver os.ResultReceiver) error
+	RequestIsSatelliteSupported(ctx context.Context, receiver os.ResultReceiver) error
+	RequestSatelliteCapabilities(ctx context.Context, receiver os.ResultReceiver) error
+	StartSatelliteTransmissionUpdates(ctx context.Context, resultCallback IIntegerConsumer, callback satellite.ISatelliteTransmissionUpdateCallback) error
+	StopSatelliteTransmissionUpdates(ctx context.Context, resultCallback IIntegerConsumer, callback satellite.ISatelliteTransmissionUpdateCallback) error
+	ProvisionSatelliteService(ctx context.Context, token string, provisionData []byte, callback IIntegerConsumer) (ondeviceintelligence.ICancellationSignal, error)
+	DeprovisionSatelliteService(ctx context.Context, token string, callback IIntegerConsumer) error
+	RegisterForSatelliteProvisionStateChanged(ctx context.Context, callback satellite.ISatelliteProvisionStateCallback) (int32, error)
+	UnregisterForSatelliteProvisionStateChanged(ctx context.Context, callback satellite.ISatelliteProvisionStateCallback) error
+	RequestIsSatelliteProvisioned(ctx context.Context, receiver os.ResultReceiver) error
+	RegisterForSatelliteModemStateChanged(ctx context.Context, callback satellite.ISatelliteModemStateCallback) (int32, error)
+	UnregisterForModemStateChanged(ctx context.Context, callback satellite.ISatelliteModemStateCallback) error
+	RegisterForIncomingDatagram(ctx context.Context, callback satellite.ISatelliteDatagramCallback) (int32, error)
+	UnregisterForIncomingDatagram(ctx context.Context, callback satellite.ISatelliteDatagramCallback) error
+	PollPendingDatagrams(ctx context.Context, callback IIntegerConsumer) error
+	SendDatagram(ctx context.Context, datagramType int32, datagram satellite.SatelliteDatagram, needFullScreenPointingUI bool, callback IIntegerConsumer) error
+	GetSatelliteDisallowedReasons(ctx context.Context) ([]int32, error)
+	RegisterForSatelliteDisallowedReasonsChanged(ctx context.Context, callback satellite.ISatelliteDisallowedReasonsCallback) error
+	UnregisterForSatelliteDisallowedReasonsChanged(ctx context.Context, callback satellite.ISatelliteDisallowedReasonsCallback) error
+	RequestIsCommunicationAllowedForCurrentLocation(ctx context.Context, subId int32, receiver os.ResultReceiver) error
+	RequestSatelliteAccessConfigurationForCurrentLocation(ctx context.Context, receiver os.ResultReceiver) error
+	RequestTimeForNextSatelliteVisibility(ctx context.Context, receiver os.ResultReceiver) error
+	RequestSelectedNbIotSatelliteSubscriptionId(ctx context.Context, receiver os.ResultReceiver) error
+	RegisterForSelectedNbIotSatelliteSubscriptionChanged(ctx context.Context, callback satellite.ISelectedNbIotSatelliteSubscriptionCallback) (int32, error)
+	UnregisterForSelectedNbIotSatelliteSubscriptionChanged(ctx context.Context, callback satellite.ISelectedNbIotSatelliteSubscriptionCallback) error
+	SetDeviceAlignedWithSatellite(ctx context.Context, isAligned bool) error
+	SetSatelliteServicePackageName(ctx context.Context, servicePackageName string, provisioned string) (bool, error)
+	SetSatelliteGatewayServicePackageName(ctx context.Context, servicePackageName string) (bool, error)
+	SetSatelliteListeningTimeoutDuration(ctx context.Context, timeoutMillis int64) (bool, error)
+	SetSatelliteIgnoreCellularServiceState(ctx context.Context, enabled bool) (bool, error)
+	SetSatellitePointingUiClassName(ctx context.Context, packageName string, className string) (bool, error)
+	SetDatagramControllerTimeoutDuration(ctx context.Context, reset bool, timeoutType int32, timeoutMillis int64) (bool, error)
+	SetSatelliteControllerTimeoutDuration(ctx context.Context, reset bool, timeoutType int32, timeoutMillis int64) (bool, error)
+	SetEmergencyCallToSatelliteHandoverType(ctx context.Context, handoverType int32, delaySeconds int32) (bool, error)
+	SetCountryCodes(ctx context.Context, reset bool, currentNetworkCountryCodes []string, cachedNetworkCountryCodes map[interface{}]interface{}, locationCountryCode string, locationCountryCodeTimestampNanos int64) (bool, error)
+	SetSatelliteAccessControlOverlayConfigs(ctx context.Context, reset bool, isAllowed bool, s2CellFile string, locationFreshDurationNanos int64, satelliteCountryCodes []string, satelliteAccessConfigurationFile string) (bool, error)
+	SetOemEnabledSatelliteProvisionStatus(ctx context.Context, reset bool, isProvisioned bool) (bool, error)
+	GetShaIdFromAllowList(ctx context.Context, pkgName string, carrierId int32) ([]string, error)
+	AddAttachRestrictionForCarrier(ctx context.Context, subId int32, reason int32, callback IIntegerConsumer) error
+	RemoveAttachRestrictionForCarrier(ctx context.Context, subId int32, reason int32, callback IIntegerConsumer) error
+	GetAttachRestrictionReasonsForCarrier(ctx context.Context, subId int32) ([]int32, error)
+	RequestNtnSignalStrength(ctx context.Context, receiver os.ResultReceiver) error
+	RegisterForNtnSignalStrengthChanged(ctx context.Context, callback satellite.INtnSignalStrengthCallback) error
+	UnregisterForNtnSignalStrengthChanged(ctx context.Context, callback satellite.INtnSignalStrengthCallback) error
+	RegisterForCapabilitiesChanged(ctx context.Context, callback satellite.ISatelliteCapabilitiesCallback) (int32, error)
+	UnregisterForCapabilitiesChanged(ctx context.Context, callback satellite.ISatelliteCapabilitiesCallback) error
+	SetShouldSendDatagramToModemInDemoMode(ctx context.Context, shouldSendToModemInDemoMode bool) (bool, error)
+	SetDomainSelectionServiceOverride(ctx context.Context, componentName androidContent.ComponentName) (bool, error)
+	ClearDomainSelectionServiceOverride(ctx context.Context) (bool, error)
+	IsAospDomainSelectionService(ctx context.Context) (bool, error)
+	SetEnableCellularIdentifierDisclosureNotifications(ctx context.Context, enable bool) error
+	IsCellularIdentifierDisclosureNotificationsEnabled(ctx context.Context) (bool, error)
+	SetNullCipherNotificationsEnabled(ctx context.Context, enable bool) error
+	IsNullCipherNotificationsEnabled(ctx context.Context) (bool, error)
+	GetSatellitePlmnsForCarrier(ctx context.Context, subId int32) ([]string, error)
+	RegisterForSatelliteSupportedStateChanged(ctx context.Context, callback satellite.ISatelliteSupportedStateCallback) (int32, error)
+	UnregisterForSatelliteSupportedStateChanged(ctx context.Context, callback satellite.ISatelliteSupportedStateCallback) error
+	RegisterForCommunicationAllowedStateChanged(ctx context.Context, subId int32, callback satellite.ISatelliteCommunicationAllowedStateCallback) (int32, error)
+	UnregisterForCommunicationAllowedStateChanged(ctx context.Context, subId int32, callback satellite.ISatelliteCommunicationAllowedStateCallback) error
+	SetDatagramControllerBooleanConfig(ctx context.Context, reset bool, booleanType int32, enable bool) (bool, error)
+	SetIsSatelliteCommunicationAllowedForCurrentLocationCache(ctx context.Context, state string) (bool, error)
+	RequestSatelliteSessionStats(ctx context.Context, subId int32, receiver os.ResultReceiver) error
+	RequestSatelliteSubscriberProvisionStatus(ctx context.Context, result os.ResultReceiver) error
+	RequestSatelliteDisplayName(ctx context.Context, receiver os.ResultReceiver) error
+	ProvisionSatellite(ctx context.Context, list []satellite.SatelliteSubscriberInfo, result os.ResultReceiver) error
+	SetSatelliteSubscriberIdListChangedIntentComponent(ctx context.Context, name string) (bool, error)
+	SetTestEuiccUiComponent(ctx context.Context, componentName androidContent.ComponentName) error
+	GetTestEuiccUiComponent(ctx context.Context) (androidContent.ComponentName, error)
+	OverrideCarrierRoamingNtnEligibilityChanged(ctx context.Context, status bool, resetRequired bool) (bool, error)
+	DeprovisionSatellite(ctx context.Context, list []satellite.SatelliteSubscriberInfo, result os.ResultReceiver) error
+	SetNtnSmsSupported(ctx context.Context, ntnSmsSupported bool) error
+	GetCarrierIdFromIdentifier(ctx context.Context, carrierIdentifier carrier.CarrierIdentifier) (int32, error)
+}
+
+type telephonyStubWrapper struct {
+	impl       ITelephonyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *telephonyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *telephonyStubWrapper) Dial(
+	ctx context.Context,
+	number string,
+) error {
+	return w.impl.Dial(ctx, number)
+}
+
+func (w *telephonyStubWrapper) Call(
+	ctx context.Context,
+	number string,
+) error {
+	return w.impl.Call(ctx, number)
+}
+
+func (w *telephonyStubWrapper) IsRadioOn(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsRadioOn(ctx)
+}
+
+func (w *telephonyStubWrapper) IsRadioOnWithFeature(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsRadioOnWithFeature(ctx)
+}
+
+func (w *telephonyStubWrapper) IsRadioOnForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsRadioOnForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsRadioOnForSubscriberWithFeature(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsRadioOnForSubscriberWithFeature(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetCallComposerStatus(
+	ctx context.Context,
+	subId int32,
+	status int32,
+) error {
+	return w.impl.SetCallComposerStatus(ctx, subId, status)
+}
+
+func (w *telephonyStubWrapper) GetCallComposerStatus(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetCallComposerStatus(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SupplyPinForSubscriber(
+	ctx context.Context,
+	subId int32,
+	pin string,
+) (bool, error) {
+	return w.impl.SupplyPinForSubscriber(ctx, subId, pin)
+}
+
+func (w *telephonyStubWrapper) SupplyPukForSubscriber(
+	ctx context.Context,
+	subId int32,
+	puk string,
+	pin string,
+) (bool, error) {
+	return w.impl.SupplyPukForSubscriber(ctx, subId, puk, pin)
+}
+
+func (w *telephonyStubWrapper) SupplyPinReportResultForSubscriber(
+	ctx context.Context,
+	subId int32,
+	pin string,
+) ([]int32, error) {
+	return w.impl.SupplyPinReportResultForSubscriber(ctx, subId, pin)
+}
+
+func (w *telephonyStubWrapper) SupplyPukReportResultForSubscriber(
+	ctx context.Context,
+	subId int32,
+	puk string,
+	pin string,
+) ([]int32, error) {
+	return w.impl.SupplyPukReportResultForSubscriber(ctx, subId, puk, pin)
+}
+
+func (w *telephonyStubWrapper) HandlePinMmi(
+	ctx context.Context,
+	dialString string,
+) (bool, error) {
+	return w.impl.HandlePinMmi(ctx, dialString)
+}
+
+func (w *telephonyStubWrapper) HandleUssdRequest(
+	ctx context.Context,
+	subId int32,
+	ussdRequest string,
+	wrappedCallback os.ResultReceiver,
+) error {
+	return w.impl.HandleUssdRequest(ctx, subId, ussdRequest, wrappedCallback)
+}
+
+func (w *telephonyStubWrapper) HandlePinMmiForSubscriber(
+	ctx context.Context,
+	subId int32,
+	dialString string,
+) (bool, error) {
+	return w.impl.HandlePinMmiForSubscriber(ctx, subId, dialString)
+}
+
+func (w *telephonyStubWrapper) ToggleRadioOnOff(
+	ctx context.Context,
+) error {
+	return w.impl.ToggleRadioOnOff(ctx)
+}
+
+func (w *telephonyStubWrapper) ToggleRadioOnOffForSubscriber(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.ToggleRadioOnOffForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetRadio(
+	ctx context.Context,
+	turnOn bool,
+) (bool, error) {
+	return w.impl.SetRadio(ctx, turnOn)
+}
+
+func (w *telephonyStubWrapper) SetRadioForSubscriber(
+	ctx context.Context,
+	subId int32,
+	turnOn bool,
+) (bool, error) {
+	return w.impl.SetRadioForSubscriber(ctx, subId, turnOn)
+}
+
+func (w *telephonyStubWrapper) SetRadioPower(
+	ctx context.Context,
+	turnOn bool,
+) (bool, error) {
+	return w.impl.SetRadioPower(ctx, turnOn)
+}
+
+func (w *telephonyStubWrapper) RequestRadioPowerOffForReason(
+	ctx context.Context,
+	subId int32,
+	reason int32,
+) (bool, error) {
+	return w.impl.RequestRadioPowerOffForReason(ctx, subId, reason)
+}
+
+func (w *telephonyStubWrapper) ClearRadioPowerOffForReason(
+	ctx context.Context,
+	subId int32,
+	reason int32,
+) (bool, error) {
+	return w.impl.ClearRadioPowerOffForReason(ctx, subId, reason)
+}
+
+func (w *telephonyStubWrapper) GetRadioPowerOffReasons(
+	ctx context.Context,
+	subId int32,
+) ([]interface{}, error) {
+	return w.impl.GetRadioPowerOffReasons(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) UpdateServiceLocation(
+	ctx context.Context,
+) error {
+	return w.impl.UpdateServiceLocation(ctx)
+}
+
+func (w *telephonyStubWrapper) UpdateServiceLocationWithPackageName(
+	ctx context.Context,
+	callingPkg string,
+) error {
+	return w.impl.UpdateServiceLocationWithPackageName(ctx, callingPkg)
+}
+
+func (w *telephonyStubWrapper) EnableLocationUpdates(
+	ctx context.Context,
+) error {
+	return w.impl.EnableLocationUpdates(ctx)
+}
+
+func (w *telephonyStubWrapper) DisableLocationUpdates(
+	ctx context.Context,
+) error {
+	return w.impl.DisableLocationUpdates(ctx)
+}
+
+func (w *telephonyStubWrapper) EnableDataConnectivity(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.EnableDataConnectivity(ctx)
+}
+
+func (w *telephonyStubWrapper) DisableDataConnectivity(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.DisableDataConnectivity(ctx)
+}
+
+func (w *telephonyStubWrapper) IsDataConnectivityPossible(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsDataConnectivityPossible(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCellLocation(
+	ctx context.Context,
+	callingPkg string,
+) (network.CellIdentity, error) {
+	return w.impl.GetCellLocation(ctx, callingPkg)
+}
+
+func (w *telephonyStubWrapper) GetNetworkCountryIsoForPhone(
+	ctx context.Context,
+	phoneId int32,
+) (string, error) {
+	return w.impl.GetNetworkCountryIsoForPhone(ctx, phoneId)
+}
+
+func (w *telephonyStubWrapper) GetNeighboringCellInfo(
+	ctx context.Context,
+	callingPkg string,
+) ([]androidTelephony.NeighboringCellInfo, error) {
+	return w.impl.GetNeighboringCellInfo(ctx, callingPkg)
+}
+
+func (w *telephonyStubWrapper) GetCallState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCallState(ctx)
+}
+
+func (w *telephonyStubWrapper) GetCallStateForSubscription(
+	ctx context.Context,
+	subId int32,
+	featureId string,
+) (int32, error) {
+	return w.impl.GetCallStateForSubscription(ctx, subId, featureId)
+}
+
+func (w *telephonyStubWrapper) GetDataActivity(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDataActivity(ctx)
+}
+
+func (w *telephonyStubWrapper) GetDataActivityForSubId(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetDataActivityForSubId(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetDataState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDataState(ctx)
+}
+
+func (w *telephonyStubWrapper) GetDataStateForSubId(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetDataStateForSubId(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetActivePhoneType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetActivePhoneType(ctx)
+}
+
+func (w *telephonyStubWrapper) GetActivePhoneTypeForSlot(
+	ctx context.Context,
+	slotIndex int32,
+) (int32, error) {
+	return w.impl.GetActivePhoneTypeForSlot(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) GetCdmaEriIconIndex(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCdmaEriIconIndex(ctx)
+}
+
+func (w *telephonyStubWrapper) GetCdmaEriIconIndexForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetCdmaEriIconIndexForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCdmaEriIconMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCdmaEriIconMode(ctx)
+}
+
+func (w *telephonyStubWrapper) GetCdmaEriIconModeForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetCdmaEriIconModeForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCdmaEriText(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCdmaEriText(ctx)
+}
+
+func (w *telephonyStubWrapper) GetCdmaEriTextForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetCdmaEriTextForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) NeedsOtaServiceProvisioning(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.NeedsOtaServiceProvisioning(ctx)
+}
+
+func (w *telephonyStubWrapper) SetVoiceMailNumber(
+	ctx context.Context,
+	subId int32,
+	alphaTag string,
+	number string,
+) (bool, error) {
+	return w.impl.SetVoiceMailNumber(ctx, subId, alphaTag, number)
+}
+
+func (w *telephonyStubWrapper) SetVoiceActivationState(
+	ctx context.Context,
+	subId int32,
+	activationState int32,
+) error {
+	return w.impl.SetVoiceActivationState(ctx, subId, activationState)
+}
+
+func (w *telephonyStubWrapper) SetDataActivationState(
+	ctx context.Context,
+	subId int32,
+	activationState int32,
+) error {
+	return w.impl.SetDataActivationState(ctx, subId, activationState)
+}
+
+func (w *telephonyStubWrapper) GetVoiceActivationState(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetVoiceActivationState(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetDataActivationState(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetDataActivationState(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetVoiceMessageCountForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetVoiceMessageCountForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsConcurrentVoiceAndDataAllowed(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsConcurrentVoiceAndDataAllowed(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetVisualVoicemailSettings(
+	ctx context.Context,
+	subId int32,
+) (os.Bundle, error) {
+	return w.impl.GetVisualVoicemailSettings(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetVisualVoicemailPackageName(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetVisualVoicemailPackageName(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) EnableVisualVoicemailSmsFilter(
+	ctx context.Context,
+	subId int32,
+	settings androidTelephony.VisualVoicemailSmsFilterSettings,
+) error {
+	return w.impl.EnableVisualVoicemailSmsFilter(ctx, subId, settings)
+}
+
+func (w *telephonyStubWrapper) DisableVisualVoicemailSmsFilter(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.DisableVisualVoicemailSmsFilter(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetVisualVoicemailSmsFilterSettings(
+	ctx context.Context,
+	subId int32,
+) (androidTelephony.VisualVoicemailSmsFilterSettings, error) {
+	return w.impl.GetVisualVoicemailSmsFilterSettings(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetActiveVisualVoicemailSmsFilterSettings(
+	ctx context.Context,
+	subId int32,
+) (androidTelephony.VisualVoicemailSmsFilterSettings, error) {
+	return w.impl.GetActiveVisualVoicemailSmsFilterSettings(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SendVisualVoicemailSmsForSubscriber(
+	ctx context.Context,
+	callingAttributeTag string,
+	subId int32,
+	number string,
+	port int32,
+	text string,
+	sentIntent app.PendingIntent,
+) error {
+	return w.impl.SendVisualVoicemailSmsForSubscriber(ctx, callingAttributeTag, subId, number, port, text, sentIntent)
+}
+
+func (w *telephonyStubWrapper) SendDialerSpecialCode(
+	ctx context.Context,
+	callingPackageName string,
+	inputCode string,
+) error {
+	return w.impl.SendDialerSpecialCode(ctx, callingPackageName, inputCode)
+}
+
+func (w *telephonyStubWrapper) GetNetworkTypeForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetNetworkTypeForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetDataNetworkType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDataNetworkType(ctx)
+}
+
+func (w *telephonyStubWrapper) GetDataNetworkTypeForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetDataNetworkTypeForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetVoiceNetworkTypeForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetVoiceNetworkTypeForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) HasIccCard(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasIccCard(ctx)
+}
+
+func (w *telephonyStubWrapper) HasIccCardUsingSlotIndex(
+	ctx context.Context,
+	slotIndex int32,
+) (bool, error) {
+	return w.impl.HasIccCardUsingSlotIndex(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) GetLteOnCdmaMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetLteOnCdmaMode(ctx)
+}
+
+func (w *telephonyStubWrapper) GetLteOnCdmaModeForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetLteOnCdmaModeForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetAllCellInfo(
+	ctx context.Context,
+	callingPkg string,
+) ([]network.CellInfo, error) {
+	return w.impl.GetAllCellInfo(ctx, callingPkg)
+}
+
+func (w *telephonyStubWrapper) RequestCellInfoUpdate(
+	ctx context.Context,
+	subId int32,
+	cb androidTelephony.ICellInfoCallback,
+	callingPkg string,
+) error {
+	return w.impl.RequestCellInfoUpdate(ctx, subId, cb, callingPkg)
+}
+
+func (w *telephonyStubWrapper) RequestCellInfoUpdateWithWorkSource(
+	ctx context.Context,
+	subId int32,
+	cb androidTelephony.ICellInfoCallback,
+	callingPkg string,
+	ws interface{},
+) error {
+	return w.impl.RequestCellInfoUpdateWithWorkSource(ctx, subId, cb, callingPkg, ws)
+}
+
+func (w *telephonyStubWrapper) SetCellInfoListRate(
+	ctx context.Context,
+	rateInMillis int32,
+	subId int32,
+) error {
+	return w.impl.SetCellInfoListRate(ctx, rateInMillis, subId)
+}
+
+func (w *telephonyStubWrapper) IccOpenLogicalChannel(
+	ctx context.Context,
+	request IccLogicalChannelRequest,
+) (androidTelephony.IccOpenLogicalChannelResponse, error) {
+	return w.impl.IccOpenLogicalChannel(ctx, request)
+}
+
+func (w *telephonyStubWrapper) IccCloseLogicalChannel(
+	ctx context.Context,
+	request IccLogicalChannelRequest,
+) (bool, error) {
+	return w.impl.IccCloseLogicalChannel(ctx, request)
+}
+
+func (w *telephonyStubWrapper) IccTransmitApduLogicalChannelByPort(
+	ctx context.Context,
+	slotIndex int32,
+	portIndex int32,
+	channel int32,
+	cla int32,
+	instruction int32,
+	p1 int32,
+	p2 int32,
+	p3 int32,
+	data string,
+) (string, error) {
+	return w.impl.IccTransmitApduLogicalChannelByPort(ctx, slotIndex, portIndex, channel, cla, instruction, p1, p2, p3, data)
+}
+
+func (w *telephonyStubWrapper) IccTransmitApduLogicalChannel(
+	ctx context.Context,
+	subId int32,
+	channel int32,
+	cla int32,
+	instruction int32,
+	p1 int32,
+	p2 int32,
+	p3 int32,
+	data string,
+) (string, error) {
+	return w.impl.IccTransmitApduLogicalChannel(ctx, subId, channel, cla, instruction, p1, p2, p3, data)
+}
+
+func (w *telephonyStubWrapper) IccTransmitApduBasicChannelByPort(
+	ctx context.Context,
+	slotIndex int32,
+	portIndex int32,
+	cla int32,
+	instruction int32,
+	p1 int32,
+	p2 int32,
+	p3 int32,
+	data string,
+) (string, error) {
+	return w.impl.IccTransmitApduBasicChannelByPort(ctx, slotIndex, portIndex, cla, instruction, p1, p2, p3, data)
+}
+
+func (w *telephonyStubWrapper) IccTransmitApduBasicChannel(
+	ctx context.Context,
+	subId int32,
+	cla int32,
+	instruction int32,
+	p1 int32,
+	p2 int32,
+	p3 int32,
+	data string,
+) (string, error) {
+	return w.impl.IccTransmitApduBasicChannel(ctx, subId, cla, instruction, p1, p2, p3, data)
+}
+
+func (w *telephonyStubWrapper) IccExchangeSimIO(
+	ctx context.Context,
+	subId int32,
+	fileID int32,
+	command int32,
+	p1 int32,
+	p2 int32,
+	p3 int32,
+	filePath string,
+) ([]byte, error) {
+	return w.impl.IccExchangeSimIO(ctx, subId, fileID, command, p1, p2, p3, filePath)
+}
+
+func (w *telephonyStubWrapper) SendEnvelopeWithStatus(
+	ctx context.Context,
+	subId int32,
+	content string,
+) (string, error) {
+	return w.impl.SendEnvelopeWithStatus(ctx, subId, content)
+}
+
+func (w *telephonyStubWrapper) NvReadItem(
+	ctx context.Context,
+	itemID int32,
+) (string, error) {
+	return w.impl.NvReadItem(ctx, itemID)
+}
+
+func (w *telephonyStubWrapper) NvWriteItem(
+	ctx context.Context,
+	itemID int32,
+	itemValue string,
+) (bool, error) {
+	return w.impl.NvWriteItem(ctx, itemID, itemValue)
+}
+
+func (w *telephonyStubWrapper) NvWriteCdmaPrl(
+	ctx context.Context,
+	preferredRoamingList []byte,
+) (bool, error) {
+	return w.impl.NvWriteCdmaPrl(ctx, preferredRoamingList)
+}
+
+func (w *telephonyStubWrapper) ResetModemConfig(
+	ctx context.Context,
+	slotIndex int32,
+) (bool, error) {
+	return w.impl.ResetModemConfig(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) RebootModem(
+	ctx context.Context,
+	slotIndex int32,
+) (bool, error) {
+	return w.impl.RebootModem(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) GetAllowedNetworkTypesBitmask(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetAllowedNetworkTypesBitmask(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsTetheringApnRequiredForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsTetheringApnRequiredForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) EnableIms(
+	ctx context.Context,
+	slotId int32,
+) error {
+	return w.impl.EnableIms(ctx, slotId)
+}
+
+func (w *telephonyStubWrapper) DisableIms(
+	ctx context.Context,
+	slotId int32,
+) error {
+	return w.impl.DisableIms(ctx, slotId)
+}
+
+func (w *telephonyStubWrapper) ResetIms(
+	ctx context.Context,
+	slotIndex int32,
+) error {
+	return w.impl.ResetIms(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) RegisterMmTelFeatureCallback(
+	ctx context.Context,
+	slotId int32,
+	callback internal.IImsServiceFeatureCallback,
+) error {
+	return w.impl.RegisterMmTelFeatureCallback(ctx, slotId, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterImsFeatureCallback(
+	ctx context.Context,
+	callback internal.IImsServiceFeatureCallback,
+) error {
+	return w.impl.UnregisterImsFeatureCallback(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) GetImsRegistration(
+	ctx context.Context,
+	slotId int32,
+	feature int32,
+) (aidl.IImsRegistration, error) {
+	return w.impl.GetImsRegistration(ctx, slotId, feature)
+}
+
+func (w *telephonyStubWrapper) GetImsConfig(
+	ctx context.Context,
+	slotId int32,
+	feature int32,
+) (aidl.IImsConfig, error) {
+	return w.impl.GetImsConfig(ctx, slotId, feature)
+}
+
+func (w *telephonyStubWrapper) SetBoundImsServiceOverride(
+	ctx context.Context,
+	slotIndex int32,
+	isCarrierService bool,
+	featureTypes []int32,
+	packageName string,
+) (bool, error) {
+	return w.impl.SetBoundImsServiceOverride(ctx, slotIndex, isCarrierService, featureTypes, packageName)
+}
+
+func (w *telephonyStubWrapper) ClearCarrierImsServiceOverride(
+	ctx context.Context,
+	slotIndex int32,
+) (bool, error) {
+	return w.impl.ClearCarrierImsServiceOverride(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) GetBoundImsServicePackage(
+	ctx context.Context,
+	slotIndex int32,
+	isCarrierImsService bool,
+	featureType int32,
+) (string, error) {
+	return w.impl.GetBoundImsServicePackage(ctx, slotIndex, isCarrierImsService, featureType)
+}
+
+func (w *telephonyStubWrapper) GetImsMmTelFeatureState(
+	ctx context.Context,
+	subId int32,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.GetImsMmTelFeatureState(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) SetNetworkSelectionModeAutomatic(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.SetNetworkSelectionModeAutomatic(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCellNetworkScanResults(
+	ctx context.Context,
+	subId int32,
+) (CellNetworkScanResult, error) {
+	return w.impl.GetCellNetworkScanResults(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) RequestNetworkScan(
+	ctx context.Context,
+	subId int32,
+	renounceFineLocationAccess bool,
+	request network.NetworkScanRequest,
+	messenger os.Messenger,
+	binder_ binder.IBinder,
+) (int32, error) {
+	return w.impl.RequestNetworkScan(ctx, subId, renounceFineLocationAccess, request, messenger, binder_)
+}
+
+func (w *telephonyStubWrapper) StopNetworkScan(
+	ctx context.Context,
+	subId int32,
+	scanId int32,
+) error {
+	return w.impl.StopNetworkScan(ctx, subId, scanId)
+}
+
+func (w *telephonyStubWrapper) SetNetworkSelectionModeManual(
+	ctx context.Context,
+	subId int32,
+	operatorInfo OperatorInfo,
+	persisSelection bool,
+) (bool, error) {
+	return w.impl.SetNetworkSelectionModeManual(ctx, subId, operatorInfo, persisSelection)
+}
+
+func (w *telephonyStubWrapper) GetAllowedNetworkTypesForReason(
+	ctx context.Context,
+	subId int32,
+	reason int32,
+) (int64, error) {
+	return w.impl.GetAllowedNetworkTypesForReason(ctx, subId, reason)
+}
+
+func (w *telephonyStubWrapper) SetAllowedNetworkTypesForReason(
+	ctx context.Context,
+	subId int32,
+	reason int32,
+	allowedNetworkTypes int64,
+) (bool, error) {
+	return w.impl.SetAllowedNetworkTypesForReason(ctx, subId, reason, allowedNetworkTypes)
+}
+
+func (w *telephonyStubWrapper) GetDataEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.GetDataEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsUserDataEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsUserDataEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsDataEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsDataEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetDataEnabledForReason(
+	ctx context.Context,
+	subId int32,
+	reason int32,
+	enable bool,
+) error {
+	return w.impl.SetDataEnabledForReason(ctx, subId, reason, enable)
+}
+
+func (w *telephonyStubWrapper) IsDataEnabledForReason(
+	ctx context.Context,
+	subId int32,
+	reason int32,
+) (bool, error) {
+	return w.impl.IsDataEnabledForReason(ctx, subId, reason)
+}
+
+func (w *telephonyStubWrapper) IsManualNetworkSelectionAllowed(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsManualNetworkSelectionAllowed(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetImsRegistrationState(
+	ctx context.Context,
+	registered bool,
+) error {
+	return w.impl.SetImsRegistrationState(ctx, registered)
+}
+
+func (w *telephonyStubWrapper) GetCdmaMdn(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetCdmaMdn(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCdmaMin(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetCdmaMin(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) RequestNumberVerification(
+	ctx context.Context,
+	range_ androidTelephony.PhoneNumberRange,
+	timeoutMillis int64,
+	callback INumberVerificationCallback,
+) error {
+	return w.impl.RequestNumberVerification(ctx, range_, timeoutMillis, callback)
+}
+
+func (w *telephonyStubWrapper) GetCarrierPrivilegeStatus(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetCarrierPrivilegeStatus(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCarrierPrivilegeStatusForUid(
+	ctx context.Context,
+	subId int32,
+	uid int32,
+) (int32, error) {
+	return w.impl.GetCarrierPrivilegeStatusForUid(ctx, subId, uid)
+}
+
+func (w *telephonyStubWrapper) CheckCarrierPrivilegesForPackage(
+	ctx context.Context,
+	subId int32,
+	pkgName string,
+) (int32, error) {
+	return w.impl.CheckCarrierPrivilegesForPackage(ctx, subId, pkgName)
+}
+
+func (w *telephonyStubWrapper) CheckCarrierPrivilegesForPackageAnyPhone(
+	ctx context.Context,
+	pkgName string,
+) (int32, error) {
+	return w.impl.CheckCarrierPrivilegesForPackageAnyPhone(ctx, pkgName)
+}
+
+func (w *telephonyStubWrapper) GetCarrierPackageNamesForIntentAndPhone(
+	ctx context.Context,
+	intent androidContent.Intent,
+	phoneId int32,
+) ([]string, error) {
+	return w.impl.GetCarrierPackageNamesForIntentAndPhone(ctx, intent, phoneId)
+}
+
+func (w *telephonyStubWrapper) SetLine1NumberForDisplayForSubscriber(
+	ctx context.Context,
+	subId int32,
+	alphaTag string,
+	number string,
+) (bool, error) {
+	return w.impl.SetLine1NumberForDisplayForSubscriber(ctx, subId, alphaTag, number)
+}
+
+func (w *telephonyStubWrapper) GetLine1NumberForDisplay(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetLine1NumberForDisplay(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetLine1AlphaTagForDisplay(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetLine1AlphaTagForDisplay(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetMergedSubscriberIds(
+	ctx context.Context,
+	subId int32,
+) ([]string, error) {
+	return w.impl.GetMergedSubscriberIds(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetMergedImsisFromGroup(
+	ctx context.Context,
+	subId int32,
+) ([]string, error) {
+	return w.impl.GetMergedImsisFromGroup(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetOperatorBrandOverride(
+	ctx context.Context,
+	subId int32,
+	brand string,
+) (bool, error) {
+	return w.impl.SetOperatorBrandOverride(ctx, subId, brand)
+}
+
+func (w *telephonyStubWrapper) SetRoamingOverride(
+	ctx context.Context,
+	subId int32,
+	gsmRoamingList []string,
+	gsmNonRoamingList []string,
+	cdmaRoamingList []string,
+	cdmaNonRoamingList []string,
+) (bool, error) {
+	return w.impl.SetRoamingOverride(ctx, subId, gsmRoamingList, gsmNonRoamingList, cdmaRoamingList, cdmaNonRoamingList)
+}
+
+func (w *telephonyStubWrapper) NeedMobileRadioShutdown(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.NeedMobileRadioShutdown(ctx)
+}
+
+func (w *telephonyStubWrapper) ShutdownMobileRadios(
+	ctx context.Context,
+) error {
+	return w.impl.ShutdownMobileRadios(ctx)
+}
+
+func (w *telephonyStubWrapper) GetRadioAccessFamily(
+	ctx context.Context,
+	phoneId int32,
+) (int32, error) {
+	return w.impl.GetRadioAccessFamily(ctx, phoneId)
+}
+
+func (w *telephonyStubWrapper) UploadCallComposerPicture(
+	ctx context.Context,
+	subscriptionId int32,
+	contentType string,
+	fd int32,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.UploadCallComposerPicture(ctx, subscriptionId, contentType, fd, callback)
+}
+
+func (w *telephonyStubWrapper) EnableVideoCalling(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.EnableVideoCalling(ctx, enable)
+}
+
+func (w *telephonyStubWrapper) IsVideoCallingEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsVideoCallingEnabled(ctx)
+}
+
+func (w *telephonyStubWrapper) CanChangeDtmfToneLength(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.CanChangeDtmfToneLength(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsWorldPhone(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsWorldPhone(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsTtyModeSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsTtyModeSupported(ctx)
+}
+
+func (w *telephonyStubWrapper) IsRttSupported(
+	ctx context.Context,
+	subscriptionId int32,
+) (bool, error) {
+	return w.impl.IsRttSupported(ctx, subscriptionId)
+}
+
+func (w *telephonyStubWrapper) IsHearingAidCompatibilitySupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHearingAidCompatibilitySupported(ctx)
+}
+
+func (w *telephonyStubWrapper) IsImsRegistered(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsImsRegistered(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsWifiCallingAvailable(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsWifiCallingAvailable(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsVideoTelephonyAvailable(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsVideoTelephonyAvailable(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetImsRegTechnologyForMmTel(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetImsRegTechnologyForMmTel(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetDeviceId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetDeviceId(ctx)
+}
+
+func (w *telephonyStubWrapper) GetDeviceIdWithFeature(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetDeviceIdWithFeature(ctx)
+}
+
+func (w *telephonyStubWrapper) GetImeiForSlot(
+	ctx context.Context,
+	slotIndex int32,
+) (string, error) {
+	return w.impl.GetImeiForSlot(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) GetPrimaryImei(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetPrimaryImei(ctx)
+}
+
+func (w *telephonyStubWrapper) GetTypeAllocationCodeForSlot(
+	ctx context.Context,
+	slotIndex int32,
+) (string, error) {
+	return w.impl.GetTypeAllocationCodeForSlot(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) GetMeidForSlot(
+	ctx context.Context,
+	slotIndex int32,
+) (string, error) {
+	return w.impl.GetMeidForSlot(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) GetManufacturerCodeForSlot(
+	ctx context.Context,
+	slotIndex int32,
+) (string, error) {
+	return w.impl.GetManufacturerCodeForSlot(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) GetDeviceSoftwareVersionForSlot(
+	ctx context.Context,
+	slotIndex int32,
+) (string, error) {
+	return w.impl.GetDeviceSoftwareVersionForSlot(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) GetSubIdForPhoneAccountHandle(
+	ctx context.Context,
+	phoneAccountHandle telecom.PhoneAccountHandle,
+) (int32, error) {
+	return w.impl.GetSubIdForPhoneAccountHandle(ctx, phoneAccountHandle)
+}
+
+func (w *telephonyStubWrapper) GetPhoneAccountHandleForSubscriptionId(
+	ctx context.Context,
+	subscriptionId int32,
+) (telecom.PhoneAccountHandle, error) {
+	return w.impl.GetPhoneAccountHandleForSubscriptionId(ctx, subscriptionId)
+}
+
+func (w *telephonyStubWrapper) FactoryReset(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.FactoryReset(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetSimLocaleForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetSimLocaleForSubscriber(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) RequestModemActivityInfo(
+	ctx context.Context,
+	result os.ResultReceiver,
+) error {
+	return w.impl.RequestModemActivityInfo(ctx, result)
+}
+
+func (w *telephonyStubWrapper) GetServiceStateForSlot(
+	ctx context.Context,
+	slotIndex int32,
+	renounceFineLocationAccess bool,
+	renounceCoarseLocationAccess bool,
+) (androidTelephony.ServiceState, error) {
+	return w.impl.GetServiceStateForSlot(ctx, slotIndex, renounceFineLocationAccess, renounceCoarseLocationAccess)
+}
+
+func (w *telephonyStubWrapper) GetVoicemailRingtoneUri(
+	ctx context.Context,
+	accountHandle telecom.PhoneAccountHandle,
+) (net.Uri, error) {
+	return w.impl.GetVoicemailRingtoneUri(ctx, accountHandle)
+}
+
+func (w *telephonyStubWrapper) SetVoicemailRingtoneUri(
+	ctx context.Context,
+	phoneAccountHandle telecom.PhoneAccountHandle,
+	uri net.Uri,
+) error {
+	return w.impl.SetVoicemailRingtoneUri(ctx, phoneAccountHandle, uri)
+}
+
+func (w *telephonyStubWrapper) IsVoicemailVibrationEnabled(
+	ctx context.Context,
+	accountHandle telecom.PhoneAccountHandle,
+) (bool, error) {
+	return w.impl.IsVoicemailVibrationEnabled(ctx, accountHandle)
+}
+
+func (w *telephonyStubWrapper) SetVoicemailVibrationEnabled(
+	ctx context.Context,
+	phoneAccountHandle telecom.PhoneAccountHandle,
+	enabled bool,
+) error {
+	return w.impl.SetVoicemailVibrationEnabled(ctx, phoneAccountHandle, enabled)
+}
+
+func (w *telephonyStubWrapper) GetPackagesWithCarrierPrivileges(
+	ctx context.Context,
+	phoneId int32,
+) ([]string, error) {
+	return w.impl.GetPackagesWithCarrierPrivileges(ctx, phoneId)
+}
+
+func (w *telephonyStubWrapper) GetPackagesWithCarrierPrivilegesForAllPhones(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetPackagesWithCarrierPrivilegesForAllPhones(ctx)
+}
+
+func (w *telephonyStubWrapper) GetAidForAppType(
+	ctx context.Context,
+	subId int32,
+	appType int32,
+) (string, error) {
+	return w.impl.GetAidForAppType(ctx, subId, appType)
+}
+
+func (w *telephonyStubWrapper) GetEsn(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetEsn(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCdmaPrlVersion(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetCdmaPrlVersion(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetTelephonyHistograms(
+	ctx context.Context,
+) ([]androidTelephony.TelephonyHistogram, error) {
+	return w.impl.GetTelephonyHistograms(ctx)
+}
+
+func (w *telephonyStubWrapper) SetAllowedCarriers(
+	ctx context.Context,
+	carrierRestrictionRules androidTelephony.CarrierRestrictionRules,
+) (int32, error) {
+	return w.impl.SetAllowedCarriers(ctx, carrierRestrictionRules)
+}
+
+func (w *telephonyStubWrapper) GetAllowedCarriers(
+	ctx context.Context,
+) (androidTelephony.CarrierRestrictionRules, error) {
+	return w.impl.GetAllowedCarriers(ctx)
+}
+
+func (w *telephonyStubWrapper) GetSubscriptionCarrierId(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetSubscriptionCarrierId(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetSubscriptionCarrierName(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetSubscriptionCarrierName(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetSubscriptionSpecificCarrierId(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetSubscriptionSpecificCarrierId(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetSubscriptionSpecificCarrierName(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetSubscriptionSpecificCarrierName(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCarrierIdFromMccMnc(
+	ctx context.Context,
+	slotIndex int32,
+	mccmnc string,
+	isSubscriptionMccMnc bool,
+) (int32, error) {
+	return w.impl.GetCarrierIdFromMccMnc(ctx, slotIndex, mccmnc, isSubscriptionMccMnc)
+}
+
+func (w *telephonyStubWrapper) CarrierActionSetRadioEnabled(
+	ctx context.Context,
+	subId int32,
+	enabled bool,
+) error {
+	return w.impl.CarrierActionSetRadioEnabled(ctx, subId, enabled)
+}
+
+func (w *telephonyStubWrapper) CarrierActionReportDefaultNetworkStatus(
+	ctx context.Context,
+	subId int32,
+	report bool,
+) error {
+	return w.impl.CarrierActionReportDefaultNetworkStatus(ctx, subId, report)
+}
+
+func (w *telephonyStubWrapper) CarrierActionResetAll(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.CarrierActionResetAll(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCallForwarding(
+	ctx context.Context,
+	subId int32,
+	callForwardingReason int32,
+	callback ICallForwardingInfoCallback,
+) error {
+	return w.impl.GetCallForwarding(ctx, subId, callForwardingReason, callback)
+}
+
+func (w *telephonyStubWrapper) SetCallForwarding(
+	ctx context.Context,
+	subId int32,
+	callForwardingInfo androidTelephony.CallForwardingInfo,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.SetCallForwarding(ctx, subId, callForwardingInfo, callback)
+}
+
+func (w *telephonyStubWrapper) GetCallWaitingStatus(
+	ctx context.Context,
+	subId int32,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.GetCallWaitingStatus(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) SetCallWaitingStatus(
+	ctx context.Context,
+	subId int32,
+	enabled bool,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.SetCallWaitingStatus(ctx, subId, enabled, callback)
+}
+
+func (w *telephonyStubWrapper) GetClientRequestStats(
+	ctx context.Context,
+	subid int32,
+) ([]androidTelephony.ClientRequestStats, error) {
+	return w.impl.GetClientRequestStats(ctx, subid)
+}
+
+func (w *telephonyStubWrapper) SetSimPowerStateForSlot(
+	ctx context.Context,
+	slotIndex int32,
+	state int32,
+) error {
+	return w.impl.SetSimPowerStateForSlot(ctx, slotIndex, state)
+}
+
+func (w *telephonyStubWrapper) SetSimPowerStateForSlotWithCallback(
+	ctx context.Context,
+	slotIndex int32,
+	state int32,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.SetSimPowerStateForSlotWithCallback(ctx, slotIndex, state, callback)
+}
+
+func (w *telephonyStubWrapper) GetForbiddenPlmns(
+	ctx context.Context,
+	subId int32,
+	appType int32,
+) ([]string, error) {
+	return w.impl.GetForbiddenPlmns(ctx, subId, appType)
+}
+
+func (w *telephonyStubWrapper) SetForbiddenPlmns(
+	ctx context.Context,
+	subId int32,
+	appType int32,
+	fplmns []string,
+) (int32, error) {
+	return w.impl.SetForbiddenPlmns(ctx, subId, appType, fplmns)
+}
+
+func (w *telephonyStubWrapper) GetEmergencyCallbackMode(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.GetEmergencyCallbackMode(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetSignalStrength(
+	ctx context.Context,
+	subId int32,
+) (network.SignalStrength, error) {
+	return w.impl.GetSignalStrength(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetCardIdForDefaultEuicc(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetCardIdForDefaultEuicc(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetUiccCardsInfo(
+	ctx context.Context,
+) ([]androidTelephony.UiccCardInfo, error) {
+	return w.impl.GetUiccCardsInfo(ctx)
+}
+
+func (w *telephonyStubWrapper) GetUiccSlotsInfo(
+	ctx context.Context,
+) ([]androidTelephony.UiccSlotInfo, error) {
+	return w.impl.GetUiccSlotsInfo(ctx)
+}
+
+func (w *telephonyStubWrapper) SwitchSlots(
+	ctx context.Context,
+	physicalSlots []int32,
+) (bool, error) {
+	return w.impl.SwitchSlots(ctx, physicalSlots)
+}
+
+func (w *telephonyStubWrapper) SetSimSlotMapping(
+	ctx context.Context,
+	slotMapping []androidTelephony.UiccSlotMapping,
+) (bool, error) {
+	return w.impl.SetSimSlotMapping(ctx, slotMapping)
+}
+
+func (w *telephonyStubWrapper) IsDataRoamingEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsDataRoamingEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetDataRoamingEnabled(
+	ctx context.Context,
+	subId int32,
+	isEnabled bool,
+) error {
+	return w.impl.SetDataRoamingEnabled(ctx, subId, isEnabled)
+}
+
+func (w *telephonyStubWrapper) GetCdmaRoamingMode(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetCdmaRoamingMode(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetCdmaRoamingMode(
+	ctx context.Context,
+	subId int32,
+	mode int32,
+) (bool, error) {
+	return w.impl.SetCdmaRoamingMode(ctx, subId, mode)
+}
+
+func (w *telephonyStubWrapper) GetCdmaSubscriptionMode(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetCdmaSubscriptionMode(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetCdmaSubscriptionMode(
+	ctx context.Context,
+	subId int32,
+	mode int32,
+) (bool, error) {
+	return w.impl.SetCdmaSubscriptionMode(ctx, subId, mode)
+}
+
+func (w *telephonyStubWrapper) SetCarrierTestOverride(
+	ctx context.Context,
+	subId int32,
+	mccmnc string,
+	imsi string,
+	iccid string,
+	gid1 string,
+	gid2 string,
+	plmn string,
+	spn string,
+	carrierPrivilegeRules string,
+	apn string,
+) error {
+	return w.impl.SetCarrierTestOverride(ctx, subId, mccmnc, imsi, iccid, gid1, gid2, plmn, spn, carrierPrivilegeRules, apn)
+}
+
+func (w *telephonyStubWrapper) SetCarrierServicePackageOverride(
+	ctx context.Context,
+	subId int32,
+	carrierServicePackage string,
+) error {
+	return w.impl.SetCarrierServicePackageOverride(ctx, subId, carrierServicePackage)
+}
+
+func (w *telephonyStubWrapper) GetCarrierIdListVersion(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetCarrierIdListVersion(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) RefreshUiccProfile(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.RefreshUiccProfile(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetNumberOfModemsWithSimultaneousDataConnections(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetNumberOfModemsWithSimultaneousDataConnections(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetNetworkSelectionMode(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetNetworkSelectionMode(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsInEmergencySmsMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInEmergencySmsMode(ctx)
+}
+
+func (w *telephonyStubWrapper) GetRadioPowerState(
+	ctx context.Context,
+	slotIndex int32,
+) (int32, error) {
+	return w.impl.GetRadioPowerState(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) RegisterImsRegistrationCallback(
+	ctx context.Context,
+	subId int32,
+	c aidl.IImsRegistrationCallback,
+) error {
+	return w.impl.RegisterImsRegistrationCallback(ctx, subId, c)
+}
+
+func (w *telephonyStubWrapper) UnregisterImsRegistrationCallback(
+	ctx context.Context,
+	subId int32,
+	c aidl.IImsRegistrationCallback,
+) error {
+	return w.impl.UnregisterImsRegistrationCallback(ctx, subId, c)
+}
+
+func (w *telephonyStubWrapper) RegisterImsEmergencyRegistrationCallback(
+	ctx context.Context,
+	subId int32,
+	c aidl.IImsRegistrationCallback,
+) error {
+	return w.impl.RegisterImsEmergencyRegistrationCallback(ctx, subId, c)
+}
+
+func (w *telephonyStubWrapper) UnregisterImsEmergencyRegistrationCallback(
+	ctx context.Context,
+	subId int32,
+	c aidl.IImsRegistrationCallback,
+) error {
+	return w.impl.UnregisterImsEmergencyRegistrationCallback(ctx, subId, c)
+}
+
+func (w *telephonyStubWrapper) GetImsMmTelRegistrationState(
+	ctx context.Context,
+	subId int32,
+	consumer IIntegerConsumer,
+) error {
+	return w.impl.GetImsMmTelRegistrationState(ctx, subId, consumer)
+}
+
+func (w *telephonyStubWrapper) GetImsMmTelRegistrationTransportType(
+	ctx context.Context,
+	subId int32,
+	consumer IIntegerConsumer,
+) error {
+	return w.impl.GetImsMmTelRegistrationTransportType(ctx, subId, consumer)
+}
+
+func (w *telephonyStubWrapper) RegisterMmTelCapabilityCallback(
+	ctx context.Context,
+	subId int32,
+	c aidl.IImsCapabilityCallback,
+) error {
+	return w.impl.RegisterMmTelCapabilityCallback(ctx, subId, c)
+}
+
+func (w *telephonyStubWrapper) UnregisterMmTelCapabilityCallback(
+	ctx context.Context,
+	subId int32,
+	c aidl.IImsCapabilityCallback,
+) error {
+	return w.impl.UnregisterMmTelCapabilityCallback(ctx, subId, c)
+}
+
+func (w *telephonyStubWrapper) IsCapable(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	regTech int32,
+) (bool, error) {
+	return w.impl.IsCapable(ctx, subId, capability, regTech)
+}
+
+func (w *telephonyStubWrapper) IsAvailable(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	regTech int32,
+) (bool, error) {
+	return w.impl.IsAvailable(ctx, subId, capability, regTech)
+}
+
+func (w *telephonyStubWrapper) IsMmTelCapabilitySupported(
+	ctx context.Context,
+	subId int32,
+	callback IIntegerConsumer,
+	capability int32,
+	transportType int32,
+) error {
+	return w.impl.IsMmTelCapabilitySupported(ctx, subId, callback, capability, transportType)
+}
+
+func (w *telephonyStubWrapper) IsAdvancedCallingSettingEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsAdvancedCallingSettingEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetAdvancedCallingSettingEnabled(
+	ctx context.Context,
+	subId int32,
+	isEnabled bool,
+) error {
+	return w.impl.SetAdvancedCallingSettingEnabled(ctx, subId, isEnabled)
+}
+
+func (w *telephonyStubWrapper) IsVtSettingEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsVtSettingEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetVtSettingEnabled(
+	ctx context.Context,
+	subId int32,
+	isEnabled bool,
+) error {
+	return w.impl.SetVtSettingEnabled(ctx, subId, isEnabled)
+}
+
+func (w *telephonyStubWrapper) IsVoWiFiSettingEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsVoWiFiSettingEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetVoWiFiSettingEnabled(
+	ctx context.Context,
+	subId int32,
+	isEnabled bool,
+) error {
+	return w.impl.SetVoWiFiSettingEnabled(ctx, subId, isEnabled)
+}
+
+func (w *telephonyStubWrapper) IsCrossSimCallingEnabledByUser(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsCrossSimCallingEnabledByUser(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetCrossSimCallingEnabled(
+	ctx context.Context,
+	subId int32,
+	isEnabled bool,
+) error {
+	return w.impl.SetCrossSimCallingEnabled(ctx, subId, isEnabled)
+}
+
+func (w *telephonyStubWrapper) IsVoWiFiRoamingSettingEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsVoWiFiRoamingSettingEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetVoWiFiRoamingSettingEnabled(
+	ctx context.Context,
+	subId int32,
+	isEnabled bool,
+) error {
+	return w.impl.SetVoWiFiRoamingSettingEnabled(ctx, subId, isEnabled)
+}
+
+func (w *telephonyStubWrapper) SetVoWiFiNonPersistent(
+	ctx context.Context,
+	subId int32,
+	isCapable bool,
+	mode int32,
+) error {
+	return w.impl.SetVoWiFiNonPersistent(ctx, subId, isCapable, mode)
+}
+
+func (w *telephonyStubWrapper) GetVoWiFiModeSetting(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetVoWiFiModeSetting(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetVoWiFiModeSetting(
+	ctx context.Context,
+	subId int32,
+	mode int32,
+) error {
+	return w.impl.SetVoWiFiModeSetting(ctx, subId, mode)
+}
+
+func (w *telephonyStubWrapper) GetVoWiFiRoamingModeSetting(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetVoWiFiRoamingModeSetting(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetVoWiFiRoamingModeSetting(
+	ctx context.Context,
+	subId int32,
+	mode int32,
+) error {
+	return w.impl.SetVoWiFiRoamingModeSetting(ctx, subId, mode)
+}
+
+func (w *telephonyStubWrapper) SetRttCapabilitySetting(
+	ctx context.Context,
+	subId int32,
+	isEnabled bool,
+) error {
+	return w.impl.SetRttCapabilitySetting(ctx, subId, isEnabled)
+}
+
+func (w *telephonyStubWrapper) IsTtyOverVolteEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsTtyOverVolteEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetEmergencyNumberList(
+	ctx context.Context,
+) (map[interface{}]interface{}, error) {
+	return w.impl.GetEmergencyNumberList(ctx)
+}
+
+func (w *telephonyStubWrapper) IsEmergencyNumber(
+	ctx context.Context,
+	number string,
+	exactMatch bool,
+) (bool, error) {
+	return w.impl.IsEmergencyNumber(ctx, number, exactMatch)
+}
+
+func (w *telephonyStubWrapper) GetCertsFromCarrierPrivilegeAccessRules(
+	ctx context.Context,
+	subId int32,
+) ([]string, error) {
+	return w.impl.GetCertsFromCarrierPrivilegeAccessRules(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) RegisterImsProvisioningChangedCallback(
+	ctx context.Context,
+	subId int32,
+	callback aidl.IImsConfigCallback,
+) error {
+	return w.impl.RegisterImsProvisioningChangedCallback(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterImsProvisioningChangedCallback(
+	ctx context.Context,
+	subId int32,
+	callback aidl.IImsConfigCallback,
+) error {
+	return w.impl.UnregisterImsProvisioningChangedCallback(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) RegisterFeatureProvisioningChangedCallback(
+	ctx context.Context,
+	subId int32,
+	callback aidl.IFeatureProvisioningCallback,
+) error {
+	return w.impl.RegisterFeatureProvisioningChangedCallback(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterFeatureProvisioningChangedCallback(
+	ctx context.Context,
+	subId int32,
+	callback aidl.IFeatureProvisioningCallback,
+) error {
+	return w.impl.UnregisterFeatureProvisioningChangedCallback(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) SetImsProvisioningStatusForCapability(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	tech int32,
+	isProvisioned bool,
+) error {
+	return w.impl.SetImsProvisioningStatusForCapability(ctx, subId, capability, tech, isProvisioned)
+}
+
+func (w *telephonyStubWrapper) GetImsProvisioningStatusForCapability(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	tech int32,
+) (bool, error) {
+	return w.impl.GetImsProvisioningStatusForCapability(ctx, subId, capability, tech)
+}
+
+func (w *telephonyStubWrapper) GetRcsProvisioningStatusForCapability(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	tech int32,
+) (bool, error) {
+	return w.impl.GetRcsProvisioningStatusForCapability(ctx, subId, capability, tech)
+}
+
+func (w *telephonyStubWrapper) SetRcsProvisioningStatusForCapability(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	tech int32,
+	isProvisioned bool,
+) error {
+	return w.impl.SetRcsProvisioningStatusForCapability(ctx, subId, capability, tech, isProvisioned)
+}
+
+func (w *telephonyStubWrapper) GetImsProvisioningInt(
+	ctx context.Context,
+	subId int32,
+	key int32,
+) (int32, error) {
+	return w.impl.GetImsProvisioningInt(ctx, subId, key)
+}
+
+func (w *telephonyStubWrapper) GetImsProvisioningString(
+	ctx context.Context,
+	subId int32,
+	key int32,
+) (string, error) {
+	return w.impl.GetImsProvisioningString(ctx, subId, key)
+}
+
+func (w *telephonyStubWrapper) SetImsProvisioningInt(
+	ctx context.Context,
+	subId int32,
+	key int32,
+	value int32,
+) (int32, error) {
+	return w.impl.SetImsProvisioningInt(ctx, subId, key, value)
+}
+
+func (w *telephonyStubWrapper) SetImsProvisioningString(
+	ctx context.Context,
+	subId int32,
+	key int32,
+	value string,
+) (int32, error) {
+	return w.impl.SetImsProvisioningString(ctx, subId, key, value)
+}
+
+func (w *telephonyStubWrapper) StartEmergencyCallbackMode(
+	ctx context.Context,
+) error {
+	return w.impl.StartEmergencyCallbackMode(ctx)
+}
+
+func (w *telephonyStubWrapper) UpdateEmergencyNumberListTestMode(
+	ctx context.Context,
+	action int32,
+	num voice.EmergencyNumber,
+) error {
+	return w.impl.UpdateEmergencyNumberListTestMode(ctx, action, num)
+}
+
+func (w *telephonyStubWrapper) GetEmergencyNumberListTestMode(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetEmergencyNumberListTestMode(ctx)
+}
+
+func (w *telephonyStubWrapper) GetEmergencyNumberDbVersion(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetEmergencyNumberDbVersion(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) NotifyOtaEmergencyNumberDbInstalled(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyOtaEmergencyNumberDbInstalled(ctx)
+}
+
+func (w *telephonyStubWrapper) UpdateOtaEmergencyNumberDbFilePath(
+	ctx context.Context,
+	otaParcelFileDescriptor int32,
+) error {
+	return w.impl.UpdateOtaEmergencyNumberDbFilePath(ctx, otaParcelFileDescriptor)
+}
+
+func (w *telephonyStubWrapper) ResetOtaEmergencyNumberDbFilePath(
+	ctx context.Context,
+) error {
+	return w.impl.ResetOtaEmergencyNumberDbFilePath(ctx)
+}
+
+func (w *telephonyStubWrapper) EnableModemForSlot(
+	ctx context.Context,
+	slotIndex int32,
+	enable bool,
+) (bool, error) {
+	return w.impl.EnableModemForSlot(ctx, slotIndex, enable)
+}
+
+func (w *telephonyStubWrapper) SetMultiSimCarrierRestriction(
+	ctx context.Context,
+	isMultiSimCarrierRestricted bool,
+) error {
+	return w.impl.SetMultiSimCarrierRestriction(ctx, isMultiSimCarrierRestricted)
+}
+
+func (w *telephonyStubWrapper) IsMultiSimSupported(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.IsMultiSimSupported(ctx)
+}
+
+func (w *telephonyStubWrapper) SwitchMultiSimConfig(
+	ctx context.Context,
+	numOfSims int32,
+) error {
+	return w.impl.SwitchMultiSimConfig(ctx, numOfSims)
+}
+
+func (w *telephonyStubWrapper) DoesSwitchMultiSimConfigTriggerReboot(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.DoesSwitchMultiSimConfigTriggerReboot(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetSlotsMapping(
+	ctx context.Context,
+) ([]androidTelephony.UiccSlotMapping, error) {
+	return w.impl.GetSlotsMapping(ctx)
+}
+
+func (w *telephonyStubWrapper) GetRadioHalVersion(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetRadioHalVersion(ctx)
+}
+
+func (w *telephonyStubWrapper) GetHalVersion(
+	ctx context.Context,
+	service int32,
+) (int32, error) {
+	return w.impl.GetHalVersion(ctx, service)
+}
+
+func (w *telephonyStubWrapper) GetCurrentPackageName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCurrentPackageName(ctx)
+}
+
+func (w *telephonyStubWrapper) IsApplicationOnUicc(
+	ctx context.Context,
+	subId int32,
+	appType int32,
+) (bool, error) {
+	return w.impl.IsApplicationOnUicc(ctx, subId, appType)
+}
+
+func (w *telephonyStubWrapper) IsModemEnabledForSlot(
+	ctx context.Context,
+	slotIndex int32,
+) (bool, error) {
+	return w.impl.IsModemEnabledForSlot(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) IsDataEnabledForApn(
+	ctx context.Context,
+	apnType int32,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsDataEnabledForApn(ctx, apnType, subId)
+}
+
+func (w *telephonyStubWrapper) IsApnMetered(
+	ctx context.Context,
+	apnType int32,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsApnMetered(ctx, apnType, subId)
+}
+
+func (w *telephonyStubWrapper) SetSystemSelectionChannels(
+	ctx context.Context,
+	specifiers []network.RadioAccessSpecifier,
+	subId int32,
+	resultCallback IBooleanConsumer,
+) error {
+	return w.impl.SetSystemSelectionChannels(ctx, specifiers, subId, resultCallback)
+}
+
+func (w *telephonyStubWrapper) GetSystemSelectionChannels(
+	ctx context.Context,
+	subId int32,
+) ([]network.RadioAccessSpecifier, error) {
+	return w.impl.GetSystemSelectionChannels(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsMvnoMatched(
+	ctx context.Context,
+	slotIndex int32,
+	mvnoType int32,
+	mvnoMatchData string,
+) (bool, error) {
+	return w.impl.IsMvnoMatched(ctx, slotIndex, mvnoType, mvnoMatchData)
+}
+
+func (w *telephonyStubWrapper) EnqueueSmsPickResult(
+	ctx context.Context,
+	callingAttributeTag string,
+	subIdResult IIntegerConsumer,
+) error {
+	return w.impl.EnqueueSmsPickResult(ctx, callingAttributeTag, subIdResult)
+}
+
+func (w *telephonyStubWrapper) ShowSwitchToManagedProfileDialog(
+	ctx context.Context,
+) error {
+	return w.impl.ShowSwitchToManagedProfileDialog(ctx)
+}
+
+func (w *telephonyStubWrapper) GetMmsUserAgent(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetMmsUserAgent(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetMmsUAProfUrl(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetMmsUAProfUrl(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetMobileDataPolicyEnabled(
+	ctx context.Context,
+	subscriptionId int32,
+	policy int32,
+	enabled bool,
+) error {
+	return w.impl.SetMobileDataPolicyEnabled(ctx, subscriptionId, policy, enabled)
+}
+
+func (w *telephonyStubWrapper) IsMobileDataPolicyEnabled(
+	ctx context.Context,
+	subscriptionId int32,
+	policy int32,
+) (bool, error) {
+	return w.impl.IsMobileDataPolicyEnabled(ctx, subscriptionId, policy)
+}
+
+func (w *telephonyStubWrapper) SetCepEnabled(
+	ctx context.Context,
+	isCepEnabled bool,
+) error {
+	return w.impl.SetCepEnabled(ctx, isCepEnabled)
+}
+
+func (w *telephonyStubWrapper) NotifyRcsAutoConfigurationReceived(
+	ctx context.Context,
+	subId int32,
+	config []byte,
+	isCompressed bool,
+) error {
+	return w.impl.NotifyRcsAutoConfigurationReceived(ctx, subId, config, isCompressed)
+}
+
+func (w *telephonyStubWrapper) IsIccLockEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsIccLockEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetIccLockEnabled(
+	ctx context.Context,
+	subId int32,
+	enabled bool,
+	password string,
+) (int32, error) {
+	return w.impl.SetIccLockEnabled(ctx, subId, enabled, password)
+}
+
+func (w *telephonyStubWrapper) ChangeIccLockPassword(
+	ctx context.Context,
+	subId int32,
+	oldPassword string,
+	newPassword string,
+) (int32, error) {
+	return w.impl.ChangeIccLockPassword(ctx, subId, oldPassword, newPassword)
+}
+
+func (w *telephonyStubWrapper) RequestUserActivityNotification(
+	ctx context.Context,
+) error {
+	return w.impl.RequestUserActivityNotification(ctx)
+}
+
+func (w *telephonyStubWrapper) UserActivity(
+	ctx context.Context,
+) error {
+	return w.impl.UserActivity(ctx)
+}
+
+func (w *telephonyStubWrapper) GetManualNetworkSelectionPlmn(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetManualNetworkSelectionPlmn(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) CanConnectTo5GInDsdsMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanConnectTo5GInDsdsMode(ctx)
+}
+
+func (w *telephonyStubWrapper) GetEquivalentHomePlmns(
+	ctx context.Context,
+	subId int32,
+) ([]string, error) {
+	return w.impl.GetEquivalentHomePlmns(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetVoNrEnabled(
+	ctx context.Context,
+	subId int32,
+	enabled bool,
+) (int32, error) {
+	return w.impl.SetVoNrEnabled(ctx, subId, enabled)
+}
+
+func (w *telephonyStubWrapper) IsVoNrEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsVoNrEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetNrDualConnectivityState(
+	ctx context.Context,
+	subId int32,
+	nrDualConnectivityState int32,
+) (int32, error) {
+	return w.impl.SetNrDualConnectivityState(ctx, subId, nrDualConnectivityState)
+}
+
+func (w *telephonyStubWrapper) IsNrDualConnectivityEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsNrDualConnectivityEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) IsRadioInterfaceCapabilitySupported(
+	ctx context.Context,
+	capability string,
+) (bool, error) {
+	return w.impl.IsRadioInterfaceCapabilitySupported(ctx, capability)
+}
+
+func (w *telephonyStubWrapper) SendThermalMitigationRequest(
+	ctx context.Context,
+	subId int32,
+	thermalMitigationRequest androidTelephony.ThermalMitigationRequest,
+) (int32, error) {
+	return w.impl.SendThermalMitigationRequest(ctx, subId, thermalMitigationRequest)
+}
+
+func (w *telephonyStubWrapper) BootstrapAuthenticationRequest(
+	ctx context.Context,
+	subId int32,
+	appType int32,
+	nafUrl net.Uri,
+	securityProtocol gba.UaSecurityProtocolIdentifier,
+	forceBootStrapping bool,
+	callback androidTelephony.IBootstrapAuthenticationCallback,
+) error {
+	return w.impl.BootstrapAuthenticationRequest(ctx, subId, appType, nafUrl, securityProtocol, forceBootStrapping, callback)
+}
+
+func (w *telephonyStubWrapper) SetBoundGbaServiceOverride(
+	ctx context.Context,
+	subId int32,
+	packageName string,
+) (bool, error) {
+	return w.impl.SetBoundGbaServiceOverride(ctx, subId, packageName)
+}
+
+func (w *telephonyStubWrapper) GetBoundGbaService(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetBoundGbaService(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetGbaReleaseTimeOverride(
+	ctx context.Context,
+	subId int32,
+	interval int32,
+) (bool, error) {
+	return w.impl.SetGbaReleaseTimeOverride(ctx, subId, interval)
+}
+
+func (w *telephonyStubWrapper) GetGbaReleaseTime(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetGbaReleaseTime(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetRcsClientConfiguration(
+	ctx context.Context,
+	subId int32,
+	rcc ims.RcsClientConfiguration,
+) error {
+	return w.impl.SetRcsClientConfiguration(ctx, subId, rcc)
+}
+
+func (w *telephonyStubWrapper) IsRcsVolteSingleRegistrationCapable(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsRcsVolteSingleRegistrationCapable(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) RegisterRcsProvisioningCallback(
+	ctx context.Context,
+	subId int32,
+	callback aidl.IRcsConfigCallback,
+) error {
+	return w.impl.RegisterRcsProvisioningCallback(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterRcsProvisioningCallback(
+	ctx context.Context,
+	subId int32,
+	callback aidl.IRcsConfigCallback,
+) error {
+	return w.impl.UnregisterRcsProvisioningCallback(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) TriggerRcsReconfiguration(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.TriggerRcsReconfiguration(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetRcsSingleRegistrationTestModeEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetRcsSingleRegistrationTestModeEnabled(ctx, enabled)
+}
+
+func (w *telephonyStubWrapper) GetRcsSingleRegistrationTestModeEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetRcsSingleRegistrationTestModeEnabled(ctx)
+}
+
+func (w *telephonyStubWrapper) SetDeviceSingleRegistrationEnabledOverride(
+	ctx context.Context,
+	enabled string,
+) error {
+	return w.impl.SetDeviceSingleRegistrationEnabledOverride(ctx, enabled)
+}
+
+func (w *telephonyStubWrapper) GetDeviceSingleRegistrationEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetDeviceSingleRegistrationEnabled(ctx)
+}
+
+func (w *telephonyStubWrapper) SetCarrierSingleRegistrationEnabledOverride(
+	ctx context.Context,
+	subId int32,
+	enabled string,
+) (bool, error) {
+	return w.impl.SetCarrierSingleRegistrationEnabledOverride(ctx, subId, enabled)
+}
+
+func (w *telephonyStubWrapper) SendDeviceToDeviceMessage(
+	ctx context.Context,
+	message int32,
+	value int32,
+) error {
+	return w.impl.SendDeviceToDeviceMessage(ctx, message, value)
+}
+
+func (w *telephonyStubWrapper) SetActiveDeviceToDeviceTransport(
+	ctx context.Context,
+	transport string,
+) error {
+	return w.impl.SetActiveDeviceToDeviceTransport(ctx, transport)
+}
+
+func (w *telephonyStubWrapper) SetDeviceToDeviceForceEnabled(
+	ctx context.Context,
+	isForceEnabled bool,
+) error {
+	return w.impl.SetDeviceToDeviceForceEnabled(ctx, isForceEnabled)
+}
+
+func (w *telephonyStubWrapper) GetCarrierSingleRegistrationEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.GetCarrierSingleRegistrationEnabled(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetImsFeatureValidationOverride(
+	ctx context.Context,
+	subId int32,
+	enabled string,
+) (bool, error) {
+	return w.impl.SetImsFeatureValidationOverride(ctx, subId, enabled)
+}
+
+func (w *telephonyStubWrapper) GetImsFeatureValidationOverride(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.GetImsFeatureValidationOverride(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetMobileProvisioningUrl(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetMobileProvisioningUrl(ctx)
+}
+
+func (w *telephonyStubWrapper) RemoveContactFromEab(
+	ctx context.Context,
+	subId int32,
+	contacts string,
+) (int32, error) {
+	return w.impl.RemoveContactFromEab(ctx, subId, contacts)
+}
+
+func (w *telephonyStubWrapper) GetContactFromEab(
+	ctx context.Context,
+	contact string,
+) (string, error) {
+	return w.impl.GetContactFromEab(ctx, contact)
+}
+
+func (w *telephonyStubWrapper) GetCapabilityFromEab(
+	ctx context.Context,
+	contact string,
+) (string, error) {
+	return w.impl.GetCapabilityFromEab(ctx, contact)
+}
+
+func (w *telephonyStubWrapper) GetDeviceUceEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetDeviceUceEnabled(ctx)
+}
+
+func (w *telephonyStubWrapper) SetDeviceUceEnabled(
+	ctx context.Context,
+	isEnabled bool,
+) error {
+	return w.impl.SetDeviceUceEnabled(ctx, isEnabled)
+}
+
+func (w *telephonyStubWrapper) AddUceRegistrationOverrideShell(
+	ctx context.Context,
+	subId int32,
+	featureTags []string,
+) (ims.RcsContactUceCapability, error) {
+	return w.impl.AddUceRegistrationOverrideShell(ctx, subId, featureTags)
+}
+
+func (w *telephonyStubWrapper) RemoveUceRegistrationOverrideShell(
+	ctx context.Context,
+	subId int32,
+	featureTags []string,
+) (ims.RcsContactUceCapability, error) {
+	return w.impl.RemoveUceRegistrationOverrideShell(ctx, subId, featureTags)
+}
+
+func (w *telephonyStubWrapper) ClearUceRegistrationOverrideShell(
+	ctx context.Context,
+	subId int32,
+) (ims.RcsContactUceCapability, error) {
+	return w.impl.ClearUceRegistrationOverrideShell(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetLatestRcsContactUceCapabilityShell(
+	ctx context.Context,
+	subId int32,
+) (ims.RcsContactUceCapability, error) {
+	return w.impl.GetLatestRcsContactUceCapabilityShell(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) GetLastUcePidfXmlShell(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetLastUcePidfXmlShell(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) RemoveUceRequestDisallowedStatus(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.RemoveUceRequestDisallowedStatus(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetCapabilitiesRequestTimeout(
+	ctx context.Context,
+	subId int32,
+	timeoutAfterMs int64,
+) (bool, error) {
+	return w.impl.SetCapabilitiesRequestTimeout(ctx, subId, timeoutAfterMs)
+}
+
+func (w *telephonyStubWrapper) SetSignalStrengthUpdateRequest(
+	ctx context.Context,
+	subId int32,
+	request androidTelephony.SignalStrengthUpdateRequest,
+) error {
+	return w.impl.SetSignalStrengthUpdateRequest(ctx, subId, request)
+}
+
+func (w *telephonyStubWrapper) ClearSignalStrengthUpdateRequest(
+	ctx context.Context,
+	subId int32,
+	request androidTelephony.SignalStrengthUpdateRequest,
+) error {
+	return w.impl.ClearSignalStrengthUpdateRequest(ctx, subId, request)
+}
+
+func (w *telephonyStubWrapper) GetPhoneCapability(
+	ctx context.Context,
+) (radioConfig.PhoneCapability, error) {
+	return w.impl.GetPhoneCapability(ctx)
+}
+
+func (w *telephonyStubWrapper) PrepareForUnattendedReboot(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.PrepareForUnattendedReboot(ctx)
+}
+
+func (w *telephonyStubWrapper) GetSlicingConfig(
+	ctx context.Context,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.GetSlicingConfig(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) IsPremiumCapabilityAvailableForPurchase(
+	ctx context.Context,
+	capability int32,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsPremiumCapabilityAvailableForPurchase(ctx, capability, subId)
+}
+
+func (w *telephonyStubWrapper) PurchasePremiumCapability(
+	ctx context.Context,
+	capability int32,
+	callback IIntegerConsumer,
+	subId int32,
+) error {
+	return w.impl.PurchasePremiumCapability(ctx, capability, callback, subId)
+}
+
+func (w *telephonyStubWrapper) RegisterImsStateCallback(
+	ctx context.Context,
+	subId int32,
+	feature int32,
+	cb IImsStateCallback,
+) error {
+	return w.impl.RegisterImsStateCallback(ctx, subId, feature, cb)
+}
+
+func (w *telephonyStubWrapper) UnregisterImsStateCallback(
+	ctx context.Context,
+	cb IImsStateCallback,
+) error {
+	return w.impl.UnregisterImsStateCallback(ctx, cb)
+}
+
+func (w *telephonyStubWrapper) GetLastKnownCellIdentity(
+	ctx context.Context,
+	subId int32,
+) (network.CellIdentity, error) {
+	return w.impl.GetLastKnownCellIdentity(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetModemService(
+	ctx context.Context,
+	serviceName string,
+) (bool, error) {
+	return w.impl.SetModemService(ctx, serviceName)
+}
+
+func (w *telephonyStubWrapper) GetModemService(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetModemService(ctx)
+}
+
+func (w *telephonyStubWrapper) IsProvisioningRequiredForCapability(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	tech int32,
+) (bool, error) {
+	return w.impl.IsProvisioningRequiredForCapability(ctx, subId, capability, tech)
+}
+
+func (w *telephonyStubWrapper) IsRcsProvisioningRequiredForCapability(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	tech int32,
+) (bool, error) {
+	return w.impl.IsRcsProvisioningRequiredForCapability(ctx, subId, capability, tech)
+}
+
+func (w *telephonyStubWrapper) SetVoiceServiceStateOverride(
+	ctx context.Context,
+	subId int32,
+	hasService bool,
+) error {
+	return w.impl.SetVoiceServiceStateOverride(ctx, subId, hasService)
+}
+
+func (w *telephonyStubWrapper) GetCarrierServicePackageNameForLogicalSlot(
+	ctx context.Context,
+	logicalSlotIndex int32,
+) (string, error) {
+	return w.impl.GetCarrierServicePackageNameForLogicalSlot(ctx, logicalSlotIndex)
+}
+
+func (w *telephonyStubWrapper) SetRemovableEsimAsDefaultEuicc(
+	ctx context.Context,
+	isDefault bool,
+) error {
+	return w.impl.SetRemovableEsimAsDefaultEuicc(ctx, isDefault)
+}
+
+func (w *telephonyStubWrapper) IsRemovableEsimDefaultEuicc(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsRemovableEsimDefaultEuicc(ctx)
+}
+
+func (w *telephonyStubWrapper) GetDefaultRespondViaMessageApplication(
+	ctx context.Context,
+	subId int32,
+	updateIfNeeded bool,
+) (androidContent.ComponentName, error) {
+	return w.impl.GetDefaultRespondViaMessageApplication(ctx, subId, updateIfNeeded)
+}
+
+func (w *telephonyStubWrapper) GetSimStateForSlotIndex(
+	ctx context.Context,
+	slotIndex int32,
+) (int32, error) {
+	return w.impl.GetSimStateForSlotIndex(ctx, slotIndex)
+}
+
+func (w *telephonyStubWrapper) PersistEmergencyCallDiagnosticData(
+	ctx context.Context,
+	dropboxTag string,
+	enableLogcat bool,
+	logcatStartTimestampMillis int64,
+	enableTelecomDump bool,
+	enableTelephonyDump bool,
+) error {
+	return w.impl.PersistEmergencyCallDiagnosticData(ctx, dropboxTag, enableLogcat, logcatStartTimestampMillis, enableTelecomDump, enableTelephonyDump)
+}
+
+func (w *telephonyStubWrapper) SetNullCipherAndIntegrityEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetNullCipherAndIntegrityEnabled(ctx, enabled)
+}
+
+func (w *telephonyStubWrapper) IsNullCipherAndIntegrityPreferenceEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsNullCipherAndIntegrityPreferenceEnabled(ctx)
+}
+
+func (w *telephonyStubWrapper) GetCellBroadcastIdRanges(
+	ctx context.Context,
+	subId int32,
+) ([]androidTelephony.CellBroadcastIdRange, error) {
+	return w.impl.GetCellBroadcastIdRanges(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) SetCellBroadcastIdRanges(
+	ctx context.Context,
+	subId int32,
+	ranges []androidTelephony.CellBroadcastIdRange,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.SetCellBroadcastIdRanges(ctx, subId, ranges, callback)
+}
+
+func (w *telephonyStubWrapper) IsDomainSelectionSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDomainSelectionSupported(ctx)
+}
+
+func (w *telephonyStubWrapper) GetCarrierRestrictionStatus(
+	ctx context.Context,
+	internalCallback IIntegerConsumer,
+	packageName string,
+) error {
+	return w.impl.GetCarrierRestrictionStatus(ctx, internalCallback, packageName)
+}
+
+func (w *telephonyStubWrapper) RequestSatelliteEnabled(
+	ctx context.Context,
+	enableSatellite bool,
+	enableDemoMode bool,
+	isEmergency bool,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.RequestSatelliteEnabled(ctx, enableSatellite, enableDemoMode, isEmergency, callback)
+}
+
+func (w *telephonyStubWrapper) RequestIsSatelliteEnabled(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestIsSatelliteEnabled(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) RequestIsDemoModeEnabled(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestIsDemoModeEnabled(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) RequestIsEmergencyModeEnabled(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestIsEmergencyModeEnabled(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) RequestIsSatelliteSupported(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestIsSatelliteSupported(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) RequestSatelliteCapabilities(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestSatelliteCapabilities(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) StartSatelliteTransmissionUpdates(
+	ctx context.Context,
+	resultCallback IIntegerConsumer,
+	callback satellite.ISatelliteTransmissionUpdateCallback,
+) error {
+	return w.impl.StartSatelliteTransmissionUpdates(ctx, resultCallback, callback)
+}
+
+func (w *telephonyStubWrapper) StopSatelliteTransmissionUpdates(
+	ctx context.Context,
+	resultCallback IIntegerConsumer,
+	callback satellite.ISatelliteTransmissionUpdateCallback,
+) error {
+	return w.impl.StopSatelliteTransmissionUpdates(ctx, resultCallback, callback)
+}
+
+func (w *telephonyStubWrapper) ProvisionSatelliteService(
+	ctx context.Context,
+	token string,
+	provisionData []byte,
+	callback IIntegerConsumer,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.ProvisionSatelliteService(ctx, token, provisionData, callback)
+}
+
+func (w *telephonyStubWrapper) DeprovisionSatelliteService(
+	ctx context.Context,
+	token string,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.DeprovisionSatelliteService(ctx, token, callback)
+}
+
+func (w *telephonyStubWrapper) RegisterForSatelliteProvisionStateChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteProvisionStateCallback,
+) (int32, error) {
+	return w.impl.RegisterForSatelliteProvisionStateChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterForSatelliteProvisionStateChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteProvisionStateCallback,
+) error {
+	return w.impl.UnregisterForSatelliteProvisionStateChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) RequestIsSatelliteProvisioned(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestIsSatelliteProvisioned(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) RegisterForSatelliteModemStateChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteModemStateCallback,
+) (int32, error) {
+	return w.impl.RegisterForSatelliteModemStateChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterForModemStateChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteModemStateCallback,
+) error {
+	return w.impl.UnregisterForModemStateChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) RegisterForIncomingDatagram(
+	ctx context.Context,
+	callback satellite.ISatelliteDatagramCallback,
+) (int32, error) {
+	return w.impl.RegisterForIncomingDatagram(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterForIncomingDatagram(
+	ctx context.Context,
+	callback satellite.ISatelliteDatagramCallback,
+) error {
+	return w.impl.UnregisterForIncomingDatagram(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) PollPendingDatagrams(
+	ctx context.Context,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.PollPendingDatagrams(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) SendDatagram(
+	ctx context.Context,
+	datagramType int32,
+	datagram satellite.SatelliteDatagram,
+	needFullScreenPointingUI bool,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.SendDatagram(ctx, datagramType, datagram, needFullScreenPointingUI, callback)
+}
+
+func (w *telephonyStubWrapper) GetSatelliteDisallowedReasons(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetSatelliteDisallowedReasons(ctx)
+}
+
+func (w *telephonyStubWrapper) RegisterForSatelliteDisallowedReasonsChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteDisallowedReasonsCallback,
+) error {
+	return w.impl.RegisterForSatelliteDisallowedReasonsChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterForSatelliteDisallowedReasonsChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteDisallowedReasonsCallback,
+) error {
+	return w.impl.UnregisterForSatelliteDisallowedReasonsChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) RequestIsCommunicationAllowedForCurrentLocation(
+	ctx context.Context,
+	subId int32,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestIsCommunicationAllowedForCurrentLocation(ctx, subId, receiver)
+}
+
+func (w *telephonyStubWrapper) RequestSatelliteAccessConfigurationForCurrentLocation(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestSatelliteAccessConfigurationForCurrentLocation(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) RequestTimeForNextSatelliteVisibility(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestTimeForNextSatelliteVisibility(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) RequestSelectedNbIotSatelliteSubscriptionId(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestSelectedNbIotSatelliteSubscriptionId(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) RegisterForSelectedNbIotSatelliteSubscriptionChanged(
+	ctx context.Context,
+	callback satellite.ISelectedNbIotSatelliteSubscriptionCallback,
+) (int32, error) {
+	return w.impl.RegisterForSelectedNbIotSatelliteSubscriptionChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterForSelectedNbIotSatelliteSubscriptionChanged(
+	ctx context.Context,
+	callback satellite.ISelectedNbIotSatelliteSubscriptionCallback,
+) error {
+	return w.impl.UnregisterForSelectedNbIotSatelliteSubscriptionChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) SetDeviceAlignedWithSatellite(
+	ctx context.Context,
+	isAligned bool,
+) error {
+	return w.impl.SetDeviceAlignedWithSatellite(ctx, isAligned)
+}
+
+func (w *telephonyStubWrapper) SetSatelliteServicePackageName(
+	ctx context.Context,
+	servicePackageName string,
+	provisioned string,
+) (bool, error) {
+	return w.impl.SetSatelliteServicePackageName(ctx, servicePackageName, provisioned)
+}
+
+func (w *telephonyStubWrapper) SetSatelliteGatewayServicePackageName(
+	ctx context.Context,
+	servicePackageName string,
+) (bool, error) {
+	return w.impl.SetSatelliteGatewayServicePackageName(ctx, servicePackageName)
+}
+
+func (w *telephonyStubWrapper) SetSatelliteListeningTimeoutDuration(
+	ctx context.Context,
+	timeoutMillis int64,
+) (bool, error) {
+	return w.impl.SetSatelliteListeningTimeoutDuration(ctx, timeoutMillis)
+}
+
+func (w *telephonyStubWrapper) SetSatelliteIgnoreCellularServiceState(
+	ctx context.Context,
+	enabled bool,
+) (bool, error) {
+	return w.impl.SetSatelliteIgnoreCellularServiceState(ctx, enabled)
+}
+
+func (w *telephonyStubWrapper) SetSatellitePointingUiClassName(
+	ctx context.Context,
+	packageName string,
+	className string,
+) (bool, error) {
+	return w.impl.SetSatellitePointingUiClassName(ctx, packageName, className)
+}
+
+func (w *telephonyStubWrapper) SetDatagramControllerTimeoutDuration(
+	ctx context.Context,
+	reset bool,
+	timeoutType int32,
+	timeoutMillis int64,
+) (bool, error) {
+	return w.impl.SetDatagramControllerTimeoutDuration(ctx, reset, timeoutType, timeoutMillis)
+}
+
+func (w *telephonyStubWrapper) SetSatelliteControllerTimeoutDuration(
+	ctx context.Context,
+	reset bool,
+	timeoutType int32,
+	timeoutMillis int64,
+) (bool, error) {
+	return w.impl.SetSatelliteControllerTimeoutDuration(ctx, reset, timeoutType, timeoutMillis)
+}
+
+func (w *telephonyStubWrapper) SetEmergencyCallToSatelliteHandoverType(
+	ctx context.Context,
+	handoverType int32,
+	delaySeconds int32,
+) (bool, error) {
+	return w.impl.SetEmergencyCallToSatelliteHandoverType(ctx, handoverType, delaySeconds)
+}
+
+func (w *telephonyStubWrapper) SetCountryCodes(
+	ctx context.Context,
+	reset bool,
+	currentNetworkCountryCodes []string,
+	cachedNetworkCountryCodes map[interface{}]interface{},
+	locationCountryCode string,
+	locationCountryCodeTimestampNanos int64,
+) (bool, error) {
+	return w.impl.SetCountryCodes(ctx, reset, currentNetworkCountryCodes, cachedNetworkCountryCodes, locationCountryCode, locationCountryCodeTimestampNanos)
+}
+
+func (w *telephonyStubWrapper) SetSatelliteAccessControlOverlayConfigs(
+	ctx context.Context,
+	reset bool,
+	isAllowed bool,
+	s2CellFile string,
+	locationFreshDurationNanos int64,
+	satelliteCountryCodes []string,
+	satelliteAccessConfigurationFile string,
+) (bool, error) {
+	return w.impl.SetSatelliteAccessControlOverlayConfigs(ctx, reset, isAllowed, s2CellFile, locationFreshDurationNanos, satelliteCountryCodes, satelliteAccessConfigurationFile)
+}
+
+func (w *telephonyStubWrapper) SetOemEnabledSatelliteProvisionStatus(
+	ctx context.Context,
+	reset bool,
+	isProvisioned bool,
+) (bool, error) {
+	return w.impl.SetOemEnabledSatelliteProvisionStatus(ctx, reset, isProvisioned)
+}
+
+func (w *telephonyStubWrapper) GetShaIdFromAllowList(
+	ctx context.Context,
+	pkgName string,
+	carrierId int32,
+) ([]string, error) {
+	return w.impl.GetShaIdFromAllowList(ctx, pkgName, carrierId)
+}
+
+func (w *telephonyStubWrapper) AddAttachRestrictionForCarrier(
+	ctx context.Context,
+	subId int32,
+	reason int32,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.AddAttachRestrictionForCarrier(ctx, subId, reason, callback)
+}
+
+func (w *telephonyStubWrapper) RemoveAttachRestrictionForCarrier(
+	ctx context.Context,
+	subId int32,
+	reason int32,
+	callback IIntegerConsumer,
+) error {
+	return w.impl.RemoveAttachRestrictionForCarrier(ctx, subId, reason, callback)
+}
+
+func (w *telephonyStubWrapper) GetAttachRestrictionReasonsForCarrier(
+	ctx context.Context,
+	subId int32,
+) ([]int32, error) {
+	return w.impl.GetAttachRestrictionReasonsForCarrier(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) RequestNtnSignalStrength(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestNtnSignalStrength(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) RegisterForNtnSignalStrengthChanged(
+	ctx context.Context,
+	callback satellite.INtnSignalStrengthCallback,
+) error {
+	return w.impl.RegisterForNtnSignalStrengthChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterForNtnSignalStrengthChanged(
+	ctx context.Context,
+	callback satellite.INtnSignalStrengthCallback,
+) error {
+	return w.impl.UnregisterForNtnSignalStrengthChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) RegisterForCapabilitiesChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteCapabilitiesCallback,
+) (int32, error) {
+	return w.impl.RegisterForCapabilitiesChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterForCapabilitiesChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteCapabilitiesCallback,
+) error {
+	return w.impl.UnregisterForCapabilitiesChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) SetShouldSendDatagramToModemInDemoMode(
+	ctx context.Context,
+	shouldSendToModemInDemoMode bool,
+) (bool, error) {
+	return w.impl.SetShouldSendDatagramToModemInDemoMode(ctx, shouldSendToModemInDemoMode)
+}
+
+func (w *telephonyStubWrapper) SetDomainSelectionServiceOverride(
+	ctx context.Context,
+	componentName androidContent.ComponentName,
+) (bool, error) {
+	return w.impl.SetDomainSelectionServiceOverride(ctx, componentName)
+}
+
+func (w *telephonyStubWrapper) ClearDomainSelectionServiceOverride(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ClearDomainSelectionServiceOverride(ctx)
+}
+
+func (w *telephonyStubWrapper) IsAospDomainSelectionService(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAospDomainSelectionService(ctx)
+}
+
+func (w *telephonyStubWrapper) SetEnableCellularIdentifierDisclosureNotifications(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetEnableCellularIdentifierDisclosureNotifications(ctx, enable)
+}
+
+func (w *telephonyStubWrapper) IsCellularIdentifierDisclosureNotificationsEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCellularIdentifierDisclosureNotificationsEnabled(ctx)
+}
+
+func (w *telephonyStubWrapper) SetNullCipherNotificationsEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetNullCipherNotificationsEnabled(ctx, enable)
+}
+
+func (w *telephonyStubWrapper) IsNullCipherNotificationsEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsNullCipherNotificationsEnabled(ctx)
+}
+
+func (w *telephonyStubWrapper) GetSatellitePlmnsForCarrier(
+	ctx context.Context,
+	subId int32,
+) ([]string, error) {
+	return w.impl.GetSatellitePlmnsForCarrier(ctx, subId)
+}
+
+func (w *telephonyStubWrapper) RegisterForSatelliteSupportedStateChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteSupportedStateCallback,
+) (int32, error) {
+	return w.impl.RegisterForSatelliteSupportedStateChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterForSatelliteSupportedStateChanged(
+	ctx context.Context,
+	callback satellite.ISatelliteSupportedStateCallback,
+) error {
+	return w.impl.UnregisterForSatelliteSupportedStateChanged(ctx, callback)
+}
+
+func (w *telephonyStubWrapper) RegisterForCommunicationAllowedStateChanged(
+	ctx context.Context,
+	subId int32,
+	callback satellite.ISatelliteCommunicationAllowedStateCallback,
+) (int32, error) {
+	return w.impl.RegisterForCommunicationAllowedStateChanged(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) UnregisterForCommunicationAllowedStateChanged(
+	ctx context.Context,
+	subId int32,
+	callback satellite.ISatelliteCommunicationAllowedStateCallback,
+) error {
+	return w.impl.UnregisterForCommunicationAllowedStateChanged(ctx, subId, callback)
+}
+
+func (w *telephonyStubWrapper) SetDatagramControllerBooleanConfig(
+	ctx context.Context,
+	reset bool,
+	booleanType int32,
+	enable bool,
+) (bool, error) {
+	return w.impl.SetDatagramControllerBooleanConfig(ctx, reset, booleanType, enable)
+}
+
+func (w *telephonyStubWrapper) SetIsSatelliteCommunicationAllowedForCurrentLocationCache(
+	ctx context.Context,
+	state string,
+) (bool, error) {
+	return w.impl.SetIsSatelliteCommunicationAllowedForCurrentLocationCache(ctx, state)
+}
+
+func (w *telephonyStubWrapper) RequestSatelliteSessionStats(
+	ctx context.Context,
+	subId int32,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestSatelliteSessionStats(ctx, subId, receiver)
+}
+
+func (w *telephonyStubWrapper) RequestSatelliteSubscriberProvisionStatus(
+	ctx context.Context,
+	result os.ResultReceiver,
+) error {
+	return w.impl.RequestSatelliteSubscriberProvisionStatus(ctx, result)
+}
+
+func (w *telephonyStubWrapper) RequestSatelliteDisplayName(
+	ctx context.Context,
+	receiver os.ResultReceiver,
+) error {
+	return w.impl.RequestSatelliteDisplayName(ctx, receiver)
+}
+
+func (w *telephonyStubWrapper) ProvisionSatellite(
+	ctx context.Context,
+	list []satellite.SatelliteSubscriberInfo,
+	result os.ResultReceiver,
+) error {
+	return w.impl.ProvisionSatellite(ctx, list, result)
+}
+
+func (w *telephonyStubWrapper) SetSatelliteSubscriberIdListChangedIntentComponent(
+	ctx context.Context,
+	name string,
+) (bool, error) {
+	return w.impl.SetSatelliteSubscriberIdListChangedIntentComponent(ctx, name)
+}
+
+func (w *telephonyStubWrapper) SetTestEuiccUiComponent(
+	ctx context.Context,
+	componentName androidContent.ComponentName,
+) error {
+	return w.impl.SetTestEuiccUiComponent(ctx, componentName)
+}
+
+func (w *telephonyStubWrapper) GetTestEuiccUiComponent(
+	ctx context.Context,
+) (androidContent.ComponentName, error) {
+	return w.impl.GetTestEuiccUiComponent(ctx)
+}
+
+func (w *telephonyStubWrapper) OverrideCarrierRoamingNtnEligibilityChanged(
+	ctx context.Context,
+	status bool,
+	resetRequired bool,
+) (bool, error) {
+	return w.impl.OverrideCarrierRoamingNtnEligibilityChanged(ctx, status, resetRequired)
+}
+
+func (w *telephonyStubWrapper) DeprovisionSatellite(
+	ctx context.Context,
+	list []satellite.SatelliteSubscriberInfo,
+	result os.ResultReceiver,
+) error {
+	return w.impl.DeprovisionSatellite(ctx, list, result)
+}
+
+func (w *telephonyStubWrapper) SetNtnSmsSupported(
+	ctx context.Context,
+	ntnSmsSupported bool,
+) error {
+	return w.impl.SetNtnSmsSupported(ctx, ntnSmsSupported)
+}
+
+func (w *telephonyStubWrapper) GetCarrierIdFromIdentifier(
+	ctx context.Context,
+	carrierIdentifier carrier.CarrierIdentifier,
+) (int32, error) {
+	return w.impl.GetCarrierIdFromIdentifier(ctx, carrierIdentifier)
+}
+
+var _ ITelephony = (*telephonyStubWrapper)(nil)
+
+// NewTelephonyStub creates a server-side ITelephony wrapping the given
+// server implementation. The returned value satisfies ITelephony
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTelephonyStub(
+	impl ITelephonyServer,
+) ITelephony {
+	wrapper := &telephonyStubWrapper{impl: impl}
+	stub := &TelephonyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

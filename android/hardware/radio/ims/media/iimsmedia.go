@@ -46,7 +46,7 @@ func (p *ImsMediaProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMedia)
-	_data.WriteStrongBinder(mediaListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, mediaListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMedia, "setListener")
 	if _err != nil {
@@ -174,4 +174,61 @@ func (s *ImsMediaStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsMediaServer is the server-side interface that user implementations
+// provide to NewImsMediaStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsMediaServer interface {
+	SetListener(ctx context.Context, mediaListener IImsMediaListener) error
+	OpenSession(ctx context.Context, sessionId int32, localEndPoint LocalEndPoint, config RtpConfig) error
+	CloseSession(ctx context.Context, sessionId int32) error
+}
+
+type imsMediaStubWrapper struct {
+	impl       IImsMediaServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsMediaStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsMediaStubWrapper) SetListener(
+	ctx context.Context,
+	mediaListener IImsMediaListener,
+) error {
+	return w.impl.SetListener(ctx, mediaListener)
+}
+
+func (w *imsMediaStubWrapper) OpenSession(
+	ctx context.Context,
+	sessionId int32,
+	localEndPoint LocalEndPoint,
+	config RtpConfig,
+) error {
+	return w.impl.OpenSession(ctx, sessionId, localEndPoint, config)
+}
+
+func (w *imsMediaStubWrapper) CloseSession(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.CloseSession(ctx, sessionId)
+}
+
+var _ IImsMedia = (*imsMediaStubWrapper)(nil)
+
+// NewImsMediaStub creates a server-side IImsMedia wrapping the given
+// server implementation. The returned value satisfies IImsMedia
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsMediaStub(
+	impl IImsMediaServer,
+) IImsMedia {
+	wrapper := &imsMediaStubWrapper{impl: impl}
+	stub := &ImsMediaStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

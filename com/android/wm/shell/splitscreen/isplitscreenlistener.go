@@ -130,3 +130,53 @@ func (s *SplitScreenListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISplitScreenListenerServer is the server-side interface that user implementations
+// provide to NewSplitScreenListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISplitScreenListenerServer interface {
+	OnStagePositionChanged(ctx context.Context, stage int32, position int32) error
+	OnTaskStageChanged(ctx context.Context, taskId int32, stage int32, visible bool) error
+}
+
+type splitScreenListenerStubWrapper struct {
+	impl       ISplitScreenListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *splitScreenListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *splitScreenListenerStubWrapper) OnStagePositionChanged(
+	ctx context.Context,
+	stage int32,
+	position int32,
+) error {
+	return w.impl.OnStagePositionChanged(ctx, stage, position)
+}
+
+func (w *splitScreenListenerStubWrapper) OnTaskStageChanged(
+	ctx context.Context,
+	taskId int32,
+	stage int32,
+	visible bool,
+) error {
+	return w.impl.OnTaskStageChanged(ctx, taskId, stage, visible)
+}
+
+var _ ISplitScreenListener = (*splitScreenListenerStubWrapper)(nil)
+
+// NewSplitScreenListenerStub creates a server-side ISplitScreenListener wrapping the given
+// server implementation. The returned value satisfies ISplitScreenListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSplitScreenListenerStub(
+	impl ISplitScreenListenerServer,
+) ISplitScreenListener {
+	wrapper := &splitScreenListenerStubWrapper{impl: impl}
+	stub := &SplitScreenListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

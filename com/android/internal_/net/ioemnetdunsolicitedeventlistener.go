@@ -76,3 +76,41 @@ func (s *OemNetdUnsolicitedEventListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOemNetdUnsolicitedEventListenerServer is the server-side interface that user implementations
+// provide to NewOemNetdUnsolicitedEventListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOemNetdUnsolicitedEventListenerServer interface {
+	OnRegistered(ctx context.Context) error
+}
+
+type oemNetdUnsolicitedEventListenerStubWrapper struct {
+	impl       IOemNetdUnsolicitedEventListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *oemNetdUnsolicitedEventListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *oemNetdUnsolicitedEventListenerStubWrapper) OnRegistered(
+	ctx context.Context,
+) error {
+	return w.impl.OnRegistered(ctx)
+}
+
+var _ IOemNetdUnsolicitedEventListener = (*oemNetdUnsolicitedEventListenerStubWrapper)(nil)
+
+// NewOemNetdUnsolicitedEventListenerStub creates a server-side IOemNetdUnsolicitedEventListener wrapping the given
+// server implementation. The returned value satisfies IOemNetdUnsolicitedEventListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOemNetdUnsolicitedEventListenerStub(
+	impl IOemNetdUnsolicitedEventListenerServer,
+) IOemNetdUnsolicitedEventListener {
+	wrapper := &oemNetdUnsolicitedEventListenerStubWrapper{impl: impl}
+	stub := &OemNetdUnsolicitedEventListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

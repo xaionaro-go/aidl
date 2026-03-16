@@ -88,3 +88,42 @@ func (s *AudioRoutingCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioRoutingCallbackServer is the server-side interface that user implementations
+// provide to NewAudioRoutingCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioRoutingCallbackServer interface {
+	OnAppsNeedingAudioRoutingChanged(ctx context.Context, appUids []int32) error
+}
+
+type audioRoutingCallbackStubWrapper struct {
+	impl       IAudioRoutingCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioRoutingCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioRoutingCallbackStubWrapper) OnAppsNeedingAudioRoutingChanged(
+	ctx context.Context,
+	appUids []int32,
+) error {
+	return w.impl.OnAppsNeedingAudioRoutingChanged(ctx, appUids)
+}
+
+var _ IAudioRoutingCallback = (*audioRoutingCallbackStubWrapper)(nil)
+
+// NewAudioRoutingCallbackStub creates a server-side IAudioRoutingCallback wrapping the given
+// server implementation. The returned value satisfies IAudioRoutingCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioRoutingCallbackStub(
+	impl IAudioRoutingCallbackServer,
+) IAudioRoutingCallback {
+	wrapper := &audioRoutingCallbackStubWrapper{impl: impl}
+	stub := &AudioRoutingCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

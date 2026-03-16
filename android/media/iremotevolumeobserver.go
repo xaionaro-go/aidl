@@ -88,3 +88,43 @@ func (s *RemoteVolumeObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoteVolumeObserverServer is the server-side interface that user implementations
+// provide to NewRemoteVolumeObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteVolumeObserverServer interface {
+	DispatchRemoteVolumeUpdate(ctx context.Context, direction int32, value int32) error
+}
+
+type remoteVolumeObserverStubWrapper struct {
+	impl       IRemoteVolumeObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteVolumeObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteVolumeObserverStubWrapper) DispatchRemoteVolumeUpdate(
+	ctx context.Context,
+	direction int32,
+	value int32,
+) error {
+	return w.impl.DispatchRemoteVolumeUpdate(ctx, direction, value)
+}
+
+var _ IRemoteVolumeObserver = (*remoteVolumeObserverStubWrapper)(nil)
+
+// NewRemoteVolumeObserverStub creates a server-side IRemoteVolumeObserver wrapping the given
+// server implementation. The returned value satisfies IRemoteVolumeObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteVolumeObserverStub(
+	impl IRemoteVolumeObserverServer,
+) IRemoteVolumeObserver {
+	wrapper := &remoteVolumeObserverStubWrapper{impl: impl}
+	stub := &RemoteVolumeObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

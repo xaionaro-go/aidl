@@ -290,3 +290,79 @@ func (s *RadioDataIndicationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioDataIndicationServer is the server-side interface that user implementations
+// provide to NewRadioDataIndicationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioDataIndicationServer interface {
+	DataCallListChanged(ctx context.Context, type_ radio.RadioIndicationType, dcList []SetupDataCallResult) error
+	KeepaliveStatus(ctx context.Context, type_ radio.RadioIndicationType, status KeepaliveStatus) error
+	PcoData(ctx context.Context, type_ radio.RadioIndicationType, pco PcoDataInfo) error
+	UnthrottleApn(ctx context.Context, type_ radio.RadioIndicationType, dataProfileInfo DataProfileInfo) error
+	SlicingConfigChanged(ctx context.Context, type_ radio.RadioIndicationType, slicingConfig SlicingConfig) error
+}
+
+type radioDataIndicationStubWrapper struct {
+	impl       IRadioDataIndicationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioDataIndicationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioDataIndicationStubWrapper) DataCallListChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	dcList []SetupDataCallResult,
+) error {
+	return w.impl.DataCallListChanged(ctx, type_, dcList)
+}
+
+func (w *radioDataIndicationStubWrapper) KeepaliveStatus(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	status KeepaliveStatus,
+) error {
+	return w.impl.KeepaliveStatus(ctx, type_, status)
+}
+
+func (w *radioDataIndicationStubWrapper) PcoData(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	pco PcoDataInfo,
+) error {
+	return w.impl.PcoData(ctx, type_, pco)
+}
+
+func (w *radioDataIndicationStubWrapper) UnthrottleApn(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	dataProfileInfo DataProfileInfo,
+) error {
+	return w.impl.UnthrottleApn(ctx, type_, dataProfileInfo)
+}
+
+func (w *radioDataIndicationStubWrapper) SlicingConfigChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	slicingConfig SlicingConfig,
+) error {
+	return w.impl.SlicingConfigChanged(ctx, type_, slicingConfig)
+}
+
+var _ IRadioDataIndication = (*radioDataIndicationStubWrapper)(nil)
+
+// NewRadioDataIndicationStub creates a server-side IRadioDataIndication wrapping the given
+// server implementation. The returned value satisfies IRadioDataIndication
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioDataIndicationStub(
+	impl IRadioDataIndicationServer,
+) IRadioDataIndication {
+	wrapper := &radioDataIndicationStubWrapper{impl: impl}
+	stub := &RadioDataIndicationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

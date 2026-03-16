@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/xaionaro-go/binder/binder"
-	telephony "github.com/xaionaro-go/binder/com/android/internal_/telephony"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -18,7 +17,7 @@ const (
 
 type ISatelliteDatagramCallback interface {
 	AsBinder() binder.IBinder
-	OnSatelliteDatagramReceived(ctx context.Context, datagramId int64, datagram SatelliteDatagram, pendingCount int32, callback telephony.IVoidConsumer) error
+	OnSatelliteDatagramReceived(ctx context.Context, datagramId int64, datagram SatelliteDatagram, pendingCount int32, callback interface{}) error
 }
 
 type SatelliteDatagramCallbackProxy struct {
@@ -42,7 +41,7 @@ func (p *SatelliteDatagramCallbackProxy) OnSatelliteDatagramReceived(
 	datagramId int64,
 	datagram SatelliteDatagram,
 	pendingCount int32,
-	callback telephony.IVoidConsumer,
+	callback interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatelliteDatagramCallback)
@@ -52,7 +51,6 @@ func (p *SatelliteDatagramCallbackProxy) OnSatelliteDatagramReceived(
 		return _err
 	}
 	_data.WriteInt32(pendingCount)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatelliteDatagramCallback, "onSatelliteDatagramReceived")
 	if _err != nil {
@@ -101,13 +99,53 @@ func (s *SatelliteDatagramCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_callback telephony.IVoidConsumer
-		_ = _arg_callback
+		var _arg_callback interface{}
 		_err = s.Impl.OnSatelliteDatagramReceived(ctx, _arg_datagramId, _arg_datagram, _arg_pendingCount, _arg_callback)
 		_ = _err
 		return nil, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISatelliteDatagramCallbackServer is the server-side interface that user implementations
+// provide to NewSatelliteDatagramCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteDatagramCallbackServer interface {
+	OnSatelliteDatagramReceived(ctx context.Context, datagramId int64, datagram SatelliteDatagram, pendingCount int32, callback interface{}) error
+}
+
+type satelliteDatagramCallbackStubWrapper struct {
+	impl       ISatelliteDatagramCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteDatagramCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteDatagramCallbackStubWrapper) OnSatelliteDatagramReceived(
+	ctx context.Context,
+	datagramId int64,
+	datagram SatelliteDatagram,
+	pendingCount int32,
+	callback interface{},
+) error {
+	return w.impl.OnSatelliteDatagramReceived(ctx, datagramId, datagram, pendingCount, callback)
+}
+
+var _ ISatelliteDatagramCallback = (*satelliteDatagramCallbackStubWrapper)(nil)
+
+// NewSatelliteDatagramCallbackStub creates a server-side ISatelliteDatagramCallback wrapping the given
+// server implementation. The returned value satisfies ISatelliteDatagramCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteDatagramCallbackStub(
+	impl ISatelliteDatagramCallbackServer,
+) ISatelliteDatagramCallback {
+	wrapper := &satelliteDatagramCallbackStubWrapper{impl: impl}
+	stub := &SatelliteDatagramCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

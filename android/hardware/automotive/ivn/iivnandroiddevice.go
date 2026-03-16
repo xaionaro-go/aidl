@@ -371,3 +371,79 @@ func (s *IvnAndroidDeviceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIvnAndroidDeviceServer is the server-side interface that user implementations
+// provide to NewIvnAndroidDeviceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIvnAndroidDeviceServer interface {
+	GetMyDeviceId(ctx context.Context) (int32, error)
+	GetOtherDeviceIds(ctx context.Context) ([]int32, error)
+	GetDeviceIdForOccupantZone(ctx context.Context, zoneId int32) (int32, error)
+	GetOccupantZonesForDevice(ctx context.Context, androidDeviceId int32) ([]OccupantZoneInfo, error)
+	GetMyEndpointInfo(ctx context.Context) (EndpointInfo, error)
+	GetEndpointInfoForDevice(ctx context.Context, androidDeviceId int32) (EndpointInfo, error)
+}
+
+type ivnAndroidDeviceStubWrapper struct {
+	impl       IIvnAndroidDeviceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ivnAndroidDeviceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ivnAndroidDeviceStubWrapper) GetMyDeviceId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMyDeviceId(ctx)
+}
+
+func (w *ivnAndroidDeviceStubWrapper) GetOtherDeviceIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetOtherDeviceIds(ctx)
+}
+
+func (w *ivnAndroidDeviceStubWrapper) GetDeviceIdForOccupantZone(
+	ctx context.Context,
+	zoneId int32,
+) (int32, error) {
+	return w.impl.GetDeviceIdForOccupantZone(ctx, zoneId)
+}
+
+func (w *ivnAndroidDeviceStubWrapper) GetOccupantZonesForDevice(
+	ctx context.Context,
+	androidDeviceId int32,
+) ([]OccupantZoneInfo, error) {
+	return w.impl.GetOccupantZonesForDevice(ctx, androidDeviceId)
+}
+
+func (w *ivnAndroidDeviceStubWrapper) GetMyEndpointInfo(
+	ctx context.Context,
+) (EndpointInfo, error) {
+	return w.impl.GetMyEndpointInfo(ctx)
+}
+
+func (w *ivnAndroidDeviceStubWrapper) GetEndpointInfoForDevice(
+	ctx context.Context,
+	androidDeviceId int32,
+) (EndpointInfo, error) {
+	return w.impl.GetEndpointInfoForDevice(ctx, androidDeviceId)
+}
+
+var _ IIvnAndroidDevice = (*ivnAndroidDeviceStubWrapper)(nil)
+
+// NewIvnAndroidDeviceStub creates a server-side IIvnAndroidDevice wrapping the given
+// server implementation. The returned value satisfies IIvnAndroidDevice
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIvnAndroidDeviceStub(
+	impl IIvnAndroidDeviceServer,
+) IIvnAndroidDevice {
+	wrapper := &ivnAndroidDeviceStubWrapper{impl: impl}
+	stub := &IvnAndroidDeviceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

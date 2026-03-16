@@ -82,3 +82,42 @@ func (s *UiModeManagerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUiModeManagerCallbackServer is the server-side interface that user implementations
+// provide to NewUiModeManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUiModeManagerCallbackServer interface {
+	NotifyContrastChanged(ctx context.Context, contrast float32) error
+}
+
+type uiModeManagerCallbackStubWrapper struct {
+	impl       IUiModeManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *uiModeManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *uiModeManagerCallbackStubWrapper) NotifyContrastChanged(
+	ctx context.Context,
+	contrast float32,
+) error {
+	return w.impl.NotifyContrastChanged(ctx, contrast)
+}
+
+var _ IUiModeManagerCallback = (*uiModeManagerCallbackStubWrapper)(nil)
+
+// NewUiModeManagerCallbackStub creates a server-side IUiModeManagerCallback wrapping the given
+// server implementation. The returned value satisfies IUiModeManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUiModeManagerCallbackStub(
+	impl IUiModeManagerCallbackServer,
+) IUiModeManagerCallback {
+	wrapper := &uiModeManagerCallbackStubWrapper{impl: impl}
+	stub := &UiModeManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

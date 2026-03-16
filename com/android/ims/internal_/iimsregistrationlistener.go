@@ -456,3 +456,130 @@ func (s *ImsRegistrationListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsRegistrationListenerServer is the server-side interface that user implementations
+// provide to NewImsRegistrationListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsRegistrationListenerServer interface {
+	RegistrationConnected(ctx context.Context) error
+	RegistrationProgressing(ctx context.Context) error
+	RegistrationConnectedWithRadioTech(ctx context.Context, imsRadioTech int32) error
+	RegistrationProgressingWithRadioTech(ctx context.Context, imsRadioTech int32) error
+	RegistrationDisconnected(ctx context.Context, imsReasonInfo ims.ImsReasonInfo) error
+	RegistrationResumed(ctx context.Context) error
+	RegistrationSuspended(ctx context.Context) error
+	RegistrationServiceCapabilityChanged(ctx context.Context, serviceClass int32, event int32) error
+	RegistrationFeatureCapabilityChanged(ctx context.Context, serviceClass int32, enabledFeatures []int32, disabledFeatures []int32) error
+	VoiceMessageCountUpdate(ctx context.Context, count int32) error
+	RegistrationAssociatedUriChanged(ctx context.Context, uris []net.Uri) error
+	RegistrationChangeFailed(ctx context.Context, targetAccessTech int32, imsReasonInfo ims.ImsReasonInfo) error
+}
+
+type imsRegistrationListenerStubWrapper struct {
+	impl       IImsRegistrationListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsRegistrationListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationConnected(
+	ctx context.Context,
+) error {
+	return w.impl.RegistrationConnected(ctx)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationProgressing(
+	ctx context.Context,
+) error {
+	return w.impl.RegistrationProgressing(ctx)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationConnectedWithRadioTech(
+	ctx context.Context,
+	imsRadioTech int32,
+) error {
+	return w.impl.RegistrationConnectedWithRadioTech(ctx, imsRadioTech)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationProgressingWithRadioTech(
+	ctx context.Context,
+	imsRadioTech int32,
+) error {
+	return w.impl.RegistrationProgressingWithRadioTech(ctx, imsRadioTech)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationDisconnected(
+	ctx context.Context,
+	imsReasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.RegistrationDisconnected(ctx, imsReasonInfo)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationResumed(
+	ctx context.Context,
+) error {
+	return w.impl.RegistrationResumed(ctx)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationSuspended(
+	ctx context.Context,
+) error {
+	return w.impl.RegistrationSuspended(ctx)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationServiceCapabilityChanged(
+	ctx context.Context,
+	serviceClass int32,
+	event int32,
+) error {
+	return w.impl.RegistrationServiceCapabilityChanged(ctx, serviceClass, event)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationFeatureCapabilityChanged(
+	ctx context.Context,
+	serviceClass int32,
+	enabledFeatures []int32,
+	disabledFeatures []int32,
+) error {
+	return w.impl.RegistrationFeatureCapabilityChanged(ctx, serviceClass, enabledFeatures, disabledFeatures)
+}
+
+func (w *imsRegistrationListenerStubWrapper) VoiceMessageCountUpdate(
+	ctx context.Context,
+	count int32,
+) error {
+	return w.impl.VoiceMessageCountUpdate(ctx, count)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationAssociatedUriChanged(
+	ctx context.Context,
+	uris []net.Uri,
+) error {
+	return w.impl.RegistrationAssociatedUriChanged(ctx, uris)
+}
+
+func (w *imsRegistrationListenerStubWrapper) RegistrationChangeFailed(
+	ctx context.Context,
+	targetAccessTech int32,
+	imsReasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.RegistrationChangeFailed(ctx, targetAccessTech, imsReasonInfo)
+}
+
+var _ IImsRegistrationListener = (*imsRegistrationListenerStubWrapper)(nil)
+
+// NewImsRegistrationListenerStub creates a server-side IImsRegistrationListener wrapping the given
+// server implementation. The returned value satisfies IImsRegistrationListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsRegistrationListenerStub(
+	impl IImsRegistrationListenerServer,
+) IImsRegistrationListener {
+	wrapper := &imsRegistrationListenerStubWrapper{impl: impl}
+	stub := &ImsRegistrationListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

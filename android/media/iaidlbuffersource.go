@@ -265,3 +265,72 @@ func (s *AidlBufferSourceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAidlBufferSourceServer is the server-side interface that user implementations
+// provide to NewAidlBufferSourceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAidlBufferSourceServer interface {
+	OnStart(ctx context.Context) error
+	OnStop(ctx context.Context) error
+	OnRelease(ctx context.Context) error
+	OnInputBufferAdded(ctx context.Context, bufferID int32) error
+	OnInputBufferEmptied(ctx context.Context, bufferID int32, fence *int32) error
+}
+
+type aidlBufferSourceStubWrapper struct {
+	impl       IAidlBufferSourceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aidlBufferSourceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aidlBufferSourceStubWrapper) OnStart(
+	ctx context.Context,
+) error {
+	return w.impl.OnStart(ctx)
+}
+
+func (w *aidlBufferSourceStubWrapper) OnStop(
+	ctx context.Context,
+) error {
+	return w.impl.OnStop(ctx)
+}
+
+func (w *aidlBufferSourceStubWrapper) OnRelease(
+	ctx context.Context,
+) error {
+	return w.impl.OnRelease(ctx)
+}
+
+func (w *aidlBufferSourceStubWrapper) OnInputBufferAdded(
+	ctx context.Context,
+	bufferID int32,
+) error {
+	return w.impl.OnInputBufferAdded(ctx, bufferID)
+}
+
+func (w *aidlBufferSourceStubWrapper) OnInputBufferEmptied(
+	ctx context.Context,
+	bufferID int32,
+	fence *int32,
+) error {
+	return w.impl.OnInputBufferEmptied(ctx, bufferID, fence)
+}
+
+var _ IAidlBufferSource = (*aidlBufferSourceStubWrapper)(nil)
+
+// NewAidlBufferSourceStub creates a server-side IAidlBufferSource wrapping the given
+// server implementation. The returned value satisfies IAidlBufferSource
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAidlBufferSourceStub(
+	impl IAidlBufferSourceServer,
+) IAidlBufferSource {
+	wrapper := &aidlBufferSourceStubWrapper{impl: impl}
+	stub := &AidlBufferSourceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

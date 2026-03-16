@@ -1075,3 +1075,220 @@ func (s *RadioMessagingResponseStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioMessagingResponseServer is the server-side interface that user implementations
+// provide to NewRadioMessagingResponseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioMessagingResponseServer interface {
+	AcknowledgeIncomingGsmSmsWithPduResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	AcknowledgeLastIncomingCdmaSmsResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	AcknowledgeLastIncomingGsmSmsResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	AcknowledgeRequest(ctx context.Context, serial int32) error
+	DeleteSmsOnRuimResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	DeleteSmsOnSimResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	GetCdmaBroadcastConfigResponse(ctx context.Context, info radio.RadioResponseInfo, configs []CdmaBroadcastSmsConfigInfo) error
+	GetGsmBroadcastConfigResponse(ctx context.Context, info radio.RadioResponseInfo, configs []GsmBroadcastSmsConfigInfo) error
+	GetSmscAddressResponse(ctx context.Context, info radio.RadioResponseInfo, smsc string) error
+	ReportSmsMemoryStatusResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SendCdmaSmsExpectMoreResponse(ctx context.Context, info radio.RadioResponseInfo, sms SendSmsResult) error
+	SendCdmaSmsResponse(ctx context.Context, info radio.RadioResponseInfo, sms SendSmsResult) error
+	SendImsSmsResponse(ctx context.Context, info radio.RadioResponseInfo, sms SendSmsResult) error
+	SendSmsExpectMoreResponse(ctx context.Context, info radio.RadioResponseInfo, sms SendSmsResult) error
+	SendSmsResponse(ctx context.Context, info radio.RadioResponseInfo, sms SendSmsResult) error
+	SetCdmaBroadcastActivationResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetCdmaBroadcastConfigResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetGsmBroadcastActivationResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetGsmBroadcastConfigResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetSmscAddressResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	WriteSmsToRuimResponse(ctx context.Context, info radio.RadioResponseInfo, index int32) error
+	WriteSmsToSimResponse(ctx context.Context, info radio.RadioResponseInfo, index int32) error
+}
+
+type radioMessagingResponseStubWrapper struct {
+	impl       IRadioMessagingResponseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioMessagingResponseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioMessagingResponseStubWrapper) AcknowledgeIncomingGsmSmsWithPduResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.AcknowledgeIncomingGsmSmsWithPduResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) AcknowledgeLastIncomingCdmaSmsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.AcknowledgeLastIncomingCdmaSmsResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) AcknowledgeLastIncomingGsmSmsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.AcknowledgeLastIncomingGsmSmsResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) AcknowledgeRequest(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.AcknowledgeRequest(ctx, serial)
+}
+
+func (w *radioMessagingResponseStubWrapper) DeleteSmsOnRuimResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.DeleteSmsOnRuimResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) DeleteSmsOnSimResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.DeleteSmsOnSimResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) GetCdmaBroadcastConfigResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	configs []CdmaBroadcastSmsConfigInfo,
+) error {
+	return w.impl.GetCdmaBroadcastConfigResponse(ctx, info, configs)
+}
+
+func (w *radioMessagingResponseStubWrapper) GetGsmBroadcastConfigResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	configs []GsmBroadcastSmsConfigInfo,
+) error {
+	return w.impl.GetGsmBroadcastConfigResponse(ctx, info, configs)
+}
+
+func (w *radioMessagingResponseStubWrapper) GetSmscAddressResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	smsc string,
+) error {
+	return w.impl.GetSmscAddressResponse(ctx, info, smsc)
+}
+
+func (w *radioMessagingResponseStubWrapper) ReportSmsMemoryStatusResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.ReportSmsMemoryStatusResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) SendCdmaSmsExpectMoreResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	sms SendSmsResult,
+) error {
+	return w.impl.SendCdmaSmsExpectMoreResponse(ctx, info, sms)
+}
+
+func (w *radioMessagingResponseStubWrapper) SendCdmaSmsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	sms SendSmsResult,
+) error {
+	return w.impl.SendCdmaSmsResponse(ctx, info, sms)
+}
+
+func (w *radioMessagingResponseStubWrapper) SendImsSmsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	sms SendSmsResult,
+) error {
+	return w.impl.SendImsSmsResponse(ctx, info, sms)
+}
+
+func (w *radioMessagingResponseStubWrapper) SendSmsExpectMoreResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	sms SendSmsResult,
+) error {
+	return w.impl.SendSmsExpectMoreResponse(ctx, info, sms)
+}
+
+func (w *radioMessagingResponseStubWrapper) SendSmsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	sms SendSmsResult,
+) error {
+	return w.impl.SendSmsResponse(ctx, info, sms)
+}
+
+func (w *radioMessagingResponseStubWrapper) SetCdmaBroadcastActivationResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetCdmaBroadcastActivationResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) SetCdmaBroadcastConfigResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetCdmaBroadcastConfigResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) SetGsmBroadcastActivationResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetGsmBroadcastActivationResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) SetGsmBroadcastConfigResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetGsmBroadcastConfigResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) SetSmscAddressResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSmscAddressResponse(ctx, info)
+}
+
+func (w *radioMessagingResponseStubWrapper) WriteSmsToRuimResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	index int32,
+) error {
+	return w.impl.WriteSmsToRuimResponse(ctx, info, index)
+}
+
+func (w *radioMessagingResponseStubWrapper) WriteSmsToSimResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	index int32,
+) error {
+	return w.impl.WriteSmsToSimResponse(ctx, info, index)
+}
+
+var _ IRadioMessagingResponse = (*radioMessagingResponseStubWrapper)(nil)
+
+// NewRadioMessagingResponseStub creates a server-side IRadioMessagingResponse wrapping the given
+// server implementation. The returned value satisfies IRadioMessagingResponse
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioMessagingResponseStub(
+	impl IRadioMessagingResponseServer,
+) IRadioMessagingResponse {
+	wrapper := &radioMessagingResponseStubWrapper{impl: impl}
+	stub := &RadioMessagingResponseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

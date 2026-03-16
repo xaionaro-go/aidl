@@ -361,7 +361,7 @@ func (p *DreamManagerProxy) FinishSelf(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(immediate)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDreamManager, "finishSelf")
@@ -393,7 +393,7 @@ func (p *DreamManagerProxy) StartDozing(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(screenState)
 	_data.WriteInt32(reason)
 	_data.WriteFloat32(screenBrightnessFloat)
@@ -424,7 +424,7 @@ func (p *DreamManagerProxy) StopDozing(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDreamManager, "stopDozing")
 	if _err != nil {
@@ -662,7 +662,7 @@ func (p *DreamManagerProxy) StartDozingOneway(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(screenState)
 	_data.WriteInt32(reason)
 	_data.WriteFloat32(screenBrightnessFloat)
@@ -685,7 +685,7 @@ func (p *DreamManagerProxy) FinishSelfOneway(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(immediate)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDreamManager, "finishSelfOneway")
@@ -1103,4 +1103,208 @@ func (s *DreamManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDreamManagerServer is the server-side interface that user implementations
+// provide to NewDreamManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDreamManagerServer interface {
+	Dream(ctx context.Context) error
+	Awaken(ctx context.Context) error
+	SetDreamComponents(ctx context.Context, componentNames []content.ComponentName) error
+	GetDreamComponents(ctx context.Context) ([]content.ComponentName, error)
+	GetDefaultDreamComponentForUser(ctx context.Context) (content.ComponentName, error)
+	TestDream(ctx context.Context, componentName content.ComponentName) error
+	IsDreaming(ctx context.Context) (bool, error)
+	IsDreamingOrInPreview(ctx context.Context) (bool, error)
+	CanStartDreaming(ctx context.Context, isScreenOn bool) (bool, error)
+	FinishSelf(ctx context.Context, token binder.IBinder, immediate bool) error
+	StartDozing(ctx context.Context, token binder.IBinder, screenState int32, reason int32, screenBrightnessFloat float32, screenBrightnessInt int32, useNormalBrightnessForDoze bool) error
+	StopDozing(ctx context.Context, token binder.IBinder) error
+	ForceAmbientDisplayEnabled(ctx context.Context, enabled bool) error
+	GetDreamComponentsForUser(ctx context.Context) ([]content.ComponentName, error)
+	SetDreamComponentsForUser(ctx context.Context, componentNames []content.ComponentName) error
+	SetSystemDreamComponent(ctx context.Context, componentName content.ComponentName) error
+	RegisterDreamOverlayService(ctx context.Context, componentName content.ComponentName) error
+	StartDreamActivity(ctx context.Context, intent content.Intent) error
+	SetDreamIsObscured(ctx context.Context, isObscured bool) error
+	StartDozingOneway(ctx context.Context, token binder.IBinder, screenState int32, reason int32, screenBrightnessFloat float32, screenBrightnessInt int32, useNormalBrightnessForDoze bool) error
+	FinishSelfOneway(ctx context.Context, token binder.IBinder, immediate bool) error
+}
+
+type dreamManagerStubWrapper struct {
+	impl       IDreamManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dreamManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dreamManagerStubWrapper) Dream(
+	ctx context.Context,
+) error {
+	return w.impl.Dream(ctx)
+}
+
+func (w *dreamManagerStubWrapper) Awaken(
+	ctx context.Context,
+) error {
+	return w.impl.Awaken(ctx)
+}
+
+func (w *dreamManagerStubWrapper) SetDreamComponents(
+	ctx context.Context,
+	componentNames []content.ComponentName,
+) error {
+	return w.impl.SetDreamComponents(ctx, componentNames)
+}
+
+func (w *dreamManagerStubWrapper) GetDreamComponents(
+	ctx context.Context,
+) ([]content.ComponentName, error) {
+	return w.impl.GetDreamComponents(ctx)
+}
+
+func (w *dreamManagerStubWrapper) GetDefaultDreamComponentForUser(
+	ctx context.Context,
+) (content.ComponentName, error) {
+	return w.impl.GetDefaultDreamComponentForUser(ctx)
+}
+
+func (w *dreamManagerStubWrapper) TestDream(
+	ctx context.Context,
+	componentName content.ComponentName,
+) error {
+	return w.impl.TestDream(ctx, componentName)
+}
+
+func (w *dreamManagerStubWrapper) IsDreaming(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDreaming(ctx)
+}
+
+func (w *dreamManagerStubWrapper) IsDreamingOrInPreview(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDreamingOrInPreview(ctx)
+}
+
+func (w *dreamManagerStubWrapper) CanStartDreaming(
+	ctx context.Context,
+	isScreenOn bool,
+) (bool, error) {
+	return w.impl.CanStartDreaming(ctx, isScreenOn)
+}
+
+func (w *dreamManagerStubWrapper) FinishSelf(
+	ctx context.Context,
+	token binder.IBinder,
+	immediate bool,
+) error {
+	return w.impl.FinishSelf(ctx, token, immediate)
+}
+
+func (w *dreamManagerStubWrapper) StartDozing(
+	ctx context.Context,
+	token binder.IBinder,
+	screenState int32,
+	reason int32,
+	screenBrightnessFloat float32,
+	screenBrightnessInt int32,
+	useNormalBrightnessForDoze bool,
+) error {
+	return w.impl.StartDozing(ctx, token, screenState, reason, screenBrightnessFloat, screenBrightnessInt, useNormalBrightnessForDoze)
+}
+
+func (w *dreamManagerStubWrapper) StopDozing(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.StopDozing(ctx, token)
+}
+
+func (w *dreamManagerStubWrapper) ForceAmbientDisplayEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.ForceAmbientDisplayEnabled(ctx, enabled)
+}
+
+func (w *dreamManagerStubWrapper) GetDreamComponentsForUser(
+	ctx context.Context,
+) ([]content.ComponentName, error) {
+	return w.impl.GetDreamComponentsForUser(ctx)
+}
+
+func (w *dreamManagerStubWrapper) SetDreamComponentsForUser(
+	ctx context.Context,
+	componentNames []content.ComponentName,
+) error {
+	return w.impl.SetDreamComponentsForUser(ctx, componentNames)
+}
+
+func (w *dreamManagerStubWrapper) SetSystemDreamComponent(
+	ctx context.Context,
+	componentName content.ComponentName,
+) error {
+	return w.impl.SetSystemDreamComponent(ctx, componentName)
+}
+
+func (w *dreamManagerStubWrapper) RegisterDreamOverlayService(
+	ctx context.Context,
+	componentName content.ComponentName,
+) error {
+	return w.impl.RegisterDreamOverlayService(ctx, componentName)
+}
+
+func (w *dreamManagerStubWrapper) StartDreamActivity(
+	ctx context.Context,
+	intent content.Intent,
+) error {
+	return w.impl.StartDreamActivity(ctx, intent)
+}
+
+func (w *dreamManagerStubWrapper) SetDreamIsObscured(
+	ctx context.Context,
+	isObscured bool,
+) error {
+	return w.impl.SetDreamIsObscured(ctx, isObscured)
+}
+
+func (w *dreamManagerStubWrapper) StartDozingOneway(
+	ctx context.Context,
+	token binder.IBinder,
+	screenState int32,
+	reason int32,
+	screenBrightnessFloat float32,
+	screenBrightnessInt int32,
+	useNormalBrightnessForDoze bool,
+) error {
+	return w.impl.StartDozingOneway(ctx, token, screenState, reason, screenBrightnessFloat, screenBrightnessInt, useNormalBrightnessForDoze)
+}
+
+func (w *dreamManagerStubWrapper) FinishSelfOneway(
+	ctx context.Context,
+	token binder.IBinder,
+	immediate bool,
+) error {
+	return w.impl.FinishSelfOneway(ctx, token, immediate)
+}
+
+var _ IDreamManager = (*dreamManagerStubWrapper)(nil)
+
+// NewDreamManagerStub creates a server-side IDreamManager wrapping the given
+// server implementation. The returned value satisfies IDreamManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDreamManagerStub(
+	impl IDreamManagerServer,
+) IDreamManager {
+	wrapper := &dreamManagerStubWrapper{impl: impl}
+	stub := &DreamManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

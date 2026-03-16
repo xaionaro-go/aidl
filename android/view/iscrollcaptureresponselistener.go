@@ -93,3 +93,42 @@ func (s *ScrollCaptureResponseListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScrollCaptureResponseListenerServer is the server-side interface that user implementations
+// provide to NewScrollCaptureResponseListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScrollCaptureResponseListenerServer interface {
+	OnScrollCaptureResponse(ctx context.Context, response ScrollCaptureResponse) error
+}
+
+type scrollCaptureResponseListenerStubWrapper struct {
+	impl       IScrollCaptureResponseListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scrollCaptureResponseListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scrollCaptureResponseListenerStubWrapper) OnScrollCaptureResponse(
+	ctx context.Context,
+	response ScrollCaptureResponse,
+) error {
+	return w.impl.OnScrollCaptureResponse(ctx, response)
+}
+
+var _ IScrollCaptureResponseListener = (*scrollCaptureResponseListenerStubWrapper)(nil)
+
+// NewScrollCaptureResponseListenerStub creates a server-side IScrollCaptureResponseListener wrapping the given
+// server implementation. The returned value satisfies IScrollCaptureResponseListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScrollCaptureResponseListenerStub(
+	impl IScrollCaptureResponseListenerServer,
+) IScrollCaptureResponseListener {
+	wrapper := &scrollCaptureResponseListenerStubWrapper{impl: impl}
+	stub := &ScrollCaptureResponseListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -136,3 +136,54 @@ func (s *SensorPrivacyListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISensorPrivacyListenerServer is the server-side interface that user implementations
+// provide to NewSensorPrivacyListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISensorPrivacyListenerServer interface {
+	OnSensorPrivacyChanged(ctx context.Context, toggleType int32, sensor int32, enabled bool) error
+	OnSensorPrivacyStateChanged(ctx context.Context, toggleType int32, sensor int32, state int32) error
+}
+
+type sensorPrivacyListenerStubWrapper struct {
+	impl       ISensorPrivacyListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sensorPrivacyListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sensorPrivacyListenerStubWrapper) OnSensorPrivacyChanged(
+	ctx context.Context,
+	toggleType int32,
+	sensor int32,
+	enabled bool,
+) error {
+	return w.impl.OnSensorPrivacyChanged(ctx, toggleType, sensor, enabled)
+}
+
+func (w *sensorPrivacyListenerStubWrapper) OnSensorPrivacyStateChanged(
+	ctx context.Context,
+	toggleType int32,
+	sensor int32,
+	state int32,
+) error {
+	return w.impl.OnSensorPrivacyStateChanged(ctx, toggleType, sensor, state)
+}
+
+var _ ISensorPrivacyListener = (*sensorPrivacyListenerStubWrapper)(nil)
+
+// NewSensorPrivacyListenerStub creates a server-side ISensorPrivacyListener wrapping the given
+// server implementation. The returned value satisfies ISensorPrivacyListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSensorPrivacyListenerStub(
+	impl ISensorPrivacyListenerServer,
+) ISensorPrivacyListener {
+	wrapper := &sensorPrivacyListenerStubWrapper{impl: impl}
+	stub := &SensorPrivacyListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

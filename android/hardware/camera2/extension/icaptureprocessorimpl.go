@@ -174,7 +174,7 @@ func (p *CaptureProcessorImplProxy) Process(
 			}
 		}
 	}
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 	_data.WriteBool(isPostviewRequested)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICaptureProcessorImpl, "process")
@@ -316,4 +316,79 @@ func (s *CaptureProcessorImplStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICaptureProcessorImplServer is the server-side interface that user implementations
+// provide to NewCaptureProcessorImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICaptureProcessorImplServer interface {
+	OnOutputSurface(ctx context.Context, surface interface{}, imageFormat int32) error
+	OnPostviewOutputSurface(ctx context.Context, surface interface{}) error
+	OnResolutionUpdate(ctx context.Context, size Size, postviewSize Size) error
+	OnImageFormatUpdate(ctx context.Context, imageFormat int32) error
+	Process(ctx context.Context, capturelist []CaptureBundle, resultCallback IProcessResultImpl, isPostviewRequested bool) error
+}
+
+type captureProcessorImplStubWrapper struct {
+	impl       ICaptureProcessorImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *captureProcessorImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *captureProcessorImplStubWrapper) OnOutputSurface(
+	ctx context.Context,
+	surface interface{},
+	imageFormat int32,
+) error {
+	return w.impl.OnOutputSurface(ctx, surface, imageFormat)
+}
+
+func (w *captureProcessorImplStubWrapper) OnPostviewOutputSurface(
+	ctx context.Context,
+	surface interface{},
+) error {
+	return w.impl.OnPostviewOutputSurface(ctx, surface)
+}
+
+func (w *captureProcessorImplStubWrapper) OnResolutionUpdate(
+	ctx context.Context,
+	size Size,
+	postviewSize Size,
+) error {
+	return w.impl.OnResolutionUpdate(ctx, size, postviewSize)
+}
+
+func (w *captureProcessorImplStubWrapper) OnImageFormatUpdate(
+	ctx context.Context,
+	imageFormat int32,
+) error {
+	return w.impl.OnImageFormatUpdate(ctx, imageFormat)
+}
+
+func (w *captureProcessorImplStubWrapper) Process(
+	ctx context.Context,
+	capturelist []CaptureBundle,
+	resultCallback IProcessResultImpl,
+	isPostviewRequested bool,
+) error {
+	return w.impl.Process(ctx, capturelist, resultCallback, isPostviewRequested)
+}
+
+var _ ICaptureProcessorImpl = (*captureProcessorImplStubWrapper)(nil)
+
+// NewCaptureProcessorImplStub creates a server-side ICaptureProcessorImpl wrapping the given
+// server implementation. The returned value satisfies ICaptureProcessorImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCaptureProcessorImplStub(
+	impl ICaptureProcessorImplServer,
+) ICaptureProcessorImpl {
+	wrapper := &captureProcessorImplStubWrapper{impl: impl}
+	stub := &CaptureProcessorImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

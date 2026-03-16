@@ -724,3 +724,137 @@ func (s *CasStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICasServer is the server-side interface that user implementations
+// provide to NewCasStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICasServer interface {
+	CloseSession(ctx context.Context, sessionId []byte) error
+	OpenSessionDefault(ctx context.Context) ([]byte, error)
+	OpenSession(ctx context.Context, intent SessionIntent, mode ScramblingMode) ([]byte, error)
+	ProcessEcm(ctx context.Context, sessionId []byte, ecm []byte) error
+	ProcessEmm(ctx context.Context, emm []byte) error
+	Provision(ctx context.Context, provisionString string) error
+	RefreshEntitlements(ctx context.Context, refreshType int32, refreshData []byte) error
+	Release(ctx context.Context) error
+	SendEvent(ctx context.Context, event int32, arg int32, eventData []byte) error
+	SendSessionEvent(ctx context.Context, sessionId []byte, event int32, arg int32, eventData []byte) error
+	SetPrivateData(ctx context.Context, pvtData []byte) error
+	SetSessionPrivateData(ctx context.Context, sessionId []byte, pvtData []byte) error
+}
+
+type casStubWrapper struct {
+	impl       ICasServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *casStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *casStubWrapper) CloseSession(
+	ctx context.Context,
+	sessionId []byte,
+) error {
+	return w.impl.CloseSession(ctx, sessionId)
+}
+
+func (w *casStubWrapper) OpenSessionDefault(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.OpenSessionDefault(ctx)
+}
+
+func (w *casStubWrapper) OpenSession(
+	ctx context.Context,
+	intent SessionIntent,
+	mode ScramblingMode,
+) ([]byte, error) {
+	return w.impl.OpenSession(ctx, intent, mode)
+}
+
+func (w *casStubWrapper) ProcessEcm(
+	ctx context.Context,
+	sessionId []byte,
+	ecm []byte,
+) error {
+	return w.impl.ProcessEcm(ctx, sessionId, ecm)
+}
+
+func (w *casStubWrapper) ProcessEmm(
+	ctx context.Context,
+	emm []byte,
+) error {
+	return w.impl.ProcessEmm(ctx, emm)
+}
+
+func (w *casStubWrapper) Provision(
+	ctx context.Context,
+	provisionString string,
+) error {
+	return w.impl.Provision(ctx, provisionString)
+}
+
+func (w *casStubWrapper) RefreshEntitlements(
+	ctx context.Context,
+	refreshType int32,
+	refreshData []byte,
+) error {
+	return w.impl.RefreshEntitlements(ctx, refreshType, refreshData)
+}
+
+func (w *casStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+func (w *casStubWrapper) SendEvent(
+	ctx context.Context,
+	event int32,
+	arg int32,
+	eventData []byte,
+) error {
+	return w.impl.SendEvent(ctx, event, arg, eventData)
+}
+
+func (w *casStubWrapper) SendSessionEvent(
+	ctx context.Context,
+	sessionId []byte,
+	event int32,
+	arg int32,
+	eventData []byte,
+) error {
+	return w.impl.SendSessionEvent(ctx, sessionId, event, arg, eventData)
+}
+
+func (w *casStubWrapper) SetPrivateData(
+	ctx context.Context,
+	pvtData []byte,
+) error {
+	return w.impl.SetPrivateData(ctx, pvtData)
+}
+
+func (w *casStubWrapper) SetSessionPrivateData(
+	ctx context.Context,
+	sessionId []byte,
+	pvtData []byte,
+) error {
+	return w.impl.SetSessionPrivateData(ctx, sessionId, pvtData)
+}
+
+var _ ICas = (*casStubWrapper)(nil)
+
+// NewCasStub creates a server-side ICas wrapping the given
+// server implementation. The returned value satisfies ICas
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCasStub(
+	impl ICasServer,
+) ICas {
+	wrapper := &casStubWrapper{impl: impl}
+	stub := &CasStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

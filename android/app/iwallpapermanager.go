@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	wallpaper "github.com/xaionaro-go/binder/android/app/wallpaper"
-	content "github.com/xaionaro-go/binder/android/content"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -58,7 +57,7 @@ type IWallpaperManager interface {
 	AsBinder() binder.IBinder
 	SetWallpaper(ctx context.Context, name string, screenOrientations []int32, crops []graphics.Rect, allowBackup bool, extras interface{}, which int32, completion IWallpaperManagerCallback) (int32, error)
 	SetWallpaperComponentChecked(ctx context.Context, description wallpaper.WallpaperDescription, which int32) error
-	SetWallpaperComponent(ctx context.Context, name content.ComponentName) error
+	SetWallpaperComponent(ctx context.Context, name interface{}) error
 	GetWallpaper(ctx context.Context, callingPkg string, cb IWallpaperManagerCallback, which int32, outParams interface{}) (int32, error)
 	GetWallpaperWithFeature(ctx context.Context, callingPkg string, cb IWallpaperManagerCallback, which int32, outParams interface{}, getCropped bool) (int32, error)
 	GetBitmapCrops(ctx context.Context, displaySizes []graphics.Point, which int32, originalBitmap bool) ([]interface{}, error)
@@ -147,7 +146,7 @@ func (p *WallpaperManagerProxy) SetWallpaper(
 	}
 	_data.WriteBool(allowBackup)
 	_data.WriteInt32(which)
-	_data.WriteStrongBinder(completion.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, completion.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWallpaperManager, "setWallpaper")
@@ -208,14 +207,10 @@ func (p *WallpaperManagerProxy) SetWallpaperComponentChecked(
 
 func (p *WallpaperManagerProxy) SetWallpaperComponent(
 	ctx context.Context,
-	name content.ComponentName,
+	name interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperManager)
-	_data.WriteInt32(1)
-	if _err := name.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWallpaperManager, "setWallpaperComponent")
 	if _err != nil {
@@ -247,7 +242,7 @@ func (p *WallpaperManagerProxy) GetWallpaper(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperManager)
 	_data.WriteString16(callingPkg)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(which)
 	_data.WriteInt32(_identity.UserID)
 
@@ -287,7 +282,7 @@ func (p *WallpaperManagerProxy) GetWallpaperWithFeature(
 	_data.WriteInterfaceToken(DescriptorIWallpaperManager)
 	_data.WriteString16(callingPkg)
 	_data.WriteString16(_identity.AttributionTag)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(which)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(getCropped)
@@ -1086,7 +1081,7 @@ func (p *WallpaperManagerProxy) RemoveOnLocalColorsChangedListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	if area == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1129,7 +1124,7 @@ func (p *WallpaperManagerProxy) AddOnLocalColorsChangedListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	if regions == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1170,7 +1165,7 @@ func (p *WallpaperManagerProxy) RegisterWallpaperColorsCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperManager)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(displayId)
 
@@ -1200,7 +1195,7 @@ func (p *WallpaperManagerProxy) UnregisterWallpaperColorsCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperManager)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(displayId)
 
@@ -1489,18 +1484,7 @@ func (s *WallpaperManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_name content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_name.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_name interface{}
 		_err := s.Impl.SetWallpaperComponent(ctx, _arg_name)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2236,4 +2220,361 @@ func (s *WallpaperManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWallpaperManagerServer is the server-side interface that user implementations
+// provide to NewWallpaperManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWallpaperManagerServer interface {
+	SetWallpaper(ctx context.Context, name string, screenOrientations []int32, crops []graphics.Rect, allowBackup bool, extras interface{}, which int32, completion IWallpaperManagerCallback) (int32, error)
+	SetWallpaperComponentChecked(ctx context.Context, description wallpaper.WallpaperDescription, which int32) error
+	SetWallpaperComponent(ctx context.Context, name interface{}) error
+	GetWallpaper(ctx context.Context, callingPkg string, cb IWallpaperManagerCallback, which int32, outParams interface{}) (int32, error)
+	GetWallpaperWithFeature(ctx context.Context, callingPkg string, cb IWallpaperManagerCallback, which int32, outParams interface{}, getCropped bool) (int32, error)
+	GetBitmapCrops(ctx context.Context, displaySizes []graphics.Point, which int32, originalBitmap bool) ([]interface{}, error)
+	GetCurrentBitmapCrops(ctx context.Context, which int32) (interface{}, error)
+	GetFutureBitmapCrops(ctx context.Context, bitmapSize graphics.Point, displaySizes []graphics.Point, screenOrientations []int32, crops []graphics.Rect) ([]interface{}, error)
+	GetBitmapCrop(ctx context.Context, bitmapSize graphics.Point, screenOrientations []int32, crops []graphics.Rect) (graphics.Rect, error)
+	GetWallpaperIdForUser(ctx context.Context, which int32) (int32, error)
+	GetWallpaperInfo(ctx context.Context) (WallpaperInfo, error)
+	GetWallpaperInfoWithFlags(ctx context.Context, which int32) (WallpaperInfo, error)
+	GetWallpaperInstance(ctx context.Context, which int32) (wallpaper.WallpaperInstance, error)
+	GetWallpaperInfoFile(ctx context.Context) (int32, error)
+	ClearWallpaper(ctx context.Context, which int32) error
+	HasNamedWallpaper(ctx context.Context, name string) (bool, error)
+	SetDimensionHints(ctx context.Context, width int32, height int32, displayId int32) error
+	GetWidthHint(ctx context.Context, displayId int32) (int32, error)
+	GetHeightHint(ctx context.Context, displayId int32) (int32, error)
+	SetDisplayPadding(ctx context.Context, padding graphics.Rect, displayId int32) error
+	GetName(ctx context.Context) (string, error)
+	SettingsRestored(ctx context.Context) error
+	IsWallpaperSupported(ctx context.Context) (bool, error)
+	IsSetWallpaperAllowed(ctx context.Context) (bool, error)
+	IsWallpaperBackupEligible(ctx context.Context, which int32) (bool, error)
+	GetWallpaperColors(ctx context.Context, which int32, displayId int32) (WallpaperColors, error)
+	RemoveOnLocalColorsChangedListener(ctx context.Context, callback ILocalWallpaperColorConsumer, area []graphics.RectF, which int32, displayId int32) error
+	AddOnLocalColorsChangedListener(ctx context.Context, callback ILocalWallpaperColorConsumer, regions []graphics.RectF, which int32, displayId int32) error
+	RegisterWallpaperColorsCallback(ctx context.Context, cb IWallpaperManagerCallback, displayId int32) error
+	UnregisterWallpaperColorsCallback(ctx context.Context, cb IWallpaperManagerCallback, displayId int32) error
+	SetInAmbientMode(ctx context.Context, inAmbientMode bool, animationDuration int64) error
+	NotifyWakingUp(ctx context.Context, x int32, y int32, extras interface{}) error
+	NotifyGoingToSleep(ctx context.Context, x int32, y int32, extras interface{}) error
+	SetWallpaperDimAmount(ctx context.Context, dimAmount float32) error
+	GetWallpaperDimAmount(ctx context.Context) (float32, error)
+	LockScreenWallpaperExists(ctx context.Context) (bool, error)
+	IsStaticWallpaper(ctx context.Context, which int32) (bool, error)
+}
+
+type wallpaperManagerStubWrapper struct {
+	impl       IWallpaperManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wallpaperManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wallpaperManagerStubWrapper) SetWallpaper(
+	ctx context.Context,
+	name string,
+	screenOrientations []int32,
+	crops []graphics.Rect,
+	allowBackup bool,
+	extras interface{},
+	which int32,
+	completion IWallpaperManagerCallback,
+) (int32, error) {
+	return w.impl.SetWallpaper(ctx, name, screenOrientations, crops, allowBackup, extras, which, completion)
+}
+
+func (w *wallpaperManagerStubWrapper) SetWallpaperComponentChecked(
+	ctx context.Context,
+	description wallpaper.WallpaperDescription,
+	which int32,
+) error {
+	return w.impl.SetWallpaperComponentChecked(ctx, description, which)
+}
+
+func (w *wallpaperManagerStubWrapper) SetWallpaperComponent(
+	ctx context.Context,
+	name interface{},
+) error {
+	return w.impl.SetWallpaperComponent(ctx, name)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWallpaper(
+	ctx context.Context,
+	callingPkg string,
+	cb IWallpaperManagerCallback,
+	which int32,
+	outParams interface{},
+) (int32, error) {
+	return w.impl.GetWallpaper(ctx, callingPkg, cb, which, outParams)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWallpaperWithFeature(
+	ctx context.Context,
+	callingPkg string,
+	cb IWallpaperManagerCallback,
+	which int32,
+	outParams interface{},
+	getCropped bool,
+) (int32, error) {
+	return w.impl.GetWallpaperWithFeature(ctx, callingPkg, cb, which, outParams, getCropped)
+}
+
+func (w *wallpaperManagerStubWrapper) GetBitmapCrops(
+	ctx context.Context,
+	displaySizes []graphics.Point,
+	which int32,
+	originalBitmap bool,
+) ([]interface{}, error) {
+	return w.impl.GetBitmapCrops(ctx, displaySizes, which, originalBitmap)
+}
+
+func (w *wallpaperManagerStubWrapper) GetCurrentBitmapCrops(
+	ctx context.Context,
+	which int32,
+) (interface{}, error) {
+	return w.impl.GetCurrentBitmapCrops(ctx, which)
+}
+
+func (w *wallpaperManagerStubWrapper) GetFutureBitmapCrops(
+	ctx context.Context,
+	bitmapSize graphics.Point,
+	displaySizes []graphics.Point,
+	screenOrientations []int32,
+	crops []graphics.Rect,
+) ([]interface{}, error) {
+	return w.impl.GetFutureBitmapCrops(ctx, bitmapSize, displaySizes, screenOrientations, crops)
+}
+
+func (w *wallpaperManagerStubWrapper) GetBitmapCrop(
+	ctx context.Context,
+	bitmapSize graphics.Point,
+	screenOrientations []int32,
+	crops []graphics.Rect,
+) (graphics.Rect, error) {
+	return w.impl.GetBitmapCrop(ctx, bitmapSize, screenOrientations, crops)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWallpaperIdForUser(
+	ctx context.Context,
+	which int32,
+) (int32, error) {
+	return w.impl.GetWallpaperIdForUser(ctx, which)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWallpaperInfo(
+	ctx context.Context,
+) (WallpaperInfo, error) {
+	return w.impl.GetWallpaperInfo(ctx)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWallpaperInfoWithFlags(
+	ctx context.Context,
+	which int32,
+) (WallpaperInfo, error) {
+	return w.impl.GetWallpaperInfoWithFlags(ctx, which)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWallpaperInstance(
+	ctx context.Context,
+	which int32,
+) (wallpaper.WallpaperInstance, error) {
+	return w.impl.GetWallpaperInstance(ctx, which)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWallpaperInfoFile(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetWallpaperInfoFile(ctx)
+}
+
+func (w *wallpaperManagerStubWrapper) ClearWallpaper(
+	ctx context.Context,
+	which int32,
+) error {
+	return w.impl.ClearWallpaper(ctx, which)
+}
+
+func (w *wallpaperManagerStubWrapper) HasNamedWallpaper(
+	ctx context.Context,
+	name string,
+) (bool, error) {
+	return w.impl.HasNamedWallpaper(ctx, name)
+}
+
+func (w *wallpaperManagerStubWrapper) SetDimensionHints(
+	ctx context.Context,
+	width int32,
+	height int32,
+	displayId int32,
+) error {
+	return w.impl.SetDimensionHints(ctx, width, height, displayId)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWidthHint(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetWidthHint(ctx, displayId)
+}
+
+func (w *wallpaperManagerStubWrapper) GetHeightHint(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetHeightHint(ctx, displayId)
+}
+
+func (w *wallpaperManagerStubWrapper) SetDisplayPadding(
+	ctx context.Context,
+	padding graphics.Rect,
+	displayId int32,
+) error {
+	return w.impl.SetDisplayPadding(ctx, padding, displayId)
+}
+
+func (w *wallpaperManagerStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+func (w *wallpaperManagerStubWrapper) SettingsRestored(
+	ctx context.Context,
+) error {
+	return w.impl.SettingsRestored(ctx)
+}
+
+func (w *wallpaperManagerStubWrapper) IsWallpaperSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsWallpaperSupported(ctx)
+}
+
+func (w *wallpaperManagerStubWrapper) IsSetWallpaperAllowed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSetWallpaperAllowed(ctx)
+}
+
+func (w *wallpaperManagerStubWrapper) IsWallpaperBackupEligible(
+	ctx context.Context,
+	which int32,
+) (bool, error) {
+	return w.impl.IsWallpaperBackupEligible(ctx, which)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWallpaperColors(
+	ctx context.Context,
+	which int32,
+	displayId int32,
+) (WallpaperColors, error) {
+	return w.impl.GetWallpaperColors(ctx, which, displayId)
+}
+
+func (w *wallpaperManagerStubWrapper) RemoveOnLocalColorsChangedListener(
+	ctx context.Context,
+	callback ILocalWallpaperColorConsumer,
+	area []graphics.RectF,
+	which int32,
+	displayId int32,
+) error {
+	return w.impl.RemoveOnLocalColorsChangedListener(ctx, callback, area, which, displayId)
+}
+
+func (w *wallpaperManagerStubWrapper) AddOnLocalColorsChangedListener(
+	ctx context.Context,
+	callback ILocalWallpaperColorConsumer,
+	regions []graphics.RectF,
+	which int32,
+	displayId int32,
+) error {
+	return w.impl.AddOnLocalColorsChangedListener(ctx, callback, regions, which, displayId)
+}
+
+func (w *wallpaperManagerStubWrapper) RegisterWallpaperColorsCallback(
+	ctx context.Context,
+	cb IWallpaperManagerCallback,
+	displayId int32,
+) error {
+	return w.impl.RegisterWallpaperColorsCallback(ctx, cb, displayId)
+}
+
+func (w *wallpaperManagerStubWrapper) UnregisterWallpaperColorsCallback(
+	ctx context.Context,
+	cb IWallpaperManagerCallback,
+	displayId int32,
+) error {
+	return w.impl.UnregisterWallpaperColorsCallback(ctx, cb, displayId)
+}
+
+func (w *wallpaperManagerStubWrapper) SetInAmbientMode(
+	ctx context.Context,
+	inAmbientMode bool,
+	animationDuration int64,
+) error {
+	return w.impl.SetInAmbientMode(ctx, inAmbientMode, animationDuration)
+}
+
+func (w *wallpaperManagerStubWrapper) NotifyWakingUp(
+	ctx context.Context,
+	x int32,
+	y int32,
+	extras interface{},
+) error {
+	return w.impl.NotifyWakingUp(ctx, x, y, extras)
+}
+
+func (w *wallpaperManagerStubWrapper) NotifyGoingToSleep(
+	ctx context.Context,
+	x int32,
+	y int32,
+	extras interface{},
+) error {
+	return w.impl.NotifyGoingToSleep(ctx, x, y, extras)
+}
+
+func (w *wallpaperManagerStubWrapper) SetWallpaperDimAmount(
+	ctx context.Context,
+	dimAmount float32,
+) error {
+	return w.impl.SetWallpaperDimAmount(ctx, dimAmount)
+}
+
+func (w *wallpaperManagerStubWrapper) GetWallpaperDimAmount(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetWallpaperDimAmount(ctx)
+}
+
+func (w *wallpaperManagerStubWrapper) LockScreenWallpaperExists(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.LockScreenWallpaperExists(ctx)
+}
+
+func (w *wallpaperManagerStubWrapper) IsStaticWallpaper(
+	ctx context.Context,
+	which int32,
+) (bool, error) {
+	return w.impl.IsStaticWallpaper(ctx, which)
+}
+
+var _ IWallpaperManager = (*wallpaperManagerStubWrapper)(nil)
+
+// NewWallpaperManagerStub creates a server-side IWallpaperManager wrapping the given
+// server implementation. The returned value satisfies IWallpaperManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWallpaperManagerStub(
+	impl IWallpaperManagerServer,
+) IWallpaperManager {
+	wrapper := &wallpaperManagerStubWrapper{impl: impl}
+	stub := &WallpaperManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

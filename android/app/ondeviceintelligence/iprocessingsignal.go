@@ -78,3 +78,42 @@ func (s *ProcessingSignalStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProcessingSignalServer is the server-side interface that user implementations
+// provide to NewProcessingSignalStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProcessingSignalServer interface {
+	SendSignal(ctx context.Context, actionParams interface{}) error
+}
+
+type processingSignalStubWrapper struct {
+	impl       IProcessingSignalServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *processingSignalStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *processingSignalStubWrapper) SendSignal(
+	ctx context.Context,
+	actionParams interface{},
+) error {
+	return w.impl.SendSignal(ctx, actionParams)
+}
+
+var _ IProcessingSignal = (*processingSignalStubWrapper)(nil)
+
+// NewProcessingSignalStub creates a server-side IProcessingSignal wrapping the given
+// server implementation. The returned value satisfies IProcessingSignal
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProcessingSignalStub(
+	impl IProcessingSignalServer,
+) IProcessingSignal {
+	wrapper := &processingSignalStubWrapper{impl: impl}
+	stub := &ProcessingSignalStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

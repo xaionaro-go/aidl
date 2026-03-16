@@ -75,7 +75,7 @@ func (p *BackupAgentProxy) DoBackup(
 	_data.WriteFileDescriptor(data)
 	_data.WriteFileDescriptor(newState)
 	_data.WriteInt64(quotaBytes)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(transportFlags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupAgent, "doBackup")
@@ -101,7 +101,7 @@ func (p *BackupAgentProxy) DoRestore(
 	_data.WriteInt64(appVersionCode)
 	_data.WriteFileDescriptor(newState)
 	_data.WriteInt32(token)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupAgent, "doRestore")
 	if _err != nil {
@@ -127,7 +127,7 @@ func (p *BackupAgentProxy) DoRestoreWithExcludedKeys(
 	_data.WriteInt64(appVersionCode)
 	_data.WriteFileDescriptor(newState)
 	_data.WriteInt32(token)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 	if excludedKeys == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -159,7 +159,7 @@ func (p *BackupAgentProxy) DoFullBackup(
 	_data.WriteFileDescriptor(data)
 	_data.WriteInt64(quotaBytes)
 	_data.WriteInt32(token)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(transportFlags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupAgent, "doFullBackup")
@@ -182,7 +182,7 @@ func (p *BackupAgentProxy) DoMeasureFullBackup(
 	_data.WriteInterfaceToken(DescriptorIBackupAgent)
 	_data.WriteInt64(quotaBytes)
 	_data.WriteInt32(token)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(transportFlags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupAgent, "doMeasureFullBackup")
@@ -204,7 +204,7 @@ func (p *BackupAgentProxy) DoQuotaExceeded(
 	_data.WriteInterfaceToken(DescriptorIBackupAgent)
 	_data.WriteInt64(backupDataBytes)
 	_data.WriteInt64(quotaBytes)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupAgent, "doQuotaExceeded")
 	if _err != nil {
@@ -237,7 +237,7 @@ func (p *BackupAgentProxy) DoRestoreFile(
 	_data.WriteInt64(mode)
 	_data.WriteInt64(mtime)
 	_data.WriteInt32(token)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupAgent, "doRestoreFile")
 	if _err != nil {
@@ -256,7 +256,7 @@ func (p *BackupAgentProxy) DoRestoreFinished(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupAgent)
 	_data.WriteInt32(token)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupAgent, "doRestoreFinished")
 	if _err != nil {
@@ -619,4 +619,162 @@ func (s *BackupAgentStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBackupAgentServer is the server-side interface that user implementations
+// provide to NewBackupAgentStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackupAgentServer interface {
+	DoBackup(ctx context.Context, oldState int32, data int32, newState int32, quotaBytes int64, callbackBinder backup.IBackupCallback, transportFlags int32) error
+	DoRestore(ctx context.Context, data int32, appVersionCode int64, newState int32, token int32, callbackBinder backup.IBackupManager) error
+	DoRestoreWithExcludedKeys(ctx context.Context, data int32, appVersionCode int64, newState int32, token int32, callbackBinder backup.IBackupManager, excludedKeys []string) error
+	DoFullBackup(ctx context.Context, data int32, quotaBytes int64, token int32, callbackBinder backup.IBackupManager, transportFlags int32) error
+	DoMeasureFullBackup(ctx context.Context, quotaBytes int64, token int32, callbackBinder backup.IBackupManager, transportFlags int32) error
+	DoQuotaExceeded(ctx context.Context, backupDataBytes int64, quotaBytes int64, callbackBinder backup.IBackupCallback) error
+	DoRestoreFile(ctx context.Context, data int32, size int64, type_ int32, domain string, path string, mode int64, mtime int64, token int32, callbackBinder backup.IBackupManager) error
+	DoRestoreFinished(ctx context.Context, token int32, callbackBinder backup.IBackupManager) error
+	Fail(ctx context.Context, message string) error
+	GetLoggerResults(ctx context.Context, resultsFuture infra.AndroidFuture) error
+	GetOperationType(ctx context.Context, operationTypeFuture infra.AndroidFuture) error
+	ClearBackupRestoreEventLogger(ctx context.Context) error
+}
+
+type backupAgentStubWrapper struct {
+	impl       IBackupAgentServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backupAgentStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backupAgentStubWrapper) DoBackup(
+	ctx context.Context,
+	oldState int32,
+	data int32,
+	newState int32,
+	quotaBytes int64,
+	callbackBinder backup.IBackupCallback,
+	transportFlags int32,
+) error {
+	return w.impl.DoBackup(ctx, oldState, data, newState, quotaBytes, callbackBinder, transportFlags)
+}
+
+func (w *backupAgentStubWrapper) DoRestore(
+	ctx context.Context,
+	data int32,
+	appVersionCode int64,
+	newState int32,
+	token int32,
+	callbackBinder backup.IBackupManager,
+) error {
+	return w.impl.DoRestore(ctx, data, appVersionCode, newState, token, callbackBinder)
+}
+
+func (w *backupAgentStubWrapper) DoRestoreWithExcludedKeys(
+	ctx context.Context,
+	data int32,
+	appVersionCode int64,
+	newState int32,
+	token int32,
+	callbackBinder backup.IBackupManager,
+	excludedKeys []string,
+) error {
+	return w.impl.DoRestoreWithExcludedKeys(ctx, data, appVersionCode, newState, token, callbackBinder, excludedKeys)
+}
+
+func (w *backupAgentStubWrapper) DoFullBackup(
+	ctx context.Context,
+	data int32,
+	quotaBytes int64,
+	token int32,
+	callbackBinder backup.IBackupManager,
+	transportFlags int32,
+) error {
+	return w.impl.DoFullBackup(ctx, data, quotaBytes, token, callbackBinder, transportFlags)
+}
+
+func (w *backupAgentStubWrapper) DoMeasureFullBackup(
+	ctx context.Context,
+	quotaBytes int64,
+	token int32,
+	callbackBinder backup.IBackupManager,
+	transportFlags int32,
+) error {
+	return w.impl.DoMeasureFullBackup(ctx, quotaBytes, token, callbackBinder, transportFlags)
+}
+
+func (w *backupAgentStubWrapper) DoQuotaExceeded(
+	ctx context.Context,
+	backupDataBytes int64,
+	quotaBytes int64,
+	callbackBinder backup.IBackupCallback,
+) error {
+	return w.impl.DoQuotaExceeded(ctx, backupDataBytes, quotaBytes, callbackBinder)
+}
+
+func (w *backupAgentStubWrapper) DoRestoreFile(
+	ctx context.Context,
+	data int32,
+	size int64,
+	type_ int32,
+	domain string,
+	path string,
+	mode int64,
+	mtime int64,
+	token int32,
+	callbackBinder backup.IBackupManager,
+) error {
+	return w.impl.DoRestoreFile(ctx, data, size, type_, domain, path, mode, mtime, token, callbackBinder)
+}
+
+func (w *backupAgentStubWrapper) DoRestoreFinished(
+	ctx context.Context,
+	token int32,
+	callbackBinder backup.IBackupManager,
+) error {
+	return w.impl.DoRestoreFinished(ctx, token, callbackBinder)
+}
+
+func (w *backupAgentStubWrapper) Fail(
+	ctx context.Context,
+	message string,
+) error {
+	return w.impl.Fail(ctx, message)
+}
+
+func (w *backupAgentStubWrapper) GetLoggerResults(
+	ctx context.Context,
+	resultsFuture infra.AndroidFuture,
+) error {
+	return w.impl.GetLoggerResults(ctx, resultsFuture)
+}
+
+func (w *backupAgentStubWrapper) GetOperationType(
+	ctx context.Context,
+	operationTypeFuture infra.AndroidFuture,
+) error {
+	return w.impl.GetOperationType(ctx, operationTypeFuture)
+}
+
+func (w *backupAgentStubWrapper) ClearBackupRestoreEventLogger(
+	ctx context.Context,
+) error {
+	return w.impl.ClearBackupRestoreEventLogger(ctx)
+}
+
+var _ IBackupAgent = (*backupAgentStubWrapper)(nil)
+
+// NewBackupAgentStub creates a server-side IBackupAgent wrapping the given
+// server implementation. The returned value satisfies IBackupAgent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackupAgentStub(
+	impl IBackupAgentServer,
+) IBackupAgent {
+	wrapper := &backupAgentStubWrapper{impl: impl}
+	stub := &BackupAgentStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

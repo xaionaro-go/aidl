@@ -78,3 +78,42 @@ func (s *TranslationCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITranslationCallbackServer is the server-side interface that user implementations
+// provide to NewTranslationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITranslationCallbackServer interface {
+	OnTranslationResponse(ctx context.Context, translationResponse interface{}) error
+}
+
+type translationCallbackStubWrapper struct {
+	impl       ITranslationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *translationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *translationCallbackStubWrapper) OnTranslationResponse(
+	ctx context.Context,
+	translationResponse interface{},
+) error {
+	return w.impl.OnTranslationResponse(ctx, translationResponse)
+}
+
+var _ ITranslationCallback = (*translationCallbackStubWrapper)(nil)
+
+// NewTranslationCallbackStub creates a server-side ITranslationCallback wrapping the given
+// server implementation. The returned value satisfies ITranslationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTranslationCallbackStub(
+	impl ITranslationCallbackServer,
+) ITranslationCallback {
+	wrapper := &translationCallbackStubWrapper{impl: impl}
+	stub := &TranslationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

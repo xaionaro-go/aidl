@@ -59,7 +59,7 @@ func (p *WwanSelectorCallbackProxy) OnRequestEmergencyNetworkScan(
 	}
 	_data.WriteInt32(scanType)
 	_data.WriteBool(resetScan)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWwanSelectorCallback, "onRequestEmergencyNetworkScan")
 	if _err != nil {
@@ -164,4 +164,62 @@ func (s *WwanSelectorCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWwanSelectorCallbackServer is the server-side interface that user implementations
+// provide to NewWwanSelectorCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWwanSelectorCallbackServer interface {
+	OnRequestEmergencyNetworkScan(ctx context.Context, preferredNetworks []int32, scanType int32, resetScan bool, cb IWwanSelectorResultCallback) error
+	OnDomainSelected(ctx context.Context, domain int32, useEmergencyPdn bool) error
+	OnCancel(ctx context.Context) error
+}
+
+type wwanSelectorCallbackStubWrapper struct {
+	impl       IWwanSelectorCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wwanSelectorCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wwanSelectorCallbackStubWrapper) OnRequestEmergencyNetworkScan(
+	ctx context.Context,
+	preferredNetworks []int32,
+	scanType int32,
+	resetScan bool,
+	cb IWwanSelectorResultCallback,
+) error {
+	return w.impl.OnRequestEmergencyNetworkScan(ctx, preferredNetworks, scanType, resetScan, cb)
+}
+
+func (w *wwanSelectorCallbackStubWrapper) OnDomainSelected(
+	ctx context.Context,
+	domain int32,
+	useEmergencyPdn bool,
+) error {
+	return w.impl.OnDomainSelected(ctx, domain, useEmergencyPdn)
+}
+
+func (w *wwanSelectorCallbackStubWrapper) OnCancel(
+	ctx context.Context,
+) error {
+	return w.impl.OnCancel(ctx)
+}
+
+var _ IWwanSelectorCallback = (*wwanSelectorCallbackStubWrapper)(nil)
+
+// NewWwanSelectorCallbackStub creates a server-side IWwanSelectorCallback wrapping the given
+// server implementation. The returned value satisfies IWwanSelectorCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWwanSelectorCallbackStub(
+	impl IWwanSelectorCallbackServer,
+) IWwanSelectorCallback {
+	wrapper := &wwanSelectorCallbackStubWrapper{impl: impl}
+	stub := &WwanSelectorCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

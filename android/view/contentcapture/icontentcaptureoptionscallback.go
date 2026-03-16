@@ -3,7 +3,6 @@ package contentcapture
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type IContentCaptureOptionsCallback interface {
 	AsBinder() binder.IBinder
-	SetContentCaptureOptions(ctx context.Context, options content.ContentCaptureOptions) error
+	SetContentCaptureOptions(ctx context.Context, options interface{}) error
 }
 
 type ContentCaptureOptionsCallbackProxy struct {
@@ -39,14 +38,10 @@ var _ IContentCaptureOptionsCallback = (*ContentCaptureOptionsCallbackProxy)(nil
 
 func (p *ContentCaptureOptionsCallbackProxy) SetContentCaptureOptions(
 	ctx context.Context,
-	options content.ContentCaptureOptions,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureOptionsCallback)
-	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureOptionsCallback, "setContentCaptureOptions")
 	if _err != nil {
@@ -75,22 +70,50 @@ func (s *ContentCaptureOptionsCallbackStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_options content.ContentCaptureOptions
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_options interface{}
 		_err := s.Impl.SetContentCaptureOptions(ctx, _arg_options)
 		_ = _err
 		return nil, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContentCaptureOptionsCallbackServer is the server-side interface that user implementations
+// provide to NewContentCaptureOptionsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentCaptureOptionsCallbackServer interface {
+	SetContentCaptureOptions(ctx context.Context, options interface{}) error
+}
+
+type contentCaptureOptionsCallbackStubWrapper struct {
+	impl       IContentCaptureOptionsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentCaptureOptionsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentCaptureOptionsCallbackStubWrapper) SetContentCaptureOptions(
+	ctx context.Context,
+	options interface{},
+) error {
+	return w.impl.SetContentCaptureOptions(ctx, options)
+}
+
+var _ IContentCaptureOptionsCallback = (*contentCaptureOptionsCallbackStubWrapper)(nil)
+
+// NewContentCaptureOptionsCallbackStub creates a server-side IContentCaptureOptionsCallback wrapping the given
+// server implementation. The returned value satisfies IContentCaptureOptionsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentCaptureOptionsCallbackStub(
+	impl IContentCaptureOptionsCallbackServer,
+) IContentCaptureOptionsCallback {
+	wrapper := &contentCaptureOptionsCallbackStubWrapper{impl: impl}
+	stub := &ContentCaptureOptionsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

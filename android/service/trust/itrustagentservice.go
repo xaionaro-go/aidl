@@ -182,7 +182,7 @@ func (p *TrustAgentServiceProxy) OnConfigure(
 	} else {
 		_data.WriteInt32(int32(len(options)))
 	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustAgentService, "onConfigure")
 	if _err != nil {
@@ -199,7 +199,7 @@ func (p *TrustAgentServiceProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustAgentService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustAgentService, "setCallback")
 	if _err != nil {
@@ -436,4 +436,132 @@ func (s *TrustAgentServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITrustAgentServiceServer is the server-side interface that user implementations
+// provide to NewTrustAgentServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITrustAgentServiceServer interface {
+	OnUnlockAttempt(ctx context.Context, successful bool) error
+	OnUserRequestedUnlock(ctx context.Context, dismissKeyguard bool) error
+	OnUserMayRequestUnlock(ctx context.Context) error
+	OnUnlockLockout(ctx context.Context, timeoutMs int32) error
+	OnTrustTimeout(ctx context.Context) error
+	OnDeviceLocked(ctx context.Context) error
+	OnDeviceUnlocked(ctx context.Context) error
+	OnConfigure(ctx context.Context, options []interface{}, token binder.IBinder) error
+	SetCallback(ctx context.Context, callback ITrustAgentServiceCallback) error
+	OnEscrowTokenAdded(ctx context.Context, token []byte, handle int64, user os.UserHandle) error
+	OnTokenStateReceived(ctx context.Context, handle int64, tokenState int32) error
+	OnEscrowTokenRemoved(ctx context.Context, handle int64, successful bool) error
+}
+
+type trustAgentServiceStubWrapper struct {
+	impl       ITrustAgentServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *trustAgentServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *trustAgentServiceStubWrapper) OnUnlockAttempt(
+	ctx context.Context,
+	successful bool,
+) error {
+	return w.impl.OnUnlockAttempt(ctx, successful)
+}
+
+func (w *trustAgentServiceStubWrapper) OnUserRequestedUnlock(
+	ctx context.Context,
+	dismissKeyguard bool,
+) error {
+	return w.impl.OnUserRequestedUnlock(ctx, dismissKeyguard)
+}
+
+func (w *trustAgentServiceStubWrapper) OnUserMayRequestUnlock(
+	ctx context.Context,
+) error {
+	return w.impl.OnUserMayRequestUnlock(ctx)
+}
+
+func (w *trustAgentServiceStubWrapper) OnUnlockLockout(
+	ctx context.Context,
+	timeoutMs int32,
+) error {
+	return w.impl.OnUnlockLockout(ctx, timeoutMs)
+}
+
+func (w *trustAgentServiceStubWrapper) OnTrustTimeout(
+	ctx context.Context,
+) error {
+	return w.impl.OnTrustTimeout(ctx)
+}
+
+func (w *trustAgentServiceStubWrapper) OnDeviceLocked(
+	ctx context.Context,
+) error {
+	return w.impl.OnDeviceLocked(ctx)
+}
+
+func (w *trustAgentServiceStubWrapper) OnDeviceUnlocked(
+	ctx context.Context,
+) error {
+	return w.impl.OnDeviceUnlocked(ctx)
+}
+
+func (w *trustAgentServiceStubWrapper) OnConfigure(
+	ctx context.Context,
+	options []interface{},
+	token binder.IBinder,
+) error {
+	return w.impl.OnConfigure(ctx, options, token)
+}
+
+func (w *trustAgentServiceStubWrapper) SetCallback(
+	ctx context.Context,
+	callback ITrustAgentServiceCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *trustAgentServiceStubWrapper) OnEscrowTokenAdded(
+	ctx context.Context,
+	token []byte,
+	handle int64,
+	user os.UserHandle,
+) error {
+	return w.impl.OnEscrowTokenAdded(ctx, token, handle, user)
+}
+
+func (w *trustAgentServiceStubWrapper) OnTokenStateReceived(
+	ctx context.Context,
+	handle int64,
+	tokenState int32,
+) error {
+	return w.impl.OnTokenStateReceived(ctx, handle, tokenState)
+}
+
+func (w *trustAgentServiceStubWrapper) OnEscrowTokenRemoved(
+	ctx context.Context,
+	handle int64,
+	successful bool,
+) error {
+	return w.impl.OnEscrowTokenRemoved(ctx, handle, successful)
+}
+
+var _ ITrustAgentService = (*trustAgentServiceStubWrapper)(nil)
+
+// NewTrustAgentServiceStub creates a server-side ITrustAgentService wrapping the given
+// server implementation. The returned value satisfies ITrustAgentService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTrustAgentServiceStub(
+	impl ITrustAgentServiceServer,
+) ITrustAgentService {
+	wrapper := &trustAgentServiceStubWrapper{impl: impl}
+	stub := &TrustAgentServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

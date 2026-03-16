@@ -154,3 +154,60 @@ func (s *GroupCallCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGroupCallCallbackServer is the server-side interface that user implementations
+// provide to NewGroupCallCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGroupCallCallbackServer interface {
+	OnError(ctx context.Context, errorCode int32, message string) error
+	OnGroupCallStateChanged(ctx context.Context, state int32, reason int32) error
+	OnBroadcastSignalStrengthUpdated(ctx context.Context, signalStrength int32) error
+}
+
+type groupCallCallbackStubWrapper struct {
+	impl       IGroupCallCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *groupCallCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *groupCallCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorCode, message)
+}
+
+func (w *groupCallCallbackStubWrapper) OnGroupCallStateChanged(
+	ctx context.Context,
+	state int32,
+	reason int32,
+) error {
+	return w.impl.OnGroupCallStateChanged(ctx, state, reason)
+}
+
+func (w *groupCallCallbackStubWrapper) OnBroadcastSignalStrengthUpdated(
+	ctx context.Context,
+	signalStrength int32,
+) error {
+	return w.impl.OnBroadcastSignalStrengthUpdated(ctx, signalStrength)
+}
+
+var _ IGroupCallCallback = (*groupCallCallbackStubWrapper)(nil)
+
+// NewGroupCallCallbackStub creates a server-side IGroupCallCallback wrapping the given
+// server implementation. The returned value satisfies IGroupCallCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGroupCallCallbackStub(
+	impl IGroupCallCallbackServer,
+) IGroupCallCallback {
+	wrapper := &groupCallCallbackStubWrapper{impl: impl}
+	stub := &GroupCallCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

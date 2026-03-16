@@ -106,7 +106,7 @@ func (p *BinderThreadPriorityServiceProxy) CallBack(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderThreadPriorityService)
-	_data.WriteStrongBinder(recurse.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, recurse.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderThreadPriorityService, "callBack")
 	if _err != nil {
@@ -134,7 +134,7 @@ func (p *BinderThreadPriorityServiceProxy) SetPriorityAndCallBack(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderThreadPriorityService)
 	_data.WriteInt32(priority)
-	_data.WriteStrongBinder(recurse.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, recurse.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderThreadPriorityService, "setPriorityAndCallBack")
 	if _err != nil {
@@ -231,4 +231,66 @@ func (s *BinderThreadPriorityServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBinderThreadPriorityServiceServer is the server-side interface that user implementations
+// provide to NewBinderThreadPriorityServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderThreadPriorityServiceServer interface {
+	GetThreadPriority(ctx context.Context) (int32, error)
+	GetThreadSchedulerGroup(ctx context.Context) (string, error)
+	CallBack(ctx context.Context, recurse IBinderThreadPriorityService) error
+	SetPriorityAndCallBack(ctx context.Context, priority int32, recurse IBinderThreadPriorityService) error
+}
+
+type binderThreadPriorityServiceStubWrapper struct {
+	impl       IBinderThreadPriorityServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderThreadPriorityServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderThreadPriorityServiceStubWrapper) GetThreadPriority(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetThreadPriority(ctx)
+}
+
+func (w *binderThreadPriorityServiceStubWrapper) GetThreadSchedulerGroup(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetThreadSchedulerGroup(ctx)
+}
+
+func (w *binderThreadPriorityServiceStubWrapper) CallBack(
+	ctx context.Context,
+	recurse IBinderThreadPriorityService,
+) error {
+	return w.impl.CallBack(ctx, recurse)
+}
+
+func (w *binderThreadPriorityServiceStubWrapper) SetPriorityAndCallBack(
+	ctx context.Context,
+	priority int32,
+	recurse IBinderThreadPriorityService,
+) error {
+	return w.impl.SetPriorityAndCallBack(ctx, priority, recurse)
+}
+
+var _ IBinderThreadPriorityService = (*binderThreadPriorityServiceStubWrapper)(nil)
+
+// NewBinderThreadPriorityServiceStub creates a server-side IBinderThreadPriorityService wrapping the given
+// server implementation. The returned value satisfies IBinderThreadPriorityService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderThreadPriorityServiceStub(
+	impl IBinderThreadPriorityServiceServer,
+) IBinderThreadPriorityService {
+	wrapper := &binderThreadPriorityServiceStubWrapper{impl: impl}
+	stub := &BinderThreadPriorityServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

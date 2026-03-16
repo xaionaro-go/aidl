@@ -82,3 +82,42 @@ func (s *SwitchToSubscriptionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISwitchToSubscriptionCallbackServer is the server-side interface that user implementations
+// provide to NewSwitchToSubscriptionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISwitchToSubscriptionCallbackServer interface {
+	OnComplete(ctx context.Context, result int32) error
+}
+
+type switchToSubscriptionCallbackStubWrapper struct {
+	impl       ISwitchToSubscriptionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *switchToSubscriptionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *switchToSubscriptionCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ ISwitchToSubscriptionCallback = (*switchToSubscriptionCallbackStubWrapper)(nil)
+
+// NewSwitchToSubscriptionCallbackStub creates a server-side ISwitchToSubscriptionCallback wrapping the given
+// server implementation. The returned value satisfies ISwitchToSubscriptionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSwitchToSubscriptionCallbackStub(
+	impl ISwitchToSubscriptionCallbackServer,
+) ISwitchToSubscriptionCallback {
+	wrapper := &switchToSubscriptionCallbackStubWrapper{impl: impl}
+	stub := &SwitchToSubscriptionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

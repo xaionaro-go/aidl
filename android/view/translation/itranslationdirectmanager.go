@@ -54,8 +54,8 @@ func (p *TranslationDirectManagerProxy) OnTranslationRequest(
 		return _err
 	}
 	_data.WriteInt32(sessionId)
-	_data.WriteStrongBinder(transport.AsBinder().Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, transport.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationDirectManager, "onTranslationRequest")
 	if _err != nil {
@@ -140,4 +140,54 @@ func (s *TranslationDirectManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITranslationDirectManagerServer is the server-side interface that user implementations
+// provide to NewTranslationDirectManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITranslationDirectManagerServer interface {
+	OnTranslationRequest(ctx context.Context, request TranslationRequest, sessionId int32, transport ondeviceintelligence.ICancellationSignal, callback serviceTranslation.ITranslationCallback) error
+	OnFinishTranslationSession(ctx context.Context, sessionId int32) error
+}
+
+type translationDirectManagerStubWrapper struct {
+	impl       ITranslationDirectManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *translationDirectManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *translationDirectManagerStubWrapper) OnTranslationRequest(
+	ctx context.Context,
+	request TranslationRequest,
+	sessionId int32,
+	transport ondeviceintelligence.ICancellationSignal,
+	callback serviceTranslation.ITranslationCallback,
+) error {
+	return w.impl.OnTranslationRequest(ctx, request, sessionId, transport, callback)
+}
+
+func (w *translationDirectManagerStubWrapper) OnFinishTranslationSession(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnFinishTranslationSession(ctx, sessionId)
+}
+
+var _ ITranslationDirectManager = (*translationDirectManagerStubWrapper)(nil)
+
+// NewTranslationDirectManagerStub creates a server-side ITranslationDirectManager wrapping the given
+// server implementation. The returned value satisfies ITranslationDirectManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTranslationDirectManagerStub(
+	impl ITranslationDirectManagerServer,
+) ITranslationDirectManager {
+	wrapper := &translationDirectManagerStubWrapper{impl: impl}
+	stub := &TranslationDirectManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

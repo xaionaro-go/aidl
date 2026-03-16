@@ -196,3 +196,68 @@ func (s *EffectClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEffectClientServer is the server-side interface that user implementations
+// provide to NewEffectClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEffectClientServer interface {
+	ControlStatusChanged(ctx context.Context, controlGranted bool) error
+	EnableStatusChanged(ctx context.Context, enabled bool) error
+	CommandExecuted(ctx context.Context, cmdCode int32, cmdData []byte, replyData []byte) error
+	FramesProcessed(ctx context.Context, frames int32) error
+}
+
+type effectClientStubWrapper struct {
+	impl       IEffectClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *effectClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *effectClientStubWrapper) ControlStatusChanged(
+	ctx context.Context,
+	controlGranted bool,
+) error {
+	return w.impl.ControlStatusChanged(ctx, controlGranted)
+}
+
+func (w *effectClientStubWrapper) EnableStatusChanged(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.EnableStatusChanged(ctx, enabled)
+}
+
+func (w *effectClientStubWrapper) CommandExecuted(
+	ctx context.Context,
+	cmdCode int32,
+	cmdData []byte,
+	replyData []byte,
+) error {
+	return w.impl.CommandExecuted(ctx, cmdCode, cmdData, replyData)
+}
+
+func (w *effectClientStubWrapper) FramesProcessed(
+	ctx context.Context,
+	frames int32,
+) error {
+	return w.impl.FramesProcessed(ctx, frames)
+}
+
+var _ IEffectClient = (*effectClientStubWrapper)(nil)
+
+// NewEffectClientStub creates a server-side IEffectClient wrapping the given
+// server implementation. The returned value satisfies IEffectClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEffectClientStub(
+	impl IEffectClientServer,
+) IEffectClient {
+	wrapper := &effectClientStubWrapper{impl: impl}
+	stub := &EffectClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

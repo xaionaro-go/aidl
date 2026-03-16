@@ -293,3 +293,71 @@ func (s *BroadcastTimeStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBroadcastTimeServer is the server-side interface that user implementations
+// provide to NewBroadcastTimeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBroadcastTimeServer interface {
+	GetUtcTime(ctx context.Context) (int64, error)
+	GetLocalTime(ctx context.Context) (int64, error)
+	GetTimeZoneInfo(ctx context.Context) (os.Bundle, error)
+	GetUtcTimePerStream(ctx context.Context, SessionToken string) (int64, error)
+	GetLocalTimePerStream(ctx context.Context, SessionToken string) (int64, error)
+}
+
+type broadcastTimeStubWrapper struct {
+	impl       IBroadcastTimeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *broadcastTimeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *broadcastTimeStubWrapper) GetUtcTime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetUtcTime(ctx)
+}
+
+func (w *broadcastTimeStubWrapper) GetLocalTime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetLocalTime(ctx)
+}
+
+func (w *broadcastTimeStubWrapper) GetTimeZoneInfo(
+	ctx context.Context,
+) (os.Bundle, error) {
+	return w.impl.GetTimeZoneInfo(ctx)
+}
+
+func (w *broadcastTimeStubWrapper) GetUtcTimePerStream(
+	ctx context.Context,
+	SessionToken string,
+) (int64, error) {
+	return w.impl.GetUtcTimePerStream(ctx, SessionToken)
+}
+
+func (w *broadcastTimeStubWrapper) GetLocalTimePerStream(
+	ctx context.Context,
+	SessionToken string,
+) (int64, error) {
+	return w.impl.GetLocalTimePerStream(ctx, SessionToken)
+}
+
+var _ IBroadcastTime = (*broadcastTimeStubWrapper)(nil)
+
+// NewBroadcastTimeStub creates a server-side IBroadcastTime wrapping the given
+// server implementation. The returned value satisfies IBroadcastTime
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBroadcastTimeStub(
+	impl IBroadcastTimeServer,
+) IBroadcastTime {
+	wrapper := &broadcastTimeStubWrapper{impl: impl}
+	stub := &BroadcastTimeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

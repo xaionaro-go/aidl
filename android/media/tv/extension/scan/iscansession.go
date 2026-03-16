@@ -1260,3 +1260,206 @@ func (s *ScanSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScanSessionServer is the server-side interface that user implementations
+// provide to NewScanSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScanSessionServer interface {
+	StartScan(ctx context.Context, broadcastType int32, countryCode string, operator string, frequency []int32, scanType string, languageCode string) (int32, error)
+	ResetScan(ctx context.Context) (int32, error)
+	CancelScan(ctx context.Context) (int32, error)
+	GetAvailableExtensionInterfaceNames(ctx context.Context) ([]string, error)
+	GetExtensionInterface(ctx context.Context, name string) (binder.IBinder, error)
+	ClearServiceList(ctx context.Context, optionalClearParams os.Bundle) (int32, error)
+	StoreServiceList(ctx context.Context) (int32, error)
+	GetServiceInfo(ctx context.Context, serviceInfoId string, keys []string) (os.Bundle, error)
+	GetServiceInfoIdList(ctx context.Context) ([]string, error)
+	GetServiceInfoList(ctx context.Context, filterInfo os.Bundle, keys []string) (os.Bundle, error)
+	UpdateServiceInfo(ctx context.Context, serviceInfo os.Bundle) (int32, error)
+	UpdateServiceInfoByList(ctx context.Context, serviceInfo []os.Bundle) (int32, error)
+	GetServiceLists(ctx context.Context) (os.Bundle, error)
+	SetServiceList(ctx context.Context, serviceListRecId int32) (int32, error)
+	GetPackageData(ctx context.Context) (os.Bundle, error)
+	SetPackage(ctx context.Context, packageId string) (int32, error)
+	GetCountryRegionData(ctx context.Context) (os.Bundle, error)
+	SetCountryRegion(ctx context.Context, regionId string) (int32, error)
+	GetRegionData(ctx context.Context) (os.Bundle, error)
+	SetRegion(ctx context.Context, regionId string) (int32, error)
+	GetSessionToken(ctx context.Context) (string, error)
+	Release(ctx context.Context) (int32, error)
+}
+
+type scanSessionStubWrapper struct {
+	impl       IScanSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scanSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scanSessionStubWrapper) StartScan(
+	ctx context.Context,
+	broadcastType int32,
+	countryCode string,
+	operator string,
+	frequency []int32,
+	scanType string,
+	languageCode string,
+) (int32, error) {
+	return w.impl.StartScan(ctx, broadcastType, countryCode, operator, frequency, scanType, languageCode)
+}
+
+func (w *scanSessionStubWrapper) ResetScan(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.ResetScan(ctx)
+}
+
+func (w *scanSessionStubWrapper) CancelScan(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.CancelScan(ctx)
+}
+
+func (w *scanSessionStubWrapper) GetAvailableExtensionInterfaceNames(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetAvailableExtensionInterfaceNames(ctx)
+}
+
+func (w *scanSessionStubWrapper) GetExtensionInterface(
+	ctx context.Context,
+	name string,
+) (binder.IBinder, error) {
+	return w.impl.GetExtensionInterface(ctx, name)
+}
+
+func (w *scanSessionStubWrapper) ClearServiceList(
+	ctx context.Context,
+	optionalClearParams os.Bundle,
+) (int32, error) {
+	return w.impl.ClearServiceList(ctx, optionalClearParams)
+}
+
+func (w *scanSessionStubWrapper) StoreServiceList(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.StoreServiceList(ctx)
+}
+
+func (w *scanSessionStubWrapper) GetServiceInfo(
+	ctx context.Context,
+	serviceInfoId string,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetServiceInfo(ctx, serviceInfoId, keys)
+}
+
+func (w *scanSessionStubWrapper) GetServiceInfoIdList(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetServiceInfoIdList(ctx)
+}
+
+func (w *scanSessionStubWrapper) GetServiceInfoList(
+	ctx context.Context,
+	filterInfo os.Bundle,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetServiceInfoList(ctx, filterInfo, keys)
+}
+
+func (w *scanSessionStubWrapper) UpdateServiceInfo(
+	ctx context.Context,
+	serviceInfo os.Bundle,
+) (int32, error) {
+	return w.impl.UpdateServiceInfo(ctx, serviceInfo)
+}
+
+func (w *scanSessionStubWrapper) UpdateServiceInfoByList(
+	ctx context.Context,
+	serviceInfo []os.Bundle,
+) (int32, error) {
+	return w.impl.UpdateServiceInfoByList(ctx, serviceInfo)
+}
+
+func (w *scanSessionStubWrapper) GetServiceLists(
+	ctx context.Context,
+) (os.Bundle, error) {
+	return w.impl.GetServiceLists(ctx)
+}
+
+func (w *scanSessionStubWrapper) SetServiceList(
+	ctx context.Context,
+	serviceListRecId int32,
+) (int32, error) {
+	return w.impl.SetServiceList(ctx, serviceListRecId)
+}
+
+func (w *scanSessionStubWrapper) GetPackageData(
+	ctx context.Context,
+) (os.Bundle, error) {
+	return w.impl.GetPackageData(ctx)
+}
+
+func (w *scanSessionStubWrapper) SetPackage(
+	ctx context.Context,
+	packageId string,
+) (int32, error) {
+	return w.impl.SetPackage(ctx, packageId)
+}
+
+func (w *scanSessionStubWrapper) GetCountryRegionData(
+	ctx context.Context,
+) (os.Bundle, error) {
+	return w.impl.GetCountryRegionData(ctx)
+}
+
+func (w *scanSessionStubWrapper) SetCountryRegion(
+	ctx context.Context,
+	regionId string,
+) (int32, error) {
+	return w.impl.SetCountryRegion(ctx, regionId)
+}
+
+func (w *scanSessionStubWrapper) GetRegionData(
+	ctx context.Context,
+) (os.Bundle, error) {
+	return w.impl.GetRegionData(ctx)
+}
+
+func (w *scanSessionStubWrapper) SetRegion(
+	ctx context.Context,
+	regionId string,
+) (int32, error) {
+	return w.impl.SetRegion(ctx, regionId)
+}
+
+func (w *scanSessionStubWrapper) GetSessionToken(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSessionToken(ctx)
+}
+
+func (w *scanSessionStubWrapper) Release(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Release(ctx)
+}
+
+var _ IScanSession = (*scanSessionStubWrapper)(nil)
+
+// NewScanSessionStub creates a server-side IScanSession wrapping the given
+// server implementation. The returned value satisfies IScanSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScanSessionStub(
+	impl IScanSessionServer,
+) IScanSession {
+	wrapper := &scanSessionStubWrapper{impl: impl}
+	stub := &ScanSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

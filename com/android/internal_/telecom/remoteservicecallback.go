@@ -127,3 +127,50 @@ func (s *RemoteServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// RemoteServiceCallbackServer is the server-side interface that user implementations
+// provide to NewRemoteServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type RemoteServiceCallbackServer interface {
+	OnError(ctx context.Context) error
+	OnResult(ctx context.Context, components []content.ComponentName, callServices []binder.IBinder) error
+}
+
+type remoteServiceCallbackStubWrapper struct {
+	impl       RemoteServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteServiceCallbackStubWrapper) OnError(
+	ctx context.Context,
+) error {
+	return w.impl.OnError(ctx)
+}
+
+func (w *remoteServiceCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	components []content.ComponentName,
+	callServices []binder.IBinder,
+) error {
+	return w.impl.OnResult(ctx, components, callServices)
+}
+
+var _ RemoteServiceCallback = (*remoteServiceCallbackStubWrapper)(nil)
+
+// NewRemoteServiceCallbackStub creates a server-side RemoteServiceCallback wrapping the given
+// server implementation. The returned value satisfies RemoteServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteServiceCallbackStub(
+	impl RemoteServiceCallbackServer,
+) RemoteServiceCallback {
+	wrapper := &remoteServiceCallbackStubWrapper{impl: impl}
+	stub := &RemoteServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

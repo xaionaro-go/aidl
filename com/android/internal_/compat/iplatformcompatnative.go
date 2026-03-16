@@ -274,3 +274,70 @@ func (s *PlatformCompatNativeStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPlatformCompatNativeServer is the server-side interface that user implementations
+// provide to NewPlatformCompatNativeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPlatformCompatNativeServer interface {
+	ReportChangeByPackageName(ctx context.Context, changeId int64, packageName string) error
+	ReportChangeByUid(ctx context.Context, changeId int64, uid int32) error
+	IsChangeEnabledByPackageName(ctx context.Context, changeId int64, packageName string) (bool, error)
+	IsChangeEnabledByUid(ctx context.Context, changeId int64, uid int32) (bool, error)
+}
+
+type platformCompatNativeStubWrapper struct {
+	impl       IPlatformCompatNativeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *platformCompatNativeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *platformCompatNativeStubWrapper) ReportChangeByPackageName(
+	ctx context.Context,
+	changeId int64,
+	packageName string,
+) error {
+	return w.impl.ReportChangeByPackageName(ctx, changeId, packageName)
+}
+
+func (w *platformCompatNativeStubWrapper) ReportChangeByUid(
+	ctx context.Context,
+	changeId int64,
+	uid int32,
+) error {
+	return w.impl.ReportChangeByUid(ctx, changeId, uid)
+}
+
+func (w *platformCompatNativeStubWrapper) IsChangeEnabledByPackageName(
+	ctx context.Context,
+	changeId int64,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsChangeEnabledByPackageName(ctx, changeId, packageName)
+}
+
+func (w *platformCompatNativeStubWrapper) IsChangeEnabledByUid(
+	ctx context.Context,
+	changeId int64,
+	uid int32,
+) (bool, error) {
+	return w.impl.IsChangeEnabledByUid(ctx, changeId, uid)
+}
+
+var _ IPlatformCompatNative = (*platformCompatNativeStubWrapper)(nil)
+
+// NewPlatformCompatNativeStub creates a server-side IPlatformCompatNative wrapping the given
+// server implementation. The returned value satisfies IPlatformCompatNative
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPlatformCompatNativeStub(
+	impl IPlatformCompatNativeServer,
+) IPlatformCompatNative {
+	wrapper := &platformCompatNativeStubWrapper{impl: impl}
+	stub := &PlatformCompatNativeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

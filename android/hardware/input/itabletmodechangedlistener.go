@@ -88,3 +88,43 @@ func (s *TabletModeChangedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITabletModeChangedListenerServer is the server-side interface that user implementations
+// provide to NewTabletModeChangedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITabletModeChangedListenerServer interface {
+	OnTabletModeChanged(ctx context.Context, whenNanos int64, inTabletMode bool) error
+}
+
+type tabletModeChangedListenerStubWrapper struct {
+	impl       ITabletModeChangedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tabletModeChangedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tabletModeChangedListenerStubWrapper) OnTabletModeChanged(
+	ctx context.Context,
+	whenNanos int64,
+	inTabletMode bool,
+) error {
+	return w.impl.OnTabletModeChanged(ctx, whenNanos, inTabletMode)
+}
+
+var _ ITabletModeChangedListener = (*tabletModeChangedListenerStubWrapper)(nil)
+
+// NewTabletModeChangedListenerStub creates a server-side ITabletModeChangedListener wrapping the given
+// server implementation. The returned value satisfies ITabletModeChangedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTabletModeChangedListenerStub(
+	impl ITabletModeChangedListenerServer,
+) ITabletModeChangedListener {
+	wrapper := &tabletModeChangedListenerStubWrapper{impl: impl}
+	stub := &TabletModeChangedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -55,3 +55,34 @@ func (s *HdrConversionConstantsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdrConversionConstantsServer is the server-side interface that user implementations
+// provide to NewHdrConversionConstantsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdrConversionConstantsServer interface {
+}
+
+type hdrConversionConstantsStubWrapper struct {
+	impl       IHdrConversionConstantsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdrConversionConstantsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IHdrConversionConstants = (*hdrConversionConstantsStubWrapper)(nil)
+
+// NewHdrConversionConstantsStub creates a server-side IHdrConversionConstants wrapping the given
+// server implementation. The returned value satisfies IHdrConversionConstants
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdrConversionConstantsStub(
+	impl IHdrConversionConstantsServer,
+) IHdrConversionConstants {
+	wrapper := &hdrConversionConstantsStubWrapper{impl: impl}
+	stub := &HdrConversionConstantsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

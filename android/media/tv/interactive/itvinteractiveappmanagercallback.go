@@ -231,3 +231,77 @@ func (s *TvInteractiveAppManagerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITvInteractiveAppManagerCallbackServer is the server-side interface that user implementations
+// provide to NewTvInteractiveAppManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInteractiveAppManagerCallbackServer interface {
+	OnInteractiveAppServiceAdded(ctx context.Context, iAppServiceId string) error
+	OnInteractiveAppServiceRemoved(ctx context.Context, iAppServiceId string) error
+	OnInteractiveAppServiceUpdated(ctx context.Context, iAppServiceId string) error
+	OnTvInteractiveAppServiceInfoUpdated(ctx context.Context, tvIAppInfo TvInteractiveAppServiceInfo) error
+	OnStateChanged(ctx context.Context, iAppServiceId string, type_ int32, state int32, err int32) error
+}
+
+type tvInteractiveAppManagerCallbackStubWrapper struct {
+	impl       ITvInteractiveAppManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInteractiveAppManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInteractiveAppManagerCallbackStubWrapper) OnInteractiveAppServiceAdded(
+	ctx context.Context,
+	iAppServiceId string,
+) error {
+	return w.impl.OnInteractiveAppServiceAdded(ctx, iAppServiceId)
+}
+
+func (w *tvInteractiveAppManagerCallbackStubWrapper) OnInteractiveAppServiceRemoved(
+	ctx context.Context,
+	iAppServiceId string,
+) error {
+	return w.impl.OnInteractiveAppServiceRemoved(ctx, iAppServiceId)
+}
+
+func (w *tvInteractiveAppManagerCallbackStubWrapper) OnInteractiveAppServiceUpdated(
+	ctx context.Context,
+	iAppServiceId string,
+) error {
+	return w.impl.OnInteractiveAppServiceUpdated(ctx, iAppServiceId)
+}
+
+func (w *tvInteractiveAppManagerCallbackStubWrapper) OnTvInteractiveAppServiceInfoUpdated(
+	ctx context.Context,
+	tvIAppInfo TvInteractiveAppServiceInfo,
+) error {
+	return w.impl.OnTvInteractiveAppServiceInfoUpdated(ctx, tvIAppInfo)
+}
+
+func (w *tvInteractiveAppManagerCallbackStubWrapper) OnStateChanged(
+	ctx context.Context,
+	iAppServiceId string,
+	type_ int32,
+	state int32,
+	err int32,
+) error {
+	return w.impl.OnStateChanged(ctx, iAppServiceId, type_, state, err)
+}
+
+var _ ITvInteractiveAppManagerCallback = (*tvInteractiveAppManagerCallbackStubWrapper)(nil)
+
+// NewTvInteractiveAppManagerCallbackStub creates a server-side ITvInteractiveAppManagerCallback wrapping the given
+// server implementation. The returned value satisfies ITvInteractiveAppManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInteractiveAppManagerCallbackStub(
+	impl ITvInteractiveAppManagerCallbackServer,
+) ITvInteractiveAppManagerCallback {
+	wrapper := &tvInteractiveAppManagerCallbackStubWrapper{impl: impl}
+	stub := &TvInteractiveAppManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

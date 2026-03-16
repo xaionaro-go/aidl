@@ -23,7 +23,11 @@ func (s *CreateEffectResponse) MarshalParcel(
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteInt32(s.Id)
 	p.WriteBool(s.Enabled)
-	p.WriteStrongBinder(s.Effect.AsBinder().Handle())
+	if s.Effect == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Effect.AsBinder().Handle())
+	}
 	if _err := s.Desc.MarshalParcel(p); _err != nil {
 		return _err
 	}

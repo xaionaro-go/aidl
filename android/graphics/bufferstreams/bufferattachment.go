@@ -18,7 +18,11 @@ func (s *BufferAttachment) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Owner.AsBinder().Handle())
+	if s.Owner == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Owner.AsBinder().Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

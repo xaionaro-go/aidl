@@ -378,3 +378,90 @@ func (s *GnssConfigurationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssConfigurationServer is the server-side interface that user implementations
+// provide to NewGnssConfigurationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssConfigurationServer interface {
+	SetSuplVersion(ctx context.Context, version int32) error
+	SetSuplMode(ctx context.Context, mode int32) error
+	SetLppProfile(ctx context.Context, lppProfile int32) error
+	SetGlonassPositioningProtocol(ctx context.Context, protocol int32) error
+	SetEmergencySuplPdn(ctx context.Context, enable bool) error
+	SetEsExtensionSec(ctx context.Context, emergencyExtensionSeconds int32) error
+	SetBlocklist(ctx context.Context, blocklist []BlocklistedSource) error
+}
+
+type gnssConfigurationStubWrapper struct {
+	impl       IGnssConfigurationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssConfigurationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssConfigurationStubWrapper) SetSuplVersion(
+	ctx context.Context,
+	version int32,
+) error {
+	return w.impl.SetSuplVersion(ctx, version)
+}
+
+func (w *gnssConfigurationStubWrapper) SetSuplMode(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.SetSuplMode(ctx, mode)
+}
+
+func (w *gnssConfigurationStubWrapper) SetLppProfile(
+	ctx context.Context,
+	lppProfile int32,
+) error {
+	return w.impl.SetLppProfile(ctx, lppProfile)
+}
+
+func (w *gnssConfigurationStubWrapper) SetGlonassPositioningProtocol(
+	ctx context.Context,
+	protocol int32,
+) error {
+	return w.impl.SetGlonassPositioningProtocol(ctx, protocol)
+}
+
+func (w *gnssConfigurationStubWrapper) SetEmergencySuplPdn(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetEmergencySuplPdn(ctx, enable)
+}
+
+func (w *gnssConfigurationStubWrapper) SetEsExtensionSec(
+	ctx context.Context,
+	emergencyExtensionSeconds int32,
+) error {
+	return w.impl.SetEsExtensionSec(ctx, emergencyExtensionSeconds)
+}
+
+func (w *gnssConfigurationStubWrapper) SetBlocklist(
+	ctx context.Context,
+	blocklist []BlocklistedSource,
+) error {
+	return w.impl.SetBlocklist(ctx, blocklist)
+}
+
+var _ IGnssConfiguration = (*gnssConfigurationStubWrapper)(nil)
+
+// NewGnssConfigurationStub creates a server-side IGnssConfiguration wrapping the given
+// server implementation. The returned value satisfies IGnssConfiguration
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssConfigurationStub(
+	impl IGnssConfigurationServer,
+) IGnssConfiguration {
+	wrapper := &gnssConfigurationStubWrapper{impl: impl}
+	stub := &GnssConfigurationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -93,3 +93,42 @@ func (s *KeyGestureEventListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyGestureEventListenerServer is the server-side interface that user implementations
+// provide to NewKeyGestureEventListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyGestureEventListenerServer interface {
+	OnKeyGestureEvent(ctx context.Context, event AidlKeyGestureEvent) error
+}
+
+type keyGestureEventListenerStubWrapper struct {
+	impl       IKeyGestureEventListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyGestureEventListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyGestureEventListenerStubWrapper) OnKeyGestureEvent(
+	ctx context.Context,
+	event AidlKeyGestureEvent,
+) error {
+	return w.impl.OnKeyGestureEvent(ctx, event)
+}
+
+var _ IKeyGestureEventListener = (*keyGestureEventListenerStubWrapper)(nil)
+
+// NewKeyGestureEventListenerStub creates a server-side IKeyGestureEventListener wrapping the given
+// server implementation. The returned value satisfies IKeyGestureEventListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyGestureEventListenerStub(
+	impl IKeyGestureEventListenerServer,
+) IKeyGestureEventListener {
+	wrapper := &keyGestureEventListenerStubWrapper{impl: impl}
+	stub := &KeyGestureEventListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

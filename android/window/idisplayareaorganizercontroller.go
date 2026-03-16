@@ -50,7 +50,7 @@ func (p *DisplayAreaOrganizerControllerProxy) RegisterOrganizer(
 	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayAreaOrganizerController)
-	_data.WriteStrongBinder(organizer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, organizer.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayAreaFeature)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayAreaOrganizerController, "registerOrganizer")
@@ -77,7 +77,7 @@ func (p *DisplayAreaOrganizerControllerProxy) UnregisterOrganizer(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayAreaOrganizerController)
-	_data.WriteStrongBinder(organizer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, organizer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayAreaOrganizerController, "unregisterOrganizer")
 	if _err != nil {
@@ -107,7 +107,7 @@ func (p *DisplayAreaOrganizerControllerProxy) CreateTaskDisplayArea(
 	var _result DisplayAreaAppearedInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayAreaOrganizerController)
-	_data.WriteStrongBinder(organizer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, organizer.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(parentFeatureId)
 	_data.WriteString16(name)
@@ -275,4 +275,71 @@ func (s *DisplayAreaOrganizerControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDisplayAreaOrganizerControllerServer is the server-side interface that user implementations
+// provide to NewDisplayAreaOrganizerControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayAreaOrganizerControllerServer interface {
+	RegisterOrganizer(ctx context.Context, organizer IDisplayAreaOrganizer, displayAreaFeature int32) (interface{}, error)
+	UnregisterOrganizer(ctx context.Context, organizer IDisplayAreaOrganizer) error
+	CreateTaskDisplayArea(ctx context.Context, organizer IDisplayAreaOrganizer, displayId int32, parentFeatureId int32, name string) (DisplayAreaAppearedInfo, error)
+	DeleteTaskDisplayArea(ctx context.Context, taskDisplayArea WindowContainerToken) error
+}
+
+type displayAreaOrganizerControllerStubWrapper struct {
+	impl       IDisplayAreaOrganizerControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayAreaOrganizerControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayAreaOrganizerControllerStubWrapper) RegisterOrganizer(
+	ctx context.Context,
+	organizer IDisplayAreaOrganizer,
+	displayAreaFeature int32,
+) (interface{}, error) {
+	return w.impl.RegisterOrganizer(ctx, organizer, displayAreaFeature)
+}
+
+func (w *displayAreaOrganizerControllerStubWrapper) UnregisterOrganizer(
+	ctx context.Context,
+	organizer IDisplayAreaOrganizer,
+) error {
+	return w.impl.UnregisterOrganizer(ctx, organizer)
+}
+
+func (w *displayAreaOrganizerControllerStubWrapper) CreateTaskDisplayArea(
+	ctx context.Context,
+	organizer IDisplayAreaOrganizer,
+	displayId int32,
+	parentFeatureId int32,
+	name string,
+) (DisplayAreaAppearedInfo, error) {
+	return w.impl.CreateTaskDisplayArea(ctx, organizer, displayId, parentFeatureId, name)
+}
+
+func (w *displayAreaOrganizerControllerStubWrapper) DeleteTaskDisplayArea(
+	ctx context.Context,
+	taskDisplayArea WindowContainerToken,
+) error {
+	return w.impl.DeleteTaskDisplayArea(ctx, taskDisplayArea)
+}
+
+var _ IDisplayAreaOrganizerController = (*displayAreaOrganizerControllerStubWrapper)(nil)
+
+// NewDisplayAreaOrganizerControllerStub creates a server-side IDisplayAreaOrganizerController wrapping the given
+// server implementation. The returned value satisfies IDisplayAreaOrganizerController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayAreaOrganizerControllerStub(
+	impl IDisplayAreaOrganizerControllerServer,
+) IDisplayAreaOrganizerController {
+	wrapper := &displayAreaOrganizerControllerStubWrapper{impl: impl}
+	stub := &DisplayAreaOrganizerControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

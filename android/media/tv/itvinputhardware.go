@@ -227,3 +227,63 @@ func (s *TvInputHardwareStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITvInputHardwareServer is the server-side interface that user implementations
+// provide to NewTvInputHardwareStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInputHardwareServer interface {
+	SetSurface(ctx context.Context, surface interface{}, config TvStreamConfig) (bool, error)
+	SetStreamVolume(ctx context.Context, volume float32) error
+	OverrideAudioSink(ctx context.Context, audioType int32, audioAddress string, samplingRate int32, channelMask int32, format int32) error
+}
+
+type tvInputHardwareStubWrapper struct {
+	impl       ITvInputHardwareServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInputHardwareStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInputHardwareStubWrapper) SetSurface(
+	ctx context.Context,
+	surface interface{},
+	config TvStreamConfig,
+) (bool, error) {
+	return w.impl.SetSurface(ctx, surface, config)
+}
+
+func (w *tvInputHardwareStubWrapper) SetStreamVolume(
+	ctx context.Context,
+	volume float32,
+) error {
+	return w.impl.SetStreamVolume(ctx, volume)
+}
+
+func (w *tvInputHardwareStubWrapper) OverrideAudioSink(
+	ctx context.Context,
+	audioType int32,
+	audioAddress string,
+	samplingRate int32,
+	channelMask int32,
+	format int32,
+) error {
+	return w.impl.OverrideAudioSink(ctx, audioType, audioAddress, samplingRate, channelMask, format)
+}
+
+var _ ITvInputHardware = (*tvInputHardwareStubWrapper)(nil)
+
+// NewTvInputHardwareStub creates a server-side ITvInputHardware wrapping the given
+// server implementation. The returned value satisfies ITvInputHardware
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInputHardwareStub(
+	impl ITvInputHardwareServer,
+) ITvInputHardware {
+	wrapper := &tvInputHardwareStubWrapper{impl: impl}
+	stub := &TvInputHardwareStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

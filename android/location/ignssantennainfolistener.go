@@ -90,3 +90,42 @@ func (s *GnssAntennaInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssAntennaInfoListenerServer is the server-side interface that user implementations
+// provide to NewGnssAntennaInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssAntennaInfoListenerServer interface {
+	OnGnssAntennaInfoChanged(ctx context.Context, antennaInfos []GnssAntennaInfo) error
+}
+
+type gnssAntennaInfoListenerStubWrapper struct {
+	impl       IGnssAntennaInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssAntennaInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssAntennaInfoListenerStubWrapper) OnGnssAntennaInfoChanged(
+	ctx context.Context,
+	antennaInfos []GnssAntennaInfo,
+) error {
+	return w.impl.OnGnssAntennaInfoChanged(ctx, antennaInfos)
+}
+
+var _ IGnssAntennaInfoListener = (*gnssAntennaInfoListenerStubWrapper)(nil)
+
+// NewGnssAntennaInfoListenerStub creates a server-side IGnssAntennaInfoListener wrapping the given
+// server implementation. The returned value satisfies IGnssAntennaInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssAntennaInfoListenerStub(
+	impl IGnssAntennaInfoListenerServer,
+) IGnssAntennaInfoListener {
+	wrapper := &gnssAntennaInfoListenerStubWrapper{impl: impl}
+	stub := &GnssAntennaInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -208,3 +208,67 @@ func (s *AppWidgetHostListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppWidgetHostListenerServer is the server-side interface that user implementations
+// provide to NewAppWidgetHostListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppWidgetHostListenerServer interface {
+	OnUpdateProviderInfo(ctx context.Context, appWidget *appwidget.AppWidgetProviderInfo) error
+	UpdateAppWidget(ctx context.Context, views *widget.RemoteViews) error
+	UpdateAppWidgetDeferred(ctx context.Context, packageName string, appWidgetId int32) error
+	OnViewDataChanged(ctx context.Context, viewId int32) error
+}
+
+type appWidgetHostListenerStubWrapper struct {
+	impl       IAppWidgetHostListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appWidgetHostListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appWidgetHostListenerStubWrapper) OnUpdateProviderInfo(
+	ctx context.Context,
+	appWidget *appwidget.AppWidgetProviderInfo,
+) error {
+	return w.impl.OnUpdateProviderInfo(ctx, appWidget)
+}
+
+func (w *appWidgetHostListenerStubWrapper) UpdateAppWidget(
+	ctx context.Context,
+	views *widget.RemoteViews,
+) error {
+	return w.impl.UpdateAppWidget(ctx, views)
+}
+
+func (w *appWidgetHostListenerStubWrapper) UpdateAppWidgetDeferred(
+	ctx context.Context,
+	packageName string,
+	appWidgetId int32,
+) error {
+	return w.impl.UpdateAppWidgetDeferred(ctx, packageName, appWidgetId)
+}
+
+func (w *appWidgetHostListenerStubWrapper) OnViewDataChanged(
+	ctx context.Context,
+	viewId int32,
+) error {
+	return w.impl.OnViewDataChanged(ctx, viewId)
+}
+
+var _ IAppWidgetHostListener = (*appWidgetHostListenerStubWrapper)(nil)
+
+// NewAppWidgetHostListenerStub creates a server-side IAppWidgetHostListener wrapping the given
+// server implementation. The returned value satisfies IAppWidgetHostListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppWidgetHostListenerStub(
+	impl IAppWidgetHostListenerServer,
+) IAppWidgetHostListener {
+	wrapper := &appWidgetHostListenerStubWrapper{impl: impl}
+	stub := &AppWidgetHostListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

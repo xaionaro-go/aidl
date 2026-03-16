@@ -1060,7 +1060,7 @@ func (p *TvInteractiveAppSessionProxy) CreateMediaView(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSession)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := frame.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1843,4 +1843,447 @@ func (s *TvInteractiveAppSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvInteractiveAppSessionServer is the server-side interface that user implementations
+// provide to NewTvInteractiveAppSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInteractiveAppSessionServer interface {
+	StartInteractiveApp(ctx context.Context) error
+	StopInteractiveApp(ctx context.Context) error
+	ResetInteractiveApp(ctx context.Context) error
+	CreateBiInteractiveApp(ctx context.Context, biIAppUri net.Uri, params os.Bundle) error
+	DestroyBiInteractiveApp(ctx context.Context, biIAppId string) error
+	SetTeletextAppEnabled(ctx context.Context, enable bool) error
+	SendCurrentVideoBounds(ctx context.Context, bounds graphics.Rect) error
+	SendCurrentChannelUri(ctx context.Context, channelUri net.Uri) error
+	SendCurrentChannelLcn(ctx context.Context, lcn int32) error
+	SendStreamVolume(ctx context.Context, volume float32) error
+	SendTrackInfoList(ctx context.Context, tracks []tv.TvTrackInfo) error
+	SendCurrentTvInputId(ctx context.Context, inputId string) error
+	SendTimeShiftMode(ctx context.Context, mode int32) error
+	SendAvailableSpeeds(ctx context.Context, speeds []float32) error
+	SendSigningResult(ctx context.Context, signingId string, result []byte) error
+	SendCertificate(ctx context.Context, host string, port int32, certBundle os.Bundle) error
+	SendTvRecordingInfo(ctx context.Context, recordingInfo tv.TvRecordingInfo) error
+	SendTvRecordingInfoList(ctx context.Context, recordingInfoList []tv.TvRecordingInfo) error
+	NotifyError(ctx context.Context, errMsg string, params os.Bundle) error
+	NotifyTimeShiftPlaybackParams(ctx context.Context, params media.PlaybackParams) error
+	NotifyTimeShiftStatusChanged(ctx context.Context, inputId string, status int32) error
+	NotifyTimeShiftStartPositionChanged(ctx context.Context, inputId string, timeMs int64) error
+	NotifyTimeShiftCurrentPositionChanged(ctx context.Context, inputId string, timeMs int64) error
+	NotifyRecordingConnectionFailed(ctx context.Context, recordingId string, inputId string) error
+	NotifyRecordingDisconnected(ctx context.Context, recordingId string, inputId string) error
+	NotifyRecordingTuned(ctx context.Context, recordingId string, channelUri net.Uri) error
+	NotifyRecordingError(ctx context.Context, recordingId string, err int32) error
+	NotifyRecordingScheduled(ctx context.Context, recordingId string, requestId string) error
+	Release(ctx context.Context) error
+	NotifyTuned(ctx context.Context, channelUri net.Uri) error
+	NotifyTrackSelected(ctx context.Context, type_ int32, trackId string) error
+	NotifyTracksChanged(ctx context.Context, tracks []tv.TvTrackInfo) error
+	NotifyVideoAvailable(ctx context.Context) error
+	NotifyVideoUnavailable(ctx context.Context, reason int32) error
+	NotifyVideoFreezeUpdated(ctx context.Context, isFrozen bool) error
+	NotifyContentAllowed(ctx context.Context) error
+	NotifyContentBlocked(ctx context.Context, rating string) error
+	NotifySignalStrength(ctx context.Context, strength int32) error
+	NotifyRecordingStarted(ctx context.Context, recordingId string, requestId string) error
+	NotifyRecordingStopped(ctx context.Context, recordingId string) error
+	NotifyTvMessage(ctx context.Context, type_ int32, data os.Bundle) error
+	SetSurface(ctx context.Context, surface interface{}) error
+	DispatchSurfaceChanged(ctx context.Context, format int32, width int32, height int32) error
+	NotifyBroadcastInfoResponse(ctx context.Context, response tv.BroadcastInfoResponse) error
+	NotifyAdResponse(ctx context.Context, response tv.AdResponse) error
+	NotifyAdBufferConsumed(ctx context.Context, buffer tv.AdBuffer) error
+	SendSelectedTrackInfo(ctx context.Context, tracks []tv.TvTrackInfo) error
+	CreateMediaView(ctx context.Context, windowToken binder.IBinder, frame graphics.Rect) error
+	RelayoutMediaView(ctx context.Context, frame graphics.Rect) error
+	RemoveMediaView(ctx context.Context) error
+}
+
+type tvInteractiveAppSessionStubWrapper struct {
+	impl       ITvInteractiveAppSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) StartInteractiveApp(
+	ctx context.Context,
+) error {
+	return w.impl.StartInteractiveApp(ctx)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) StopInteractiveApp(
+	ctx context.Context,
+) error {
+	return w.impl.StopInteractiveApp(ctx)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) ResetInteractiveApp(
+	ctx context.Context,
+) error {
+	return w.impl.ResetInteractiveApp(ctx)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) CreateBiInteractiveApp(
+	ctx context.Context,
+	biIAppUri net.Uri,
+	params os.Bundle,
+) error {
+	return w.impl.CreateBiInteractiveApp(ctx, biIAppUri, params)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) DestroyBiInteractiveApp(
+	ctx context.Context,
+	biIAppId string,
+) error {
+	return w.impl.DestroyBiInteractiveApp(ctx, biIAppId)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SetTeletextAppEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetTeletextAppEnabled(ctx, enable)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendCurrentVideoBounds(
+	ctx context.Context,
+	bounds graphics.Rect,
+) error {
+	return w.impl.SendCurrentVideoBounds(ctx, bounds)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendCurrentChannelUri(
+	ctx context.Context,
+	channelUri net.Uri,
+) error {
+	return w.impl.SendCurrentChannelUri(ctx, channelUri)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendCurrentChannelLcn(
+	ctx context.Context,
+	lcn int32,
+) error {
+	return w.impl.SendCurrentChannelLcn(ctx, lcn)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendStreamVolume(
+	ctx context.Context,
+	volume float32,
+) error {
+	return w.impl.SendStreamVolume(ctx, volume)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendTrackInfoList(
+	ctx context.Context,
+	tracks []tv.TvTrackInfo,
+) error {
+	return w.impl.SendTrackInfoList(ctx, tracks)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendCurrentTvInputId(
+	ctx context.Context,
+	inputId string,
+) error {
+	return w.impl.SendCurrentTvInputId(ctx, inputId)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendTimeShiftMode(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.SendTimeShiftMode(ctx, mode)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendAvailableSpeeds(
+	ctx context.Context,
+	speeds []float32,
+) error {
+	return w.impl.SendAvailableSpeeds(ctx, speeds)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendSigningResult(
+	ctx context.Context,
+	signingId string,
+	result []byte,
+) error {
+	return w.impl.SendSigningResult(ctx, signingId, result)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendCertificate(
+	ctx context.Context,
+	host string,
+	port int32,
+	certBundle os.Bundle,
+) error {
+	return w.impl.SendCertificate(ctx, host, port, certBundle)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendTvRecordingInfo(
+	ctx context.Context,
+	recordingInfo tv.TvRecordingInfo,
+) error {
+	return w.impl.SendTvRecordingInfo(ctx, recordingInfo)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendTvRecordingInfoList(
+	ctx context.Context,
+	recordingInfoList []tv.TvRecordingInfo,
+) error {
+	return w.impl.SendTvRecordingInfoList(ctx, recordingInfoList)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyError(
+	ctx context.Context,
+	errMsg string,
+	params os.Bundle,
+) error {
+	return w.impl.NotifyError(ctx, errMsg, params)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyTimeShiftPlaybackParams(
+	ctx context.Context,
+	params media.PlaybackParams,
+) error {
+	return w.impl.NotifyTimeShiftPlaybackParams(ctx, params)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyTimeShiftStatusChanged(
+	ctx context.Context,
+	inputId string,
+	status int32,
+) error {
+	return w.impl.NotifyTimeShiftStatusChanged(ctx, inputId, status)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyTimeShiftStartPositionChanged(
+	ctx context.Context,
+	inputId string,
+	timeMs int64,
+) error {
+	return w.impl.NotifyTimeShiftStartPositionChanged(ctx, inputId, timeMs)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyTimeShiftCurrentPositionChanged(
+	ctx context.Context,
+	inputId string,
+	timeMs int64,
+) error {
+	return w.impl.NotifyTimeShiftCurrentPositionChanged(ctx, inputId, timeMs)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyRecordingConnectionFailed(
+	ctx context.Context,
+	recordingId string,
+	inputId string,
+) error {
+	return w.impl.NotifyRecordingConnectionFailed(ctx, recordingId, inputId)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyRecordingDisconnected(
+	ctx context.Context,
+	recordingId string,
+	inputId string,
+) error {
+	return w.impl.NotifyRecordingDisconnected(ctx, recordingId, inputId)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyRecordingTuned(
+	ctx context.Context,
+	recordingId string,
+	channelUri net.Uri,
+) error {
+	return w.impl.NotifyRecordingTuned(ctx, recordingId, channelUri)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyRecordingError(
+	ctx context.Context,
+	recordingId string,
+	err int32,
+) error {
+	return w.impl.NotifyRecordingError(ctx, recordingId, err)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyRecordingScheduled(
+	ctx context.Context,
+	recordingId string,
+	requestId string,
+) error {
+	return w.impl.NotifyRecordingScheduled(ctx, recordingId, requestId)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyTuned(
+	ctx context.Context,
+	channelUri net.Uri,
+) error {
+	return w.impl.NotifyTuned(ctx, channelUri)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyTrackSelected(
+	ctx context.Context,
+	type_ int32,
+	trackId string,
+) error {
+	return w.impl.NotifyTrackSelected(ctx, type_, trackId)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyTracksChanged(
+	ctx context.Context,
+	tracks []tv.TvTrackInfo,
+) error {
+	return w.impl.NotifyTracksChanged(ctx, tracks)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyVideoAvailable(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyVideoAvailable(ctx)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyVideoUnavailable(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.NotifyVideoUnavailable(ctx, reason)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyVideoFreezeUpdated(
+	ctx context.Context,
+	isFrozen bool,
+) error {
+	return w.impl.NotifyVideoFreezeUpdated(ctx, isFrozen)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyContentAllowed(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyContentAllowed(ctx)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyContentBlocked(
+	ctx context.Context,
+	rating string,
+) error {
+	return w.impl.NotifyContentBlocked(ctx, rating)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifySignalStrength(
+	ctx context.Context,
+	strength int32,
+) error {
+	return w.impl.NotifySignalStrength(ctx, strength)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyRecordingStarted(
+	ctx context.Context,
+	recordingId string,
+	requestId string,
+) error {
+	return w.impl.NotifyRecordingStarted(ctx, recordingId, requestId)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyRecordingStopped(
+	ctx context.Context,
+	recordingId string,
+) error {
+	return w.impl.NotifyRecordingStopped(ctx, recordingId)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyTvMessage(
+	ctx context.Context,
+	type_ int32,
+	data os.Bundle,
+) error {
+	return w.impl.NotifyTvMessage(ctx, type_, data)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SetSurface(
+	ctx context.Context,
+	surface interface{},
+) error {
+	return w.impl.SetSurface(ctx, surface)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) DispatchSurfaceChanged(
+	ctx context.Context,
+	format int32,
+	width int32,
+	height int32,
+) error {
+	return w.impl.DispatchSurfaceChanged(ctx, format, width, height)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyBroadcastInfoResponse(
+	ctx context.Context,
+	response tv.BroadcastInfoResponse,
+) error {
+	return w.impl.NotifyBroadcastInfoResponse(ctx, response)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyAdResponse(
+	ctx context.Context,
+	response tv.AdResponse,
+) error {
+	return w.impl.NotifyAdResponse(ctx, response)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) NotifyAdBufferConsumed(
+	ctx context.Context,
+	buffer tv.AdBuffer,
+) error {
+	return w.impl.NotifyAdBufferConsumed(ctx, buffer)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) SendSelectedTrackInfo(
+	ctx context.Context,
+	tracks []tv.TvTrackInfo,
+) error {
+	return w.impl.SendSelectedTrackInfo(ctx, tracks)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) CreateMediaView(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	frame graphics.Rect,
+) error {
+	return w.impl.CreateMediaView(ctx, windowToken, frame)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) RelayoutMediaView(
+	ctx context.Context,
+	frame graphics.Rect,
+) error {
+	return w.impl.RelayoutMediaView(ctx, frame)
+}
+
+func (w *tvInteractiveAppSessionStubWrapper) RemoveMediaView(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveMediaView(ctx)
+}
+
+var _ ITvInteractiveAppSession = (*tvInteractiveAppSessionStubWrapper)(nil)
+
+// NewTvInteractiveAppSessionStub creates a server-side ITvInteractiveAppSession wrapping the given
+// server implementation. The returned value satisfies ITvInteractiveAppSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInteractiveAppSessionStub(
+	impl ITvInteractiveAppSessionServer,
+) ITvInteractiveAppSession {
+	wrapper := &tvInteractiveAppSessionStubWrapper{impl: impl}
+	stub := &TvInteractiveAppSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

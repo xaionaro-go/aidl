@@ -114,3 +114,49 @@ func (s *NetworkScoreCacheStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INetworkScoreCacheServer is the server-side interface that user implementations
+// provide to NewNetworkScoreCacheStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkScoreCacheServer interface {
+	UpdateScores(ctx context.Context, networks []ScoredNetwork) error
+	ClearScores(ctx context.Context) error
+}
+
+type networkScoreCacheStubWrapper struct {
+	impl       INetworkScoreCacheServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkScoreCacheStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkScoreCacheStubWrapper) UpdateScores(
+	ctx context.Context,
+	networks []ScoredNetwork,
+) error {
+	return w.impl.UpdateScores(ctx, networks)
+}
+
+func (w *networkScoreCacheStubWrapper) ClearScores(
+	ctx context.Context,
+) error {
+	return w.impl.ClearScores(ctx)
+}
+
+var _ INetworkScoreCache = (*networkScoreCacheStubWrapper)(nil)
+
+// NewNetworkScoreCacheStub creates a server-side INetworkScoreCache wrapping the given
+// server implementation. The returned value satisfies INetworkScoreCache
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkScoreCacheStub(
+	impl INetworkScoreCacheServer,
+) INetworkScoreCache {
+	wrapper := &networkScoreCacheStubWrapper{impl: impl}
+	stub := &NetworkScoreCacheStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

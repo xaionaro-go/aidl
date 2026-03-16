@@ -155,3 +155,59 @@ func (s *GetCredentialCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetCredentialCallbackServer is the server-side interface that user implementations
+// provide to NewGetCredentialCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetCredentialCallbackServer interface {
+	OnPendingIntent(ctx context.Context, pendingIntent interface{}) error
+	OnResponse(ctx context.Context, response GetCredentialResponse) error
+	OnError(ctx context.Context, errorType string, message string) error
+}
+
+type getCredentialCallbackStubWrapper struct {
+	impl       IGetCredentialCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getCredentialCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getCredentialCallbackStubWrapper) OnPendingIntent(
+	ctx context.Context,
+	pendingIntent interface{},
+) error {
+	return w.impl.OnPendingIntent(ctx, pendingIntent)
+}
+
+func (w *getCredentialCallbackStubWrapper) OnResponse(
+	ctx context.Context,
+	response GetCredentialResponse,
+) error {
+	return w.impl.OnResponse(ctx, response)
+}
+
+func (w *getCredentialCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorType string,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorType, message)
+}
+
+var _ IGetCredentialCallback = (*getCredentialCallbackStubWrapper)(nil)
+
+// NewGetCredentialCallbackStub creates a server-side IGetCredentialCallback wrapping the given
+// server implementation. The returned value satisfies IGetCredentialCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetCredentialCallbackStub(
+	impl IGetCredentialCallbackServer,
+) IGetCredentialCallback {
+	wrapper := &getCredentialCallbackStubWrapper{impl: impl}
+	stub := &GetCredentialCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

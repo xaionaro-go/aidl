@@ -104,3 +104,41 @@ func (s *SecurityStateManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISecurityStateManagerServer is the server-side interface that user implementations
+// provide to NewSecurityStateManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecurityStateManagerServer interface {
+	GetGlobalSecurityState(ctx context.Context) (Bundle, error)
+}
+
+type securityStateManagerStubWrapper struct {
+	impl       ISecurityStateManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *securityStateManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *securityStateManagerStubWrapper) GetGlobalSecurityState(
+	ctx context.Context,
+) (Bundle, error) {
+	return w.impl.GetGlobalSecurityState(ctx)
+}
+
+var _ ISecurityStateManager = (*securityStateManagerStubWrapper)(nil)
+
+// NewSecurityStateManagerStub creates a server-side ISecurityStateManager wrapping the given
+// server implementation. The returned value satisfies ISecurityStateManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecurityStateManagerStub(
+	impl ISecurityStateManagerServer,
+) ISecurityStateManager {
+	wrapper := &securityStateManagerStubWrapper{impl: impl}
+	stub := &SecurityStateManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

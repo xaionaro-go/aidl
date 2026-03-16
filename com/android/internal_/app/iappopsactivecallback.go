@@ -123,3 +123,48 @@ func (s *AppOpsActiveCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppOpsActiveCallbackServer is the server-side interface that user implementations
+// provide to NewAppOpsActiveCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppOpsActiveCallbackServer interface {
+	OpActiveChanged(ctx context.Context, op int32, uid int32, packageName string, virtualDeviceId int32, active bool, attributionFlags int32, attributionChainId int32) error
+}
+
+type appOpsActiveCallbackStubWrapper struct {
+	impl       IAppOpsActiveCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appOpsActiveCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appOpsActiveCallbackStubWrapper) OpActiveChanged(
+	ctx context.Context,
+	op int32,
+	uid int32,
+	packageName string,
+	virtualDeviceId int32,
+	active bool,
+	attributionFlags int32,
+	attributionChainId int32,
+) error {
+	return w.impl.OpActiveChanged(ctx, op, uid, packageName, virtualDeviceId, active, attributionFlags, attributionChainId)
+}
+
+var _ IAppOpsActiveCallback = (*appOpsActiveCallbackStubWrapper)(nil)
+
+// NewAppOpsActiveCallbackStub creates a server-side IAppOpsActiveCallback wrapping the given
+// server implementation. The returned value satisfies IAppOpsActiveCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppOpsActiveCallbackStub(
+	impl IAppOpsActiveCallbackServer,
+) IAppOpsActiveCallback {
+	wrapper := &appOpsActiveCallbackStubWrapper{impl: impl}
+	stub := &AppOpsActiveCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -362,3 +362,103 @@ func (s *PowerHintSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPowerHintSessionServer is the server-side interface that user implementations
+// provide to NewPowerHintSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPowerHintSessionServer interface {
+	UpdateTargetWorkDuration(ctx context.Context, targetDurationNanos int64) error
+	ReportActualWorkDuration(ctx context.Context, durations []WorkDuration) error
+	Pause(ctx context.Context) error
+	Resume(ctx context.Context) error
+	Close(ctx context.Context) error
+	SendHint(ctx context.Context, hint SessionHint) error
+	SetThreads(ctx context.Context, threadIds []int32) error
+	SetMode(ctx context.Context, type_ SessionMode, enabled bool) error
+	GetSessionConfig(ctx context.Context) (SessionConfig, error)
+}
+
+type powerHintSessionStubWrapper struct {
+	impl       IPowerHintSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *powerHintSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *powerHintSessionStubWrapper) UpdateTargetWorkDuration(
+	ctx context.Context,
+	targetDurationNanos int64,
+) error {
+	return w.impl.UpdateTargetWorkDuration(ctx, targetDurationNanos)
+}
+
+func (w *powerHintSessionStubWrapper) ReportActualWorkDuration(
+	ctx context.Context,
+	durations []WorkDuration,
+) error {
+	return w.impl.ReportActualWorkDuration(ctx, durations)
+}
+
+func (w *powerHintSessionStubWrapper) Pause(
+	ctx context.Context,
+) error {
+	return w.impl.Pause(ctx)
+}
+
+func (w *powerHintSessionStubWrapper) Resume(
+	ctx context.Context,
+) error {
+	return w.impl.Resume(ctx)
+}
+
+func (w *powerHintSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *powerHintSessionStubWrapper) SendHint(
+	ctx context.Context,
+	hint SessionHint,
+) error {
+	return w.impl.SendHint(ctx, hint)
+}
+
+func (w *powerHintSessionStubWrapper) SetThreads(
+	ctx context.Context,
+	threadIds []int32,
+) error {
+	return w.impl.SetThreads(ctx, threadIds)
+}
+
+func (w *powerHintSessionStubWrapper) SetMode(
+	ctx context.Context,
+	type_ SessionMode,
+	enabled bool,
+) error {
+	return w.impl.SetMode(ctx, type_, enabled)
+}
+
+func (w *powerHintSessionStubWrapper) GetSessionConfig(
+	ctx context.Context,
+) (SessionConfig, error) {
+	return w.impl.GetSessionConfig(ctx)
+}
+
+var _ IPowerHintSession = (*powerHintSessionStubWrapper)(nil)
+
+// NewPowerHintSessionStub creates a server-side IPowerHintSession wrapping the given
+// server implementation. The returned value satisfies IPowerHintSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPowerHintSessionStub(
+	impl IPowerHintSessionServer,
+) IPowerHintSession {
+	wrapper := &powerHintSessionStubWrapper{impl: impl}
+	stub := &PowerHintSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

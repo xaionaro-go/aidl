@@ -453,3 +453,100 @@ func (s *TestSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITestSessionServer is the server-side interface that user implementations
+// provide to NewTestSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITestSessionServer interface {
+	SetTestHalEnabled(ctx context.Context, enableTestHal bool) error
+	StartEnroll(ctx context.Context) error
+	FinishEnroll(ctx context.Context) error
+	AcceptAuthentication(ctx context.Context) error
+	RejectAuthentication(ctx context.Context) error
+	NotifyAcquired(ctx context.Context, acquireInfo int32) error
+	NotifyError(ctx context.Context, errorCode int32) error
+	CleanupInternalState(ctx context.Context) error
+	GetSensorId(ctx context.Context) (int32, error)
+}
+
+type testSessionStubWrapper struct {
+	impl       ITestSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *testSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *testSessionStubWrapper) SetTestHalEnabled(
+	ctx context.Context,
+	enableTestHal bool,
+) error {
+	return w.impl.SetTestHalEnabled(ctx, enableTestHal)
+}
+
+func (w *testSessionStubWrapper) StartEnroll(
+	ctx context.Context,
+) error {
+	return w.impl.StartEnroll(ctx)
+}
+
+func (w *testSessionStubWrapper) FinishEnroll(
+	ctx context.Context,
+) error {
+	return w.impl.FinishEnroll(ctx)
+}
+
+func (w *testSessionStubWrapper) AcceptAuthentication(
+	ctx context.Context,
+) error {
+	return w.impl.AcceptAuthentication(ctx)
+}
+
+func (w *testSessionStubWrapper) RejectAuthentication(
+	ctx context.Context,
+) error {
+	return w.impl.RejectAuthentication(ctx)
+}
+
+func (w *testSessionStubWrapper) NotifyAcquired(
+	ctx context.Context,
+	acquireInfo int32,
+) error {
+	return w.impl.NotifyAcquired(ctx, acquireInfo)
+}
+
+func (w *testSessionStubWrapper) NotifyError(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.NotifyError(ctx, errorCode)
+}
+
+func (w *testSessionStubWrapper) CleanupInternalState(
+	ctx context.Context,
+) error {
+	return w.impl.CleanupInternalState(ctx)
+}
+
+func (w *testSessionStubWrapper) GetSensorId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetSensorId(ctx)
+}
+
+var _ ITestSession = (*testSessionStubWrapper)(nil)
+
+// NewTestSessionStub creates a server-side ITestSession wrapping the given
+// server implementation. The returned value satisfies ITestSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTestSessionStub(
+	impl ITestSessionServer,
+) ITestSession {
+	wrapper := &testSessionStubWrapper{impl: impl}
+	stub := &TestSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

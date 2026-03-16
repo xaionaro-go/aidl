@@ -21,7 +21,11 @@ func (s *InputChannelCore) MarshalParcel(
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteString16(s.Name)
 	p.WriteFileDescriptor(s.Fd)
-	p.WriteStrongBinder(s.Token.Handle())
+	if s.Token == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Token.Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

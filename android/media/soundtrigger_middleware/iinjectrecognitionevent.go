@@ -127,3 +127,50 @@ func (s *InjectRecognitionEventStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInjectRecognitionEventServer is the server-side interface that user implementations
+// provide to NewInjectRecognitionEventStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInjectRecognitionEventServer interface {
+	TriggerRecognitionEvent(ctx context.Context, data []byte, phraseExtras []soundtrigger.PhraseRecognitionExtra) error
+	TriggerAbortRecognition(ctx context.Context) error
+}
+
+type injectRecognitionEventStubWrapper struct {
+	impl       IInjectRecognitionEventServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *injectRecognitionEventStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *injectRecognitionEventStubWrapper) TriggerRecognitionEvent(
+	ctx context.Context,
+	data []byte,
+	phraseExtras []soundtrigger.PhraseRecognitionExtra,
+) error {
+	return w.impl.TriggerRecognitionEvent(ctx, data, phraseExtras)
+}
+
+func (w *injectRecognitionEventStubWrapper) TriggerAbortRecognition(
+	ctx context.Context,
+) error {
+	return w.impl.TriggerAbortRecognition(ctx)
+}
+
+var _ IInjectRecognitionEvent = (*injectRecognitionEventStubWrapper)(nil)
+
+// NewInjectRecognitionEventStub creates a server-side IInjectRecognitionEvent wrapping the given
+// server implementation. The returned value satisfies IInjectRecognitionEvent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInjectRecognitionEventStub(
+	impl IInjectRecognitionEventServer,
+) IInjectRecognitionEvent {
+	wrapper := &injectRecognitionEventStubWrapper{impl: impl}
+	stub := &InjectRecognitionEventStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

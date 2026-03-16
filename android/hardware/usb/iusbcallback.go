@@ -433,3 +433,117 @@ func (s *UsbCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUsbCallbackServer is the server-side interface that user implementations
+// provide to NewUsbCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUsbCallbackServer interface {
+	NotifyPortStatusChange(ctx context.Context, currentPortStatus []PortStatus, retval Status) error
+	NotifyRoleSwitchStatus(ctx context.Context, portName string, newRole PortRole, retval Status, transactionId int64) error
+	NotifyEnableUsbDataStatus(ctx context.Context, portName string, enable bool, retval Status, transactionId int64) error
+	NotifyEnableUsbDataWhileDockedStatus(ctx context.Context, portName string, retval Status, transactionId int64) error
+	NotifyContaminantEnabledStatus(ctx context.Context, portName string, enable bool, retval Status, transactionId int64) error
+	NotifyQueryPortStatus(ctx context.Context, portName string, retval Status, transactionId int64) error
+	NotifyLimitPowerTransferStatus(ctx context.Context, portName string, limit bool, retval Status, transactionId int64) error
+	NotifyResetUsbPortStatus(ctx context.Context, portName string, retval Status, transactionId int64) error
+}
+
+type usbCallbackStubWrapper struct {
+	impl       IUsbCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *usbCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *usbCallbackStubWrapper) NotifyPortStatusChange(
+	ctx context.Context,
+	currentPortStatus []PortStatus,
+	retval Status,
+) error {
+	return w.impl.NotifyPortStatusChange(ctx, currentPortStatus, retval)
+}
+
+func (w *usbCallbackStubWrapper) NotifyRoleSwitchStatus(
+	ctx context.Context,
+	portName string,
+	newRole PortRole,
+	retval Status,
+	transactionId int64,
+) error {
+	return w.impl.NotifyRoleSwitchStatus(ctx, portName, newRole, retval, transactionId)
+}
+
+func (w *usbCallbackStubWrapper) NotifyEnableUsbDataStatus(
+	ctx context.Context,
+	portName string,
+	enable bool,
+	retval Status,
+	transactionId int64,
+) error {
+	return w.impl.NotifyEnableUsbDataStatus(ctx, portName, enable, retval, transactionId)
+}
+
+func (w *usbCallbackStubWrapper) NotifyEnableUsbDataWhileDockedStatus(
+	ctx context.Context,
+	portName string,
+	retval Status,
+	transactionId int64,
+) error {
+	return w.impl.NotifyEnableUsbDataWhileDockedStatus(ctx, portName, retval, transactionId)
+}
+
+func (w *usbCallbackStubWrapper) NotifyContaminantEnabledStatus(
+	ctx context.Context,
+	portName string,
+	enable bool,
+	retval Status,
+	transactionId int64,
+) error {
+	return w.impl.NotifyContaminantEnabledStatus(ctx, portName, enable, retval, transactionId)
+}
+
+func (w *usbCallbackStubWrapper) NotifyQueryPortStatus(
+	ctx context.Context,
+	portName string,
+	retval Status,
+	transactionId int64,
+) error {
+	return w.impl.NotifyQueryPortStatus(ctx, portName, retval, transactionId)
+}
+
+func (w *usbCallbackStubWrapper) NotifyLimitPowerTransferStatus(
+	ctx context.Context,
+	portName string,
+	limit bool,
+	retval Status,
+	transactionId int64,
+) error {
+	return w.impl.NotifyLimitPowerTransferStatus(ctx, portName, limit, retval, transactionId)
+}
+
+func (w *usbCallbackStubWrapper) NotifyResetUsbPortStatus(
+	ctx context.Context,
+	portName string,
+	retval Status,
+	transactionId int64,
+) error {
+	return w.impl.NotifyResetUsbPortStatus(ctx, portName, retval, transactionId)
+}
+
+var _ IUsbCallback = (*usbCallbackStubWrapper)(nil)
+
+// NewUsbCallbackStub creates a server-side IUsbCallback wrapping the given
+// server implementation. The returned value satisfies IUsbCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUsbCallbackStub(
+	impl IUsbCallbackServer,
+) IUsbCallback {
+	wrapper := &usbCallbackStubWrapper{impl: impl}
+	stub := &UsbCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

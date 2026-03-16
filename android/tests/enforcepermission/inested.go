@@ -128,3 +128,48 @@ func (s *NestedStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INestedServer is the server-side interface that user implementations
+// provide to NewNestedStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INestedServer interface {
+	ProtectedByAccessNetworkState(ctx context.Context) error
+	ProtectedByReadSyncSettings(ctx context.Context) error
+}
+
+type nestedStubWrapper struct {
+	impl       INestedServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *nestedStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *nestedStubWrapper) ProtectedByAccessNetworkState(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByAccessNetworkState(ctx)
+}
+
+func (w *nestedStubWrapper) ProtectedByReadSyncSettings(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByReadSyncSettings(ctx)
+}
+
+var _ INested = (*nestedStubWrapper)(nil)
+
+// NewNestedStub creates a server-side INested wrapping the given
+// server implementation. The returned value satisfies INested
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNestedStub(
+	impl INestedServer,
+) INested {
+	wrapper := &nestedStubWrapper{impl: impl}
+	stub := &NestedStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

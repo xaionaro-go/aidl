@@ -263,3 +263,68 @@ func (s *FileIntegrityServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFileIntegrityServiceServer is the server-side interface that user implementations
+// provide to NewFileIntegrityServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFileIntegrityServiceServer interface {
+	IsApkVeritySupported(ctx context.Context) (bool, error)
+	IsAppSourceCertificateTrusted(ctx context.Context, certificateBytes []byte, packageName string) (bool, error)
+	CreateAuthToken(ctx context.Context, authFd int32) (IInstalld.IFsveritySetupAuthToken, error)
+	SetupFsverity(ctx context.Context, authToken IInstalld.IFsveritySetupAuthToken, filePath string, packageName string) (int32, error)
+}
+
+type fileIntegrityServiceStubWrapper struct {
+	impl       IFileIntegrityServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fileIntegrityServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fileIntegrityServiceStubWrapper) IsApkVeritySupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsApkVeritySupported(ctx)
+}
+
+func (w *fileIntegrityServiceStubWrapper) IsAppSourceCertificateTrusted(
+	ctx context.Context,
+	certificateBytes []byte,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsAppSourceCertificateTrusted(ctx, certificateBytes, packageName)
+}
+
+func (w *fileIntegrityServiceStubWrapper) CreateAuthToken(
+	ctx context.Context,
+	authFd int32,
+) (IInstalld.IFsveritySetupAuthToken, error) {
+	return w.impl.CreateAuthToken(ctx, authFd)
+}
+
+func (w *fileIntegrityServiceStubWrapper) SetupFsverity(
+	ctx context.Context,
+	authToken IInstalld.IFsveritySetupAuthToken,
+	filePath string,
+	packageName string,
+) (int32, error) {
+	return w.impl.SetupFsverity(ctx, authToken, filePath, packageName)
+}
+
+var _ IFileIntegrityService = (*fileIntegrityServiceStubWrapper)(nil)
+
+// NewFileIntegrityServiceStub creates a server-side IFileIntegrityService wrapping the given
+// server implementation. The returned value satisfies IFileIntegrityService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFileIntegrityServiceStub(
+	impl IFileIntegrityServiceServer,
+) IFileIntegrityService {
+	wrapper := &fileIntegrityServiceStubWrapper{impl: impl}
+	stub := &FileIntegrityServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

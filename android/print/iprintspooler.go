@@ -93,7 +93,7 @@ func (p *PrintSpoolerProxy) GetPrintJobInfos(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintSpooler)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := componentName.MarshalParcel(_data); _err != nil {
 		return _err
@@ -124,7 +124,7 @@ func (p *PrintSpoolerProxy) GetPrintJobInfo(
 	if _err := printJobId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(appId)
 	_data.WriteInt32(sequence)
 
@@ -173,7 +173,7 @@ func (p *PrintSpoolerProxy) SetPrintJobState(
 	}
 	_data.WriteInt32(status)
 	_data.WriteString16(stateReason)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sequence)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpooler, "setPrintJobState")
@@ -268,7 +268,7 @@ func (p *PrintSpoolerProxy) OnCustomPrinterIconLoaded(
 	if _err := icon.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sequence)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpooler, "onCustomPrinterIconLoaded")
@@ -292,7 +292,7 @@ func (p *PrintSpoolerProxy) GetCustomPrinterIcon(
 	if _err := printerId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sequence)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpooler, "getCustomPrinterIcon")
@@ -311,7 +311,7 @@ func (p *PrintSpoolerProxy) ClearCustomPrinterIconCache(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintSpooler)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sequence)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpooler, "clearCustomPrinterIconCache")
@@ -337,7 +337,7 @@ func (p *PrintSpoolerProxy) SetPrintJobTag(
 		return _err
 	}
 	_data.WriteString16(tag)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sequence)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpooler, "setPrintJobTag")
@@ -377,7 +377,7 @@ func (p *PrintSpoolerProxy) SetClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintSpooler)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintSpooler, "setClient")
 	if _err != nil {
@@ -818,4 +818,188 @@ func (s *PrintSpoolerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPrintSpoolerServer is the server-side interface that user implementations
+// provide to NewPrintSpoolerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrintSpoolerServer interface {
+	RemoveObsoletePrintJobs(ctx context.Context) error
+	GetPrintJobInfos(ctx context.Context, callback IPrintSpoolerCallbacks, componentName content.ComponentName, state int32, appId int32, sequence int32) error
+	GetPrintJobInfo(ctx context.Context, printJobId PrintJobId, callback IPrintSpoolerCallbacks, appId int32, sequence int32) error
+	CreatePrintJob(ctx context.Context, printJob PrintJobInfo) error
+	SetPrintJobState(ctx context.Context, printJobId PrintJobId, status int32, stateReason string, callback IPrintSpoolerCallbacks, sequence int32) error
+	SetProgress(ctx context.Context, printJobId PrintJobId, progress float32) error
+	SetStatus(ctx context.Context, printJobId PrintJobId, status interface{}) error
+	SetStatusRes(ctx context.Context, printJobId PrintJobId, status int32, appPackageName interface{}) error
+	OnCustomPrinterIconLoaded(ctx context.Context, printerId PrinterId, icon drawable.Icon, callbacks IPrintSpoolerCallbacks, sequence int32) error
+	GetCustomPrinterIcon(ctx context.Context, printerId PrinterId, callbacks IPrintSpoolerCallbacks, sequence int32) error
+	ClearCustomPrinterIconCache(ctx context.Context, callbacks IPrintSpoolerCallbacks, sequence int32) error
+	SetPrintJobTag(ctx context.Context, printJobId PrintJobId, tag string, callback IPrintSpoolerCallbacks, sequence int32) error
+	WritePrintJobData(ctx context.Context, fd int32, printJobId PrintJobId) error
+	SetClient(ctx context.Context, client IPrintSpoolerClient) error
+	SetPrintJobCancelling(ctx context.Context, printJobId PrintJobId, cancelling bool) error
+	PruneApprovedPrintServices(ctx context.Context, servicesToKeep []content.ComponentName) error
+}
+
+type printSpoolerStubWrapper struct {
+	impl       IPrintSpoolerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *printSpoolerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *printSpoolerStubWrapper) RemoveObsoletePrintJobs(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveObsoletePrintJobs(ctx)
+}
+
+func (w *printSpoolerStubWrapper) GetPrintJobInfos(
+	ctx context.Context,
+	callback IPrintSpoolerCallbacks,
+	componentName content.ComponentName,
+	state int32,
+	appId int32,
+	sequence int32,
+) error {
+	return w.impl.GetPrintJobInfos(ctx, callback, componentName, state, appId, sequence)
+}
+
+func (w *printSpoolerStubWrapper) GetPrintJobInfo(
+	ctx context.Context,
+	printJobId PrintJobId,
+	callback IPrintSpoolerCallbacks,
+	appId int32,
+	sequence int32,
+) error {
+	return w.impl.GetPrintJobInfo(ctx, printJobId, callback, appId, sequence)
+}
+
+func (w *printSpoolerStubWrapper) CreatePrintJob(
+	ctx context.Context,
+	printJob PrintJobInfo,
+) error {
+	return w.impl.CreatePrintJob(ctx, printJob)
+}
+
+func (w *printSpoolerStubWrapper) SetPrintJobState(
+	ctx context.Context,
+	printJobId PrintJobId,
+	status int32,
+	stateReason string,
+	callback IPrintSpoolerCallbacks,
+	sequence int32,
+) error {
+	return w.impl.SetPrintJobState(ctx, printJobId, status, stateReason, callback, sequence)
+}
+
+func (w *printSpoolerStubWrapper) SetProgress(
+	ctx context.Context,
+	printJobId PrintJobId,
+	progress float32,
+) error {
+	return w.impl.SetProgress(ctx, printJobId, progress)
+}
+
+func (w *printSpoolerStubWrapper) SetStatus(
+	ctx context.Context,
+	printJobId PrintJobId,
+	status interface{},
+) error {
+	return w.impl.SetStatus(ctx, printJobId, status)
+}
+
+func (w *printSpoolerStubWrapper) SetStatusRes(
+	ctx context.Context,
+	printJobId PrintJobId,
+	status int32,
+	appPackageName interface{},
+) error {
+	return w.impl.SetStatusRes(ctx, printJobId, status, appPackageName)
+}
+
+func (w *printSpoolerStubWrapper) OnCustomPrinterIconLoaded(
+	ctx context.Context,
+	printerId PrinterId,
+	icon drawable.Icon,
+	callbacks IPrintSpoolerCallbacks,
+	sequence int32,
+) error {
+	return w.impl.OnCustomPrinterIconLoaded(ctx, printerId, icon, callbacks, sequence)
+}
+
+func (w *printSpoolerStubWrapper) GetCustomPrinterIcon(
+	ctx context.Context,
+	printerId PrinterId,
+	callbacks IPrintSpoolerCallbacks,
+	sequence int32,
+) error {
+	return w.impl.GetCustomPrinterIcon(ctx, printerId, callbacks, sequence)
+}
+
+func (w *printSpoolerStubWrapper) ClearCustomPrinterIconCache(
+	ctx context.Context,
+	callbacks IPrintSpoolerCallbacks,
+	sequence int32,
+) error {
+	return w.impl.ClearCustomPrinterIconCache(ctx, callbacks, sequence)
+}
+
+func (w *printSpoolerStubWrapper) SetPrintJobTag(
+	ctx context.Context,
+	printJobId PrintJobId,
+	tag string,
+	callback IPrintSpoolerCallbacks,
+	sequence int32,
+) error {
+	return w.impl.SetPrintJobTag(ctx, printJobId, tag, callback, sequence)
+}
+
+func (w *printSpoolerStubWrapper) WritePrintJobData(
+	ctx context.Context,
+	fd int32,
+	printJobId PrintJobId,
+) error {
+	return w.impl.WritePrintJobData(ctx, fd, printJobId)
+}
+
+func (w *printSpoolerStubWrapper) SetClient(
+	ctx context.Context,
+	client IPrintSpoolerClient,
+) error {
+	return w.impl.SetClient(ctx, client)
+}
+
+func (w *printSpoolerStubWrapper) SetPrintJobCancelling(
+	ctx context.Context,
+	printJobId PrintJobId,
+	cancelling bool,
+) error {
+	return w.impl.SetPrintJobCancelling(ctx, printJobId, cancelling)
+}
+
+func (w *printSpoolerStubWrapper) PruneApprovedPrintServices(
+	ctx context.Context,
+	servicesToKeep []content.ComponentName,
+) error {
+	return w.impl.PruneApprovedPrintServices(ctx, servicesToKeep)
+}
+
+var _ IPrintSpooler = (*printSpoolerStubWrapper)(nil)
+
+// NewPrintSpoolerStub creates a server-side IPrintSpooler wrapping the given
+// server implementation. The returned value satisfies IPrintSpooler
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrintSpoolerStub(
+	impl IPrintSpoolerServer,
+) IPrintSpooler {
+	wrapper := &printSpoolerStubWrapper{impl: impl}
+	stub := &PrintSpoolerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

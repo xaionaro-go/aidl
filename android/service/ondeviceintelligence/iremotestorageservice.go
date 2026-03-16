@@ -160,3 +160,52 @@ func (s *RemoteStorageServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoteStorageServiceServer is the server-side interface that user implementations
+// provide to NewRemoteStorageServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteStorageServiceServer interface {
+	GetReadOnlyFileDescriptor(ctx context.Context, filePath string, future infra.AndroidFuture) error
+	GetReadOnlyFeatureFileDescriptorMap(ctx context.Context, feature appOndeviceintelligence.Feature, remoteCallback os.RemoteCallback) error
+}
+
+type remoteStorageServiceStubWrapper struct {
+	impl       IRemoteStorageServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteStorageServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteStorageServiceStubWrapper) GetReadOnlyFileDescriptor(
+	ctx context.Context,
+	filePath string,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.GetReadOnlyFileDescriptor(ctx, filePath, future)
+}
+
+func (w *remoteStorageServiceStubWrapper) GetReadOnlyFeatureFileDescriptorMap(
+	ctx context.Context,
+	feature appOndeviceintelligence.Feature,
+	remoteCallback os.RemoteCallback,
+) error {
+	return w.impl.GetReadOnlyFeatureFileDescriptorMap(ctx, feature, remoteCallback)
+}
+
+var _ IRemoteStorageService = (*remoteStorageServiceStubWrapper)(nil)
+
+// NewRemoteStorageServiceStub creates a server-side IRemoteStorageService wrapping the given
+// server implementation. The returned value satisfies IRemoteStorageService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteStorageServiceStub(
+	impl IRemoteStorageServiceServer,
+) IRemoteStorageService {
+	wrapper := &remoteStorageServiceStubWrapper{impl: impl}
+	stub := &RemoteStorageServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

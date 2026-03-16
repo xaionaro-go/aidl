@@ -48,7 +48,7 @@ func (p *InputFlingerProxy) CreateInputChannel(
 	var _result InputChannelCore
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputFlinger)
-	_data.WriteString(name)
+	_data.WriteString16(name)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputFlinger, "createInputChannel")
 	if _err != nil {
@@ -83,7 +83,7 @@ func (p *InputFlingerProxy) RemoveInputChannel(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputFlinger)
-	_data.WriteStrongBinder(connectionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, connectionToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputFlinger, "removeInputChannel")
 	if _err != nil {
@@ -141,7 +141,7 @@ func (s *InputFlingerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_name, _err := _data.ReadString()
+		_arg_name, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -194,4 +194,59 @@ func (s *InputFlingerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputFlingerServer is the server-side interface that user implementations
+// provide to NewInputFlingerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputFlingerServer interface {
+	CreateInputChannel(ctx context.Context, name string) (InputChannelCore, error)
+	RemoveInputChannel(ctx context.Context, connectionToken binder.IBinder) error
+	SetFocusedWindow(ctx context.Context, request gui.FocusRequest) error
+}
+
+type inputFlingerStubWrapper struct {
+	impl       IInputFlingerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputFlingerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputFlingerStubWrapper) CreateInputChannel(
+	ctx context.Context,
+	name string,
+) (InputChannelCore, error) {
+	return w.impl.CreateInputChannel(ctx, name)
+}
+
+func (w *inputFlingerStubWrapper) RemoveInputChannel(
+	ctx context.Context,
+	connectionToken binder.IBinder,
+) error {
+	return w.impl.RemoveInputChannel(ctx, connectionToken)
+}
+
+func (w *inputFlingerStubWrapper) SetFocusedWindow(
+	ctx context.Context,
+	request gui.FocusRequest,
+) error {
+	return w.impl.SetFocusedWindow(ctx, request)
+}
+
+var _ IInputFlinger = (*inputFlingerStubWrapper)(nil)
+
+// NewInputFlingerStub creates a server-side IInputFlinger wrapping the given
+// server implementation. The returned value satisfies IInputFlinger
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputFlingerStub(
+	impl IInputFlingerServer,
+) IInputFlinger {
+	wrapper := &inputFlingerStubWrapper{impl: impl}
+	stub := &InputFlingerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

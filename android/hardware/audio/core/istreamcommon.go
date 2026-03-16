@@ -135,7 +135,7 @@ func (p *StreamCommonProxy) GetVendorParameters(
 	} else {
 		_data.WriteInt32(int32(len(ids)))
 		for _, _item := range ids {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 
@@ -213,7 +213,7 @@ func (p *StreamCommonProxy) AddEffect(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStreamCommon)
-	_data.WriteStrongBinder(effect.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, effect.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStreamCommon, "addEffect")
 	if _err != nil {
@@ -239,7 +239,7 @@ func (p *StreamCommonProxy) RemoveEffect(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStreamCommon)
-	_data.WriteStrongBinder(effect.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, effect.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStreamCommon, "removeEffect")
 	if _err != nil {
@@ -382,4 +382,90 @@ func (s *StreamCommonStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IStreamCommonServer is the server-side interface that user implementations
+// provide to NewStreamCommonStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStreamCommonServer interface {
+	Close(ctx context.Context) error
+	PrepareToClose(ctx context.Context) error
+	UpdateHwAvSyncId(ctx context.Context, hwAvSyncId int32) error
+	GetVendorParameters(ctx context.Context, ids []string) ([]VendorParameter, error)
+	SetVendorParameters(ctx context.Context, parameters []VendorParameter, async bool) error
+	AddEffect(ctx context.Context, effect audioEffect.IEffect) error
+	RemoveEffect(ctx context.Context, effect audioEffect.IEffect) error
+}
+
+type streamCommonStubWrapper struct {
+	impl       IStreamCommonServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *streamCommonStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *streamCommonStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *streamCommonStubWrapper) PrepareToClose(
+	ctx context.Context,
+) error {
+	return w.impl.PrepareToClose(ctx)
+}
+
+func (w *streamCommonStubWrapper) UpdateHwAvSyncId(
+	ctx context.Context,
+	hwAvSyncId int32,
+) error {
+	return w.impl.UpdateHwAvSyncId(ctx, hwAvSyncId)
+}
+
+func (w *streamCommonStubWrapper) GetVendorParameters(
+	ctx context.Context,
+	ids []string,
+) ([]VendorParameter, error) {
+	return w.impl.GetVendorParameters(ctx, ids)
+}
+
+func (w *streamCommonStubWrapper) SetVendorParameters(
+	ctx context.Context,
+	parameters []VendorParameter,
+	async bool,
+) error {
+	return w.impl.SetVendorParameters(ctx, parameters, async)
+}
+
+func (w *streamCommonStubWrapper) AddEffect(
+	ctx context.Context,
+	effect audioEffect.IEffect,
+) error {
+	return w.impl.AddEffect(ctx, effect)
+}
+
+func (w *streamCommonStubWrapper) RemoveEffect(
+	ctx context.Context,
+	effect audioEffect.IEffect,
+) error {
+	return w.impl.RemoveEffect(ctx, effect)
+}
+
+var _ IStreamCommon = (*streamCommonStubWrapper)(nil)
+
+// NewStreamCommonStub creates a server-side IStreamCommon wrapping the given
+// server implementation. The returned value satisfies IStreamCommon
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStreamCommonStub(
+	impl IStreamCommonServer,
+) IStreamCommon {
+	wrapper := &streamCommonStubWrapper{impl: impl}
+	stub := &StreamCommonStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

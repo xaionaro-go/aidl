@@ -90,3 +90,42 @@ func (s *ResolverRankerResultStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IResolverRankerResultServer is the server-side interface that user implementations
+// provide to NewResolverRankerResultStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResolverRankerResultServer interface {
+	SendResult(ctx context.Context, results []ResolverTarget) error
+}
+
+type resolverRankerResultStubWrapper struct {
+	impl       IResolverRankerResultServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resolverRankerResultStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resolverRankerResultStubWrapper) SendResult(
+	ctx context.Context,
+	results []ResolverTarget,
+) error {
+	return w.impl.SendResult(ctx, results)
+}
+
+var _ IResolverRankerResult = (*resolverRankerResultStubWrapper)(nil)
+
+// NewResolverRankerResultStub creates a server-side IResolverRankerResult wrapping the given
+// server implementation. The returned value satisfies IResolverRankerResult
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResolverRankerResultStub(
+	impl IResolverRankerResultServer,
+) IResolverRankerResult {
+	wrapper := &resolverRankerResultStubWrapper{impl: impl}
+	stub := &ResolverRankerResultStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

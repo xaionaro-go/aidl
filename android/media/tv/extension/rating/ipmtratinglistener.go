@@ -88,3 +88,43 @@ func (s *PmtRatingListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPmtRatingListenerServer is the server-side interface that user implementations
+// provide to NewPmtRatingListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPmtRatingListenerServer interface {
+	OnPmtRatingChanged(ctx context.Context, sessionToken string, newTvContentRating string) error
+}
+
+type pmtRatingListenerStubWrapper struct {
+	impl       IPmtRatingListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pmtRatingListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pmtRatingListenerStubWrapper) OnPmtRatingChanged(
+	ctx context.Context,
+	sessionToken string,
+	newTvContentRating string,
+) error {
+	return w.impl.OnPmtRatingChanged(ctx, sessionToken, newTvContentRating)
+}
+
+var _ IPmtRatingListener = (*pmtRatingListenerStubWrapper)(nil)
+
+// NewPmtRatingListenerStub creates a server-side IPmtRatingListener wrapping the given
+// server implementation. The returned value satisfies IPmtRatingListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPmtRatingListenerStub(
+	impl IPmtRatingListenerServer,
+) IPmtRatingListener {
+	wrapper := &pmtRatingListenerStubWrapper{impl: impl}
+	stub := &PmtRatingListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

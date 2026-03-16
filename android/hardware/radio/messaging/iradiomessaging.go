@@ -478,8 +478,8 @@ func (p *RadioMessagingProxy) SetResponseFunctions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRadioMessaging)
-	_data.WriteStrongBinder(radioMessagingResponse.AsBinder().Handle())
-	_data.WriteStrongBinder(radioMessagingIndication.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, radioMessagingResponse.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, radioMessagingIndication.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioMessaging, "setResponseFunctions")
 	if _err != nil {
@@ -964,4 +964,239 @@ func (s *RadioMessagingStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRadioMessagingServer is the server-side interface that user implementations
+// provide to NewRadioMessagingStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioMessagingServer interface {
+	AcknowledgeIncomingGsmSmsWithPdu(ctx context.Context, serial int32, success bool, ackPdu string) error
+	AcknowledgeLastIncomingCdmaSms(ctx context.Context, serial int32, smsAck CdmaSmsAck) error
+	AcknowledgeLastIncomingGsmSms(ctx context.Context, serial int32, success bool, cause SmsAcknowledgeFailCause) error
+	DeleteSmsOnRuim(ctx context.Context, serial int32, index int32) error
+	DeleteSmsOnSim(ctx context.Context, serial int32, index int32) error
+	GetCdmaBroadcastConfig(ctx context.Context, serial int32) error
+	GetGsmBroadcastConfig(ctx context.Context, serial int32) error
+	GetSmscAddress(ctx context.Context, serial int32) error
+	ReportSmsMemoryStatus(ctx context.Context, serial int32, available bool) error
+	ResponseAcknowledgement(ctx context.Context) error
+	SendCdmaSms(ctx context.Context, serial int32, sms CdmaSmsMessage) error
+	SendCdmaSmsExpectMore(ctx context.Context, serial int32, sms CdmaSmsMessage) error
+	SendImsSms(ctx context.Context, serial int32, message ImsSmsMessage) error
+	SendSms(ctx context.Context, serial int32, message GsmSmsMessage) error
+	SendSmsExpectMore(ctx context.Context, serial int32, message GsmSmsMessage) error
+	SetCdmaBroadcastActivation(ctx context.Context, serial int32, activate bool) error
+	SetCdmaBroadcastConfig(ctx context.Context, serial int32, configInfo []CdmaBroadcastSmsConfigInfo) error
+	SetGsmBroadcastActivation(ctx context.Context, serial int32, activate bool) error
+	SetGsmBroadcastConfig(ctx context.Context, serial int32, configInfo []GsmBroadcastSmsConfigInfo) error
+	SetResponseFunctions(ctx context.Context, radioMessagingResponse IRadioMessagingResponse, radioMessagingIndication IRadioMessagingIndication) error
+	SetSmscAddress(ctx context.Context, serial int32, smsc string) error
+	WriteSmsToRuim(ctx context.Context, serial int32, cdmaSms CdmaSmsWriteArgs) error
+	WriteSmsToSim(ctx context.Context, serial int32, smsWriteArgs SmsWriteArgs) error
+}
+
+type radioMessagingStubWrapper struct {
+	impl       IRadioMessagingServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioMessagingStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioMessagingStubWrapper) AcknowledgeIncomingGsmSmsWithPdu(
+	ctx context.Context,
+	serial int32,
+	success bool,
+	ackPdu string,
+) error {
+	return w.impl.AcknowledgeIncomingGsmSmsWithPdu(ctx, serial, success, ackPdu)
+}
+
+func (w *radioMessagingStubWrapper) AcknowledgeLastIncomingCdmaSms(
+	ctx context.Context,
+	serial int32,
+	smsAck CdmaSmsAck,
+) error {
+	return w.impl.AcknowledgeLastIncomingCdmaSms(ctx, serial, smsAck)
+}
+
+func (w *radioMessagingStubWrapper) AcknowledgeLastIncomingGsmSms(
+	ctx context.Context,
+	serial int32,
+	success bool,
+	cause SmsAcknowledgeFailCause,
+) error {
+	return w.impl.AcknowledgeLastIncomingGsmSms(ctx, serial, success, cause)
+}
+
+func (w *radioMessagingStubWrapper) DeleteSmsOnRuim(
+	ctx context.Context,
+	serial int32,
+	index int32,
+) error {
+	return w.impl.DeleteSmsOnRuim(ctx, serial, index)
+}
+
+func (w *radioMessagingStubWrapper) DeleteSmsOnSim(
+	ctx context.Context,
+	serial int32,
+	index int32,
+) error {
+	return w.impl.DeleteSmsOnSim(ctx, serial, index)
+}
+
+func (w *radioMessagingStubWrapper) GetCdmaBroadcastConfig(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetCdmaBroadcastConfig(ctx, serial)
+}
+
+func (w *radioMessagingStubWrapper) GetGsmBroadcastConfig(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetGsmBroadcastConfig(ctx, serial)
+}
+
+func (w *radioMessagingStubWrapper) GetSmscAddress(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetSmscAddress(ctx, serial)
+}
+
+func (w *radioMessagingStubWrapper) ReportSmsMemoryStatus(
+	ctx context.Context,
+	serial int32,
+	available bool,
+) error {
+	return w.impl.ReportSmsMemoryStatus(ctx, serial, available)
+}
+
+func (w *radioMessagingStubWrapper) ResponseAcknowledgement(
+	ctx context.Context,
+) error {
+	return w.impl.ResponseAcknowledgement(ctx)
+}
+
+func (w *radioMessagingStubWrapper) SendCdmaSms(
+	ctx context.Context,
+	serial int32,
+	sms CdmaSmsMessage,
+) error {
+	return w.impl.SendCdmaSms(ctx, serial, sms)
+}
+
+func (w *radioMessagingStubWrapper) SendCdmaSmsExpectMore(
+	ctx context.Context,
+	serial int32,
+	sms CdmaSmsMessage,
+) error {
+	return w.impl.SendCdmaSmsExpectMore(ctx, serial, sms)
+}
+
+func (w *radioMessagingStubWrapper) SendImsSms(
+	ctx context.Context,
+	serial int32,
+	message ImsSmsMessage,
+) error {
+	return w.impl.SendImsSms(ctx, serial, message)
+}
+
+func (w *radioMessagingStubWrapper) SendSms(
+	ctx context.Context,
+	serial int32,
+	message GsmSmsMessage,
+) error {
+	return w.impl.SendSms(ctx, serial, message)
+}
+
+func (w *radioMessagingStubWrapper) SendSmsExpectMore(
+	ctx context.Context,
+	serial int32,
+	message GsmSmsMessage,
+) error {
+	return w.impl.SendSmsExpectMore(ctx, serial, message)
+}
+
+func (w *radioMessagingStubWrapper) SetCdmaBroadcastActivation(
+	ctx context.Context,
+	serial int32,
+	activate bool,
+) error {
+	return w.impl.SetCdmaBroadcastActivation(ctx, serial, activate)
+}
+
+func (w *radioMessagingStubWrapper) SetCdmaBroadcastConfig(
+	ctx context.Context,
+	serial int32,
+	configInfo []CdmaBroadcastSmsConfigInfo,
+) error {
+	return w.impl.SetCdmaBroadcastConfig(ctx, serial, configInfo)
+}
+
+func (w *radioMessagingStubWrapper) SetGsmBroadcastActivation(
+	ctx context.Context,
+	serial int32,
+	activate bool,
+) error {
+	return w.impl.SetGsmBroadcastActivation(ctx, serial, activate)
+}
+
+func (w *radioMessagingStubWrapper) SetGsmBroadcastConfig(
+	ctx context.Context,
+	serial int32,
+	configInfo []GsmBroadcastSmsConfigInfo,
+) error {
+	return w.impl.SetGsmBroadcastConfig(ctx, serial, configInfo)
+}
+
+func (w *radioMessagingStubWrapper) SetResponseFunctions(
+	ctx context.Context,
+	radioMessagingResponse IRadioMessagingResponse,
+	radioMessagingIndication IRadioMessagingIndication,
+) error {
+	return w.impl.SetResponseFunctions(ctx, radioMessagingResponse, radioMessagingIndication)
+}
+
+func (w *radioMessagingStubWrapper) SetSmscAddress(
+	ctx context.Context,
+	serial int32,
+	smsc string,
+) error {
+	return w.impl.SetSmscAddress(ctx, serial, smsc)
+}
+
+func (w *radioMessagingStubWrapper) WriteSmsToRuim(
+	ctx context.Context,
+	serial int32,
+	cdmaSms CdmaSmsWriteArgs,
+) error {
+	return w.impl.WriteSmsToRuim(ctx, serial, cdmaSms)
+}
+
+func (w *radioMessagingStubWrapper) WriteSmsToSim(
+	ctx context.Context,
+	serial int32,
+	smsWriteArgs SmsWriteArgs,
+) error {
+	return w.impl.WriteSmsToSim(ctx, serial, smsWriteArgs)
+}
+
+var _ IRadioMessaging = (*radioMessagingStubWrapper)(nil)
+
+// NewRadioMessagingStub creates a server-side IRadioMessaging wrapping the given
+// server implementation. The returned value satisfies IRadioMessaging
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioMessagingStub(
+	impl IRadioMessagingServer,
+) IRadioMessaging {
+	wrapper := &radioMessagingStubWrapper{impl: impl}
+	stub := &RadioMessagingStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

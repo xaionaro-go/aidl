@@ -1275,7 +1275,7 @@ func (p *BinderRecordReplayTestProxy) SetBinder(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRecordReplayTest)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderRecordReplayTest, "setBinder")
 	if _err != nil {
@@ -1981,4 +1981,335 @@ func (s *BinderRecordReplayTestStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBinderRecordReplayTestServer is the server-side interface that user implementations
+// provide to NewBinderRecordReplayTestStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderRecordReplayTestServer interface {
+	SetByte(ctx context.Context, input byte) error
+	GetByte(ctx context.Context) (byte, error)
+	SetChar(ctx context.Context, input uint16) error
+	GetChar(ctx context.Context) (uint16, error)
+	SetBoolean(ctx context.Context, input bool) error
+	GetBoolean(ctx context.Context) (bool, error)
+	SetInt(ctx context.Context, input int32) error
+	GetInt(ctx context.Context) (int32, error)
+	SetFloat(ctx context.Context, input float32) error
+	GetFloat(ctx context.Context) (float32, error)
+	SetLong(ctx context.Context, input int64) error
+	GetLong(ctx context.Context) (int64, error)
+	SetDouble(ctx context.Context, input float64) error
+	GetDouble(ctx context.Context) (float64, error)
+	SetString(ctx context.Context, input string) error
+	GetString(ctx context.Context) (string, error)
+	SetSingleDataParcelable(ctx context.Context, p_ parcelables.SingleDataParcelable) error
+	GetSingleDataParcelable(ctx context.Context) (parcelables.SingleDataParcelable, error)
+	SetByteArray(ctx context.Context, input []byte) error
+	GetByteArray(ctx context.Context) ([]byte, error)
+	SetCharArray(ctx context.Context, input []uint16) error
+	GetCharArray(ctx context.Context) ([]uint16, error)
+	SetBooleanArray(ctx context.Context, input []bool) error
+	GetBooleanArray(ctx context.Context) ([]bool, error)
+	SetIntArray(ctx context.Context, input []int32) error
+	GetIntArray(ctx context.Context) ([]int32, error)
+	SetFloatArray(ctx context.Context, input []float32) error
+	GetFloatArray(ctx context.Context) ([]float32, error)
+	SetLongArray(ctx context.Context, input []int64) error
+	GetLongArray(ctx context.Context) ([]int64, error)
+	SetDoubleArray(ctx context.Context, input []float64) error
+	GetDoubleArray(ctx context.Context) ([]float64, error)
+	SetStringArray(ctx context.Context, input []string) error
+	GetStringArray(ctx context.Context) ([]string, error)
+	SetSingleDataParcelableArray(ctx context.Context, input []parcelables.SingleDataParcelable) error
+	GetSingleDataParcelableArray(ctx context.Context) ([]parcelables.SingleDataParcelable, error)
+	SetBinder(ctx context.Context, binder_ binder.IBinder) error
+	GetBinder(ctx context.Context) (binder.IBinder, error)
+	SetFileDescriptor(ctx context.Context, fd interface{}) error
+	GetFileDescriptor(ctx context.Context) (interface{}, error)
+}
+
+type binderRecordReplayTestStubWrapper struct {
+	impl       IBinderRecordReplayTestServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderRecordReplayTestStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetByte(
+	ctx context.Context,
+	input byte,
+) error {
+	return w.impl.SetByte(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetByte(
+	ctx context.Context,
+) (byte, error) {
+	return w.impl.GetByte(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetChar(
+	ctx context.Context,
+	input uint16,
+) error {
+	return w.impl.SetChar(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetChar(
+	ctx context.Context,
+) (uint16, error) {
+	return w.impl.GetChar(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetBoolean(
+	ctx context.Context,
+	input bool,
+) error {
+	return w.impl.SetBoolean(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetBoolean(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetBoolean(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetInt(
+	ctx context.Context,
+	input int32,
+) error {
+	return w.impl.SetInt(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetInt(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetInt(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetFloat(
+	ctx context.Context,
+	input float32,
+) error {
+	return w.impl.SetFloat(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetFloat(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetFloat(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetLong(
+	ctx context.Context,
+	input int64,
+) error {
+	return w.impl.SetLong(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetLong(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetLong(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetDouble(
+	ctx context.Context,
+	input float64,
+) error {
+	return w.impl.SetDouble(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetDouble(
+	ctx context.Context,
+) (float64, error) {
+	return w.impl.GetDouble(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetString(
+	ctx context.Context,
+	input string,
+) error {
+	return w.impl.SetString(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetString(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetString(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetSingleDataParcelable(
+	ctx context.Context,
+	p_ parcelables.SingleDataParcelable,
+) error {
+	return w.impl.SetSingleDataParcelable(ctx, p_)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetSingleDataParcelable(
+	ctx context.Context,
+) (parcelables.SingleDataParcelable, error) {
+	return w.impl.GetSingleDataParcelable(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetByteArray(
+	ctx context.Context,
+	input []byte,
+) error {
+	return w.impl.SetByteArray(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetByteArray(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetByteArray(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetCharArray(
+	ctx context.Context,
+	input []uint16,
+) error {
+	return w.impl.SetCharArray(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetCharArray(
+	ctx context.Context,
+) ([]uint16, error) {
+	return w.impl.GetCharArray(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetBooleanArray(
+	ctx context.Context,
+	input []bool,
+) error {
+	return w.impl.SetBooleanArray(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetBooleanArray(
+	ctx context.Context,
+) ([]bool, error) {
+	return w.impl.GetBooleanArray(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetIntArray(
+	ctx context.Context,
+	input []int32,
+) error {
+	return w.impl.SetIntArray(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetIntArray(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetIntArray(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetFloatArray(
+	ctx context.Context,
+	input []float32,
+) error {
+	return w.impl.SetFloatArray(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetFloatArray(
+	ctx context.Context,
+) ([]float32, error) {
+	return w.impl.GetFloatArray(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetLongArray(
+	ctx context.Context,
+	input []int64,
+) error {
+	return w.impl.SetLongArray(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetLongArray(
+	ctx context.Context,
+) ([]int64, error) {
+	return w.impl.GetLongArray(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetDoubleArray(
+	ctx context.Context,
+	input []float64,
+) error {
+	return w.impl.SetDoubleArray(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetDoubleArray(
+	ctx context.Context,
+) ([]float64, error) {
+	return w.impl.GetDoubleArray(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetStringArray(
+	ctx context.Context,
+	input []string,
+) error {
+	return w.impl.SetStringArray(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetStringArray(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetStringArray(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetSingleDataParcelableArray(
+	ctx context.Context,
+	input []parcelables.SingleDataParcelable,
+) error {
+	return w.impl.SetSingleDataParcelableArray(ctx, input)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetSingleDataParcelableArray(
+	ctx context.Context,
+) ([]parcelables.SingleDataParcelable, error) {
+	return w.impl.GetSingleDataParcelableArray(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetBinder(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) error {
+	return w.impl.SetBinder(ctx, binder_)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetBinder(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.GetBinder(ctx)
+}
+
+func (w *binderRecordReplayTestStubWrapper) SetFileDescriptor(
+	ctx context.Context,
+	fd interface{},
+) error {
+	return w.impl.SetFileDescriptor(ctx, fd)
+}
+
+func (w *binderRecordReplayTestStubWrapper) GetFileDescriptor(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetFileDescriptor(ctx)
+}
+
+var _ IBinderRecordReplayTest = (*binderRecordReplayTestStubWrapper)(nil)
+
+// NewBinderRecordReplayTestStub creates a server-side IBinderRecordReplayTest wrapping the given
+// server implementation. The returned value satisfies IBinderRecordReplayTest
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderRecordReplayTestStub(
+	impl IBinderRecordReplayTestServer,
+) IBinderRecordReplayTest {
+	wrapper := &binderRecordReplayTestStubWrapper{impl: impl}
+	stub := &BinderRecordReplayTestStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

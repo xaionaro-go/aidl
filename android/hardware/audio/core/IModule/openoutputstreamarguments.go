@@ -33,8 +33,16 @@ func (s *OpenOutputStreamArguments) MarshalParcel(
 		return _err
 	}
 	p.WriteInt64(s.BufferSizeFrames)
-	p.WriteStrongBinder(s.Callback.AsBinder().Handle())
-	p.WriteStrongBinder(s.EventCallback.AsBinder().Handle())
+	if s.Callback == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Callback.AsBinder().Handle())
+	}
+	if s.EventCallback == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.EventCallback.AsBinder().Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

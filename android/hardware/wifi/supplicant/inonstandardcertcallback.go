@@ -174,3 +174,50 @@ func (s *NonStandardCertCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INonStandardCertCallbackServer is the server-side interface that user implementations
+// provide to NewNonStandardCertCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INonStandardCertCallbackServer interface {
+	GetBlob(ctx context.Context, alias string) ([]byte, error)
+	ListAliases(ctx context.Context, prefix string) ([]string, error)
+}
+
+type nonStandardCertCallbackStubWrapper struct {
+	impl       INonStandardCertCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *nonStandardCertCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *nonStandardCertCallbackStubWrapper) GetBlob(
+	ctx context.Context,
+	alias string,
+) ([]byte, error) {
+	return w.impl.GetBlob(ctx, alias)
+}
+
+func (w *nonStandardCertCallbackStubWrapper) ListAliases(
+	ctx context.Context,
+	prefix string,
+) ([]string, error) {
+	return w.impl.ListAliases(ctx, prefix)
+}
+
+var _ INonStandardCertCallback = (*nonStandardCertCallbackStubWrapper)(nil)
+
+// NewNonStandardCertCallbackStub creates a server-side INonStandardCertCallback wrapping the given
+// server implementation. The returned value satisfies INonStandardCertCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNonStandardCertCallbackStub(
+	impl INonStandardCertCallbackServer,
+) INonStandardCertCallback {
+	wrapper := &nonStandardCertCallbackStubWrapper{impl: impl}
+	stub := &NonStandardCertCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

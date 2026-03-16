@@ -94,3 +94,42 @@ func (s *ImsServiceControllerListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsServiceControllerListenerServer is the server-side interface that user implementations
+// provide to NewImsServiceControllerListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsServiceControllerListenerServer interface {
+	OnUpdateSupportedImsFeatures(ctx context.Context, c stub.ImsFeatureConfiguration) error
+}
+
+type imsServiceControllerListenerStubWrapper struct {
+	impl       IImsServiceControllerListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsServiceControllerListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsServiceControllerListenerStubWrapper) OnUpdateSupportedImsFeatures(
+	ctx context.Context,
+	c stub.ImsFeatureConfiguration,
+) error {
+	return w.impl.OnUpdateSupportedImsFeatures(ctx, c)
+}
+
+var _ IImsServiceControllerListener = (*imsServiceControllerListenerStubWrapper)(nil)
+
+// NewImsServiceControllerListenerStub creates a server-side IImsServiceControllerListener wrapping the given
+// server implementation. The returned value satisfies IImsServiceControllerListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsServiceControllerListenerStub(
+	impl IImsServiceControllerListenerServer,
+) IImsServiceControllerListener {
+	wrapper := &imsServiceControllerListenerStubWrapper{impl: impl}
+	stub := &ImsServiceControllerListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -20,7 +20,11 @@ func (s *FocusRequest) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Token.Handle())
+	if s.Token == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Token.Handle())
+	}
 	p.WriteString16(s.WindowName)
 	p.WriteInt64(s.Timestamp)
 	p.WriteInt32(s.DisplayId)

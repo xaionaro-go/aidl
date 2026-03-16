@@ -176,3 +176,58 @@ func (s *TestInterfaceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITestInterfaceServer is the server-side interface that user implementations
+// provide to NewTestInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITestInterfaceServer interface {
+	Foo(ctx context.Context, a int32) (int32, error)
+	OnewayFoo(ctx context.Context, a int32) error
+	Bar(ctx context.Context, a int32) error
+}
+
+type testInterfaceStubWrapper struct {
+	impl       ITestInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *testInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *testInterfaceStubWrapper) Foo(
+	ctx context.Context,
+	a int32,
+) (int32, error) {
+	return w.impl.Foo(ctx, a)
+}
+
+func (w *testInterfaceStubWrapper) OnewayFoo(
+	ctx context.Context,
+	a int32,
+) error {
+	return w.impl.OnewayFoo(ctx, a)
+}
+
+func (w *testInterfaceStubWrapper) Bar(
+	ctx context.Context,
+	a int32,
+) error {
+	return w.impl.Bar(ctx, a)
+}
+
+var _ ITestInterface = (*testInterfaceStubWrapper)(nil)
+
+// NewTestInterfaceStub creates a server-side ITestInterface wrapping the given
+// server implementation. The returned value satisfies ITestInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTestInterfaceStub(
+	impl ITestInterfaceServer,
+) ITestInterface {
+	wrapper := &testInterfaceStubWrapper{impl: impl}
+	stub := &TestInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

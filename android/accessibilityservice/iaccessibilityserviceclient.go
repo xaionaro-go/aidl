@@ -5,7 +5,6 @@ import (
 	"fmt"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	common "github.com/xaionaro-go/binder/android/hardware/input/common"
-	view "github.com/xaionaro-go/binder/android/view"
 	accessibility "github.com/xaionaro-go/binder/android/view/accessibility"
 	viewInputmethod "github.com/xaionaro-go/binder/android/view/inputmethod"
 	"github.com/xaionaro-go/binder/binder"
@@ -48,7 +47,7 @@ type IAccessibilityServiceClient interface {
 	OnInterrupt(ctx context.Context) error
 	OnGesture(ctx context.Context, gestureEvent AccessibilityGestureEvent) error
 	ClearAccessibilityCache(ctx context.Context) error
-	OnKeyEvent(ctx context.Context, event view.KeyEvent, sequence int32) error
+	OnKeyEvent(ctx context.Context, event interface{}, sequence int32) error
 	OnMagnificationChanged(ctx context.Context, displayId int32, region graphics.Region, config MagnificationConfig) error
 	OnMotionEvent(ctx context.Context, event common.MotionEvent) error
 	OnTouchStateChanged(ctx context.Context, displayId int32, state int32) error
@@ -90,9 +89,9 @@ func (p *AccessibilityServiceClientProxy) Init(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceClient)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(connectionId)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceClient, "init")
 	if _err != nil {
@@ -177,15 +176,11 @@ func (p *AccessibilityServiceClientProxy) ClearAccessibilityCache(
 
 func (p *AccessibilityServiceClientProxy) OnKeyEvent(
 	ctx context.Context,
-	event view.KeyEvent,
+	event interface{},
 	sequence int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceClient)
-	_data.WriteInt32(1)
-	if _err := event.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(sequence)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceClient, "onKeyEvent")
@@ -388,7 +383,7 @@ func (p *AccessibilityServiceClientProxy) CreateImeSession(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceClient)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceClient, "createImeSession")
 	if _err != nil {
@@ -406,7 +401,7 @@ func (p *AccessibilityServiceClientProxy) SetImeSessionEnabled(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceClient)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteBool(enabled)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceClient, "setImeSessionEnabled")
@@ -456,7 +451,7 @@ func (p *AccessibilityServiceClientProxy) StartInput(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceClient)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := editorInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -563,18 +558,7 @@ func (s *AccessibilityServiceClientStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_event view.KeyEvent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_event.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_event interface{}
 		_arg_sequence, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -795,4 +779,209 @@ func (s *AccessibilityServiceClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAccessibilityServiceClientServer is the server-side interface that user implementations
+// provide to NewAccessibilityServiceClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccessibilityServiceClientServer interface {
+	Init(ctx context.Context, connection IAccessibilityServiceConnection, connectionId int32, windowToken binder.IBinder) error
+	OnAccessibilityEvent(ctx context.Context, event accessibility.AccessibilityEvent, serviceWantsEvent bool) error
+	OnInterrupt(ctx context.Context) error
+	OnGesture(ctx context.Context, gestureEvent AccessibilityGestureEvent) error
+	ClearAccessibilityCache(ctx context.Context) error
+	OnKeyEvent(ctx context.Context, event interface{}, sequence int32) error
+	OnMagnificationChanged(ctx context.Context, displayId int32, region graphics.Region, config MagnificationConfig) error
+	OnMotionEvent(ctx context.Context, event common.MotionEvent) error
+	OnTouchStateChanged(ctx context.Context, displayId int32, state int32) error
+	OnSoftKeyboardShowModeChanged(ctx context.Context, showMode int32) error
+	OnPerformGestureResult(ctx context.Context, sequence int32, completedSuccessfully bool) error
+	OnFingerprintCapturingGesturesChanged(ctx context.Context, capturing bool) error
+	OnFingerprintGesture(ctx context.Context, gesture int32) error
+	OnAccessibilityButtonClicked(ctx context.Context, displayId int32) error
+	OnAccessibilityButtonAvailabilityChanged(ctx context.Context, available bool) error
+	OnSystemActionsChanged(ctx context.Context) error
+	CreateImeSession(ctx context.Context, callback inputmethod.IAccessibilityInputMethodSessionCallback) error
+	SetImeSessionEnabled(ctx context.Context, session inputmethod.IAccessibilityInputMethodSession, enabled bool) error
+	BindInput(ctx context.Context) error
+	UnbindInput(ctx context.Context) error
+	StartInput(ctx context.Context, connection inputmethod.IRemoteAccessibilityInputConnection, editorInfo viewInputmethod.EditorInfo, restarting bool) error
+}
+
+type accessibilityServiceClientStubWrapper struct {
+	impl       IAccessibilityServiceClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accessibilityServiceClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accessibilityServiceClientStubWrapper) Init(
+	ctx context.Context,
+	connection IAccessibilityServiceConnection,
+	connectionId int32,
+	windowToken binder.IBinder,
+) error {
+	return w.impl.Init(ctx, connection, connectionId, windowToken)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnAccessibilityEvent(
+	ctx context.Context,
+	event accessibility.AccessibilityEvent,
+	serviceWantsEvent bool,
+) error {
+	return w.impl.OnAccessibilityEvent(ctx, event, serviceWantsEvent)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnInterrupt(
+	ctx context.Context,
+) error {
+	return w.impl.OnInterrupt(ctx)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnGesture(
+	ctx context.Context,
+	gestureEvent AccessibilityGestureEvent,
+) error {
+	return w.impl.OnGesture(ctx, gestureEvent)
+}
+
+func (w *accessibilityServiceClientStubWrapper) ClearAccessibilityCache(
+	ctx context.Context,
+) error {
+	return w.impl.ClearAccessibilityCache(ctx)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnKeyEvent(
+	ctx context.Context,
+	event interface{},
+	sequence int32,
+) error {
+	return w.impl.OnKeyEvent(ctx, event, sequence)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnMagnificationChanged(
+	ctx context.Context,
+	displayId int32,
+	region graphics.Region,
+	config MagnificationConfig,
+) error {
+	return w.impl.OnMagnificationChanged(ctx, displayId, region, config)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnMotionEvent(
+	ctx context.Context,
+	event common.MotionEvent,
+) error {
+	return w.impl.OnMotionEvent(ctx, event)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnTouchStateChanged(
+	ctx context.Context,
+	displayId int32,
+	state int32,
+) error {
+	return w.impl.OnTouchStateChanged(ctx, displayId, state)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnSoftKeyboardShowModeChanged(
+	ctx context.Context,
+	showMode int32,
+) error {
+	return w.impl.OnSoftKeyboardShowModeChanged(ctx, showMode)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnPerformGestureResult(
+	ctx context.Context,
+	sequence int32,
+	completedSuccessfully bool,
+) error {
+	return w.impl.OnPerformGestureResult(ctx, sequence, completedSuccessfully)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnFingerprintCapturingGesturesChanged(
+	ctx context.Context,
+	capturing bool,
+) error {
+	return w.impl.OnFingerprintCapturingGesturesChanged(ctx, capturing)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnFingerprintGesture(
+	ctx context.Context,
+	gesture int32,
+) error {
+	return w.impl.OnFingerprintGesture(ctx, gesture)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnAccessibilityButtonClicked(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnAccessibilityButtonClicked(ctx, displayId)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnAccessibilityButtonAvailabilityChanged(
+	ctx context.Context,
+	available bool,
+) error {
+	return w.impl.OnAccessibilityButtonAvailabilityChanged(ctx, available)
+}
+
+func (w *accessibilityServiceClientStubWrapper) OnSystemActionsChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnSystemActionsChanged(ctx)
+}
+
+func (w *accessibilityServiceClientStubWrapper) CreateImeSession(
+	ctx context.Context,
+	callback inputmethod.IAccessibilityInputMethodSessionCallback,
+) error {
+	return w.impl.CreateImeSession(ctx, callback)
+}
+
+func (w *accessibilityServiceClientStubWrapper) SetImeSessionEnabled(
+	ctx context.Context,
+	session inputmethod.IAccessibilityInputMethodSession,
+	enabled bool,
+) error {
+	return w.impl.SetImeSessionEnabled(ctx, session, enabled)
+}
+
+func (w *accessibilityServiceClientStubWrapper) BindInput(
+	ctx context.Context,
+) error {
+	return w.impl.BindInput(ctx)
+}
+
+func (w *accessibilityServiceClientStubWrapper) UnbindInput(
+	ctx context.Context,
+) error {
+	return w.impl.UnbindInput(ctx)
+}
+
+func (w *accessibilityServiceClientStubWrapper) StartInput(
+	ctx context.Context,
+	connection inputmethod.IRemoteAccessibilityInputConnection,
+	editorInfo viewInputmethod.EditorInfo,
+	restarting bool,
+) error {
+	return w.impl.StartInput(ctx, connection, editorInfo, restarting)
+}
+
+var _ IAccessibilityServiceClient = (*accessibilityServiceClientStubWrapper)(nil)
+
+// NewAccessibilityServiceClientStub creates a server-side IAccessibilityServiceClient wrapping the given
+// server implementation. The returned value satisfies IAccessibilityServiceClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccessibilityServiceClientStub(
+	impl IAccessibilityServiceClientServer,
+) IAccessibilityServiceClient {
+	wrapper := &accessibilityServiceClientStubWrapper{impl: impl}
+	stub := &AccessibilityServiceClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

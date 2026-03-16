@@ -100,3 +100,48 @@ func (s *IncidentAuthListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIncidentAuthListenerServer is the server-side interface that user implementations
+// provide to NewIncidentAuthListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIncidentAuthListenerServer interface {
+	OnReportApproved(ctx context.Context) error
+	OnReportDenied(ctx context.Context) error
+}
+
+type incidentAuthListenerStubWrapper struct {
+	impl       IIncidentAuthListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *incidentAuthListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *incidentAuthListenerStubWrapper) OnReportApproved(
+	ctx context.Context,
+) error {
+	return w.impl.OnReportApproved(ctx)
+}
+
+func (w *incidentAuthListenerStubWrapper) OnReportDenied(
+	ctx context.Context,
+) error {
+	return w.impl.OnReportDenied(ctx)
+}
+
+var _ IIncidentAuthListener = (*incidentAuthListenerStubWrapper)(nil)
+
+// NewIncidentAuthListenerStub creates a server-side IIncidentAuthListener wrapping the given
+// server implementation. The returned value satisfies IIncidentAuthListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIncidentAuthListenerStub(
+	impl IIncidentAuthListenerServer,
+) IIncidentAuthListener {
+	wrapper := &incidentAuthListenerStubWrapper{impl: impl}
+	stub := &IncidentAuthListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

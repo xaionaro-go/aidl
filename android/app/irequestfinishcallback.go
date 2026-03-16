@@ -76,3 +76,41 @@ func (s *RequestFinishCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRequestFinishCallbackServer is the server-side interface that user implementations
+// provide to NewRequestFinishCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRequestFinishCallbackServer interface {
+	RequestFinish(ctx context.Context) error
+}
+
+type requestFinishCallbackStubWrapper struct {
+	impl       IRequestFinishCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *requestFinishCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *requestFinishCallbackStubWrapper) RequestFinish(
+	ctx context.Context,
+) error {
+	return w.impl.RequestFinish(ctx)
+}
+
+var _ IRequestFinishCallback = (*requestFinishCallbackStubWrapper)(nil)
+
+// NewRequestFinishCallbackStub creates a server-side IRequestFinishCallback wrapping the given
+// server implementation. The returned value satisfies IRequestFinishCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRequestFinishCallbackStub(
+	impl IRequestFinishCallbackServer,
+) IRequestFinishCallback {
+	wrapper := &requestFinishCallbackStubWrapper{impl: impl}
+	stub := &RequestFinishCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

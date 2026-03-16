@@ -260,3 +260,70 @@ func (s *TimeFilterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITimeFilterServer is the server-side interface that user implementations
+// provide to NewTimeFilterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITimeFilterServer interface {
+	SetTimeStamp(ctx context.Context, timeStamp int64) error
+	ClearTimeStamp(ctx context.Context) error
+	GetTimeStamp(ctx context.Context) (int64, error)
+	GetSourceTime(ctx context.Context) (int64, error)
+	Close(ctx context.Context) error
+}
+
+type timeFilterStubWrapper struct {
+	impl       ITimeFilterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *timeFilterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *timeFilterStubWrapper) SetTimeStamp(
+	ctx context.Context,
+	timeStamp int64,
+) error {
+	return w.impl.SetTimeStamp(ctx, timeStamp)
+}
+
+func (w *timeFilterStubWrapper) ClearTimeStamp(
+	ctx context.Context,
+) error {
+	return w.impl.ClearTimeStamp(ctx)
+}
+
+func (w *timeFilterStubWrapper) GetTimeStamp(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetTimeStamp(ctx)
+}
+
+func (w *timeFilterStubWrapper) GetSourceTime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetSourceTime(ctx)
+}
+
+func (w *timeFilterStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ ITimeFilter = (*timeFilterStubWrapper)(nil)
+
+// NewTimeFilterStub creates a server-side ITimeFilter wrapping the given
+// server implementation. The returned value satisfies ITimeFilter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTimeFilterStub(
+	impl ITimeFilterServer,
+) ITimeFilter {
+	wrapper := &timeFilterStubWrapper{impl: impl}
+	stub := &TimeFilterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

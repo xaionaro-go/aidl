@@ -118,3 +118,49 @@ func (s *AppFunctionEnabledCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppFunctionEnabledCallbackServer is the server-side interface that user implementations
+// provide to NewAppFunctionEnabledCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppFunctionEnabledCallbackServer interface {
+	OnSuccess(ctx context.Context) error
+	OnError(ctx context.Context, exception os.ParcelableException) error
+}
+
+type appFunctionEnabledCallbackStubWrapper struct {
+	impl       IAppFunctionEnabledCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appFunctionEnabledCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appFunctionEnabledCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+) error {
+	return w.impl.OnSuccess(ctx)
+}
+
+func (w *appFunctionEnabledCallbackStubWrapper) OnError(
+	ctx context.Context,
+	exception os.ParcelableException,
+) error {
+	return w.impl.OnError(ctx, exception)
+}
+
+var _ IAppFunctionEnabledCallback = (*appFunctionEnabledCallbackStubWrapper)(nil)
+
+// NewAppFunctionEnabledCallbackStub creates a server-side IAppFunctionEnabledCallback wrapping the given
+// server implementation. The returned value satisfies IAppFunctionEnabledCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppFunctionEnabledCallbackStub(
+	impl IAppFunctionEnabledCallbackServer,
+) IAppFunctionEnabledCallback {
+	wrapper := &appFunctionEnabledCallbackStubWrapper{impl: impl}
+	stub := &AppFunctionEnabledCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -124,3 +124,44 @@ func (s *AttestationVerificationServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAttestationVerificationServiceServer is the server-side interface that user implementations
+// provide to NewAttestationVerificationServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAttestationVerificationServiceServer interface {
+	OnVerifyAttestation(ctx context.Context, requirements os.Bundle, attestation []byte, callback infra.AndroidFuture) error
+}
+
+type attestationVerificationServiceStubWrapper struct {
+	impl       IAttestationVerificationServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *attestationVerificationServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *attestationVerificationServiceStubWrapper) OnVerifyAttestation(
+	ctx context.Context,
+	requirements os.Bundle,
+	attestation []byte,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.OnVerifyAttestation(ctx, requirements, attestation, callback)
+}
+
+var _ IAttestationVerificationService = (*attestationVerificationServiceStubWrapper)(nil)
+
+// NewAttestationVerificationServiceStub creates a server-side IAttestationVerificationService wrapping the given
+// server implementation. The returned value satisfies IAttestationVerificationService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAttestationVerificationServiceStub(
+	impl IAttestationVerificationServiceServer,
+) IAttestationVerificationService {
+	wrapper := &attestationVerificationServiceStubWrapper{impl: impl}
+	stub := &AttestationVerificationServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

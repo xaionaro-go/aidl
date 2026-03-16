@@ -81,7 +81,7 @@ func (p *TunerFrontendSignalInfoInterfaceProxy) SetFrontendSignalInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerFrontendSignalInfoInterface)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerFrontendSignalInfoInterface, "setFrontendSignalInfoListener")
 	if _err != nil {
@@ -153,4 +153,51 @@ func (s *TunerFrontendSignalInfoInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITunerFrontendSignalInfoInterfaceServer is the server-side interface that user implementations
+// provide to NewTunerFrontendSignalInfoInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerFrontendSignalInfoInterfaceServer interface {
+	GetFrontendSignalInfo(ctx context.Context, sessionToken string) (os.Bundle, error)
+	SetFrontendSignalInfoListener(ctx context.Context, listener ITunerFrontendSignalInfoListener) error
+}
+
+type tunerFrontendSignalInfoInterfaceStubWrapper struct {
+	impl       ITunerFrontendSignalInfoInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerFrontendSignalInfoInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerFrontendSignalInfoInterfaceStubWrapper) GetFrontendSignalInfo(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetFrontendSignalInfo(ctx, sessionToken)
+}
+
+func (w *tunerFrontendSignalInfoInterfaceStubWrapper) SetFrontendSignalInfoListener(
+	ctx context.Context,
+	listener ITunerFrontendSignalInfoListener,
+) error {
+	return w.impl.SetFrontendSignalInfoListener(ctx, listener)
+}
+
+var _ ITunerFrontendSignalInfoInterface = (*tunerFrontendSignalInfoInterfaceStubWrapper)(nil)
+
+// NewTunerFrontendSignalInfoInterfaceStub creates a server-side ITunerFrontendSignalInfoInterface wrapping the given
+// server implementation. The returned value satisfies ITunerFrontendSignalInfoInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerFrontendSignalInfoInterfaceStub(
+	impl ITunerFrontendSignalInfoInterfaceServer,
+) ITunerFrontendSignalInfoInterface {
+	wrapper := &tunerFrontendSignalInfoInterfaceStubWrapper{impl: impl}
+	stub := &TunerFrontendSignalInfoInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

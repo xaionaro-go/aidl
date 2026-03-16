@@ -51,7 +51,7 @@ func (p *TunerDescramblerProxy) SetDemuxSource(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerDescrambler)
-	_data.WriteStrongBinder(tunerDemux.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tunerDemux.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerDescrambler, "setDemuxSource")
 	if _err != nil {
@@ -115,7 +115,7 @@ func (p *TunerDescramblerProxy) AddPid(
 	if _err := pid.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(optionalSourceFilter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, optionalSourceFilter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerDescrambler, "addPid")
 	if _err != nil {
@@ -146,7 +146,7 @@ func (p *TunerDescramblerProxy) RemovePid(
 	if _err := pid.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(optionalSourceFilter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, optionalSourceFilter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerDescrambler, "removePid")
 	if _err != nil {
@@ -303,4 +303,76 @@ func (s *TunerDescramblerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITunerDescramblerServer is the server-side interface that user implementations
+// provide to NewTunerDescramblerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerDescramblerServer interface {
+	SetDemuxSource(ctx context.Context, tunerDemux ITunerDemux) error
+	SetKeyToken(ctx context.Context, keyToken []byte) error
+	AddPid(ctx context.Context, pid tvTuner.DemuxPid, optionalSourceFilter ITunerFilter) error
+	RemovePid(ctx context.Context, pid tvTuner.DemuxPid, optionalSourceFilter ITunerFilter) error
+	Close(ctx context.Context) error
+}
+
+type tunerDescramblerStubWrapper struct {
+	impl       ITunerDescramblerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerDescramblerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerDescramblerStubWrapper) SetDemuxSource(
+	ctx context.Context,
+	tunerDemux ITunerDemux,
+) error {
+	return w.impl.SetDemuxSource(ctx, tunerDemux)
+}
+
+func (w *tunerDescramblerStubWrapper) SetKeyToken(
+	ctx context.Context,
+	keyToken []byte,
+) error {
+	return w.impl.SetKeyToken(ctx, keyToken)
+}
+
+func (w *tunerDescramblerStubWrapper) AddPid(
+	ctx context.Context,
+	pid tvTuner.DemuxPid,
+	optionalSourceFilter ITunerFilter,
+) error {
+	return w.impl.AddPid(ctx, pid, optionalSourceFilter)
+}
+
+func (w *tunerDescramblerStubWrapper) RemovePid(
+	ctx context.Context,
+	pid tvTuner.DemuxPid,
+	optionalSourceFilter ITunerFilter,
+) error {
+	return w.impl.RemovePid(ctx, pid, optionalSourceFilter)
+}
+
+func (w *tunerDescramblerStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ ITunerDescrambler = (*tunerDescramblerStubWrapper)(nil)
+
+// NewTunerDescramblerStub creates a server-side ITunerDescrambler wrapping the given
+// server implementation. The returned value satisfies ITunerDescrambler
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerDescramblerStub(
+	impl ITunerDescramblerServer,
+) ITunerDescrambler {
+	wrapper := &tunerDescramblerStubWrapper{impl: impl}
+	stub := &TunerDescramblerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

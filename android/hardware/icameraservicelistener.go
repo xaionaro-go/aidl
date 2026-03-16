@@ -388,3 +388,112 @@ func (s *CameraServiceListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraServiceListenerServer is the server-side interface that user implementations
+// provide to NewCameraServiceListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraServiceListenerServer interface {
+	OnStatusChanged(ctx context.Context, status int32, cameraId string, deviceId int32) error
+	OnPhysicalCameraStatusChanged(ctx context.Context, status int32, cameraId string, physicalCameraId string, deviceId int32) error
+	OnTorchStatusChanged(ctx context.Context, status int32, cameraId string, deviceId int32) error
+	OnTorchStrengthLevelChanged(ctx context.Context, cameraId string, newTorchStrength int32, deviceId int32) error
+	OnCameraAccessPrioritiesChanged(ctx context.Context) error
+	OnCameraOpened(ctx context.Context, cameraId string, clientPackageId string, deviceId int32) error
+	OnCameraOpenedInSharedMode(ctx context.Context, cameraId string, clientPackageId string, deviceId int32, primaryClient bool) error
+	OnCameraClosed(ctx context.Context, cameraId string, deviceId int32) error
+}
+
+type cameraServiceListenerStubWrapper struct {
+	impl       ICameraServiceListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraServiceListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraServiceListenerStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	status int32,
+	cameraId string,
+	deviceId int32,
+) error {
+	return w.impl.OnStatusChanged(ctx, status, cameraId, deviceId)
+}
+
+func (w *cameraServiceListenerStubWrapper) OnPhysicalCameraStatusChanged(
+	ctx context.Context,
+	status int32,
+	cameraId string,
+	physicalCameraId string,
+	deviceId int32,
+) error {
+	return w.impl.OnPhysicalCameraStatusChanged(ctx, status, cameraId, physicalCameraId, deviceId)
+}
+
+func (w *cameraServiceListenerStubWrapper) OnTorchStatusChanged(
+	ctx context.Context,
+	status int32,
+	cameraId string,
+	deviceId int32,
+) error {
+	return w.impl.OnTorchStatusChanged(ctx, status, cameraId, deviceId)
+}
+
+func (w *cameraServiceListenerStubWrapper) OnTorchStrengthLevelChanged(
+	ctx context.Context,
+	cameraId string,
+	newTorchStrength int32,
+	deviceId int32,
+) error {
+	return w.impl.OnTorchStrengthLevelChanged(ctx, cameraId, newTorchStrength, deviceId)
+}
+
+func (w *cameraServiceListenerStubWrapper) OnCameraAccessPrioritiesChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnCameraAccessPrioritiesChanged(ctx)
+}
+
+func (w *cameraServiceListenerStubWrapper) OnCameraOpened(
+	ctx context.Context,
+	cameraId string,
+	clientPackageId string,
+	deviceId int32,
+) error {
+	return w.impl.OnCameraOpened(ctx, cameraId, clientPackageId, deviceId)
+}
+
+func (w *cameraServiceListenerStubWrapper) OnCameraOpenedInSharedMode(
+	ctx context.Context,
+	cameraId string,
+	clientPackageId string,
+	deviceId int32,
+	primaryClient bool,
+) error {
+	return w.impl.OnCameraOpenedInSharedMode(ctx, cameraId, clientPackageId, deviceId, primaryClient)
+}
+
+func (w *cameraServiceListenerStubWrapper) OnCameraClosed(
+	ctx context.Context,
+	cameraId string,
+	deviceId int32,
+) error {
+	return w.impl.OnCameraClosed(ctx, cameraId, deviceId)
+}
+
+var _ ICameraServiceListener = (*cameraServiceListenerStubWrapper)(nil)
+
+// NewCameraServiceListenerStub creates a server-side ICameraServiceListener wrapping the given
+// server implementation. The returned value satisfies ICameraServiceListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraServiceListenerStub(
+	impl ICameraServiceListenerServer,
+) ICameraServiceListener {
+	wrapper := &cameraServiceListenerStubWrapper{impl: impl}
+	stub := &CameraServiceListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

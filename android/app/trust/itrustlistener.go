@@ -236,3 +236,76 @@ func (s *TrustListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITrustListenerServer is the server-side interface that user implementations
+// provide to NewTrustListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITrustListenerServer interface {
+	OnEnabledTrustAgentsChanged(ctx context.Context) error
+	OnTrustChanged(ctx context.Context, enabled bool, newlyUnlocked bool, flags int32, trustGrantedMessages []string) error
+	OnTrustManagedChanged(ctx context.Context, managed bool) error
+	OnTrustError(ctx context.Context, message interface{}) error
+	OnIsActiveUnlockRunningChanged(ctx context.Context, isRunning bool) error
+}
+
+type trustListenerStubWrapper struct {
+	impl       ITrustListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *trustListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *trustListenerStubWrapper) OnEnabledTrustAgentsChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnEnabledTrustAgentsChanged(ctx)
+}
+
+func (w *trustListenerStubWrapper) OnTrustChanged(
+	ctx context.Context,
+	enabled bool,
+	newlyUnlocked bool,
+	flags int32,
+	trustGrantedMessages []string,
+) error {
+	return w.impl.OnTrustChanged(ctx, enabled, newlyUnlocked, flags, trustGrantedMessages)
+}
+
+func (w *trustListenerStubWrapper) OnTrustManagedChanged(
+	ctx context.Context,
+	managed bool,
+) error {
+	return w.impl.OnTrustManagedChanged(ctx, managed)
+}
+
+func (w *trustListenerStubWrapper) OnTrustError(
+	ctx context.Context,
+	message interface{},
+) error {
+	return w.impl.OnTrustError(ctx, message)
+}
+
+func (w *trustListenerStubWrapper) OnIsActiveUnlockRunningChanged(
+	ctx context.Context,
+	isRunning bool,
+) error {
+	return w.impl.OnIsActiveUnlockRunningChanged(ctx, isRunning)
+}
+
+var _ ITrustListener = (*trustListenerStubWrapper)(nil)
+
+// NewTrustListenerStub creates a server-side ITrustListener wrapping the given
+// server implementation. The returned value satisfies ITrustListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTrustListenerStub(
+	impl ITrustListenerServer,
+) ITrustListener {
+	wrapper := &trustListenerStubWrapper{impl: impl}
+	stub := &TrustListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

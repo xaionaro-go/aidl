@@ -149,3 +149,49 @@ func (s *CamProfileInterfaceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICamProfileInterfaceServer is the server-side interface that user implementations
+// provide to NewCamProfileInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICamProfileInterfaceServer interface {
+	GetCamServiceUpdateInfo(ctx context.Context, slotNumber int32) (os.Bundle, error)
+	RequestResendProfileInfoBroadcastACON(ctx context.Context) error
+}
+
+type camProfileInterfaceStubWrapper struct {
+	impl       ICamProfileInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *camProfileInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *camProfileInterfaceStubWrapper) GetCamServiceUpdateInfo(
+	ctx context.Context,
+	slotNumber int32,
+) (os.Bundle, error) {
+	return w.impl.GetCamServiceUpdateInfo(ctx, slotNumber)
+}
+
+func (w *camProfileInterfaceStubWrapper) RequestResendProfileInfoBroadcastACON(
+	ctx context.Context,
+) error {
+	return w.impl.RequestResendProfileInfoBroadcastACON(ctx)
+}
+
+var _ ICamProfileInterface = (*camProfileInterfaceStubWrapper)(nil)
+
+// NewCamProfileInterfaceStub creates a server-side ICamProfileInterface wrapping the given
+// server implementation. The returned value satisfies ICamProfileInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCamProfileInterfaceStub(
+	impl ICamProfileInterfaceServer,
+) ICamProfileInterface {
+	wrapper := &camProfileInterfaceStubWrapper{impl: impl}
+	stub := &CamProfileInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

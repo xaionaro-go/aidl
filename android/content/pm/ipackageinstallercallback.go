@@ -220,3 +220,77 @@ func (s *PackageInstallerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPackageInstallerCallbackServer is the server-side interface that user implementations
+// provide to NewPackageInstallerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageInstallerCallbackServer interface {
+	OnSessionCreated(ctx context.Context, sessionId int32) error
+	OnSessionBadgingChanged(ctx context.Context, sessionId int32) error
+	OnSessionActiveChanged(ctx context.Context, sessionId int32, active bool) error
+	OnSessionProgressChanged(ctx context.Context, sessionId int32, progress float32) error
+	OnSessionFinished(ctx context.Context, sessionId int32, success bool) error
+}
+
+type packageInstallerCallbackStubWrapper struct {
+	impl       IPackageInstallerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageInstallerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageInstallerCallbackStubWrapper) OnSessionCreated(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnSessionCreated(ctx, sessionId)
+}
+
+func (w *packageInstallerCallbackStubWrapper) OnSessionBadgingChanged(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnSessionBadgingChanged(ctx, sessionId)
+}
+
+func (w *packageInstallerCallbackStubWrapper) OnSessionActiveChanged(
+	ctx context.Context,
+	sessionId int32,
+	active bool,
+) error {
+	return w.impl.OnSessionActiveChanged(ctx, sessionId, active)
+}
+
+func (w *packageInstallerCallbackStubWrapper) OnSessionProgressChanged(
+	ctx context.Context,
+	sessionId int32,
+	progress float32,
+) error {
+	return w.impl.OnSessionProgressChanged(ctx, sessionId, progress)
+}
+
+func (w *packageInstallerCallbackStubWrapper) OnSessionFinished(
+	ctx context.Context,
+	sessionId int32,
+	success bool,
+) error {
+	return w.impl.OnSessionFinished(ctx, sessionId, success)
+}
+
+var _ IPackageInstallerCallback = (*packageInstallerCallbackStubWrapper)(nil)
+
+// NewPackageInstallerCallbackStub creates a server-side IPackageInstallerCallback wrapping the given
+// server implementation. The returned value satisfies IPackageInstallerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageInstallerCallbackStub(
+	impl IPackageInstallerCallbackServer,
+) IPackageInstallerCallback {
+	wrapper := &packageInstallerCallbackStubWrapper{impl: impl}
+	stub := &PackageInstallerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

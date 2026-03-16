@@ -93,3 +93,42 @@ func (s *MediaQualityCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaQualityCallbackServer is the server-side interface that user implementations
+// provide to NewMediaQualityCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaQualityCallbackServer interface {
+	NotifyAmbientBacklightEvent(ctx context.Context, event AmbientBacklightEvent) error
+}
+
+type mediaQualityCallbackStubWrapper struct {
+	impl       IMediaQualityCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaQualityCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaQualityCallbackStubWrapper) NotifyAmbientBacklightEvent(
+	ctx context.Context,
+	event AmbientBacklightEvent,
+) error {
+	return w.impl.NotifyAmbientBacklightEvent(ctx, event)
+}
+
+var _ IMediaQualityCallback = (*mediaQualityCallbackStubWrapper)(nil)
+
+// NewMediaQualityCallbackStub creates a server-side IMediaQualityCallback wrapping the given
+// server implementation. The returned value satisfies IMediaQualityCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaQualityCallbackStub(
+	impl IMediaQualityCallbackServer,
+) IMediaQualityCallback {
+	wrapper := &mediaQualityCallbackStubWrapper{impl: impl}
+	stub := &MediaQualityCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

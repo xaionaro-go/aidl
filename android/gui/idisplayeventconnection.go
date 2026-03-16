@@ -252,3 +252,71 @@ func (s *DisplayEventConnectionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDisplayEventConnectionServer is the server-side interface that user implementations
+// provide to NewDisplayEventConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayEventConnectionServer interface {
+	StealReceiveChannel(ctx context.Context, outChannel interface{}) error
+	SetVsyncRate(ctx context.Context, count int32) error
+	RequestNextVsync(ctx context.Context) error
+	GetLatestVsyncEventData(ctx context.Context) (interface{}, error)
+	GetSchedulingPolicy(ctx context.Context) (SchedulingPolicy, error)
+}
+
+type displayEventConnectionStubWrapper struct {
+	impl       IDisplayEventConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayEventConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayEventConnectionStubWrapper) StealReceiveChannel(
+	ctx context.Context,
+	outChannel interface{},
+) error {
+	return w.impl.StealReceiveChannel(ctx, outChannel)
+}
+
+func (w *displayEventConnectionStubWrapper) SetVsyncRate(
+	ctx context.Context,
+	count int32,
+) error {
+	return w.impl.SetVsyncRate(ctx, count)
+}
+
+func (w *displayEventConnectionStubWrapper) RequestNextVsync(
+	ctx context.Context,
+) error {
+	return w.impl.RequestNextVsync(ctx)
+}
+
+func (w *displayEventConnectionStubWrapper) GetLatestVsyncEventData(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetLatestVsyncEventData(ctx)
+}
+
+func (w *displayEventConnectionStubWrapper) GetSchedulingPolicy(
+	ctx context.Context,
+) (SchedulingPolicy, error) {
+	return w.impl.GetSchedulingPolicy(ctx)
+}
+
+var _ IDisplayEventConnection = (*displayEventConnectionStubWrapper)(nil)
+
+// NewDisplayEventConnectionStub creates a server-side IDisplayEventConnection wrapping the given
+// server implementation. The returned value satisfies IDisplayEventConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayEventConnectionStub(
+	impl IDisplayEventConnectionServer,
+) IDisplayEventConnection {
+	wrapper := &displayEventConnectionStubWrapper{impl: impl}
+	stub := &DisplayEventConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

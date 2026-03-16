@@ -204,7 +204,7 @@ func (p *CameraDeviceProxy) Open(
 	var _result ICameraDeviceSession
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "open")
 	if _err != nil {
@@ -236,7 +236,7 @@ func (p *CameraDeviceProxy) OpenInjectionSession(
 	var _result ICameraInjectionSession
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraDevice, "openInjectionSession")
 	if _err != nil {
@@ -698,4 +698,128 @@ func (s *CameraDeviceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICameraDeviceServer is the server-side interface that user implementations
+// provide to NewCameraDeviceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraDeviceServer interface {
+	GetCameraCharacteristics(ctx context.Context) (CameraMetadata, error)
+	GetPhysicalCameraCharacteristics(ctx context.Context, physicalCameraId string) (CameraMetadata, error)
+	GetResourceCost(ctx context.Context) (common.CameraResourceCost, error)
+	IsStreamCombinationSupported(ctx context.Context, streams StreamConfiguration) (bool, error)
+	Open(ctx context.Context, callback ICameraDeviceCallback) (ICameraDeviceSession, error)
+	OpenInjectionSession(ctx context.Context, callback ICameraDeviceCallback) (ICameraInjectionSession, error)
+	SetTorchMode(ctx context.Context, on bool) error
+	TurnOnTorchWithStrengthLevel(ctx context.Context, torchStrength int32) error
+	GetTorchStrengthLevel(ctx context.Context) (int32, error)
+	ConstructDefaultRequestSettings(ctx context.Context, type_ RequestTemplate) (CameraMetadata, error)
+	IsStreamCombinationWithSettingsSupported(ctx context.Context, streams StreamConfiguration) (bool, error)
+	GetSessionCharacteristics(ctx context.Context, sessionConfig StreamConfiguration) (CameraMetadata, error)
+}
+
+type cameraDeviceStubWrapper struct {
+	impl       ICameraDeviceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraDeviceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraDeviceStubWrapper) GetCameraCharacteristics(
+	ctx context.Context,
+) (CameraMetadata, error) {
+	return w.impl.GetCameraCharacteristics(ctx)
+}
+
+func (w *cameraDeviceStubWrapper) GetPhysicalCameraCharacteristics(
+	ctx context.Context,
+	physicalCameraId string,
+) (CameraMetadata, error) {
+	return w.impl.GetPhysicalCameraCharacteristics(ctx, physicalCameraId)
+}
+
+func (w *cameraDeviceStubWrapper) GetResourceCost(
+	ctx context.Context,
+) (common.CameraResourceCost, error) {
+	return w.impl.GetResourceCost(ctx)
+}
+
+func (w *cameraDeviceStubWrapper) IsStreamCombinationSupported(
+	ctx context.Context,
+	streams StreamConfiguration,
+) (bool, error) {
+	return w.impl.IsStreamCombinationSupported(ctx, streams)
+}
+
+func (w *cameraDeviceStubWrapper) Open(
+	ctx context.Context,
+	callback ICameraDeviceCallback,
+) (ICameraDeviceSession, error) {
+	return w.impl.Open(ctx, callback)
+}
+
+func (w *cameraDeviceStubWrapper) OpenInjectionSession(
+	ctx context.Context,
+	callback ICameraDeviceCallback,
+) (ICameraInjectionSession, error) {
+	return w.impl.OpenInjectionSession(ctx, callback)
+}
+
+func (w *cameraDeviceStubWrapper) SetTorchMode(
+	ctx context.Context,
+	on bool,
+) error {
+	return w.impl.SetTorchMode(ctx, on)
+}
+
+func (w *cameraDeviceStubWrapper) TurnOnTorchWithStrengthLevel(
+	ctx context.Context,
+	torchStrength int32,
+) error {
+	return w.impl.TurnOnTorchWithStrengthLevel(ctx, torchStrength)
+}
+
+func (w *cameraDeviceStubWrapper) GetTorchStrengthLevel(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetTorchStrengthLevel(ctx)
+}
+
+func (w *cameraDeviceStubWrapper) ConstructDefaultRequestSettings(
+	ctx context.Context,
+	type_ RequestTemplate,
+) (CameraMetadata, error) {
+	return w.impl.ConstructDefaultRequestSettings(ctx, type_)
+}
+
+func (w *cameraDeviceStubWrapper) IsStreamCombinationWithSettingsSupported(
+	ctx context.Context,
+	streams StreamConfiguration,
+) (bool, error) {
+	return w.impl.IsStreamCombinationWithSettingsSupported(ctx, streams)
+}
+
+func (w *cameraDeviceStubWrapper) GetSessionCharacteristics(
+	ctx context.Context,
+	sessionConfig StreamConfiguration,
+) (CameraMetadata, error) {
+	return w.impl.GetSessionCharacteristics(ctx, sessionConfig)
+}
+
+var _ ICameraDevice = (*cameraDeviceStubWrapper)(nil)
+
+// NewCameraDeviceStub creates a server-side ICameraDevice wrapping the given
+// server implementation. The returned value satisfies ICameraDevice
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraDeviceStub(
+	impl ICameraDeviceServer,
+) ICameraDevice {
+	wrapper := &cameraDeviceStubWrapper{impl: impl}
+	stub := &CameraDeviceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

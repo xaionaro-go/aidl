@@ -56,7 +56,7 @@ func (p *MbmsStreamingServiceProxy) Initialize(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMbmsStreamingService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(subId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMbmsStreamingService, "initialize")
@@ -132,7 +132,7 @@ func (p *MbmsStreamingServiceProxy) StartStreaming(
 	_data.WriteInterfaceToken(DescriptorIMbmsStreamingService)
 	_data.WriteInt32(subId)
 	_data.WriteString16(serviceId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMbmsStreamingService, "startStreaming")
 	if _err != nil {
@@ -389,4 +389,89 @@ func (s *MbmsStreamingServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMbmsStreamingServiceServer is the server-side interface that user implementations
+// provide to NewMbmsStreamingServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMbmsStreamingServiceServer interface {
+	Initialize(ctx context.Context, callback mbms.IMbmsStreamingSessionCallback, subId int32) (int32, error)
+	RequestUpdateStreamingServices(ctx context.Context, subId int32, serviceClasses []string) (int32, error)
+	StartStreaming(ctx context.Context, subId int32, serviceId string, callback mbms.IStreamingServiceCallback) (int32, error)
+	GetPlaybackUri(ctx context.Context, subId int32, serviceId string) (net.Uri, error)
+	StopStreaming(ctx context.Context, subId int32, serviceId string) error
+	Dispose(ctx context.Context, subId int32) error
+}
+
+type mbmsStreamingServiceStubWrapper struct {
+	impl       IMbmsStreamingServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mbmsStreamingServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mbmsStreamingServiceStubWrapper) Initialize(
+	ctx context.Context,
+	callback mbms.IMbmsStreamingSessionCallback,
+	subId int32,
+) (int32, error) {
+	return w.impl.Initialize(ctx, callback, subId)
+}
+
+func (w *mbmsStreamingServiceStubWrapper) RequestUpdateStreamingServices(
+	ctx context.Context,
+	subId int32,
+	serviceClasses []string,
+) (int32, error) {
+	return w.impl.RequestUpdateStreamingServices(ctx, subId, serviceClasses)
+}
+
+func (w *mbmsStreamingServiceStubWrapper) StartStreaming(
+	ctx context.Context,
+	subId int32,
+	serviceId string,
+	callback mbms.IStreamingServiceCallback,
+) (int32, error) {
+	return w.impl.StartStreaming(ctx, subId, serviceId, callback)
+}
+
+func (w *mbmsStreamingServiceStubWrapper) GetPlaybackUri(
+	ctx context.Context,
+	subId int32,
+	serviceId string,
+) (net.Uri, error) {
+	return w.impl.GetPlaybackUri(ctx, subId, serviceId)
+}
+
+func (w *mbmsStreamingServiceStubWrapper) StopStreaming(
+	ctx context.Context,
+	subId int32,
+	serviceId string,
+) error {
+	return w.impl.StopStreaming(ctx, subId, serviceId)
+}
+
+func (w *mbmsStreamingServiceStubWrapper) Dispose(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.Dispose(ctx, subId)
+}
+
+var _ IMbmsStreamingService = (*mbmsStreamingServiceStubWrapper)(nil)
+
+// NewMbmsStreamingServiceStub creates a server-side IMbmsStreamingService wrapping the given
+// server implementation. The returned value satisfies IMbmsStreamingService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMbmsStreamingServiceStub(
+	impl IMbmsStreamingServiceServer,
+) IMbmsStreamingService {
+	wrapper := &mbmsStreamingServiceStubWrapper{impl: impl}
+	stub := &MbmsStreamingServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

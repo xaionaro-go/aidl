@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -25,7 +24,7 @@ type IAppTask interface {
 	FinishAndRemoveTask(ctx context.Context) error
 	GetTaskInfo(ctx context.Context) (ActivityManagerRecentTaskInfo, error)
 	MoveToFront(ctx context.Context, appThread IApplicationThread) error
-	StartActivity(ctx context.Context, whoThread binder.IBinder, intent content.Intent, resolvedType string, options interface{}) (int32, error)
+	StartActivity(ctx context.Context, whoThread binder.IBinder, intent interface{}, resolvedType string, options interface{}) (int32, error)
 	SetExcludeFromRecents(ctx context.Context, exclude bool) error
 }
 
@@ -110,7 +109,7 @@ func (p *AppTaskProxy) MoveToFront(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppTask)
-	_data.WriteStrongBinder(appThread.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, appThread.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppTask, "moveToFront")
@@ -134,7 +133,7 @@ func (p *AppTaskProxy) MoveToFront(
 func (p *AppTaskProxy) StartActivity(
 	ctx context.Context,
 	whoThread binder.IBinder,
-	intent content.Intent,
+	intent interface{},
 	resolvedType string,
 	options interface{},
 ) (int32, error) {
@@ -142,13 +141,9 @@ func (p *AppTaskProxy) StartActivity(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppTask)
-	_data.WriteStrongBinder(whoThread.Handle())
+	binder.WriteBinderToParcel(ctx, _data, whoThread, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(_identity.AttributionTag)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(resolvedType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppTask, "startActivity")
@@ -272,18 +267,7 @@ func (s *AppTaskStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -317,4 +301,76 @@ func (s *AppTaskStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAppTaskServer is the server-side interface that user implementations
+// provide to NewAppTaskStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppTaskServer interface {
+	FinishAndRemoveTask(ctx context.Context) error
+	GetTaskInfo(ctx context.Context) (ActivityManagerRecentTaskInfo, error)
+	MoveToFront(ctx context.Context, appThread IApplicationThread) error
+	StartActivity(ctx context.Context, whoThread binder.IBinder, intent interface{}, resolvedType string, options interface{}) (int32, error)
+	SetExcludeFromRecents(ctx context.Context, exclude bool) error
+}
+
+type appTaskStubWrapper struct {
+	impl       IAppTaskServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appTaskStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appTaskStubWrapper) FinishAndRemoveTask(
+	ctx context.Context,
+) error {
+	return w.impl.FinishAndRemoveTask(ctx)
+}
+
+func (w *appTaskStubWrapper) GetTaskInfo(
+	ctx context.Context,
+) (ActivityManagerRecentTaskInfo, error) {
+	return w.impl.GetTaskInfo(ctx)
+}
+
+func (w *appTaskStubWrapper) MoveToFront(
+	ctx context.Context,
+	appThread IApplicationThread,
+) error {
+	return w.impl.MoveToFront(ctx, appThread)
+}
+
+func (w *appTaskStubWrapper) StartActivity(
+	ctx context.Context,
+	whoThread binder.IBinder,
+	intent interface{},
+	resolvedType string,
+	options interface{},
+) (int32, error) {
+	return w.impl.StartActivity(ctx, whoThread, intent, resolvedType, options)
+}
+
+func (w *appTaskStubWrapper) SetExcludeFromRecents(
+	ctx context.Context,
+	exclude bool,
+) error {
+	return w.impl.SetExcludeFromRecents(ctx, exclude)
+}
+
+var _ IAppTask = (*appTaskStubWrapper)(nil)
+
+// NewAppTaskStub creates a server-side IAppTask wrapping the given
+// server implementation. The returned value satisfies IAppTask
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppTaskStub(
+	impl IAppTaskServer,
+) IAppTask {
+	wrapper := &appTaskStubWrapper{impl: impl}
+	stub := &AppTaskStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

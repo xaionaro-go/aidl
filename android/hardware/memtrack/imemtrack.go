@@ -173,3 +173,50 @@ func (s *MemtrackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMemtrackServer is the server-side interface that user implementations
+// provide to NewMemtrackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMemtrackServer interface {
+	GetMemory(ctx context.Context, pid int32, type_ MemtrackType) ([]MemtrackRecord, error)
+	GetGpuDeviceInfo(ctx context.Context) ([]DeviceInfo, error)
+}
+
+type memtrackStubWrapper struct {
+	impl       IMemtrackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *memtrackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *memtrackStubWrapper) GetMemory(
+	ctx context.Context,
+	pid int32,
+	type_ MemtrackType,
+) ([]MemtrackRecord, error) {
+	return w.impl.GetMemory(ctx, pid, type_)
+}
+
+func (w *memtrackStubWrapper) GetGpuDeviceInfo(
+	ctx context.Context,
+) ([]DeviceInfo, error) {
+	return w.impl.GetGpuDeviceInfo(ctx)
+}
+
+var _ IMemtrack = (*memtrackStubWrapper)(nil)
+
+// NewMemtrackStub creates a server-side IMemtrack wrapping the given
+// server implementation. The returned value satisfies IMemtrack
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMemtrackStub(
+	impl IMemtrackServer,
+) IMemtrack {
+	wrapper := &memtrackStubWrapper{impl: impl}
+	stub := &MemtrackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

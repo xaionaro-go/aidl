@@ -45,7 +45,7 @@ func (p *ForegroundServiceObserverProxy) OnForegroundStateChanged(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIForegroundServiceObserver)
-	_data.WriteStrongBinder(serviceToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, serviceToken, p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteBool(isForeground)
@@ -97,4 +97,45 @@ func (s *ForegroundServiceObserverStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IForegroundServiceObserverServer is the server-side interface that user implementations
+// provide to NewForegroundServiceObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IForegroundServiceObserverServer interface {
+	OnForegroundStateChanged(ctx context.Context, serviceToken binder.IBinder, packageName string, isForeground bool) error
+}
+
+type foregroundServiceObserverStubWrapper struct {
+	impl       IForegroundServiceObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *foregroundServiceObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *foregroundServiceObserverStubWrapper) OnForegroundStateChanged(
+	ctx context.Context,
+	serviceToken binder.IBinder,
+	packageName string,
+	isForeground bool,
+) error {
+	return w.impl.OnForegroundStateChanged(ctx, serviceToken, packageName, isForeground)
+}
+
+var _ IForegroundServiceObserver = (*foregroundServiceObserverStubWrapper)(nil)
+
+// NewForegroundServiceObserverStub creates a server-side IForegroundServiceObserver wrapping the given
+// server implementation. The returned value satisfies IForegroundServiceObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewForegroundServiceObserverStub(
+	impl IForegroundServiceObserverServer,
+) IForegroundServiceObserver {
+	wrapper := &foregroundServiceObserverStubWrapper{impl: impl}
+	stub := &ForegroundServiceObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

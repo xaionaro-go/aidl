@@ -771,3 +771,192 @@ func (s *BluetoothGattServerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothGattServerCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothGattServerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothGattServerCallbackServer interface {
+	OnServerRegistered(ctx context.Context, status int32, serverIf int32) error
+	OnServerConnectionState(ctx context.Context, status int32, serverIf int32, connected bool, address string) error
+	OnServiceAdded(ctx context.Context, status int32, service BluetoothGattService) error
+	OnCharacteristicReadRequest(ctx context.Context, address string, transId int32, offset int32, isLong bool, handle int32) error
+	OnDescriptorReadRequest(ctx context.Context, address string, transId int32, offset int32, isLong bool, handle int32) error
+	OnCharacteristicWriteRequest(ctx context.Context, address string, transId int32, offset int32, length int32, isPrep bool, needRsp bool, handle int32, value []byte) error
+	OnDescriptorWriteRequest(ctx context.Context, address string, transId int32, offset int32, length int32, isPrep bool, needRsp bool, handle int32, value []byte) error
+	OnExecuteWrite(ctx context.Context, address string, transId int32, execWrite bool) error
+	OnNotificationSent(ctx context.Context, address string, status int32) error
+	OnMtuChanged(ctx context.Context, address string, mtu int32) error
+	OnPhyUpdate(ctx context.Context, address string, txPhy int32, rxPhy int32, status int32) error
+	OnPhyRead(ctx context.Context, address string, txPhy int32, rxPhy int32, status int32) error
+	OnConnectionUpdated(ctx context.Context, address string, interval int32, latency int32, timeout int32, status int32) error
+	OnSubrateChange(ctx context.Context, address string, subrateFactor int32, latency int32, contNum int32, timeout int32, status int32) error
+}
+
+type bluetoothGattServerCallbackStubWrapper struct {
+	impl       IBluetoothGattServerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnServerRegistered(
+	ctx context.Context,
+	status int32,
+	serverIf int32,
+) error {
+	return w.impl.OnServerRegistered(ctx, status, serverIf)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnServerConnectionState(
+	ctx context.Context,
+	status int32,
+	serverIf int32,
+	connected bool,
+	address string,
+) error {
+	return w.impl.OnServerConnectionState(ctx, status, serverIf, connected, address)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnServiceAdded(
+	ctx context.Context,
+	status int32,
+	service BluetoothGattService,
+) error {
+	return w.impl.OnServiceAdded(ctx, status, service)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnCharacteristicReadRequest(
+	ctx context.Context,
+	address string,
+	transId int32,
+	offset int32,
+	isLong bool,
+	handle int32,
+) error {
+	return w.impl.OnCharacteristicReadRequest(ctx, address, transId, offset, isLong, handle)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnDescriptorReadRequest(
+	ctx context.Context,
+	address string,
+	transId int32,
+	offset int32,
+	isLong bool,
+	handle int32,
+) error {
+	return w.impl.OnDescriptorReadRequest(ctx, address, transId, offset, isLong, handle)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnCharacteristicWriteRequest(
+	ctx context.Context,
+	address string,
+	transId int32,
+	offset int32,
+	length int32,
+	isPrep bool,
+	needRsp bool,
+	handle int32,
+	value []byte,
+) error {
+	return w.impl.OnCharacteristicWriteRequest(ctx, address, transId, offset, length, isPrep, needRsp, handle, value)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnDescriptorWriteRequest(
+	ctx context.Context,
+	address string,
+	transId int32,
+	offset int32,
+	length int32,
+	isPrep bool,
+	needRsp bool,
+	handle int32,
+	value []byte,
+) error {
+	return w.impl.OnDescriptorWriteRequest(ctx, address, transId, offset, length, isPrep, needRsp, handle, value)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnExecuteWrite(
+	ctx context.Context,
+	address string,
+	transId int32,
+	execWrite bool,
+) error {
+	return w.impl.OnExecuteWrite(ctx, address, transId, execWrite)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnNotificationSent(
+	ctx context.Context,
+	address string,
+	status int32,
+) error {
+	return w.impl.OnNotificationSent(ctx, address, status)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnMtuChanged(
+	ctx context.Context,
+	address string,
+	mtu int32,
+) error {
+	return w.impl.OnMtuChanged(ctx, address, mtu)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnPhyUpdate(
+	ctx context.Context,
+	address string,
+	txPhy int32,
+	rxPhy int32,
+	status int32,
+) error {
+	return w.impl.OnPhyUpdate(ctx, address, txPhy, rxPhy, status)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnPhyRead(
+	ctx context.Context,
+	address string,
+	txPhy int32,
+	rxPhy int32,
+	status int32,
+) error {
+	return w.impl.OnPhyRead(ctx, address, txPhy, rxPhy, status)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnConnectionUpdated(
+	ctx context.Context,
+	address string,
+	interval int32,
+	latency int32,
+	timeout int32,
+	status int32,
+) error {
+	return w.impl.OnConnectionUpdated(ctx, address, interval, latency, timeout, status)
+}
+
+func (w *bluetoothGattServerCallbackStubWrapper) OnSubrateChange(
+	ctx context.Context,
+	address string,
+	subrateFactor int32,
+	latency int32,
+	contNum int32,
+	timeout int32,
+	status int32,
+) error {
+	return w.impl.OnSubrateChange(ctx, address, subrateFactor, latency, contNum, timeout, status)
+}
+
+var _ IBluetoothGattServerCallback = (*bluetoothGattServerCallbackStubWrapper)(nil)
+
+// NewBluetoothGattServerCallbackStub creates a server-side IBluetoothGattServerCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothGattServerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothGattServerCallbackStub(
+	impl IBluetoothGattServerCallbackServer,
+) IBluetoothGattServerCallback {
+	wrapper := &bluetoothGattServerCallbackStubWrapper{impl: impl}
+	stub := &BluetoothGattServerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

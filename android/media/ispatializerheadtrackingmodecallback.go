@@ -112,3 +112,50 @@ func (s *SpatializerHeadTrackingModeCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISpatializerHeadTrackingModeCallbackServer is the server-side interface that user implementations
+// provide to NewSpatializerHeadTrackingModeCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpatializerHeadTrackingModeCallbackServer interface {
+	DispatchSpatializerActualHeadTrackingModeChanged(ctx context.Context, mode int32) error
+	DispatchSpatializerDesiredHeadTrackingModeChanged(ctx context.Context, mode int32) error
+}
+
+type spatializerHeadTrackingModeCallbackStubWrapper struct {
+	impl       ISpatializerHeadTrackingModeCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spatializerHeadTrackingModeCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spatializerHeadTrackingModeCallbackStubWrapper) DispatchSpatializerActualHeadTrackingModeChanged(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.DispatchSpatializerActualHeadTrackingModeChanged(ctx, mode)
+}
+
+func (w *spatializerHeadTrackingModeCallbackStubWrapper) DispatchSpatializerDesiredHeadTrackingModeChanged(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.DispatchSpatializerDesiredHeadTrackingModeChanged(ctx, mode)
+}
+
+var _ ISpatializerHeadTrackingModeCallback = (*spatializerHeadTrackingModeCallbackStubWrapper)(nil)
+
+// NewSpatializerHeadTrackingModeCallbackStub creates a server-side ISpatializerHeadTrackingModeCallback wrapping the given
+// server implementation. The returned value satisfies ISpatializerHeadTrackingModeCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpatializerHeadTrackingModeCallbackStub(
+	impl ISpatializerHeadTrackingModeCallbackServer,
+) ISpatializerHeadTrackingModeCallback {
+	wrapper := &spatializerHeadTrackingModeCallbackStubWrapper{impl: impl}
+	stub := &SpatializerHeadTrackingModeCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

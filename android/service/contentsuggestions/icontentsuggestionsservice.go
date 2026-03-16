@@ -83,7 +83,7 @@ func (p *ContentSuggestionsServiceProxy) SuggestContentSelections(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsService, "suggestContentSelections")
 	if _err != nil {
@@ -105,7 +105,7 @@ func (p *ContentSuggestionsServiceProxy) ClassifyContentSelections(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsService, "classifyContentSelections")
 	if _err != nil {
@@ -257,4 +257,72 @@ func (s *ContentSuggestionsServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContentSuggestionsServiceServer is the server-side interface that user implementations
+// provide to NewContentSuggestionsServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentSuggestionsServiceServer interface {
+	ProvideContextImage(ctx context.Context, taskId int32, snapshot view.WindowManagerTaskSnapshot, imageContextRequestExtras os.Bundle) error
+	SuggestContentSelections(ctx context.Context, request appContentsuggestions.SelectionsRequest, callback appContentsuggestions.ISelectionsCallback) error
+	ClassifyContentSelections(ctx context.Context, request appContentsuggestions.ClassificationsRequest, callback appContentsuggestions.IClassificationsCallback) error
+	NotifyInteraction(ctx context.Context, requestId string, interaction os.Bundle) error
+}
+
+type contentSuggestionsServiceStubWrapper struct {
+	impl       IContentSuggestionsServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentSuggestionsServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentSuggestionsServiceStubWrapper) ProvideContextImage(
+	ctx context.Context,
+	taskId int32,
+	snapshot view.WindowManagerTaskSnapshot,
+	imageContextRequestExtras os.Bundle,
+) error {
+	return w.impl.ProvideContextImage(ctx, taskId, snapshot, imageContextRequestExtras)
+}
+
+func (w *contentSuggestionsServiceStubWrapper) SuggestContentSelections(
+	ctx context.Context,
+	request appContentsuggestions.SelectionsRequest,
+	callback appContentsuggestions.ISelectionsCallback,
+) error {
+	return w.impl.SuggestContentSelections(ctx, request, callback)
+}
+
+func (w *contentSuggestionsServiceStubWrapper) ClassifyContentSelections(
+	ctx context.Context,
+	request appContentsuggestions.ClassificationsRequest,
+	callback appContentsuggestions.IClassificationsCallback,
+) error {
+	return w.impl.ClassifyContentSelections(ctx, request, callback)
+}
+
+func (w *contentSuggestionsServiceStubWrapper) NotifyInteraction(
+	ctx context.Context,
+	requestId string,
+	interaction os.Bundle,
+) error {
+	return w.impl.NotifyInteraction(ctx, requestId, interaction)
+}
+
+var _ IContentSuggestionsService = (*contentSuggestionsServiceStubWrapper)(nil)
+
+// NewContentSuggestionsServiceStub creates a server-side IContentSuggestionsService wrapping the given
+// server implementation. The returned value satisfies IContentSuggestionsService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentSuggestionsServiceStub(
+	impl IContentSuggestionsServiceServer,
+) IContentSuggestionsService {
+	wrapper := &contentSuggestionsServiceStubWrapper{impl: impl}
+	stub := &ContentSuggestionsServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

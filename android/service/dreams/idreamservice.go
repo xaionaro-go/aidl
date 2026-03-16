@@ -52,10 +52,10 @@ func (p *DreamServiceProxy) Attach(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamService)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteBool(canDoze)
 	_data.WriteBool(isPreviewMode)
-	_data.WriteStrongBinder(started.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, started.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDreamService, "attach")
 	if _err != nil {
@@ -170,4 +170,67 @@ func (s *DreamServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDreamServiceServer is the server-side interface that user implementations
+// provide to NewDreamServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDreamServiceServer interface {
+	Attach(ctx context.Context, windowToken binder.IBinder, canDoze bool, isPreviewMode bool, started ondeviceintelligence.IRemoteCallback) error
+	Detach(ctx context.Context) error
+	WakeUp(ctx context.Context) error
+	ComeToFront(ctx context.Context) error
+}
+
+type dreamServiceStubWrapper struct {
+	impl       IDreamServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dreamServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dreamServiceStubWrapper) Attach(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	canDoze bool,
+	isPreviewMode bool,
+	started ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.Attach(ctx, windowToken, canDoze, isPreviewMode, started)
+}
+
+func (w *dreamServiceStubWrapper) Detach(
+	ctx context.Context,
+) error {
+	return w.impl.Detach(ctx)
+}
+
+func (w *dreamServiceStubWrapper) WakeUp(
+	ctx context.Context,
+) error {
+	return w.impl.WakeUp(ctx)
+}
+
+func (w *dreamServiceStubWrapper) ComeToFront(
+	ctx context.Context,
+) error {
+	return w.impl.ComeToFront(ctx)
+}
+
+var _ IDreamService = (*dreamServiceStubWrapper)(nil)
+
+// NewDreamServiceStub creates a server-side IDreamService wrapping the given
+// server implementation. The returned value satisfies IDreamService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDreamServiceStub(
+	impl IDreamServiceServer,
+) IDreamService {
+	wrapper := &dreamServiceStubWrapper{impl: impl}
+	stub := &DreamServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

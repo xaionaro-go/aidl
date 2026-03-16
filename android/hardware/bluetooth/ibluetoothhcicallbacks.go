@@ -297,3 +297,74 @@ func (s *BluetoothHciCallbacksStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothHciCallbacksServer is the server-side interface that user implementations
+// provide to NewBluetoothHciCallbacksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothHciCallbacksServer interface {
+	AclDataReceived(ctx context.Context, data []byte) error
+	HciEventReceived(ctx context.Context, event []byte) error
+	InitializationComplete(ctx context.Context, status Status) error
+	IsoDataReceived(ctx context.Context, data []byte) error
+	ScoDataReceived(ctx context.Context, data []byte) error
+}
+
+type bluetoothHciCallbacksStubWrapper struct {
+	impl       IBluetoothHciCallbacksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothHciCallbacksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothHciCallbacksStubWrapper) AclDataReceived(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.AclDataReceived(ctx, data)
+}
+
+func (w *bluetoothHciCallbacksStubWrapper) HciEventReceived(
+	ctx context.Context,
+	event []byte,
+) error {
+	return w.impl.HciEventReceived(ctx, event)
+}
+
+func (w *bluetoothHciCallbacksStubWrapper) InitializationComplete(
+	ctx context.Context,
+	status Status,
+) error {
+	return w.impl.InitializationComplete(ctx, status)
+}
+
+func (w *bluetoothHciCallbacksStubWrapper) IsoDataReceived(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.IsoDataReceived(ctx, data)
+}
+
+func (w *bluetoothHciCallbacksStubWrapper) ScoDataReceived(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.ScoDataReceived(ctx, data)
+}
+
+var _ IBluetoothHciCallbacks = (*bluetoothHciCallbacksStubWrapper)(nil)
+
+// NewBluetoothHciCallbacksStub creates a server-side IBluetoothHciCallbacks wrapping the given
+// server implementation. The returned value satisfies IBluetoothHciCallbacks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothHciCallbacksStub(
+	impl IBluetoothHciCallbacksServer,
+) IBluetoothHciCallbacks {
+	wrapper := &bluetoothHciCallbacksStubWrapper{impl: impl}
+	stub := &BluetoothHciCallbacksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

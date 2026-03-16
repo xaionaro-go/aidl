@@ -51,7 +51,7 @@ func (p *CredentialProviderServiceProxy) OnBeginGetCredential(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialProviderService, "onBeginGetCredential")
 	if _err != nil {
@@ -73,7 +73,7 @@ func (p *CredentialProviderServiceProxy) OnBeginCreateCredential(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialProviderService, "onBeginCreateCredential")
 	if _err != nil {
@@ -95,7 +95,7 @@ func (p *CredentialProviderServiceProxy) OnClearCredentialState(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialProviderService, "onClearCredentialState")
 	if _err != nil {
@@ -189,4 +189,62 @@ func (s *CredentialProviderServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICredentialProviderServiceServer is the server-side interface that user implementations
+// provide to NewCredentialProviderServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICredentialProviderServiceServer interface {
+	OnBeginGetCredential(ctx context.Context, request BeginGetCredentialRequest, callback IBeginGetCredentialCallback) error
+	OnBeginCreateCredential(ctx context.Context, request BeginCreateCredentialRequest, callback IBeginCreateCredentialCallback) error
+	OnClearCredentialState(ctx context.Context, request ClearCredentialStateRequest, callback IClearCredentialStateCallback) error
+}
+
+type credentialProviderServiceStubWrapper struct {
+	impl       ICredentialProviderServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *credentialProviderServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *credentialProviderServiceStubWrapper) OnBeginGetCredential(
+	ctx context.Context,
+	request BeginGetCredentialRequest,
+	callback IBeginGetCredentialCallback,
+) error {
+	return w.impl.OnBeginGetCredential(ctx, request, callback)
+}
+
+func (w *credentialProviderServiceStubWrapper) OnBeginCreateCredential(
+	ctx context.Context,
+	request BeginCreateCredentialRequest,
+	callback IBeginCreateCredentialCallback,
+) error {
+	return w.impl.OnBeginCreateCredential(ctx, request, callback)
+}
+
+func (w *credentialProviderServiceStubWrapper) OnClearCredentialState(
+	ctx context.Context,
+	request ClearCredentialStateRequest,
+	callback IClearCredentialStateCallback,
+) error {
+	return w.impl.OnClearCredentialState(ctx, request, callback)
+}
+
+var _ ICredentialProviderService = (*credentialProviderServiceStubWrapper)(nil)
+
+// NewCredentialProviderServiceStub creates a server-side ICredentialProviderService wrapping the given
+// server implementation. The returned value satisfies ICredentialProviderService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCredentialProviderServiceStub(
+	impl ICredentialProviderServiceServer,
+) ICredentialProviderService {
+	wrapper := &credentialProviderServiceStubWrapper{impl: impl}
+	stub := &CredentialProviderServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

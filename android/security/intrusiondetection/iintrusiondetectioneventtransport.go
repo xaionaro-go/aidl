@@ -190,3 +190,59 @@ func (s *IntrusionDetectionEventTransportStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIntrusionDetectionEventTransportServer is the server-side interface that user implementations
+// provide to NewIntrusionDetectionEventTransportStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIntrusionDetectionEventTransportServer interface {
+	Initialize(ctx context.Context, resultFuture infra.AndroidFuture) error
+	AddData(ctx context.Context, events []IntrusionDetectionEvent, resultFuture infra.AndroidFuture) error
+	Release(ctx context.Context, resultFuture infra.AndroidFuture) error
+}
+
+type intrusionDetectionEventTransportStubWrapper struct {
+	impl       IIntrusionDetectionEventTransportServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *intrusionDetectionEventTransportStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *intrusionDetectionEventTransportStubWrapper) Initialize(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.Initialize(ctx, resultFuture)
+}
+
+func (w *intrusionDetectionEventTransportStubWrapper) AddData(
+	ctx context.Context,
+	events []IntrusionDetectionEvent,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.AddData(ctx, events, resultFuture)
+}
+
+func (w *intrusionDetectionEventTransportStubWrapper) Release(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.Release(ctx, resultFuture)
+}
+
+var _ IIntrusionDetectionEventTransport = (*intrusionDetectionEventTransportStubWrapper)(nil)
+
+// NewIntrusionDetectionEventTransportStub creates a server-side IIntrusionDetectionEventTransport wrapping the given
+// server implementation. The returned value satisfies IIntrusionDetectionEventTransport
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIntrusionDetectionEventTransportStub(
+	impl IIntrusionDetectionEventTransportServer,
+) IIntrusionDetectionEventTransport {
+	wrapper := &intrusionDetectionEventTransportStubWrapper{impl: impl}
+	stub := &IntrusionDetectionEventTransportStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

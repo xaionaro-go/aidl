@@ -96,3 +96,43 @@ func (s *ClassificationsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IClassificationsCallbackServer is the server-side interface that user implementations
+// provide to NewClassificationsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IClassificationsCallbackServer interface {
+	OnContentClassificationsAvailable(ctx context.Context, statusCode int32, classifications []ContentClassification) error
+}
+
+type classificationsCallbackStubWrapper struct {
+	impl       IClassificationsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *classificationsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *classificationsCallbackStubWrapper) OnContentClassificationsAvailable(
+	ctx context.Context,
+	statusCode int32,
+	classifications []ContentClassification,
+) error {
+	return w.impl.OnContentClassificationsAvailable(ctx, statusCode, classifications)
+}
+
+var _ IClassificationsCallback = (*classificationsCallbackStubWrapper)(nil)
+
+// NewClassificationsCallbackStub creates a server-side IClassificationsCallback wrapping the given
+// server implementation. The returned value satisfies IClassificationsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewClassificationsCallbackStub(
+	impl IClassificationsCallbackServer,
+) IClassificationsCallback {
+	wrapper := &classificationsCallbackStubWrapper{impl: impl}
+	stub := &ClassificationsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

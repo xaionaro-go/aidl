@@ -3,7 +3,6 @@ package window
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -20,7 +19,7 @@ const (
 type IBackAnimationRunner interface {
 	AsBinder() binder.IBinder
 	OnAnimationCancelled(ctx context.Context) error
-	OnAnimationStart(ctx context.Context, apps []view.RemoteAnimationTarget, prepareOpenTransition binder.IBinder, finishedCallback IBackAnimationFinishedCallback) error
+	OnAnimationStart(ctx context.Context, apps []interface{}, prepareOpenTransition binder.IBinder, finishedCallback IBackAnimationFinishedCallback) error
 }
 
 type BackAnimationRunnerProxy struct {
@@ -56,7 +55,7 @@ func (p *BackAnimationRunnerProxy) OnAnimationCancelled(
 
 func (p *BackAnimationRunnerProxy) OnAnimationStart(
 	ctx context.Context,
-	apps []view.RemoteAnimationTarget,
+	apps []interface{},
 	prepareOpenTransition binder.IBinder,
 	finishedCallback IBackAnimationFinishedCallback,
 ) error {
@@ -66,14 +65,9 @@ func (p *BackAnimationRunnerProxy) OnAnimationStart(
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(apps)))
-		for _, _item := range apps {
-			if _err := _item.MarshalParcel(_data); _err != nil {
-				return _err
-			}
-		}
 	}
-	_data.WriteStrongBinder(prepareOpenTransition.Handle())
-	_data.WriteStrongBinder(finishedCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, prepareOpenTransition, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, finishedCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackAnimationRunner, "onAnimationStart")
 	if _err != nil {
@@ -110,7 +104,7 @@ func (s *BackAnimationRunnerStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_apps []view.RemoteAnimationTarget
+		var _arg_apps []interface{}
 		_ = _arg_apps
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_prepareOpenTransition binder.IBinder
@@ -124,4 +118,52 @@ func (s *BackAnimationRunnerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBackAnimationRunnerServer is the server-side interface that user implementations
+// provide to NewBackAnimationRunnerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackAnimationRunnerServer interface {
+	OnAnimationCancelled(ctx context.Context) error
+	OnAnimationStart(ctx context.Context, apps []interface{}, prepareOpenTransition binder.IBinder, finishedCallback IBackAnimationFinishedCallback) error
+}
+
+type backAnimationRunnerStubWrapper struct {
+	impl       IBackAnimationRunnerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backAnimationRunnerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backAnimationRunnerStubWrapper) OnAnimationCancelled(
+	ctx context.Context,
+) error {
+	return w.impl.OnAnimationCancelled(ctx)
+}
+
+func (w *backAnimationRunnerStubWrapper) OnAnimationStart(
+	ctx context.Context,
+	apps []interface{},
+	prepareOpenTransition binder.IBinder,
+	finishedCallback IBackAnimationFinishedCallback,
+) error {
+	return w.impl.OnAnimationStart(ctx, apps, prepareOpenTransition, finishedCallback)
+}
+
+var _ IBackAnimationRunner = (*backAnimationRunnerStubWrapper)(nil)
+
+// NewBackAnimationRunnerStub creates a server-side IBackAnimationRunner wrapping the given
+// server implementation. The returned value satisfies IBackAnimationRunner
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackAnimationRunnerStub(
+	impl IBackAnimationRunnerServer,
+) IBackAnimationRunner {
+	wrapper := &backAnimationRunnerStubWrapper{impl: impl}
+	stub := &BackAnimationRunnerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

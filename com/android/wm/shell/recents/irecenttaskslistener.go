@@ -321,3 +321,89 @@ func (s *RecentTasksListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRecentTasksListenerServer is the server-side interface that user implementations
+// provide to NewRecentTasksListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecentTasksListenerServer interface {
+	OnRecentTasksChanged(ctx context.Context) error
+	OnRunningTaskAppeared(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
+	OnRunningTaskVanished(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
+	OnRunningTaskChanged(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
+	OnTaskMovedToFront(ctx context.Context, taskToFront shared.GroupedTaskInfo) error
+	OnTaskInfoChanged(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
+	OnVisibleTasksChanged(ctx context.Context, visibleTasks []shared.GroupedTaskInfo) error
+}
+
+type recentTasksListenerStubWrapper struct {
+	impl       IRecentTasksListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recentTasksListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recentTasksListenerStubWrapper) OnRecentTasksChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnRecentTasksChanged(ctx)
+}
+
+func (w *recentTasksListenerStubWrapper) OnRunningTaskAppeared(
+	ctx context.Context,
+	taskInfo app.ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnRunningTaskAppeared(ctx, taskInfo)
+}
+
+func (w *recentTasksListenerStubWrapper) OnRunningTaskVanished(
+	ctx context.Context,
+	taskInfo app.ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnRunningTaskVanished(ctx, taskInfo)
+}
+
+func (w *recentTasksListenerStubWrapper) OnRunningTaskChanged(
+	ctx context.Context,
+	taskInfo app.ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnRunningTaskChanged(ctx, taskInfo)
+}
+
+func (w *recentTasksListenerStubWrapper) OnTaskMovedToFront(
+	ctx context.Context,
+	taskToFront shared.GroupedTaskInfo,
+) error {
+	return w.impl.OnTaskMovedToFront(ctx, taskToFront)
+}
+
+func (w *recentTasksListenerStubWrapper) OnTaskInfoChanged(
+	ctx context.Context,
+	taskInfo app.ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnTaskInfoChanged(ctx, taskInfo)
+}
+
+func (w *recentTasksListenerStubWrapper) OnVisibleTasksChanged(
+	ctx context.Context,
+	visibleTasks []shared.GroupedTaskInfo,
+) error {
+	return w.impl.OnVisibleTasksChanged(ctx, visibleTasks)
+}
+
+var _ IRecentTasksListener = (*recentTasksListenerStubWrapper)(nil)
+
+// NewRecentTasksListenerStub creates a server-side IRecentTasksListener wrapping the given
+// server implementation. The returned value satisfies IRecentTasksListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecentTasksListenerStub(
+	impl IRecentTasksListenerServer,
+) IRecentTasksListener {
+	wrapper := &recentTasksListenerStubWrapper{impl: impl}
+	stub := &RecentTasksListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -246,3 +246,82 @@ func (s *GeofenceHardwareCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGeofenceHardwareCallbackServer is the server-side interface that user implementations
+// provide to NewGeofenceHardwareCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGeofenceHardwareCallbackServer interface {
+	OnGeofenceTransition(ctx context.Context, geofenceId int32, transition int32, location interface{}, timestamp int64, monitoringType int32) error
+	OnGeofenceAdd(ctx context.Context, geofenceId int32, status int32) error
+	OnGeofenceRemove(ctx context.Context, geofenceId int32, status int32) error
+	OnGeofencePause(ctx context.Context, geofenceId int32, status int32) error
+	OnGeofenceResume(ctx context.Context, geofenceId int32, status int32) error
+}
+
+type geofenceHardwareCallbackStubWrapper struct {
+	impl       IGeofenceHardwareCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *geofenceHardwareCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *geofenceHardwareCallbackStubWrapper) OnGeofenceTransition(
+	ctx context.Context,
+	geofenceId int32,
+	transition int32,
+	location interface{},
+	timestamp int64,
+	monitoringType int32,
+) error {
+	return w.impl.OnGeofenceTransition(ctx, geofenceId, transition, location, timestamp, monitoringType)
+}
+
+func (w *geofenceHardwareCallbackStubWrapper) OnGeofenceAdd(
+	ctx context.Context,
+	geofenceId int32,
+	status int32,
+) error {
+	return w.impl.OnGeofenceAdd(ctx, geofenceId, status)
+}
+
+func (w *geofenceHardwareCallbackStubWrapper) OnGeofenceRemove(
+	ctx context.Context,
+	geofenceId int32,
+	status int32,
+) error {
+	return w.impl.OnGeofenceRemove(ctx, geofenceId, status)
+}
+
+func (w *geofenceHardwareCallbackStubWrapper) OnGeofencePause(
+	ctx context.Context,
+	geofenceId int32,
+	status int32,
+) error {
+	return w.impl.OnGeofencePause(ctx, geofenceId, status)
+}
+
+func (w *geofenceHardwareCallbackStubWrapper) OnGeofenceResume(
+	ctx context.Context,
+	geofenceId int32,
+	status int32,
+) error {
+	return w.impl.OnGeofenceResume(ctx, geofenceId, status)
+}
+
+var _ IGeofenceHardwareCallback = (*geofenceHardwareCallbackStubWrapper)(nil)
+
+// NewGeofenceHardwareCallbackStub creates a server-side IGeofenceHardwareCallback wrapping the given
+// server implementation. The returned value satisfies IGeofenceHardwareCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGeofenceHardwareCallbackStub(
+	impl IGeofenceHardwareCallbackServer,
+) IGeofenceHardwareCallback {
+	wrapper := &geofenceHardwareCallbackStubWrapper{impl: impl}
+	stub := &GeofenceHardwareCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

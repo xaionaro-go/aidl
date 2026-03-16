@@ -47,7 +47,7 @@ func (p *MusicRecognitionManagerProxy) BeginRecognition(
 	if _err := recognitionRequest.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMusicRecognitionManager, "beginRecognition")
 	if _err != nil {
@@ -111,4 +111,44 @@ func (s *MusicRecognitionManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMusicRecognitionManagerServer is the server-side interface that user implementations
+// provide to NewMusicRecognitionManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMusicRecognitionManagerServer interface {
+	BeginRecognition(ctx context.Context, recognitionRequest RecognitionRequest, callback binder.IBinder) error
+}
+
+type musicRecognitionManagerStubWrapper struct {
+	impl       IMusicRecognitionManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *musicRecognitionManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *musicRecognitionManagerStubWrapper) BeginRecognition(
+	ctx context.Context,
+	recognitionRequest RecognitionRequest,
+	callback binder.IBinder,
+) error {
+	return w.impl.BeginRecognition(ctx, recognitionRequest, callback)
+}
+
+var _ IMusicRecognitionManager = (*musicRecognitionManagerStubWrapper)(nil)
+
+// NewMusicRecognitionManagerStub creates a server-side IMusicRecognitionManager wrapping the given
+// server implementation. The returned value satisfies IMusicRecognitionManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMusicRecognitionManagerStub(
+	impl IMusicRecognitionManagerServer,
+) IMusicRecognitionManager {
+	wrapper := &musicRecognitionManagerStubWrapper{impl: impl}
+	stub := &MusicRecognitionManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

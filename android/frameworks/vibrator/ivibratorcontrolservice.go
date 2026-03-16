@@ -50,7 +50,7 @@ func (p *VibratorControlServiceProxy) RegisterVibratorController(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibratorControlService)
-	_data.WriteStrongBinder(controller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, controller.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorControlService, "registerVibratorController")
 	if _err != nil {
@@ -67,7 +67,7 @@ func (p *VibratorControlServiceProxy) UnregisterVibratorController(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibratorControlService)
-	_data.WriteStrongBinder(controller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, controller.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorControlService, "unregisterVibratorController")
 	if _err != nil {
@@ -95,7 +95,7 @@ func (p *VibratorControlServiceProxy) SetVibrationParams(
 			}
 		}
 	}
-	_data.WriteStrongBinder(token.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorControlService, "setVibrationParams")
 	if _err != nil {
@@ -114,7 +114,7 @@ func (p *VibratorControlServiceProxy) ClearVibrationParams(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibratorControlService)
 	_data.WriteInt32(typesMask)
-	_data.WriteStrongBinder(token.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorControlService, "clearVibrationParams")
 	if _err != nil {
@@ -132,7 +132,7 @@ func (p *VibratorControlServiceProxy) OnRequestVibrationParamsComplete(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibratorControlService)
-	_data.WriteStrongBinder(requestToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, requestToken, p.remote.Transport())
 	if result == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -230,4 +230,78 @@ func (s *VibratorControlServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVibratorControlServiceServer is the server-side interface that user implementations
+// provide to NewVibratorControlServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVibratorControlServiceServer interface {
+	RegisterVibratorController(ctx context.Context, controller IVibratorController) error
+	UnregisterVibratorController(ctx context.Context, controller IVibratorController) error
+	SetVibrationParams(ctx context.Context, params []VibrationParam, token IVibratorController) error
+	ClearVibrationParams(ctx context.Context, typesMask int32, token IVibratorController) error
+	OnRequestVibrationParamsComplete(ctx context.Context, requestToken binder.IBinder, result []VibrationParam) error
+}
+
+type vibratorControlServiceStubWrapper struct {
+	impl       IVibratorControlServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vibratorControlServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vibratorControlServiceStubWrapper) RegisterVibratorController(
+	ctx context.Context,
+	controller IVibratorController,
+) error {
+	return w.impl.RegisterVibratorController(ctx, controller)
+}
+
+func (w *vibratorControlServiceStubWrapper) UnregisterVibratorController(
+	ctx context.Context,
+	controller IVibratorController,
+) error {
+	return w.impl.UnregisterVibratorController(ctx, controller)
+}
+
+func (w *vibratorControlServiceStubWrapper) SetVibrationParams(
+	ctx context.Context,
+	params []VibrationParam,
+	token IVibratorController,
+) error {
+	return w.impl.SetVibrationParams(ctx, params, token)
+}
+
+func (w *vibratorControlServiceStubWrapper) ClearVibrationParams(
+	ctx context.Context,
+	typesMask int32,
+	token IVibratorController,
+) error {
+	return w.impl.ClearVibrationParams(ctx, typesMask, token)
+}
+
+func (w *vibratorControlServiceStubWrapper) OnRequestVibrationParamsComplete(
+	ctx context.Context,
+	requestToken binder.IBinder,
+	result []VibrationParam,
+) error {
+	return w.impl.OnRequestVibrationParamsComplete(ctx, requestToken, result)
+}
+
+var _ IVibratorControlService = (*vibratorControlServiceStubWrapper)(nil)
+
+// NewVibratorControlServiceStub creates a server-side IVibratorControlService wrapping the given
+// server implementation. The returned value satisfies IVibratorControlService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVibratorControlServiceStub(
+	impl IVibratorControlServiceServer,
+) IVibratorControlService {
+	wrapper := &vibratorControlServiceStubWrapper{impl: impl}
+	stub := &VibratorControlServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

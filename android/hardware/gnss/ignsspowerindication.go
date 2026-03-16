@@ -44,7 +44,7 @@ func (p *GnssPowerIndicationProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssPowerIndication)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGnssPowerIndication, "setCallback")
 	if _err != nil {
@@ -118,4 +118,50 @@ func (s *GnssPowerIndicationStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssPowerIndicationServer is the server-side interface that user implementations
+// provide to NewGnssPowerIndicationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssPowerIndicationServer interface {
+	SetCallback(ctx context.Context, callback IGnssPowerIndicationCallback) error
+	RequestGnssPowerStats(ctx context.Context) error
+}
+
+type gnssPowerIndicationStubWrapper struct {
+	impl       IGnssPowerIndicationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssPowerIndicationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssPowerIndicationStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IGnssPowerIndicationCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *gnssPowerIndicationStubWrapper) RequestGnssPowerStats(
+	ctx context.Context,
+) error {
+	return w.impl.RequestGnssPowerStats(ctx)
+}
+
+var _ IGnssPowerIndication = (*gnssPowerIndicationStubWrapper)(nil)
+
+// NewGnssPowerIndicationStub creates a server-side IGnssPowerIndication wrapping the given
+// server implementation. The returned value satisfies IGnssPowerIndication
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssPowerIndicationStub(
+	impl IGnssPowerIndicationServer,
+) IGnssPowerIndication {
+	wrapper := &gnssPowerIndicationStubWrapper{impl: impl}
+	stub := &GnssPowerIndicationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

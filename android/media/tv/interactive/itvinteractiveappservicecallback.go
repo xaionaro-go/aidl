@@ -94,3 +94,44 @@ func (s *TvInteractiveAppServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITvInteractiveAppServiceCallbackServer is the server-side interface that user implementations
+// provide to NewTvInteractiveAppServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInteractiveAppServiceCallbackServer interface {
+	OnStateChanged(ctx context.Context, type_ int32, state int32, error_ int32) error
+}
+
+type tvInteractiveAppServiceCallbackStubWrapper struct {
+	impl       ITvInteractiveAppServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInteractiveAppServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInteractiveAppServiceCallbackStubWrapper) OnStateChanged(
+	ctx context.Context,
+	type_ int32,
+	state int32,
+	error_ int32,
+) error {
+	return w.impl.OnStateChanged(ctx, type_, state, error_)
+}
+
+var _ ITvInteractiveAppServiceCallback = (*tvInteractiveAppServiceCallbackStubWrapper)(nil)
+
+// NewTvInteractiveAppServiceCallbackStub creates a server-side ITvInteractiveAppServiceCallback wrapping the given
+// server implementation. The returned value satisfies ITvInteractiveAppServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInteractiveAppServiceCallbackStub(
+	impl ITvInteractiveAppServiceCallbackServer,
+) ITvInteractiveAppServiceCallback {
+	wrapper := &tvInteractiveAppServiceCallbackStubWrapper{impl: impl}
+	stub := &TvInteractiveAppServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

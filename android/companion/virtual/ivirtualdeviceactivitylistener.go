@@ -311,3 +311,80 @@ func (s *VirtualDeviceActivityListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVirtualDeviceActivityListenerServer is the server-side interface that user implementations
+// provide to NewVirtualDeviceActivityListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualDeviceActivityListenerServer interface {
+	OnTopActivityChanged(ctx context.Context, displayId int32, topActivity content.ComponentName) error
+	OnDisplayEmpty(ctx context.Context, displayId int32) error
+	OnActivityLaunchBlocked(ctx context.Context, displayId int32, componentName content.ComponentName, user os.UserHandle, intentSender content.IntentSender) error
+	OnSecureWindowShown(ctx context.Context, displayId int32, componentName content.ComponentName, user os.UserHandle) error
+	OnSecureWindowHidden(ctx context.Context, displayId int32) error
+}
+
+type virtualDeviceActivityListenerStubWrapper struct {
+	impl       IVirtualDeviceActivityListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualDeviceActivityListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualDeviceActivityListenerStubWrapper) OnTopActivityChanged(
+	ctx context.Context,
+	displayId int32,
+	topActivity content.ComponentName,
+) error {
+	return w.impl.OnTopActivityChanged(ctx, displayId, topActivity)
+}
+
+func (w *virtualDeviceActivityListenerStubWrapper) OnDisplayEmpty(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnDisplayEmpty(ctx, displayId)
+}
+
+func (w *virtualDeviceActivityListenerStubWrapper) OnActivityLaunchBlocked(
+	ctx context.Context,
+	displayId int32,
+	componentName content.ComponentName,
+	user os.UserHandle,
+	intentSender content.IntentSender,
+) error {
+	return w.impl.OnActivityLaunchBlocked(ctx, displayId, componentName, user, intentSender)
+}
+
+func (w *virtualDeviceActivityListenerStubWrapper) OnSecureWindowShown(
+	ctx context.Context,
+	displayId int32,
+	componentName content.ComponentName,
+	user os.UserHandle,
+) error {
+	return w.impl.OnSecureWindowShown(ctx, displayId, componentName, user)
+}
+
+func (w *virtualDeviceActivityListenerStubWrapper) OnSecureWindowHidden(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnSecureWindowHidden(ctx, displayId)
+}
+
+var _ IVirtualDeviceActivityListener = (*virtualDeviceActivityListenerStubWrapper)(nil)
+
+// NewVirtualDeviceActivityListenerStub creates a server-side IVirtualDeviceActivityListener wrapping the given
+// server implementation. The returned value satisfies IVirtualDeviceActivityListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualDeviceActivityListenerStub(
+	impl IVirtualDeviceActivityListenerServer,
+) IVirtualDeviceActivityListener {
+	wrapper := &virtualDeviceActivityListenerStubWrapper{impl: impl}
+	stub := &VirtualDeviceActivityListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -105,7 +105,7 @@ func (p *CameraOfflineSessionProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraOfflineSession)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraOfflineSession, "setCallback")
 	if _err != nil {
@@ -185,4 +185,57 @@ func (s *CameraOfflineSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICameraOfflineSessionServer is the server-side interface that user implementations
+// provide to NewCameraOfflineSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraOfflineSessionServer interface {
+	Close(ctx context.Context) error
+	GetCaptureResultMetadataQueue(ctx context.Context) (fmq.MQDescriptor, error)
+	SetCallback(ctx context.Context, cb ICameraDeviceCallback) error
+}
+
+type cameraOfflineSessionStubWrapper struct {
+	impl       ICameraOfflineSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraOfflineSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraOfflineSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *cameraOfflineSessionStubWrapper) GetCaptureResultMetadataQueue(
+	ctx context.Context,
+) (fmq.MQDescriptor, error) {
+	return w.impl.GetCaptureResultMetadataQueue(ctx)
+}
+
+func (w *cameraOfflineSessionStubWrapper) SetCallback(
+	ctx context.Context,
+	cb ICameraDeviceCallback,
+) error {
+	return w.impl.SetCallback(ctx, cb)
+}
+
+var _ ICameraOfflineSession = (*cameraOfflineSessionStubWrapper)(nil)
+
+// NewCameraOfflineSessionStub creates a server-side ICameraOfflineSession wrapping the given
+// server implementation. The returned value satisfies ICameraOfflineSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraOfflineSessionStub(
+	impl ICameraOfflineSessionServer,
+) ICameraOfflineSession {
+	wrapper := &cameraOfflineSessionStubWrapper{impl: impl}
+	stub := &CameraOfflineSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

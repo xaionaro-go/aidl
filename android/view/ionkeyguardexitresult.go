@@ -82,3 +82,42 @@ func (s *OnKeyguardExitResultStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnKeyguardExitResultServer is the server-side interface that user implementations
+// provide to NewOnKeyguardExitResultStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnKeyguardExitResultServer interface {
+	OnKeyguardExitResult(ctx context.Context, success bool) error
+}
+
+type onKeyguardExitResultStubWrapper struct {
+	impl       IOnKeyguardExitResultServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onKeyguardExitResultStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onKeyguardExitResultStubWrapper) OnKeyguardExitResult(
+	ctx context.Context,
+	success bool,
+) error {
+	return w.impl.OnKeyguardExitResult(ctx, success)
+}
+
+var _ IOnKeyguardExitResult = (*onKeyguardExitResultStubWrapper)(nil)
+
+// NewOnKeyguardExitResultStub creates a server-side IOnKeyguardExitResult wrapping the given
+// server implementation. The returned value satisfies IOnKeyguardExitResult
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnKeyguardExitResultStub(
+	impl IOnKeyguardExitResultServer,
+) IOnKeyguardExitResult {
+	wrapper := &onKeyguardExitResultStubWrapper{impl: impl}
+	stub := &OnKeyguardExitResultStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

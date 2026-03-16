@@ -139,7 +139,7 @@ func (p *EvsUltrasonicsArrayProxy) StartStream(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEvsUltrasonicsArray)
-	_data.WriteStrongBinder(stream.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, stream.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEvsUltrasonicsArray, "startStream")
 	if _err != nil {
@@ -283,4 +283,73 @@ func (s *EvsUltrasonicsArrayStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IEvsUltrasonicsArrayServer is the server-side interface that user implementations
+// provide to NewEvsUltrasonicsArrayStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEvsUltrasonicsArrayServer interface {
+	DoneWithDataFrame(ctx context.Context, dataFrameDesc UltrasonicsDataFrameDesc) error
+	GetUltrasonicArrayInfo(ctx context.Context) (UltrasonicsArrayDesc, error)
+	SetMaxFramesInFlight(ctx context.Context, bufferCount int32) error
+	StartStream(ctx context.Context, stream IEvsUltrasonicsArrayStream) error
+	StopStream(ctx context.Context) error
+}
+
+type evsUltrasonicsArrayStubWrapper struct {
+	impl       IEvsUltrasonicsArrayServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *evsUltrasonicsArrayStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *evsUltrasonicsArrayStubWrapper) DoneWithDataFrame(
+	ctx context.Context,
+	dataFrameDesc UltrasonicsDataFrameDesc,
+) error {
+	return w.impl.DoneWithDataFrame(ctx, dataFrameDesc)
+}
+
+func (w *evsUltrasonicsArrayStubWrapper) GetUltrasonicArrayInfo(
+	ctx context.Context,
+) (UltrasonicsArrayDesc, error) {
+	return w.impl.GetUltrasonicArrayInfo(ctx)
+}
+
+func (w *evsUltrasonicsArrayStubWrapper) SetMaxFramesInFlight(
+	ctx context.Context,
+	bufferCount int32,
+) error {
+	return w.impl.SetMaxFramesInFlight(ctx, bufferCount)
+}
+
+func (w *evsUltrasonicsArrayStubWrapper) StartStream(
+	ctx context.Context,
+	stream IEvsUltrasonicsArrayStream,
+) error {
+	return w.impl.StartStream(ctx, stream)
+}
+
+func (w *evsUltrasonicsArrayStubWrapper) StopStream(
+	ctx context.Context,
+) error {
+	return w.impl.StopStream(ctx)
+}
+
+var _ IEvsUltrasonicsArray = (*evsUltrasonicsArrayStubWrapper)(nil)
+
+// NewEvsUltrasonicsArrayStub creates a server-side IEvsUltrasonicsArray wrapping the given
+// server implementation. The returned value satisfies IEvsUltrasonicsArray
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEvsUltrasonicsArrayStub(
+	impl IEvsUltrasonicsArrayServer,
+) IEvsUltrasonicsArray {
+	wrapper := &evsUltrasonicsArrayStubWrapper{impl: impl}
+	stub := &EvsUltrasonicsArrayStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

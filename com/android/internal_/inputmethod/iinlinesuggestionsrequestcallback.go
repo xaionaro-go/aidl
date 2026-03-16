@@ -78,7 +78,7 @@ func (p *InlineSuggestionsRequestCallbackProxy) OnInlineSuggestionsRequest(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionsRequestCallback, "onInlineSuggestionsRequest")
 	if _err != nil {
@@ -290,4 +290,95 @@ func (s *InlineSuggestionsRequestCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInlineSuggestionsRequestCallbackServer is the server-side interface that user implementations
+// provide to NewInlineSuggestionsRequestCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInlineSuggestionsRequestCallbackServer interface {
+	OnInlineSuggestionsUnsupported(ctx context.Context) error
+	OnInlineSuggestionsRequest(ctx context.Context, request viewInputmethod.InlineSuggestionsRequest, callback IInlineSuggestionsResponseCallback) error
+	OnInputMethodStartInput(ctx context.Context, imeFieldId autofill.AutofillId) error
+	OnInputMethodShowInputRequested(ctx context.Context, requestResult bool) error
+	OnInputMethodStartInputView(ctx context.Context) error
+	OnInputMethodFinishInputView(ctx context.Context) error
+	OnInputMethodFinishInput(ctx context.Context) error
+	OnInlineSuggestionsSessionInvalidated(ctx context.Context) error
+}
+
+type inlineSuggestionsRequestCallbackStubWrapper struct {
+	impl       IInlineSuggestionsRequestCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inlineSuggestionsRequestCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inlineSuggestionsRequestCallbackStubWrapper) OnInlineSuggestionsUnsupported(
+	ctx context.Context,
+) error {
+	return w.impl.OnInlineSuggestionsUnsupported(ctx)
+}
+
+func (w *inlineSuggestionsRequestCallbackStubWrapper) OnInlineSuggestionsRequest(
+	ctx context.Context,
+	request viewInputmethod.InlineSuggestionsRequest,
+	callback IInlineSuggestionsResponseCallback,
+) error {
+	return w.impl.OnInlineSuggestionsRequest(ctx, request, callback)
+}
+
+func (w *inlineSuggestionsRequestCallbackStubWrapper) OnInputMethodStartInput(
+	ctx context.Context,
+	imeFieldId autofill.AutofillId,
+) error {
+	return w.impl.OnInputMethodStartInput(ctx, imeFieldId)
+}
+
+func (w *inlineSuggestionsRequestCallbackStubWrapper) OnInputMethodShowInputRequested(
+	ctx context.Context,
+	requestResult bool,
+) error {
+	return w.impl.OnInputMethodShowInputRequested(ctx, requestResult)
+}
+
+func (w *inlineSuggestionsRequestCallbackStubWrapper) OnInputMethodStartInputView(
+	ctx context.Context,
+) error {
+	return w.impl.OnInputMethodStartInputView(ctx)
+}
+
+func (w *inlineSuggestionsRequestCallbackStubWrapper) OnInputMethodFinishInputView(
+	ctx context.Context,
+) error {
+	return w.impl.OnInputMethodFinishInputView(ctx)
+}
+
+func (w *inlineSuggestionsRequestCallbackStubWrapper) OnInputMethodFinishInput(
+	ctx context.Context,
+) error {
+	return w.impl.OnInputMethodFinishInput(ctx)
+}
+
+func (w *inlineSuggestionsRequestCallbackStubWrapper) OnInlineSuggestionsSessionInvalidated(
+	ctx context.Context,
+) error {
+	return w.impl.OnInlineSuggestionsSessionInvalidated(ctx)
+}
+
+var _ IInlineSuggestionsRequestCallback = (*inlineSuggestionsRequestCallbackStubWrapper)(nil)
+
+// NewInlineSuggestionsRequestCallbackStub creates a server-side IInlineSuggestionsRequestCallback wrapping the given
+// server implementation. The returned value satisfies IInlineSuggestionsRequestCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInlineSuggestionsRequestCallbackStub(
+	impl IInlineSuggestionsRequestCallbackServer,
+) IInlineSuggestionsRequestCallback {
+	wrapper := &inlineSuggestionsRequestCallbackStubWrapper{impl: impl}
+	stub := &InlineSuggestionsRequestCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

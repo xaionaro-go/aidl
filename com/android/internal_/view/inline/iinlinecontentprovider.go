@@ -50,7 +50,7 @@ func (p *InlineContentProviderProxy) ProvideContent(
 	_data.WriteInterfaceToken(DescriptorIInlineContentProvider)
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInlineContentProvider, "provideContent")
 	if _err != nil {
@@ -140,4 +140,59 @@ func (s *InlineContentProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInlineContentProviderServer is the server-side interface that user implementations
+// provide to NewInlineContentProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInlineContentProviderServer interface {
+	ProvideContent(ctx context.Context, width int32, height int32, callback IInlineContentCallback) error
+	RequestSurfacePackage(ctx context.Context) error
+	OnSurfacePackageReleased(ctx context.Context) error
+}
+
+type inlineContentProviderStubWrapper struct {
+	impl       IInlineContentProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inlineContentProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inlineContentProviderStubWrapper) ProvideContent(
+	ctx context.Context,
+	width int32,
+	height int32,
+	callback IInlineContentCallback,
+) error {
+	return w.impl.ProvideContent(ctx, width, height, callback)
+}
+
+func (w *inlineContentProviderStubWrapper) RequestSurfacePackage(
+	ctx context.Context,
+) error {
+	return w.impl.RequestSurfacePackage(ctx)
+}
+
+func (w *inlineContentProviderStubWrapper) OnSurfacePackageReleased(
+	ctx context.Context,
+) error {
+	return w.impl.OnSurfacePackageReleased(ctx)
+}
+
+var _ IInlineContentProvider = (*inlineContentProviderStubWrapper)(nil)
+
+// NewInlineContentProviderStub creates a server-side IInlineContentProvider wrapping the given
+// server implementation. The returned value satisfies IInlineContentProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInlineContentProviderStub(
+	impl IInlineContentProviderServer,
+) IInlineContentProvider {
+	wrapper := &inlineContentProviderStubWrapper{impl: impl}
+	stub := &InlineContentProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

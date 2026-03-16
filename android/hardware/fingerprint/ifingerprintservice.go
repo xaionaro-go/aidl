@@ -132,7 +132,7 @@ func (p *FingerprintServiceProxy) CreateTestSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "createTestSession")
@@ -289,9 +289,9 @@ func (p *FingerprintServiceProxy) Authenticate(
 	var _result int64
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt64(operationId)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -328,8 +328,8 @@ func (p *FingerprintServiceProxy) DetectFingerprint(
 	var _result int64
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -370,9 +370,9 @@ func (p *FingerprintServiceProxy) PrepareForAuthentication(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt64(operationId)
-	_data.WriteStrongBinder(sensorReceiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, sensorReceiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _err
@@ -436,7 +436,7 @@ func (p *FingerprintServiceProxy) CancelAuthentication(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt64(requestId)
@@ -467,7 +467,7 @@ func (p *FingerprintServiceProxy) CancelFingerprintDetect(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
@@ -499,7 +499,7 @@ func (p *FingerprintServiceProxy) CancelAuthenticationFromService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
@@ -533,7 +533,7 @@ func (p *FingerprintServiceProxy) Enroll(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	if hardwareAuthToken == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -543,7 +543,7 @@ func (p *FingerprintServiceProxy) Enroll(
 		}
 	}
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(enrollReason)
 	_data.WriteInt32(1)
@@ -580,7 +580,7 @@ func (p *FingerprintServiceProxy) CancelEnrollment(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt64(requestId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "cancelEnrollment")
@@ -610,10 +610,10 @@ func (p *FingerprintServiceProxy) Remove(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(fingerId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "remove")
@@ -642,9 +642,9 @@ func (p *FingerprintServiceProxy) RemoveAll(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "removeAll")
@@ -811,10 +811,10 @@ func (p *FingerprintServiceProxy) GenerateChallenge(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "generateChallenge")
@@ -844,7 +844,7 @@ func (p *FingerprintServiceProxy) RevokeChallenge(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(_identity.PackageName)
@@ -978,7 +978,7 @@ func (p *FingerprintServiceProxy) InvalidateAuthenticatorId(
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "invalidateAuthenticatorId")
 	if _err != nil {
@@ -1041,7 +1041,7 @@ func (p *FingerprintServiceProxy) ResetLockout(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
 	if hardwareAuthToken == nil {
@@ -1079,7 +1079,7 @@ func (p *FingerprintServiceProxy) AddLockoutResetCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "addLockoutResetCallback")
@@ -1135,7 +1135,7 @@ func (p *FingerprintServiceProxy) AddClientActiveCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "addClientActiveCallback")
 	if _err != nil {
@@ -1161,7 +1161,7 @@ func (p *FingerprintServiceProxy) RemoveClientActiveCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "removeClientActiveCallback")
 	if _err != nil {
@@ -1216,7 +1216,7 @@ func (p *FingerprintServiceProxy) AddAuthenticatorsRegisteredCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "addAuthenticatorsRegisteredCallback")
 	if _err != nil {
@@ -1368,7 +1368,7 @@ func (p *FingerprintServiceProxy) SetUdfpsOverlayController(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(controller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, controller.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "setUdfpsOverlayController")
 	if _err != nil {
@@ -1394,7 +1394,7 @@ func (p *FingerprintServiceProxy) RegisterAuthenticationStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "registerAuthenticationStateListener")
 	if _err != nil {
@@ -1420,7 +1420,7 @@ func (p *FingerprintServiceProxy) UnregisterAuthenticationStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "unregisterAuthenticationStateListener")
 	if _err != nil {
@@ -1446,7 +1446,7 @@ func (p *FingerprintServiceProxy) RegisterBiometricStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFingerprintService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprintService, "registerBiometricStateListener")
 	if _err != nil {
@@ -2487,4 +2487,416 @@ func (s *FingerprintServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFingerprintServiceServer is the server-side interface that user implementations
+// provide to NewFingerprintServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFingerprintServiceServer interface {
+	CreateTestSession(ctx context.Context, sensorId int32, callback biometrics.ITestSessionCallback) (biometrics.ITestSession, error)
+	DumpSensorServiceStateProto(ctx context.Context, sensorId int32, clearSchedulerBuffer bool) ([]byte, error)
+	GetSensorPropertiesInternal(ctx context.Context) ([]FingerprintSensorPropertiesInternal, error)
+	GetSensorProperties(ctx context.Context, sensorId int32) (FingerprintSensorPropertiesInternal, error)
+	Authenticate(ctx context.Context, token binder.IBinder, operationId int64, receiver IFingerprintServiceReceiver, options FingerprintAuthenticateOptions) (int64, error)
+	DetectFingerprint(ctx context.Context, token binder.IBinder, receiver IFingerprintServiceReceiver, options FingerprintAuthenticateOptions) (int64, error)
+	PrepareForAuthentication(ctx context.Context, token binder.IBinder, operationId int64, sensorReceiver biometrics.IBiometricSensorReceiver, options FingerprintAuthenticateOptions, requestId int64, cookie int32, allowBackgroundAuthentication bool, isForLegacyFingerprintManager bool) error
+	StartPreparedClient(ctx context.Context, sensorId int32, cookie int32) error
+	CancelAuthentication(ctx context.Context, token binder.IBinder, requestId int64) error
+	CancelFingerprintDetect(ctx context.Context, token binder.IBinder, requestId int64) error
+	CancelAuthenticationFromService(ctx context.Context, sensorId int32, token binder.IBinder, requestId int64) error
+	Enroll(ctx context.Context, token binder.IBinder, hardwareAuthToken []byte, receiver IFingerprintServiceReceiver, enrollReason int32, options FingerprintEnrollOptions) (int64, error)
+	CancelEnrollment(ctx context.Context, token binder.IBinder, requestId int64) error
+	Remove(ctx context.Context, token binder.IBinder, fingerId int32, receiver IFingerprintServiceReceiver) error
+	RemoveAll(ctx context.Context, token binder.IBinder, receiver IFingerprintServiceReceiver) error
+	Rename(ctx context.Context, fingerId int32, name string) error
+	GetEnrolledFingerprints(ctx context.Context) ([]Fingerprint, error)
+	IsHardwareDetectedDeprecated(ctx context.Context) (bool, error)
+	IsHardwareDetected(ctx context.Context, sensorId int32) (bool, error)
+	GenerateChallenge(ctx context.Context, token binder.IBinder, sensorId int32, receiver IFingerprintServiceReceiver) error
+	RevokeChallenge(ctx context.Context, token binder.IBinder, sensorId int32, challenge int64) error
+	HasEnrolledFingerprintsDeprecated(ctx context.Context) (bool, error)
+	HasEnrolledFingerprints(ctx context.Context, sensorId int32) (bool, error)
+	GetLockoutModeForUser(ctx context.Context, sensorId int32) (int32, error)
+	InvalidateAuthenticatorId(ctx context.Context, sensorId int32, callback biometrics.IInvalidationCallback) error
+	GetAuthenticatorId(ctx context.Context, sensorId int32) (int64, error)
+	ResetLockout(ctx context.Context, token binder.IBinder, sensorId int32, hardwareAuthToken []byte, opPackageNAame string) error
+	AddLockoutResetCallback(ctx context.Context, callback biometrics.IBiometricServiceLockoutResetCallback) error
+	IsClientActive(ctx context.Context) (bool, error)
+	AddClientActiveCallback(ctx context.Context, callback IFingerprintClientActiveCallback) error
+	RemoveClientActiveCallback(ctx context.Context, callback IFingerprintClientActiveCallback) error
+	RegisterAuthenticators(ctx context.Context, fingerprintSensorConfigurations FingerprintSensorConfigurations) error
+	AddAuthenticatorsRegisteredCallback(ctx context.Context, callback IFingerprintAuthenticatorsRegisteredCallback) error
+	OnPointerDown(ctx context.Context, requestId int64, sensorId int32, pc biometricsFingerprint.PointerContext) error
+	OnPointerUp(ctx context.Context, requestId int64, sensorId int32, pc biometricsFingerprint.PointerContext) error
+	OnUdfpsUiEvent(ctx context.Context, event int32, requestId int64, sensorId int32) error
+	SetIgnoreDisplayTouches(ctx context.Context, requestId int64, sensorId int32, ignoreTouches bool) error
+	SetUdfpsOverlayController(ctx context.Context, controller IUdfpsOverlayController) error
+	RegisterAuthenticationStateListener(ctx context.Context, listener biometrics.AuthenticationStateListener) error
+	UnregisterAuthenticationStateListener(ctx context.Context, listener biometrics.AuthenticationStateListener) error
+	RegisterBiometricStateListener(ctx context.Context, listener biometrics.IBiometricStateListener) error
+	OnPowerPressed(ctx context.Context) error
+	ScheduleWatchdog(ctx context.Context) error
+}
+
+type fingerprintServiceStubWrapper struct {
+	impl       IFingerprintServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fingerprintServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fingerprintServiceStubWrapper) CreateTestSession(
+	ctx context.Context,
+	sensorId int32,
+	callback biometrics.ITestSessionCallback,
+) (biometrics.ITestSession, error) {
+	return w.impl.CreateTestSession(ctx, sensorId, callback)
+}
+
+func (w *fingerprintServiceStubWrapper) DumpSensorServiceStateProto(
+	ctx context.Context,
+	sensorId int32,
+	clearSchedulerBuffer bool,
+) ([]byte, error) {
+	return w.impl.DumpSensorServiceStateProto(ctx, sensorId, clearSchedulerBuffer)
+}
+
+func (w *fingerprintServiceStubWrapper) GetSensorPropertiesInternal(
+	ctx context.Context,
+) ([]FingerprintSensorPropertiesInternal, error) {
+	return w.impl.GetSensorPropertiesInternal(ctx)
+}
+
+func (w *fingerprintServiceStubWrapper) GetSensorProperties(
+	ctx context.Context,
+	sensorId int32,
+) (FingerprintSensorPropertiesInternal, error) {
+	return w.impl.GetSensorProperties(ctx, sensorId)
+}
+
+func (w *fingerprintServiceStubWrapper) Authenticate(
+	ctx context.Context,
+	token binder.IBinder,
+	operationId int64,
+	receiver IFingerprintServiceReceiver,
+	options FingerprintAuthenticateOptions,
+) (int64, error) {
+	return w.impl.Authenticate(ctx, token, operationId, receiver, options)
+}
+
+func (w *fingerprintServiceStubWrapper) DetectFingerprint(
+	ctx context.Context,
+	token binder.IBinder,
+	receiver IFingerprintServiceReceiver,
+	options FingerprintAuthenticateOptions,
+) (int64, error) {
+	return w.impl.DetectFingerprint(ctx, token, receiver, options)
+}
+
+func (w *fingerprintServiceStubWrapper) PrepareForAuthentication(
+	ctx context.Context,
+	token binder.IBinder,
+	operationId int64,
+	sensorReceiver biometrics.IBiometricSensorReceiver,
+	options FingerprintAuthenticateOptions,
+	requestId int64,
+	cookie int32,
+	allowBackgroundAuthentication bool,
+	isForLegacyFingerprintManager bool,
+) error {
+	return w.impl.PrepareForAuthentication(ctx, token, operationId, sensorReceiver, options, requestId, cookie, allowBackgroundAuthentication, isForLegacyFingerprintManager)
+}
+
+func (w *fingerprintServiceStubWrapper) StartPreparedClient(
+	ctx context.Context,
+	sensorId int32,
+	cookie int32,
+) error {
+	return w.impl.StartPreparedClient(ctx, sensorId, cookie)
+}
+
+func (w *fingerprintServiceStubWrapper) CancelAuthentication(
+	ctx context.Context,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelAuthentication(ctx, token, requestId)
+}
+
+func (w *fingerprintServiceStubWrapper) CancelFingerprintDetect(
+	ctx context.Context,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelFingerprintDetect(ctx, token, requestId)
+}
+
+func (w *fingerprintServiceStubWrapper) CancelAuthenticationFromService(
+	ctx context.Context,
+	sensorId int32,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelAuthenticationFromService(ctx, sensorId, token, requestId)
+}
+
+func (w *fingerprintServiceStubWrapper) Enroll(
+	ctx context.Context,
+	token binder.IBinder,
+	hardwareAuthToken []byte,
+	receiver IFingerprintServiceReceiver,
+	enrollReason int32,
+	options FingerprintEnrollOptions,
+) (int64, error) {
+	return w.impl.Enroll(ctx, token, hardwareAuthToken, receiver, enrollReason, options)
+}
+
+func (w *fingerprintServiceStubWrapper) CancelEnrollment(
+	ctx context.Context,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelEnrollment(ctx, token, requestId)
+}
+
+func (w *fingerprintServiceStubWrapper) Remove(
+	ctx context.Context,
+	token binder.IBinder,
+	fingerId int32,
+	receiver IFingerprintServiceReceiver,
+) error {
+	return w.impl.Remove(ctx, token, fingerId, receiver)
+}
+
+func (w *fingerprintServiceStubWrapper) RemoveAll(
+	ctx context.Context,
+	token binder.IBinder,
+	receiver IFingerprintServiceReceiver,
+) error {
+	return w.impl.RemoveAll(ctx, token, receiver)
+}
+
+func (w *fingerprintServiceStubWrapper) Rename(
+	ctx context.Context,
+	fingerId int32,
+	name string,
+) error {
+	return w.impl.Rename(ctx, fingerId, name)
+}
+
+func (w *fingerprintServiceStubWrapper) GetEnrolledFingerprints(
+	ctx context.Context,
+) ([]Fingerprint, error) {
+	return w.impl.GetEnrolledFingerprints(ctx)
+}
+
+func (w *fingerprintServiceStubWrapper) IsHardwareDetectedDeprecated(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHardwareDetectedDeprecated(ctx)
+}
+
+func (w *fingerprintServiceStubWrapper) IsHardwareDetected(
+	ctx context.Context,
+	sensorId int32,
+) (bool, error) {
+	return w.impl.IsHardwareDetected(ctx, sensorId)
+}
+
+func (w *fingerprintServiceStubWrapper) GenerateChallenge(
+	ctx context.Context,
+	token binder.IBinder,
+	sensorId int32,
+	receiver IFingerprintServiceReceiver,
+) error {
+	return w.impl.GenerateChallenge(ctx, token, sensorId, receiver)
+}
+
+func (w *fingerprintServiceStubWrapper) RevokeChallenge(
+	ctx context.Context,
+	token binder.IBinder,
+	sensorId int32,
+	challenge int64,
+) error {
+	return w.impl.RevokeChallenge(ctx, token, sensorId, challenge)
+}
+
+func (w *fingerprintServiceStubWrapper) HasEnrolledFingerprintsDeprecated(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasEnrolledFingerprintsDeprecated(ctx)
+}
+
+func (w *fingerprintServiceStubWrapper) HasEnrolledFingerprints(
+	ctx context.Context,
+	sensorId int32,
+) (bool, error) {
+	return w.impl.HasEnrolledFingerprints(ctx, sensorId)
+}
+
+func (w *fingerprintServiceStubWrapper) GetLockoutModeForUser(
+	ctx context.Context,
+	sensorId int32,
+) (int32, error) {
+	return w.impl.GetLockoutModeForUser(ctx, sensorId)
+}
+
+func (w *fingerprintServiceStubWrapper) InvalidateAuthenticatorId(
+	ctx context.Context,
+	sensorId int32,
+	callback biometrics.IInvalidationCallback,
+) error {
+	return w.impl.InvalidateAuthenticatorId(ctx, sensorId, callback)
+}
+
+func (w *fingerprintServiceStubWrapper) GetAuthenticatorId(
+	ctx context.Context,
+	sensorId int32,
+) (int64, error) {
+	return w.impl.GetAuthenticatorId(ctx, sensorId)
+}
+
+func (w *fingerprintServiceStubWrapper) ResetLockout(
+	ctx context.Context,
+	token binder.IBinder,
+	sensorId int32,
+	hardwareAuthToken []byte,
+	opPackageNAame string,
+) error {
+	return w.impl.ResetLockout(ctx, token, sensorId, hardwareAuthToken, opPackageNAame)
+}
+
+func (w *fingerprintServiceStubWrapper) AddLockoutResetCallback(
+	ctx context.Context,
+	callback biometrics.IBiometricServiceLockoutResetCallback,
+) error {
+	return w.impl.AddLockoutResetCallback(ctx, callback)
+}
+
+func (w *fingerprintServiceStubWrapper) IsClientActive(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsClientActive(ctx)
+}
+
+func (w *fingerprintServiceStubWrapper) AddClientActiveCallback(
+	ctx context.Context,
+	callback IFingerprintClientActiveCallback,
+) error {
+	return w.impl.AddClientActiveCallback(ctx, callback)
+}
+
+func (w *fingerprintServiceStubWrapper) RemoveClientActiveCallback(
+	ctx context.Context,
+	callback IFingerprintClientActiveCallback,
+) error {
+	return w.impl.RemoveClientActiveCallback(ctx, callback)
+}
+
+func (w *fingerprintServiceStubWrapper) RegisterAuthenticators(
+	ctx context.Context,
+	fingerprintSensorConfigurations FingerprintSensorConfigurations,
+) error {
+	return w.impl.RegisterAuthenticators(ctx, fingerprintSensorConfigurations)
+}
+
+func (w *fingerprintServiceStubWrapper) AddAuthenticatorsRegisteredCallback(
+	ctx context.Context,
+	callback IFingerprintAuthenticatorsRegisteredCallback,
+) error {
+	return w.impl.AddAuthenticatorsRegisteredCallback(ctx, callback)
+}
+
+func (w *fingerprintServiceStubWrapper) OnPointerDown(
+	ctx context.Context,
+	requestId int64,
+	sensorId int32,
+	pc biometricsFingerprint.PointerContext,
+) error {
+	return w.impl.OnPointerDown(ctx, requestId, sensorId, pc)
+}
+
+func (w *fingerprintServiceStubWrapper) OnPointerUp(
+	ctx context.Context,
+	requestId int64,
+	sensorId int32,
+	pc biometricsFingerprint.PointerContext,
+) error {
+	return w.impl.OnPointerUp(ctx, requestId, sensorId, pc)
+}
+
+func (w *fingerprintServiceStubWrapper) OnUdfpsUiEvent(
+	ctx context.Context,
+	event int32,
+	requestId int64,
+	sensorId int32,
+) error {
+	return w.impl.OnUdfpsUiEvent(ctx, event, requestId, sensorId)
+}
+
+func (w *fingerprintServiceStubWrapper) SetIgnoreDisplayTouches(
+	ctx context.Context,
+	requestId int64,
+	sensorId int32,
+	ignoreTouches bool,
+) error {
+	return w.impl.SetIgnoreDisplayTouches(ctx, requestId, sensorId, ignoreTouches)
+}
+
+func (w *fingerprintServiceStubWrapper) SetUdfpsOverlayController(
+	ctx context.Context,
+	controller IUdfpsOverlayController,
+) error {
+	return w.impl.SetUdfpsOverlayController(ctx, controller)
+}
+
+func (w *fingerprintServiceStubWrapper) RegisterAuthenticationStateListener(
+	ctx context.Context,
+	listener biometrics.AuthenticationStateListener,
+) error {
+	return w.impl.RegisterAuthenticationStateListener(ctx, listener)
+}
+
+func (w *fingerprintServiceStubWrapper) UnregisterAuthenticationStateListener(
+	ctx context.Context,
+	listener biometrics.AuthenticationStateListener,
+) error {
+	return w.impl.UnregisterAuthenticationStateListener(ctx, listener)
+}
+
+func (w *fingerprintServiceStubWrapper) RegisterBiometricStateListener(
+	ctx context.Context,
+	listener biometrics.IBiometricStateListener,
+) error {
+	return w.impl.RegisterBiometricStateListener(ctx, listener)
+}
+
+func (w *fingerprintServiceStubWrapper) OnPowerPressed(
+	ctx context.Context,
+) error {
+	return w.impl.OnPowerPressed(ctx)
+}
+
+func (w *fingerprintServiceStubWrapper) ScheduleWatchdog(
+	ctx context.Context,
+) error {
+	return w.impl.ScheduleWatchdog(ctx)
+}
+
+var _ IFingerprintService = (*fingerprintServiceStubWrapper)(nil)
+
+// NewFingerprintServiceStub creates a server-side IFingerprintService wrapping the given
+// server implementation. The returned value satisfies IFingerprintService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFingerprintServiceStub(
+	impl IFingerprintServiceServer,
+) IFingerprintService {
+	wrapper := &fingerprintServiceStubWrapper{impl: impl}
+	stub := &FingerprintServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

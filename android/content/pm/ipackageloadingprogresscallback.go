@@ -82,3 +82,42 @@ func (s *PackageLoadingProgressCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPackageLoadingProgressCallbackServer is the server-side interface that user implementations
+// provide to NewPackageLoadingProgressCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageLoadingProgressCallbackServer interface {
+	OnPackageLoadingProgressChanged(ctx context.Context, progress float32) error
+}
+
+type packageLoadingProgressCallbackStubWrapper struct {
+	impl       IPackageLoadingProgressCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageLoadingProgressCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageLoadingProgressCallbackStubWrapper) OnPackageLoadingProgressChanged(
+	ctx context.Context,
+	progress float32,
+) error {
+	return w.impl.OnPackageLoadingProgressChanged(ctx, progress)
+}
+
+var _ IPackageLoadingProgressCallback = (*packageLoadingProgressCallbackStubWrapper)(nil)
+
+// NewPackageLoadingProgressCallbackStub creates a server-side IPackageLoadingProgressCallback wrapping the given
+// server implementation. The returned value satisfies IPackageLoadingProgressCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageLoadingProgressCallbackStub(
+	impl IPackageLoadingProgressCallbackServer,
+) IPackageLoadingProgressCallback {
+	wrapper := &packageLoadingProgressCallbackStubWrapper{impl: impl}
+	stub := &PackageLoadingProgressCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

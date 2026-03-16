@@ -109,3 +109,45 @@ func (s *ResourceObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IResourceObserverServer is the server-side interface that user implementations
+// provide to NewResourceObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResourceObserverServer interface {
+	OnStatusChanged(ctx context.Context, event MediaObservableEvent, uid int32, pid int32, observables []MediaObservableParcel) error
+}
+
+type resourceObserverStubWrapper struct {
+	impl       IResourceObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resourceObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resourceObserverStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	event MediaObservableEvent,
+	uid int32,
+	pid int32,
+	observables []MediaObservableParcel,
+) error {
+	return w.impl.OnStatusChanged(ctx, event, uid, pid, observables)
+}
+
+var _ IResourceObserver = (*resourceObserverStubWrapper)(nil)
+
+// NewResourceObserverStub creates a server-side IResourceObserver wrapping the given
+// server implementation. The returned value satisfies IResourceObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResourceObserverStub(
+	impl IResourceObserverServer,
+) IResourceObserver {
+	wrapper := &resourceObserverStubWrapper{impl: impl}
+	stub := &ResourceObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

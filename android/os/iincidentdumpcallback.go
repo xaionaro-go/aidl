@@ -82,3 +82,42 @@ func (s *IncidentDumpCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIncidentDumpCallbackServer is the server-side interface that user implementations
+// provide to NewIncidentDumpCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIncidentDumpCallbackServer interface {
+	OnDumpSection(ctx context.Context, fd int32) error
+}
+
+type incidentDumpCallbackStubWrapper struct {
+	impl       IIncidentDumpCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *incidentDumpCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *incidentDumpCallbackStubWrapper) OnDumpSection(
+	ctx context.Context,
+	fd int32,
+) error {
+	return w.impl.OnDumpSection(ctx, fd)
+}
+
+var _ IIncidentDumpCallback = (*incidentDumpCallbackStubWrapper)(nil)
+
+// NewIncidentDumpCallbackStub creates a server-side IIncidentDumpCallback wrapping the given
+// server implementation. The returned value satisfies IIncidentDumpCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIncidentDumpCallbackStub(
+	impl IIncidentDumpCallbackServer,
+) IIncidentDumpCallback {
+	wrapper := &incidentDumpCallbackStubWrapper{impl: impl}
+	stub := &IncidentDumpCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

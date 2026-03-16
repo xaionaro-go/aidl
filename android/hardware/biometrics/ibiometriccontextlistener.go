@@ -144,3 +144,58 @@ func (s *BiometricContextListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBiometricContextListenerServer is the server-side interface that user implementations
+// provide to NewBiometricContextListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBiometricContextListenerServer interface {
+	OnFoldChanged(ctx context.Context, FoldState biometricsIBiometricContextListener.FoldState) error
+	OnDisplayStateChanged(ctx context.Context, displayState int32) error
+	OnHardwareIgnoreTouchesChanged(ctx context.Context, shouldIgnore bool) error
+}
+
+type biometricContextListenerStubWrapper struct {
+	impl       IBiometricContextListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *biometricContextListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *biometricContextListenerStubWrapper) OnFoldChanged(
+	ctx context.Context,
+	FoldState biometricsIBiometricContextListener.FoldState,
+) error {
+	return w.impl.OnFoldChanged(ctx, FoldState)
+}
+
+func (w *biometricContextListenerStubWrapper) OnDisplayStateChanged(
+	ctx context.Context,
+	displayState int32,
+) error {
+	return w.impl.OnDisplayStateChanged(ctx, displayState)
+}
+
+func (w *biometricContextListenerStubWrapper) OnHardwareIgnoreTouchesChanged(
+	ctx context.Context,
+	shouldIgnore bool,
+) error {
+	return w.impl.OnHardwareIgnoreTouchesChanged(ctx, shouldIgnore)
+}
+
+var _ IBiometricContextListener = (*biometricContextListenerStubWrapper)(nil)
+
+// NewBiometricContextListenerStub creates a server-side IBiometricContextListener wrapping the given
+// server implementation. The returned value satisfies IBiometricContextListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBiometricContextListenerStub(
+	impl IBiometricContextListenerServer,
+) IBiometricContextListener {
+	wrapper := &biometricContextListenerStubWrapper{impl: impl}
+	stub := &BiometricContextListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

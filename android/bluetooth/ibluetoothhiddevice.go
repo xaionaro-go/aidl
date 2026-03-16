@@ -3,7 +3,6 @@ package bluetooth
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -30,19 +29,19 @@ const (
 
 type IBluetoothHidDevice interface {
 	AsBinder() binder.IBinder
-	RegisterApp(ctx context.Context, sdp BluetoothHidDeviceAppSdpSettings, inQos BluetoothHidDeviceAppQosSettings, outQos BluetoothHidDeviceAppQosSettings, callback IBluetoothHidDeviceCallback, attributionSource content.AttributionSource) (bool, error)
-	UnregisterApp(ctx context.Context, attributionSource content.AttributionSource) (bool, error)
-	SendReport(ctx context.Context, device BluetoothDevice, id int32, data []byte, attributionSource content.AttributionSource) (bool, error)
-	ReplyReport(ctx context.Context, device BluetoothDevice, type_ byte, id byte, data []byte, attributionSource content.AttributionSource) (bool, error)
-	ReportError(ctx context.Context, device BluetoothDevice, error_ byte, attributionSource content.AttributionSource) (bool, error)
-	Unplug(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
-	Connect(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
-	Disconnect(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
-	GetConnectedDevices(ctx context.Context, attributionSource content.AttributionSource) ([]BluetoothDevice, error)
-	GetDevicesMatchingConnectionStates(ctx context.Context, states []int32, attributionSource content.AttributionSource) ([]BluetoothDevice, error)
-	GetConnectionState(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (int32, error)
-	GetUserAppName(ctx context.Context, attributionSource content.AttributionSource) (string, error)
-	SetConnectionPolicy(ctx context.Context, device BluetoothDevice, connectionPolicy int32, attributionSource content.AttributionSource) (bool, error)
+	RegisterApp(ctx context.Context, sdp BluetoothHidDeviceAppSdpSettings, inQos BluetoothHidDeviceAppQosSettings, outQos BluetoothHidDeviceAppQosSettings, callback IBluetoothHidDeviceCallback, attributionSource interface{}) (bool, error)
+	UnregisterApp(ctx context.Context, attributionSource interface{}) (bool, error)
+	SendReport(ctx context.Context, device BluetoothDevice, id int32, data []byte, attributionSource interface{}) (bool, error)
+	ReplyReport(ctx context.Context, device BluetoothDevice, type_ byte, id byte, data []byte, attributionSource interface{}) (bool, error)
+	ReportError(ctx context.Context, device BluetoothDevice, error_ byte, attributionSource interface{}) (bool, error)
+	Unplug(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	Connect(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	Disconnect(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	GetConnectedDevices(ctx context.Context, attributionSource interface{}) ([]BluetoothDevice, error)
+	GetDevicesMatchingConnectionStates(ctx context.Context, states []int32, attributionSource interface{}) ([]BluetoothDevice, error)
+	GetConnectionState(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (int32, error)
+	GetUserAppName(ctx context.Context, attributionSource interface{}) (string, error)
+	SetConnectionPolicy(ctx context.Context, device BluetoothDevice, connectionPolicy int32, attributionSource interface{}) (bool, error)
 }
 
 type BluetoothHidDeviceProxy struct {
@@ -67,7 +66,7 @@ func (p *BluetoothHidDeviceProxy) RegisterApp(
 	inQos BluetoothHidDeviceAppQosSettings,
 	outQos BluetoothHidDeviceAppQosSettings,
 	callback IBluetoothHidDeviceCallback,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
@@ -84,11 +83,7 @@ func (p *BluetoothHidDeviceProxy) RegisterApp(
 	if _err := outQos.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHidDevice, "registerApp")
 	if _err != nil {
@@ -114,15 +109,11 @@ func (p *BluetoothHidDeviceProxy) RegisterApp(
 
 func (p *BluetoothHidDeviceProxy) UnregisterApp(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothHidDevice)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHidDevice, "unregisterApp")
 	if _err != nil {
@@ -151,7 +142,7 @@ func (p *BluetoothHidDeviceProxy) SendReport(
 	device BluetoothDevice,
 	id int32,
 	data []byte,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
@@ -168,10 +159,6 @@ func (p *BluetoothHidDeviceProxy) SendReport(
 		for _, _item := range data {
 			_data.WritePaddedByte(_item)
 		}
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
 	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHidDevice, "sendReport")
@@ -202,7 +189,7 @@ func (p *BluetoothHidDeviceProxy) ReplyReport(
 	type_ byte,
 	id byte,
 	data []byte,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
@@ -220,10 +207,6 @@ func (p *BluetoothHidDeviceProxy) ReplyReport(
 		for _, _item := range data {
 			_data.WritePaddedByte(_item)
 		}
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
 	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHidDevice, "replyReport")
@@ -252,7 +235,7 @@ func (p *BluetoothHidDeviceProxy) ReportError(
 	ctx context.Context,
 	device BluetoothDevice,
 	error_ byte,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
@@ -262,10 +245,6 @@ func (p *BluetoothHidDeviceProxy) ReportError(
 		return _result, _err
 	}
 	_data.WritePaddedByte(error_)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHidDevice, "reportError")
 	if _err != nil {
@@ -292,17 +271,13 @@ func (p *BluetoothHidDeviceProxy) ReportError(
 func (p *BluetoothHidDeviceProxy) Unplug(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothHidDevice)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -331,17 +306,13 @@ func (p *BluetoothHidDeviceProxy) Unplug(
 func (p *BluetoothHidDeviceProxy) Connect(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothHidDevice)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -370,17 +341,13 @@ func (p *BluetoothHidDeviceProxy) Connect(
 func (p *BluetoothHidDeviceProxy) Disconnect(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothHidDevice)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -408,15 +375,11 @@ func (p *BluetoothHidDeviceProxy) Disconnect(
 
 func (p *BluetoothHidDeviceProxy) GetConnectedDevices(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) ([]BluetoothDevice, error) {
 	var _result []BluetoothDevice
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothHidDevice)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHidDevice, "getConnectedDevices")
 	if _err != nil {
@@ -452,7 +415,7 @@ func (p *BluetoothHidDeviceProxy) GetConnectedDevices(
 func (p *BluetoothHidDeviceProxy) GetDevicesMatchingConnectionStates(
 	ctx context.Context,
 	states []int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) ([]BluetoothDevice, error) {
 	var _result []BluetoothDevice
 	_data := parcel.New()
@@ -464,10 +427,6 @@ func (p *BluetoothHidDeviceProxy) GetDevicesMatchingConnectionStates(
 		for _, _item := range states {
 			_data.WriteInt32(_item)
 		}
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
 	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHidDevice, "getDevicesMatchingConnectionStates")
@@ -504,17 +463,13 @@ func (p *BluetoothHidDeviceProxy) GetDevicesMatchingConnectionStates(
 func (p *BluetoothHidDeviceProxy) GetConnectionState(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothHidDevice)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -542,15 +497,11 @@ func (p *BluetoothHidDeviceProxy) GetConnectionState(
 
 func (p *BluetoothHidDeviceProxy) GetUserAppName(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (string, error) {
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothHidDevice)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHidDevice, "getUserAppName")
 	if _err != nil {
@@ -578,7 +529,7 @@ func (p *BluetoothHidDeviceProxy) SetConnectionPolicy(
 	ctx context.Context,
 	device BluetoothDevice,
 	connectionPolicy int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
@@ -588,10 +539,6 @@ func (p *BluetoothHidDeviceProxy) SetConnectionPolicy(
 		return _result, _err
 	}
 	_data.WriteInt32(connectionPolicy)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHidDevice, "setConnectionPolicy")
 	if _err != nil {
@@ -672,18 +619,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_callback IBluetoothHidDeviceCallback
 		_ = _arg_callback
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.RegisterApp(ctx, _arg_sdp, _arg_inQos, _arg_outQos, _arg_callback, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -697,18 +633,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.UnregisterApp(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -741,18 +666,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_data []byte
 		_ = _arg_data
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.SendReport(ctx, _arg_device, _arg_id, _arg_data, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -789,18 +703,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_data []byte
 		_ = _arg_data
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.ReplyReport(ctx, _arg_device, _arg_type_, _arg_id, _arg_data, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -830,18 +733,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.ReportError(ctx, _arg_device, _arg_error_, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -867,18 +759,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.Unplug(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -904,18 +785,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.Connect(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -941,18 +811,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.Disconnect(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -966,18 +825,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetConnectedDevices(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -995,18 +843,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_states []int32
 		_ = _arg_states
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetDevicesMatchingConnectionStates(ctx, _arg_states, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -1033,18 +870,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetConnectionState(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -1058,18 +884,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetUserAppName(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -1099,18 +914,7 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.SetConnectionPolicy(ctx, _arg_device, _arg_connectionPolicy, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -1123,4 +927,159 @@ func (s *BluetoothHidDeviceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothHidDeviceServer is the server-side interface that user implementations
+// provide to NewBluetoothHidDeviceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothHidDeviceServer interface {
+	RegisterApp(ctx context.Context, sdp BluetoothHidDeviceAppSdpSettings, inQos BluetoothHidDeviceAppQosSettings, outQos BluetoothHidDeviceAppQosSettings, callback IBluetoothHidDeviceCallback, attributionSource interface{}) (bool, error)
+	UnregisterApp(ctx context.Context, attributionSource interface{}) (bool, error)
+	SendReport(ctx context.Context, device BluetoothDevice, id int32, data []byte, attributionSource interface{}) (bool, error)
+	ReplyReport(ctx context.Context, device BluetoothDevice, type_ byte, id byte, data []byte, attributionSource interface{}) (bool, error)
+	ReportError(ctx context.Context, device BluetoothDevice, error_ byte, attributionSource interface{}) (bool, error)
+	Unplug(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	Connect(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	Disconnect(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	GetConnectedDevices(ctx context.Context, attributionSource interface{}) ([]BluetoothDevice, error)
+	GetDevicesMatchingConnectionStates(ctx context.Context, states []int32, attributionSource interface{}) ([]BluetoothDevice, error)
+	GetConnectionState(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (int32, error)
+	GetUserAppName(ctx context.Context, attributionSource interface{}) (string, error)
+	SetConnectionPolicy(ctx context.Context, device BluetoothDevice, connectionPolicy int32, attributionSource interface{}) (bool, error)
+}
+
+type bluetoothHidDeviceStubWrapper struct {
+	impl       IBluetoothHidDeviceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothHidDeviceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothHidDeviceStubWrapper) RegisterApp(
+	ctx context.Context,
+	sdp BluetoothHidDeviceAppSdpSettings,
+	inQos BluetoothHidDeviceAppQosSettings,
+	outQos BluetoothHidDeviceAppQosSettings,
+	callback IBluetoothHidDeviceCallback,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.RegisterApp(ctx, sdp, inQos, outQos, callback, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) UnregisterApp(
+	ctx context.Context,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.UnregisterApp(ctx, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) SendReport(
+	ctx context.Context,
+	device BluetoothDevice,
+	id int32,
+	data []byte,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.SendReport(ctx, device, id, data, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) ReplyReport(
+	ctx context.Context,
+	device BluetoothDevice,
+	type_ byte,
+	id byte,
+	data []byte,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.ReplyReport(ctx, device, type_, id, data, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) ReportError(
+	ctx context.Context,
+	device BluetoothDevice,
+	error_ byte,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.ReportError(ctx, device, error_, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) Unplug(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.Unplug(ctx, device, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) Connect(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.Connect(ctx, device, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) Disconnect(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.Disconnect(ctx, device, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) GetConnectedDevices(
+	ctx context.Context,
+	attributionSource interface{},
+) ([]BluetoothDevice, error) {
+	return w.impl.GetConnectedDevices(ctx, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) GetDevicesMatchingConnectionStates(
+	ctx context.Context,
+	states []int32,
+	attributionSource interface{},
+) ([]BluetoothDevice, error) {
+	return w.impl.GetDevicesMatchingConnectionStates(ctx, states, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) GetConnectionState(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.GetConnectionState(ctx, device, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) GetUserAppName(
+	ctx context.Context,
+	attributionSource interface{},
+) (string, error) {
+	return w.impl.GetUserAppName(ctx, attributionSource)
+}
+
+func (w *bluetoothHidDeviceStubWrapper) SetConnectionPolicy(
+	ctx context.Context,
+	device BluetoothDevice,
+	connectionPolicy int32,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.SetConnectionPolicy(ctx, device, connectionPolicy, attributionSource)
+}
+
+var _ IBluetoothHidDevice = (*bluetoothHidDeviceStubWrapper)(nil)
+
+// NewBluetoothHidDeviceStub creates a server-side IBluetoothHidDevice wrapping the given
+// server implementation. The returned value satisfies IBluetoothHidDevice
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothHidDeviceStub(
+	impl IBluetoothHidDeviceServer,
+) IBluetoothHidDevice {
+	wrapper := &bluetoothHidDeviceStubWrapper{impl: impl}
+	stub := &BluetoothHidDeviceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

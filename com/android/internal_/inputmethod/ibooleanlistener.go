@@ -82,3 +82,42 @@ func (s *BooleanListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBooleanListenerServer is the server-side interface that user implementations
+// provide to NewBooleanListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBooleanListenerServer interface {
+	OnResult(ctx context.Context, value bool) error
+}
+
+type booleanListenerStubWrapper struct {
+	impl       IBooleanListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *booleanListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *booleanListenerStubWrapper) OnResult(
+	ctx context.Context,
+	value bool,
+) error {
+	return w.impl.OnResult(ctx, value)
+}
+
+var _ IBooleanListener = (*booleanListenerStubWrapper)(nil)
+
+// NewBooleanListenerStub creates a server-side IBooleanListener wrapping the given
+// server implementation. The returned value satisfies IBooleanListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBooleanListenerStub(
+	impl IBooleanListenerServer,
+) IBooleanListener {
+	wrapper := &booleanListenerStubWrapper{impl: impl}
+	stub := &BooleanListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -128,3 +128,52 @@ func (s *ListFeaturesCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IListFeaturesCallbackServer is the server-side interface that user implementations
+// provide to NewListFeaturesCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IListFeaturesCallbackServer interface {
+	OnSuccess(ctx context.Context, result []Feature) error
+	OnFailure(ctx context.Context, errorCode int32, errorMessage string, errorParams interface{}) error
+}
+
+type listFeaturesCallbackStubWrapper struct {
+	impl       IListFeaturesCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *listFeaturesCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *listFeaturesCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result []Feature,
+) error {
+	return w.impl.OnSuccess(ctx, result)
+}
+
+func (w *listFeaturesCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	errorCode int32,
+	errorMessage string,
+	errorParams interface{},
+) error {
+	return w.impl.OnFailure(ctx, errorCode, errorMessage, errorParams)
+}
+
+var _ IListFeaturesCallback = (*listFeaturesCallbackStubWrapper)(nil)
+
+// NewListFeaturesCallbackStub creates a server-side IListFeaturesCallback wrapping the given
+// server implementation. The returned value satisfies IListFeaturesCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewListFeaturesCallbackStub(
+	impl IListFeaturesCallbackServer,
+) IListFeaturesCallback {
+	wrapper := &listFeaturesCallbackStubWrapper{impl: impl}
+	stub := &ListFeaturesCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

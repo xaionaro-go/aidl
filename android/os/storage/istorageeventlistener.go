@@ -317,3 +317,95 @@ func (s *StorageEventListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStorageEventListenerServer is the server-side interface that user implementations
+// provide to NewStorageEventListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStorageEventListenerServer interface {
+	OnUsbMassStorageConnectionChanged(ctx context.Context, connected bool) error
+	OnStorageStateChanged(ctx context.Context, path string, oldState string, newState string) error
+	OnVolumeStateChanged(ctx context.Context, vol VolumeInfo, oldState int32, newState int32) error
+	OnVolumeRecordChanged(ctx context.Context, rec VolumeRecord) error
+	OnVolumeForgotten(ctx context.Context, fsUuid string) error
+	OnDiskScanned(ctx context.Context, disk DiskInfo, volumeCount int32) error
+	OnDiskDestroyed(ctx context.Context, disk DiskInfo) error
+}
+
+type storageEventListenerStubWrapper struct {
+	impl       IStorageEventListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *storageEventListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *storageEventListenerStubWrapper) OnUsbMassStorageConnectionChanged(
+	ctx context.Context,
+	connected bool,
+) error {
+	return w.impl.OnUsbMassStorageConnectionChanged(ctx, connected)
+}
+
+func (w *storageEventListenerStubWrapper) OnStorageStateChanged(
+	ctx context.Context,
+	path string,
+	oldState string,
+	newState string,
+) error {
+	return w.impl.OnStorageStateChanged(ctx, path, oldState, newState)
+}
+
+func (w *storageEventListenerStubWrapper) OnVolumeStateChanged(
+	ctx context.Context,
+	vol VolumeInfo,
+	oldState int32,
+	newState int32,
+) error {
+	return w.impl.OnVolumeStateChanged(ctx, vol, oldState, newState)
+}
+
+func (w *storageEventListenerStubWrapper) OnVolumeRecordChanged(
+	ctx context.Context,
+	rec VolumeRecord,
+) error {
+	return w.impl.OnVolumeRecordChanged(ctx, rec)
+}
+
+func (w *storageEventListenerStubWrapper) OnVolumeForgotten(
+	ctx context.Context,
+	fsUuid string,
+) error {
+	return w.impl.OnVolumeForgotten(ctx, fsUuid)
+}
+
+func (w *storageEventListenerStubWrapper) OnDiskScanned(
+	ctx context.Context,
+	disk DiskInfo,
+	volumeCount int32,
+) error {
+	return w.impl.OnDiskScanned(ctx, disk, volumeCount)
+}
+
+func (w *storageEventListenerStubWrapper) OnDiskDestroyed(
+	ctx context.Context,
+	disk DiskInfo,
+) error {
+	return w.impl.OnDiskDestroyed(ctx, disk)
+}
+
+var _ IStorageEventListener = (*storageEventListenerStubWrapper)(nil)
+
+// NewStorageEventListenerStub creates a server-side IStorageEventListener wrapping the given
+// server implementation. The returned value satisfies IStorageEventListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStorageEventListenerStub(
+	impl IStorageEventListenerServer,
+) IStorageEventListener {
+	wrapper := &storageEventListenerStubWrapper{impl: impl}
+	stub := &StorageEventListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

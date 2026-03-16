@@ -463,3 +463,130 @@ func (s *RadioSimIndicationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioSimIndicationServer is the server-side interface that user implementations
+// provide to NewRadioSimIndicationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioSimIndicationServer interface {
+	CarrierInfoForImsiEncryption(ctx context.Context, info radio.RadioIndicationType) error
+	CdmaSubscriptionSourceChanged(ctx context.Context, type_ radio.RadioIndicationType, cdmaSource CdmaSubscriptionSource) error
+	SimPhonebookChanged(ctx context.Context, type_ radio.RadioIndicationType) error
+	SimPhonebookRecordsReceived(ctx context.Context, type_ radio.RadioIndicationType, status PbReceivedStatus, records []PhonebookRecordInfo) error
+	SimRefresh(ctx context.Context, type_ radio.RadioIndicationType, refreshResult SimRefreshResult) error
+	SimStatusChanged(ctx context.Context, type_ radio.RadioIndicationType) error
+	StkEventNotify(ctx context.Context, type_ radio.RadioIndicationType, cmd string) error
+	StkProactiveCommand(ctx context.Context, type_ radio.RadioIndicationType, cmd string) error
+	StkSessionEnd(ctx context.Context, type_ radio.RadioIndicationType) error
+	SubscriptionStatusChanged(ctx context.Context, type_ radio.RadioIndicationType, activate bool) error
+	UiccApplicationsEnablementChanged(ctx context.Context, type_ radio.RadioIndicationType, enabled bool) error
+}
+
+type radioSimIndicationStubWrapper struct {
+	impl       IRadioSimIndicationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioSimIndicationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioSimIndicationStubWrapper) CarrierInfoForImsiEncryption(
+	ctx context.Context,
+	info radio.RadioIndicationType,
+) error {
+	return w.impl.CarrierInfoForImsiEncryption(ctx, info)
+}
+
+func (w *radioSimIndicationStubWrapper) CdmaSubscriptionSourceChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	cdmaSource CdmaSubscriptionSource,
+) error {
+	return w.impl.CdmaSubscriptionSourceChanged(ctx, type_, cdmaSource)
+}
+
+func (w *radioSimIndicationStubWrapper) SimPhonebookChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.SimPhonebookChanged(ctx, type_)
+}
+
+func (w *radioSimIndicationStubWrapper) SimPhonebookRecordsReceived(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	status PbReceivedStatus,
+	records []PhonebookRecordInfo,
+) error {
+	return w.impl.SimPhonebookRecordsReceived(ctx, type_, status, records)
+}
+
+func (w *radioSimIndicationStubWrapper) SimRefresh(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	refreshResult SimRefreshResult,
+) error {
+	return w.impl.SimRefresh(ctx, type_, refreshResult)
+}
+
+func (w *radioSimIndicationStubWrapper) SimStatusChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.SimStatusChanged(ctx, type_)
+}
+
+func (w *radioSimIndicationStubWrapper) StkEventNotify(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	cmd string,
+) error {
+	return w.impl.StkEventNotify(ctx, type_, cmd)
+}
+
+func (w *radioSimIndicationStubWrapper) StkProactiveCommand(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	cmd string,
+) error {
+	return w.impl.StkProactiveCommand(ctx, type_, cmd)
+}
+
+func (w *radioSimIndicationStubWrapper) StkSessionEnd(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.StkSessionEnd(ctx, type_)
+}
+
+func (w *radioSimIndicationStubWrapper) SubscriptionStatusChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	activate bool,
+) error {
+	return w.impl.SubscriptionStatusChanged(ctx, type_, activate)
+}
+
+func (w *radioSimIndicationStubWrapper) UiccApplicationsEnablementChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	enabled bool,
+) error {
+	return w.impl.UiccApplicationsEnablementChanged(ctx, type_, enabled)
+}
+
+var _ IRadioSimIndication = (*radioSimIndicationStubWrapper)(nil)
+
+// NewRadioSimIndicationStub creates a server-side IRadioSimIndication wrapping the given
+// server implementation. The returned value satisfies IRadioSimIndication
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioSimIndicationStub(
+	impl IRadioSimIndicationServer,
+) IRadioSimIndication {
+	wrapper := &radioSimIndicationStubWrapper{impl: impl}
+	stub := &RadioSimIndicationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

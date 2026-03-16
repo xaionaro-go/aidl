@@ -100,3 +100,43 @@ func (s *ChannelTunedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IChannelTunedListenerServer is the server-side interface that user implementations
+// provide to NewChannelTunedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IChannelTunedListenerServer interface {
+	OnChannelTuned(ctx context.Context, sessionToken string, channelTunedInfo os.Bundle) error
+}
+
+type channelTunedListenerStubWrapper struct {
+	impl       IChannelTunedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *channelTunedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *channelTunedListenerStubWrapper) OnChannelTuned(
+	ctx context.Context,
+	sessionToken string,
+	channelTunedInfo os.Bundle,
+) error {
+	return w.impl.OnChannelTuned(ctx, sessionToken, channelTunedInfo)
+}
+
+var _ IChannelTunedListener = (*channelTunedListenerStubWrapper)(nil)
+
+// NewChannelTunedListenerStub creates a server-side IChannelTunedListener wrapping the given
+// server implementation. The returned value satisfies IChannelTunedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewChannelTunedListenerStub(
+	impl IChannelTunedListenerServer,
+) IChannelTunedListener {
+	wrapper := &channelTunedListenerStubWrapper{impl: impl}
+	stub := &ChannelTunedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

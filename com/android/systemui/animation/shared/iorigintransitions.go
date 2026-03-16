@@ -194,3 +194,51 @@ func (s *OriginTransitionsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOriginTransitionsServer is the server-side interface that user implementations
+// provide to NewOriginTransitionsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOriginTransitionsServer interface {
+	MakeOriginTransition(ctx context.Context, launchTransition window.RemoteTransition, returnTransition window.RemoteTransition) (window.RemoteTransition, error)
+	CancelOriginTransition(ctx context.Context, originTransition window.RemoteTransition) error
+}
+
+type originTransitionsStubWrapper struct {
+	impl       IOriginTransitionsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *originTransitionsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *originTransitionsStubWrapper) MakeOriginTransition(
+	ctx context.Context,
+	launchTransition window.RemoteTransition,
+	returnTransition window.RemoteTransition,
+) (window.RemoteTransition, error) {
+	return w.impl.MakeOriginTransition(ctx, launchTransition, returnTransition)
+}
+
+func (w *originTransitionsStubWrapper) CancelOriginTransition(
+	ctx context.Context,
+	originTransition window.RemoteTransition,
+) error {
+	return w.impl.CancelOriginTransition(ctx, originTransition)
+}
+
+var _ IOriginTransitions = (*originTransitionsStubWrapper)(nil)
+
+// NewOriginTransitionsStub creates a server-side IOriginTransitions wrapping the given
+// server implementation. The returned value satisfies IOriginTransitions
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOriginTransitionsStub(
+	impl IOriginTransitionsServer,
+) IOriginTransitions {
+	wrapper := &originTransitionsStubWrapper{impl: impl}
+	stub := &OriginTransitionsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

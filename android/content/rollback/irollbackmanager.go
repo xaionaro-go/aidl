@@ -498,3 +498,103 @@ func (s *RollbackManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRollbackManagerServer is the server-side interface that user implementations
+// provide to NewRollbackManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRollbackManagerServer interface {
+	GetAvailableRollbacks(ctx context.Context) (pm.ParceledListSlice, error)
+	GetRecentlyCommittedRollbacks(ctx context.Context) (pm.ParceledListSlice, error)
+	CommitRollback(ctx context.Context, rollbackId int32, causePackages pm.ParceledListSlice, callerPackageName string, statusReceiver content.IntentSender) error
+	SnapshotAndRestoreUserData(ctx context.Context, packageName string, userIds []int32, appId int32, ceDataInode int64, seInfo string, token int32) error
+	ReloadPersistedData(ctx context.Context) error
+	ExpireRollbackForPackage(ctx context.Context, packageName string) error
+	NotifyStagedSession(ctx context.Context, sessionId int32) (int32, error)
+	BlockRollbackManager(ctx context.Context, millis int64) error
+}
+
+type rollbackManagerStubWrapper struct {
+	impl       IRollbackManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *rollbackManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *rollbackManagerStubWrapper) GetAvailableRollbacks(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetAvailableRollbacks(ctx)
+}
+
+func (w *rollbackManagerStubWrapper) GetRecentlyCommittedRollbacks(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetRecentlyCommittedRollbacks(ctx)
+}
+
+func (w *rollbackManagerStubWrapper) CommitRollback(
+	ctx context.Context,
+	rollbackId int32,
+	causePackages pm.ParceledListSlice,
+	callerPackageName string,
+	statusReceiver content.IntentSender,
+) error {
+	return w.impl.CommitRollback(ctx, rollbackId, causePackages, callerPackageName, statusReceiver)
+}
+
+func (w *rollbackManagerStubWrapper) SnapshotAndRestoreUserData(
+	ctx context.Context,
+	packageName string,
+	userIds []int32,
+	appId int32,
+	ceDataInode int64,
+	seInfo string,
+	token int32,
+) error {
+	return w.impl.SnapshotAndRestoreUserData(ctx, packageName, userIds, appId, ceDataInode, seInfo, token)
+}
+
+func (w *rollbackManagerStubWrapper) ReloadPersistedData(
+	ctx context.Context,
+) error {
+	return w.impl.ReloadPersistedData(ctx)
+}
+
+func (w *rollbackManagerStubWrapper) ExpireRollbackForPackage(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ExpireRollbackForPackage(ctx, packageName)
+}
+
+func (w *rollbackManagerStubWrapper) NotifyStagedSession(
+	ctx context.Context,
+	sessionId int32,
+) (int32, error) {
+	return w.impl.NotifyStagedSession(ctx, sessionId)
+}
+
+func (w *rollbackManagerStubWrapper) BlockRollbackManager(
+	ctx context.Context,
+	millis int64,
+) error {
+	return w.impl.BlockRollbackManager(ctx, millis)
+}
+
+var _ IRollbackManager = (*rollbackManagerStubWrapper)(nil)
+
+// NewRollbackManagerStub creates a server-side IRollbackManager wrapping the given
+// server implementation. The returned value satisfies IRollbackManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRollbackManagerStub(
+	impl IRollbackManagerServer,
+) IRollbackManager {
+	wrapper := &rollbackManagerStubWrapper{impl: impl}
+	stub := &RollbackManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

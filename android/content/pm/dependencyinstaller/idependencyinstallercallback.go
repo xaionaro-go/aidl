@@ -140,3 +140,49 @@ func (s *DependencyInstallerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDependencyInstallerCallbackServer is the server-side interface that user implementations
+// provide to NewDependencyInstallerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDependencyInstallerCallbackServer interface {
+	OnAllDependenciesResolved(ctx context.Context, sessionIds []int32) error
+	OnFailureToResolveAllDependencies(ctx context.Context) error
+}
+
+type dependencyInstallerCallbackStubWrapper struct {
+	impl       IDependencyInstallerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dependencyInstallerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dependencyInstallerCallbackStubWrapper) OnAllDependenciesResolved(
+	ctx context.Context,
+	sessionIds []int32,
+) error {
+	return w.impl.OnAllDependenciesResolved(ctx, sessionIds)
+}
+
+func (w *dependencyInstallerCallbackStubWrapper) OnFailureToResolveAllDependencies(
+	ctx context.Context,
+) error {
+	return w.impl.OnFailureToResolveAllDependencies(ctx)
+}
+
+var _ IDependencyInstallerCallback = (*dependencyInstallerCallbackStubWrapper)(nil)
+
+// NewDependencyInstallerCallbackStub creates a server-side IDependencyInstallerCallback wrapping the given
+// server implementation. The returned value satisfies IDependencyInstallerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDependencyInstallerCallbackStub(
+	impl IDependencyInstallerCallbackServer,
+) IDependencyInstallerCallback {
+	wrapper := &dependencyInstallerCallbackStubWrapper{impl: impl}
+	stub := &DependencyInstallerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

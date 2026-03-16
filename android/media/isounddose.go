@@ -464,3 +464,121 @@ func (s *SoundDoseStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundDoseServer is the server-side interface that user implementations
+// provide to NewSoundDoseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundDoseServer interface {
+	SetOutputRs2UpperBound(ctx context.Context, rs2Value float32) error
+	ResetCsd(ctx context.Context, currentCsd float32, records []SoundDoseRecord) error
+	UpdateAttenuation(ctx context.Context, attenuationDB float32, device int32) error
+	SetCsdEnabled(ctx context.Context, enabled bool) error
+	InitCachedAudioDeviceCategories(ctx context.Context, audioDevices []mediaISoundDose.AudioDeviceCategory) error
+	SetAudioDeviceCategory(ctx context.Context, audioDevice mediaISoundDose.AudioDeviceCategory) error
+	GetOutputRs2UpperBound(ctx context.Context) (float32, error)
+	GetCsd(ctx context.Context) (float32, error)
+	IsSoundDoseHalSupported(ctx context.Context) (bool, error)
+	ForceUseFrameworkMel(ctx context.Context, useFrameworkMel bool) error
+	ForceComputeCsdOnAllDevices(ctx context.Context, computeCsdOnAllDevices bool) error
+}
+
+type soundDoseStubWrapper struct {
+	impl       ISoundDoseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundDoseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundDoseStubWrapper) SetOutputRs2UpperBound(
+	ctx context.Context,
+	rs2Value float32,
+) error {
+	return w.impl.SetOutputRs2UpperBound(ctx, rs2Value)
+}
+
+func (w *soundDoseStubWrapper) ResetCsd(
+	ctx context.Context,
+	currentCsd float32,
+	records []SoundDoseRecord,
+) error {
+	return w.impl.ResetCsd(ctx, currentCsd, records)
+}
+
+func (w *soundDoseStubWrapper) UpdateAttenuation(
+	ctx context.Context,
+	attenuationDB float32,
+	device int32,
+) error {
+	return w.impl.UpdateAttenuation(ctx, attenuationDB, device)
+}
+
+func (w *soundDoseStubWrapper) SetCsdEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetCsdEnabled(ctx, enabled)
+}
+
+func (w *soundDoseStubWrapper) InitCachedAudioDeviceCategories(
+	ctx context.Context,
+	audioDevices []mediaISoundDose.AudioDeviceCategory,
+) error {
+	return w.impl.InitCachedAudioDeviceCategories(ctx, audioDevices)
+}
+
+func (w *soundDoseStubWrapper) SetAudioDeviceCategory(
+	ctx context.Context,
+	audioDevice mediaISoundDose.AudioDeviceCategory,
+) error {
+	return w.impl.SetAudioDeviceCategory(ctx, audioDevice)
+}
+
+func (w *soundDoseStubWrapper) GetOutputRs2UpperBound(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetOutputRs2UpperBound(ctx)
+}
+
+func (w *soundDoseStubWrapper) GetCsd(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetCsd(ctx)
+}
+
+func (w *soundDoseStubWrapper) IsSoundDoseHalSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSoundDoseHalSupported(ctx)
+}
+
+func (w *soundDoseStubWrapper) ForceUseFrameworkMel(
+	ctx context.Context,
+	useFrameworkMel bool,
+) error {
+	return w.impl.ForceUseFrameworkMel(ctx, useFrameworkMel)
+}
+
+func (w *soundDoseStubWrapper) ForceComputeCsdOnAllDevices(
+	ctx context.Context,
+	computeCsdOnAllDevices bool,
+) error {
+	return w.impl.ForceComputeCsdOnAllDevices(ctx, computeCsdOnAllDevices)
+}
+
+var _ ISoundDose = (*soundDoseStubWrapper)(nil)
+
+// NewSoundDoseStub creates a server-side ISoundDose wrapping the given
+// server implementation. The returned value satisfies ISoundDose
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundDoseStub(
+	impl ISoundDoseServer,
+) ISoundDose {
+	wrapper := &soundDoseStubWrapper{impl: impl}
+	stub := &SoundDoseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

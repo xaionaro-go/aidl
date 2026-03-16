@@ -48,7 +48,7 @@ func (p *TransportSelectorCallbackProxy) OnCreated(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransportSelectorCallback)
-	_data.WriteStrongBinder(selector.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, selector.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onCreated")
 	if _err != nil {
@@ -82,7 +82,7 @@ func (p *TransportSelectorCallbackProxy) OnWwanSelectedAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransportSelectorCallback)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITransportSelectorCallback, "onWwanSelectedAsync")
 	if _err != nil {
@@ -169,4 +169,67 @@ func (s *TransportSelectorCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITransportSelectorCallbackServer is the server-side interface that user implementations
+// provide to NewTransportSelectorCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITransportSelectorCallbackServer interface {
+	OnCreated(ctx context.Context, selector IDomainSelector) error
+	OnWlanSelected(ctx context.Context, useEmergencyPdn bool) error
+	OnWwanSelectedAsync(ctx context.Context, cb ITransportSelectorResultCallback) error
+	OnSelectionTerminated(ctx context.Context, cause int32) error
+}
+
+type transportSelectorCallbackStubWrapper struct {
+	impl       ITransportSelectorCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transportSelectorCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transportSelectorCallbackStubWrapper) OnCreated(
+	ctx context.Context,
+	selector IDomainSelector,
+) error {
+	return w.impl.OnCreated(ctx, selector)
+}
+
+func (w *transportSelectorCallbackStubWrapper) OnWlanSelected(
+	ctx context.Context,
+	useEmergencyPdn bool,
+) error {
+	return w.impl.OnWlanSelected(ctx, useEmergencyPdn)
+}
+
+func (w *transportSelectorCallbackStubWrapper) OnWwanSelectedAsync(
+	ctx context.Context,
+	cb ITransportSelectorResultCallback,
+) error {
+	return w.impl.OnWwanSelectedAsync(ctx, cb)
+}
+
+func (w *transportSelectorCallbackStubWrapper) OnSelectionTerminated(
+	ctx context.Context,
+	cause int32,
+) error {
+	return w.impl.OnSelectionTerminated(ctx, cause)
+}
+
+var _ ITransportSelectorCallback = (*transportSelectorCallbackStubWrapper)(nil)
+
+// NewTransportSelectorCallbackStub creates a server-side ITransportSelectorCallback wrapping the given
+// server implementation. The returned value satisfies ITransportSelectorCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTransportSelectorCallbackStub(
+	impl ITransportSelectorCallbackServer,
+) ITransportSelectorCallback {
+	wrapper := &transportSelectorCallbackStubWrapper{impl: impl}
+	stub := &TransportSelectorCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

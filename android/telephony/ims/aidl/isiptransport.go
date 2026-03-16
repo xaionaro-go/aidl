@@ -53,8 +53,8 @@ func (p *SipTransportProxy) CreateSipDelegate(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(dc.AsBinder().Handle())
-	_data.WriteStrongBinder(mc.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dc.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, mc.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISipTransport, "createSipDelegate")
 	if _err != nil {
@@ -72,7 +72,7 @@ func (p *SipTransportProxy) DestroySipDelegate(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISipTransport)
-	_data.WriteStrongBinder(delegate.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, delegate.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(reason)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISipTransport, "destroySipDelegate")
@@ -144,4 +144,55 @@ func (s *SipTransportStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISipTransportServer is the server-side interface that user implementations
+// provide to NewSipTransportStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISipTransportServer interface {
+	CreateSipDelegate(ctx context.Context, subId int32, request ims.DelegateRequest, dc ISipDelegateStateCallback, mc ISipDelegateMessageCallback) error
+	DestroySipDelegate(ctx context.Context, delegate ISipDelegate, reason int32) error
+}
+
+type sipTransportStubWrapper struct {
+	impl       ISipTransportServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sipTransportStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sipTransportStubWrapper) CreateSipDelegate(
+	ctx context.Context,
+	subId int32,
+	request ims.DelegateRequest,
+	dc ISipDelegateStateCallback,
+	mc ISipDelegateMessageCallback,
+) error {
+	return w.impl.CreateSipDelegate(ctx, subId, request, dc, mc)
+}
+
+func (w *sipTransportStubWrapper) DestroySipDelegate(
+	ctx context.Context,
+	delegate ISipDelegate,
+	reason int32,
+) error {
+	return w.impl.DestroySipDelegate(ctx, delegate, reason)
+}
+
+var _ ISipTransport = (*sipTransportStubWrapper)(nil)
+
+// NewSipTransportStub creates a server-side ISipTransport wrapping the given
+// server implementation. The returned value satisfies ISipTransport
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSipTransportStub(
+	impl ISipTransportServer,
+) ISipTransport {
+	wrapper := &sipTransportStubWrapper{impl: impl}
+	stub := &SipTransportStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

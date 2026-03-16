@@ -388,7 +388,7 @@ func (p *DeviceProxy) PrepareModel(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevice, "prepareModel")
 	if _err != nil {
@@ -443,7 +443,7 @@ func (p *DeviceProxy) PrepareModelFromCache(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevice, "prepareModelFromCache")
 	if _err != nil {
@@ -479,7 +479,7 @@ func (p *DeviceProxy) PrepareModelWithConfig(
 	if _err := config.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevice, "prepareModelWithConfig")
 	if _err != nil {
@@ -768,4 +768,126 @@ func (s *DeviceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDeviceServer is the server-side interface that user implementations
+// provide to NewDeviceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceServer interface {
+	Allocate(ctx context.Context, desc BufferDesc, preparedModels []IPreparedModelParcel, inputRoles []BufferRole, outputRoles []BufferRole) (DeviceBuffer, error)
+	GetCapabilities(ctx context.Context) (Capabilities, error)
+	GetNumberOfCacheFilesNeeded(ctx context.Context) (NumberOfCacheFiles, error)
+	GetSupportedExtensions(ctx context.Context) ([]Extension, error)
+	GetSupportedOperations(ctx context.Context, model Model) ([]bool, error)
+	GetType(ctx context.Context) (DeviceType, error)
+	GetVersionString(ctx context.Context) (string, error)
+	PrepareModel(ctx context.Context, model Model, preference ExecutionPreference, priority Priority, deadlineNs int64, modelCache []int32, dataCache []int32, token []byte, callback IPreparedModelCallback) error
+	PrepareModelFromCache(ctx context.Context, deadlineNs int64, modelCache []int32, dataCache []int32, token []byte, callback IPreparedModelCallback) error
+	PrepareModelWithConfig(ctx context.Context, model Model, config PrepareModelConfig, callback IPreparedModelCallback) error
+}
+
+type deviceStubWrapper struct {
+	impl       IDeviceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceStubWrapper) Allocate(
+	ctx context.Context,
+	desc BufferDesc,
+	preparedModels []IPreparedModelParcel,
+	inputRoles []BufferRole,
+	outputRoles []BufferRole,
+) (DeviceBuffer, error) {
+	return w.impl.Allocate(ctx, desc, preparedModels, inputRoles, outputRoles)
+}
+
+func (w *deviceStubWrapper) GetCapabilities(
+	ctx context.Context,
+) (Capabilities, error) {
+	return w.impl.GetCapabilities(ctx)
+}
+
+func (w *deviceStubWrapper) GetNumberOfCacheFilesNeeded(
+	ctx context.Context,
+) (NumberOfCacheFiles, error) {
+	return w.impl.GetNumberOfCacheFilesNeeded(ctx)
+}
+
+func (w *deviceStubWrapper) GetSupportedExtensions(
+	ctx context.Context,
+) ([]Extension, error) {
+	return w.impl.GetSupportedExtensions(ctx)
+}
+
+func (w *deviceStubWrapper) GetSupportedOperations(
+	ctx context.Context,
+	model Model,
+) ([]bool, error) {
+	return w.impl.GetSupportedOperations(ctx, model)
+}
+
+func (w *deviceStubWrapper) GetType(
+	ctx context.Context,
+) (DeviceType, error) {
+	return w.impl.GetType(ctx)
+}
+
+func (w *deviceStubWrapper) GetVersionString(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetVersionString(ctx)
+}
+
+func (w *deviceStubWrapper) PrepareModel(
+	ctx context.Context,
+	model Model,
+	preference ExecutionPreference,
+	priority Priority,
+	deadlineNs int64,
+	modelCache []int32,
+	dataCache []int32,
+	token []byte,
+	callback IPreparedModelCallback,
+) error {
+	return w.impl.PrepareModel(ctx, model, preference, priority, deadlineNs, modelCache, dataCache, token, callback)
+}
+
+func (w *deviceStubWrapper) PrepareModelFromCache(
+	ctx context.Context,
+	deadlineNs int64,
+	modelCache []int32,
+	dataCache []int32,
+	token []byte,
+	callback IPreparedModelCallback,
+) error {
+	return w.impl.PrepareModelFromCache(ctx, deadlineNs, modelCache, dataCache, token, callback)
+}
+
+func (w *deviceStubWrapper) PrepareModelWithConfig(
+	ctx context.Context,
+	model Model,
+	config PrepareModelConfig,
+	callback IPreparedModelCallback,
+) error {
+	return w.impl.PrepareModelWithConfig(ctx, model, config, callback)
+}
+
+var _ IDevice = (*deviceStubWrapper)(nil)
+
+// NewDeviceStub creates a server-side IDevice wrapping the given
+// server implementation. The returned value satisfies IDevice
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceStub(
+	impl IDeviceServer,
+) IDevice {
+	wrapper := &deviceStubWrapper{impl: impl}
+	stub := &DeviceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -55,7 +55,7 @@ func (p *CameraServiceProxy) AddListener(
 	var _result []CameraStatusAndId
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraService, "addListener")
 	if _err != nil {
@@ -96,7 +96,7 @@ func (p *CameraServiceProxy) ConnectDevice(
 	var _result device.ICameraDeviceUser
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(cameraId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraService, "connectDevice")
@@ -202,7 +202,7 @@ func (p *CameraServiceProxy) RemoveListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraService, "removeListener")
 	if _err != nil {
@@ -231,7 +231,7 @@ func (p *CameraServiceProxy) ConnectDeviceV2(
 	var _result device.ICameraDeviceUser
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(cameraId)
 	_data.WriteBool(sharedMode)
 
@@ -387,4 +387,85 @@ func (s *CameraServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICameraServiceServer is the server-side interface that user implementations
+// provide to NewCameraServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraServiceServer interface {
+	AddListener(ctx context.Context, listener ICameraServiceListener) ([]CameraStatusAndId, error)
+	ConnectDevice(ctx context.Context, callback device.ICameraDeviceCallback, cameraId string) (device.ICameraDeviceUser, error)
+	GetCameraCharacteristics(ctx context.Context, cameraId string) (device.CameraMetadata, error)
+	GetCameraVendorTagSections(ctx context.Context) ([]common.ProviderIdAndVendorTagSections, error)
+	RemoveListener(ctx context.Context, listener ICameraServiceListener) error
+	ConnectDeviceV2(ctx context.Context, callback device.ICameraDeviceCallback, cameraId string, sharedMode bool) (device.ICameraDeviceUser, error)
+}
+
+type cameraServiceStubWrapper struct {
+	impl       ICameraServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraServiceStubWrapper) AddListener(
+	ctx context.Context,
+	listener ICameraServiceListener,
+) ([]CameraStatusAndId, error) {
+	return w.impl.AddListener(ctx, listener)
+}
+
+func (w *cameraServiceStubWrapper) ConnectDevice(
+	ctx context.Context,
+	callback device.ICameraDeviceCallback,
+	cameraId string,
+) (device.ICameraDeviceUser, error) {
+	return w.impl.ConnectDevice(ctx, callback, cameraId)
+}
+
+func (w *cameraServiceStubWrapper) GetCameraCharacteristics(
+	ctx context.Context,
+	cameraId string,
+) (device.CameraMetadata, error) {
+	return w.impl.GetCameraCharacteristics(ctx, cameraId)
+}
+
+func (w *cameraServiceStubWrapper) GetCameraVendorTagSections(
+	ctx context.Context,
+) ([]common.ProviderIdAndVendorTagSections, error) {
+	return w.impl.GetCameraVendorTagSections(ctx)
+}
+
+func (w *cameraServiceStubWrapper) RemoveListener(
+	ctx context.Context,
+	listener ICameraServiceListener,
+) error {
+	return w.impl.RemoveListener(ctx, listener)
+}
+
+func (w *cameraServiceStubWrapper) ConnectDeviceV2(
+	ctx context.Context,
+	callback device.ICameraDeviceCallback,
+	cameraId string,
+	sharedMode bool,
+) (device.ICameraDeviceUser, error) {
+	return w.impl.ConnectDeviceV2(ctx, callback, cameraId, sharedMode)
+}
+
+var _ ICameraService = (*cameraServiceStubWrapper)(nil)
+
+// NewCameraServiceStub creates a server-side ICameraService wrapping the given
+// server implementation. The returned value satisfies ICameraService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraServiceStub(
+	impl ICameraServiceServer,
+) ICameraService {
+	wrapper := &cameraServiceStubWrapper{impl: impl}
+	stub := &CameraServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -265,7 +265,7 @@ func (p *InputMethodSessionProxy) InvalidateInput(
 	if _err := editorInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(inputConnection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, inputConnection.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sessionId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodSession, "invalidateInput")
@@ -466,4 +466,129 @@ func (s *InputMethodSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputMethodSessionServer is the server-side interface that user implementations
+// provide to NewInputMethodSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputMethodSessionServer interface {
+	UpdateExtractedText(ctx context.Context, token int32, text viewInputmethod.ExtractedText) error
+	UpdateSelection(ctx context.Context, oldSelStart int32, oldSelEnd int32, newSelStart int32, newSelEnd int32, candidatesStart int32, candidatesEnd int32) error
+	ViewClicked(ctx context.Context, focusChanged bool) error
+	UpdateCursor(ctx context.Context, newCursor graphics.Rect) error
+	DisplayCompletions(ctx context.Context, completions []viewInputmethod.CompletionInfo) error
+	AppPrivateCommand(ctx context.Context, action string, data interface{}) error
+	FinishSession(ctx context.Context) error
+	UpdateCursorAnchorInfo(ctx context.Context, cursorAnchorInfo viewInputmethod.CursorAnchorInfo) error
+	RemoveImeSurface(ctx context.Context) error
+	FinishInput(ctx context.Context) error
+	InvalidateInput(ctx context.Context, editorInfo viewInputmethod.EditorInfo, inputConnection IRemoteInputConnection, sessionId int32) error
+}
+
+type inputMethodSessionStubWrapper struct {
+	impl       IInputMethodSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputMethodSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputMethodSessionStubWrapper) UpdateExtractedText(
+	ctx context.Context,
+	token int32,
+	text viewInputmethod.ExtractedText,
+) error {
+	return w.impl.UpdateExtractedText(ctx, token, text)
+}
+
+func (w *inputMethodSessionStubWrapper) UpdateSelection(
+	ctx context.Context,
+	oldSelStart int32,
+	oldSelEnd int32,
+	newSelStart int32,
+	newSelEnd int32,
+	candidatesStart int32,
+	candidatesEnd int32,
+) error {
+	return w.impl.UpdateSelection(ctx, oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
+}
+
+func (w *inputMethodSessionStubWrapper) ViewClicked(
+	ctx context.Context,
+	focusChanged bool,
+) error {
+	return w.impl.ViewClicked(ctx, focusChanged)
+}
+
+func (w *inputMethodSessionStubWrapper) UpdateCursor(
+	ctx context.Context,
+	newCursor graphics.Rect,
+) error {
+	return w.impl.UpdateCursor(ctx, newCursor)
+}
+
+func (w *inputMethodSessionStubWrapper) DisplayCompletions(
+	ctx context.Context,
+	completions []viewInputmethod.CompletionInfo,
+) error {
+	return w.impl.DisplayCompletions(ctx, completions)
+}
+
+func (w *inputMethodSessionStubWrapper) AppPrivateCommand(
+	ctx context.Context,
+	action string,
+	data interface{},
+) error {
+	return w.impl.AppPrivateCommand(ctx, action, data)
+}
+
+func (w *inputMethodSessionStubWrapper) FinishSession(
+	ctx context.Context,
+) error {
+	return w.impl.FinishSession(ctx)
+}
+
+func (w *inputMethodSessionStubWrapper) UpdateCursorAnchorInfo(
+	ctx context.Context,
+	cursorAnchorInfo viewInputmethod.CursorAnchorInfo,
+) error {
+	return w.impl.UpdateCursorAnchorInfo(ctx, cursorAnchorInfo)
+}
+
+func (w *inputMethodSessionStubWrapper) RemoveImeSurface(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveImeSurface(ctx)
+}
+
+func (w *inputMethodSessionStubWrapper) FinishInput(
+	ctx context.Context,
+) error {
+	return w.impl.FinishInput(ctx)
+}
+
+func (w *inputMethodSessionStubWrapper) InvalidateInput(
+	ctx context.Context,
+	editorInfo viewInputmethod.EditorInfo,
+	inputConnection IRemoteInputConnection,
+	sessionId int32,
+) error {
+	return w.impl.InvalidateInput(ctx, editorInfo, inputConnection, sessionId)
+}
+
+var _ IInputMethodSession = (*inputMethodSessionStubWrapper)(nil)
+
+// NewInputMethodSessionStub creates a server-side IInputMethodSession wrapping the given
+// server implementation. The returned value satisfies IInputMethodSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputMethodSessionStub(
+	impl IInputMethodSessionServer,
+) IInputMethodSession {
+	wrapper := &inputMethodSessionStubWrapper{impl: impl}
+	stub := &InputMethodSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

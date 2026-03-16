@@ -130,3 +130,56 @@ func (s *MediaRouterClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaRouterClientServer is the server-side interface that user implementations
+// provide to NewMediaRouterClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaRouterClientServer interface {
+	OnStateChanged(ctx context.Context) error
+	OnRestoreRoute(ctx context.Context) error
+	OnGroupRouteSelected(ctx context.Context, routeId string) error
+}
+
+type mediaRouterClientStubWrapper struct {
+	impl       IMediaRouterClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaRouterClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaRouterClientStubWrapper) OnStateChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnStateChanged(ctx)
+}
+
+func (w *mediaRouterClientStubWrapper) OnRestoreRoute(
+	ctx context.Context,
+) error {
+	return w.impl.OnRestoreRoute(ctx)
+}
+
+func (w *mediaRouterClientStubWrapper) OnGroupRouteSelected(
+	ctx context.Context,
+	routeId string,
+) error {
+	return w.impl.OnGroupRouteSelected(ctx, routeId)
+}
+
+var _ IMediaRouterClient = (*mediaRouterClientStubWrapper)(nil)
+
+// NewMediaRouterClientStub creates a server-side IMediaRouterClient wrapping the given
+// server implementation. The returned value satisfies IMediaRouterClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaRouterClientStub(
+	impl IMediaRouterClientServer,
+) IMediaRouterClient {
+	wrapper := &mediaRouterClientStubWrapper{impl: impl}
+	stub := &MediaRouterClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

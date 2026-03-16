@@ -107,3 +107,42 @@ func (s *GnssMeasurementCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssMeasurementCallbackServer is the server-side interface that user implementations
+// provide to NewGnssMeasurementCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssMeasurementCallbackServer interface {
+	GnssMeasurementCb(ctx context.Context, data GnssData) error
+}
+
+type gnssMeasurementCallbackStubWrapper struct {
+	impl       IGnssMeasurementCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssMeasurementCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssMeasurementCallbackStubWrapper) GnssMeasurementCb(
+	ctx context.Context,
+	data GnssData,
+) error {
+	return w.impl.GnssMeasurementCb(ctx, data)
+}
+
+var _ IGnssMeasurementCallback = (*gnssMeasurementCallbackStubWrapper)(nil)
+
+// NewGnssMeasurementCallbackStub creates a server-side IGnssMeasurementCallback wrapping the given
+// server implementation. The returned value satisfies IGnssMeasurementCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssMeasurementCallbackStub(
+	impl IGnssMeasurementCallbackServer,
+) IGnssMeasurementCallback {
+	wrapper := &gnssMeasurementCallbackStubWrapper{impl: impl}
+	stub := &GnssMeasurementCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

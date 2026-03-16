@@ -42,7 +42,7 @@ func (p *ActivityRecognitionHardwareWatcherProxy) OnInstanceChanged(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityRecognitionHardwareWatcher)
-	_data.WriteStrongBinder(instance.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, instance.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityRecognitionHardwareWatcher, "onInstanceChanged")
 	if _err != nil {
@@ -94,4 +94,43 @@ func (s *ActivityRecognitionHardwareWatcherStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IActivityRecognitionHardwareWatcherServer is the server-side interface that user implementations
+// provide to NewActivityRecognitionHardwareWatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IActivityRecognitionHardwareWatcherServer interface {
+	OnInstanceChanged(ctx context.Context, instance IActivityRecognitionHardware) error
+}
+
+type activityRecognitionHardwareWatcherStubWrapper struct {
+	impl       IActivityRecognitionHardwareWatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *activityRecognitionHardwareWatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *activityRecognitionHardwareWatcherStubWrapper) OnInstanceChanged(
+	ctx context.Context,
+	instance IActivityRecognitionHardware,
+) error {
+	return w.impl.OnInstanceChanged(ctx, instance)
+}
+
+var _ IActivityRecognitionHardwareWatcher = (*activityRecognitionHardwareWatcherStubWrapper)(nil)
+
+// NewActivityRecognitionHardwareWatcherStub creates a server-side IActivityRecognitionHardwareWatcher wrapping the given
+// server implementation. The returned value satisfies IActivityRecognitionHardwareWatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewActivityRecognitionHardwareWatcherStub(
+	impl IActivityRecognitionHardwareWatcherServer,
+) IActivityRecognitionHardwareWatcher {
+	wrapper := &activityRecognitionHardwareWatcherStubWrapper{impl: impl}
+	stub := &ActivityRecognitionHardwareWatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -359,3 +359,104 @@ func (s *PrintSpoolerCallbacksStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPrintSpoolerCallbacksServer is the server-side interface that user implementations
+// provide to NewPrintSpoolerCallbacksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrintSpoolerCallbacksServer interface {
+	OnGetPrintJobInfosResult(ctx context.Context, printJob []PrintJobInfo, sequence int32) error
+	OnCancelPrintJobResult(ctx context.Context, canceled bool, sequence int32) error
+	OnSetPrintJobStateResult(ctx context.Context, success bool, sequence int32) error
+	OnSetPrintJobTagResult(ctx context.Context, success bool, sequence int32) error
+	OnGetPrintJobInfoResult(ctx context.Context, printJob PrintJobInfo, sequence int32) error
+	OnGetCustomPrinterIconResult(ctx context.Context, icon drawable.Icon, sequence int32) error
+	OnCustomPrinterIconCached(ctx context.Context, sequence int32) error
+	CustomPrinterIconCacheCleared(ctx context.Context, sequence int32) error
+}
+
+type printSpoolerCallbacksStubWrapper struct {
+	impl       IPrintSpoolerCallbacksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *printSpoolerCallbacksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *printSpoolerCallbacksStubWrapper) OnGetPrintJobInfosResult(
+	ctx context.Context,
+	printJob []PrintJobInfo,
+	sequence int32,
+) error {
+	return w.impl.OnGetPrintJobInfosResult(ctx, printJob, sequence)
+}
+
+func (w *printSpoolerCallbacksStubWrapper) OnCancelPrintJobResult(
+	ctx context.Context,
+	canceled bool,
+	sequence int32,
+) error {
+	return w.impl.OnCancelPrintJobResult(ctx, canceled, sequence)
+}
+
+func (w *printSpoolerCallbacksStubWrapper) OnSetPrintJobStateResult(
+	ctx context.Context,
+	success bool,
+	sequence int32,
+) error {
+	return w.impl.OnSetPrintJobStateResult(ctx, success, sequence)
+}
+
+func (w *printSpoolerCallbacksStubWrapper) OnSetPrintJobTagResult(
+	ctx context.Context,
+	success bool,
+	sequence int32,
+) error {
+	return w.impl.OnSetPrintJobTagResult(ctx, success, sequence)
+}
+
+func (w *printSpoolerCallbacksStubWrapper) OnGetPrintJobInfoResult(
+	ctx context.Context,
+	printJob PrintJobInfo,
+	sequence int32,
+) error {
+	return w.impl.OnGetPrintJobInfoResult(ctx, printJob, sequence)
+}
+
+func (w *printSpoolerCallbacksStubWrapper) OnGetCustomPrinterIconResult(
+	ctx context.Context,
+	icon drawable.Icon,
+	sequence int32,
+) error {
+	return w.impl.OnGetCustomPrinterIconResult(ctx, icon, sequence)
+}
+
+func (w *printSpoolerCallbacksStubWrapper) OnCustomPrinterIconCached(
+	ctx context.Context,
+	sequence int32,
+) error {
+	return w.impl.OnCustomPrinterIconCached(ctx, sequence)
+}
+
+func (w *printSpoolerCallbacksStubWrapper) CustomPrinterIconCacheCleared(
+	ctx context.Context,
+	sequence int32,
+) error {
+	return w.impl.CustomPrinterIconCacheCleared(ctx, sequence)
+}
+
+var _ IPrintSpoolerCallbacks = (*printSpoolerCallbacksStubWrapper)(nil)
+
+// NewPrintSpoolerCallbacksStub creates a server-side IPrintSpoolerCallbacks wrapping the given
+// server implementation. The returned value satisfies IPrintSpoolerCallbacks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrintSpoolerCallbacksStub(
+	impl IPrintSpoolerCallbacksServer,
+) IPrintSpoolerCallbacks {
+	wrapper := &printSpoolerCallbacksStubWrapper{impl: impl}
+	stub := &PrintSpoolerCallbacksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

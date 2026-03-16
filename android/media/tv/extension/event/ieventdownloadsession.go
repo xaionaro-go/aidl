@@ -359,3 +359,80 @@ func (s *EventDownloadSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEventDownloadSessionServer is the server-side interface that user implementations
+// provide to NewEventDownloadSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEventDownloadSessionServer interface {
+	IsBarkerOrSequentialDownloadByServiceType(ctx context.Context, eventDownloadParams os.Bundle) (int32, error)
+	IsBarkerOrSequentialDownloadByServiceRecord(ctx context.Context, eventDownloadParams os.Bundle) (int32, error)
+	StartTuningMultiplex(ctx context.Context, channelUri net.Uri) error
+	SetActiveWindowChannelInfo(ctx context.Context, activeWinChannelInfos []net.Uri) error
+	Cancel(ctx context.Context) error
+	Release(ctx context.Context) error
+}
+
+type eventDownloadSessionStubWrapper struct {
+	impl       IEventDownloadSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eventDownloadSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eventDownloadSessionStubWrapper) IsBarkerOrSequentialDownloadByServiceType(
+	ctx context.Context,
+	eventDownloadParams os.Bundle,
+) (int32, error) {
+	return w.impl.IsBarkerOrSequentialDownloadByServiceType(ctx, eventDownloadParams)
+}
+
+func (w *eventDownloadSessionStubWrapper) IsBarkerOrSequentialDownloadByServiceRecord(
+	ctx context.Context,
+	eventDownloadParams os.Bundle,
+) (int32, error) {
+	return w.impl.IsBarkerOrSequentialDownloadByServiceRecord(ctx, eventDownloadParams)
+}
+
+func (w *eventDownloadSessionStubWrapper) StartTuningMultiplex(
+	ctx context.Context,
+	channelUri net.Uri,
+) error {
+	return w.impl.StartTuningMultiplex(ctx, channelUri)
+}
+
+func (w *eventDownloadSessionStubWrapper) SetActiveWindowChannelInfo(
+	ctx context.Context,
+	activeWinChannelInfos []net.Uri,
+) error {
+	return w.impl.SetActiveWindowChannelInfo(ctx, activeWinChannelInfos)
+}
+
+func (w *eventDownloadSessionStubWrapper) Cancel(
+	ctx context.Context,
+) error {
+	return w.impl.Cancel(ctx)
+}
+
+func (w *eventDownloadSessionStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+var _ IEventDownloadSession = (*eventDownloadSessionStubWrapper)(nil)
+
+// NewEventDownloadSessionStub creates a server-side IEventDownloadSession wrapping the given
+// server implementation. The returned value satisfies IEventDownloadSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEventDownloadSessionStub(
+	impl IEventDownloadSessionServer,
+) IEventDownloadSession {
+	wrapper := &eventDownloadSessionStubWrapper{impl: impl}
+	stub := &EventDownloadSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

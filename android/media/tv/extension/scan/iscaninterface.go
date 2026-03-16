@@ -52,7 +52,7 @@ func (p *ScanInterfaceProxy) CreateSession(
 	_data.WriteInt32(broadcastType)
 	_data.WriteString16(countryCode)
 	_data.WriteString16(operator)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIScanInterface, "createSession")
 	if _err != nil {
@@ -208,4 +208,57 @@ func (s *ScanInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IScanInterfaceServer is the server-side interface that user implementations
+// provide to NewScanInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScanInterfaceServer interface {
+	CreateSession(ctx context.Context, broadcastType int32, countryCode string, operator string, listener IScanListener) (binder.IBinder, error)
+	GetParameters(ctx context.Context, broadcastType int32, countryCode string, operator string, params os.Bundle) (os.Bundle, error)
+}
+
+type scanInterfaceStubWrapper struct {
+	impl       IScanInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scanInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scanInterfaceStubWrapper) CreateSession(
+	ctx context.Context,
+	broadcastType int32,
+	countryCode string,
+	operator string,
+	listener IScanListener,
+) (binder.IBinder, error) {
+	return w.impl.CreateSession(ctx, broadcastType, countryCode, operator, listener)
+}
+
+func (w *scanInterfaceStubWrapper) GetParameters(
+	ctx context.Context,
+	broadcastType int32,
+	countryCode string,
+	operator string,
+	params os.Bundle,
+) (os.Bundle, error) {
+	return w.impl.GetParameters(ctx, broadcastType, countryCode, operator, params)
+}
+
+var _ IScanInterface = (*scanInterfaceStubWrapper)(nil)
+
+// NewScanInterfaceStub creates a server-side IScanInterface wrapping the given
+// server implementation. The returned value satisfies IScanInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScanInterfaceStub(
+	impl IScanInterfaceServer,
+) IScanInterface {
+	wrapper := &scanInterfaceStubWrapper{impl: impl}
+	stub := &ScanInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

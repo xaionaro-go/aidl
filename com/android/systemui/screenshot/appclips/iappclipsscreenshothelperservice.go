@@ -110,3 +110,42 @@ func (s *AppClipsScreenshotHelperServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppClipsScreenshotHelperServiceServer is the server-side interface that user implementations
+// provide to NewAppClipsScreenshotHelperServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppClipsScreenshotHelperServiceServer interface {
+	TakeScreenshot(ctx context.Context, displayId int32) (ScreenshotHardwareBufferInternal, error)
+}
+
+type appClipsScreenshotHelperServiceStubWrapper struct {
+	impl       IAppClipsScreenshotHelperServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appClipsScreenshotHelperServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appClipsScreenshotHelperServiceStubWrapper) TakeScreenshot(
+	ctx context.Context,
+	displayId int32,
+) (ScreenshotHardwareBufferInternal, error) {
+	return w.impl.TakeScreenshot(ctx, displayId)
+}
+
+var _ IAppClipsScreenshotHelperService = (*appClipsScreenshotHelperServiceStubWrapper)(nil)
+
+// NewAppClipsScreenshotHelperServiceStub creates a server-side IAppClipsScreenshotHelperService wrapping the given
+// server implementation. The returned value satisfies IAppClipsScreenshotHelperService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppClipsScreenshotHelperServiceStub(
+	impl IAppClipsScreenshotHelperServiceServer,
+) IAppClipsScreenshotHelperService {
+	wrapper := &appClipsScreenshotHelperServiceStubWrapper{impl: impl}
+	stub := &AppClipsScreenshotHelperServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

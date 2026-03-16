@@ -45,7 +45,7 @@ func (p *GraphicsStatsProxy) RequestBufferForProcess(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGraphicsStats)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGraphicsStats, "requestBufferForProcess")
 	if _err != nil {
@@ -106,4 +106,44 @@ func (s *GraphicsStatsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGraphicsStatsServer is the server-side interface that user implementations
+// provide to NewGraphicsStatsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGraphicsStatsServer interface {
+	RequestBufferForProcess(ctx context.Context, packageName string, callback IGraphicsStatsCallback) (int32, error)
+}
+
+type graphicsStatsStubWrapper struct {
+	impl       IGraphicsStatsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *graphicsStatsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *graphicsStatsStubWrapper) RequestBufferForProcess(
+	ctx context.Context,
+	packageName string,
+	callback IGraphicsStatsCallback,
+) (int32, error) {
+	return w.impl.RequestBufferForProcess(ctx, packageName, callback)
+}
+
+var _ IGraphicsStats = (*graphicsStatsStubWrapper)(nil)
+
+// NewGraphicsStatsStub creates a server-side IGraphicsStats wrapping the given
+// server implementation. The returned value satisfies IGraphicsStats
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGraphicsStatsStub(
+	impl IGraphicsStatsServer,
+) IGraphicsStats {
+	wrapper := &graphicsStatsStubWrapper{impl: impl}
+	stub := &GraphicsStatsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

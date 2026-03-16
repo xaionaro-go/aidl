@@ -54,7 +54,7 @@ func (p *RecentTasksProxy) RegisterRecentTasksListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecentTasks)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecentTasks, "registerRecentTasksListener")
 	if _err != nil {
@@ -71,7 +71,7 @@ func (p *RecentTasksProxy) UnregisterRecentTasksListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecentTasks)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecentTasks, "unregisterRecentTasksListener")
 	if _err != nil {
@@ -188,8 +188,8 @@ func (p *RecentTasksProxy) StartRecentsTransition(
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(appThread.AsBinder().Handle())
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, appThread.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecentTasks, "startRecentsTransition")
 	if _err != nil {
@@ -329,4 +329,80 @@ func (s *RecentTasksStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRecentTasksServer is the server-side interface that user implementations
+// provide to NewRecentTasksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecentTasksServer interface {
+	RegisterRecentTasksListener(ctx context.Context, listener IRecentTasksListener) error
+	UnregisterRecentTasksListener(ctx context.Context, listener IRecentTasksListener) error
+	GetRecentTasks(ctx context.Context, maxNum int32, flags int32) ([]shared.GroupedTaskInfo, error)
+	GetRunningTasks(ctx context.Context, maxNum int32) ([]app.ActivityManagerRunningTaskInfo, error)
+	StartRecentsTransition(ctx context.Context, intent app.PendingIntent, fillIn content.Intent, options os.Bundle, appThread app.IApplicationThread, listener IRecentsAnimationRunner) error
+}
+
+type recentTasksStubWrapper struct {
+	impl       IRecentTasksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recentTasksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recentTasksStubWrapper) RegisterRecentTasksListener(
+	ctx context.Context,
+	listener IRecentTasksListener,
+) error {
+	return w.impl.RegisterRecentTasksListener(ctx, listener)
+}
+
+func (w *recentTasksStubWrapper) UnregisterRecentTasksListener(
+	ctx context.Context,
+	listener IRecentTasksListener,
+) error {
+	return w.impl.UnregisterRecentTasksListener(ctx, listener)
+}
+
+func (w *recentTasksStubWrapper) GetRecentTasks(
+	ctx context.Context,
+	maxNum int32,
+	flags int32,
+) ([]shared.GroupedTaskInfo, error) {
+	return w.impl.GetRecentTasks(ctx, maxNum, flags)
+}
+
+func (w *recentTasksStubWrapper) GetRunningTasks(
+	ctx context.Context,
+	maxNum int32,
+) ([]app.ActivityManagerRunningTaskInfo, error) {
+	return w.impl.GetRunningTasks(ctx, maxNum)
+}
+
+func (w *recentTasksStubWrapper) StartRecentsTransition(
+	ctx context.Context,
+	intent app.PendingIntent,
+	fillIn content.Intent,
+	options os.Bundle,
+	appThread app.IApplicationThread,
+	listener IRecentsAnimationRunner,
+) error {
+	return w.impl.StartRecentsTransition(ctx, intent, fillIn, options, appThread, listener)
+}
+
+var _ IRecentTasks = (*recentTasksStubWrapper)(nil)
+
+// NewRecentTasksStub creates a server-side IRecentTasks wrapping the given
+// server implementation. The returned value satisfies IRecentTasks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecentTasksStub(
+	impl IRecentTasksServer,
+) IRecentTasks {
+	wrapper := &recentTasksStubWrapper{impl: impl}
+	stub := &RecentTasksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

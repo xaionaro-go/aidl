@@ -126,7 +126,7 @@ func (p *LcnConflictProxy) SetListener(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILcnConflict)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILcnConflict, "setListener")
 	if _err != nil {
@@ -213,4 +213,58 @@ func (s *LcnConflictStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ILcnConflictServer is the server-side interface that user implementations
+// provide to NewLcnConflictStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILcnConflictServer interface {
+	GetLcnConflictGroups(ctx context.Context) ([]os.Bundle, error)
+	ResolveLcnConflict(ctx context.Context, lcnConflictSettings []os.Bundle) (int32, error)
+	SetListener(ctx context.Context, listener ILcnConflictListener) (int32, error)
+}
+
+type lcnConflictStubWrapper struct {
+	impl       ILcnConflictServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *lcnConflictStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *lcnConflictStubWrapper) GetLcnConflictGroups(
+	ctx context.Context,
+) ([]os.Bundle, error) {
+	return w.impl.GetLcnConflictGroups(ctx)
+}
+
+func (w *lcnConflictStubWrapper) ResolveLcnConflict(
+	ctx context.Context,
+	lcnConflictSettings []os.Bundle,
+) (int32, error) {
+	return w.impl.ResolveLcnConflict(ctx, lcnConflictSettings)
+}
+
+func (w *lcnConflictStubWrapper) SetListener(
+	ctx context.Context,
+	listener ILcnConflictListener,
+) (int32, error) {
+	return w.impl.SetListener(ctx, listener)
+}
+
+var _ ILcnConflict = (*lcnConflictStubWrapper)(nil)
+
+// NewLcnConflictStub creates a server-side ILcnConflict wrapping the given
+// server implementation. The returned value satisfies ILcnConflict
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLcnConflictStub(
+	impl ILcnConflictServer,
+) ILcnConflict {
+	wrapper := &lcnConflictStubWrapper{impl: impl}
+	stub := &LcnConflictStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -80,7 +80,7 @@ func (p *ImageCaptureExtenderImplProxy) OnInit(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImageCaptureExtenderImpl)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(cameraId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImageCaptureExtenderImpl, "onInit")
@@ -107,7 +107,7 @@ func (p *ImageCaptureExtenderImplProxy) OnDeInit(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImageCaptureExtenderImpl)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImageCaptureExtenderImpl, "onDeInit")
 	if _err != nil {
@@ -1001,4 +1001,178 @@ func (s *ImageCaptureExtenderImplStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImageCaptureExtenderImplServer is the server-side interface that user implementations
+// provide to NewImageCaptureExtenderImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImageCaptureExtenderImplServer interface {
+	OnInit(ctx context.Context, token binder.IBinder, cameraId string, cameraCharacteristics interface{}) error
+	OnDeInit(ctx context.Context, token binder.IBinder) error
+	OnPresetSession(ctx context.Context) (CaptureStageImpl, error)
+	OnEnableSession(ctx context.Context) (CaptureStageImpl, error)
+	OnDisableSession(ctx context.Context) (CaptureStageImpl, error)
+	GetSessionType(ctx context.Context) (int32, error)
+	IsExtensionAvailable(ctx context.Context, cameraId string, chars interface{}) (bool, error)
+	Init(ctx context.Context, cameraId string, chars interface{}) error
+	GetCaptureProcessor(ctx context.Context) (ICaptureProcessorImpl, error)
+	GetCaptureStages(ctx context.Context) ([]CaptureStageImpl, error)
+	GetMaxCaptureStage(ctx context.Context) (int32, error)
+	GetSupportedResolutions(ctx context.Context) ([]SizeList, error)
+	GetSupportedPostviewResolutions(ctx context.Context, captureSize Size) ([]SizeList, error)
+	GetEstimatedCaptureLatencyRange(ctx context.Context, outputSize Size) (LatencyRange, error)
+	GetAvailableCaptureRequestKeys(ctx context.Context) (interface{}, error)
+	GetAvailableCaptureResultKeys(ctx context.Context) (interface{}, error)
+	IsCaptureProcessProgressAvailable(ctx context.Context) (bool, error)
+	GetRealtimeCaptureLatency(ctx context.Context) (LatencyPair, error)
+	IsPostviewAvailable(ctx context.Context) (bool, error)
+}
+
+type imageCaptureExtenderImplStubWrapper struct {
+	impl       IImageCaptureExtenderImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) OnInit(
+	ctx context.Context,
+	token binder.IBinder,
+	cameraId string,
+	cameraCharacteristics interface{},
+) error {
+	return w.impl.OnInit(ctx, token, cameraId, cameraCharacteristics)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) OnDeInit(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.OnDeInit(ctx, token)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) OnPresetSession(
+	ctx context.Context,
+) (CaptureStageImpl, error) {
+	return w.impl.OnPresetSession(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) OnEnableSession(
+	ctx context.Context,
+) (CaptureStageImpl, error) {
+	return w.impl.OnEnableSession(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) OnDisableSession(
+	ctx context.Context,
+) (CaptureStageImpl, error) {
+	return w.impl.OnDisableSession(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetSessionType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetSessionType(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) IsExtensionAvailable(
+	ctx context.Context,
+	cameraId string,
+	chars interface{},
+) (bool, error) {
+	return w.impl.IsExtensionAvailable(ctx, cameraId, chars)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) Init(
+	ctx context.Context,
+	cameraId string,
+	chars interface{},
+) error {
+	return w.impl.Init(ctx, cameraId, chars)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetCaptureProcessor(
+	ctx context.Context,
+) (ICaptureProcessorImpl, error) {
+	return w.impl.GetCaptureProcessor(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetCaptureStages(
+	ctx context.Context,
+) ([]CaptureStageImpl, error) {
+	return w.impl.GetCaptureStages(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetMaxCaptureStage(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMaxCaptureStage(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetSupportedResolutions(
+	ctx context.Context,
+) ([]SizeList, error) {
+	return w.impl.GetSupportedResolutions(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetSupportedPostviewResolutions(
+	ctx context.Context,
+	captureSize Size,
+) ([]SizeList, error) {
+	return w.impl.GetSupportedPostviewResolutions(ctx, captureSize)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetEstimatedCaptureLatencyRange(
+	ctx context.Context,
+	outputSize Size,
+) (LatencyRange, error) {
+	return w.impl.GetEstimatedCaptureLatencyRange(ctx, outputSize)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetAvailableCaptureRequestKeys(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetAvailableCaptureRequestKeys(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetAvailableCaptureResultKeys(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetAvailableCaptureResultKeys(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) IsCaptureProcessProgressAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCaptureProcessProgressAvailable(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) GetRealtimeCaptureLatency(
+	ctx context.Context,
+) (LatencyPair, error) {
+	return w.impl.GetRealtimeCaptureLatency(ctx)
+}
+
+func (w *imageCaptureExtenderImplStubWrapper) IsPostviewAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsPostviewAvailable(ctx)
+}
+
+var _ IImageCaptureExtenderImpl = (*imageCaptureExtenderImplStubWrapper)(nil)
+
+// NewImageCaptureExtenderImplStub creates a server-side IImageCaptureExtenderImpl wrapping the given
+// server implementation. The returned value satisfies IImageCaptureExtenderImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImageCaptureExtenderImplStub(
+	impl IImageCaptureExtenderImplServer,
+) IImageCaptureExtenderImpl {
+	wrapper := &imageCaptureExtenderImplStubWrapper{impl: impl}
+	stub := &ImageCaptureExtenderImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

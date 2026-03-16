@@ -711,3 +711,123 @@ func (s *KeystoreServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeystoreServiceServer is the server-side interface that user implementations
+// provide to NewKeystoreServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeystoreServiceServer interface {
+	GetSecurityLevel(ctx context.Context, securityLevel drm.SecurityLevel) (IKeystoreSecurityLevel, error)
+	GetKeyEntry(ctx context.Context, key KeyDescriptor) (KeyEntryResponse, error)
+	UpdateSubcomponent(ctx context.Context, key KeyDescriptor, publicCert []byte, certificateChain []byte) error
+	ListEntries(ctx context.Context, domain Domain, nspace int64) ([]KeyDescriptor, error)
+	DeleteKey(ctx context.Context, key KeyDescriptor) error
+	Grant(ctx context.Context, key KeyDescriptor, granteeUid int32, accessVector int32) (KeyDescriptor, error)
+	Ungrant(ctx context.Context, key KeyDescriptor, granteeUid int32) error
+	GetNumberOfEntries(ctx context.Context, domain Domain, nspace int64) (int32, error)
+	ListEntriesBatched(ctx context.Context, domain Domain, nspace int64, startingPastAlias string) ([]KeyDescriptor, error)
+	GetSupplementaryAttestationInfo(ctx context.Context, tag keymint.Tag) ([]byte, error)
+}
+
+type keystoreServiceStubWrapper struct {
+	impl       IKeystoreServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keystoreServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keystoreServiceStubWrapper) GetSecurityLevel(
+	ctx context.Context,
+	securityLevel drm.SecurityLevel,
+) (IKeystoreSecurityLevel, error) {
+	return w.impl.GetSecurityLevel(ctx, securityLevel)
+}
+
+func (w *keystoreServiceStubWrapper) GetKeyEntry(
+	ctx context.Context,
+	key KeyDescriptor,
+) (KeyEntryResponse, error) {
+	return w.impl.GetKeyEntry(ctx, key)
+}
+
+func (w *keystoreServiceStubWrapper) UpdateSubcomponent(
+	ctx context.Context,
+	key KeyDescriptor,
+	publicCert []byte,
+	certificateChain []byte,
+) error {
+	return w.impl.UpdateSubcomponent(ctx, key, publicCert, certificateChain)
+}
+
+func (w *keystoreServiceStubWrapper) ListEntries(
+	ctx context.Context,
+	domain Domain,
+	nspace int64,
+) ([]KeyDescriptor, error) {
+	return w.impl.ListEntries(ctx, domain, nspace)
+}
+
+func (w *keystoreServiceStubWrapper) DeleteKey(
+	ctx context.Context,
+	key KeyDescriptor,
+) error {
+	return w.impl.DeleteKey(ctx, key)
+}
+
+func (w *keystoreServiceStubWrapper) Grant(
+	ctx context.Context,
+	key KeyDescriptor,
+	granteeUid int32,
+	accessVector int32,
+) (KeyDescriptor, error) {
+	return w.impl.Grant(ctx, key, granteeUid, accessVector)
+}
+
+func (w *keystoreServiceStubWrapper) Ungrant(
+	ctx context.Context,
+	key KeyDescriptor,
+	granteeUid int32,
+) error {
+	return w.impl.Ungrant(ctx, key, granteeUid)
+}
+
+func (w *keystoreServiceStubWrapper) GetNumberOfEntries(
+	ctx context.Context,
+	domain Domain,
+	nspace int64,
+) (int32, error) {
+	return w.impl.GetNumberOfEntries(ctx, domain, nspace)
+}
+
+func (w *keystoreServiceStubWrapper) ListEntriesBatched(
+	ctx context.Context,
+	domain Domain,
+	nspace int64,
+	startingPastAlias string,
+) ([]KeyDescriptor, error) {
+	return w.impl.ListEntriesBatched(ctx, domain, nspace, startingPastAlias)
+}
+
+func (w *keystoreServiceStubWrapper) GetSupplementaryAttestationInfo(
+	ctx context.Context,
+	tag keymint.Tag,
+) ([]byte, error) {
+	return w.impl.GetSupplementaryAttestationInfo(ctx, tag)
+}
+
+var _ IKeystoreService = (*keystoreServiceStubWrapper)(nil)
+
+// NewKeystoreServiceStub creates a server-side IKeystoreService wrapping the given
+// server implementation. The returned value satisfies IKeystoreService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeystoreServiceStub(
+	impl IKeystoreServiceServer,
+) IKeystoreService {
+	wrapper := &keystoreServiceStubWrapper{impl: impl}
+	stub := &KeystoreServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

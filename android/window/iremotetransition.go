@@ -3,7 +3,6 @@ package window
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -21,9 +20,9 @@ const (
 
 type IRemoteTransition interface {
 	AsBinder() binder.IBinder
-	StartAnimation(ctx context.Context, token binder.IBinder, info TransitionInfo, t view.SurfaceControlTransaction, finishCallback IRemoteTransitionFinishedCallback) error
-	MergeAnimation(ctx context.Context, transition binder.IBinder, info TransitionInfo, t view.SurfaceControlTransaction, mergeTarget binder.IBinder, finishCallback IRemoteTransitionFinishedCallback) error
-	TakeOverAnimation(ctx context.Context, transition binder.IBinder, info TransitionInfo, t view.SurfaceControlTransaction, finishCallback IRemoteTransitionFinishedCallback, states []WindowAnimationState) error
+	StartAnimation(ctx context.Context, token binder.IBinder, info TransitionInfo, t interface{}, finishCallback IRemoteTransitionFinishedCallback) error
+	MergeAnimation(ctx context.Context, transition binder.IBinder, info TransitionInfo, t interface{}, mergeTarget binder.IBinder, finishCallback IRemoteTransitionFinishedCallback) error
+	TakeOverAnimation(ctx context.Context, transition binder.IBinder, info TransitionInfo, t interface{}, finishCallback IRemoteTransitionFinishedCallback, states []WindowAnimationState) error
 	OnTransitionConsumed(ctx context.Context, transition binder.IBinder, aborted bool) error
 }
 
@@ -47,21 +46,17 @@ func (p *RemoteTransitionProxy) StartAnimation(
 	ctx context.Context,
 	token binder.IBinder,
 	info TransitionInfo,
-	t view.SurfaceControlTransaction,
+	t interface{},
 	finishCallback IRemoteTransitionFinishedCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteTransition)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := info.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(1)
-	if _err := t.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(finishCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, finishCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteTransition, "startAnimation")
 	if _err != nil {
@@ -76,23 +71,19 @@ func (p *RemoteTransitionProxy) MergeAnimation(
 	ctx context.Context,
 	transition binder.IBinder,
 	info TransitionInfo,
-	t view.SurfaceControlTransaction,
+	t interface{},
 	mergeTarget binder.IBinder,
 	finishCallback IRemoteTransitionFinishedCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteTransition)
-	_data.WriteStrongBinder(transition.Handle())
+	binder.WriteBinderToParcel(ctx, _data, transition, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := info.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(1)
-	if _err := t.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(mergeTarget.Handle())
-	_data.WriteStrongBinder(finishCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, mergeTarget, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, finishCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteTransition, "mergeAnimation")
 	if _err != nil {
@@ -107,22 +98,18 @@ func (p *RemoteTransitionProxy) TakeOverAnimation(
 	ctx context.Context,
 	transition binder.IBinder,
 	info TransitionInfo,
-	t view.SurfaceControlTransaction,
+	t interface{},
 	finishCallback IRemoteTransitionFinishedCallback,
 	states []WindowAnimationState,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteTransition)
-	_data.WriteStrongBinder(transition.Handle())
+	binder.WriteBinderToParcel(ctx, _data, transition, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := info.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteInt32(1)
-	if _err := t.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(finishCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, finishCallback.AsBinder(), p.remote.Transport())
 	if states == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -150,7 +137,7 @@ func (p *RemoteTransitionProxy) OnTransitionConsumed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteTransition)
-	_data.WriteStrongBinder(transition.Handle())
+	binder.WriteBinderToParcel(ctx, _data, transition, p.remote.Transport())
 	_data.WriteBool(aborted)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteTransition, "onTransitionConsumed")
@@ -195,18 +182,7 @@ func (s *RemoteTransitionStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_t view.SurfaceControlTransaction
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_t.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_t interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_finishCallback IRemoteTransitionFinishedCallback
 		_ = _arg_finishCallback
@@ -232,18 +208,7 @@ func (s *RemoteTransitionStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_t view.SurfaceControlTransaction
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_t.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_t interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_mergeTarget binder.IBinder
 		_ = _arg_mergeTarget
@@ -272,18 +237,7 @@ func (s *RemoteTransitionStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_t view.SurfaceControlTransaction
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_t.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_t interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_finishCallback IRemoteTransitionFinishedCallback
 		_ = _arg_finishCallback
@@ -310,4 +264,79 @@ func (s *RemoteTransitionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRemoteTransitionServer is the server-side interface that user implementations
+// provide to NewRemoteTransitionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteTransitionServer interface {
+	StartAnimation(ctx context.Context, token binder.IBinder, info TransitionInfo, t interface{}, finishCallback IRemoteTransitionFinishedCallback) error
+	MergeAnimation(ctx context.Context, transition binder.IBinder, info TransitionInfo, t interface{}, mergeTarget binder.IBinder, finishCallback IRemoteTransitionFinishedCallback) error
+	TakeOverAnimation(ctx context.Context, transition binder.IBinder, info TransitionInfo, t interface{}, finishCallback IRemoteTransitionFinishedCallback, states []WindowAnimationState) error
+	OnTransitionConsumed(ctx context.Context, transition binder.IBinder, aborted bool) error
+}
+
+type remoteTransitionStubWrapper struct {
+	impl       IRemoteTransitionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteTransitionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteTransitionStubWrapper) StartAnimation(
+	ctx context.Context,
+	token binder.IBinder,
+	info TransitionInfo,
+	t interface{},
+	finishCallback IRemoteTransitionFinishedCallback,
+) error {
+	return w.impl.StartAnimation(ctx, token, info, t, finishCallback)
+}
+
+func (w *remoteTransitionStubWrapper) MergeAnimation(
+	ctx context.Context,
+	transition binder.IBinder,
+	info TransitionInfo,
+	t interface{},
+	mergeTarget binder.IBinder,
+	finishCallback IRemoteTransitionFinishedCallback,
+) error {
+	return w.impl.MergeAnimation(ctx, transition, info, t, mergeTarget, finishCallback)
+}
+
+func (w *remoteTransitionStubWrapper) TakeOverAnimation(
+	ctx context.Context,
+	transition binder.IBinder,
+	info TransitionInfo,
+	t interface{},
+	finishCallback IRemoteTransitionFinishedCallback,
+	states []WindowAnimationState,
+) error {
+	return w.impl.TakeOverAnimation(ctx, transition, info, t, finishCallback, states)
+}
+
+func (w *remoteTransitionStubWrapper) OnTransitionConsumed(
+	ctx context.Context,
+	transition binder.IBinder,
+	aborted bool,
+) error {
+	return w.impl.OnTransitionConsumed(ctx, transition, aborted)
+}
+
+var _ IRemoteTransition = (*remoteTransitionStubWrapper)(nil)
+
+// NewRemoteTransitionStub creates a server-side IRemoteTransition wrapping the given
+// server implementation. The returned value satisfies IRemoteTransition
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteTransitionStub(
+	impl IRemoteTransitionServer,
+) IRemoteTransition {
+	wrapper := &remoteTransitionStubWrapper{impl: impl}
+	stub := &RemoteTransitionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -140,3 +140,51 @@ func (s *BluetoothConnectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothConnectionCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothConnectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothConnectionCallbackServer interface {
+	OnDeviceConnected(ctx context.Context, device BluetoothDevice) error
+	OnDeviceDisconnected(ctx context.Context, device BluetoothDevice, hciReason int32) error
+}
+
+type bluetoothConnectionCallbackStubWrapper struct {
+	impl       IBluetoothConnectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothConnectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothConnectionCallbackStubWrapper) OnDeviceConnected(
+	ctx context.Context,
+	device BluetoothDevice,
+) error {
+	return w.impl.OnDeviceConnected(ctx, device)
+}
+
+func (w *bluetoothConnectionCallbackStubWrapper) OnDeviceDisconnected(
+	ctx context.Context,
+	device BluetoothDevice,
+	hciReason int32,
+) error {
+	return w.impl.OnDeviceDisconnected(ctx, device, hciReason)
+}
+
+var _ IBluetoothConnectionCallback = (*bluetoothConnectionCallbackStubWrapper)(nil)
+
+// NewBluetoothConnectionCallbackStub creates a server-side IBluetoothConnectionCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothConnectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothConnectionCallbackStub(
+	impl IBluetoothConnectionCallbackServer,
+) IBluetoothConnectionCallback {
+	wrapper := &bluetoothConnectionCallbackStubWrapper{impl: impl}
+	stub := &BluetoothConnectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

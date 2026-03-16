@@ -329,3 +329,76 @@ func (s *LocaleManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILocaleManagerServer is the server-side interface that user implementations
+// provide to NewLocaleManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILocaleManagerServer interface {
+	SetApplicationLocales(ctx context.Context, packageName string, locales interface{}, fromDelegate bool) error
+	GetApplicationLocales(ctx context.Context, packageName string) (interface{}, error)
+	GetSystemLocales(ctx context.Context) (interface{}, error)
+	SetOverrideLocaleConfig(ctx context.Context, packageName string, localeConfig LocaleConfig) error
+	GetOverrideLocaleConfig(ctx context.Context, packageName string) (LocaleConfig, error)
+}
+
+type localeManagerStubWrapper struct {
+	impl       ILocaleManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *localeManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *localeManagerStubWrapper) SetApplicationLocales(
+	ctx context.Context,
+	packageName string,
+	locales interface{},
+	fromDelegate bool,
+) error {
+	return w.impl.SetApplicationLocales(ctx, packageName, locales, fromDelegate)
+}
+
+func (w *localeManagerStubWrapper) GetApplicationLocales(
+	ctx context.Context,
+	packageName string,
+) (interface{}, error) {
+	return w.impl.GetApplicationLocales(ctx, packageName)
+}
+
+func (w *localeManagerStubWrapper) GetSystemLocales(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetSystemLocales(ctx)
+}
+
+func (w *localeManagerStubWrapper) SetOverrideLocaleConfig(
+	ctx context.Context,
+	packageName string,
+	localeConfig LocaleConfig,
+) error {
+	return w.impl.SetOverrideLocaleConfig(ctx, packageName, localeConfig)
+}
+
+func (w *localeManagerStubWrapper) GetOverrideLocaleConfig(
+	ctx context.Context,
+	packageName string,
+) (LocaleConfig, error) {
+	return w.impl.GetOverrideLocaleConfig(ctx, packageName)
+}
+
+var _ ILocaleManager = (*localeManagerStubWrapper)(nil)
+
+// NewLocaleManagerStub creates a server-side ILocaleManager wrapping the given
+// server implementation. The returned value satisfies ILocaleManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLocaleManagerStub(
+	impl ILocaleManagerServer,
+) ILocaleManager {
+	wrapper := &localeManagerStubWrapper{impl: impl}
+	stub := &LocaleManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

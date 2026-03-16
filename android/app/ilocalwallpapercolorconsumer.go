@@ -111,3 +111,43 @@ func (s *LocalWallpaperColorConsumerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILocalWallpaperColorConsumerServer is the server-side interface that user implementations
+// provide to NewLocalWallpaperColorConsumerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILocalWallpaperColorConsumerServer interface {
+	OnColorsChanged(ctx context.Context, area graphics.RectF, colors WallpaperColors) error
+}
+
+type localWallpaperColorConsumerStubWrapper struct {
+	impl       ILocalWallpaperColorConsumerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *localWallpaperColorConsumerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *localWallpaperColorConsumerStubWrapper) OnColorsChanged(
+	ctx context.Context,
+	area graphics.RectF,
+	colors WallpaperColors,
+) error {
+	return w.impl.OnColorsChanged(ctx, area, colors)
+}
+
+var _ ILocalWallpaperColorConsumer = (*localWallpaperColorConsumerStubWrapper)(nil)
+
+// NewLocalWallpaperColorConsumerStub creates a server-side ILocalWallpaperColorConsumer wrapping the given
+// server implementation. The returned value satisfies ILocalWallpaperColorConsumer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLocalWallpaperColorConsumerStub(
+	impl ILocalWallpaperColorConsumerServer,
+) ILocalWallpaperColorConsumer {
+	wrapper := &localWallpaperColorConsumerStubWrapper{impl: impl}
+	stub := &LocalWallpaperColorConsumerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

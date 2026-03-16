@@ -77,7 +77,7 @@ func (p *HealthProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHealth)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHealth, "registerCallback")
 	if _err != nil {
@@ -103,7 +103,7 @@ func (p *HealthProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHealth)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHealth, "unregisterCallback")
 	if _err != nil {
@@ -801,4 +801,150 @@ func (s *HealthStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IHealthServer is the server-side interface that user implementations
+// provide to NewHealthStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHealthServer interface {
+	RegisterCallback(ctx context.Context, callback IHealthInfoCallback) error
+	UnregisterCallback(ctx context.Context, callback IHealthInfoCallback) error
+	Update(ctx context.Context) error
+	GetChargeCounterUah(ctx context.Context) (int32, error)
+	GetCurrentNowMicroamps(ctx context.Context) (int32, error)
+	GetCurrentAverageMicroamps(ctx context.Context) (int32, error)
+	GetCapacity(ctx context.Context) (int32, error)
+	GetEnergyCounterNwh(ctx context.Context) (int64, error)
+	GetChargeStatus(ctx context.Context) (BatteryStatus, error)
+	GetStorageInfo(ctx context.Context) ([]StorageInfo, error)
+	GetDiskStats(ctx context.Context) ([]DiskStats, error)
+	GetHealthInfo(ctx context.Context) (HealthInfo, error)
+	SetChargingPolicy(ctx context.Context, in_value BatteryChargingPolicy) error
+	GetChargingPolicy(ctx context.Context) (BatteryChargingPolicy, error)
+	GetBatteryHealthData(ctx context.Context) (BatteryHealthData, error)
+	GetHingeInfo(ctx context.Context) ([]HingeInfo, error)
+}
+
+type healthStubWrapper struct {
+	impl       IHealthServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *healthStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *healthStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IHealthInfoCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *healthStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback IHealthInfoCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+func (w *healthStubWrapper) Update(
+	ctx context.Context,
+) error {
+	return w.impl.Update(ctx)
+}
+
+func (w *healthStubWrapper) GetChargeCounterUah(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetChargeCounterUah(ctx)
+}
+
+func (w *healthStubWrapper) GetCurrentNowMicroamps(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentNowMicroamps(ctx)
+}
+
+func (w *healthStubWrapper) GetCurrentAverageMicroamps(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentAverageMicroamps(ctx)
+}
+
+func (w *healthStubWrapper) GetCapacity(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCapacity(ctx)
+}
+
+func (w *healthStubWrapper) GetEnergyCounterNwh(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetEnergyCounterNwh(ctx)
+}
+
+func (w *healthStubWrapper) GetChargeStatus(
+	ctx context.Context,
+) (BatteryStatus, error) {
+	return w.impl.GetChargeStatus(ctx)
+}
+
+func (w *healthStubWrapper) GetStorageInfo(
+	ctx context.Context,
+) ([]StorageInfo, error) {
+	return w.impl.GetStorageInfo(ctx)
+}
+
+func (w *healthStubWrapper) GetDiskStats(
+	ctx context.Context,
+) ([]DiskStats, error) {
+	return w.impl.GetDiskStats(ctx)
+}
+
+func (w *healthStubWrapper) GetHealthInfo(
+	ctx context.Context,
+) (HealthInfo, error) {
+	return w.impl.GetHealthInfo(ctx)
+}
+
+func (w *healthStubWrapper) SetChargingPolicy(
+	ctx context.Context,
+	in_value BatteryChargingPolicy,
+) error {
+	return w.impl.SetChargingPolicy(ctx, in_value)
+}
+
+func (w *healthStubWrapper) GetChargingPolicy(
+	ctx context.Context,
+) (BatteryChargingPolicy, error) {
+	return w.impl.GetChargingPolicy(ctx)
+}
+
+func (w *healthStubWrapper) GetBatteryHealthData(
+	ctx context.Context,
+) (BatteryHealthData, error) {
+	return w.impl.GetBatteryHealthData(ctx)
+}
+
+func (w *healthStubWrapper) GetHingeInfo(
+	ctx context.Context,
+) ([]HingeInfo, error) {
+	return w.impl.GetHingeInfo(ctx)
+}
+
+var _ IHealth = (*healthStubWrapper)(nil)
+
+// NewHealthStub creates a server-side IHealth wrapping the given
+// server implementation. The returned value satisfies IHealth
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHealthStub(
+	impl IHealthServer,
+) IHealth {
+	wrapper := &healthStubWrapper{impl: impl}
+	stub := &HealthStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

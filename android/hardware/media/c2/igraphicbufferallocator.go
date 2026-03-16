@@ -216,3 +216,57 @@ func (s *GraphicBufferAllocatorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGraphicBufferAllocatorServer is the server-side interface that user implementations
+// provide to NewGraphicBufferAllocatorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGraphicBufferAllocatorServer interface {
+	Allocate(ctx context.Context, desc c2IGraphicBufferAllocator.Description) (c2IGraphicBufferAllocator.Allocation, error)
+	Deallocate(ctx context.Context, id int64) (bool, error)
+	GetWaitableFd(ctx context.Context) (int32, error)
+}
+
+type graphicBufferAllocatorStubWrapper struct {
+	impl       IGraphicBufferAllocatorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *graphicBufferAllocatorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *graphicBufferAllocatorStubWrapper) Allocate(
+	ctx context.Context,
+	desc c2IGraphicBufferAllocator.Description,
+) (c2IGraphicBufferAllocator.Allocation, error) {
+	return w.impl.Allocate(ctx, desc)
+}
+
+func (w *graphicBufferAllocatorStubWrapper) Deallocate(
+	ctx context.Context,
+	id int64,
+) (bool, error) {
+	return w.impl.Deallocate(ctx, id)
+}
+
+func (w *graphicBufferAllocatorStubWrapper) GetWaitableFd(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetWaitableFd(ctx)
+}
+
+var _ IGraphicBufferAllocator = (*graphicBufferAllocatorStubWrapper)(nil)
+
+// NewGraphicBufferAllocatorStub creates a server-side IGraphicBufferAllocator wrapping the given
+// server implementation. The returned value satisfies IGraphicBufferAllocator
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGraphicBufferAllocatorStub(
+	impl IGraphicBufferAllocatorServer,
+) IGraphicBufferAllocator {
+	wrapper := &graphicBufferAllocatorStubWrapper{impl: impl}
+	stub := &GraphicBufferAllocatorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

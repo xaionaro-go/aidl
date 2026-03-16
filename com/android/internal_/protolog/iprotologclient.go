@@ -108,3 +108,43 @@ func (s *ProtoLogClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProtoLogClientServer is the server-side interface that user implementations
+// provide to NewProtoLogClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProtoLogClientServer interface {
+	ToggleLogcat(ctx context.Context, enabled bool, groups []string) error
+}
+
+type protoLogClientStubWrapper struct {
+	impl       IProtoLogClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *protoLogClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *protoLogClientStubWrapper) ToggleLogcat(
+	ctx context.Context,
+	enabled bool,
+	groups []string,
+) error {
+	return w.impl.ToggleLogcat(ctx, enabled, groups)
+}
+
+var _ IProtoLogClient = (*protoLogClientStubWrapper)(nil)
+
+// NewProtoLogClientStub creates a server-side IProtoLogClient wrapping the given
+// server implementation. The returned value satisfies IProtoLogClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProtoLogClientStub(
+	impl IProtoLogClientServer,
+) IProtoLogClient {
+	wrapper := &protoLogClientStubWrapper{impl: impl}
+	stub := &ProtoLogClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -100,3 +100,43 @@ func (s *DataServiceSignalInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDataServiceSignalInfoListenerServer is the server-side interface that user implementations
+// provide to NewDataServiceSignalInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataServiceSignalInfoListenerServer interface {
+	OnDataServiceSignalInfoChanged(ctx context.Context, sessionToken string, changedSignalInfo os.Bundle) error
+}
+
+type dataServiceSignalInfoListenerStubWrapper struct {
+	impl       IDataServiceSignalInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataServiceSignalInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dataServiceSignalInfoListenerStubWrapper) OnDataServiceSignalInfoChanged(
+	ctx context.Context,
+	sessionToken string,
+	changedSignalInfo os.Bundle,
+) error {
+	return w.impl.OnDataServiceSignalInfoChanged(ctx, sessionToken, changedSignalInfo)
+}
+
+var _ IDataServiceSignalInfoListener = (*dataServiceSignalInfoListenerStubWrapper)(nil)
+
+// NewDataServiceSignalInfoListenerStub creates a server-side IDataServiceSignalInfoListener wrapping the given
+// server implementation. The returned value satisfies IDataServiceSignalInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataServiceSignalInfoListenerStub(
+	impl IDataServiceSignalInfoListenerServer,
+) IDataServiceSignalInfoListener {
+	wrapper := &dataServiceSignalInfoListenerStubWrapper{impl: impl}
+	stub := &DataServiceSignalInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

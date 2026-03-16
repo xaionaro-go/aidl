@@ -191,7 +191,7 @@ func (p *ImsConfigProxy) GetFeatureValue(
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
 	_data.WriteInt32(feature)
 	_data.WriteInt32(network)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "getFeatureValue")
 	if _err != nil {
@@ -214,7 +214,7 @@ func (p *ImsConfigProxy) SetFeatureValue(
 	_data.WriteInt32(feature)
 	_data.WriteInt32(network)
 	_data.WriteInt32(value)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "setFeatureValue")
 	if _err != nil {
@@ -260,7 +260,7 @@ func (p *ImsConfigProxy) GetVideoQuality(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "getVideoQuality")
 	if _err != nil {
@@ -279,7 +279,7 @@ func (p *ImsConfigProxy) SetVideoQuality(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
 	_data.WriteInt32(quality)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "setVideoQuality")
 	if _err != nil {
@@ -460,4 +460,114 @@ func (s *ImsConfigStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsConfigServer is the server-side interface that user implementations
+// provide to NewImsConfigStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsConfigServer interface {
+	GetProvisionedValue(ctx context.Context, item int32) (int32, error)
+	GetProvisionedStringValue(ctx context.Context, item int32) (string, error)
+	SetProvisionedValue(ctx context.Context, item int32, value int32) (int32, error)
+	SetProvisionedStringValue(ctx context.Context, item int32, value string) (int32, error)
+	GetFeatureValue(ctx context.Context, feature int32, network int32, listener ims.ImsConfigListener) error
+	SetFeatureValue(ctx context.Context, feature int32, network int32, value int32, listener ims.ImsConfigListener) error
+	GetVolteProvisioned(ctx context.Context) (bool, error)
+	GetVideoQuality(ctx context.Context, listener ims.ImsConfigListener) error
+	SetVideoQuality(ctx context.Context, quality int32, listener ims.ImsConfigListener) error
+}
+
+type imsConfigStubWrapper struct {
+	impl       IImsConfigServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsConfigStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsConfigStubWrapper) GetProvisionedValue(
+	ctx context.Context,
+	item int32,
+) (int32, error) {
+	return w.impl.GetProvisionedValue(ctx, item)
+}
+
+func (w *imsConfigStubWrapper) GetProvisionedStringValue(
+	ctx context.Context,
+	item int32,
+) (string, error) {
+	return w.impl.GetProvisionedStringValue(ctx, item)
+}
+
+func (w *imsConfigStubWrapper) SetProvisionedValue(
+	ctx context.Context,
+	item int32,
+	value int32,
+) (int32, error) {
+	return w.impl.SetProvisionedValue(ctx, item, value)
+}
+
+func (w *imsConfigStubWrapper) SetProvisionedStringValue(
+	ctx context.Context,
+	item int32,
+	value string,
+) (int32, error) {
+	return w.impl.SetProvisionedStringValue(ctx, item, value)
+}
+
+func (w *imsConfigStubWrapper) GetFeatureValue(
+	ctx context.Context,
+	feature int32,
+	network int32,
+	listener ims.ImsConfigListener,
+) error {
+	return w.impl.GetFeatureValue(ctx, feature, network, listener)
+}
+
+func (w *imsConfigStubWrapper) SetFeatureValue(
+	ctx context.Context,
+	feature int32,
+	network int32,
+	value int32,
+	listener ims.ImsConfigListener,
+) error {
+	return w.impl.SetFeatureValue(ctx, feature, network, value, listener)
+}
+
+func (w *imsConfigStubWrapper) GetVolteProvisioned(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetVolteProvisioned(ctx)
+}
+
+func (w *imsConfigStubWrapper) GetVideoQuality(
+	ctx context.Context,
+	listener ims.ImsConfigListener,
+) error {
+	return w.impl.GetVideoQuality(ctx, listener)
+}
+
+func (w *imsConfigStubWrapper) SetVideoQuality(
+	ctx context.Context,
+	quality int32,
+	listener ims.ImsConfigListener,
+) error {
+	return w.impl.SetVideoQuality(ctx, quality, listener)
+}
+
+var _ IImsConfig = (*imsConfigStubWrapper)(nil)
+
+// NewImsConfigStub creates a server-side IImsConfig wrapping the given
+// server implementation. The returned value satisfies IImsConfig
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsConfigStub(
+	impl IImsConfigServer,
+) IImsConfig {
+	wrapper := &imsConfigStubWrapper{impl: impl}
+	stub := &ImsConfigStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

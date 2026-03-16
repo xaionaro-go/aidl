@@ -82,3 +82,42 @@ func (s *SyncStatusObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISyncStatusObserverServer is the server-side interface that user implementations
+// provide to NewSyncStatusObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISyncStatusObserverServer interface {
+	OnStatusChanged(ctx context.Context, which int32) error
+}
+
+type syncStatusObserverStubWrapper struct {
+	impl       ISyncStatusObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *syncStatusObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *syncStatusObserverStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	which int32,
+) error {
+	return w.impl.OnStatusChanged(ctx, which)
+}
+
+var _ ISyncStatusObserver = (*syncStatusObserverStubWrapper)(nil)
+
+// NewSyncStatusObserverStub creates a server-side ISyncStatusObserver wrapping the given
+// server implementation. The returned value satisfies ISyncStatusObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSyncStatusObserverStub(
+	impl ISyncStatusObserverServer,
+) ISyncStatusObserver {
+	wrapper := &syncStatusObserverStubWrapper{impl: impl}
+	stub := &SyncStatusObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -81,7 +81,7 @@ func (p *SliceManagerProxy) PinSlice(
 			}
 		}
 	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISliceManager, "pinSlice")
 	if _err != nil {
@@ -114,7 +114,7 @@ func (p *SliceManagerProxy) UnpinSlice(
 	if _err := uri.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISliceManager, "unpinSlice")
 	if _err != nil {
@@ -800,4 +800,141 @@ func (s *SliceManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISliceManagerServer is the server-side interface that user implementations
+// provide to NewSliceManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISliceManagerServer interface {
+	PinSlice(ctx context.Context, pkg string, uri net.Uri, specs []SliceSpec, token binder.IBinder) error
+	UnpinSlice(ctx context.Context, pkg string, uri net.Uri, token binder.IBinder) error
+	HasSliceAccess(ctx context.Context, pkg string) (bool, error)
+	GetPinnedSpecs(ctx context.Context, uri net.Uri, pkg string) ([]SliceSpec, error)
+	GetPinnedSlices(ctx context.Context, pkg string) ([]net.Uri, error)
+	GetBackupPayload(ctx context.Context, user int32) ([]byte, error)
+	ApplyRestore(ctx context.Context, payload []byte, user int32) error
+	GrantSlicePermission(ctx context.Context, callingPkg string, toPkg string, uri net.Uri) error
+	RevokeSlicePermission(ctx context.Context, callingPkg string, toPkg string, uri net.Uri) error
+	CheckSlicePermission(ctx context.Context, uri net.Uri, callingPkg string, pid int32, uid int32, autoGrantPermissions []string) (int32, error)
+	GrantPermissionFromUser(ctx context.Context, uri net.Uri, pkg string, callingPkg string, allSlices bool) error
+}
+
+type sliceManagerStubWrapper struct {
+	impl       ISliceManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sliceManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sliceManagerStubWrapper) PinSlice(
+	ctx context.Context,
+	pkg string,
+	uri net.Uri,
+	specs []SliceSpec,
+	token binder.IBinder,
+) error {
+	return w.impl.PinSlice(ctx, pkg, uri, specs, token)
+}
+
+func (w *sliceManagerStubWrapper) UnpinSlice(
+	ctx context.Context,
+	pkg string,
+	uri net.Uri,
+	token binder.IBinder,
+) error {
+	return w.impl.UnpinSlice(ctx, pkg, uri, token)
+}
+
+func (w *sliceManagerStubWrapper) HasSliceAccess(
+	ctx context.Context,
+	pkg string,
+) (bool, error) {
+	return w.impl.HasSliceAccess(ctx, pkg)
+}
+
+func (w *sliceManagerStubWrapper) GetPinnedSpecs(
+	ctx context.Context,
+	uri net.Uri,
+	pkg string,
+) ([]SliceSpec, error) {
+	return w.impl.GetPinnedSpecs(ctx, uri, pkg)
+}
+
+func (w *sliceManagerStubWrapper) GetPinnedSlices(
+	ctx context.Context,
+	pkg string,
+) ([]net.Uri, error) {
+	return w.impl.GetPinnedSlices(ctx, pkg)
+}
+
+func (w *sliceManagerStubWrapper) GetBackupPayload(
+	ctx context.Context,
+	user int32,
+) ([]byte, error) {
+	return w.impl.GetBackupPayload(ctx, user)
+}
+
+func (w *sliceManagerStubWrapper) ApplyRestore(
+	ctx context.Context,
+	payload []byte,
+	user int32,
+) error {
+	return w.impl.ApplyRestore(ctx, payload, user)
+}
+
+func (w *sliceManagerStubWrapper) GrantSlicePermission(
+	ctx context.Context,
+	callingPkg string,
+	toPkg string,
+	uri net.Uri,
+) error {
+	return w.impl.GrantSlicePermission(ctx, callingPkg, toPkg, uri)
+}
+
+func (w *sliceManagerStubWrapper) RevokeSlicePermission(
+	ctx context.Context,
+	callingPkg string,
+	toPkg string,
+	uri net.Uri,
+) error {
+	return w.impl.RevokeSlicePermission(ctx, callingPkg, toPkg, uri)
+}
+
+func (w *sliceManagerStubWrapper) CheckSlicePermission(
+	ctx context.Context,
+	uri net.Uri,
+	callingPkg string,
+	pid int32,
+	uid int32,
+	autoGrantPermissions []string,
+) (int32, error) {
+	return w.impl.CheckSlicePermission(ctx, uri, callingPkg, pid, uid, autoGrantPermissions)
+}
+
+func (w *sliceManagerStubWrapper) GrantPermissionFromUser(
+	ctx context.Context,
+	uri net.Uri,
+	pkg string,
+	callingPkg string,
+	allSlices bool,
+) error {
+	return w.impl.GrantPermissionFromUser(ctx, uri, pkg, callingPkg, allSlices)
+}
+
+var _ ISliceManager = (*sliceManagerStubWrapper)(nil)
+
+// NewSliceManagerStub creates a server-side ISliceManager wrapping the given
+// server implementation. The returned value satisfies ISliceManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSliceManagerStub(
+	impl ISliceManagerServer,
+) ISliceManager {
+	wrapper := &sliceManagerStubWrapper{impl: impl}
+	stub := &SliceManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

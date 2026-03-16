@@ -930,3 +930,184 @@ func (s *SessionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISessionCallbackServer is the server-side interface that user implementations
+// provide to NewSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISessionCallbackServer interface {
+	OnChallengeGenerated(ctx context.Context, challenge int64) error
+	OnChallengeRevoked(ctx context.Context, challenge int64) error
+	OnAuthenticationFrame(ctx context.Context, frame AuthenticationFrame) error
+	OnEnrollmentFrame(ctx context.Context, frame EnrollmentFrame) error
+	OnError(ctx context.Context, error_ Error, vendorCode int32) error
+	OnEnrollmentProgress(ctx context.Context, enrollmentId int32, remaining int32) error
+	OnAuthenticationSucceeded(ctx context.Context, enrollmentId int32, hat keymaster.HardwareAuthToken) error
+	OnAuthenticationFailed(ctx context.Context) error
+	OnLockoutTimed(ctx context.Context, durationMillis int64) error
+	OnLockoutPermanent(ctx context.Context) error
+	OnLockoutCleared(ctx context.Context) error
+	OnInteractionDetected(ctx context.Context) error
+	OnEnrollmentsEnumerated(ctx context.Context, enrollmentIds []int32) error
+	OnFeaturesRetrieved(ctx context.Context, features []Feature) error
+	OnFeatureSet(ctx context.Context, feature Feature) error
+	OnEnrollmentsRemoved(ctx context.Context, enrollmentIds []int32) error
+	OnAuthenticatorIdRetrieved(ctx context.Context, authenticatorId int64) error
+	OnAuthenticatorIdInvalidated(ctx context.Context, newAuthenticatorId int64) error
+	OnSessionClosed(ctx context.Context) error
+}
+
+type sessionCallbackStubWrapper struct {
+	impl       ISessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sessionCallbackStubWrapper) OnChallengeGenerated(
+	ctx context.Context,
+	challenge int64,
+) error {
+	return w.impl.OnChallengeGenerated(ctx, challenge)
+}
+
+func (w *sessionCallbackStubWrapper) OnChallengeRevoked(
+	ctx context.Context,
+	challenge int64,
+) error {
+	return w.impl.OnChallengeRevoked(ctx, challenge)
+}
+
+func (w *sessionCallbackStubWrapper) OnAuthenticationFrame(
+	ctx context.Context,
+	frame AuthenticationFrame,
+) error {
+	return w.impl.OnAuthenticationFrame(ctx, frame)
+}
+
+func (w *sessionCallbackStubWrapper) OnEnrollmentFrame(
+	ctx context.Context,
+	frame EnrollmentFrame,
+) error {
+	return w.impl.OnEnrollmentFrame(ctx, frame)
+}
+
+func (w *sessionCallbackStubWrapper) OnError(
+	ctx context.Context,
+	error_ Error,
+	vendorCode int32,
+) error {
+	return w.impl.OnError(ctx, error_, vendorCode)
+}
+
+func (w *sessionCallbackStubWrapper) OnEnrollmentProgress(
+	ctx context.Context,
+	enrollmentId int32,
+	remaining int32,
+) error {
+	return w.impl.OnEnrollmentProgress(ctx, enrollmentId, remaining)
+}
+
+func (w *sessionCallbackStubWrapper) OnAuthenticationSucceeded(
+	ctx context.Context,
+	enrollmentId int32,
+	hat keymaster.HardwareAuthToken,
+) error {
+	return w.impl.OnAuthenticationSucceeded(ctx, enrollmentId, hat)
+}
+
+func (w *sessionCallbackStubWrapper) OnAuthenticationFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnAuthenticationFailed(ctx)
+}
+
+func (w *sessionCallbackStubWrapper) OnLockoutTimed(
+	ctx context.Context,
+	durationMillis int64,
+) error {
+	return w.impl.OnLockoutTimed(ctx, durationMillis)
+}
+
+func (w *sessionCallbackStubWrapper) OnLockoutPermanent(
+	ctx context.Context,
+) error {
+	return w.impl.OnLockoutPermanent(ctx)
+}
+
+func (w *sessionCallbackStubWrapper) OnLockoutCleared(
+	ctx context.Context,
+) error {
+	return w.impl.OnLockoutCleared(ctx)
+}
+
+func (w *sessionCallbackStubWrapper) OnInteractionDetected(
+	ctx context.Context,
+) error {
+	return w.impl.OnInteractionDetected(ctx)
+}
+
+func (w *sessionCallbackStubWrapper) OnEnrollmentsEnumerated(
+	ctx context.Context,
+	enrollmentIds []int32,
+) error {
+	return w.impl.OnEnrollmentsEnumerated(ctx, enrollmentIds)
+}
+
+func (w *sessionCallbackStubWrapper) OnFeaturesRetrieved(
+	ctx context.Context,
+	features []Feature,
+) error {
+	return w.impl.OnFeaturesRetrieved(ctx, features)
+}
+
+func (w *sessionCallbackStubWrapper) OnFeatureSet(
+	ctx context.Context,
+	feature Feature,
+) error {
+	return w.impl.OnFeatureSet(ctx, feature)
+}
+
+func (w *sessionCallbackStubWrapper) OnEnrollmentsRemoved(
+	ctx context.Context,
+	enrollmentIds []int32,
+) error {
+	return w.impl.OnEnrollmentsRemoved(ctx, enrollmentIds)
+}
+
+func (w *sessionCallbackStubWrapper) OnAuthenticatorIdRetrieved(
+	ctx context.Context,
+	authenticatorId int64,
+) error {
+	return w.impl.OnAuthenticatorIdRetrieved(ctx, authenticatorId)
+}
+
+func (w *sessionCallbackStubWrapper) OnAuthenticatorIdInvalidated(
+	ctx context.Context,
+	newAuthenticatorId int64,
+) error {
+	return w.impl.OnAuthenticatorIdInvalidated(ctx, newAuthenticatorId)
+}
+
+func (w *sessionCallbackStubWrapper) OnSessionClosed(
+	ctx context.Context,
+) error {
+	return w.impl.OnSessionClosed(ctx)
+}
+
+var _ ISessionCallback = (*sessionCallbackStubWrapper)(nil)
+
+// NewSessionCallbackStub creates a server-side ISessionCallback wrapping the given
+// server implementation. The returned value satisfies ISessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSessionCallbackStub(
+	impl ISessionCallbackServer,
+) ISessionCallback {
+	wrapper := &sessionCallbackStubWrapper{impl: impl}
+	stub := &SessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

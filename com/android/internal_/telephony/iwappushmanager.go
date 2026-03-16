@@ -366,3 +366,83 @@ func (s *WapPushManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWapPushManagerServer is the server-side interface that user implementations
+// provide to NewWapPushManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWapPushManagerServer interface {
+	ProcessMessage(ctx context.Context, app_id string, content_type string, intent content.Intent) (int32, error)
+	AddPackage(ctx context.Context, x_app_id string, content_type string, package_name string, class_name string, app_type int32, need_signature bool, further_processing bool) (bool, error)
+	UpdatePackage(ctx context.Context, x_app_id string, content_type string, package_name string, class_name string, app_type int32, need_signature bool, further_processing bool) (bool, error)
+	DeletePackage(ctx context.Context, x_app_id string, content_type string, package_name string, class_name string) (bool, error)
+}
+
+type wapPushManagerStubWrapper struct {
+	impl       IWapPushManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wapPushManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wapPushManagerStubWrapper) ProcessMessage(
+	ctx context.Context,
+	app_id string,
+	content_type string,
+	intent content.Intent,
+) (int32, error) {
+	return w.impl.ProcessMessage(ctx, app_id, content_type, intent)
+}
+
+func (w *wapPushManagerStubWrapper) AddPackage(
+	ctx context.Context,
+	x_app_id string,
+	content_type string,
+	package_name string,
+	class_name string,
+	app_type int32,
+	need_signature bool,
+	further_processing bool,
+) (bool, error) {
+	return w.impl.AddPackage(ctx, x_app_id, content_type, package_name, class_name, app_type, need_signature, further_processing)
+}
+
+func (w *wapPushManagerStubWrapper) UpdatePackage(
+	ctx context.Context,
+	x_app_id string,
+	content_type string,
+	package_name string,
+	class_name string,
+	app_type int32,
+	need_signature bool,
+	further_processing bool,
+) (bool, error) {
+	return w.impl.UpdatePackage(ctx, x_app_id, content_type, package_name, class_name, app_type, need_signature, further_processing)
+}
+
+func (w *wapPushManagerStubWrapper) DeletePackage(
+	ctx context.Context,
+	x_app_id string,
+	content_type string,
+	package_name string,
+	class_name string,
+) (bool, error) {
+	return w.impl.DeletePackage(ctx, x_app_id, content_type, package_name, class_name)
+}
+
+var _ IWapPushManager = (*wapPushManagerStubWrapper)(nil)
+
+// NewWapPushManagerStub creates a server-side IWapPushManager wrapping the given
+// server implementation. The returned value satisfies IWapPushManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWapPushManagerStub(
+	impl IWapPushManagerServer,
+) IWapPushManager {
+	wrapper := &wapPushManagerStubWrapper{impl: impl}
+	stub := &WapPushManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

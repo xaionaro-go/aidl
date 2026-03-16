@@ -106,7 +106,7 @@ func (p *TvInteractiveAppSessionCallbackProxy) OnSessionCreated(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppSessionCallback)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppSessionCallback, "onSessionCreated")
 	if _err != nil {
@@ -1258,4 +1258,301 @@ func (s *TvInteractiveAppSessionCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvInteractiveAppSessionCallbackServer is the server-side interface that user implementations
+// provide to NewTvInteractiveAppSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInteractiveAppSessionCallbackServer interface {
+	OnSessionCreated(ctx context.Context, session ITvInteractiveAppSession) error
+	OnLayoutSurface(ctx context.Context, left int32, top int32, right int32, bottom int32) error
+	OnBroadcastInfoRequest(ctx context.Context, request tv.BroadcastInfoRequest) error
+	OnRemoveBroadcastInfo(ctx context.Context, id int32) error
+	OnSessionStateChanged(ctx context.Context, state int32, err int32) error
+	OnBiInteractiveAppCreated(ctx context.Context, biIAppUri net.Uri, biIAppId string) error
+	OnTeletextAppStateChanged(ctx context.Context, state int32) error
+	OnAdBufferReady(ctx context.Context, buffer tv.AdBuffer) error
+	OnCommandRequest(ctx context.Context, cmdType string, parameters os.Bundle) error
+	OnTimeShiftCommandRequest(ctx context.Context, cmdType string, parameters os.Bundle) error
+	OnSetVideoBounds(ctx context.Context, rect graphics.Rect) error
+	OnRequestCurrentVideoBounds(ctx context.Context) error
+	OnRequestCurrentChannelUri(ctx context.Context) error
+	OnRequestCurrentChannelLcn(ctx context.Context) error
+	OnRequestStreamVolume(ctx context.Context) error
+	OnRequestTrackInfoList(ctx context.Context) error
+	OnRequestCurrentTvInputId(ctx context.Context) error
+	OnRequestTimeShiftMode(ctx context.Context) error
+	OnRequestAvailableSpeeds(ctx context.Context) error
+	OnRequestSelectedTrackInfo(ctx context.Context) error
+	OnRequestStartRecording(ctx context.Context, requestId string, programUri net.Uri) error
+	OnRequestStopRecording(ctx context.Context, recordingId string) error
+	OnRequestScheduleRecording(ctx context.Context, requestId string, inputId string, channelUri net.Uri, programUri net.Uri, params os.Bundle) error
+	OnRequestScheduleRecording2(ctx context.Context, requestId string, inputId string, channelUri net.Uri, start int64, duration int64, repeat int32, params os.Bundle) error
+	OnSetTvRecordingInfo(ctx context.Context, recordingId string, recordingInfo tv.TvRecordingInfo) error
+	OnRequestTvRecordingInfo(ctx context.Context, recordingId string) error
+	OnRequestTvRecordingInfoList(ctx context.Context, type_ int32) error
+	OnRequestSigning(ctx context.Context, id string, algorithm string, alias string, data []byte) error
+	OnRequestSigning2(ctx context.Context, id string, algorithm string, host string, port int32, data []byte) error
+	OnRequestCertificate(ctx context.Context, host string, port int32) error
+	OnAdRequest(ctx context.Context, request tv.AdRequest) error
+}
+
+type tvInteractiveAppSessionCallbackStubWrapper struct {
+	impl       ITvInteractiveAppSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnSessionCreated(
+	ctx context.Context,
+	session ITvInteractiveAppSession,
+) error {
+	return w.impl.OnSessionCreated(ctx, session)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnLayoutSurface(
+	ctx context.Context,
+	left int32,
+	top int32,
+	right int32,
+	bottom int32,
+) error {
+	return w.impl.OnLayoutSurface(ctx, left, top, right, bottom)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnBroadcastInfoRequest(
+	ctx context.Context,
+	request tv.BroadcastInfoRequest,
+) error {
+	return w.impl.OnBroadcastInfoRequest(ctx, request)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRemoveBroadcastInfo(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.OnRemoveBroadcastInfo(ctx, id)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnSessionStateChanged(
+	ctx context.Context,
+	state int32,
+	err int32,
+) error {
+	return w.impl.OnSessionStateChanged(ctx, state, err)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnBiInteractiveAppCreated(
+	ctx context.Context,
+	biIAppUri net.Uri,
+	biIAppId string,
+) error {
+	return w.impl.OnBiInteractiveAppCreated(ctx, biIAppUri, biIAppId)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnTeletextAppStateChanged(
+	ctx context.Context,
+	state int32,
+) error {
+	return w.impl.OnTeletextAppStateChanged(ctx, state)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnAdBufferReady(
+	ctx context.Context,
+	buffer tv.AdBuffer,
+) error {
+	return w.impl.OnAdBufferReady(ctx, buffer)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnCommandRequest(
+	ctx context.Context,
+	cmdType string,
+	parameters os.Bundle,
+) error {
+	return w.impl.OnCommandRequest(ctx, cmdType, parameters)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnTimeShiftCommandRequest(
+	ctx context.Context,
+	cmdType string,
+	parameters os.Bundle,
+) error {
+	return w.impl.OnTimeShiftCommandRequest(ctx, cmdType, parameters)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnSetVideoBounds(
+	ctx context.Context,
+	rect graphics.Rect,
+) error {
+	return w.impl.OnSetVideoBounds(ctx, rect)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestCurrentVideoBounds(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestCurrentVideoBounds(ctx)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestCurrentChannelUri(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestCurrentChannelUri(ctx)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestCurrentChannelLcn(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestCurrentChannelLcn(ctx)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestStreamVolume(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestStreamVolume(ctx)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestTrackInfoList(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestTrackInfoList(ctx)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestCurrentTvInputId(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestCurrentTvInputId(ctx)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestTimeShiftMode(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestTimeShiftMode(ctx)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestAvailableSpeeds(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestAvailableSpeeds(ctx)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestSelectedTrackInfo(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestSelectedTrackInfo(ctx)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestStartRecording(
+	ctx context.Context,
+	requestId string,
+	programUri net.Uri,
+) error {
+	return w.impl.OnRequestStartRecording(ctx, requestId, programUri)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestStopRecording(
+	ctx context.Context,
+	recordingId string,
+) error {
+	return w.impl.OnRequestStopRecording(ctx, recordingId)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestScheduleRecording(
+	ctx context.Context,
+	requestId string,
+	inputId string,
+	channelUri net.Uri,
+	programUri net.Uri,
+	params os.Bundle,
+) error {
+	return w.impl.OnRequestScheduleRecording(ctx, requestId, inputId, channelUri, programUri, params)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestScheduleRecording2(
+	ctx context.Context,
+	requestId string,
+	inputId string,
+	channelUri net.Uri,
+	start int64,
+	duration int64,
+	repeat int32,
+	params os.Bundle,
+) error {
+	return w.impl.OnRequestScheduleRecording2(ctx, requestId, inputId, channelUri, start, duration, repeat, params)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnSetTvRecordingInfo(
+	ctx context.Context,
+	recordingId string,
+	recordingInfo tv.TvRecordingInfo,
+) error {
+	return w.impl.OnSetTvRecordingInfo(ctx, recordingId, recordingInfo)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestTvRecordingInfo(
+	ctx context.Context,
+	recordingId string,
+) error {
+	return w.impl.OnRequestTvRecordingInfo(ctx, recordingId)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestTvRecordingInfoList(
+	ctx context.Context,
+	type_ int32,
+) error {
+	return w.impl.OnRequestTvRecordingInfoList(ctx, type_)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestSigning(
+	ctx context.Context,
+	id string,
+	algorithm string,
+	alias string,
+	data []byte,
+) error {
+	return w.impl.OnRequestSigning(ctx, id, algorithm, alias, data)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestSigning2(
+	ctx context.Context,
+	id string,
+	algorithm string,
+	host string,
+	port int32,
+	data []byte,
+) error {
+	return w.impl.OnRequestSigning2(ctx, id, algorithm, host, port, data)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnRequestCertificate(
+	ctx context.Context,
+	host string,
+	port int32,
+) error {
+	return w.impl.OnRequestCertificate(ctx, host, port)
+}
+
+func (w *tvInteractiveAppSessionCallbackStubWrapper) OnAdRequest(
+	ctx context.Context,
+	request tv.AdRequest,
+) error {
+	return w.impl.OnAdRequest(ctx, request)
+}
+
+var _ ITvInteractiveAppSessionCallback = (*tvInteractiveAppSessionCallbackStubWrapper)(nil)
+
+// NewTvInteractiveAppSessionCallbackStub creates a server-side ITvInteractiveAppSessionCallback wrapping the given
+// server implementation. The returned value satisfies ITvInteractiveAppSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInteractiveAppSessionCallbackStub(
+	impl ITvInteractiveAppSessionCallbackServer,
+) ITvInteractiveAppSessionCallback {
+	wrapper := &tvInteractiveAppSessionCallbackStubWrapper{impl: impl}
+	stub := &TvInteractiveAppSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

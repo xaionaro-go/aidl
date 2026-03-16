@@ -112,3 +112,50 @@ func (s *GetAvailableMemoryInBytesCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetAvailableMemoryInBytesCallbackServer is the server-side interface that user implementations
+// provide to NewGetAvailableMemoryInBytesCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetAvailableMemoryInBytesCallbackServer interface {
+	OnSuccess(ctx context.Context, availableMemoryInBytes int64) error
+	OnUnsupportedOperationException(ctx context.Context, message string) error
+}
+
+type getAvailableMemoryInBytesCallbackStubWrapper struct {
+	impl       IGetAvailableMemoryInBytesCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getAvailableMemoryInBytesCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getAvailableMemoryInBytesCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	availableMemoryInBytes int64,
+) error {
+	return w.impl.OnSuccess(ctx, availableMemoryInBytes)
+}
+
+func (w *getAvailableMemoryInBytesCallbackStubWrapper) OnUnsupportedOperationException(
+	ctx context.Context,
+	message string,
+) error {
+	return w.impl.OnUnsupportedOperationException(ctx, message)
+}
+
+var _ IGetAvailableMemoryInBytesCallback = (*getAvailableMemoryInBytesCallbackStubWrapper)(nil)
+
+// NewGetAvailableMemoryInBytesCallbackStub creates a server-side IGetAvailableMemoryInBytesCallback wrapping the given
+// server implementation. The returned value satisfies IGetAvailableMemoryInBytesCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetAvailableMemoryInBytesCallbackStub(
+	impl IGetAvailableMemoryInBytesCallbackServer,
+) IGetAvailableMemoryInBytesCallback {
+	wrapper := &getAvailableMemoryInBytesCallbackStubWrapper{impl: impl}
+	stub := &GetAvailableMemoryInBytesCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

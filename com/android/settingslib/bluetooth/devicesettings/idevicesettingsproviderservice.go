@@ -87,7 +87,7 @@ func (p *DeviceSettingsProviderServiceProxy) RegisterDeviceSettingsListener(
 	if _err := device.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceSettingsProviderService, "registerDeviceSettingsListener")
 	if _err != nil {
@@ -109,7 +109,7 @@ func (p *DeviceSettingsProviderServiceProxy) UnregisterDeviceSettingsListener(
 	if _err := device.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceSettingsProviderService, "unregisterDeviceSettingsListener")
 	if _err != nil {
@@ -253,4 +253,69 @@ func (s *DeviceSettingsProviderServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDeviceSettingsProviderServiceServer is the server-side interface that user implementations
+// provide to NewDeviceSettingsProviderServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceSettingsProviderServiceServer interface {
+	GetServiceStatus(ctx context.Context) (DeviceSettingsProviderServiceStatus, error)
+	RegisterDeviceSettingsListener(ctx context.Context, device DeviceInfo, callback IDeviceSettingsListener) error
+	UnregisterDeviceSettingsListener(ctx context.Context, device DeviceInfo, callback IDeviceSettingsListener) error
+	UpdateDeviceSettings(ctx context.Context, device DeviceInfo, params DeviceSettingState) error
+}
+
+type deviceSettingsProviderServiceStubWrapper struct {
+	impl       IDeviceSettingsProviderServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceSettingsProviderServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceSettingsProviderServiceStubWrapper) GetServiceStatus(
+	ctx context.Context,
+) (DeviceSettingsProviderServiceStatus, error) {
+	return w.impl.GetServiceStatus(ctx)
+}
+
+func (w *deviceSettingsProviderServiceStubWrapper) RegisterDeviceSettingsListener(
+	ctx context.Context,
+	device DeviceInfo,
+	callback IDeviceSettingsListener,
+) error {
+	return w.impl.RegisterDeviceSettingsListener(ctx, device, callback)
+}
+
+func (w *deviceSettingsProviderServiceStubWrapper) UnregisterDeviceSettingsListener(
+	ctx context.Context,
+	device DeviceInfo,
+	callback IDeviceSettingsListener,
+) error {
+	return w.impl.UnregisterDeviceSettingsListener(ctx, device, callback)
+}
+
+func (w *deviceSettingsProviderServiceStubWrapper) UpdateDeviceSettings(
+	ctx context.Context,
+	device DeviceInfo,
+	params DeviceSettingState,
+) error {
+	return w.impl.UpdateDeviceSettings(ctx, device, params)
+}
+
+var _ IDeviceSettingsProviderService = (*deviceSettingsProviderServiceStubWrapper)(nil)
+
+// NewDeviceSettingsProviderServiceStub creates a server-side IDeviceSettingsProviderService wrapping the given
+// server implementation. The returned value satisfies IDeviceSettingsProviderService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceSettingsProviderServiceStub(
+	impl IDeviceSettingsProviderServiceServer,
+) IDeviceSettingsProviderService {
+	wrapper := &deviceSettingsProviderServiceStubWrapper{impl: impl}
+	stub := &DeviceSettingsProviderServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

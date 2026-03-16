@@ -3,7 +3,6 @@ package pm
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	infra "github.com/xaionaro-go/binder/com/android/internal_/infra"
 	"github.com/xaionaro-go/binder/parcel"
@@ -47,7 +46,7 @@ type IShortcutService interface {
 	RemoveDynamicShortcuts(ctx context.Context, packageName string, shortcutIds []string) error
 	RemoveAllDynamicShortcuts(ctx context.Context, packageName string) error
 	UpdateShortcuts(ctx context.Context, packageName string, shortcuts ParceledListSlice) (bool, error)
-	RequestPinShortcut(ctx context.Context, packageName string, shortcut ShortcutInfo, resultIntent content.IntentSender, ret infra.AndroidFuture) error
+	RequestPinShortcut(ctx context.Context, packageName string, shortcut ShortcutInfo, resultIntent interface{}, ret infra.AndroidFuture) error
 	CreateShortcutResultIntent(ctx context.Context, packageName string, shortcut ShortcutInfo, ret infra.AndroidFuture) error
 	DisableShortcuts(ctx context.Context, packageName string, shortcutIds []string, disabledMessage interface{}, disabledMessageResId int32) error
 	EnableShortcuts(ctx context.Context, packageName string, shortcutIds []string) error
@@ -61,7 +60,7 @@ type IShortcutService interface {
 	GetBackupPayload(ctx context.Context, user int32) ([]byte, error)
 	ApplyRestore(ctx context.Context, payload []byte, user int32) error
 	IsRequestPinItemSupported(ctx context.Context, user int32, requestType int32) (bool, error)
-	GetShareTargets(ctx context.Context, packageName string, filter content.IntentFilter) (ParceledListSlice, error)
+	GetShareTargets(ctx context.Context, packageName string, filter interface{}) (ParceledListSlice, error)
 	HasShareTargets(ctx context.Context, packageName string, packageToCheck string) (bool, error)
 	RemoveLongLivedShortcuts(ctx context.Context, packageName string, shortcutIds []string) error
 	GetShortcuts(ctx context.Context, packageName string, matchFlags int32) (ParceledListSlice, error)
@@ -267,7 +266,7 @@ func (p *ShortcutServiceProxy) RequestPinShortcut(
 	ctx context.Context,
 	packageName string,
 	shortcut ShortcutInfo,
-	resultIntent content.IntentSender,
+	resultIntent interface{},
 	ret infra.AndroidFuture,
 ) error {
 	_identity := p.remote.Identity()
@@ -276,10 +275,6 @@ func (p *ShortcutServiceProxy) RequestPinShortcut(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(1)
 	if _err := shortcut.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := resultIntent.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteInt32(_identity.UserID)
@@ -738,17 +733,13 @@ func (p *ShortcutServiceProxy) IsRequestPinItemSupported(
 func (p *ShortcutServiceProxy) GetShareTargets(
 	ctx context.Context,
 	packageName string,
-	filter content.IntentFilter,
+	filter interface{},
 ) (ParceledListSlice, error) {
 	var _result ParceledListSlice
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShortcutService)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(1)
-	if _err := filter.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShortcutService, "getShareTargets")
@@ -1094,18 +1085,7 @@ func (s *ShortcutServiceStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_resultIntent content.IntentSender
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_resultIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_resultIntent interface{}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -1416,18 +1396,7 @@ func (s *ShortcutServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_filter content.IntentFilter
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_filter.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_filter interface{}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -1550,4 +1519,247 @@ func (s *ShortcutServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IShortcutServiceServer is the server-side interface that user implementations
+// provide to NewShortcutServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IShortcutServiceServer interface {
+	SetDynamicShortcuts(ctx context.Context, packageName string, shortcutInfoList ParceledListSlice) (bool, error)
+	AddDynamicShortcuts(ctx context.Context, packageName string, shortcutInfoList ParceledListSlice) (bool, error)
+	RemoveDynamicShortcuts(ctx context.Context, packageName string, shortcutIds []string) error
+	RemoveAllDynamicShortcuts(ctx context.Context, packageName string) error
+	UpdateShortcuts(ctx context.Context, packageName string, shortcuts ParceledListSlice) (bool, error)
+	RequestPinShortcut(ctx context.Context, packageName string, shortcut ShortcutInfo, resultIntent interface{}, ret infra.AndroidFuture) error
+	CreateShortcutResultIntent(ctx context.Context, packageName string, shortcut ShortcutInfo, ret infra.AndroidFuture) error
+	DisableShortcuts(ctx context.Context, packageName string, shortcutIds []string, disabledMessage interface{}, disabledMessageResId int32) error
+	EnableShortcuts(ctx context.Context, packageName string, shortcutIds []string) error
+	GetMaxShortcutCountPerActivity(ctx context.Context, packageName string) (int32, error)
+	GetRemainingCallCount(ctx context.Context, packageName string) (int32, error)
+	GetRateLimitResetTime(ctx context.Context, packageName string) (int64, error)
+	GetIconMaxDimensions(ctx context.Context, packageName string) (int32, error)
+	ReportShortcutUsed(ctx context.Context, packageName string, shortcutId string) error
+	ResetThrottling(ctx context.Context) error
+	OnApplicationActive(ctx context.Context, packageName string) error
+	GetBackupPayload(ctx context.Context, user int32) ([]byte, error)
+	ApplyRestore(ctx context.Context, payload []byte, user int32) error
+	IsRequestPinItemSupported(ctx context.Context, user int32, requestType int32) (bool, error)
+	GetShareTargets(ctx context.Context, packageName string, filter interface{}) (ParceledListSlice, error)
+	HasShareTargets(ctx context.Context, packageName string, packageToCheck string) (bool, error)
+	RemoveLongLivedShortcuts(ctx context.Context, packageName string, shortcutIds []string) error
+	GetShortcuts(ctx context.Context, packageName string, matchFlags int32) (ParceledListSlice, error)
+	PushDynamicShortcut(ctx context.Context, packageName string, shortcut ShortcutInfo) error
+}
+
+type shortcutServiceStubWrapper struct {
+	impl       IShortcutServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *shortcutServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *shortcutServiceStubWrapper) SetDynamicShortcuts(
+	ctx context.Context,
+	packageName string,
+	shortcutInfoList ParceledListSlice,
+) (bool, error) {
+	return w.impl.SetDynamicShortcuts(ctx, packageName, shortcutInfoList)
+}
+
+func (w *shortcutServiceStubWrapper) AddDynamicShortcuts(
+	ctx context.Context,
+	packageName string,
+	shortcutInfoList ParceledListSlice,
+) (bool, error) {
+	return w.impl.AddDynamicShortcuts(ctx, packageName, shortcutInfoList)
+}
+
+func (w *shortcutServiceStubWrapper) RemoveDynamicShortcuts(
+	ctx context.Context,
+	packageName string,
+	shortcutIds []string,
+) error {
+	return w.impl.RemoveDynamicShortcuts(ctx, packageName, shortcutIds)
+}
+
+func (w *shortcutServiceStubWrapper) RemoveAllDynamicShortcuts(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.RemoveAllDynamicShortcuts(ctx, packageName)
+}
+
+func (w *shortcutServiceStubWrapper) UpdateShortcuts(
+	ctx context.Context,
+	packageName string,
+	shortcuts ParceledListSlice,
+) (bool, error) {
+	return w.impl.UpdateShortcuts(ctx, packageName, shortcuts)
+}
+
+func (w *shortcutServiceStubWrapper) RequestPinShortcut(
+	ctx context.Context,
+	packageName string,
+	shortcut ShortcutInfo,
+	resultIntent interface{},
+	ret infra.AndroidFuture,
+) error {
+	return w.impl.RequestPinShortcut(ctx, packageName, shortcut, resultIntent, ret)
+}
+
+func (w *shortcutServiceStubWrapper) CreateShortcutResultIntent(
+	ctx context.Context,
+	packageName string,
+	shortcut ShortcutInfo,
+	ret infra.AndroidFuture,
+) error {
+	return w.impl.CreateShortcutResultIntent(ctx, packageName, shortcut, ret)
+}
+
+func (w *shortcutServiceStubWrapper) DisableShortcuts(
+	ctx context.Context,
+	packageName string,
+	shortcutIds []string,
+	disabledMessage interface{},
+	disabledMessageResId int32,
+) error {
+	return w.impl.DisableShortcuts(ctx, packageName, shortcutIds, disabledMessage, disabledMessageResId)
+}
+
+func (w *shortcutServiceStubWrapper) EnableShortcuts(
+	ctx context.Context,
+	packageName string,
+	shortcutIds []string,
+) error {
+	return w.impl.EnableShortcuts(ctx, packageName, shortcutIds)
+}
+
+func (w *shortcutServiceStubWrapper) GetMaxShortcutCountPerActivity(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetMaxShortcutCountPerActivity(ctx, packageName)
+}
+
+func (w *shortcutServiceStubWrapper) GetRemainingCallCount(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetRemainingCallCount(ctx, packageName)
+}
+
+func (w *shortcutServiceStubWrapper) GetRateLimitResetTime(
+	ctx context.Context,
+	packageName string,
+) (int64, error) {
+	return w.impl.GetRateLimitResetTime(ctx, packageName)
+}
+
+func (w *shortcutServiceStubWrapper) GetIconMaxDimensions(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetIconMaxDimensions(ctx, packageName)
+}
+
+func (w *shortcutServiceStubWrapper) ReportShortcutUsed(
+	ctx context.Context,
+	packageName string,
+	shortcutId string,
+) error {
+	return w.impl.ReportShortcutUsed(ctx, packageName, shortcutId)
+}
+
+func (w *shortcutServiceStubWrapper) ResetThrottling(
+	ctx context.Context,
+) error {
+	return w.impl.ResetThrottling(ctx)
+}
+
+func (w *shortcutServiceStubWrapper) OnApplicationActive(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.OnApplicationActive(ctx, packageName)
+}
+
+func (w *shortcutServiceStubWrapper) GetBackupPayload(
+	ctx context.Context,
+	user int32,
+) ([]byte, error) {
+	return w.impl.GetBackupPayload(ctx, user)
+}
+
+func (w *shortcutServiceStubWrapper) ApplyRestore(
+	ctx context.Context,
+	payload []byte,
+	user int32,
+) error {
+	return w.impl.ApplyRestore(ctx, payload, user)
+}
+
+func (w *shortcutServiceStubWrapper) IsRequestPinItemSupported(
+	ctx context.Context,
+	user int32,
+	requestType int32,
+) (bool, error) {
+	return w.impl.IsRequestPinItemSupported(ctx, user, requestType)
+}
+
+func (w *shortcutServiceStubWrapper) GetShareTargets(
+	ctx context.Context,
+	packageName string,
+	filter interface{},
+) (ParceledListSlice, error) {
+	return w.impl.GetShareTargets(ctx, packageName, filter)
+}
+
+func (w *shortcutServiceStubWrapper) HasShareTargets(
+	ctx context.Context,
+	packageName string,
+	packageToCheck string,
+) (bool, error) {
+	return w.impl.HasShareTargets(ctx, packageName, packageToCheck)
+}
+
+func (w *shortcutServiceStubWrapper) RemoveLongLivedShortcuts(
+	ctx context.Context,
+	packageName string,
+	shortcutIds []string,
+) error {
+	return w.impl.RemoveLongLivedShortcuts(ctx, packageName, shortcutIds)
+}
+
+func (w *shortcutServiceStubWrapper) GetShortcuts(
+	ctx context.Context,
+	packageName string,
+	matchFlags int32,
+) (ParceledListSlice, error) {
+	return w.impl.GetShortcuts(ctx, packageName, matchFlags)
+}
+
+func (w *shortcutServiceStubWrapper) PushDynamicShortcut(
+	ctx context.Context,
+	packageName string,
+	shortcut ShortcutInfo,
+) error {
+	return w.impl.PushDynamicShortcut(ctx, packageName, shortcut)
+}
+
+var _ IShortcutService = (*shortcutServiceStubWrapper)(nil)
+
+// NewShortcutServiceStub creates a server-side IShortcutService wrapping the given
+// server implementation. The returned value satisfies IShortcutService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewShortcutServiceStub(
+	impl IShortcutServiceServer,
+) IShortcutService {
+	wrapper := &shortcutServiceStubWrapper{impl: impl}
+	stub := &ShortcutServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -108,3 +108,43 @@ func (s *HDPlusInfoStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHDPlusInfoServer is the server-side interface that user implementations
+// provide to NewHDPlusInfoStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHDPlusInfoServer interface {
+	SetHDPlusInfo(ctx context.Context, isBlindScanContinue string, isHDMode string) (int32, error)
+}
+
+type hDPlusInfoStubWrapper struct {
+	impl       IHDPlusInfoServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hDPlusInfoStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hDPlusInfoStubWrapper) SetHDPlusInfo(
+	ctx context.Context,
+	isBlindScanContinue string,
+	isHDMode string,
+) (int32, error) {
+	return w.impl.SetHDPlusInfo(ctx, isBlindScanContinue, isHDMode)
+}
+
+var _ IHDPlusInfo = (*hDPlusInfoStubWrapper)(nil)
+
+// NewHDPlusInfoStub creates a server-side IHDPlusInfo wrapping the given
+// server implementation. The returned value satisfies IHDPlusInfo
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHDPlusInfoStub(
+	impl IHDPlusInfoServer,
+) IHDPlusInfo {
+	wrapper := &hDPlusInfoStubWrapper{impl: impl}
+	stub := &HDPlusInfoStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

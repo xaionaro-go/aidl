@@ -2290,3 +2290,342 @@ func (s *PhoneSubInfoStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPhoneSubInfoServer is the server-side interface that user implementations
+// provide to NewPhoneSubInfoStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPhoneSubInfoServer interface {
+	GetDeviceId(ctx context.Context) (string, error)
+	GetDeviceIdWithFeature(ctx context.Context) (string, error)
+	GetNaiForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetDeviceIdForPhone(ctx context.Context, phoneId int32) (string, error)
+	GetImeiForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetDeviceSvn(ctx context.Context) (string, error)
+	GetDeviceSvnUsingSubId(ctx context.Context, subId int32) (string, error)
+	GetSubscriberId(ctx context.Context) (string, error)
+	GetSubscriberIdWithFeature(ctx context.Context, callingComponenId string) (string, error)
+	GetSubscriberIdForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetGroupIdLevel1ForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetGroupIdLevel2ForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetIccSerialNumber(ctx context.Context) (string, error)
+	GetIccSerialNumberWithFeature(ctx context.Context) (string, error)
+	GetIccSerialNumberForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetLine1Number(ctx context.Context) (string, error)
+	GetLine1NumberForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetLine1AlphaTag(ctx context.Context) (string, error)
+	GetLine1AlphaTagForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetMsisdn(ctx context.Context) (string, error)
+	GetMsisdnForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetVoiceMailNumber(ctx context.Context) (string, error)
+	GetVoiceMailNumberForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetCarrierInfoForImsiEncryption(ctx context.Context, subId int32, keyType int32) (sim.ImsiEncryptionInfo, error)
+	SetCarrierInfoForImsiEncryption(ctx context.Context, subId int32, imsiEncryptionInfo sim.ImsiEncryptionInfo) error
+	ResetCarrierKeysForImsiEncryption(ctx context.Context, subId int32) error
+	GetVoiceMailAlphaTag(ctx context.Context) (string, error)
+	GetVoiceMailAlphaTagForSubscriber(ctx context.Context, subId int32) (string, error)
+	GetIsimImpi(ctx context.Context, subId int32) (string, error)
+	GetImsPrivateUserIdentity(ctx context.Context, subId int32) (string, error)
+	GetIsimDomain(ctx context.Context, subId int32) (string, error)
+	GetIsimImpu(ctx context.Context, subId int32) ([]string, error)
+	GetImsPublicUserIdentities(ctx context.Context, subId int32) ([]net.Uri, error)
+	GetIsimIst(ctx context.Context, subId int32) (string, error)
+	GetIsimPcscf(ctx context.Context, subId int32) ([]string, error)
+	GetImsPcscfAddresses(ctx context.Context, subId int32) ([]string, error)
+	GetIccSimChallengeResponse(ctx context.Context, subId int32, appType int32, authType int32, data string) (string, error)
+	GetSmscIdentity(ctx context.Context, subId int32, appType int32) (net.Uri, error)
+	GetSimServiceTable(ctx context.Context, subId int32, appType int32) (string, error)
+}
+
+type phoneSubInfoStubWrapper struct {
+	impl       IPhoneSubInfoServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *phoneSubInfoStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *phoneSubInfoStubWrapper) GetDeviceId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetDeviceId(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetDeviceIdWithFeature(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetDeviceIdWithFeature(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetNaiForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetNaiForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetDeviceIdForPhone(
+	ctx context.Context,
+	phoneId int32,
+) (string, error) {
+	return w.impl.GetDeviceIdForPhone(ctx, phoneId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetImeiForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetImeiForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetDeviceSvn(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetDeviceSvn(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetDeviceSvnUsingSubId(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetDeviceSvnUsingSubId(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetSubscriberId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSubscriberId(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetSubscriberIdWithFeature(
+	ctx context.Context,
+	callingComponenId string,
+) (string, error) {
+	return w.impl.GetSubscriberIdWithFeature(ctx, callingComponenId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetSubscriberIdForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetSubscriberIdForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetGroupIdLevel1ForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetGroupIdLevel1ForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetGroupIdLevel2ForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetGroupIdLevel2ForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetIccSerialNumber(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetIccSerialNumber(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetIccSerialNumberWithFeature(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetIccSerialNumberWithFeature(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetIccSerialNumberForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetIccSerialNumberForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetLine1Number(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetLine1Number(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetLine1NumberForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetLine1NumberForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetLine1AlphaTag(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetLine1AlphaTag(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetLine1AlphaTagForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetLine1AlphaTagForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetMsisdn(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetMsisdn(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetMsisdnForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetMsisdnForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetVoiceMailNumber(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetVoiceMailNumber(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetVoiceMailNumberForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetVoiceMailNumberForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetCarrierInfoForImsiEncryption(
+	ctx context.Context,
+	subId int32,
+	keyType int32,
+) (sim.ImsiEncryptionInfo, error) {
+	return w.impl.GetCarrierInfoForImsiEncryption(ctx, subId, keyType)
+}
+
+func (w *phoneSubInfoStubWrapper) SetCarrierInfoForImsiEncryption(
+	ctx context.Context,
+	subId int32,
+	imsiEncryptionInfo sim.ImsiEncryptionInfo,
+) error {
+	return w.impl.SetCarrierInfoForImsiEncryption(ctx, subId, imsiEncryptionInfo)
+}
+
+func (w *phoneSubInfoStubWrapper) ResetCarrierKeysForImsiEncryption(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.ResetCarrierKeysForImsiEncryption(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetVoiceMailAlphaTag(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetVoiceMailAlphaTag(ctx)
+}
+
+func (w *phoneSubInfoStubWrapper) GetVoiceMailAlphaTagForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetVoiceMailAlphaTagForSubscriber(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetIsimImpi(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetIsimImpi(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetImsPrivateUserIdentity(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetImsPrivateUserIdentity(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetIsimDomain(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetIsimDomain(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetIsimImpu(
+	ctx context.Context,
+	subId int32,
+) ([]string, error) {
+	return w.impl.GetIsimImpu(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetImsPublicUserIdentities(
+	ctx context.Context,
+	subId int32,
+) ([]net.Uri, error) {
+	return w.impl.GetImsPublicUserIdentities(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetIsimIst(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetIsimIst(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetIsimPcscf(
+	ctx context.Context,
+	subId int32,
+) ([]string, error) {
+	return w.impl.GetIsimPcscf(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetImsPcscfAddresses(
+	ctx context.Context,
+	subId int32,
+) ([]string, error) {
+	return w.impl.GetImsPcscfAddresses(ctx, subId)
+}
+
+func (w *phoneSubInfoStubWrapper) GetIccSimChallengeResponse(
+	ctx context.Context,
+	subId int32,
+	appType int32,
+	authType int32,
+	data string,
+) (string, error) {
+	return w.impl.GetIccSimChallengeResponse(ctx, subId, appType, authType, data)
+}
+
+func (w *phoneSubInfoStubWrapper) GetSmscIdentity(
+	ctx context.Context,
+	subId int32,
+	appType int32,
+) (net.Uri, error) {
+	return w.impl.GetSmscIdentity(ctx, subId, appType)
+}
+
+func (w *phoneSubInfoStubWrapper) GetSimServiceTable(
+	ctx context.Context,
+	subId int32,
+	appType int32,
+) (string, error) {
+	return w.impl.GetSimServiceTable(ctx, subId, appType)
+}
+
+var _ IPhoneSubInfo = (*phoneSubInfoStubWrapper)(nil)
+
+// NewPhoneSubInfoStub creates a server-side IPhoneSubInfo wrapping the given
+// server implementation. The returned value satisfies IPhoneSubInfo
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPhoneSubInfoStub(
+	impl IPhoneSubInfoServer,
+) IPhoneSubInfo {
+	wrapper := &phoneSubInfoStubWrapper{impl: impl}
+	stub := &PhoneSubInfoStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

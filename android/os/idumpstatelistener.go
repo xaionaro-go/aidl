@@ -205,3 +205,73 @@ func (s *DumpstateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDumpstateListenerServer is the server-side interface that user implementations
+// provide to NewDumpstateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDumpstateListenerServer interface {
+	OnProgress(ctx context.Context, progress int32) error
+	OnError(ctx context.Context, errorCode int32) error
+	OnFinished(ctx context.Context, bugreportFile string) error
+	OnScreenshotTaken(ctx context.Context, success bool) error
+	OnUiIntensiveBugreportDumpsFinished(ctx context.Context) error
+}
+
+type dumpstateListenerStubWrapper struct {
+	impl       IDumpstateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dumpstateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dumpstateListenerStubWrapper) OnProgress(
+	ctx context.Context,
+	progress int32,
+) error {
+	return w.impl.OnProgress(ctx, progress)
+}
+
+func (w *dumpstateListenerStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.OnError(ctx, errorCode)
+}
+
+func (w *dumpstateListenerStubWrapper) OnFinished(
+	ctx context.Context,
+	bugreportFile string,
+) error {
+	return w.impl.OnFinished(ctx, bugreportFile)
+}
+
+func (w *dumpstateListenerStubWrapper) OnScreenshotTaken(
+	ctx context.Context,
+	success bool,
+) error {
+	return w.impl.OnScreenshotTaken(ctx, success)
+}
+
+func (w *dumpstateListenerStubWrapper) OnUiIntensiveBugreportDumpsFinished(
+	ctx context.Context,
+) error {
+	return w.impl.OnUiIntensiveBugreportDumpsFinished(ctx)
+}
+
+var _ IDumpstateListener = (*dumpstateListenerStubWrapper)(nil)
+
+// NewDumpstateListenerStub creates a server-side IDumpstateListener wrapping the given
+// server implementation. The returned value satisfies IDumpstateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDumpstateListenerStub(
+	impl IDumpstateListenerServer,
+) IDumpstateListener {
+	wrapper := &dumpstateListenerStubWrapper{impl: impl}
+	stub := &DumpstateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

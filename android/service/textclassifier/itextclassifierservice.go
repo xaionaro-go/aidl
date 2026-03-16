@@ -71,7 +71,7 @@ func (p *TextClassifierServiceProxy) OnSuggestSelection(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextClassifierService, "onSuggestSelection")
 	if _err != nil {
@@ -98,7 +98,7 @@ func (p *TextClassifierServiceProxy) OnClassifyText(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextClassifierService, "onClassifyText")
 	if _err != nil {
@@ -125,7 +125,7 @@ func (p *TextClassifierServiceProxy) OnGenerateLinks(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextClassifierService, "onGenerateLinks")
 	if _err != nil {
@@ -247,7 +247,7 @@ func (p *TextClassifierServiceProxy) OnDetectLanguage(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextClassifierService, "onDetectLanguage")
 	if _err != nil {
@@ -274,7 +274,7 @@ func (p *TextClassifierServiceProxy) OnSuggestConversationActions(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextClassifierService, "onSuggestConversationActions")
 	if _err != nil {
@@ -612,4 +612,128 @@ func (s *TextClassifierServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITextClassifierServiceServer is the server-side interface that user implementations
+// provide to NewTextClassifierServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITextClassifierServiceServer interface {
+	OnSuggestSelection(ctx context.Context, sessionId viewTextclassifier.TextClassificationSessionId, request viewTextclassifier.TextSelectionRequest, callback ITextClassifierCallback) error
+	OnClassifyText(ctx context.Context, sessionId viewTextclassifier.TextClassificationSessionId, request viewTextclassifier.TextClassificationRequest, callback ITextClassifierCallback) error
+	OnGenerateLinks(ctx context.Context, sessionId viewTextclassifier.TextClassificationSessionId, request viewTextclassifier.TextLinksRequest, callback ITextClassifierCallback) error
+	OnSelectionEvent(ctx context.Context, sessionId viewTextclassifier.TextClassificationSessionId, event viewTextclassifier.SelectionEvent) error
+	OnTextClassifierEvent(ctx context.Context, sessionId viewTextclassifier.TextClassificationSessionId, event viewTextclassifier.TextClassifierEvent) error
+	OnCreateTextClassificationSession(ctx context.Context, context_ viewTextclassifier.TextClassificationContext, sessionId viewTextclassifier.TextClassificationSessionId) error
+	OnDestroyTextClassificationSession(ctx context.Context, sessionId viewTextclassifier.TextClassificationSessionId) error
+	OnDetectLanguage(ctx context.Context, sessionId viewTextclassifier.TextClassificationSessionId, request viewTextclassifier.TextLanguageRequest, callback ITextClassifierCallback) error
+	OnSuggestConversationActions(ctx context.Context, sessionId viewTextclassifier.TextClassificationSessionId, request viewTextclassifier.ConversationActionsRequest, callback ITextClassifierCallback) error
+	OnConnectedStateChanged(ctx context.Context, connected int32) error
+}
+
+type textClassifierServiceStubWrapper struct {
+	impl       ITextClassifierServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *textClassifierServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *textClassifierServiceStubWrapper) OnSuggestSelection(
+	ctx context.Context,
+	sessionId viewTextclassifier.TextClassificationSessionId,
+	request viewTextclassifier.TextSelectionRequest,
+	callback ITextClassifierCallback,
+) error {
+	return w.impl.OnSuggestSelection(ctx, sessionId, request, callback)
+}
+
+func (w *textClassifierServiceStubWrapper) OnClassifyText(
+	ctx context.Context,
+	sessionId viewTextclassifier.TextClassificationSessionId,
+	request viewTextclassifier.TextClassificationRequest,
+	callback ITextClassifierCallback,
+) error {
+	return w.impl.OnClassifyText(ctx, sessionId, request, callback)
+}
+
+func (w *textClassifierServiceStubWrapper) OnGenerateLinks(
+	ctx context.Context,
+	sessionId viewTextclassifier.TextClassificationSessionId,
+	request viewTextclassifier.TextLinksRequest,
+	callback ITextClassifierCallback,
+) error {
+	return w.impl.OnGenerateLinks(ctx, sessionId, request, callback)
+}
+
+func (w *textClassifierServiceStubWrapper) OnSelectionEvent(
+	ctx context.Context,
+	sessionId viewTextclassifier.TextClassificationSessionId,
+	event viewTextclassifier.SelectionEvent,
+) error {
+	return w.impl.OnSelectionEvent(ctx, sessionId, event)
+}
+
+func (w *textClassifierServiceStubWrapper) OnTextClassifierEvent(
+	ctx context.Context,
+	sessionId viewTextclassifier.TextClassificationSessionId,
+	event viewTextclassifier.TextClassifierEvent,
+) error {
+	return w.impl.OnTextClassifierEvent(ctx, sessionId, event)
+}
+
+func (w *textClassifierServiceStubWrapper) OnCreateTextClassificationSession(
+	ctx context.Context,
+	context_ viewTextclassifier.TextClassificationContext,
+	sessionId viewTextclassifier.TextClassificationSessionId,
+) error {
+	return w.impl.OnCreateTextClassificationSession(ctx, context_, sessionId)
+}
+
+func (w *textClassifierServiceStubWrapper) OnDestroyTextClassificationSession(
+	ctx context.Context,
+	sessionId viewTextclassifier.TextClassificationSessionId,
+) error {
+	return w.impl.OnDestroyTextClassificationSession(ctx, sessionId)
+}
+
+func (w *textClassifierServiceStubWrapper) OnDetectLanguage(
+	ctx context.Context,
+	sessionId viewTextclassifier.TextClassificationSessionId,
+	request viewTextclassifier.TextLanguageRequest,
+	callback ITextClassifierCallback,
+) error {
+	return w.impl.OnDetectLanguage(ctx, sessionId, request, callback)
+}
+
+func (w *textClassifierServiceStubWrapper) OnSuggestConversationActions(
+	ctx context.Context,
+	sessionId viewTextclassifier.TextClassificationSessionId,
+	request viewTextclassifier.ConversationActionsRequest,
+	callback ITextClassifierCallback,
+) error {
+	return w.impl.OnSuggestConversationActions(ctx, sessionId, request, callback)
+}
+
+func (w *textClassifierServiceStubWrapper) OnConnectedStateChanged(
+	ctx context.Context,
+	connected int32,
+) error {
+	return w.impl.OnConnectedStateChanged(ctx, connected)
+}
+
+var _ ITextClassifierService = (*textClassifierServiceStubWrapper)(nil)
+
+// NewTextClassifierServiceStub creates a server-side ITextClassifierService wrapping the given
+// server implementation. The returned value satisfies ITextClassifierService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTextClassifierServiceStub(
+	impl ITextClassifierServiceServer,
+) ITextClassifierService {
+	wrapper := &textClassifierServiceStubWrapper{impl: impl}
+	stub := &TextClassifierServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

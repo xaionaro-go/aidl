@@ -90,3 +90,42 @@ func (s *ConditionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IConditionListenerServer is the server-side interface that user implementations
+// provide to NewConditionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConditionListenerServer interface {
+	OnConditionsReceived(ctx context.Context, conditions []Condition) error
+}
+
+type conditionListenerStubWrapper struct {
+	impl       IConditionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *conditionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *conditionListenerStubWrapper) OnConditionsReceived(
+	ctx context.Context,
+	conditions []Condition,
+) error {
+	return w.impl.OnConditionsReceived(ctx, conditions)
+}
+
+var _ IConditionListener = (*conditionListenerStubWrapper)(nil)
+
+// NewConditionListenerStub creates a server-side IConditionListener wrapping the given
+// server implementation. The returned value satisfies IConditionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConditionListenerStub(
+	impl IConditionListenerServer,
+) IConditionListener {
+	wrapper := &conditionListenerStubWrapper{impl: impl}
+	stub := &ConditionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

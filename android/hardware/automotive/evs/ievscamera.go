@@ -111,7 +111,7 @@ func (p *EvsCameraProxy) ForcePrimaryClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEvsCamera)
-	_data.WriteStrongBinder(display.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, display.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEvsCamera, "forcePrimaryClient")
 	if _err != nil {
@@ -581,7 +581,7 @@ func (p *EvsCameraProxy) StartVideoStream(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEvsCamera)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEvsCamera, "startVideoStream")
 	if _err != nil {
@@ -953,4 +953,174 @@ func (s *EvsCameraStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IEvsCameraServer is the server-side interface that user implementations
+// provide to NewEvsCameraStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEvsCameraServer interface {
+	DoneWithFrame(ctx context.Context, buffer []BufferDesc) error
+	ForcePrimaryClient(ctx context.Context, display IEvsDisplay) error
+	GetCameraInfo(ctx context.Context) (CameraDesc, error)
+	GetExtendedInfo(ctx context.Context, opaqueIdentifier int32) ([]byte, error)
+	GetIntParameter(ctx context.Context, id CameraParam) ([]int32, error)
+	GetIntParameterRange(ctx context.Context, id CameraParam) (ParameterRange, error)
+	GetParameterList(ctx context.Context) ([]CameraParam, error)
+	GetPhysicalCameraInfo(ctx context.Context, deviceId string) (CameraDesc, error)
+	ImportExternalBuffers(ctx context.Context, buffers []BufferDesc) (int32, error)
+	PauseVideoStream(ctx context.Context) error
+	ResumeVideoStream(ctx context.Context) error
+	SetExtendedInfo(ctx context.Context, opaqueIdentifier int32, opaqueValue []byte) error
+	SetIntParameter(ctx context.Context, id CameraParam, value int32) ([]int32, error)
+	SetPrimaryClient(ctx context.Context) error
+	SetMaxFramesInFlight(ctx context.Context, bufferCount int32) error
+	StartVideoStream(ctx context.Context, receiver IEvsCameraStream) error
+	StopVideoStream(ctx context.Context) error
+	UnsetPrimaryClient(ctx context.Context) error
+}
+
+type evsCameraStubWrapper struct {
+	impl       IEvsCameraServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *evsCameraStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *evsCameraStubWrapper) DoneWithFrame(
+	ctx context.Context,
+	buffer []BufferDesc,
+) error {
+	return w.impl.DoneWithFrame(ctx, buffer)
+}
+
+func (w *evsCameraStubWrapper) ForcePrimaryClient(
+	ctx context.Context,
+	display IEvsDisplay,
+) error {
+	return w.impl.ForcePrimaryClient(ctx, display)
+}
+
+func (w *evsCameraStubWrapper) GetCameraInfo(
+	ctx context.Context,
+) (CameraDesc, error) {
+	return w.impl.GetCameraInfo(ctx)
+}
+
+func (w *evsCameraStubWrapper) GetExtendedInfo(
+	ctx context.Context,
+	opaqueIdentifier int32,
+) ([]byte, error) {
+	return w.impl.GetExtendedInfo(ctx, opaqueIdentifier)
+}
+
+func (w *evsCameraStubWrapper) GetIntParameter(
+	ctx context.Context,
+	id CameraParam,
+) ([]int32, error) {
+	return w.impl.GetIntParameter(ctx, id)
+}
+
+func (w *evsCameraStubWrapper) GetIntParameterRange(
+	ctx context.Context,
+	id CameraParam,
+) (ParameterRange, error) {
+	return w.impl.GetIntParameterRange(ctx, id)
+}
+
+func (w *evsCameraStubWrapper) GetParameterList(
+	ctx context.Context,
+) ([]CameraParam, error) {
+	return w.impl.GetParameterList(ctx)
+}
+
+func (w *evsCameraStubWrapper) GetPhysicalCameraInfo(
+	ctx context.Context,
+	deviceId string,
+) (CameraDesc, error) {
+	return w.impl.GetPhysicalCameraInfo(ctx, deviceId)
+}
+
+func (w *evsCameraStubWrapper) ImportExternalBuffers(
+	ctx context.Context,
+	buffers []BufferDesc,
+) (int32, error) {
+	return w.impl.ImportExternalBuffers(ctx, buffers)
+}
+
+func (w *evsCameraStubWrapper) PauseVideoStream(
+	ctx context.Context,
+) error {
+	return w.impl.PauseVideoStream(ctx)
+}
+
+func (w *evsCameraStubWrapper) ResumeVideoStream(
+	ctx context.Context,
+) error {
+	return w.impl.ResumeVideoStream(ctx)
+}
+
+func (w *evsCameraStubWrapper) SetExtendedInfo(
+	ctx context.Context,
+	opaqueIdentifier int32,
+	opaqueValue []byte,
+) error {
+	return w.impl.SetExtendedInfo(ctx, opaqueIdentifier, opaqueValue)
+}
+
+func (w *evsCameraStubWrapper) SetIntParameter(
+	ctx context.Context,
+	id CameraParam,
+	value int32,
+) ([]int32, error) {
+	return w.impl.SetIntParameter(ctx, id, value)
+}
+
+func (w *evsCameraStubWrapper) SetPrimaryClient(
+	ctx context.Context,
+) error {
+	return w.impl.SetPrimaryClient(ctx)
+}
+
+func (w *evsCameraStubWrapper) SetMaxFramesInFlight(
+	ctx context.Context,
+	bufferCount int32,
+) error {
+	return w.impl.SetMaxFramesInFlight(ctx, bufferCount)
+}
+
+func (w *evsCameraStubWrapper) StartVideoStream(
+	ctx context.Context,
+	receiver IEvsCameraStream,
+) error {
+	return w.impl.StartVideoStream(ctx, receiver)
+}
+
+func (w *evsCameraStubWrapper) StopVideoStream(
+	ctx context.Context,
+) error {
+	return w.impl.StopVideoStream(ctx)
+}
+
+func (w *evsCameraStubWrapper) UnsetPrimaryClient(
+	ctx context.Context,
+) error {
+	return w.impl.UnsetPrimaryClient(ctx)
+}
+
+var _ IEvsCamera = (*evsCameraStubWrapper)(nil)
+
+// NewEvsCameraStub creates a server-side IEvsCamera wrapping the given
+// server implementation. The returned value satisfies IEvsCamera
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEvsCameraStub(
+	impl IEvsCameraServer,
+) IEvsCamera {
+	wrapper := &evsCameraStubWrapper{impl: impl}
+	stub := &EvsCameraStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

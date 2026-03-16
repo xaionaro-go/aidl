@@ -873,3 +873,158 @@ func (s *CameraDeviceUserStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraDeviceUserServer is the server-side interface that user implementations
+// provide to NewCameraDeviceUserStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraDeviceUserServer interface {
+	BeginConfigure(ctx context.Context) error
+	CancelRepeatingRequest(ctx context.Context) (int64, error)
+	CreateDefaultRequest(ctx context.Context, templateId TemplateId) (CameraMetadata, error)
+	CreateStream(ctx context.Context, outputConfiguration OutputConfiguration) (int32, error)
+	DeleteStream(ctx context.Context, streamId int32) error
+	Disconnect(ctx context.Context) error
+	EndConfigure(ctx context.Context, operatingMode StreamConfigurationMode, sessionParams CameraMetadata, startTimeNs int64) error
+	Flush(ctx context.Context) (int64, error)
+	GetCaptureRequestMetadataQueue(ctx context.Context) (fmq.MQDescriptor, error)
+	GetCaptureResultMetadataQueue(ctx context.Context) (fmq.MQDescriptor, error)
+	IsSessionConfigurationSupported(ctx context.Context, sessionConfiguration SessionConfiguration) (bool, error)
+	Prepare(ctx context.Context, streamId int32) error
+	SubmitRequestList(ctx context.Context, requestList []CaptureRequest, isRepeating bool) (SubmitInfo, error)
+	UpdateOutputConfiguration(ctx context.Context, streamId int32, outputConfiguration OutputConfiguration) error
+	WaitUntilIdle(ctx context.Context) error
+	IsPrimaryClient(ctx context.Context) (bool, error)
+}
+
+type cameraDeviceUserStubWrapper struct {
+	impl       ICameraDeviceUserServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraDeviceUserStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraDeviceUserStubWrapper) BeginConfigure(
+	ctx context.Context,
+) error {
+	return w.impl.BeginConfigure(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) CancelRepeatingRequest(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.CancelRepeatingRequest(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) CreateDefaultRequest(
+	ctx context.Context,
+	templateId TemplateId,
+) (CameraMetadata, error) {
+	return w.impl.CreateDefaultRequest(ctx, templateId)
+}
+
+func (w *cameraDeviceUserStubWrapper) CreateStream(
+	ctx context.Context,
+	outputConfiguration OutputConfiguration,
+) (int32, error) {
+	return w.impl.CreateStream(ctx, outputConfiguration)
+}
+
+func (w *cameraDeviceUserStubWrapper) DeleteStream(
+	ctx context.Context,
+	streamId int32,
+) error {
+	return w.impl.DeleteStream(ctx, streamId)
+}
+
+func (w *cameraDeviceUserStubWrapper) Disconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnect(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) EndConfigure(
+	ctx context.Context,
+	operatingMode StreamConfigurationMode,
+	sessionParams CameraMetadata,
+	startTimeNs int64,
+) error {
+	return w.impl.EndConfigure(ctx, operatingMode, sessionParams, startTimeNs)
+}
+
+func (w *cameraDeviceUserStubWrapper) Flush(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.Flush(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) GetCaptureRequestMetadataQueue(
+	ctx context.Context,
+) (fmq.MQDescriptor, error) {
+	return w.impl.GetCaptureRequestMetadataQueue(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) GetCaptureResultMetadataQueue(
+	ctx context.Context,
+) (fmq.MQDescriptor, error) {
+	return w.impl.GetCaptureResultMetadataQueue(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) IsSessionConfigurationSupported(
+	ctx context.Context,
+	sessionConfiguration SessionConfiguration,
+) (bool, error) {
+	return w.impl.IsSessionConfigurationSupported(ctx, sessionConfiguration)
+}
+
+func (w *cameraDeviceUserStubWrapper) Prepare(
+	ctx context.Context,
+	streamId int32,
+) error {
+	return w.impl.Prepare(ctx, streamId)
+}
+
+func (w *cameraDeviceUserStubWrapper) SubmitRequestList(
+	ctx context.Context,
+	requestList []CaptureRequest,
+	isRepeating bool,
+) (SubmitInfo, error) {
+	return w.impl.SubmitRequestList(ctx, requestList, isRepeating)
+}
+
+func (w *cameraDeviceUserStubWrapper) UpdateOutputConfiguration(
+	ctx context.Context,
+	streamId int32,
+	outputConfiguration OutputConfiguration,
+) error {
+	return w.impl.UpdateOutputConfiguration(ctx, streamId, outputConfiguration)
+}
+
+func (w *cameraDeviceUserStubWrapper) WaitUntilIdle(
+	ctx context.Context,
+) error {
+	return w.impl.WaitUntilIdle(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) IsPrimaryClient(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsPrimaryClient(ctx)
+}
+
+var _ ICameraDeviceUser = (*cameraDeviceUserStubWrapper)(nil)
+
+// NewCameraDeviceUserStub creates a server-side ICameraDeviceUser wrapping the given
+// server implementation. The returned value satisfies ICameraDeviceUser
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraDeviceUserStub(
+	impl ICameraDeviceUserServer,
+) ICameraDeviceUser {
+	wrapper := &cameraDeviceUserStubWrapper{impl: impl}
+	stub := &CameraDeviceUserStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

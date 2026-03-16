@@ -82,3 +82,42 @@ func (s *FpsListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFpsListenerServer is the server-side interface that user implementations
+// provide to NewFpsListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFpsListenerServer interface {
+	OnFpsReported(ctx context.Context, fps float32) error
+}
+
+type fpsListenerStubWrapper struct {
+	impl       IFpsListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fpsListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fpsListenerStubWrapper) OnFpsReported(
+	ctx context.Context,
+	fps float32,
+) error {
+	return w.impl.OnFpsReported(ctx, fps)
+}
+
+var _ IFpsListener = (*fpsListenerStubWrapper)(nil)
+
+// NewFpsListenerStub creates a server-side IFpsListener wrapping the given
+// server implementation. The returned value satisfies IFpsListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFpsListenerStub(
+	impl IFpsListenerServer,
+) IFpsListener {
+	wrapper := &fpsListenerStubWrapper{impl: impl}
+	stub := &FpsListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

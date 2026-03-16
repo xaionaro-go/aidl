@@ -76,3 +76,41 @@ func (s *VoidConsumerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVoidConsumerServer is the server-side interface that user implementations
+// provide to NewVoidConsumerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoidConsumerServer interface {
+	Accept(ctx context.Context) error
+}
+
+type voidConsumerStubWrapper struct {
+	impl       IVoidConsumerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voidConsumerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voidConsumerStubWrapper) Accept(
+	ctx context.Context,
+) error {
+	return w.impl.Accept(ctx)
+}
+
+var _ IVoidConsumer = (*voidConsumerStubWrapper)(nil)
+
+// NewVoidConsumerStub creates a server-side IVoidConsumer wrapping the given
+// server implementation. The returned value satisfies IVoidConsumer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoidConsumerStub(
+	impl IVoidConsumerServer,
+) IVoidConsumer {
+	wrapper := &voidConsumerStubWrapper{impl: impl}
+	stub := &VoidConsumerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

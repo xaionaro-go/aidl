@@ -44,7 +44,7 @@ func (p *GnssNavigationMessageInterfaceProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssNavigationMessageInterface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGnssNavigationMessageInterface, "setCallback")
 	if _err != nil {
@@ -132,4 +132,50 @@ func (s *GnssNavigationMessageInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssNavigationMessageInterfaceServer is the server-side interface that user implementations
+// provide to NewGnssNavigationMessageInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssNavigationMessageInterfaceServer interface {
+	SetCallback(ctx context.Context, callback IGnssNavigationMessageCallback) error
+	Close(ctx context.Context) error
+}
+
+type gnssNavigationMessageInterfaceStubWrapper struct {
+	impl       IGnssNavigationMessageInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssNavigationMessageInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssNavigationMessageInterfaceStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IGnssNavigationMessageCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *gnssNavigationMessageInterfaceStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ IGnssNavigationMessageInterface = (*gnssNavigationMessageInterfaceStubWrapper)(nil)
+
+// NewGnssNavigationMessageInterfaceStub creates a server-side IGnssNavigationMessageInterface wrapping the given
+// server implementation. The returned value satisfies IGnssNavigationMessageInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssNavigationMessageInterfaceStub(
+	impl IGnssNavigationMessageInterfaceServer,
+) IGnssNavigationMessageInterface {
+	wrapper := &gnssNavigationMessageInterfaceStubWrapper{impl: impl}
+	stub := &GnssNavigationMessageInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -263,3 +263,69 @@ func (s *HdmiRecordListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiRecordListenerServer is the server-side interface that user implementations
+// provide to NewHdmiRecordListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiRecordListenerServer interface {
+	GetOneTouchRecordSource(ctx context.Context, recorderAddress int32) ([]byte, error)
+	OnOneTouchRecordResult(ctx context.Context, recorderAddress int32, result int32) error
+	OnTimerRecordingResult(ctx context.Context, recorderAddress int32, result int32) error
+	OnClearTimerRecordingResult(ctx context.Context, recorderAddress int32, result int32) error
+}
+
+type hdmiRecordListenerStubWrapper struct {
+	impl       IHdmiRecordListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiRecordListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiRecordListenerStubWrapper) GetOneTouchRecordSource(
+	ctx context.Context,
+	recorderAddress int32,
+) ([]byte, error) {
+	return w.impl.GetOneTouchRecordSource(ctx, recorderAddress)
+}
+
+func (w *hdmiRecordListenerStubWrapper) OnOneTouchRecordResult(
+	ctx context.Context,
+	recorderAddress int32,
+	result int32,
+) error {
+	return w.impl.OnOneTouchRecordResult(ctx, recorderAddress, result)
+}
+
+func (w *hdmiRecordListenerStubWrapper) OnTimerRecordingResult(
+	ctx context.Context,
+	recorderAddress int32,
+	result int32,
+) error {
+	return w.impl.OnTimerRecordingResult(ctx, recorderAddress, result)
+}
+
+func (w *hdmiRecordListenerStubWrapper) OnClearTimerRecordingResult(
+	ctx context.Context,
+	recorderAddress int32,
+	result int32,
+) error {
+	return w.impl.OnClearTimerRecordingResult(ctx, recorderAddress, result)
+}
+
+var _ IHdmiRecordListener = (*hdmiRecordListenerStubWrapper)(nil)
+
+// NewHdmiRecordListenerStub creates a server-side IHdmiRecordListener wrapping the given
+// server implementation. The returned value satisfies IHdmiRecordListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiRecordListenerStub(
+	impl IHdmiRecordListenerServer,
+) IHdmiRecordListener {
+	wrapper := &hdmiRecordListenerStubWrapper{impl: impl}
+	stub := &HdmiRecordListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

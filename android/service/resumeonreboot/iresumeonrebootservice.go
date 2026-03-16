@@ -165,3 +165,53 @@ func (s *ResumeOnRebootServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IResumeOnRebootServiceServer is the server-side interface that user implementations
+// provide to NewResumeOnRebootServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResumeOnRebootServiceServer interface {
+	WrapSecret(ctx context.Context, unwrappedBlob []byte, lifeTimeInMillis int64, resultCallback os.RemoteCallback) error
+	Unwrap(ctx context.Context, wrappedBlob []byte, resultCallback os.RemoteCallback) error
+}
+
+type resumeOnRebootServiceStubWrapper struct {
+	impl       IResumeOnRebootServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resumeOnRebootServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resumeOnRebootServiceStubWrapper) WrapSecret(
+	ctx context.Context,
+	unwrappedBlob []byte,
+	lifeTimeInMillis int64,
+	resultCallback os.RemoteCallback,
+) error {
+	return w.impl.WrapSecret(ctx, unwrappedBlob, lifeTimeInMillis, resultCallback)
+}
+
+func (w *resumeOnRebootServiceStubWrapper) Unwrap(
+	ctx context.Context,
+	wrappedBlob []byte,
+	resultCallback os.RemoteCallback,
+) error {
+	return w.impl.Unwrap(ctx, wrappedBlob, resultCallback)
+}
+
+var _ IResumeOnRebootService = (*resumeOnRebootServiceStubWrapper)(nil)
+
+// NewResumeOnRebootServiceStub creates a server-side IResumeOnRebootService wrapping the given
+// server implementation. The returned value satisfies IResumeOnRebootService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResumeOnRebootServiceStub(
+	impl IResumeOnRebootServiceServer,
+) IResumeOnRebootService {
+	wrapper := &resumeOnRebootServiceStubWrapper{impl: impl}
+	stub := &ResumeOnRebootServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

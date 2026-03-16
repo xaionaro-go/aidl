@@ -214,3 +214,76 @@ func (s *DesktopTaskListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDesktopTaskListenerServer is the server-side interface that user implementations
+// provide to NewDesktopTaskListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDesktopTaskListenerServer interface {
+	OnTasksVisibilityChanged(ctx context.Context, displayId int32, visibleTasksCount int32) error
+	OnStashedChanged(ctx context.Context, displayId int32, stashed bool) error
+	OnTaskbarCornerRoundingUpdate(ctx context.Context, hasTasksRequiringTaskbarRounding bool) error
+	OnEnterDesktopModeTransitionStarted(ctx context.Context, transitionDuration int32) error
+	OnExitDesktopModeTransitionStarted(ctx context.Context, transitionDuration int32) error
+}
+
+type desktopTaskListenerStubWrapper struct {
+	impl       IDesktopTaskListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *desktopTaskListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *desktopTaskListenerStubWrapper) OnTasksVisibilityChanged(
+	ctx context.Context,
+	displayId int32,
+	visibleTasksCount int32,
+) error {
+	return w.impl.OnTasksVisibilityChanged(ctx, displayId, visibleTasksCount)
+}
+
+func (w *desktopTaskListenerStubWrapper) OnStashedChanged(
+	ctx context.Context,
+	displayId int32,
+	stashed bool,
+) error {
+	return w.impl.OnStashedChanged(ctx, displayId, stashed)
+}
+
+func (w *desktopTaskListenerStubWrapper) OnTaskbarCornerRoundingUpdate(
+	ctx context.Context,
+	hasTasksRequiringTaskbarRounding bool,
+) error {
+	return w.impl.OnTaskbarCornerRoundingUpdate(ctx, hasTasksRequiringTaskbarRounding)
+}
+
+func (w *desktopTaskListenerStubWrapper) OnEnterDesktopModeTransitionStarted(
+	ctx context.Context,
+	transitionDuration int32,
+) error {
+	return w.impl.OnEnterDesktopModeTransitionStarted(ctx, transitionDuration)
+}
+
+func (w *desktopTaskListenerStubWrapper) OnExitDesktopModeTransitionStarted(
+	ctx context.Context,
+	transitionDuration int32,
+) error {
+	return w.impl.OnExitDesktopModeTransitionStarted(ctx, transitionDuration)
+}
+
+var _ IDesktopTaskListener = (*desktopTaskListenerStubWrapper)(nil)
+
+// NewDesktopTaskListenerStub creates a server-side IDesktopTaskListener wrapping the given
+// server implementation. The returned value satisfies IDesktopTaskListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDesktopTaskListenerStub(
+	impl IDesktopTaskListenerServer,
+) IDesktopTaskListener {
+	wrapper := &desktopTaskListenerStubWrapper{impl: impl}
+	stub := &DesktopTaskListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

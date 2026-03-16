@@ -1118,3 +1118,178 @@ func (s *MmsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMmsServer is the server-side interface that user implementations
+// provide to NewMmsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMmsServer interface {
+	SendMessage(ctx context.Context, subId int32, callingUser int32, callingPkg string, contentUri net.Uri, locationUrl string, configOverrides os.Bundle, sentIntent app.PendingIntent, messageId int64) error
+	DownloadMessage(ctx context.Context, subId int32, callingUser int32, callingPkg string, locationUrl string, contentUri net.Uri, configOverrides os.Bundle, downloadedIntent app.PendingIntent, messageId int64) error
+	ImportTextMessage(ctx context.Context, callingPkg string, address string, type_ int32, text string, timestampMillis int64, seen bool, read bool) (net.Uri, error)
+	ImportMultimediaMessage(ctx context.Context, callingUser int32, callingPkg string, contentUri net.Uri, messageId string, timestampSecs int64, seen bool, read bool) (net.Uri, error)
+	DeleteStoredMessage(ctx context.Context, callingPkg string, messageUri net.Uri) (bool, error)
+	DeleteStoredConversation(ctx context.Context, callingPkg string, conversationId int64) (bool, error)
+	UpdateStoredMessageStatus(ctx context.Context, callingPkg string, messageUri net.Uri, statusValues content.ContentValues) (bool, error)
+	ArchiveStoredConversation(ctx context.Context, callingPkg string, conversationId int64, archived bool) (bool, error)
+	AddTextMessageDraft(ctx context.Context, callingPkg string, address string, text string) (net.Uri, error)
+	AddMultimediaMessageDraft(ctx context.Context, callingUser int32, callingPkg string, contentUri net.Uri) (net.Uri, error)
+	SendStoredMessage(ctx context.Context, subId int32, callingPkg string, messageUri net.Uri, configOverrides os.Bundle, sentIntent app.PendingIntent) error
+	SetAutoPersisting(ctx context.Context, callingPkg string, enabled bool) error
+	GetAutoPersisting(ctx context.Context) (bool, error)
+}
+
+type mmsStubWrapper struct {
+	impl       IMmsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mmsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mmsStubWrapper) SendMessage(
+	ctx context.Context,
+	subId int32,
+	callingUser int32,
+	callingPkg string,
+	contentUri net.Uri,
+	locationUrl string,
+	configOverrides os.Bundle,
+	sentIntent app.PendingIntent,
+	messageId int64,
+) error {
+	return w.impl.SendMessage(ctx, subId, callingUser, callingPkg, contentUri, locationUrl, configOverrides, sentIntent, messageId)
+}
+
+func (w *mmsStubWrapper) DownloadMessage(
+	ctx context.Context,
+	subId int32,
+	callingUser int32,
+	callingPkg string,
+	locationUrl string,
+	contentUri net.Uri,
+	configOverrides os.Bundle,
+	downloadedIntent app.PendingIntent,
+	messageId int64,
+) error {
+	return w.impl.DownloadMessage(ctx, subId, callingUser, callingPkg, locationUrl, contentUri, configOverrides, downloadedIntent, messageId)
+}
+
+func (w *mmsStubWrapper) ImportTextMessage(
+	ctx context.Context,
+	callingPkg string,
+	address string,
+	type_ int32,
+	text string,
+	timestampMillis int64,
+	seen bool,
+	read bool,
+) (net.Uri, error) {
+	return w.impl.ImportTextMessage(ctx, callingPkg, address, type_, text, timestampMillis, seen, read)
+}
+
+func (w *mmsStubWrapper) ImportMultimediaMessage(
+	ctx context.Context,
+	callingUser int32,
+	callingPkg string,
+	contentUri net.Uri,
+	messageId string,
+	timestampSecs int64,
+	seen bool,
+	read bool,
+) (net.Uri, error) {
+	return w.impl.ImportMultimediaMessage(ctx, callingUser, callingPkg, contentUri, messageId, timestampSecs, seen, read)
+}
+
+func (w *mmsStubWrapper) DeleteStoredMessage(
+	ctx context.Context,
+	callingPkg string,
+	messageUri net.Uri,
+) (bool, error) {
+	return w.impl.DeleteStoredMessage(ctx, callingPkg, messageUri)
+}
+
+func (w *mmsStubWrapper) DeleteStoredConversation(
+	ctx context.Context,
+	callingPkg string,
+	conversationId int64,
+) (bool, error) {
+	return w.impl.DeleteStoredConversation(ctx, callingPkg, conversationId)
+}
+
+func (w *mmsStubWrapper) UpdateStoredMessageStatus(
+	ctx context.Context,
+	callingPkg string,
+	messageUri net.Uri,
+	statusValues content.ContentValues,
+) (bool, error) {
+	return w.impl.UpdateStoredMessageStatus(ctx, callingPkg, messageUri, statusValues)
+}
+
+func (w *mmsStubWrapper) ArchiveStoredConversation(
+	ctx context.Context,
+	callingPkg string,
+	conversationId int64,
+	archived bool,
+) (bool, error) {
+	return w.impl.ArchiveStoredConversation(ctx, callingPkg, conversationId, archived)
+}
+
+func (w *mmsStubWrapper) AddTextMessageDraft(
+	ctx context.Context,
+	callingPkg string,
+	address string,
+	text string,
+) (net.Uri, error) {
+	return w.impl.AddTextMessageDraft(ctx, callingPkg, address, text)
+}
+
+func (w *mmsStubWrapper) AddMultimediaMessageDraft(
+	ctx context.Context,
+	callingUser int32,
+	callingPkg string,
+	contentUri net.Uri,
+) (net.Uri, error) {
+	return w.impl.AddMultimediaMessageDraft(ctx, callingUser, callingPkg, contentUri)
+}
+
+func (w *mmsStubWrapper) SendStoredMessage(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	messageUri net.Uri,
+	configOverrides os.Bundle,
+	sentIntent app.PendingIntent,
+) error {
+	return w.impl.SendStoredMessage(ctx, subId, callingPkg, messageUri, configOverrides, sentIntent)
+}
+
+func (w *mmsStubWrapper) SetAutoPersisting(
+	ctx context.Context,
+	callingPkg string,
+	enabled bool,
+) error {
+	return w.impl.SetAutoPersisting(ctx, callingPkg, enabled)
+}
+
+func (w *mmsStubWrapper) GetAutoPersisting(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetAutoPersisting(ctx)
+}
+
+var _ IMms = (*mmsStubWrapper)(nil)
+
+// NewMmsStub creates a server-side IMms wrapping the given
+// server implementation. The returned value satisfies IMms
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMmsStub(
+	impl IMmsServer,
+) IMms {
+	wrapper := &mmsStubWrapper{impl: impl}
+	stub := &MmsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

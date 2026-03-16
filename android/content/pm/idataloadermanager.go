@@ -56,7 +56,7 @@ func (p *DataLoaderManagerProxy) BindToDataLoader(
 		return _result, _err
 	}
 	_data.WriteInt64(bindDelayMs)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataLoaderManager, "bindToDataLoader")
 	if _err != nil {
@@ -225,4 +225,62 @@ func (s *DataLoaderManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDataLoaderManagerServer is the server-side interface that user implementations
+// provide to NewDataLoaderManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataLoaderManagerServer interface {
+	BindToDataLoader(ctx context.Context, id int32, params DataLoaderParamsParcel, bindDelayMs int64, listener IDataLoaderStatusListener) (bool, error)
+	GetDataLoader(ctx context.Context, dataLoaderId int32) (IDataLoader, error)
+	UnbindFromDataLoader(ctx context.Context, dataLoaderId int32) error
+}
+
+type dataLoaderManagerStubWrapper struct {
+	impl       IDataLoaderManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataLoaderManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dataLoaderManagerStubWrapper) BindToDataLoader(
+	ctx context.Context,
+	id int32,
+	params DataLoaderParamsParcel,
+	bindDelayMs int64,
+	listener IDataLoaderStatusListener,
+) (bool, error) {
+	return w.impl.BindToDataLoader(ctx, id, params, bindDelayMs, listener)
+}
+
+func (w *dataLoaderManagerStubWrapper) GetDataLoader(
+	ctx context.Context,
+	dataLoaderId int32,
+) (IDataLoader, error) {
+	return w.impl.GetDataLoader(ctx, dataLoaderId)
+}
+
+func (w *dataLoaderManagerStubWrapper) UnbindFromDataLoader(
+	ctx context.Context,
+	dataLoaderId int32,
+) error {
+	return w.impl.UnbindFromDataLoader(ctx, dataLoaderId)
+}
+
+var _ IDataLoaderManager = (*dataLoaderManagerStubWrapper)(nil)
+
+// NewDataLoaderManagerStub creates a server-side IDataLoaderManager wrapping the given
+// server implementation. The returned value satisfies IDataLoaderManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataLoaderManagerStub(
+	impl IDataLoaderManagerServer,
+) IDataLoaderManager {
+	wrapper := &dataLoaderManagerStubWrapper{impl: impl}
+	stub := &DataLoaderManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

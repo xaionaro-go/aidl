@@ -94,3 +94,44 @@ func (s *AAudioClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAAudioClientServer is the server-side interface that user implementations
+// provide to NewAAudioClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAAudioClientServer interface {
+	OnStreamChange(ctx context.Context, handle int32, opcode int32, value int32) error
+}
+
+type aAudioClientStubWrapper struct {
+	impl       IAAudioClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aAudioClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aAudioClientStubWrapper) OnStreamChange(
+	ctx context.Context,
+	handle int32,
+	opcode int32,
+	value int32,
+) error {
+	return w.impl.OnStreamChange(ctx, handle, opcode, value)
+}
+
+var _ IAAudioClient = (*aAudioClientStubWrapper)(nil)
+
+// NewAAudioClientStub creates a server-side IAAudioClient wrapping the given
+// server implementation. The returned value satisfies IAAudioClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAAudioClientStub(
+	impl IAAudioClientServer,
+) IAAudioClient {
+	wrapper := &aAudioClientStubWrapper{impl: impl}
+	stub := &AAudioClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

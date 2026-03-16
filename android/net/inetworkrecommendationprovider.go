@@ -90,3 +90,42 @@ func (s *NetworkRecommendationProviderStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INetworkRecommendationProviderServer is the server-side interface that user implementations
+// provide to NewNetworkRecommendationProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkRecommendationProviderServer interface {
+	RequestScores(ctx context.Context, networks []NetworkKey) error
+}
+
+type networkRecommendationProviderStubWrapper struct {
+	impl       INetworkRecommendationProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkRecommendationProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkRecommendationProviderStubWrapper) RequestScores(
+	ctx context.Context,
+	networks []NetworkKey,
+) error {
+	return w.impl.RequestScores(ctx, networks)
+}
+
+var _ INetworkRecommendationProvider = (*networkRecommendationProviderStubWrapper)(nil)
+
+// NewNetworkRecommendationProviderStub creates a server-side INetworkRecommendationProvider wrapping the given
+// server implementation. The returned value satisfies INetworkRecommendationProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkRecommendationProviderStub(
+	impl INetworkRecommendationProviderServer,
+) INetworkRecommendationProvider {
+	wrapper := &networkRecommendationProviderStubWrapper{impl: impl}
+	stub := &NetworkRecommendationProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

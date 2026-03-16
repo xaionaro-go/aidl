@@ -44,7 +44,7 @@ func (p *ActivityRecognitionHardwareClientProxy) OnAvailabilityChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityRecognitionHardwareClient)
 	_data.WriteBool(isSupported)
-	_data.WriteStrongBinder(instance.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, instance.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityRecognitionHardwareClient, "onAvailabilityChanged")
 	if _err != nil {
@@ -86,4 +86,44 @@ func (s *ActivityRecognitionHardwareClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IActivityRecognitionHardwareClientServer is the server-side interface that user implementations
+// provide to NewActivityRecognitionHardwareClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IActivityRecognitionHardwareClientServer interface {
+	OnAvailabilityChanged(ctx context.Context, isSupported bool, instance IActivityRecognitionHardware) error
+}
+
+type activityRecognitionHardwareClientStubWrapper struct {
+	impl       IActivityRecognitionHardwareClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *activityRecognitionHardwareClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *activityRecognitionHardwareClientStubWrapper) OnAvailabilityChanged(
+	ctx context.Context,
+	isSupported bool,
+	instance IActivityRecognitionHardware,
+) error {
+	return w.impl.OnAvailabilityChanged(ctx, isSupported, instance)
+}
+
+var _ IActivityRecognitionHardwareClient = (*activityRecognitionHardwareClientStubWrapper)(nil)
+
+// NewActivityRecognitionHardwareClientStub creates a server-side IActivityRecognitionHardwareClient wrapping the given
+// server implementation. The returned value satisfies IActivityRecognitionHardwareClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewActivityRecognitionHardwareClientStub(
+	impl IActivityRecognitionHardwareClientServer,
+) IActivityRecognitionHardwareClient {
+	wrapper := &activityRecognitionHardwareClientStubWrapper{impl: impl}
+	stub := &ActivityRecognitionHardwareClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

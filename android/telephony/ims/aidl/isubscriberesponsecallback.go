@@ -234,3 +234,75 @@ func (s *SubscribeResponseCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISubscribeResponseCallbackServer is the server-side interface that user implementations
+// provide to NewSubscribeResponseCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISubscribeResponseCallbackServer interface {
+	OnCommandError(ctx context.Context, code int32) error
+	OnNetworkResponse(ctx context.Context, detail ims.SipDetails) error
+	OnNotifyCapabilitiesUpdate(ctx context.Context, pidfXmls []string) error
+	OnResourceTerminated(ctx context.Context, uriTerminatedReason []ims.RcsContactTerminatedReason) error
+	OnTerminated(ctx context.Context, reason string, retryAfterMilliseconds int64) error
+}
+
+type subscribeResponseCallbackStubWrapper struct {
+	impl       ISubscribeResponseCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *subscribeResponseCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *subscribeResponseCallbackStubWrapper) OnCommandError(
+	ctx context.Context,
+	code int32,
+) error {
+	return w.impl.OnCommandError(ctx, code)
+}
+
+func (w *subscribeResponseCallbackStubWrapper) OnNetworkResponse(
+	ctx context.Context,
+	detail ims.SipDetails,
+) error {
+	return w.impl.OnNetworkResponse(ctx, detail)
+}
+
+func (w *subscribeResponseCallbackStubWrapper) OnNotifyCapabilitiesUpdate(
+	ctx context.Context,
+	pidfXmls []string,
+) error {
+	return w.impl.OnNotifyCapabilitiesUpdate(ctx, pidfXmls)
+}
+
+func (w *subscribeResponseCallbackStubWrapper) OnResourceTerminated(
+	ctx context.Context,
+	uriTerminatedReason []ims.RcsContactTerminatedReason,
+) error {
+	return w.impl.OnResourceTerminated(ctx, uriTerminatedReason)
+}
+
+func (w *subscribeResponseCallbackStubWrapper) OnTerminated(
+	ctx context.Context,
+	reason string,
+	retryAfterMilliseconds int64,
+) error {
+	return w.impl.OnTerminated(ctx, reason, retryAfterMilliseconds)
+}
+
+var _ ISubscribeResponseCallback = (*subscribeResponseCallbackStubWrapper)(nil)
+
+// NewSubscribeResponseCallbackStub creates a server-side ISubscribeResponseCallback wrapping the given
+// server implementation. The returned value satisfies ISubscribeResponseCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSubscribeResponseCallbackStub(
+	impl ISubscribeResponseCallbackServer,
+) ISubscribeResponseCallback {
+	wrapper := &subscribeResponseCallbackStubWrapper{impl: impl}
+	stub := &SubscribeResponseCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -90,3 +90,41 @@ func (s *ImsStreamMediaSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsStreamMediaSessionServer is the server-side interface that user implementations
+// provide to NewImsStreamMediaSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsStreamMediaSessionServer interface {
+	Close(ctx context.Context) error
+}
+
+type imsStreamMediaSessionStubWrapper struct {
+	impl       IImsStreamMediaSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsStreamMediaSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsStreamMediaSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ IImsStreamMediaSession = (*imsStreamMediaSessionStubWrapper)(nil)
+
+// NewImsStreamMediaSessionStub creates a server-side IImsStreamMediaSession wrapping the given
+// server implementation. The returned value satisfies IImsStreamMediaSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsStreamMediaSessionStub(
+	impl IImsStreamMediaSessionServer,
+) IImsStreamMediaSession {
+	wrapper := &imsStreamMediaSessionStubWrapper{impl: impl}
+	stub := &ImsStreamMediaSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

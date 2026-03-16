@@ -100,3 +100,43 @@ func (s *CamAppInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICamAppInfoListenerServer is the server-side interface that user implementations
+// provide to NewCamAppInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICamAppInfoListenerServer interface {
+	OnCamAppInfoChanged(ctx context.Context, slotId int32, appInfo os.Bundle) error
+}
+
+type camAppInfoListenerStubWrapper struct {
+	impl       ICamAppInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *camAppInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *camAppInfoListenerStubWrapper) OnCamAppInfoChanged(
+	ctx context.Context,
+	slotId int32,
+	appInfo os.Bundle,
+) error {
+	return w.impl.OnCamAppInfoChanged(ctx, slotId, appInfo)
+}
+
+var _ ICamAppInfoListener = (*camAppInfoListenerStubWrapper)(nil)
+
+// NewCamAppInfoListenerStub creates a server-side ICamAppInfoListener wrapping the given
+// server implementation. The returned value satisfies ICamAppInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCamAppInfoListenerStub(
+	impl ICamAppInfoListenerServer,
+) ICamAppInfoListener {
+	wrapper := &camAppInfoListenerStubWrapper{impl: impl}
+	stub := &CamAppInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

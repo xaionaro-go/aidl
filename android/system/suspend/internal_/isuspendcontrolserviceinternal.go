@@ -69,7 +69,7 @@ func (p *SuspendControlServiceInternalProxy) EnableAutosuspend(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISuspendControlServiceInternal)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISuspendControlServiceInternal, "enableAutosuspend")
 	if _err != nil {
@@ -380,4 +380,79 @@ func (s *SuspendControlServiceInternalStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISuspendControlServiceInternalServer is the server-side interface that user implementations
+// provide to NewSuspendControlServiceInternalStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISuspendControlServiceInternalServer interface {
+	EnableAutosuspend(ctx context.Context, token binder.IBinder) (bool, error)
+	ForceSuspend(ctx context.Context) (bool, error)
+	GetWakeLockStats(ctx context.Context) ([]WakeLockInfo, error)
+	GetWakeLockStatsFiltered(ctx context.Context, wakeLockInfoFieldBitMask int32) ([]WakeLockInfo, error)
+	GetWakeupStats(ctx context.Context) ([]WakeupInfo, error)
+	GetSuspendStats(ctx context.Context) (SuspendInfo, error)
+}
+
+type suspendControlServiceInternalStubWrapper struct {
+	impl       ISuspendControlServiceInternalServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *suspendControlServiceInternalStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *suspendControlServiceInternalStubWrapper) EnableAutosuspend(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.EnableAutosuspend(ctx, token)
+}
+
+func (w *suspendControlServiceInternalStubWrapper) ForceSuspend(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ForceSuspend(ctx)
+}
+
+func (w *suspendControlServiceInternalStubWrapper) GetWakeLockStats(
+	ctx context.Context,
+) ([]WakeLockInfo, error) {
+	return w.impl.GetWakeLockStats(ctx)
+}
+
+func (w *suspendControlServiceInternalStubWrapper) GetWakeLockStatsFiltered(
+	ctx context.Context,
+	wakeLockInfoFieldBitMask int32,
+) ([]WakeLockInfo, error) {
+	return w.impl.GetWakeLockStatsFiltered(ctx, wakeLockInfoFieldBitMask)
+}
+
+func (w *suspendControlServiceInternalStubWrapper) GetWakeupStats(
+	ctx context.Context,
+) ([]WakeupInfo, error) {
+	return w.impl.GetWakeupStats(ctx)
+}
+
+func (w *suspendControlServiceInternalStubWrapper) GetSuspendStats(
+	ctx context.Context,
+) (SuspendInfo, error) {
+	return w.impl.GetSuspendStats(ctx)
+}
+
+var _ ISuspendControlServiceInternal = (*suspendControlServiceInternalStubWrapper)(nil)
+
+// NewSuspendControlServiceInternalStub creates a server-side ISuspendControlServiceInternal wrapping the given
+// server implementation. The returned value satisfies ISuspendControlServiceInternal
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSuspendControlServiceInternalStub(
+	impl ISuspendControlServiceInternalServer,
+) ISuspendControlServiceInternal {
+	wrapper := &suspendControlServiceInternalStubWrapper{impl: impl}
+	stub := &SuspendControlServiceInternalStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

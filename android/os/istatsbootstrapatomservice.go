@@ -93,3 +93,42 @@ func (s *StatsBootstrapAtomServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStatsBootstrapAtomServiceServer is the server-side interface that user implementations
+// provide to NewStatsBootstrapAtomServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStatsBootstrapAtomServiceServer interface {
+	ReportBootstrapAtom(ctx context.Context, atom StatsBootstrapAtom) error
+}
+
+type statsBootstrapAtomServiceStubWrapper struct {
+	impl       IStatsBootstrapAtomServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *statsBootstrapAtomServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *statsBootstrapAtomServiceStubWrapper) ReportBootstrapAtom(
+	ctx context.Context,
+	atom StatsBootstrapAtom,
+) error {
+	return w.impl.ReportBootstrapAtom(ctx, atom)
+}
+
+var _ IStatsBootstrapAtomService = (*statsBootstrapAtomServiceStubWrapper)(nil)
+
+// NewStatsBootstrapAtomServiceStub creates a server-side IStatsBootstrapAtomService wrapping the given
+// server implementation. The returned value satisfies IStatsBootstrapAtomService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStatsBootstrapAtomServiceStub(
+	impl IStatsBootstrapAtomServiceServer,
+) IStatsBootstrapAtomService {
+	wrapper := &statsBootstrapAtomServiceStubWrapper{impl: impl}
+	stub := &StatsBootstrapAtomServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

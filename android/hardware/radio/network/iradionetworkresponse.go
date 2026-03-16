@@ -2351,3 +2351,461 @@ func (s *RadioNetworkResponseStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioNetworkResponseServer is the server-side interface that user implementations
+// provide to NewRadioNetworkResponseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioNetworkResponseServer interface {
+	AcknowledgeRequest(ctx context.Context, serial int32) error
+	GetAllowedNetworkTypesBitmapResponse(ctx context.Context, info radio.RadioResponseInfo, networkTypeBitmap int32) error
+	GetAvailableBandModesResponse(ctx context.Context, info radio.RadioResponseInfo, bandModes []RadioBandMode) error
+	GetAvailableNetworksResponse(ctx context.Context, info radio.RadioResponseInfo, networkInfos []OperatorInfo) error
+	GetBarringInfoResponse(ctx context.Context, info radio.RadioResponseInfo, cellIdentity CellIdentity, barringInfos []BarringInfo) error
+	GetCdmaRoamingPreferenceResponse(ctx context.Context, info radio.RadioResponseInfo, type_ CdmaRoamingType) error
+	GetCellInfoListResponse(ctx context.Context, info radio.RadioResponseInfo, cellInfo []CellInfo) error
+	GetDataRegistrationStateResponse(ctx context.Context, info radio.RadioResponseInfo, dataRegResponse RegStateResult) error
+	GetImsRegistrationStateResponse(ctx context.Context, info radio.RadioResponseInfo, isRegistered bool, ratFamily radio.RadioTechnologyFamily) error
+	GetNetworkSelectionModeResponse(ctx context.Context, info radio.RadioResponseInfo, manual bool) error
+	GetOperatorResponse(ctx context.Context, info radio.RadioResponseInfo, longName string, shortName string, numeric string) error
+	GetSignalStrengthResponse(ctx context.Context, info radio.RadioResponseInfo, signalStrength SignalStrength) error
+	GetSystemSelectionChannelsResponse(ctx context.Context, info radio.RadioResponseInfo, specifiers []RadioAccessSpecifier) error
+	GetVoiceRadioTechnologyResponse(ctx context.Context, info radio.RadioResponseInfo, rat radio.RadioTechnology) error
+	GetVoiceRegistrationStateResponse(ctx context.Context, info radio.RadioResponseInfo, voiceRegResponse RegStateResult) error
+	IsNrDualConnectivityEnabledResponse(ctx context.Context, info radio.RadioResponseInfo, isEnabled bool) error
+	SetAllowedNetworkTypesBitmapResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetBandModeResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetBarringPasswordResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetCdmaRoamingPreferenceResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetCellInfoListRateResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetIndicationFilterResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetLinkCapacityReportingCriteriaResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetLocationUpdatesResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetNetworkSelectionModeAutomaticResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetNetworkSelectionModeManualResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetNrDualConnectivityStateResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetSignalStrengthReportingCriteriaResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetSuppServiceNotificationsResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetSystemSelectionChannelsResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	StartNetworkScanResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	StopNetworkScanResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SupplyNetworkDepersonalizationResponse(ctx context.Context, info radio.RadioResponseInfo, remainingRetries int32) error
+	SetUsageSettingResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	GetUsageSettingResponse(ctx context.Context, info radio.RadioResponseInfo, usageSetting UsageSetting) error
+	SetEmergencyModeResponse(ctx context.Context, info radio.RadioResponseInfo, regState EmergencyRegResult) error
+	TriggerEmergencyNetworkScanResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	ExitEmergencyModeResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	CancelEmergencyNetworkScanResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetNullCipherAndIntegrityEnabledResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	IsNullCipherAndIntegrityEnabledResponse(ctx context.Context, info radio.RadioResponseInfo, isEnabled bool) error
+	IsN1ModeEnabledResponse(ctx context.Context, info radio.RadioResponseInfo, isEnabled bool) error
+	SetN1ModeEnabledResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	IsCellularIdentifierTransparencyEnabledResponse(ctx context.Context, info radio.RadioResponseInfo, isEnabled bool) error
+	SetCellularIdentifierTransparencyEnabledResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetSecurityAlgorithmsUpdatedEnabledResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	IsSecurityAlgorithmsUpdatedEnabledResponse(ctx context.Context, info radio.RadioResponseInfo, isEnabled bool) error
+	SetSatellitePlmnResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetSatelliteEnabledForCarrierResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	IsSatelliteEnabledForCarrierResponse(ctx context.Context, info radio.RadioResponseInfo, isEnabled bool) error
+}
+
+type radioNetworkResponseStubWrapper struct {
+	impl       IRadioNetworkResponseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioNetworkResponseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioNetworkResponseStubWrapper) AcknowledgeRequest(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.AcknowledgeRequest(ctx, serial)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetAllowedNetworkTypesBitmapResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	networkTypeBitmap int32,
+) error {
+	return w.impl.GetAllowedNetworkTypesBitmapResponse(ctx, info, networkTypeBitmap)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetAvailableBandModesResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	bandModes []RadioBandMode,
+) error {
+	return w.impl.GetAvailableBandModesResponse(ctx, info, bandModes)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetAvailableNetworksResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	networkInfos []OperatorInfo,
+) error {
+	return w.impl.GetAvailableNetworksResponse(ctx, info, networkInfos)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetBarringInfoResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	cellIdentity CellIdentity,
+	barringInfos []BarringInfo,
+) error {
+	return w.impl.GetBarringInfoResponse(ctx, info, cellIdentity, barringInfos)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetCdmaRoamingPreferenceResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	type_ CdmaRoamingType,
+) error {
+	return w.impl.GetCdmaRoamingPreferenceResponse(ctx, info, type_)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetCellInfoListResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	cellInfo []CellInfo,
+) error {
+	return w.impl.GetCellInfoListResponse(ctx, info, cellInfo)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetDataRegistrationStateResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	dataRegResponse RegStateResult,
+) error {
+	return w.impl.GetDataRegistrationStateResponse(ctx, info, dataRegResponse)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetImsRegistrationStateResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	isRegistered bool,
+	ratFamily radio.RadioTechnologyFamily,
+) error {
+	return w.impl.GetImsRegistrationStateResponse(ctx, info, isRegistered, ratFamily)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetNetworkSelectionModeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	manual bool,
+) error {
+	return w.impl.GetNetworkSelectionModeResponse(ctx, info, manual)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetOperatorResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	longName string,
+	shortName string,
+	numeric string,
+) error {
+	return w.impl.GetOperatorResponse(ctx, info, longName, shortName, numeric)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetSignalStrengthResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	signalStrength SignalStrength,
+) error {
+	return w.impl.GetSignalStrengthResponse(ctx, info, signalStrength)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetSystemSelectionChannelsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	specifiers []RadioAccessSpecifier,
+) error {
+	return w.impl.GetSystemSelectionChannelsResponse(ctx, info, specifiers)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetVoiceRadioTechnologyResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	rat radio.RadioTechnology,
+) error {
+	return w.impl.GetVoiceRadioTechnologyResponse(ctx, info, rat)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetVoiceRegistrationStateResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	voiceRegResponse RegStateResult,
+) error {
+	return w.impl.GetVoiceRegistrationStateResponse(ctx, info, voiceRegResponse)
+}
+
+func (w *radioNetworkResponseStubWrapper) IsNrDualConnectivityEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	isEnabled bool,
+) error {
+	return w.impl.IsNrDualConnectivityEnabledResponse(ctx, info, isEnabled)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetAllowedNetworkTypesBitmapResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetAllowedNetworkTypesBitmapResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetBandModeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetBandModeResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetBarringPasswordResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetBarringPasswordResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetCdmaRoamingPreferenceResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetCdmaRoamingPreferenceResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetCellInfoListRateResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetCellInfoListRateResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetIndicationFilterResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetIndicationFilterResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetLinkCapacityReportingCriteriaResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetLinkCapacityReportingCriteriaResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetLocationUpdatesResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetLocationUpdatesResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetNetworkSelectionModeAutomaticResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetNetworkSelectionModeAutomaticResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetNetworkSelectionModeManualResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetNetworkSelectionModeManualResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetNrDualConnectivityStateResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetNrDualConnectivityStateResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetSignalStrengthReportingCriteriaResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSignalStrengthReportingCriteriaResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetSuppServiceNotificationsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSuppServiceNotificationsResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetSystemSelectionChannelsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSystemSelectionChannelsResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) StartNetworkScanResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.StartNetworkScanResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) StopNetworkScanResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.StopNetworkScanResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SupplyNetworkDepersonalizationResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	remainingRetries int32,
+) error {
+	return w.impl.SupplyNetworkDepersonalizationResponse(ctx, info, remainingRetries)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetUsageSettingResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetUsageSettingResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) GetUsageSettingResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	usageSetting UsageSetting,
+) error {
+	return w.impl.GetUsageSettingResponse(ctx, info, usageSetting)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetEmergencyModeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	regState EmergencyRegResult,
+) error {
+	return w.impl.SetEmergencyModeResponse(ctx, info, regState)
+}
+
+func (w *radioNetworkResponseStubWrapper) TriggerEmergencyNetworkScanResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.TriggerEmergencyNetworkScanResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) ExitEmergencyModeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.ExitEmergencyModeResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) CancelEmergencyNetworkScanResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.CancelEmergencyNetworkScanResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetNullCipherAndIntegrityEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetNullCipherAndIntegrityEnabledResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) IsNullCipherAndIntegrityEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	isEnabled bool,
+) error {
+	return w.impl.IsNullCipherAndIntegrityEnabledResponse(ctx, info, isEnabled)
+}
+
+func (w *radioNetworkResponseStubWrapper) IsN1ModeEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	isEnabled bool,
+) error {
+	return w.impl.IsN1ModeEnabledResponse(ctx, info, isEnabled)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetN1ModeEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetN1ModeEnabledResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) IsCellularIdentifierTransparencyEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	isEnabled bool,
+) error {
+	return w.impl.IsCellularIdentifierTransparencyEnabledResponse(ctx, info, isEnabled)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetCellularIdentifierTransparencyEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetCellularIdentifierTransparencyEnabledResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetSecurityAlgorithmsUpdatedEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSecurityAlgorithmsUpdatedEnabledResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) IsSecurityAlgorithmsUpdatedEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	isEnabled bool,
+) error {
+	return w.impl.IsSecurityAlgorithmsUpdatedEnabledResponse(ctx, info, isEnabled)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetSatellitePlmnResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSatellitePlmnResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) SetSatelliteEnabledForCarrierResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSatelliteEnabledForCarrierResponse(ctx, info)
+}
+
+func (w *radioNetworkResponseStubWrapper) IsSatelliteEnabledForCarrierResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	isEnabled bool,
+) error {
+	return w.impl.IsSatelliteEnabledForCarrierResponse(ctx, info, isEnabled)
+}
+
+var _ IRadioNetworkResponse = (*radioNetworkResponseStubWrapper)(nil)
+
+// NewRadioNetworkResponseStub creates a server-side IRadioNetworkResponse wrapping the given
+// server implementation. The returned value satisfies IRadioNetworkResponse
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioNetworkResponseStub(
+	impl IRadioNetworkResponseServer,
+) IRadioNetworkResponse {
+	wrapper := &radioNetworkResponseStubWrapper{impl: impl}
+	stub := &RadioNetworkResponseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

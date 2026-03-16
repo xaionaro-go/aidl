@@ -126,3 +126,50 @@ func (s *BinderRpcCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBinderRpcCallbackServer is the server-side interface that user implementations
+// provide to NewBinderRpcCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderRpcCallbackServer interface {
+	SendCallback(ctx context.Context, str string) error
+	SendOnewayCallback(ctx context.Context, str string) error
+}
+
+type binderRpcCallbackStubWrapper struct {
+	impl       IBinderRpcCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderRpcCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderRpcCallbackStubWrapper) SendCallback(
+	ctx context.Context,
+	str string,
+) error {
+	return w.impl.SendCallback(ctx, str)
+}
+
+func (w *binderRpcCallbackStubWrapper) SendOnewayCallback(
+	ctx context.Context,
+	str string,
+) error {
+	return w.impl.SendOnewayCallback(ctx, str)
+}
+
+var _ IBinderRpcCallback = (*binderRpcCallbackStubWrapper)(nil)
+
+// NewBinderRpcCallbackStub creates a server-side IBinderRpcCallback wrapping the given
+// server implementation. The returned value satisfies IBinderRpcCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderRpcCallbackStub(
+	impl IBinderRpcCallbackServer,
+) IBinderRpcCallback {
+	wrapper := &binderRpcCallbackStubWrapper{impl: impl}
+	stub := &BinderRpcCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

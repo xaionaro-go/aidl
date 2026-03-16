@@ -3,7 +3,6 @@ package session
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	net "github.com/xaionaro-go/binder/android/net"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -43,8 +42,8 @@ const (
 type ISessionCallback interface {
 	AsBinder() binder.IBinder
 	OnCommand(ctx context.Context, packageName string, pid int32, uid int32, command string, args interface{}, cb interface{}) error
-	OnMediaButton(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent content.Intent, sequenceNumber int32, cb interface{}) error
-	OnMediaButtonFromController(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent content.Intent) error
+	OnMediaButton(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent interface{}, sequenceNumber int32, cb interface{}) error
+	OnMediaButtonFromController(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent interface{}) error
 	OnPrepare(ctx context.Context, packageName string, pid int32, uid int32) error
 	OnPrepareFromMediaId(ctx context.Context, packageName string, pid int32, uid int32, mediaId string, extras interface{}) error
 	OnPrepareFromSearch(ctx context.Context, packageName string, pid int32, uid int32, query string, extras interface{}) error
@@ -114,7 +113,7 @@ func (p *SessionCallbackProxy) OnMediaButton(
 	packageName string,
 	pid int32,
 	uid int32,
-	mediaButtonIntent content.Intent,
+	mediaButtonIntent interface{},
 	sequenceNumber int32,
 	cb interface{},
 ) error {
@@ -123,10 +122,6 @@ func (p *SessionCallbackProxy) OnMediaButton(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
-	_data.WriteInt32(1)
-	if _err := mediaButtonIntent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(sequenceNumber)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionCallback, "onMediaButton")
@@ -143,17 +138,13 @@ func (p *SessionCallbackProxy) OnMediaButtonFromController(
 	packageName string,
 	pid int32,
 	uid int32,
-	mediaButtonIntent content.Intent,
+	mediaButtonIntent interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionCallback)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(pid)
 	_data.WriteInt32(uid)
-	_data.WriteInt32(1)
-	if _err := mediaButtonIntent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionCallback, "onMediaButtonFromController")
 	if _err != nil {
@@ -698,18 +689,7 @@ func (s *SessionCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_mediaButtonIntent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_mediaButtonIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_mediaButtonIntent interface{}
 		_arg_sequenceNumber, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -734,18 +714,7 @@ func (s *SessionCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_mediaButtonIntent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_mediaButtonIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_mediaButtonIntent interface{}
 		_err = s.Impl.OnMediaButtonFromController(ctx, _arg_packageName, _arg_pid, _arg_uid, _arg_mediaButtonIntent)
 		_ = _err
 		return nil, nil
@@ -1223,4 +1192,302 @@ func (s *SessionCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISessionCallbackServer is the server-side interface that user implementations
+// provide to NewSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISessionCallbackServer interface {
+	OnCommand(ctx context.Context, packageName string, pid int32, uid int32, command string, args interface{}, cb interface{}) error
+	OnMediaButton(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent interface{}, sequenceNumber int32, cb interface{}) error
+	OnMediaButtonFromController(ctx context.Context, packageName string, pid int32, uid int32, mediaButtonIntent interface{}) error
+	OnPrepare(ctx context.Context, packageName string, pid int32, uid int32) error
+	OnPrepareFromMediaId(ctx context.Context, packageName string, pid int32, uid int32, mediaId string, extras interface{}) error
+	OnPrepareFromSearch(ctx context.Context, packageName string, pid int32, uid int32, query string, extras interface{}) error
+	OnPrepareFromUri(ctx context.Context, packageName string, pid int32, uid int32, uri net.Uri, extras interface{}) error
+	OnPlay(ctx context.Context, packageName string, pid int32, uid int32) error
+	OnPlayFromMediaId(ctx context.Context, packageName string, pid int32, uid int32, mediaId string, extras interface{}) error
+	OnPlayFromSearch(ctx context.Context, packageName string, pid int32, uid int32, query string, extras interface{}) error
+	OnPlayFromUri(ctx context.Context, packageName string, pid int32, uid int32, uri net.Uri, extras interface{}) error
+	OnSkipToTrack(ctx context.Context, packageName string, pid int32, uid int32, id int64) error
+	OnPause(ctx context.Context, packageName string, pid int32, uid int32) error
+	OnStop(ctx context.Context, packageName string, pid int32, uid int32) error
+	OnNext(ctx context.Context, packageName string, pid int32, uid int32) error
+	OnPrevious(ctx context.Context, packageName string, pid int32, uid int32) error
+	OnFastForward(ctx context.Context, packageName string, pid int32, uid int32) error
+	OnRewind(ctx context.Context, packageName string, pid int32, uid int32) error
+	OnSeekTo(ctx context.Context, packageName string, pid int32, uid int32, pos int64) error
+	OnRate(ctx context.Context, packageName string, pid int32, uid int32, rating interface{}) error
+	OnSetPlaybackSpeed(ctx context.Context, packageName string, pid int32, uid int32, speed float32) error
+	OnCustomAction(ctx context.Context, packageName string, pid int32, uid int32, action string, args interface{}) error
+	OnAdjustVolume(ctx context.Context, packageName string, pid int32, uid int32, direction int32) error
+	OnSetVolumeTo(ctx context.Context, packageName string, pid int32, uid int32, value int32) error
+}
+
+type sessionCallbackStubWrapper struct {
+	impl       ISessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sessionCallbackStubWrapper) OnCommand(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	command string,
+	args interface{},
+	cb interface{},
+) error {
+	return w.impl.OnCommand(ctx, packageName, pid, uid, command, args, cb)
+}
+
+func (w *sessionCallbackStubWrapper) OnMediaButton(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	mediaButtonIntent interface{},
+	sequenceNumber int32,
+	cb interface{},
+) error {
+	return w.impl.OnMediaButton(ctx, packageName, pid, uid, mediaButtonIntent, sequenceNumber, cb)
+}
+
+func (w *sessionCallbackStubWrapper) OnMediaButtonFromController(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	mediaButtonIntent interface{},
+) error {
+	return w.impl.OnMediaButtonFromController(ctx, packageName, pid, uid, mediaButtonIntent)
+}
+
+func (w *sessionCallbackStubWrapper) OnPrepare(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.OnPrepare(ctx, packageName, pid, uid)
+}
+
+func (w *sessionCallbackStubWrapper) OnPrepareFromMediaId(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	mediaId string,
+	extras interface{},
+) error {
+	return w.impl.OnPrepareFromMediaId(ctx, packageName, pid, uid, mediaId, extras)
+}
+
+func (w *sessionCallbackStubWrapper) OnPrepareFromSearch(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	query string,
+	extras interface{},
+) error {
+	return w.impl.OnPrepareFromSearch(ctx, packageName, pid, uid, query, extras)
+}
+
+func (w *sessionCallbackStubWrapper) OnPrepareFromUri(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	uri net.Uri,
+	extras interface{},
+) error {
+	return w.impl.OnPrepareFromUri(ctx, packageName, pid, uid, uri, extras)
+}
+
+func (w *sessionCallbackStubWrapper) OnPlay(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.OnPlay(ctx, packageName, pid, uid)
+}
+
+func (w *sessionCallbackStubWrapper) OnPlayFromMediaId(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	mediaId string,
+	extras interface{},
+) error {
+	return w.impl.OnPlayFromMediaId(ctx, packageName, pid, uid, mediaId, extras)
+}
+
+func (w *sessionCallbackStubWrapper) OnPlayFromSearch(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	query string,
+	extras interface{},
+) error {
+	return w.impl.OnPlayFromSearch(ctx, packageName, pid, uid, query, extras)
+}
+
+func (w *sessionCallbackStubWrapper) OnPlayFromUri(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	uri net.Uri,
+	extras interface{},
+) error {
+	return w.impl.OnPlayFromUri(ctx, packageName, pid, uid, uri, extras)
+}
+
+func (w *sessionCallbackStubWrapper) OnSkipToTrack(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	id int64,
+) error {
+	return w.impl.OnSkipToTrack(ctx, packageName, pid, uid, id)
+}
+
+func (w *sessionCallbackStubWrapper) OnPause(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.OnPause(ctx, packageName, pid, uid)
+}
+
+func (w *sessionCallbackStubWrapper) OnStop(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.OnStop(ctx, packageName, pid, uid)
+}
+
+func (w *sessionCallbackStubWrapper) OnNext(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.OnNext(ctx, packageName, pid, uid)
+}
+
+func (w *sessionCallbackStubWrapper) OnPrevious(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.OnPrevious(ctx, packageName, pid, uid)
+}
+
+func (w *sessionCallbackStubWrapper) OnFastForward(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.OnFastForward(ctx, packageName, pid, uid)
+}
+
+func (w *sessionCallbackStubWrapper) OnRewind(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.OnRewind(ctx, packageName, pid, uid)
+}
+
+func (w *sessionCallbackStubWrapper) OnSeekTo(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	pos int64,
+) error {
+	return w.impl.OnSeekTo(ctx, packageName, pid, uid, pos)
+}
+
+func (w *sessionCallbackStubWrapper) OnRate(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	rating interface{},
+) error {
+	return w.impl.OnRate(ctx, packageName, pid, uid, rating)
+}
+
+func (w *sessionCallbackStubWrapper) OnSetPlaybackSpeed(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	speed float32,
+) error {
+	return w.impl.OnSetPlaybackSpeed(ctx, packageName, pid, uid, speed)
+}
+
+func (w *sessionCallbackStubWrapper) OnCustomAction(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	action string,
+	args interface{},
+) error {
+	return w.impl.OnCustomAction(ctx, packageName, pid, uid, action, args)
+}
+
+func (w *sessionCallbackStubWrapper) OnAdjustVolume(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	direction int32,
+) error {
+	return w.impl.OnAdjustVolume(ctx, packageName, pid, uid, direction)
+}
+
+func (w *sessionCallbackStubWrapper) OnSetVolumeTo(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+	value int32,
+) error {
+	return w.impl.OnSetVolumeTo(ctx, packageName, pid, uid, value)
+}
+
+var _ ISessionCallback = (*sessionCallbackStubWrapper)(nil)
+
+// NewSessionCallbackStub creates a server-side ISessionCallback wrapping the given
+// server implementation. The returned value satisfies ISessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSessionCallbackStub(
+	impl ISessionCallbackServer,
+) ISessionCallback {
+	wrapper := &sessionCallbackStubWrapper{impl: impl}
+	stub := &SessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

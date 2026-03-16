@@ -85,7 +85,7 @@ func (p *SatelliteProxy) SetSatelliteListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "setSatelliteListener")
 	if _err != nil {
@@ -106,7 +106,7 @@ func (p *SatelliteProxy) RequestSatelliteListeningEnabled(
 	_data.WriteInterfaceToken(DescriptorISatellite)
 	_data.WriteBool(enable)
 	_data.WriteInt32(timeout)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "requestSatelliteListeningEnabled")
 	if _err != nil {
@@ -125,7 +125,7 @@ func (p *SatelliteProxy) EnableTerrestrialNetworkScanWhileSatelliteModeIsOn(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
 	_data.WriteBool(enabled)
-	_data.WriteStrongBinder(errorCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, errorCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "enableTerrestrialNetworkScanWhileSatelliteModeIsOn")
 	if _err != nil {
@@ -147,7 +147,7 @@ func (p *SatelliteProxy) RequestSatelliteEnabled(
 	if _err := enableAttributes.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "requestSatelliteEnabled")
 	if _err != nil {
@@ -165,8 +165,8 @@ func (p *SatelliteProxy) RequestIsSatelliteEnabled(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "requestIsSatelliteEnabled")
 	if _err != nil {
@@ -184,8 +184,8 @@ func (p *SatelliteProxy) RequestIsSatelliteSupported(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "requestIsSatelliteSupported")
 	if _err != nil {
@@ -203,8 +203,8 @@ func (p *SatelliteProxy) RequestSatelliteCapabilities(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "requestSatelliteCapabilities")
 	if _err != nil {
@@ -221,7 +221,7 @@ func (p *SatelliteProxy) StartSendingSatellitePointingInfo(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "startSendingSatellitePointingInfo")
 	if _err != nil {
@@ -238,7 +238,7 @@ func (p *SatelliteProxy) StopSendingSatellitePointingInfo(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "stopSendingSatellitePointingInfo")
 	if _err != nil {
@@ -255,7 +255,7 @@ func (p *SatelliteProxy) PollPendingSatelliteDatagrams(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "pollPendingSatelliteDatagrams")
 	if _err != nil {
@@ -279,7 +279,7 @@ func (p *SatelliteProxy) SendSatelliteDatagram(
 		return _err
 	}
 	_data.WriteBool(isEmergency)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "sendSatelliteDatagram")
 	if _err != nil {
@@ -297,8 +297,8 @@ func (p *SatelliteProxy) RequestSatelliteModemState(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "requestSatelliteModemState")
 	if _err != nil {
@@ -316,8 +316,8 @@ func (p *SatelliteProxy) RequestTimeForNextSatelliteVisibility(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "requestTimeForNextSatelliteVisibility")
 	if _err != nil {
@@ -354,7 +354,7 @@ func (p *SatelliteProxy) SetSatellitePlmn(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "setSatellitePlmn")
 	if _err != nil {
@@ -375,7 +375,7 @@ func (p *SatelliteProxy) SetSatelliteEnabledForCarrier(
 	_data.WriteInterfaceToken(DescriptorISatellite)
 	_data.WriteInt32(simSlot)
 	_data.WriteBool(satelliteEnabled)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "setSatelliteEnabledForCarrier")
 	if _err != nil {
@@ -395,8 +395,8 @@ func (p *SatelliteProxy) RequestIsSatelliteEnabledForCarrier(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
 	_data.WriteInt32(simSlot)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "requestIsSatelliteEnabledForCarrier")
 	if _err != nil {
@@ -414,8 +414,8 @@ func (p *SatelliteProxy) RequestSignalStrength(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "requestSignalStrength")
 	if _err != nil {
@@ -432,7 +432,7 @@ func (p *SatelliteProxy) StartSendingNtnSignalStrength(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "startSendingNtnSignalStrength")
 	if _err != nil {
@@ -449,7 +449,7 @@ func (p *SatelliteProxy) StopSendingNtnSignalStrength(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "stopSendingNtnSignalStrength")
 	if _err != nil {
@@ -466,7 +466,7 @@ func (p *SatelliteProxy) AbortSendingSatelliteDatagrams(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "abortSendingSatelliteDatagrams")
 	if _err != nil {
@@ -485,7 +485,7 @@ func (p *SatelliteProxy) UpdateSatelliteSubscription(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISatellite)
 	_data.WriteString16(iccId)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "updateSatelliteSubscription")
 	if _err != nil {
@@ -513,7 +513,7 @@ func (p *SatelliteProxy) UpdateSystemSelectionChannels(
 			}
 		}
 	}
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISatellite, "updateSystemSelectionChannels")
 	if _err != nil {
@@ -851,4 +851,232 @@ func (s *SatelliteStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISatelliteServer is the server-side interface that user implementations
+// provide to NewSatelliteStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteServer interface {
+	SetSatelliteListener(ctx context.Context, listener ISatelliteListener) error
+	RequestSatelliteListeningEnabled(ctx context.Context, enable bool, timeout int32, resultCallback telephony.IIntegerConsumer) error
+	EnableTerrestrialNetworkScanWhileSatelliteModeIsOn(ctx context.Context, enabled bool, errorCallback telephony.IIntegerConsumer) error
+	RequestSatelliteEnabled(ctx context.Context, enableAttributes SatelliteModemEnableRequestAttributes, resultCallback telephony.IIntegerConsumer) error
+	RequestIsSatelliteEnabled(ctx context.Context, resultCallback telephony.IIntegerConsumer, callback telephony.IBooleanConsumer) error
+	RequestIsSatelliteSupported(ctx context.Context, resultCallback telephony.IIntegerConsumer, callback telephony.IBooleanConsumer) error
+	RequestSatelliteCapabilities(ctx context.Context, resultCallback telephony.IIntegerConsumer, callback ISatelliteCapabilitiesConsumer) error
+	StartSendingSatellitePointingInfo(ctx context.Context, resultCallback telephony.IIntegerConsumer) error
+	StopSendingSatellitePointingInfo(ctx context.Context, resultCallback telephony.IIntegerConsumer) error
+	PollPendingSatelliteDatagrams(ctx context.Context, resultCallback telephony.IIntegerConsumer) error
+	SendSatelliteDatagram(ctx context.Context, datagram SatelliteDatagram, isEmergency bool, resultCallback telephony.IIntegerConsumer) error
+	RequestSatelliteModemState(ctx context.Context, resultCallback telephony.IIntegerConsumer, callback telephony.IIntegerConsumer) error
+	RequestTimeForNextSatelliteVisibility(ctx context.Context, resultCallback telephony.IIntegerConsumer, callback telephony.IIntegerConsumer) error
+	SetSatellitePlmn(ctx context.Context, simSlot int32, carrierPlmnList []string, allSatellitePlmnList []string, resultCallback telephony.IIntegerConsumer) error
+	SetSatelliteEnabledForCarrier(ctx context.Context, simSlot int32, satelliteEnabled bool, callback telephony.IIntegerConsumer) error
+	RequestIsSatelliteEnabledForCarrier(ctx context.Context, simSlot int32, resultCallback telephony.IIntegerConsumer, callback telephony.IBooleanConsumer) error
+	RequestSignalStrength(ctx context.Context, resultCallback telephony.IIntegerConsumer, callback INtnSignalStrengthConsumer) error
+	StartSendingNtnSignalStrength(ctx context.Context, resultCallback telephony.IIntegerConsumer) error
+	StopSendingNtnSignalStrength(ctx context.Context, resultCallback telephony.IIntegerConsumer) error
+	AbortSendingSatelliteDatagrams(ctx context.Context, resultCallback telephony.IIntegerConsumer) error
+	UpdateSatelliteSubscription(ctx context.Context, iccId string, resultCallback telephony.IIntegerConsumer) error
+	UpdateSystemSelectionChannels(ctx context.Context, systemSelectionSpecifiers []SystemSelectionSpecifier, resultCallback telephony.IIntegerConsumer) error
+}
+
+type satelliteStubWrapper struct {
+	impl       ISatelliteServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteStubWrapper) SetSatelliteListener(
+	ctx context.Context,
+	listener ISatelliteListener,
+) error {
+	return w.impl.SetSatelliteListener(ctx, listener)
+}
+
+func (w *satelliteStubWrapper) RequestSatelliteListeningEnabled(
+	ctx context.Context,
+	enable bool,
+	timeout int32,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.RequestSatelliteListeningEnabled(ctx, enable, timeout, resultCallback)
+}
+
+func (w *satelliteStubWrapper) EnableTerrestrialNetworkScanWhileSatelliteModeIsOn(
+	ctx context.Context,
+	enabled bool,
+	errorCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.EnableTerrestrialNetworkScanWhileSatelliteModeIsOn(ctx, enabled, errorCallback)
+}
+
+func (w *satelliteStubWrapper) RequestSatelliteEnabled(
+	ctx context.Context,
+	enableAttributes SatelliteModemEnableRequestAttributes,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.RequestSatelliteEnabled(ctx, enableAttributes, resultCallback)
+}
+
+func (w *satelliteStubWrapper) RequestIsSatelliteEnabled(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+	callback telephony.IBooleanConsumer,
+) error {
+	return w.impl.RequestIsSatelliteEnabled(ctx, resultCallback, callback)
+}
+
+func (w *satelliteStubWrapper) RequestIsSatelliteSupported(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+	callback telephony.IBooleanConsumer,
+) error {
+	return w.impl.RequestIsSatelliteSupported(ctx, resultCallback, callback)
+}
+
+func (w *satelliteStubWrapper) RequestSatelliteCapabilities(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+	callback ISatelliteCapabilitiesConsumer,
+) error {
+	return w.impl.RequestSatelliteCapabilities(ctx, resultCallback, callback)
+}
+
+func (w *satelliteStubWrapper) StartSendingSatellitePointingInfo(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.StartSendingSatellitePointingInfo(ctx, resultCallback)
+}
+
+func (w *satelliteStubWrapper) StopSendingSatellitePointingInfo(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.StopSendingSatellitePointingInfo(ctx, resultCallback)
+}
+
+func (w *satelliteStubWrapper) PollPendingSatelliteDatagrams(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.PollPendingSatelliteDatagrams(ctx, resultCallback)
+}
+
+func (w *satelliteStubWrapper) SendSatelliteDatagram(
+	ctx context.Context,
+	datagram SatelliteDatagram,
+	isEmergency bool,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.SendSatelliteDatagram(ctx, datagram, isEmergency, resultCallback)
+}
+
+func (w *satelliteStubWrapper) RequestSatelliteModemState(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+	callback telephony.IIntegerConsumer,
+) error {
+	return w.impl.RequestSatelliteModemState(ctx, resultCallback, callback)
+}
+
+func (w *satelliteStubWrapper) RequestTimeForNextSatelliteVisibility(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+	callback telephony.IIntegerConsumer,
+) error {
+	return w.impl.RequestTimeForNextSatelliteVisibility(ctx, resultCallback, callback)
+}
+
+func (w *satelliteStubWrapper) SetSatellitePlmn(
+	ctx context.Context,
+	simSlot int32,
+	carrierPlmnList []string,
+	allSatellitePlmnList []string,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.SetSatellitePlmn(ctx, simSlot, carrierPlmnList, allSatellitePlmnList, resultCallback)
+}
+
+func (w *satelliteStubWrapper) SetSatelliteEnabledForCarrier(
+	ctx context.Context,
+	simSlot int32,
+	satelliteEnabled bool,
+	callback telephony.IIntegerConsumer,
+) error {
+	return w.impl.SetSatelliteEnabledForCarrier(ctx, simSlot, satelliteEnabled, callback)
+}
+
+func (w *satelliteStubWrapper) RequestIsSatelliteEnabledForCarrier(
+	ctx context.Context,
+	simSlot int32,
+	resultCallback telephony.IIntegerConsumer,
+	callback telephony.IBooleanConsumer,
+) error {
+	return w.impl.RequestIsSatelliteEnabledForCarrier(ctx, simSlot, resultCallback, callback)
+}
+
+func (w *satelliteStubWrapper) RequestSignalStrength(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+	callback INtnSignalStrengthConsumer,
+) error {
+	return w.impl.RequestSignalStrength(ctx, resultCallback, callback)
+}
+
+func (w *satelliteStubWrapper) StartSendingNtnSignalStrength(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.StartSendingNtnSignalStrength(ctx, resultCallback)
+}
+
+func (w *satelliteStubWrapper) StopSendingNtnSignalStrength(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.StopSendingNtnSignalStrength(ctx, resultCallback)
+}
+
+func (w *satelliteStubWrapper) AbortSendingSatelliteDatagrams(
+	ctx context.Context,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.AbortSendingSatelliteDatagrams(ctx, resultCallback)
+}
+
+func (w *satelliteStubWrapper) UpdateSatelliteSubscription(
+	ctx context.Context,
+	iccId string,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.UpdateSatelliteSubscription(ctx, iccId, resultCallback)
+}
+
+func (w *satelliteStubWrapper) UpdateSystemSelectionChannels(
+	ctx context.Context,
+	systemSelectionSpecifiers []SystemSelectionSpecifier,
+	resultCallback telephony.IIntegerConsumer,
+) error {
+	return w.impl.UpdateSystemSelectionChannels(ctx, systemSelectionSpecifiers, resultCallback)
+}
+
+var _ ISatellite = (*satelliteStubWrapper)(nil)
+
+// NewSatelliteStub creates a server-side ISatellite wrapping the given
+// server implementation. The returned value satisfies ISatellite
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteStub(
+	impl ISatelliteServer,
+) ISatellite {
+	wrapper := &satelliteStubWrapper{impl: impl}
+	stub := &SatelliteStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

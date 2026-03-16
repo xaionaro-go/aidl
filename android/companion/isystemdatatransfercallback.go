@@ -106,3 +106,49 @@ func (s *SystemDataTransferCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISystemDataTransferCallbackServer is the server-side interface that user implementations
+// provide to NewSystemDataTransferCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISystemDataTransferCallbackServer interface {
+	OnResult(ctx context.Context) error
+	OnError(ctx context.Context, error_ string) error
+}
+
+type systemDataTransferCallbackStubWrapper struct {
+	impl       ISystemDataTransferCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *systemDataTransferCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *systemDataTransferCallbackStubWrapper) OnResult(
+	ctx context.Context,
+) error {
+	return w.impl.OnResult(ctx)
+}
+
+func (w *systemDataTransferCallbackStubWrapper) OnError(
+	ctx context.Context,
+	error_ string,
+) error {
+	return w.impl.OnError(ctx, error_)
+}
+
+var _ ISystemDataTransferCallback = (*systemDataTransferCallbackStubWrapper)(nil)
+
+// NewSystemDataTransferCallbackStub creates a server-side ISystemDataTransferCallback wrapping the given
+// server implementation. The returned value satisfies ISystemDataTransferCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSystemDataTransferCallbackStub(
+	impl ISystemDataTransferCallbackServer,
+) ISystemDataTransferCallback {
+	wrapper := &systemDataTransferCallbackStubWrapper{impl: impl}
+	stub := &SystemDataTransferCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

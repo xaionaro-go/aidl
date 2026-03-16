@@ -82,3 +82,42 @@ func (s *SoundTriggerDetectionServiceClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundTriggerDetectionServiceClientServer is the server-side interface that user implementations
+// provide to NewSoundTriggerDetectionServiceClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerDetectionServiceClientServer interface {
+	OnOpFinished(ctx context.Context, opId int32) error
+}
+
+type soundTriggerDetectionServiceClientStubWrapper struct {
+	impl       ISoundTriggerDetectionServiceClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerDetectionServiceClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerDetectionServiceClientStubWrapper) OnOpFinished(
+	ctx context.Context,
+	opId int32,
+) error {
+	return w.impl.OnOpFinished(ctx, opId)
+}
+
+var _ ISoundTriggerDetectionServiceClient = (*soundTriggerDetectionServiceClientStubWrapper)(nil)
+
+// NewSoundTriggerDetectionServiceClientStub creates a server-side ISoundTriggerDetectionServiceClient wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerDetectionServiceClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerDetectionServiceClientStub(
+	impl ISoundTriggerDetectionServiceClientServer,
+) ISoundTriggerDetectionServiceClient {
+	wrapper := &soundTriggerDetectionServiceClientStubWrapper{impl: impl}
+	stub := &SoundTriggerDetectionServiceClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -82,3 +82,42 @@ func (s *CrossWindowBlurEnabledListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICrossWindowBlurEnabledListenerServer is the server-side interface that user implementations
+// provide to NewCrossWindowBlurEnabledListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICrossWindowBlurEnabledListenerServer interface {
+	OnCrossWindowBlurEnabledChanged(ctx context.Context, enabled bool) error
+}
+
+type crossWindowBlurEnabledListenerStubWrapper struct {
+	impl       ICrossWindowBlurEnabledListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *crossWindowBlurEnabledListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *crossWindowBlurEnabledListenerStubWrapper) OnCrossWindowBlurEnabledChanged(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.OnCrossWindowBlurEnabledChanged(ctx, enabled)
+}
+
+var _ ICrossWindowBlurEnabledListener = (*crossWindowBlurEnabledListenerStubWrapper)(nil)
+
+// NewCrossWindowBlurEnabledListenerStub creates a server-side ICrossWindowBlurEnabledListener wrapping the given
+// server implementation. The returned value satisfies ICrossWindowBlurEnabledListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCrossWindowBlurEnabledListenerStub(
+	impl ICrossWindowBlurEnabledListenerServer,
+) ICrossWindowBlurEnabledListener {
+	wrapper := &crossWindowBlurEnabledListenerStubWrapper{impl: impl}
+	stub := &CrossWindowBlurEnabledListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -49,7 +49,7 @@ func (p *WallpaperEffectsGenerationManagerProxy) GenerateCinematicEffect(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWallpaperEffectsGenerationManager, "generateCinematicEffect")
 	if _err != nil {
@@ -138,4 +138,52 @@ func (s *WallpaperEffectsGenerationManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWallpaperEffectsGenerationManagerServer is the server-side interface that user implementations
+// provide to NewWallpaperEffectsGenerationManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWallpaperEffectsGenerationManagerServer interface {
+	GenerateCinematicEffect(ctx context.Context, request CinematicEffectRequest, listener ICinematicEffectListener) error
+	ReturnCinematicEffectResponse(ctx context.Context, response CinematicEffectResponse) error
+}
+
+type wallpaperEffectsGenerationManagerStubWrapper struct {
+	impl       IWallpaperEffectsGenerationManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wallpaperEffectsGenerationManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wallpaperEffectsGenerationManagerStubWrapper) GenerateCinematicEffect(
+	ctx context.Context,
+	request CinematicEffectRequest,
+	listener ICinematicEffectListener,
+) error {
+	return w.impl.GenerateCinematicEffect(ctx, request, listener)
+}
+
+func (w *wallpaperEffectsGenerationManagerStubWrapper) ReturnCinematicEffectResponse(
+	ctx context.Context,
+	response CinematicEffectResponse,
+) error {
+	return w.impl.ReturnCinematicEffectResponse(ctx, response)
+}
+
+var _ IWallpaperEffectsGenerationManager = (*wallpaperEffectsGenerationManagerStubWrapper)(nil)
+
+// NewWallpaperEffectsGenerationManagerStub creates a server-side IWallpaperEffectsGenerationManager wrapping the given
+// server implementation. The returned value satisfies IWallpaperEffectsGenerationManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWallpaperEffectsGenerationManagerStub(
+	impl IWallpaperEffectsGenerationManagerServer,
+) IWallpaperEffectsGenerationManager {
+	wrapper := &wallpaperEffectsGenerationManagerStubWrapper{impl: impl}
+	stub := &WallpaperEffectsGenerationManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

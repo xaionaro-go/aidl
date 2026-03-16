@@ -93,3 +93,42 @@ func (s *HdmiCecCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiCecCallbackServer is the server-side interface that user implementations
+// provide to NewHdmiCecCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiCecCallbackServer interface {
+	OnCecMessage(ctx context.Context, message CecMessage) error
+}
+
+type hdmiCecCallbackStubWrapper struct {
+	impl       IHdmiCecCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiCecCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiCecCallbackStubWrapper) OnCecMessage(
+	ctx context.Context,
+	message CecMessage,
+) error {
+	return w.impl.OnCecMessage(ctx, message)
+}
+
+var _ IHdmiCecCallback = (*hdmiCecCallbackStubWrapper)(nil)
+
+// NewHdmiCecCallbackStub creates a server-side IHdmiCecCallback wrapping the given
+// server implementation. The returned value satisfies IHdmiCecCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiCecCallbackStub(
+	impl IHdmiCecCallbackServer,
+) IHdmiCecCallback {
+	wrapper := &hdmiCecCallbackStubWrapper{impl: impl}
+	stub := &HdmiCecCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

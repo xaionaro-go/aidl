@@ -80,7 +80,7 @@ func (p *OperatorDetectionProxy) SetListener(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOperatorDetection)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOperatorDetection, "setListener")
 	if _err != nil {
@@ -162,4 +162,51 @@ func (s *OperatorDetectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOperatorDetectionServer is the server-side interface that user implementations
+// provide to NewOperatorDetectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOperatorDetectionServer interface {
+	SetOperatorDetection(ctx context.Context, operatorSelected os.Bundle) (int32, error)
+	SetListener(ctx context.Context, listener IOperatorDetectionListener) (int32, error)
+}
+
+type operatorDetectionStubWrapper struct {
+	impl       IOperatorDetectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *operatorDetectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *operatorDetectionStubWrapper) SetOperatorDetection(
+	ctx context.Context,
+	operatorSelected os.Bundle,
+) (int32, error) {
+	return w.impl.SetOperatorDetection(ctx, operatorSelected)
+}
+
+func (w *operatorDetectionStubWrapper) SetListener(
+	ctx context.Context,
+	listener IOperatorDetectionListener,
+) (int32, error) {
+	return w.impl.SetListener(ctx, listener)
+}
+
+var _ IOperatorDetection = (*operatorDetectionStubWrapper)(nil)
+
+// NewOperatorDetectionStub creates a server-side IOperatorDetection wrapping the given
+// server implementation. The returned value satisfies IOperatorDetection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOperatorDetectionStub(
+	impl IOperatorDetectionServer,
+) IOperatorDetection {
+	wrapper := &operatorDetectionStubWrapper{impl: impl}
+	stub := &OperatorDetectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

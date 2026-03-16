@@ -125,7 +125,7 @@ func (p *LightsManagerProxy) OpenSession(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILightsManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(priority)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILightsManager, "openSession")
@@ -152,7 +152,7 @@ func (p *LightsManagerProxy) CloseSession(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILightsManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILightsManager, "closeSession")
 	if _err != nil {
@@ -180,7 +180,7 @@ func (p *LightsManagerProxy) SetLightStates(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILightsManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	if lightIds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -324,4 +324,77 @@ func (s *LightsManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ILightsManagerServer is the server-side interface that user implementations
+// provide to NewLightsManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILightsManagerServer interface {
+	GetLights(ctx context.Context) ([]Light, error)
+	GetLightState(ctx context.Context, lightId int32) (LightState, error)
+	OpenSession(ctx context.Context, sessionToken binder.IBinder, priority int32) error
+	CloseSession(ctx context.Context, sessionToken binder.IBinder) error
+	SetLightStates(ctx context.Context, sessionToken binder.IBinder, lightIds []int32, states []LightState) error
+}
+
+type lightsManagerStubWrapper struct {
+	impl       ILightsManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *lightsManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *lightsManagerStubWrapper) GetLights(
+	ctx context.Context,
+) ([]Light, error) {
+	return w.impl.GetLights(ctx)
+}
+
+func (w *lightsManagerStubWrapper) GetLightState(
+	ctx context.Context,
+	lightId int32,
+) (LightState, error) {
+	return w.impl.GetLightState(ctx, lightId)
+}
+
+func (w *lightsManagerStubWrapper) OpenSession(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	priority int32,
+) error {
+	return w.impl.OpenSession(ctx, sessionToken, priority)
+}
+
+func (w *lightsManagerStubWrapper) CloseSession(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.CloseSession(ctx, sessionToken)
+}
+
+func (w *lightsManagerStubWrapper) SetLightStates(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	lightIds []int32,
+	states []LightState,
+) error {
+	return w.impl.SetLightStates(ctx, sessionToken, lightIds, states)
+}
+
+var _ ILightsManager = (*lightsManagerStubWrapper)(nil)
+
+// NewLightsManagerStub creates a server-side ILightsManager wrapping the given
+// server implementation. The returned value satisfies ILightsManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLightsManagerStub(
+	impl ILightsManagerServer,
+) ILightsManager {
+	wrapper := &lightsManagerStubWrapper{impl: impl}
+	stub := &LightsManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -93,3 +93,42 @@ func (s *CoolingDeviceChangedCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICoolingDeviceChangedCallbackServer is the server-side interface that user implementations
+// provide to NewCoolingDeviceChangedCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICoolingDeviceChangedCallbackServer interface {
+	NotifyCoolingDeviceChanged(ctx context.Context, coolingDevice CoolingDevice) error
+}
+
+type coolingDeviceChangedCallbackStubWrapper struct {
+	impl       ICoolingDeviceChangedCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *coolingDeviceChangedCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *coolingDeviceChangedCallbackStubWrapper) NotifyCoolingDeviceChanged(
+	ctx context.Context,
+	coolingDevice CoolingDevice,
+) error {
+	return w.impl.NotifyCoolingDeviceChanged(ctx, coolingDevice)
+}
+
+var _ ICoolingDeviceChangedCallback = (*coolingDeviceChangedCallbackStubWrapper)(nil)
+
+// NewCoolingDeviceChangedCallbackStub creates a server-side ICoolingDeviceChangedCallback wrapping the given
+// server implementation. The returned value satisfies ICoolingDeviceChangedCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCoolingDeviceChangedCallbackStub(
+	impl ICoolingDeviceChangedCallbackServer,
+) ICoolingDeviceChangedCallback {
+	wrapper := &coolingDeviceChangedCallbackStubWrapper{impl: impl}
+	stub := &CoolingDeviceChangedCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

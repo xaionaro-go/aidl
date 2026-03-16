@@ -84,3 +84,42 @@ func (s *IntrusionDetectionServiceStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIntrusionDetectionServiceStateCallbackServer is the server-side interface that user implementations
+// provide to NewIntrusionDetectionServiceStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIntrusionDetectionServiceStateCallbackServer interface {
+	OnStateChange(ctx context.Context, state StreamDescriptor.State) error
+}
+
+type intrusionDetectionServiceStateCallbackStubWrapper struct {
+	impl       IIntrusionDetectionServiceStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *intrusionDetectionServiceStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *intrusionDetectionServiceStateCallbackStubWrapper) OnStateChange(
+	ctx context.Context,
+	state StreamDescriptor.State,
+) error {
+	return w.impl.OnStateChange(ctx, state)
+}
+
+var _ IIntrusionDetectionServiceStateCallback = (*intrusionDetectionServiceStateCallbackStubWrapper)(nil)
+
+// NewIntrusionDetectionServiceStateCallbackStub creates a server-side IIntrusionDetectionServiceStateCallback wrapping the given
+// server implementation. The returned value satisfies IIntrusionDetectionServiceStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIntrusionDetectionServiceStateCallbackStub(
+	impl IIntrusionDetectionServiceStateCallbackServer,
+) IIntrusionDetectionServiceStateCallback {
+	wrapper := &intrusionDetectionServiceStateCallbackStubWrapper{impl: impl}
+	stub := &IntrusionDetectionServiceStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

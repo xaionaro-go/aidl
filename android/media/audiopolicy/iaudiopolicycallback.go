@@ -264,3 +264,93 @@ func (s *AudioPolicyCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioPolicyCallbackServer is the server-side interface that user implementations
+// provide to NewAudioPolicyCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioPolicyCallbackServer interface {
+	NotifyAudioFocusGrant(ctx context.Context, afi interface{}, requestResult int32) error
+	NotifyAudioFocusLoss(ctx context.Context, afi interface{}, wasNotified bool) error
+	NotifyAudioFocusRequest(ctx context.Context, afi interface{}, requestResult int32) error
+	NotifyAudioFocusAbandon(ctx context.Context, afi interface{}) error
+	NotifyMixStateUpdate(ctx context.Context, regId string, state int32) error
+	NotifyVolumeAdjust(ctx context.Context, adjustment int32) error
+	NotifyUnregistration(ctx context.Context) error
+}
+
+type audioPolicyCallbackStubWrapper struct {
+	impl       IAudioPolicyCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioPolicyCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioPolicyCallbackStubWrapper) NotifyAudioFocusGrant(
+	ctx context.Context,
+	afi interface{},
+	requestResult int32,
+) error {
+	return w.impl.NotifyAudioFocusGrant(ctx, afi, requestResult)
+}
+
+func (w *audioPolicyCallbackStubWrapper) NotifyAudioFocusLoss(
+	ctx context.Context,
+	afi interface{},
+	wasNotified bool,
+) error {
+	return w.impl.NotifyAudioFocusLoss(ctx, afi, wasNotified)
+}
+
+func (w *audioPolicyCallbackStubWrapper) NotifyAudioFocusRequest(
+	ctx context.Context,
+	afi interface{},
+	requestResult int32,
+) error {
+	return w.impl.NotifyAudioFocusRequest(ctx, afi, requestResult)
+}
+
+func (w *audioPolicyCallbackStubWrapper) NotifyAudioFocusAbandon(
+	ctx context.Context,
+	afi interface{},
+) error {
+	return w.impl.NotifyAudioFocusAbandon(ctx, afi)
+}
+
+func (w *audioPolicyCallbackStubWrapper) NotifyMixStateUpdate(
+	ctx context.Context,
+	regId string,
+	state int32,
+) error {
+	return w.impl.NotifyMixStateUpdate(ctx, regId, state)
+}
+
+func (w *audioPolicyCallbackStubWrapper) NotifyVolumeAdjust(
+	ctx context.Context,
+	adjustment int32,
+) error {
+	return w.impl.NotifyVolumeAdjust(ctx, adjustment)
+}
+
+func (w *audioPolicyCallbackStubWrapper) NotifyUnregistration(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyUnregistration(ctx)
+}
+
+var _ IAudioPolicyCallback = (*audioPolicyCallbackStubWrapper)(nil)
+
+// NewAudioPolicyCallbackStub creates a server-side IAudioPolicyCallback wrapping the given
+// server implementation. The returned value satisfies IAudioPolicyCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioPolicyCallbackStub(
+	impl IAudioPolicyCallbackServer,
+) IAudioPolicyCallback {
+	wrapper := &audioPolicyCallbackStubWrapper{impl: impl}
+	stub := &AudioPolicyCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

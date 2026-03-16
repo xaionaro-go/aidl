@@ -93,3 +93,42 @@ func (s *NtnSignalStrengthConsumerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INtnSignalStrengthConsumerServer is the server-side interface that user implementations
+// provide to NewNtnSignalStrengthConsumerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INtnSignalStrengthConsumerServer interface {
+	Accept(ctx context.Context, result NtnSignalStrength) error
+}
+
+type ntnSignalStrengthConsumerStubWrapper struct {
+	impl       INtnSignalStrengthConsumerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ntnSignalStrengthConsumerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ntnSignalStrengthConsumerStubWrapper) Accept(
+	ctx context.Context,
+	result NtnSignalStrength,
+) error {
+	return w.impl.Accept(ctx, result)
+}
+
+var _ INtnSignalStrengthConsumer = (*ntnSignalStrengthConsumerStubWrapper)(nil)
+
+// NewNtnSignalStrengthConsumerStub creates a server-side INtnSignalStrengthConsumer wrapping the given
+// server implementation. The returned value satisfies INtnSignalStrengthConsumer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNtnSignalStrengthConsumerStub(
+	impl INtnSignalStrengthConsumerServer,
+) INtnSignalStrengthConsumer {
+	wrapper := &ntnSignalStrengthConsumerStubWrapper{impl: impl}
+	stub := &NtnSignalStrengthConsumerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

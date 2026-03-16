@@ -82,3 +82,42 @@ func (s *HomeTransitionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHomeTransitionListenerServer is the server-side interface that user implementations
+// provide to NewHomeTransitionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHomeTransitionListenerServer interface {
+	OnHomeVisibilityChanged(ctx context.Context, isVisible bool) error
+}
+
+type homeTransitionListenerStubWrapper struct {
+	impl       IHomeTransitionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *homeTransitionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *homeTransitionListenerStubWrapper) OnHomeVisibilityChanged(
+	ctx context.Context,
+	isVisible bool,
+) error {
+	return w.impl.OnHomeVisibilityChanged(ctx, isVisible)
+}
+
+var _ IHomeTransitionListener = (*homeTransitionListenerStubWrapper)(nil)
+
+// NewHomeTransitionListenerStub creates a server-side IHomeTransitionListener wrapping the given
+// server implementation. The returned value satisfies IHomeTransitionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHomeTransitionListenerStub(
+	impl IHomeTransitionListenerServer,
+) IHomeTransitionListener {
+	wrapper := &homeTransitionListenerStubWrapper{impl: impl}
+	stub := &HomeTransitionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

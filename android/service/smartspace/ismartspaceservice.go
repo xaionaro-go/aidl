@@ -128,7 +128,7 @@ func (p *SmartspaceServiceProxy) RegisterSmartspaceUpdates(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISmartspaceService, "registerSmartspaceUpdates")
 	if _err != nil {
@@ -150,7 +150,7 @@ func (p *SmartspaceServiceProxy) UnregisterSmartspaceUpdates(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISmartspaceService, "unregisterSmartspaceUpdates")
 	if _err != nil {
@@ -342,4 +342,87 @@ func (s *SmartspaceServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISmartspaceServiceServer is the server-side interface that user implementations
+// provide to NewSmartspaceServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISmartspaceServiceServer interface {
+	OnCreateSmartspaceSession(ctx context.Context, context_ appSmartspace.SmartspaceConfig, sessionId appSmartspace.SmartspaceSessionId) error
+	NotifySmartspaceEvent(ctx context.Context, sessionId appSmartspace.SmartspaceSessionId, event appSmartspace.SmartspaceTargetEvent) error
+	RequestSmartspaceUpdate(ctx context.Context, sessionId appSmartspace.SmartspaceSessionId) error
+	RegisterSmartspaceUpdates(ctx context.Context, sessionId appSmartspace.SmartspaceSessionId, callback appSmartspace.ISmartspaceCallback) error
+	UnregisterSmartspaceUpdates(ctx context.Context, sessionId appSmartspace.SmartspaceSessionId, callback appSmartspace.ISmartspaceCallback) error
+	OnDestroySmartspaceSession(ctx context.Context, sessionId appSmartspace.SmartspaceSessionId) error
+}
+
+type smartspaceServiceStubWrapper struct {
+	impl       ISmartspaceServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *smartspaceServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *smartspaceServiceStubWrapper) OnCreateSmartspaceSession(
+	ctx context.Context,
+	context_ appSmartspace.SmartspaceConfig,
+	sessionId appSmartspace.SmartspaceSessionId,
+) error {
+	return w.impl.OnCreateSmartspaceSession(ctx, context_, sessionId)
+}
+
+func (w *smartspaceServiceStubWrapper) NotifySmartspaceEvent(
+	ctx context.Context,
+	sessionId appSmartspace.SmartspaceSessionId,
+	event appSmartspace.SmartspaceTargetEvent,
+) error {
+	return w.impl.NotifySmartspaceEvent(ctx, sessionId, event)
+}
+
+func (w *smartspaceServiceStubWrapper) RequestSmartspaceUpdate(
+	ctx context.Context,
+	sessionId appSmartspace.SmartspaceSessionId,
+) error {
+	return w.impl.RequestSmartspaceUpdate(ctx, sessionId)
+}
+
+func (w *smartspaceServiceStubWrapper) RegisterSmartspaceUpdates(
+	ctx context.Context,
+	sessionId appSmartspace.SmartspaceSessionId,
+	callback appSmartspace.ISmartspaceCallback,
+) error {
+	return w.impl.RegisterSmartspaceUpdates(ctx, sessionId, callback)
+}
+
+func (w *smartspaceServiceStubWrapper) UnregisterSmartspaceUpdates(
+	ctx context.Context,
+	sessionId appSmartspace.SmartspaceSessionId,
+	callback appSmartspace.ISmartspaceCallback,
+) error {
+	return w.impl.UnregisterSmartspaceUpdates(ctx, sessionId, callback)
+}
+
+func (w *smartspaceServiceStubWrapper) OnDestroySmartspaceSession(
+	ctx context.Context,
+	sessionId appSmartspace.SmartspaceSessionId,
+) error {
+	return w.impl.OnDestroySmartspaceSession(ctx, sessionId)
+}
+
+var _ ISmartspaceService = (*smartspaceServiceStubWrapper)(nil)
+
+// NewSmartspaceServiceStub creates a server-side ISmartspaceService wrapping the given
+// server implementation. The returned value satisfies ISmartspaceService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSmartspaceServiceStub(
+	impl ISmartspaceServiceServer,
+) ISmartspaceService {
+	wrapper := &smartspaceServiceStubWrapper{impl: impl}
+	stub := &SmartspaceServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

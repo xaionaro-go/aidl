@@ -42,7 +42,7 @@ func (p *UnfoldAnimationProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUnfoldAnimation)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUnfoldAnimation, "setListener")
 	if _err != nil {
@@ -80,4 +80,43 @@ func (s *UnfoldAnimationStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUnfoldAnimationServer is the server-side interface that user implementations
+// provide to NewUnfoldAnimationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUnfoldAnimationServer interface {
+	SetListener(ctx context.Context, listener IUnfoldTransitionListener) error
+}
+
+type unfoldAnimationStubWrapper struct {
+	impl       IUnfoldAnimationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *unfoldAnimationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *unfoldAnimationStubWrapper) SetListener(
+	ctx context.Context,
+	listener IUnfoldTransitionListener,
+) error {
+	return w.impl.SetListener(ctx, listener)
+}
+
+var _ IUnfoldAnimation = (*unfoldAnimationStubWrapper)(nil)
+
+// NewUnfoldAnimationStub creates a server-side IUnfoldAnimation wrapping the given
+// server implementation. The returned value satisfies IUnfoldAnimation
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUnfoldAnimationStub(
+	impl IUnfoldAnimationServer,
+) IUnfoldAnimation {
+	wrapper := &unfoldAnimationStubWrapper{impl: impl}
+	stub := &UnfoldAnimationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

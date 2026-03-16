@@ -65,7 +65,7 @@ func (p *QSServiceProxy) GetTile(
 	var _result Tile
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
-	_data.WriteStrongBinder(tile.Handle())
+	binder.WriteBinderToParcel(ctx, _data, tile, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "getTile")
 	if _err != nil {
@@ -105,7 +105,7 @@ func (p *QSServiceProxy) UpdateQsTile(
 	if _err := tile.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(service.Handle())
+	binder.WriteBinderToParcel(ctx, _data, service, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "updateQsTile")
 	if _err != nil {
@@ -133,7 +133,7 @@ func (p *QSServiceProxy) UpdateStatusIcon(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
-	_data.WriteStrongBinder(tile.Handle())
+	binder.WriteBinderToParcel(ctx, _data, tile, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := icon.MarshalParcel(_data); _err != nil {
 		return _err
@@ -164,7 +164,7 @@ func (p *QSServiceProxy) OnShowDialog(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
-	_data.WriteStrongBinder(tile.Handle())
+	binder.WriteBinderToParcel(ctx, _data, tile, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "onShowDialog")
 	if _err != nil {
@@ -190,7 +190,7 @@ func (p *QSServiceProxy) OnStartActivity(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
-	_data.WriteStrongBinder(tile.Handle())
+	binder.WriteBinderToParcel(ctx, _data, tile, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "onStartActivity")
 	if _err != nil {
@@ -217,7 +217,7 @@ func (p *QSServiceProxy) StartActivity(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
-	_data.WriteStrongBinder(tile.Handle())
+	binder.WriteBinderToParcel(ctx, _data, tile, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := pendingIntent.MarshalParcel(_data); _err != nil {
 		return _err
@@ -305,7 +305,7 @@ func (p *QSServiceProxy) StartUnlockAndRun(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
-	_data.WriteStrongBinder(tile.Handle())
+	binder.WriteBinderToParcel(ctx, _data, tile, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "startUnlockAndRun")
 	if _err != nil {
@@ -331,7 +331,7 @@ func (p *QSServiceProxy) OnDialogHidden(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
-	_data.WriteStrongBinder(tile.Handle())
+	binder.WriteBinderToParcel(ctx, _data, tile, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "onDialogHidden")
 	if _err != nil {
@@ -357,7 +357,7 @@ func (p *QSServiceProxy) OnStartSuccessful(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSService)
-	_data.WriteStrongBinder(tile.Handle())
+	binder.WriteBinderToParcel(ctx, _data, tile, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQSService, "onStartSuccessful")
 	if _err != nil {
@@ -599,4 +599,125 @@ func (s *QSServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IQSServiceServer is the server-side interface that user implementations
+// provide to NewQSServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IQSServiceServer interface {
+	GetTile(ctx context.Context, tile binder.IBinder) (Tile, error)
+	UpdateQsTile(ctx context.Context, tile Tile, service binder.IBinder) error
+	UpdateStatusIcon(ctx context.Context, tile binder.IBinder, icon drawable.Icon, contentDescription string) error
+	OnShowDialog(ctx context.Context, tile binder.IBinder) error
+	OnStartActivity(ctx context.Context, tile binder.IBinder) error
+	StartActivity(ctx context.Context, tile binder.IBinder, pendingIntent app.PendingIntent) error
+	IsLocked(ctx context.Context) (bool, error)
+	IsSecure(ctx context.Context) (bool, error)
+	StartUnlockAndRun(ctx context.Context, tile binder.IBinder) error
+	OnDialogHidden(ctx context.Context, tile binder.IBinder) error
+	OnStartSuccessful(ctx context.Context, tile binder.IBinder) error
+}
+
+type qSServiceStubWrapper struct {
+	impl       IQSServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *qSServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *qSServiceStubWrapper) GetTile(
+	ctx context.Context,
+	tile binder.IBinder,
+) (Tile, error) {
+	return w.impl.GetTile(ctx, tile)
+}
+
+func (w *qSServiceStubWrapper) UpdateQsTile(
+	ctx context.Context,
+	tile Tile,
+	service binder.IBinder,
+) error {
+	return w.impl.UpdateQsTile(ctx, tile, service)
+}
+
+func (w *qSServiceStubWrapper) UpdateStatusIcon(
+	ctx context.Context,
+	tile binder.IBinder,
+	icon drawable.Icon,
+	contentDescription string,
+) error {
+	return w.impl.UpdateStatusIcon(ctx, tile, icon, contentDescription)
+}
+
+func (w *qSServiceStubWrapper) OnShowDialog(
+	ctx context.Context,
+	tile binder.IBinder,
+) error {
+	return w.impl.OnShowDialog(ctx, tile)
+}
+
+func (w *qSServiceStubWrapper) OnStartActivity(
+	ctx context.Context,
+	tile binder.IBinder,
+) error {
+	return w.impl.OnStartActivity(ctx, tile)
+}
+
+func (w *qSServiceStubWrapper) StartActivity(
+	ctx context.Context,
+	tile binder.IBinder,
+	pendingIntent app.PendingIntent,
+) error {
+	return w.impl.StartActivity(ctx, tile, pendingIntent)
+}
+
+func (w *qSServiceStubWrapper) IsLocked(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLocked(ctx)
+}
+
+func (w *qSServiceStubWrapper) IsSecure(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSecure(ctx)
+}
+
+func (w *qSServiceStubWrapper) StartUnlockAndRun(
+	ctx context.Context,
+	tile binder.IBinder,
+) error {
+	return w.impl.StartUnlockAndRun(ctx, tile)
+}
+
+func (w *qSServiceStubWrapper) OnDialogHidden(
+	ctx context.Context,
+	tile binder.IBinder,
+) error {
+	return w.impl.OnDialogHidden(ctx, tile)
+}
+
+func (w *qSServiceStubWrapper) OnStartSuccessful(
+	ctx context.Context,
+	tile binder.IBinder,
+) error {
+	return w.impl.OnStartSuccessful(ctx, tile)
+}
+
+var _ IQSService = (*qSServiceStubWrapper)(nil)
+
+// NewQSServiceStub creates a server-side IQSService wrapping the given
+// server implementation. The returned value satisfies IQSService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewQSServiceStub(
+	impl IQSServiceServer,
+) IQSService {
+	wrapper := &qSServiceStubWrapper{impl: impl}
+	stub := &QSServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -129,3 +129,51 @@ func (s *BluetoothOobDataCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothOobDataCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothOobDataCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothOobDataCallbackServer interface {
+	OnOobData(ctx context.Context, transport int32, oobData OobData) error
+	OnError(ctx context.Context, errorCode int32) error
+}
+
+type bluetoothOobDataCallbackStubWrapper struct {
+	impl       IBluetoothOobDataCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothOobDataCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothOobDataCallbackStubWrapper) OnOobData(
+	ctx context.Context,
+	transport int32,
+	oobData OobData,
+) error {
+	return w.impl.OnOobData(ctx, transport, oobData)
+}
+
+func (w *bluetoothOobDataCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.OnError(ctx, errorCode)
+}
+
+var _ IBluetoothOobDataCallback = (*bluetoothOobDataCallbackStubWrapper)(nil)
+
+// NewBluetoothOobDataCallbackStub creates a server-side IBluetoothOobDataCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothOobDataCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothOobDataCallbackStub(
+	impl IBluetoothOobDataCallbackServer,
+) IBluetoothOobDataCallback {
+	wrapper := &bluetoothOobDataCallbackStubWrapper{impl: impl}
+	stub := &BluetoothOobDataCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

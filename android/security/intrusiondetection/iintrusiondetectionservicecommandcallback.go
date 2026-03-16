@@ -108,3 +108,49 @@ func (s *IntrusionDetectionServiceCommandCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIntrusionDetectionServiceCommandCallbackServer is the server-side interface that user implementations
+// provide to NewIntrusionDetectionServiceCommandCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIntrusionDetectionServiceCommandCallbackServer interface {
+	OnSuccess(ctx context.Context) error
+	OnFailure(ctx context.Context, error_ device.ErrorCode) error
+}
+
+type intrusionDetectionServiceCommandCallbackStubWrapper struct {
+	impl       IIntrusionDetectionServiceCommandCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *intrusionDetectionServiceCommandCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *intrusionDetectionServiceCommandCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+) error {
+	return w.impl.OnSuccess(ctx)
+}
+
+func (w *intrusionDetectionServiceCommandCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	error_ device.ErrorCode,
+) error {
+	return w.impl.OnFailure(ctx, error_)
+}
+
+var _ IIntrusionDetectionServiceCommandCallback = (*intrusionDetectionServiceCommandCallbackStubWrapper)(nil)
+
+// NewIntrusionDetectionServiceCommandCallbackStub creates a server-side IIntrusionDetectionServiceCommandCallback wrapping the given
+// server implementation. The returned value satisfies IIntrusionDetectionServiceCommandCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIntrusionDetectionServiceCommandCallbackStub(
+	impl IIntrusionDetectionServiceCommandCallbackServer,
+) IIntrusionDetectionServiceCommandCallback {
+	wrapper := &intrusionDetectionServiceCommandCallbackStubWrapper{impl: impl}
+	stub := &IntrusionDetectionServiceCommandCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

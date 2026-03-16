@@ -1462,3 +1462,305 @@ func (s *SupplicantP2pIfaceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISupplicantP2pIfaceCallbackServer is the server-side interface that user implementations
+// provide to NewSupplicantP2pIfaceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupplicantP2pIfaceCallbackServer interface {
+	OnDeviceFound(ctx context.Context, srcAddress []byte, p2pDeviceAddress []byte, primaryDeviceType []byte, deviceName string, configMethods WpsConfigMethods, deviceCapabilities byte, groupCapabilities P2pGroupCapabilityMask, wfdDeviceInfo []byte) error
+	OnDeviceLost(ctx context.Context, p2pDeviceAddress []byte) error
+	OnFindStopped(ctx context.Context) error
+	OnGoNegotiationCompleted(ctx context.Context, status P2pStatusCode) error
+	OnGoNegotiationRequest(ctx context.Context, srcAddress []byte, passwordId WpsDevPasswordId) error
+	OnGroupFormationFailure(ctx context.Context, failureReason string) error
+	OnGroupFormationSuccess(ctx context.Context) error
+	OnGroupRemoved(ctx context.Context, groupIfname string, isGroupOwner bool) error
+	OnGroupStarted(ctx context.Context, groupIfname string, isGroupOwner bool, ssid []byte, frequency int32, psk []byte, passphrase string, goDeviceAddress []byte, isPersistent bool) error
+	OnInvitationReceived(ctx context.Context, srcAddress []byte, goDeviceAddress []byte, bssid []byte, persistentNetworkId int32, operatingFrequency int32) error
+	OnInvitationResult(ctx context.Context, bssid []byte, status P2pStatusCode) error
+	OnProvisionDiscoveryCompleted(ctx context.Context, p2pDeviceAddress []byte, isRequest bool, status P2pProvDiscStatusCode, configMethods WpsConfigMethods, generatedPin string) error
+	OnR2DeviceFound(ctx context.Context, srcAddress []byte, p2pDeviceAddress []byte, primaryDeviceType []byte, deviceName string, configMethods WpsConfigMethods, deviceCapabilities byte, groupCapabilities P2pGroupCapabilityMask, wfdDeviceInfo []byte, wfdR2DeviceInfo []byte) error
+	OnServiceDiscoveryResponse(ctx context.Context, srcAddress []byte, updateIndicator uint16, tlvs []byte) error
+	OnStaAuthorized(ctx context.Context, srcAddress []byte, p2pDeviceAddress []byte) error
+	OnStaDeauthorized(ctx context.Context, srcAddress []byte, p2pDeviceAddress []byte) error
+	OnGroupFrequencyChanged(ctx context.Context, groupIfname string, frequency int32) error
+	OnDeviceFoundWithVendorElements(ctx context.Context, srcAddress []byte, p2pDeviceAddress []byte, primaryDeviceType []byte, deviceName string, configMethods WpsConfigMethods, deviceCapabilities byte, groupCapabilities P2pGroupCapabilityMask, wfdDeviceInfo []byte, wfdR2DeviceInfo []byte, vendorElemBytes []byte) error
+	OnGroupStartedWithParams(ctx context.Context, groupStartedEventParams P2pGroupStartedEventParams) error
+	OnPeerClientJoined(ctx context.Context, clientJoinedEventParams P2pPeerClientJoinedEventParams) error
+	OnPeerClientDisconnected(ctx context.Context, clientDisconnectedEventParams P2pPeerClientDisconnectedEventParams) error
+	OnProvisionDiscoveryCompletedEvent(ctx context.Context, provisionDiscoveryCompletedEventParams P2pProvisionDiscoveryCompletedEventParams) error
+	OnDeviceFoundWithParams(ctx context.Context, deviceFoundEventParams P2pDeviceFoundEventParams) error
+	OnGoNegotiationRequestWithParams(ctx context.Context, params P2pGoNegotiationReqEventParams) error
+	OnInvitationReceivedWithParams(ctx context.Context, params P2pInvitationEventParams) error
+	OnUsdBasedServiceDiscoveryResult(ctx context.Context, params P2pUsdBasedServiceDiscoveryResultParams) error
+	OnUsdBasedServiceDiscoveryTerminated(ctx context.Context, sessionId int32, reasonCode UsdTerminateReasonCode) error
+	OnUsdBasedServiceAdvertisementTerminated(ctx context.Context, sessionId int32, reasonCode UsdTerminateReasonCode) error
+}
+
+type supplicantP2pIfaceCallbackStubWrapper struct {
+	impl       ISupplicantP2pIfaceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnDeviceFound(
+	ctx context.Context,
+	srcAddress []byte,
+	p2pDeviceAddress []byte,
+	primaryDeviceType []byte,
+	deviceName string,
+	configMethods WpsConfigMethods,
+	deviceCapabilities byte,
+	groupCapabilities P2pGroupCapabilityMask,
+	wfdDeviceInfo []byte,
+) error {
+	return w.impl.OnDeviceFound(ctx, srcAddress, p2pDeviceAddress, primaryDeviceType, deviceName, configMethods, deviceCapabilities, groupCapabilities, wfdDeviceInfo)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnDeviceLost(
+	ctx context.Context,
+	p2pDeviceAddress []byte,
+) error {
+	return w.impl.OnDeviceLost(ctx, p2pDeviceAddress)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnFindStopped(
+	ctx context.Context,
+) error {
+	return w.impl.OnFindStopped(ctx)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnGoNegotiationCompleted(
+	ctx context.Context,
+	status P2pStatusCode,
+) error {
+	return w.impl.OnGoNegotiationCompleted(ctx, status)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnGoNegotiationRequest(
+	ctx context.Context,
+	srcAddress []byte,
+	passwordId WpsDevPasswordId,
+) error {
+	return w.impl.OnGoNegotiationRequest(ctx, srcAddress, passwordId)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnGroupFormationFailure(
+	ctx context.Context,
+	failureReason string,
+) error {
+	return w.impl.OnGroupFormationFailure(ctx, failureReason)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnGroupFormationSuccess(
+	ctx context.Context,
+) error {
+	return w.impl.OnGroupFormationSuccess(ctx)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnGroupRemoved(
+	ctx context.Context,
+	groupIfname string,
+	isGroupOwner bool,
+) error {
+	return w.impl.OnGroupRemoved(ctx, groupIfname, isGroupOwner)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnGroupStarted(
+	ctx context.Context,
+	groupIfname string,
+	isGroupOwner bool,
+	ssid []byte,
+	frequency int32,
+	psk []byte,
+	passphrase string,
+	goDeviceAddress []byte,
+	isPersistent bool,
+) error {
+	return w.impl.OnGroupStarted(ctx, groupIfname, isGroupOwner, ssid, frequency, psk, passphrase, goDeviceAddress, isPersistent)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnInvitationReceived(
+	ctx context.Context,
+	srcAddress []byte,
+	goDeviceAddress []byte,
+	bssid []byte,
+	persistentNetworkId int32,
+	operatingFrequency int32,
+) error {
+	return w.impl.OnInvitationReceived(ctx, srcAddress, goDeviceAddress, bssid, persistentNetworkId, operatingFrequency)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnInvitationResult(
+	ctx context.Context,
+	bssid []byte,
+	status P2pStatusCode,
+) error {
+	return w.impl.OnInvitationResult(ctx, bssid, status)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnProvisionDiscoveryCompleted(
+	ctx context.Context,
+	p2pDeviceAddress []byte,
+	isRequest bool,
+	status P2pProvDiscStatusCode,
+	configMethods WpsConfigMethods,
+	generatedPin string,
+) error {
+	return w.impl.OnProvisionDiscoveryCompleted(ctx, p2pDeviceAddress, isRequest, status, configMethods, generatedPin)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnR2DeviceFound(
+	ctx context.Context,
+	srcAddress []byte,
+	p2pDeviceAddress []byte,
+	primaryDeviceType []byte,
+	deviceName string,
+	configMethods WpsConfigMethods,
+	deviceCapabilities byte,
+	groupCapabilities P2pGroupCapabilityMask,
+	wfdDeviceInfo []byte,
+	wfdR2DeviceInfo []byte,
+) error {
+	return w.impl.OnR2DeviceFound(ctx, srcAddress, p2pDeviceAddress, primaryDeviceType, deviceName, configMethods, deviceCapabilities, groupCapabilities, wfdDeviceInfo, wfdR2DeviceInfo)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnServiceDiscoveryResponse(
+	ctx context.Context,
+	srcAddress []byte,
+	updateIndicator uint16,
+	tlvs []byte,
+) error {
+	return w.impl.OnServiceDiscoveryResponse(ctx, srcAddress, updateIndicator, tlvs)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnStaAuthorized(
+	ctx context.Context,
+	srcAddress []byte,
+	p2pDeviceAddress []byte,
+) error {
+	return w.impl.OnStaAuthorized(ctx, srcAddress, p2pDeviceAddress)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnStaDeauthorized(
+	ctx context.Context,
+	srcAddress []byte,
+	p2pDeviceAddress []byte,
+) error {
+	return w.impl.OnStaDeauthorized(ctx, srcAddress, p2pDeviceAddress)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnGroupFrequencyChanged(
+	ctx context.Context,
+	groupIfname string,
+	frequency int32,
+) error {
+	return w.impl.OnGroupFrequencyChanged(ctx, groupIfname, frequency)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnDeviceFoundWithVendorElements(
+	ctx context.Context,
+	srcAddress []byte,
+	p2pDeviceAddress []byte,
+	primaryDeviceType []byte,
+	deviceName string,
+	configMethods WpsConfigMethods,
+	deviceCapabilities byte,
+	groupCapabilities P2pGroupCapabilityMask,
+	wfdDeviceInfo []byte,
+	wfdR2DeviceInfo []byte,
+	vendorElemBytes []byte,
+) error {
+	return w.impl.OnDeviceFoundWithVendorElements(ctx, srcAddress, p2pDeviceAddress, primaryDeviceType, deviceName, configMethods, deviceCapabilities, groupCapabilities, wfdDeviceInfo, wfdR2DeviceInfo, vendorElemBytes)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnGroupStartedWithParams(
+	ctx context.Context,
+	groupStartedEventParams P2pGroupStartedEventParams,
+) error {
+	return w.impl.OnGroupStartedWithParams(ctx, groupStartedEventParams)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnPeerClientJoined(
+	ctx context.Context,
+	clientJoinedEventParams P2pPeerClientJoinedEventParams,
+) error {
+	return w.impl.OnPeerClientJoined(ctx, clientJoinedEventParams)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnPeerClientDisconnected(
+	ctx context.Context,
+	clientDisconnectedEventParams P2pPeerClientDisconnectedEventParams,
+) error {
+	return w.impl.OnPeerClientDisconnected(ctx, clientDisconnectedEventParams)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnProvisionDiscoveryCompletedEvent(
+	ctx context.Context,
+	provisionDiscoveryCompletedEventParams P2pProvisionDiscoveryCompletedEventParams,
+) error {
+	return w.impl.OnProvisionDiscoveryCompletedEvent(ctx, provisionDiscoveryCompletedEventParams)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnDeviceFoundWithParams(
+	ctx context.Context,
+	deviceFoundEventParams P2pDeviceFoundEventParams,
+) error {
+	return w.impl.OnDeviceFoundWithParams(ctx, deviceFoundEventParams)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnGoNegotiationRequestWithParams(
+	ctx context.Context,
+	params P2pGoNegotiationReqEventParams,
+) error {
+	return w.impl.OnGoNegotiationRequestWithParams(ctx, params)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnInvitationReceivedWithParams(
+	ctx context.Context,
+	params P2pInvitationEventParams,
+) error {
+	return w.impl.OnInvitationReceivedWithParams(ctx, params)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnUsdBasedServiceDiscoveryResult(
+	ctx context.Context,
+	params P2pUsdBasedServiceDiscoveryResultParams,
+) error {
+	return w.impl.OnUsdBasedServiceDiscoveryResult(ctx, params)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnUsdBasedServiceDiscoveryTerminated(
+	ctx context.Context,
+	sessionId int32,
+	reasonCode UsdTerminateReasonCode,
+) error {
+	return w.impl.OnUsdBasedServiceDiscoveryTerminated(ctx, sessionId, reasonCode)
+}
+
+func (w *supplicantP2pIfaceCallbackStubWrapper) OnUsdBasedServiceAdvertisementTerminated(
+	ctx context.Context,
+	sessionId int32,
+	reasonCode UsdTerminateReasonCode,
+) error {
+	return w.impl.OnUsdBasedServiceAdvertisementTerminated(ctx, sessionId, reasonCode)
+}
+
+var _ ISupplicantP2pIfaceCallback = (*supplicantP2pIfaceCallbackStubWrapper)(nil)
+
+// NewSupplicantP2pIfaceCallbackStub creates a server-side ISupplicantP2pIfaceCallback wrapping the given
+// server implementation. The returned value satisfies ISupplicantP2pIfaceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupplicantP2pIfaceCallbackStub(
+	impl ISupplicantP2pIfaceCallbackServer,
+) ISupplicantP2pIfaceCallback {
+	wrapper := &supplicantP2pIfaceCallbackStubWrapper{impl: impl}
+	stub := &SupplicantP2pIfaceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

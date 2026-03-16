@@ -99,7 +99,7 @@ func (p *SoundTriggerHwProxy) RegisterGlobalCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerHw)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerHw, "registerGlobalCallback")
 	if _err != nil {
@@ -131,7 +131,7 @@ func (p *SoundTriggerHwProxy) LoadSoundModel(
 	if _err := soundModel.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerHw, "loadSoundModel")
 	if _err != nil {
@@ -167,7 +167,7 @@ func (p *SoundTriggerHwProxy) LoadPhraseSoundModel(
 	if _err := soundModel.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerHw, "loadPhraseSoundModel")
 	if _err != nil {
@@ -665,4 +665,131 @@ func (s *SoundTriggerHwStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISoundTriggerHwServer is the server-side interface that user implementations
+// provide to NewSoundTriggerHwStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerHwServer interface {
+	GetProperties(ctx context.Context) (broadcastradio.Properties, error)
+	RegisterGlobalCallback(ctx context.Context, callback ISoundTriggerHwGlobalCallback) error
+	LoadSoundModel(ctx context.Context, soundModel soundtrigger.SoundModel, callback ISoundTriggerHwCallback) (int32, error)
+	LoadPhraseSoundModel(ctx context.Context, soundModel soundtrigger.PhraseSoundModel, callback ISoundTriggerHwCallback) (int32, error)
+	UnloadSoundModel(ctx context.Context, modelHandle int32) error
+	StartRecognition(ctx context.Context, modelHandle int32, deviceHandle int32, ioHandle int32, config hardwareSoundtrigger.SoundTriggerRecognitionConfig) error
+	StopRecognition(ctx context.Context, modelHandle int32) error
+	ForceRecognitionEvent(ctx context.Context, modelHandle int32) error
+	QueryParameter(ctx context.Context, modelHandle int32, modelParam soundtrigger.ModelParameter) (soundtrigger.ModelParameterRange, error)
+	GetParameter(ctx context.Context, modelHandle int32, modelParam soundtrigger.ModelParameter) (int32, error)
+	SetParameter(ctx context.Context, modelHandle int32, modelParam soundtrigger.ModelParameter, value int32) error
+}
+
+type soundTriggerHwStubWrapper struct {
+	impl       ISoundTriggerHwServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerHwStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerHwStubWrapper) GetProperties(
+	ctx context.Context,
+) (broadcastradio.Properties, error) {
+	return w.impl.GetProperties(ctx)
+}
+
+func (w *soundTriggerHwStubWrapper) RegisterGlobalCallback(
+	ctx context.Context,
+	callback ISoundTriggerHwGlobalCallback,
+) error {
+	return w.impl.RegisterGlobalCallback(ctx, callback)
+}
+
+func (w *soundTriggerHwStubWrapper) LoadSoundModel(
+	ctx context.Context,
+	soundModel soundtrigger.SoundModel,
+	callback ISoundTriggerHwCallback,
+) (int32, error) {
+	return w.impl.LoadSoundModel(ctx, soundModel, callback)
+}
+
+func (w *soundTriggerHwStubWrapper) LoadPhraseSoundModel(
+	ctx context.Context,
+	soundModel soundtrigger.PhraseSoundModel,
+	callback ISoundTriggerHwCallback,
+) (int32, error) {
+	return w.impl.LoadPhraseSoundModel(ctx, soundModel, callback)
+}
+
+func (w *soundTriggerHwStubWrapper) UnloadSoundModel(
+	ctx context.Context,
+	modelHandle int32,
+) error {
+	return w.impl.UnloadSoundModel(ctx, modelHandle)
+}
+
+func (w *soundTriggerHwStubWrapper) StartRecognition(
+	ctx context.Context,
+	modelHandle int32,
+	deviceHandle int32,
+	ioHandle int32,
+	config hardwareSoundtrigger.SoundTriggerRecognitionConfig,
+) error {
+	return w.impl.StartRecognition(ctx, modelHandle, deviceHandle, ioHandle, config)
+}
+
+func (w *soundTriggerHwStubWrapper) StopRecognition(
+	ctx context.Context,
+	modelHandle int32,
+) error {
+	return w.impl.StopRecognition(ctx, modelHandle)
+}
+
+func (w *soundTriggerHwStubWrapper) ForceRecognitionEvent(
+	ctx context.Context,
+	modelHandle int32,
+) error {
+	return w.impl.ForceRecognitionEvent(ctx, modelHandle)
+}
+
+func (w *soundTriggerHwStubWrapper) QueryParameter(
+	ctx context.Context,
+	modelHandle int32,
+	modelParam soundtrigger.ModelParameter,
+) (soundtrigger.ModelParameterRange, error) {
+	return w.impl.QueryParameter(ctx, modelHandle, modelParam)
+}
+
+func (w *soundTriggerHwStubWrapper) GetParameter(
+	ctx context.Context,
+	modelHandle int32,
+	modelParam soundtrigger.ModelParameter,
+) (int32, error) {
+	return w.impl.GetParameter(ctx, modelHandle, modelParam)
+}
+
+func (w *soundTriggerHwStubWrapper) SetParameter(
+	ctx context.Context,
+	modelHandle int32,
+	modelParam soundtrigger.ModelParameter,
+	value int32,
+) error {
+	return w.impl.SetParameter(ctx, modelHandle, modelParam, value)
+}
+
+var _ ISoundTriggerHw = (*soundTriggerHwStubWrapper)(nil)
+
+// NewSoundTriggerHwStub creates a server-side ISoundTriggerHw wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerHw
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerHwStub(
+	impl ISoundTriggerHwServer,
+) ISoundTriggerHw {
+	wrapper := &soundTriggerHwStubWrapper{impl: impl}
+	stub := &SoundTriggerHwStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

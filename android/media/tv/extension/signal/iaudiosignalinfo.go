@@ -144,7 +144,7 @@ func (p *AudioSignalInfoProxy) AddAudioSignalInfoListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioSignalInfo)
 	_data.WriteString16(clientToken)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioSignalInfo, "addAudioSignalInfoListener")
 	if _err != nil {
@@ -170,7 +170,7 @@ func (p *AudioSignalInfoProxy) RemoveAudioSignalInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioSignalInfo)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioSignalInfo, "removeAudioSignalInfoListener")
 	if _err != nil {
@@ -290,4 +290,75 @@ func (s *AudioSignalInfoStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAudioSignalInfoServer is the server-side interface that user implementations
+// provide to NewAudioSignalInfoStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioSignalInfoServer interface {
+	GetAudioSignalInfo(ctx context.Context, sessionToken string) (os.Bundle, error)
+	NotifyMtsSelectTrackFlag(ctx context.Context, mtsFlag bool) error
+	GetMtsSelectedTrackId(ctx context.Context) (string, error)
+	AddAudioSignalInfoListener(ctx context.Context, clientToken string, listener IAudioSignalInfoListener) error
+	RemoveAudioSignalInfoListener(ctx context.Context, listener IAudioSignalInfoListener) error
+}
+
+type audioSignalInfoStubWrapper struct {
+	impl       IAudioSignalInfoServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioSignalInfoStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioSignalInfoStubWrapper) GetAudioSignalInfo(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetAudioSignalInfo(ctx, sessionToken)
+}
+
+func (w *audioSignalInfoStubWrapper) NotifyMtsSelectTrackFlag(
+	ctx context.Context,
+	mtsFlag bool,
+) error {
+	return w.impl.NotifyMtsSelectTrackFlag(ctx, mtsFlag)
+}
+
+func (w *audioSignalInfoStubWrapper) GetMtsSelectedTrackId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetMtsSelectedTrackId(ctx)
+}
+
+func (w *audioSignalInfoStubWrapper) AddAudioSignalInfoListener(
+	ctx context.Context,
+	clientToken string,
+	listener IAudioSignalInfoListener,
+) error {
+	return w.impl.AddAudioSignalInfoListener(ctx, clientToken, listener)
+}
+
+func (w *audioSignalInfoStubWrapper) RemoveAudioSignalInfoListener(
+	ctx context.Context,
+	listener IAudioSignalInfoListener,
+) error {
+	return w.impl.RemoveAudioSignalInfoListener(ctx, listener)
+}
+
+var _ IAudioSignalInfo = (*audioSignalInfoStubWrapper)(nil)
+
+// NewAudioSignalInfoStub creates a server-side IAudioSignalInfo wrapping the given
+// server implementation. The returned value satisfies IAudioSignalInfo
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioSignalInfoStub(
+	impl IAudioSignalInfoServer,
+) IAudioSignalInfo {
+	wrapper := &audioSignalInfoStubWrapper{impl: impl}
+	stub := &AudioSignalInfoStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

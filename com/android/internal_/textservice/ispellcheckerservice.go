@@ -48,13 +48,13 @@ func (p *SpellCheckerServiceProxy) GetISpellCheckerSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISpellCheckerService)
 	_data.WriteString16(locale)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := bundle.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteInt32(supportedAttributes)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISpellCheckerService, "getISpellCheckerSession")
 	if _err != nil {
@@ -115,4 +115,47 @@ func (s *SpellCheckerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISpellCheckerServiceServer is the server-side interface that user implementations
+// provide to NewSpellCheckerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpellCheckerServiceServer interface {
+	GetISpellCheckerSession(ctx context.Context, locale string, listener ISpellCheckerSessionListener, bundle os.Bundle, supportedAttributes int32, callback ISpellCheckerServiceCallback) error
+}
+
+type spellCheckerServiceStubWrapper struct {
+	impl       ISpellCheckerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spellCheckerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spellCheckerServiceStubWrapper) GetISpellCheckerSession(
+	ctx context.Context,
+	locale string,
+	listener ISpellCheckerSessionListener,
+	bundle os.Bundle,
+	supportedAttributes int32,
+	callback ISpellCheckerServiceCallback,
+) error {
+	return w.impl.GetISpellCheckerSession(ctx, locale, listener, bundle, supportedAttributes, callback)
+}
+
+var _ ISpellCheckerService = (*spellCheckerServiceStubWrapper)(nil)
+
+// NewSpellCheckerServiceStub creates a server-side ISpellCheckerService wrapping the given
+// server implementation. The returned value satisfies ISpellCheckerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpellCheckerServiceStub(
+	impl ISpellCheckerServiceServer,
+) ISpellCheckerService {
+	wrapper := &spellCheckerServiceStubWrapper{impl: impl}
+	stub := &SpellCheckerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

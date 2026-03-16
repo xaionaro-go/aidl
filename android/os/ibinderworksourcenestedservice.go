@@ -168,3 +168,49 @@ func (s *BinderWorkSourceNestedServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBinderWorkSourceNestedServiceServer is the server-side interface that user implementations
+// provide to NewBinderWorkSourceNestedServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderWorkSourceNestedServiceServer interface {
+	NestedCallWithWorkSourceToSet(ctx context.Context, uidToBlame int32) ([]int32, error)
+	NestedCall(ctx context.Context) ([]int32, error)
+}
+
+type binderWorkSourceNestedServiceStubWrapper struct {
+	impl       IBinderWorkSourceNestedServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderWorkSourceNestedServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderWorkSourceNestedServiceStubWrapper) NestedCallWithWorkSourceToSet(
+	ctx context.Context,
+	uidToBlame int32,
+) ([]int32, error) {
+	return w.impl.NestedCallWithWorkSourceToSet(ctx, uidToBlame)
+}
+
+func (w *binderWorkSourceNestedServiceStubWrapper) NestedCall(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.NestedCall(ctx)
+}
+
+var _ IBinderWorkSourceNestedService = (*binderWorkSourceNestedServiceStubWrapper)(nil)
+
+// NewBinderWorkSourceNestedServiceStub creates a server-side IBinderWorkSourceNestedService wrapping the given
+// server implementation. The returned value satisfies IBinderWorkSourceNestedService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderWorkSourceNestedServiceStub(
+	impl IBinderWorkSourceNestedServiceServer,
+) IBinderWorkSourceNestedService {
+	wrapper := &binderWorkSourceNestedServiceStubWrapper{impl: impl}
+	stub := &BinderWorkSourceNestedServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -94,3 +94,42 @@ func (s *EventQueueCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEventQueueCallbackServer is the server-side interface that user implementations
+// provide to NewEventQueueCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEventQueueCallbackServer interface {
+	OnEvent(ctx context.Context, event sensors.Event) error
+}
+
+type eventQueueCallbackStubWrapper struct {
+	impl       IEventQueueCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eventQueueCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eventQueueCallbackStubWrapper) OnEvent(
+	ctx context.Context,
+	event sensors.Event,
+) error {
+	return w.impl.OnEvent(ctx, event)
+}
+
+var _ IEventQueueCallback = (*eventQueueCallbackStubWrapper)(nil)
+
+// NewEventQueueCallbackStub creates a server-side IEventQueueCallback wrapping the given
+// server implementation. The returned value satisfies IEventQueueCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEventQueueCallbackStub(
+	impl IEventQueueCallbackServer,
+) IEventQueueCallback {
+	wrapper := &eventQueueCallbackStubWrapper{impl: impl}
+	stub := &EventQueueCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

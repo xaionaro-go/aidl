@@ -82,3 +82,42 @@ func (s *UnhandledDragCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUnhandledDragCallbackServer is the server-side interface that user implementations
+// provide to NewUnhandledDragCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUnhandledDragCallbackServer interface {
+	NotifyUnhandledDropComplete(ctx context.Context, handled bool) error
+}
+
+type unhandledDragCallbackStubWrapper struct {
+	impl       IUnhandledDragCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *unhandledDragCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *unhandledDragCallbackStubWrapper) NotifyUnhandledDropComplete(
+	ctx context.Context,
+	handled bool,
+) error {
+	return w.impl.NotifyUnhandledDropComplete(ctx, handled)
+}
+
+var _ IUnhandledDragCallback = (*unhandledDragCallbackStubWrapper)(nil)
+
+// NewUnhandledDragCallbackStub creates a server-side IUnhandledDragCallback wrapping the given
+// server implementation. The returned value satisfies IUnhandledDragCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUnhandledDragCallbackStub(
+	impl IUnhandledDragCallbackServer,
+) IUnhandledDragCallback {
+	wrapper := &unhandledDragCallbackStubWrapper{impl: impl}
+	stub := &UnhandledDragCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

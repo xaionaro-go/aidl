@@ -274,7 +274,7 @@ func (p *DisplayManagerProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "registerCallback")
 	if _err != nil {
@@ -301,7 +301,7 @@ func (p *DisplayManagerProxy) RegisterCallbackWithEventMask(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(eventsMask)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "registerCallbackWithEventMask")
@@ -760,8 +760,8 @@ func (p *DisplayManagerProxy) CreateVirtualDisplay(
 	if _err := virtualDisplayConfig.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteStrongBinder(projectionToken.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, projectionToken.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "createVirtualDisplay")
@@ -795,7 +795,7 @@ func (p *DisplayManagerProxy) ResizeVirtualDisplay(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteStrongBinder(token.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
 	_data.WriteInt32(densityDpi)
@@ -825,7 +825,7 @@ func (p *DisplayManagerProxy) SetVirtualDisplaySurface(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteStrongBinder(token.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "setVirtualDisplaySurface")
 	if _err != nil {
@@ -851,7 +851,7 @@ func (p *DisplayManagerProxy) ReleaseVirtualDisplay(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteStrongBinder(token.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "releaseVirtualDisplay")
 	if _err != nil {
@@ -878,7 +878,7 @@ func (p *DisplayManagerProxy) SetVirtualDisplayRotation(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteStrongBinder(token.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(rotation)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "setVirtualDisplayRotation")
@@ -1803,7 +1803,7 @@ func (p *DisplayManagerProxy) SetDisplayIdToMirror(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayManager, "setDisplayIdToMirror")
@@ -1951,7 +1951,7 @@ func (p *DisplayManagerProxy) RequestDisplayModes(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(displayId)
 	if modeIds == nil {
 		_data.WriteInt32(-1)
@@ -3309,4 +3309,548 @@ func (s *DisplayManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDisplayManagerServer is the server-side interface that user implementations
+// provide to NewDisplayManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayManagerServer interface {
+	GetDisplayInfo(ctx context.Context, displayId int32) (interface{}, error)
+	GetDisplayIds(ctx context.Context, includeDisabled bool) ([]int32, error)
+	IsUidPresentOnDisplay(ctx context.Context, uid int32, displayId int32) (bool, error)
+	RegisterCallback(ctx context.Context, callback IDisplayManagerCallback) error
+	RegisterCallbackWithEventMask(ctx context.Context, callback IDisplayManagerCallback, eventsMask int64) error
+	StartWifiDisplayScan(ctx context.Context) error
+	StopWifiDisplayScan(ctx context.Context) error
+	ConnectWifiDisplay(ctx context.Context, address string) error
+	DisconnectWifiDisplay(ctx context.Context) error
+	RenameWifiDisplay(ctx context.Context, address string, alias string) error
+	ForgetWifiDisplay(ctx context.Context, address string) error
+	PauseWifiDisplay(ctx context.Context) error
+	ResumeWifiDisplay(ctx context.Context) error
+	GetWifiDisplayStatus(ctx context.Context) (WifiDisplayStatus, error)
+	SetUserDisabledHdrTypes(ctx context.Context, userDisabledTypes []int32) error
+	SetAreUserDisabledHdrTypesAllowed(ctx context.Context, areUserDisabledHdrTypesAllowed bool) error
+	AreUserDisabledHdrTypesAllowed(ctx context.Context) (bool, error)
+	GetUserDisabledHdrTypes(ctx context.Context) ([]int32, error)
+	OverrideHdrTypes(ctx context.Context, displayId int32, modes []int32) error
+	RequestColorMode(ctx context.Context, displayId int32, colorMode int32) error
+	CreateVirtualDisplay(ctx context.Context, virtualDisplayConfig VirtualDisplayConfig, callback IVirtualDisplayCallback, projectionToken projection.IMediaProjection, packageName string) (int32, error)
+	ResizeVirtualDisplay(ctx context.Context, token IVirtualDisplayCallback, width int32, height int32, densityDpi int32) error
+	SetVirtualDisplaySurface(ctx context.Context, token IVirtualDisplayCallback, surface interface{}) error
+	ReleaseVirtualDisplay(ctx context.Context, token IVirtualDisplayCallback) error
+	SetVirtualDisplayRotation(ctx context.Context, token IVirtualDisplayCallback, rotation int32) error
+	GetStableDisplaySize(ctx context.Context) (graphics.Point, error)
+	GetBrightnessEvents(ctx context.Context) (pm.ParceledListSlice, error)
+	GetAmbientBrightnessStats(ctx context.Context) (pm.ParceledListSlice, error)
+	SetBrightnessConfigurationForUser(ctx context.Context, c BrightnessConfiguration, packageName string) error
+	SetBrightnessConfigurationForDisplay(ctx context.Context, c BrightnessConfiguration, uniqueDisplayId string, packageName string) error
+	GetBrightnessConfigurationForDisplay(ctx context.Context, uniqueDisplayId string) (BrightnessConfiguration, error)
+	GetBrightnessConfigurationForUser(ctx context.Context) (BrightnessConfiguration, error)
+	GetDefaultBrightnessConfiguration(ctx context.Context) (BrightnessConfiguration, error)
+	IsMinimalPostProcessingRequested(ctx context.Context, displayId int32) (bool, error)
+	SetTemporaryBrightness(ctx context.Context, displayId int32, brightness float32) error
+	SetBrightness(ctx context.Context, displayId int32, brightness float32) error
+	GetBrightness(ctx context.Context, displayId int32) (float32, error)
+	SetTemporaryAutoBrightnessAdjustment(ctx context.Context, adjustment float32) error
+	GetMinimumBrightnessCurve(ctx context.Context) (Curve, error)
+	GetBrightnessInfo(ctx context.Context, displayId int32) (BrightnessInfo, error)
+	GetPreferredWideGamutColorSpaceId(ctx context.Context) (int32, error)
+	SetUserPreferredDisplayMode(ctx context.Context, displayId int32, mode ScoConfig.Mode) error
+	GetUserPreferredDisplayMode(ctx context.Context, displayId int32) (ScoConfig.Mode, error)
+	GetSystemPreferredDisplayMode(ctx context.Context, displayId int32) (ScoConfig.Mode, error)
+	SetHdrConversionMode(ctx context.Context, hdrConversionMode HdrConversionMode) error
+	GetHdrConversionModeSetting(ctx context.Context) (HdrConversionMode, error)
+	GetHdrConversionMode(ctx context.Context) (HdrConversionMode, error)
+	GetSupportedHdrOutputTypes(ctx context.Context) ([]int32, error)
+	SetShouldAlwaysRespectAppRequestedMode(ctx context.Context, enabled bool) error
+	ShouldAlwaysRespectAppRequestedMode(ctx context.Context) (bool, error)
+	SetRefreshRateSwitchingType(ctx context.Context, newValue int32) error
+	GetRefreshRateSwitchingType(ctx context.Context) (int32, error)
+	GetDisplayDecorationSupport(ctx context.Context, displayId int32) (gui.DisplayDecorationSupport, error)
+	SetDisplayIdToMirror(ctx context.Context, token binder.IBinder, displayId int32) error
+	GetOverlaySupport(ctx context.Context) (gui.OverlayProperties, error)
+	EnableConnectedDisplay(ctx context.Context, displayId int32) error
+	DisableConnectedDisplay(ctx context.Context, displayId int32) error
+	RequestDisplayPower(ctx context.Context, displayId int32, state int32) (bool, error)
+	RequestDisplayModes(ctx context.Context, token binder.IBinder, displayId int32, modeIds []int32) error
+	GetHighestHdrSdrRatio(ctx context.Context, displayId int32) (float32, error)
+	GetDozeBrightnessSensorValueToBrightness(ctx context.Context, displayId int32) ([]float32, error)
+	GetDefaultDozeBrightness(ctx context.Context, displayId int32) (float32, error)
+	GetDisplayTopology(ctx context.Context) (DisplayTopology, error)
+	SetDisplayTopology(ctx context.Context, topology DisplayTopology) error
+}
+
+type displayManagerStubWrapper struct {
+	impl       IDisplayManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayManagerStubWrapper) GetDisplayInfo(
+	ctx context.Context,
+	displayId int32,
+) (interface{}, error) {
+	return w.impl.GetDisplayInfo(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) GetDisplayIds(
+	ctx context.Context,
+	includeDisabled bool,
+) ([]int32, error) {
+	return w.impl.GetDisplayIds(ctx, includeDisabled)
+}
+
+func (w *displayManagerStubWrapper) IsUidPresentOnDisplay(
+	ctx context.Context,
+	uid int32,
+	displayId int32,
+) (bool, error) {
+	return w.impl.IsUidPresentOnDisplay(ctx, uid, displayId)
+}
+
+func (w *displayManagerStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IDisplayManagerCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *displayManagerStubWrapper) RegisterCallbackWithEventMask(
+	ctx context.Context,
+	callback IDisplayManagerCallback,
+	eventsMask int64,
+) error {
+	return w.impl.RegisterCallbackWithEventMask(ctx, callback, eventsMask)
+}
+
+func (w *displayManagerStubWrapper) StartWifiDisplayScan(
+	ctx context.Context,
+) error {
+	return w.impl.StartWifiDisplayScan(ctx)
+}
+
+func (w *displayManagerStubWrapper) StopWifiDisplayScan(
+	ctx context.Context,
+) error {
+	return w.impl.StopWifiDisplayScan(ctx)
+}
+
+func (w *displayManagerStubWrapper) ConnectWifiDisplay(
+	ctx context.Context,
+	address string,
+) error {
+	return w.impl.ConnectWifiDisplay(ctx, address)
+}
+
+func (w *displayManagerStubWrapper) DisconnectWifiDisplay(
+	ctx context.Context,
+) error {
+	return w.impl.DisconnectWifiDisplay(ctx)
+}
+
+func (w *displayManagerStubWrapper) RenameWifiDisplay(
+	ctx context.Context,
+	address string,
+	alias string,
+) error {
+	return w.impl.RenameWifiDisplay(ctx, address, alias)
+}
+
+func (w *displayManagerStubWrapper) ForgetWifiDisplay(
+	ctx context.Context,
+	address string,
+) error {
+	return w.impl.ForgetWifiDisplay(ctx, address)
+}
+
+func (w *displayManagerStubWrapper) PauseWifiDisplay(
+	ctx context.Context,
+) error {
+	return w.impl.PauseWifiDisplay(ctx)
+}
+
+func (w *displayManagerStubWrapper) ResumeWifiDisplay(
+	ctx context.Context,
+) error {
+	return w.impl.ResumeWifiDisplay(ctx)
+}
+
+func (w *displayManagerStubWrapper) GetWifiDisplayStatus(
+	ctx context.Context,
+) (WifiDisplayStatus, error) {
+	return w.impl.GetWifiDisplayStatus(ctx)
+}
+
+func (w *displayManagerStubWrapper) SetUserDisabledHdrTypes(
+	ctx context.Context,
+	userDisabledTypes []int32,
+) error {
+	return w.impl.SetUserDisabledHdrTypes(ctx, userDisabledTypes)
+}
+
+func (w *displayManagerStubWrapper) SetAreUserDisabledHdrTypesAllowed(
+	ctx context.Context,
+	areUserDisabledHdrTypesAllowed bool,
+) error {
+	return w.impl.SetAreUserDisabledHdrTypesAllowed(ctx, areUserDisabledHdrTypesAllowed)
+}
+
+func (w *displayManagerStubWrapper) AreUserDisabledHdrTypesAllowed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.AreUserDisabledHdrTypesAllowed(ctx)
+}
+
+func (w *displayManagerStubWrapper) GetUserDisabledHdrTypes(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetUserDisabledHdrTypes(ctx)
+}
+
+func (w *displayManagerStubWrapper) OverrideHdrTypes(
+	ctx context.Context,
+	displayId int32,
+	modes []int32,
+) error {
+	return w.impl.OverrideHdrTypes(ctx, displayId, modes)
+}
+
+func (w *displayManagerStubWrapper) RequestColorMode(
+	ctx context.Context,
+	displayId int32,
+	colorMode int32,
+) error {
+	return w.impl.RequestColorMode(ctx, displayId, colorMode)
+}
+
+func (w *displayManagerStubWrapper) CreateVirtualDisplay(
+	ctx context.Context,
+	virtualDisplayConfig VirtualDisplayConfig,
+	callback IVirtualDisplayCallback,
+	projectionToken projection.IMediaProjection,
+	packageName string,
+) (int32, error) {
+	return w.impl.CreateVirtualDisplay(ctx, virtualDisplayConfig, callback, projectionToken, packageName)
+}
+
+func (w *displayManagerStubWrapper) ResizeVirtualDisplay(
+	ctx context.Context,
+	token IVirtualDisplayCallback,
+	width int32,
+	height int32,
+	densityDpi int32,
+) error {
+	return w.impl.ResizeVirtualDisplay(ctx, token, width, height, densityDpi)
+}
+
+func (w *displayManagerStubWrapper) SetVirtualDisplaySurface(
+	ctx context.Context,
+	token IVirtualDisplayCallback,
+	surface interface{},
+) error {
+	return w.impl.SetVirtualDisplaySurface(ctx, token, surface)
+}
+
+func (w *displayManagerStubWrapper) ReleaseVirtualDisplay(
+	ctx context.Context,
+	token IVirtualDisplayCallback,
+) error {
+	return w.impl.ReleaseVirtualDisplay(ctx, token)
+}
+
+func (w *displayManagerStubWrapper) SetVirtualDisplayRotation(
+	ctx context.Context,
+	token IVirtualDisplayCallback,
+	rotation int32,
+) error {
+	return w.impl.SetVirtualDisplayRotation(ctx, token, rotation)
+}
+
+func (w *displayManagerStubWrapper) GetStableDisplaySize(
+	ctx context.Context,
+) (graphics.Point, error) {
+	return w.impl.GetStableDisplaySize(ctx)
+}
+
+func (w *displayManagerStubWrapper) GetBrightnessEvents(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetBrightnessEvents(ctx)
+}
+
+func (w *displayManagerStubWrapper) GetAmbientBrightnessStats(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetAmbientBrightnessStats(ctx)
+}
+
+func (w *displayManagerStubWrapper) SetBrightnessConfigurationForUser(
+	ctx context.Context,
+	c BrightnessConfiguration,
+	packageName string,
+) error {
+	return w.impl.SetBrightnessConfigurationForUser(ctx, c, packageName)
+}
+
+func (w *displayManagerStubWrapper) SetBrightnessConfigurationForDisplay(
+	ctx context.Context,
+	c BrightnessConfiguration,
+	uniqueDisplayId string,
+	packageName string,
+) error {
+	return w.impl.SetBrightnessConfigurationForDisplay(ctx, c, uniqueDisplayId, packageName)
+}
+
+func (w *displayManagerStubWrapper) GetBrightnessConfigurationForDisplay(
+	ctx context.Context,
+	uniqueDisplayId string,
+) (BrightnessConfiguration, error) {
+	return w.impl.GetBrightnessConfigurationForDisplay(ctx, uniqueDisplayId)
+}
+
+func (w *displayManagerStubWrapper) GetBrightnessConfigurationForUser(
+	ctx context.Context,
+) (BrightnessConfiguration, error) {
+	return w.impl.GetBrightnessConfigurationForUser(ctx)
+}
+
+func (w *displayManagerStubWrapper) GetDefaultBrightnessConfiguration(
+	ctx context.Context,
+) (BrightnessConfiguration, error) {
+	return w.impl.GetDefaultBrightnessConfiguration(ctx)
+}
+
+func (w *displayManagerStubWrapper) IsMinimalPostProcessingRequested(
+	ctx context.Context,
+	displayId int32,
+) (bool, error) {
+	return w.impl.IsMinimalPostProcessingRequested(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) SetTemporaryBrightness(
+	ctx context.Context,
+	displayId int32,
+	brightness float32,
+) error {
+	return w.impl.SetTemporaryBrightness(ctx, displayId, brightness)
+}
+
+func (w *displayManagerStubWrapper) SetBrightness(
+	ctx context.Context,
+	displayId int32,
+	brightness float32,
+) error {
+	return w.impl.SetBrightness(ctx, displayId, brightness)
+}
+
+func (w *displayManagerStubWrapper) GetBrightness(
+	ctx context.Context,
+	displayId int32,
+) (float32, error) {
+	return w.impl.GetBrightness(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) SetTemporaryAutoBrightnessAdjustment(
+	ctx context.Context,
+	adjustment float32,
+) error {
+	return w.impl.SetTemporaryAutoBrightnessAdjustment(ctx, adjustment)
+}
+
+func (w *displayManagerStubWrapper) GetMinimumBrightnessCurve(
+	ctx context.Context,
+) (Curve, error) {
+	return w.impl.GetMinimumBrightnessCurve(ctx)
+}
+
+func (w *displayManagerStubWrapper) GetBrightnessInfo(
+	ctx context.Context,
+	displayId int32,
+) (BrightnessInfo, error) {
+	return w.impl.GetBrightnessInfo(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) GetPreferredWideGamutColorSpaceId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPreferredWideGamutColorSpaceId(ctx)
+}
+
+func (w *displayManagerStubWrapper) SetUserPreferredDisplayMode(
+	ctx context.Context,
+	displayId int32,
+	mode ScoConfig.Mode,
+) error {
+	return w.impl.SetUserPreferredDisplayMode(ctx, displayId, mode)
+}
+
+func (w *displayManagerStubWrapper) GetUserPreferredDisplayMode(
+	ctx context.Context,
+	displayId int32,
+) (ScoConfig.Mode, error) {
+	return w.impl.GetUserPreferredDisplayMode(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) GetSystemPreferredDisplayMode(
+	ctx context.Context,
+	displayId int32,
+) (ScoConfig.Mode, error) {
+	return w.impl.GetSystemPreferredDisplayMode(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) SetHdrConversionMode(
+	ctx context.Context,
+	hdrConversionMode HdrConversionMode,
+) error {
+	return w.impl.SetHdrConversionMode(ctx, hdrConversionMode)
+}
+
+func (w *displayManagerStubWrapper) GetHdrConversionModeSetting(
+	ctx context.Context,
+) (HdrConversionMode, error) {
+	return w.impl.GetHdrConversionModeSetting(ctx)
+}
+
+func (w *displayManagerStubWrapper) GetHdrConversionMode(
+	ctx context.Context,
+) (HdrConversionMode, error) {
+	return w.impl.GetHdrConversionMode(ctx)
+}
+
+func (w *displayManagerStubWrapper) GetSupportedHdrOutputTypes(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetSupportedHdrOutputTypes(ctx)
+}
+
+func (w *displayManagerStubWrapper) SetShouldAlwaysRespectAppRequestedMode(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetShouldAlwaysRespectAppRequestedMode(ctx, enabled)
+}
+
+func (w *displayManagerStubWrapper) ShouldAlwaysRespectAppRequestedMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ShouldAlwaysRespectAppRequestedMode(ctx)
+}
+
+func (w *displayManagerStubWrapper) SetRefreshRateSwitchingType(
+	ctx context.Context,
+	newValue int32,
+) error {
+	return w.impl.SetRefreshRateSwitchingType(ctx, newValue)
+}
+
+func (w *displayManagerStubWrapper) GetRefreshRateSwitchingType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetRefreshRateSwitchingType(ctx)
+}
+
+func (w *displayManagerStubWrapper) GetDisplayDecorationSupport(
+	ctx context.Context,
+	displayId int32,
+) (gui.DisplayDecorationSupport, error) {
+	return w.impl.GetDisplayDecorationSupport(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) SetDisplayIdToMirror(
+	ctx context.Context,
+	token binder.IBinder,
+	displayId int32,
+) error {
+	return w.impl.SetDisplayIdToMirror(ctx, token, displayId)
+}
+
+func (w *displayManagerStubWrapper) GetOverlaySupport(
+	ctx context.Context,
+) (gui.OverlayProperties, error) {
+	return w.impl.GetOverlaySupport(ctx)
+}
+
+func (w *displayManagerStubWrapper) EnableConnectedDisplay(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.EnableConnectedDisplay(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) DisableConnectedDisplay(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.DisableConnectedDisplay(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) RequestDisplayPower(
+	ctx context.Context,
+	displayId int32,
+	state int32,
+) (bool, error) {
+	return w.impl.RequestDisplayPower(ctx, displayId, state)
+}
+
+func (w *displayManagerStubWrapper) RequestDisplayModes(
+	ctx context.Context,
+	token binder.IBinder,
+	displayId int32,
+	modeIds []int32,
+) error {
+	return w.impl.RequestDisplayModes(ctx, token, displayId, modeIds)
+}
+
+func (w *displayManagerStubWrapper) GetHighestHdrSdrRatio(
+	ctx context.Context,
+	displayId int32,
+) (float32, error) {
+	return w.impl.GetHighestHdrSdrRatio(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) GetDozeBrightnessSensorValueToBrightness(
+	ctx context.Context,
+	displayId int32,
+) ([]float32, error) {
+	return w.impl.GetDozeBrightnessSensorValueToBrightness(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) GetDefaultDozeBrightness(
+	ctx context.Context,
+	displayId int32,
+) (float32, error) {
+	return w.impl.GetDefaultDozeBrightness(ctx, displayId)
+}
+
+func (w *displayManagerStubWrapper) GetDisplayTopology(
+	ctx context.Context,
+) (DisplayTopology, error) {
+	return w.impl.GetDisplayTopology(ctx)
+}
+
+func (w *displayManagerStubWrapper) SetDisplayTopology(
+	ctx context.Context,
+	topology DisplayTopology,
+) error {
+	return w.impl.SetDisplayTopology(ctx, topology)
+}
+
+var _ IDisplayManager = (*displayManagerStubWrapper)(nil)
+
+// NewDisplayManagerStub creates a server-side IDisplayManager wrapping the given
+// server implementation. The returned value satisfies IDisplayManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayManagerStub(
+	impl IDisplayManagerServer,
+) IDisplayManager {
+	wrapper := &displayManagerStubWrapper{impl: impl}
+	stub := &DisplayManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

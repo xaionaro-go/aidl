@@ -176,3 +176,60 @@ func (s *TvInputServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITvInputServiceCallbackServer is the server-side interface that user implementations
+// provide to NewTvInputServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInputServiceCallbackServer interface {
+	AddHardwareInput(ctx context.Context, deviceId int32, inputInfo TvInputInfo) error
+	AddHdmiInput(ctx context.Context, id int32, inputInfo TvInputInfo) error
+	RemoveHardwareInput(ctx context.Context, inputId string) error
+}
+
+type tvInputServiceCallbackStubWrapper struct {
+	impl       ITvInputServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInputServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInputServiceCallbackStubWrapper) AddHardwareInput(
+	ctx context.Context,
+	deviceId int32,
+	inputInfo TvInputInfo,
+) error {
+	return w.impl.AddHardwareInput(ctx, deviceId, inputInfo)
+}
+
+func (w *tvInputServiceCallbackStubWrapper) AddHdmiInput(
+	ctx context.Context,
+	id int32,
+	inputInfo TvInputInfo,
+) error {
+	return w.impl.AddHdmiInput(ctx, id, inputInfo)
+}
+
+func (w *tvInputServiceCallbackStubWrapper) RemoveHardwareInput(
+	ctx context.Context,
+	inputId string,
+) error {
+	return w.impl.RemoveHardwareInput(ctx, inputId)
+}
+
+var _ ITvInputServiceCallback = (*tvInputServiceCallbackStubWrapper)(nil)
+
+// NewTvInputServiceCallbackStub creates a server-side ITvInputServiceCallback wrapping the given
+// server implementation. The returned value satisfies ITvInputServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInputServiceCallbackStub(
+	impl ITvInputServiceCallbackServer,
+) ITvInputServiceCallback {
+	wrapper := &tvInputServiceCallbackStubWrapper{impl: impl}
+	stub := &TvInputServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -18,7 +18,11 @@ func (s *ServiceWithMetadata) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Service.Handle())
+	if s.Service == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Service.Handle())
+	}
 	p.WriteBool(s.IsLazyService)
 
 	parcel.WriteParcelableFooter(p, _headerPos)

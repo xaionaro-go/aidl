@@ -211,3 +211,68 @@ func (s *SoundProfileAdjustmentListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundProfileAdjustmentListenerServer is the server-side interface that user implementations
+// provide to NewSoundProfileAdjustmentListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundProfileAdjustmentListenerServer interface {
+	OnSoundProfileAdjusted(ctx context.Context, soundProfile SoundProfile) error
+	OnParamCapabilityChanged(ctx context.Context, soundProfileId int64, caps []ParamCapability) error
+	OnVendorParamCapabilityChanged(ctx context.Context, soundProfileId int64, caps []VendorParamCapability) error
+	OnRequestSoundParameters(ctx context.Context, SoundProfileId int64) error
+}
+
+type soundProfileAdjustmentListenerStubWrapper struct {
+	impl       ISoundProfileAdjustmentListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundProfileAdjustmentListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundProfileAdjustmentListenerStubWrapper) OnSoundProfileAdjusted(
+	ctx context.Context,
+	soundProfile SoundProfile,
+) error {
+	return w.impl.OnSoundProfileAdjusted(ctx, soundProfile)
+}
+
+func (w *soundProfileAdjustmentListenerStubWrapper) OnParamCapabilityChanged(
+	ctx context.Context,
+	soundProfileId int64,
+	caps []ParamCapability,
+) error {
+	return w.impl.OnParamCapabilityChanged(ctx, soundProfileId, caps)
+}
+
+func (w *soundProfileAdjustmentListenerStubWrapper) OnVendorParamCapabilityChanged(
+	ctx context.Context,
+	soundProfileId int64,
+	caps []VendorParamCapability,
+) error {
+	return w.impl.OnVendorParamCapabilityChanged(ctx, soundProfileId, caps)
+}
+
+func (w *soundProfileAdjustmentListenerStubWrapper) OnRequestSoundParameters(
+	ctx context.Context,
+	SoundProfileId int64,
+) error {
+	return w.impl.OnRequestSoundParameters(ctx, SoundProfileId)
+}
+
+var _ ISoundProfileAdjustmentListener = (*soundProfileAdjustmentListenerStubWrapper)(nil)
+
+// NewSoundProfileAdjustmentListenerStub creates a server-side ISoundProfileAdjustmentListener wrapping the given
+// server implementation. The returned value satisfies ISoundProfileAdjustmentListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundProfileAdjustmentListenerStub(
+	impl ISoundProfileAdjustmentListenerServer,
+) ISoundProfileAdjustmentListener {
+	wrapper := &soundProfileAdjustmentListenerStubWrapper{impl: impl}
+	stub := &SoundProfileAdjustmentListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

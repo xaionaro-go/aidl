@@ -287,3 +287,70 @@ func (s *PinItemRequestStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPinItemRequestServer is the server-side interface that user implementations
+// provide to NewPinItemRequestStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPinItemRequestServer interface {
+	IsValid(ctx context.Context) (bool, error)
+	Accept(ctx context.Context, options interface{}) (bool, error)
+	GetShortcutInfo(ctx context.Context) (ShortcutInfo, error)
+	GetAppWidgetProviderInfo(ctx context.Context) (appwidget.AppWidgetProviderInfo, error)
+	GetExtras(ctx context.Context) (interface{}, error)
+}
+
+type pinItemRequestStubWrapper struct {
+	impl       IPinItemRequestServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pinItemRequestStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pinItemRequestStubWrapper) IsValid(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsValid(ctx)
+}
+
+func (w *pinItemRequestStubWrapper) Accept(
+	ctx context.Context,
+	options interface{},
+) (bool, error) {
+	return w.impl.Accept(ctx, options)
+}
+
+func (w *pinItemRequestStubWrapper) GetShortcutInfo(
+	ctx context.Context,
+) (ShortcutInfo, error) {
+	return w.impl.GetShortcutInfo(ctx)
+}
+
+func (w *pinItemRequestStubWrapper) GetAppWidgetProviderInfo(
+	ctx context.Context,
+) (appwidget.AppWidgetProviderInfo, error) {
+	return w.impl.GetAppWidgetProviderInfo(ctx)
+}
+
+func (w *pinItemRequestStubWrapper) GetExtras(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetExtras(ctx)
+}
+
+var _ IPinItemRequest = (*pinItemRequestStubWrapper)(nil)
+
+// NewPinItemRequestStub creates a server-side IPinItemRequest wrapping the given
+// server implementation. The returned value satisfies IPinItemRequest
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPinItemRequestStub(
+	impl IPinItemRequestServer,
+) IPinItemRequest {
+	wrapper := &pinItemRequestStubWrapper{impl: impl}
+	stub := &PinItemRequestStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

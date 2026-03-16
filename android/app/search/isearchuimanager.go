@@ -62,7 +62,7 @@ func (p *SearchUiManagerProxy) CreateSearchSession(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISearchUiManager, "createSearchSession")
 	if _err != nil {
@@ -98,7 +98,7 @@ func (p *SearchUiManagerProxy) Query(
 	if _err := input.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISearchUiManager, "query")
 	if _err != nil {
@@ -168,7 +168,7 @@ func (p *SearchUiManagerProxy) RegisterEmptyQueryResultUpdateCallback(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISearchUiManager, "registerEmptyQueryResultUpdateCallback")
 	if _err != nil {
@@ -199,7 +199,7 @@ func (p *SearchUiManagerProxy) UnregisterEmptyQueryResultUpdateCallback(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISearchUiManager, "unregisterEmptyQueryResultUpdateCallback")
 	if _err != nil {
@@ -469,4 +469,91 @@ func (s *SearchUiManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISearchUiManagerServer is the server-side interface that user implementations
+// provide to NewSearchUiManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISearchUiManagerServer interface {
+	CreateSearchSession(ctx context.Context, context_ SearchContext, sessionId SearchSessionId, token binder.IBinder) error
+	Query(ctx context.Context, sessionId SearchSessionId, input Query, callback ISearchCallback) error
+	NotifyEvent(ctx context.Context, sessionId SearchSessionId, input Query, event SearchTargetEvent) error
+	RegisterEmptyQueryResultUpdateCallback(ctx context.Context, sessionId SearchSessionId, callback ISearchCallback) error
+	UnregisterEmptyQueryResultUpdateCallback(ctx context.Context, sessionId SearchSessionId, callback ISearchCallback) error
+	DestroySearchSession(ctx context.Context, sessionId SearchSessionId) error
+}
+
+type searchUiManagerStubWrapper struct {
+	impl       ISearchUiManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *searchUiManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *searchUiManagerStubWrapper) CreateSearchSession(
+	ctx context.Context,
+	context_ SearchContext,
+	sessionId SearchSessionId,
+	token binder.IBinder,
+) error {
+	return w.impl.CreateSearchSession(ctx, context_, sessionId, token)
+}
+
+func (w *searchUiManagerStubWrapper) Query(
+	ctx context.Context,
+	sessionId SearchSessionId,
+	input Query,
+	callback ISearchCallback,
+) error {
+	return w.impl.Query(ctx, sessionId, input, callback)
+}
+
+func (w *searchUiManagerStubWrapper) NotifyEvent(
+	ctx context.Context,
+	sessionId SearchSessionId,
+	input Query,
+	event SearchTargetEvent,
+) error {
+	return w.impl.NotifyEvent(ctx, sessionId, input, event)
+}
+
+func (w *searchUiManagerStubWrapper) RegisterEmptyQueryResultUpdateCallback(
+	ctx context.Context,
+	sessionId SearchSessionId,
+	callback ISearchCallback,
+) error {
+	return w.impl.RegisterEmptyQueryResultUpdateCallback(ctx, sessionId, callback)
+}
+
+func (w *searchUiManagerStubWrapper) UnregisterEmptyQueryResultUpdateCallback(
+	ctx context.Context,
+	sessionId SearchSessionId,
+	callback ISearchCallback,
+) error {
+	return w.impl.UnregisterEmptyQueryResultUpdateCallback(ctx, sessionId, callback)
+}
+
+func (w *searchUiManagerStubWrapper) DestroySearchSession(
+	ctx context.Context,
+	sessionId SearchSessionId,
+) error {
+	return w.impl.DestroySearchSession(ctx, sessionId)
+}
+
+var _ ISearchUiManager = (*searchUiManagerStubWrapper)(nil)
+
+// NewSearchUiManagerStub creates a server-side ISearchUiManager wrapping the given
+// server implementation. The returned value satisfies ISearchUiManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSearchUiManagerStub(
+	impl ISearchUiManagerServer,
+) ISearchUiManager {
+	wrapper := &searchUiManagerStubWrapper{impl: impl}
+	stub := &SearchUiManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

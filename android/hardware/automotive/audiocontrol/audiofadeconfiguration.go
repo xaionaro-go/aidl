@@ -151,7 +151,7 @@ func (s *AudioFadeConfiguration) UnmarshalParcel(
 			if _err != nil {
 				return _err
 			}
-			s.UnfadeableContentTypes[_i] = common.AudioContentType(_raw)
+			s.UnfadeableContentTypes[_i] = *common.AudioContentType(_raw)
 		}
 	}
 

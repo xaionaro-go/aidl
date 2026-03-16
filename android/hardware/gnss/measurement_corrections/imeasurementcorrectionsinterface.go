@@ -73,7 +73,7 @@ func (p *MeasurementCorrectionsInterfaceProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMeasurementCorrectionsInterface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMeasurementCorrectionsInterface, "setCallback")
 	if _err != nil {
@@ -149,4 +149,51 @@ func (s *MeasurementCorrectionsInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMeasurementCorrectionsInterfaceServer is the server-side interface that user implementations
+// provide to NewMeasurementCorrectionsInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMeasurementCorrectionsInterfaceServer interface {
+	SetCorrections(ctx context.Context, corrections MeasurementCorrections) error
+	SetCallback(ctx context.Context, callback IMeasurementCorrectionsCallback) error
+}
+
+type measurementCorrectionsInterfaceStubWrapper struct {
+	impl       IMeasurementCorrectionsInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *measurementCorrectionsInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *measurementCorrectionsInterfaceStubWrapper) SetCorrections(
+	ctx context.Context,
+	corrections MeasurementCorrections,
+) error {
+	return w.impl.SetCorrections(ctx, corrections)
+}
+
+func (w *measurementCorrectionsInterfaceStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IMeasurementCorrectionsCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+var _ IMeasurementCorrectionsInterface = (*measurementCorrectionsInterfaceStubWrapper)(nil)
+
+// NewMeasurementCorrectionsInterfaceStub creates a server-side IMeasurementCorrectionsInterface wrapping the given
+// server implementation. The returned value satisfies IMeasurementCorrectionsInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMeasurementCorrectionsInterfaceStub(
+	impl IMeasurementCorrectionsInterfaceServer,
+) IMeasurementCorrectionsInterface {
+	wrapper := &measurementCorrectionsInterfaceStubWrapper{impl: impl}
+	stub := &MeasurementCorrectionsInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

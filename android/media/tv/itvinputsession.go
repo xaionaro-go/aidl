@@ -322,7 +322,7 @@ func (p *TvInputSessionProxy) CreateOverlayView(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputSession)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := frame.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1336,4 +1336,328 @@ func (s *TvInputSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvInputSessionServer is the server-side interface that user implementations
+// provide to NewTvInputSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInputSessionServer interface {
+	Release(ctx context.Context) error
+	SetMain(ctx context.Context, isMain bool) error
+	SetSurface(ctx context.Context, surface interface{}) error
+	DispatchSurfaceChanged(ctx context.Context, format int32, width int32, height int32) error
+	SetVolume(ctx context.Context, volume float32) error
+	Tune(ctx context.Context, channelUri net.Uri, params os.Bundle) error
+	SetCaptionEnabled(ctx context.Context, enabled bool) error
+	SelectAudioPresentation(ctx context.Context, presentationId int32, programId int32) error
+	SelectTrack(ctx context.Context, type_ int32, trackId string) error
+	SetInteractiveAppNotificationEnabled(ctx context.Context, enable bool) error
+	AppPrivateCommand(ctx context.Context, action string, data os.Bundle) error
+	CreateOverlayView(ctx context.Context, windowToken binder.IBinder, frame graphics.Rect) error
+	RelayoutOverlayView(ctx context.Context, frame graphics.Rect) error
+	RemoveOverlayView(ctx context.Context) error
+	UnblockContent(ctx context.Context, unblockedRating string) error
+	TimeShiftPlay(ctx context.Context, recordedProgramUri net.Uri) error
+	TimeShiftPause(ctx context.Context) error
+	TimeShiftResume(ctx context.Context) error
+	TimeShiftSeekTo(ctx context.Context, timeMs int64) error
+	TimeShiftSetPlaybackParams(ctx context.Context, params media.PlaybackParams) error
+	TimeShiftSetMode(ctx context.Context, mode int32) error
+	TimeShiftEnablePositionTracking(ctx context.Context, enable bool) error
+	ResumePlayback(ctx context.Context) error
+	StopPlayback(ctx context.Context, mode int32) error
+	StartRecording(ctx context.Context, programUri net.Uri, params os.Bundle) error
+	StopRecording(ctx context.Context) error
+	PauseRecording(ctx context.Context, params os.Bundle) error
+	ResumeRecording(ctx context.Context, params os.Bundle) error
+	RequestBroadcastInfo(ctx context.Context, request BroadcastInfoRequest) error
+	RemoveBroadcastInfo(ctx context.Context, id int32) error
+	RequestAd(ctx context.Context, request AdRequest) error
+	NotifyAdBufferReady(ctx context.Context, buffer AdBuffer) error
+	NotifyTvMessage(ctx context.Context, type_ int32, data os.Bundle) error
+	SetTvMessageEnabled(ctx context.Context, type_ int32, enabled bool) error
+	SetVideoFrozen(ctx context.Context, isFrozen bool) error
+	NotifyTvAdSessionData(ctx context.Context, type_ string, data os.Bundle) error
+}
+
+type tvInputSessionStubWrapper struct {
+	impl       ITvInputSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInputSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInputSessionStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+func (w *tvInputSessionStubWrapper) SetMain(
+	ctx context.Context,
+	isMain bool,
+) error {
+	return w.impl.SetMain(ctx, isMain)
+}
+
+func (w *tvInputSessionStubWrapper) SetSurface(
+	ctx context.Context,
+	surface interface{},
+) error {
+	return w.impl.SetSurface(ctx, surface)
+}
+
+func (w *tvInputSessionStubWrapper) DispatchSurfaceChanged(
+	ctx context.Context,
+	format int32,
+	width int32,
+	height int32,
+) error {
+	return w.impl.DispatchSurfaceChanged(ctx, format, width, height)
+}
+
+func (w *tvInputSessionStubWrapper) SetVolume(
+	ctx context.Context,
+	volume float32,
+) error {
+	return w.impl.SetVolume(ctx, volume)
+}
+
+func (w *tvInputSessionStubWrapper) Tune(
+	ctx context.Context,
+	channelUri net.Uri,
+	params os.Bundle,
+) error {
+	return w.impl.Tune(ctx, channelUri, params)
+}
+
+func (w *tvInputSessionStubWrapper) SetCaptionEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetCaptionEnabled(ctx, enabled)
+}
+
+func (w *tvInputSessionStubWrapper) SelectAudioPresentation(
+	ctx context.Context,
+	presentationId int32,
+	programId int32,
+) error {
+	return w.impl.SelectAudioPresentation(ctx, presentationId, programId)
+}
+
+func (w *tvInputSessionStubWrapper) SelectTrack(
+	ctx context.Context,
+	type_ int32,
+	trackId string,
+) error {
+	return w.impl.SelectTrack(ctx, type_, trackId)
+}
+
+func (w *tvInputSessionStubWrapper) SetInteractiveAppNotificationEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetInteractiveAppNotificationEnabled(ctx, enable)
+}
+
+func (w *tvInputSessionStubWrapper) AppPrivateCommand(
+	ctx context.Context,
+	action string,
+	data os.Bundle,
+) error {
+	return w.impl.AppPrivateCommand(ctx, action, data)
+}
+
+func (w *tvInputSessionStubWrapper) CreateOverlayView(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	frame graphics.Rect,
+) error {
+	return w.impl.CreateOverlayView(ctx, windowToken, frame)
+}
+
+func (w *tvInputSessionStubWrapper) RelayoutOverlayView(
+	ctx context.Context,
+	frame graphics.Rect,
+) error {
+	return w.impl.RelayoutOverlayView(ctx, frame)
+}
+
+func (w *tvInputSessionStubWrapper) RemoveOverlayView(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveOverlayView(ctx)
+}
+
+func (w *tvInputSessionStubWrapper) UnblockContent(
+	ctx context.Context,
+	unblockedRating string,
+) error {
+	return w.impl.UnblockContent(ctx, unblockedRating)
+}
+
+func (w *tvInputSessionStubWrapper) TimeShiftPlay(
+	ctx context.Context,
+	recordedProgramUri net.Uri,
+) error {
+	return w.impl.TimeShiftPlay(ctx, recordedProgramUri)
+}
+
+func (w *tvInputSessionStubWrapper) TimeShiftPause(
+	ctx context.Context,
+) error {
+	return w.impl.TimeShiftPause(ctx)
+}
+
+func (w *tvInputSessionStubWrapper) TimeShiftResume(
+	ctx context.Context,
+) error {
+	return w.impl.TimeShiftResume(ctx)
+}
+
+func (w *tvInputSessionStubWrapper) TimeShiftSeekTo(
+	ctx context.Context,
+	timeMs int64,
+) error {
+	return w.impl.TimeShiftSeekTo(ctx, timeMs)
+}
+
+func (w *tvInputSessionStubWrapper) TimeShiftSetPlaybackParams(
+	ctx context.Context,
+	params media.PlaybackParams,
+) error {
+	return w.impl.TimeShiftSetPlaybackParams(ctx, params)
+}
+
+func (w *tvInputSessionStubWrapper) TimeShiftSetMode(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.TimeShiftSetMode(ctx, mode)
+}
+
+func (w *tvInputSessionStubWrapper) TimeShiftEnablePositionTracking(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.TimeShiftEnablePositionTracking(ctx, enable)
+}
+
+func (w *tvInputSessionStubWrapper) ResumePlayback(
+	ctx context.Context,
+) error {
+	return w.impl.ResumePlayback(ctx)
+}
+
+func (w *tvInputSessionStubWrapper) StopPlayback(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.StopPlayback(ctx, mode)
+}
+
+func (w *tvInputSessionStubWrapper) StartRecording(
+	ctx context.Context,
+	programUri net.Uri,
+	params os.Bundle,
+) error {
+	return w.impl.StartRecording(ctx, programUri, params)
+}
+
+func (w *tvInputSessionStubWrapper) StopRecording(
+	ctx context.Context,
+) error {
+	return w.impl.StopRecording(ctx)
+}
+
+func (w *tvInputSessionStubWrapper) PauseRecording(
+	ctx context.Context,
+	params os.Bundle,
+) error {
+	return w.impl.PauseRecording(ctx, params)
+}
+
+func (w *tvInputSessionStubWrapper) ResumeRecording(
+	ctx context.Context,
+	params os.Bundle,
+) error {
+	return w.impl.ResumeRecording(ctx, params)
+}
+
+func (w *tvInputSessionStubWrapper) RequestBroadcastInfo(
+	ctx context.Context,
+	request BroadcastInfoRequest,
+) error {
+	return w.impl.RequestBroadcastInfo(ctx, request)
+}
+
+func (w *tvInputSessionStubWrapper) RemoveBroadcastInfo(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.RemoveBroadcastInfo(ctx, id)
+}
+
+func (w *tvInputSessionStubWrapper) RequestAd(
+	ctx context.Context,
+	request AdRequest,
+) error {
+	return w.impl.RequestAd(ctx, request)
+}
+
+func (w *tvInputSessionStubWrapper) NotifyAdBufferReady(
+	ctx context.Context,
+	buffer AdBuffer,
+) error {
+	return w.impl.NotifyAdBufferReady(ctx, buffer)
+}
+
+func (w *tvInputSessionStubWrapper) NotifyTvMessage(
+	ctx context.Context,
+	type_ int32,
+	data os.Bundle,
+) error {
+	return w.impl.NotifyTvMessage(ctx, type_, data)
+}
+
+func (w *tvInputSessionStubWrapper) SetTvMessageEnabled(
+	ctx context.Context,
+	type_ int32,
+	enabled bool,
+) error {
+	return w.impl.SetTvMessageEnabled(ctx, type_, enabled)
+}
+
+func (w *tvInputSessionStubWrapper) SetVideoFrozen(
+	ctx context.Context,
+	isFrozen bool,
+) error {
+	return w.impl.SetVideoFrozen(ctx, isFrozen)
+}
+
+func (w *tvInputSessionStubWrapper) NotifyTvAdSessionData(
+	ctx context.Context,
+	type_ string,
+	data os.Bundle,
+) error {
+	return w.impl.NotifyTvAdSessionData(ctx, type_, data)
+}
+
+var _ ITvInputSession = (*tvInputSessionStubWrapper)(nil)
+
+// NewTvInputSessionStub creates a server-side ITvInputSession wrapping the given
+// server implementation. The returned value satisfies ITvInputSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInputSessionStub(
+	impl ITvInputSessionServer,
+) ITvInputSession {
+	wrapper := &tvInputSessionStubWrapper{impl: impl}
+	stub := &TvInputSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

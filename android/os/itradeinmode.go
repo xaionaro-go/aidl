@@ -184,3 +184,55 @@ func (s *TradeInModeStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITradeInModeServer is the server-side interface that user implementations
+// provide to NewTradeInModeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITradeInModeServer interface {
+	Start(ctx context.Context) (bool, error)
+	IsEvaluationModeAllowed(ctx context.Context) (bool, error)
+	EnterEvaluationMode(ctx context.Context) (bool, error)
+}
+
+type tradeInModeStubWrapper struct {
+	impl       ITradeInModeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tradeInModeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tradeInModeStubWrapper) Start(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.Start(ctx)
+}
+
+func (w *tradeInModeStubWrapper) IsEvaluationModeAllowed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsEvaluationModeAllowed(ctx)
+}
+
+func (w *tradeInModeStubWrapper) EnterEvaluationMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.EnterEvaluationMode(ctx)
+}
+
+var _ ITradeInMode = (*tradeInModeStubWrapper)(nil)
+
+// NewTradeInModeStub creates a server-side ITradeInMode wrapping the given
+// server implementation. The returned value satisfies ITradeInMode
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTradeInModeStub(
+	impl ITradeInModeServer,
+) ITradeInMode {
+	wrapper := &tradeInModeStubWrapper{impl: impl}
+	stub := &TradeInModeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

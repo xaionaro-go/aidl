@@ -374,3 +374,91 @@ func (s *AudioRecordStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioRecordServer is the server-side interface that user implementations
+// provide to NewAudioRecordStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioRecordServer interface {
+	Start(ctx context.Context, event int32, triggerSession int32) error
+	Stop(ctx context.Context) error
+	GetActiveMicrophones(ctx context.Context, activeMicrophones []MicrophoneInfoFw) error
+	SetPreferredMicrophoneDirection(ctx context.Context, direction int32) error
+	SetPreferredMicrophoneFieldDimension(ctx context.Context, zoom float32) error
+	ShareAudioHistory(ctx context.Context, sharedAudioPackageName string, sharedAudioStartMs int64) error
+	SetParameters(ctx context.Context, keyValuePairs string) error
+}
+
+type audioRecordStubWrapper struct {
+	impl       IAudioRecordServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioRecordStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioRecordStubWrapper) Start(
+	ctx context.Context,
+	event int32,
+	triggerSession int32,
+) error {
+	return w.impl.Start(ctx, event, triggerSession)
+}
+
+func (w *audioRecordStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *audioRecordStubWrapper) GetActiveMicrophones(
+	ctx context.Context,
+	activeMicrophones []MicrophoneInfoFw,
+) error {
+	return w.impl.GetActiveMicrophones(ctx, activeMicrophones)
+}
+
+func (w *audioRecordStubWrapper) SetPreferredMicrophoneDirection(
+	ctx context.Context,
+	direction int32,
+) error {
+	return w.impl.SetPreferredMicrophoneDirection(ctx, direction)
+}
+
+func (w *audioRecordStubWrapper) SetPreferredMicrophoneFieldDimension(
+	ctx context.Context,
+	zoom float32,
+) error {
+	return w.impl.SetPreferredMicrophoneFieldDimension(ctx, zoom)
+}
+
+func (w *audioRecordStubWrapper) ShareAudioHistory(
+	ctx context.Context,
+	sharedAudioPackageName string,
+	sharedAudioStartMs int64,
+) error {
+	return w.impl.ShareAudioHistory(ctx, sharedAudioPackageName, sharedAudioStartMs)
+}
+
+func (w *audioRecordStubWrapper) SetParameters(
+	ctx context.Context,
+	keyValuePairs string,
+) error {
+	return w.impl.SetParameters(ctx, keyValuePairs)
+}
+
+var _ IAudioRecord = (*audioRecordStubWrapper)(nil)
+
+// NewAudioRecordStub creates a server-side IAudioRecord wrapping the given
+// server implementation. The returned value satisfies IAudioRecord
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioRecordStub(
+	impl IAudioRecordServer,
+) IAudioRecord {
+	wrapper := &audioRecordStubWrapper{impl: impl}
+	stub := &AudioRecordStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

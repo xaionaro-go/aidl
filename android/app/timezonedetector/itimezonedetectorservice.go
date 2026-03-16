@@ -93,7 +93,7 @@ func (p *TimeZoneDetectorServiceProxy) AddListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITimeZoneDetectorService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITimeZoneDetectorService, "addListener")
 	if _err != nil {
@@ -119,7 +119,7 @@ func (p *TimeZoneDetectorServiceProxy) RemoveListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITimeZoneDetectorService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITimeZoneDetectorService, "removeListener")
 	if _err != nil {
@@ -530,4 +530,105 @@ func (s *TimeZoneDetectorServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITimeZoneDetectorServiceServer is the server-side interface that user implementations
+// provide to NewTimeZoneDetectorServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITimeZoneDetectorServiceServer interface {
+	GetCapabilitiesAndConfig(ctx context.Context) (time.TimeZoneCapabilitiesAndConfig, error)
+	AddListener(ctx context.Context, listener time.ITimeZoneDetectorListener) error
+	RemoveListener(ctx context.Context, listener time.ITimeZoneDetectorListener) error
+	UpdateConfiguration(ctx context.Context, configuration time.TimeZoneConfiguration) (bool, error)
+	GetTimeZoneState(ctx context.Context) (time.TimeZoneState, error)
+	ConfirmTimeZone(ctx context.Context, timeZoneId string) (bool, error)
+	SetManualTimeZone(ctx context.Context, timeZoneSuggestion ManualTimeZoneSuggestion) (bool, error)
+	SuggestManualTimeZone(ctx context.Context, timeZoneSuggestion ManualTimeZoneSuggestion) (bool, error)
+	SuggestTelephonyTimeZone(ctx context.Context, timeZoneSuggestion TelephonyTimeZoneSuggestion) error
+}
+
+type timeZoneDetectorServiceStubWrapper struct {
+	impl       ITimeZoneDetectorServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) GetCapabilitiesAndConfig(
+	ctx context.Context,
+) (time.TimeZoneCapabilitiesAndConfig, error) {
+	return w.impl.GetCapabilitiesAndConfig(ctx)
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) AddListener(
+	ctx context.Context,
+	listener time.ITimeZoneDetectorListener,
+) error {
+	return w.impl.AddListener(ctx, listener)
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) RemoveListener(
+	ctx context.Context,
+	listener time.ITimeZoneDetectorListener,
+) error {
+	return w.impl.RemoveListener(ctx, listener)
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) UpdateConfiguration(
+	ctx context.Context,
+	configuration time.TimeZoneConfiguration,
+) (bool, error) {
+	return w.impl.UpdateConfiguration(ctx, configuration)
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) GetTimeZoneState(
+	ctx context.Context,
+) (time.TimeZoneState, error) {
+	return w.impl.GetTimeZoneState(ctx)
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) ConfirmTimeZone(
+	ctx context.Context,
+	timeZoneId string,
+) (bool, error) {
+	return w.impl.ConfirmTimeZone(ctx, timeZoneId)
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) SetManualTimeZone(
+	ctx context.Context,
+	timeZoneSuggestion ManualTimeZoneSuggestion,
+) (bool, error) {
+	return w.impl.SetManualTimeZone(ctx, timeZoneSuggestion)
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) SuggestManualTimeZone(
+	ctx context.Context,
+	timeZoneSuggestion ManualTimeZoneSuggestion,
+) (bool, error) {
+	return w.impl.SuggestManualTimeZone(ctx, timeZoneSuggestion)
+}
+
+func (w *timeZoneDetectorServiceStubWrapper) SuggestTelephonyTimeZone(
+	ctx context.Context,
+	timeZoneSuggestion TelephonyTimeZoneSuggestion,
+) error {
+	return w.impl.SuggestTelephonyTimeZone(ctx, timeZoneSuggestion)
+}
+
+var _ ITimeZoneDetectorService = (*timeZoneDetectorServiceStubWrapper)(nil)
+
+// NewTimeZoneDetectorServiceStub creates a server-side ITimeZoneDetectorService wrapping the given
+// server implementation. The returned value satisfies ITimeZoneDetectorService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTimeZoneDetectorServiceStub(
+	impl ITimeZoneDetectorServiceServer,
+) ITimeZoneDetectorService {
+	wrapper := &timeZoneDetectorServiceStubWrapper{impl: impl}
+	stub := &TimeZoneDetectorServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

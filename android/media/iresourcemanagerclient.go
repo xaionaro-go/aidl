@@ -140,3 +140,48 @@ func (s *ResourceManagerClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IResourceManagerClientServer is the server-side interface that user implementations
+// provide to NewResourceManagerClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResourceManagerClientServer interface {
+	ReclaimResource(ctx context.Context) (bool, error)
+	GetName(ctx context.Context) (string, error)
+}
+
+type resourceManagerClientStubWrapper struct {
+	impl       IResourceManagerClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resourceManagerClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resourceManagerClientStubWrapper) ReclaimResource(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ReclaimResource(ctx)
+}
+
+func (w *resourceManagerClientStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+var _ IResourceManagerClient = (*resourceManagerClientStubWrapper)(nil)
+
+// NewResourceManagerClientStub creates a server-side IResourceManagerClient wrapping the given
+// server implementation. The returned value satisfies IResourceManagerClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResourceManagerClientStub(
+	impl IResourceManagerClientServer,
+) IResourceManagerClient {
+	wrapper := &resourceManagerClientStubWrapper{impl: impl}
+	stub := &ResourceManagerClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

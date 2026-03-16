@@ -49,7 +49,7 @@ func (p *CallStreamingServiceProxy) SetStreamingCallAdapter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICallStreamingService)
-	_data.WriteStrongBinder(streamingCallAdapter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, streamingCallAdapter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICallStreamingService, "setStreamingCallAdapter")
 	if _err != nil {
@@ -176,4 +176,66 @@ func (s *CallStreamingServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICallStreamingServiceServer is the server-side interface that user implementations
+// provide to NewCallStreamingServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallStreamingServiceServer interface {
+	SetStreamingCallAdapter(ctx context.Context, streamingCallAdapter IStreamingCallAdapter) error
+	OnCallStreamingStarted(ctx context.Context, call androidTelecom.StreamingCall) error
+	OnCallStreamingStopped(ctx context.Context) error
+	OnCallStreamingStateChanged(ctx context.Context, state int32) error
+}
+
+type callStreamingServiceStubWrapper struct {
+	impl       ICallStreamingServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callStreamingServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callStreamingServiceStubWrapper) SetStreamingCallAdapter(
+	ctx context.Context,
+	streamingCallAdapter IStreamingCallAdapter,
+) error {
+	return w.impl.SetStreamingCallAdapter(ctx, streamingCallAdapter)
+}
+
+func (w *callStreamingServiceStubWrapper) OnCallStreamingStarted(
+	ctx context.Context,
+	call androidTelecom.StreamingCall,
+) error {
+	return w.impl.OnCallStreamingStarted(ctx, call)
+}
+
+func (w *callStreamingServiceStubWrapper) OnCallStreamingStopped(
+	ctx context.Context,
+) error {
+	return w.impl.OnCallStreamingStopped(ctx)
+}
+
+func (w *callStreamingServiceStubWrapper) OnCallStreamingStateChanged(
+	ctx context.Context,
+	state int32,
+) error {
+	return w.impl.OnCallStreamingStateChanged(ctx, state)
+}
+
+var _ ICallStreamingService = (*callStreamingServiceStubWrapper)(nil)
+
+// NewCallStreamingServiceStub creates a server-side ICallStreamingService wrapping the given
+// server implementation. The returned value satisfies ICallStreamingService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallStreamingServiceStub(
+	impl ICallStreamingServiceServer,
+) ICallStreamingService {
+	wrapper := &callStreamingServiceStubWrapper{impl: impl}
+	stub := &CallStreamingServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

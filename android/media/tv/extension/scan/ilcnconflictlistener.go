@@ -94,3 +94,42 @@ func (s *LcnConflictListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILcnConflictListenerServer is the server-side interface that user implementations
+// provide to NewLcnConflictListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILcnConflictListenerServer interface {
+	OnDetectLcnConflict(ctx context.Context, detectLcnConflicts os.Bundle) error
+}
+
+type lcnConflictListenerStubWrapper struct {
+	impl       ILcnConflictListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *lcnConflictListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *lcnConflictListenerStubWrapper) OnDetectLcnConflict(
+	ctx context.Context,
+	detectLcnConflicts os.Bundle,
+) error {
+	return w.impl.OnDetectLcnConflict(ctx, detectLcnConflicts)
+}
+
+var _ ILcnConflictListener = (*lcnConflictListenerStubWrapper)(nil)
+
+// NewLcnConflictListenerStub creates a server-side ILcnConflictListener wrapping the given
+// server implementation. The returned value satisfies ILcnConflictListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLcnConflictListenerStub(
+	impl ILcnConflictListenerServer,
+) ILcnConflictListener {
+	wrapper := &lcnConflictListenerStubWrapper{impl: impl}
+	stub := &LcnConflictListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

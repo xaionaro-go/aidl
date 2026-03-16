@@ -1851,3 +1851,378 @@ func (s *WifiNanIfaceEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWifiNanIfaceEventCallbackServer is the server-side interface that user implementations
+// provide to NewWifiNanIfaceEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiNanIfaceEventCallbackServer interface {
+	EventClusterEvent(ctx context.Context, event NanClusterEventInd) error
+	EventDataPathConfirm(ctx context.Context, event NanDataPathConfirmInd) error
+	EventDataPathRequest(ctx context.Context, event NanDataPathRequestInd) error
+	EventDataPathScheduleUpdate(ctx context.Context, event NanDataPathScheduleUpdateInd) error
+	EventDataPathTerminated(ctx context.Context, ndpInstanceId int32) error
+	EventDisabled(ctx context.Context, status NanStatus) error
+	EventFollowupReceived(ctx context.Context, event NanFollowupReceivedInd) error
+	EventMatch(ctx context.Context, event NanMatchInd) error
+	EventMatchExpired(ctx context.Context, discoverySessionId byte, peerId int32) error
+	EventPublishTerminated(ctx context.Context, sessionId byte, status NanStatus) error
+	EventSubscribeTerminated(ctx context.Context, sessionId byte, status NanStatus) error
+	EventTransmitFollowup(ctx context.Context, id uint16, status NanStatus) error
+	EventSuspensionModeChanged(ctx context.Context, event NanSuspensionModeChangeInd) error
+	NotifyCapabilitiesResponse(ctx context.Context, id uint16, status NanStatus, capabilities NanCapabilities) error
+	NotifyConfigResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyCreateDataInterfaceResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyDeleteDataInterfaceResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyDisableResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyEnableResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyInitiateDataPathResponse(ctx context.Context, id uint16, status NanStatus, ndpInstanceId int32) error
+	NotifyRespondToDataPathIndicationResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyStartPublishResponse(ctx context.Context, id uint16, status NanStatus, sessionId byte) error
+	NotifyStartSubscribeResponse(ctx context.Context, id uint16, status NanStatus, sessionId byte) error
+	NotifyStopPublishResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyStopSubscribeResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyTerminateDataPathResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifySuspendResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyResumeResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyTransmitFollowupResponse(ctx context.Context, id uint16, status NanStatus) error
+	EventPairingRequest(ctx context.Context, event NanPairingRequestInd) error
+	EventPairingConfirm(ctx context.Context, event NanPairingConfirmInd) error
+	NotifyInitiatePairingResponse(ctx context.Context, id uint16, status NanStatus, pairingInstanceId int32) error
+	NotifyRespondToPairingIndicationResponse(ctx context.Context, id uint16, status NanStatus) error
+	EventBootstrappingRequest(ctx context.Context, event NanBootstrappingRequestInd) error
+	EventBootstrappingConfirm(ctx context.Context, event NanBootstrappingConfirmInd) error
+	NotifyInitiateBootstrappingResponse(ctx context.Context, id uint16, status NanStatus, bootstrappingInstanceId int32) error
+	NotifyRespondToBootstrappingIndicationResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyTerminatePairingResponse(ctx context.Context, id uint16, status NanStatus) error
+	NotifyRangingResults(ctx context.Context, results []RttResult, discoverySessionId byte) error
+}
+
+type wifiNanIfaceEventCallbackStubWrapper struct {
+	impl       IWifiNanIfaceEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventClusterEvent(
+	ctx context.Context,
+	event NanClusterEventInd,
+) error {
+	return w.impl.EventClusterEvent(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventDataPathConfirm(
+	ctx context.Context,
+	event NanDataPathConfirmInd,
+) error {
+	return w.impl.EventDataPathConfirm(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventDataPathRequest(
+	ctx context.Context,
+	event NanDataPathRequestInd,
+) error {
+	return w.impl.EventDataPathRequest(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventDataPathScheduleUpdate(
+	ctx context.Context,
+	event NanDataPathScheduleUpdateInd,
+) error {
+	return w.impl.EventDataPathScheduleUpdate(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventDataPathTerminated(
+	ctx context.Context,
+	ndpInstanceId int32,
+) error {
+	return w.impl.EventDataPathTerminated(ctx, ndpInstanceId)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventDisabled(
+	ctx context.Context,
+	status NanStatus,
+) error {
+	return w.impl.EventDisabled(ctx, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventFollowupReceived(
+	ctx context.Context,
+	event NanFollowupReceivedInd,
+) error {
+	return w.impl.EventFollowupReceived(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventMatch(
+	ctx context.Context,
+	event NanMatchInd,
+) error {
+	return w.impl.EventMatch(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventMatchExpired(
+	ctx context.Context,
+	discoverySessionId byte,
+	peerId int32,
+) error {
+	return w.impl.EventMatchExpired(ctx, discoverySessionId, peerId)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventPublishTerminated(
+	ctx context.Context,
+	sessionId byte,
+	status NanStatus,
+) error {
+	return w.impl.EventPublishTerminated(ctx, sessionId, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventSubscribeTerminated(
+	ctx context.Context,
+	sessionId byte,
+	status NanStatus,
+) error {
+	return w.impl.EventSubscribeTerminated(ctx, sessionId, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventTransmitFollowup(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.EventTransmitFollowup(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventSuspensionModeChanged(
+	ctx context.Context,
+	event NanSuspensionModeChangeInd,
+) error {
+	return w.impl.EventSuspensionModeChanged(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyCapabilitiesResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+	capabilities NanCapabilities,
+) error {
+	return w.impl.NotifyCapabilitiesResponse(ctx, id, status, capabilities)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyConfigResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyConfigResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyCreateDataInterfaceResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyCreateDataInterfaceResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyDeleteDataInterfaceResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyDeleteDataInterfaceResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyDisableResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyDisableResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyEnableResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyEnableResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyInitiateDataPathResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+	ndpInstanceId int32,
+) error {
+	return w.impl.NotifyInitiateDataPathResponse(ctx, id, status, ndpInstanceId)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyRespondToDataPathIndicationResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyRespondToDataPathIndicationResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyStartPublishResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+	sessionId byte,
+) error {
+	return w.impl.NotifyStartPublishResponse(ctx, id, status, sessionId)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyStartSubscribeResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+	sessionId byte,
+) error {
+	return w.impl.NotifyStartSubscribeResponse(ctx, id, status, sessionId)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyStopPublishResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyStopPublishResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyStopSubscribeResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyStopSubscribeResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyTerminateDataPathResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyTerminateDataPathResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifySuspendResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifySuspendResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyResumeResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyResumeResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyTransmitFollowupResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyTransmitFollowupResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventPairingRequest(
+	ctx context.Context,
+	event NanPairingRequestInd,
+) error {
+	return w.impl.EventPairingRequest(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventPairingConfirm(
+	ctx context.Context,
+	event NanPairingConfirmInd,
+) error {
+	return w.impl.EventPairingConfirm(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyInitiatePairingResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+	pairingInstanceId int32,
+) error {
+	return w.impl.NotifyInitiatePairingResponse(ctx, id, status, pairingInstanceId)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyRespondToPairingIndicationResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyRespondToPairingIndicationResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventBootstrappingRequest(
+	ctx context.Context,
+	event NanBootstrappingRequestInd,
+) error {
+	return w.impl.EventBootstrappingRequest(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) EventBootstrappingConfirm(
+	ctx context.Context,
+	event NanBootstrappingConfirmInd,
+) error {
+	return w.impl.EventBootstrappingConfirm(ctx, event)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyInitiateBootstrappingResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+	bootstrappingInstanceId int32,
+) error {
+	return w.impl.NotifyInitiateBootstrappingResponse(ctx, id, status, bootstrappingInstanceId)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyRespondToBootstrappingIndicationResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyRespondToBootstrappingIndicationResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyTerminatePairingResponse(
+	ctx context.Context,
+	id uint16,
+	status NanStatus,
+) error {
+	return w.impl.NotifyTerminatePairingResponse(ctx, id, status)
+}
+
+func (w *wifiNanIfaceEventCallbackStubWrapper) NotifyRangingResults(
+	ctx context.Context,
+	results []RttResult,
+	discoverySessionId byte,
+) error {
+	return w.impl.NotifyRangingResults(ctx, results, discoverySessionId)
+}
+
+var _ IWifiNanIfaceEventCallback = (*wifiNanIfaceEventCallbackStubWrapper)(nil)
+
+// NewWifiNanIfaceEventCallbackStub creates a server-side IWifiNanIfaceEventCallback wrapping the given
+// server implementation. The returned value satisfies IWifiNanIfaceEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiNanIfaceEventCallbackStub(
+	impl IWifiNanIfaceEventCallbackServer,
+) IWifiNanIfaceEventCallback {
+	wrapper := &wifiNanIfaceEventCallbackStubWrapper{impl: impl}
+	stub := &WifiNanIfaceEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

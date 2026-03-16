@@ -651,8 +651,8 @@ func (p *RadioNetworkProxy) SetResponseFunctions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRadioNetwork)
-	_data.WriteStrongBinder(radioNetworkResponse.AsBinder().Handle())
-	_data.WriteStrongBinder(radioNetworkIndication.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, radioNetworkResponse.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, radioNetworkIndication.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioNetwork, "setResponseFunctions")
 	if _err != nil {
@@ -1877,4 +1877,481 @@ func (s *RadioNetworkStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRadioNetworkServer is the server-side interface that user implementations
+// provide to NewRadioNetworkStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioNetworkServer interface {
+	GetAllowedNetworkTypesBitmap(ctx context.Context, serial int32) error
+	GetAvailableBandModes(ctx context.Context, serial int32) error
+	GetAvailableNetworks(ctx context.Context, serial int32) error
+	GetBarringInfo(ctx context.Context, serial int32) error
+	GetCdmaRoamingPreference(ctx context.Context, serial int32) error
+	GetCellInfoList(ctx context.Context, serial int32) error
+	GetDataRegistrationState(ctx context.Context, serial int32) error
+	GetImsRegistrationState(ctx context.Context, serial int32) error
+	GetNetworkSelectionMode(ctx context.Context, serial int32) error
+	GetOperator(ctx context.Context, serial int32) error
+	GetSignalStrength(ctx context.Context, serial int32) error
+	GetSystemSelectionChannels(ctx context.Context, serial int32) error
+	GetVoiceRadioTechnology(ctx context.Context, serial int32) error
+	GetVoiceRegistrationState(ctx context.Context, serial int32) error
+	IsNrDualConnectivityEnabled(ctx context.Context, serial int32) error
+	ResponseAcknowledgement(ctx context.Context) error
+	SetAllowedNetworkTypesBitmap(ctx context.Context, serial int32, networkTypeBitmap int32) error
+	SetBandMode(ctx context.Context, serial int32, mode RadioBandMode) error
+	SetBarringPassword(ctx context.Context, serial int32, facility string, oldPassword string, newPassword string) error
+	SetCdmaRoamingPreference(ctx context.Context, serial int32, type_ CdmaRoamingType) error
+	SetCellInfoListRate(ctx context.Context, serial int32, rate int32) error
+	SetIndicationFilter(ctx context.Context, serial int32, indicationFilter int32) error
+	SetLinkCapacityReportingCriteria(ctx context.Context, serial int32, hysteresisMs int32, hysteresisDlKbps int32, hysteresisUlKbps int32, thresholdsDownlinkKbps []int32, thresholdsUplinkKbps []int32, accessNetwork radio.AccessNetwork) error
+	SetLocationUpdates(ctx context.Context, serial int32, enable bool) error
+	SetNetworkSelectionModeAutomatic(ctx context.Context, serial int32) error
+	SetNetworkSelectionModeManual(ctx context.Context, serial int32, operatorNumeric string, ran radio.AccessNetwork) error
+	SetNrDualConnectivityState(ctx context.Context, serial int32, nrDualConnectivityState NrDualConnectivityState) error
+	SetResponseFunctions(ctx context.Context, radioNetworkResponse IRadioNetworkResponse, radioNetworkIndication IRadioNetworkIndication) error
+	SetSignalStrengthReportingCriteria(ctx context.Context, serial int32, signalThresholdInfos []SignalThresholdInfo) error
+	SetSuppServiceNotifications(ctx context.Context, serial int32, enable bool) error
+	SetSystemSelectionChannels(ctx context.Context, serial int32, specifyChannels bool, specifiers []RadioAccessSpecifier) error
+	StartNetworkScan(ctx context.Context, serial int32, request NetworkScanRequest) error
+	StopNetworkScan(ctx context.Context, serial int32) error
+	SupplyNetworkDepersonalization(ctx context.Context, serial int32, netPin string) error
+	SetUsageSetting(ctx context.Context, serial int32, usageSetting UsageSetting) error
+	GetUsageSetting(ctx context.Context, serial int32) error
+	SetEmergencyMode(ctx context.Context, serial int32, emcModeType EmergencyMode) error
+	TriggerEmergencyNetworkScan(ctx context.Context, serial int32, request EmergencyNetworkScanTrigger) error
+	CancelEmergencyNetworkScan(ctx context.Context, serial int32, resetScan bool) error
+	ExitEmergencyMode(ctx context.Context, serial int32) error
+	SetNullCipherAndIntegrityEnabled(ctx context.Context, serial int32, enabled bool) error
+	IsNullCipherAndIntegrityEnabled(ctx context.Context, serial int32) error
+	IsN1ModeEnabled(ctx context.Context, serial int32) error
+	SetN1ModeEnabled(ctx context.Context, serial int32, enable bool) error
+	IsCellularIdentifierTransparencyEnabled(ctx context.Context, serial int32) error
+	SetCellularIdentifierTransparencyEnabled(ctx context.Context, serial int32, enabled bool) error
+	SetSecurityAlgorithmsUpdatedEnabled(ctx context.Context, serial int32, enable bool) error
+	IsSecurityAlgorithmsUpdatedEnabled(ctx context.Context, serial int32) error
+	SetSatellitePlmn(ctx context.Context, serial int32, simSlot int32, carrierPlmnArray []string, allSatellitePlmnArray []string) error
+	SetSatelliteEnabledForCarrier(ctx context.Context, serial int32, simSlot int32, satelliteEnabled bool) error
+	IsSatelliteEnabledForCarrier(ctx context.Context, serial int32, simSlot int32) error
+}
+
+type radioNetworkStubWrapper struct {
+	impl       IRadioNetworkServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioNetworkStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioNetworkStubWrapper) GetAllowedNetworkTypesBitmap(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetAllowedNetworkTypesBitmap(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetAvailableBandModes(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetAvailableBandModes(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetAvailableNetworks(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetAvailableNetworks(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetBarringInfo(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetBarringInfo(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetCdmaRoamingPreference(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetCdmaRoamingPreference(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetCellInfoList(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetCellInfoList(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetDataRegistrationState(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetDataRegistrationState(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetImsRegistrationState(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetImsRegistrationState(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetNetworkSelectionMode(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetNetworkSelectionMode(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetOperator(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetOperator(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetSignalStrength(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetSignalStrength(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetSystemSelectionChannels(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetSystemSelectionChannels(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetVoiceRadioTechnology(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetVoiceRadioTechnology(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) GetVoiceRegistrationState(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetVoiceRegistrationState(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) IsNrDualConnectivityEnabled(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.IsNrDualConnectivityEnabled(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) ResponseAcknowledgement(
+	ctx context.Context,
+) error {
+	return w.impl.ResponseAcknowledgement(ctx)
+}
+
+func (w *radioNetworkStubWrapper) SetAllowedNetworkTypesBitmap(
+	ctx context.Context,
+	serial int32,
+	networkTypeBitmap int32,
+) error {
+	return w.impl.SetAllowedNetworkTypesBitmap(ctx, serial, networkTypeBitmap)
+}
+
+func (w *radioNetworkStubWrapper) SetBandMode(
+	ctx context.Context,
+	serial int32,
+	mode RadioBandMode,
+) error {
+	return w.impl.SetBandMode(ctx, serial, mode)
+}
+
+func (w *radioNetworkStubWrapper) SetBarringPassword(
+	ctx context.Context,
+	serial int32,
+	facility string,
+	oldPassword string,
+	newPassword string,
+) error {
+	return w.impl.SetBarringPassword(ctx, serial, facility, oldPassword, newPassword)
+}
+
+func (w *radioNetworkStubWrapper) SetCdmaRoamingPreference(
+	ctx context.Context,
+	serial int32,
+	type_ CdmaRoamingType,
+) error {
+	return w.impl.SetCdmaRoamingPreference(ctx, serial, type_)
+}
+
+func (w *radioNetworkStubWrapper) SetCellInfoListRate(
+	ctx context.Context,
+	serial int32,
+	rate int32,
+) error {
+	return w.impl.SetCellInfoListRate(ctx, serial, rate)
+}
+
+func (w *radioNetworkStubWrapper) SetIndicationFilter(
+	ctx context.Context,
+	serial int32,
+	indicationFilter int32,
+) error {
+	return w.impl.SetIndicationFilter(ctx, serial, indicationFilter)
+}
+
+func (w *radioNetworkStubWrapper) SetLinkCapacityReportingCriteria(
+	ctx context.Context,
+	serial int32,
+	hysteresisMs int32,
+	hysteresisDlKbps int32,
+	hysteresisUlKbps int32,
+	thresholdsDownlinkKbps []int32,
+	thresholdsUplinkKbps []int32,
+	accessNetwork radio.AccessNetwork,
+) error {
+	return w.impl.SetLinkCapacityReportingCriteria(ctx, serial, hysteresisMs, hysteresisDlKbps, hysteresisUlKbps, thresholdsDownlinkKbps, thresholdsUplinkKbps, accessNetwork)
+}
+
+func (w *radioNetworkStubWrapper) SetLocationUpdates(
+	ctx context.Context,
+	serial int32,
+	enable bool,
+) error {
+	return w.impl.SetLocationUpdates(ctx, serial, enable)
+}
+
+func (w *radioNetworkStubWrapper) SetNetworkSelectionModeAutomatic(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.SetNetworkSelectionModeAutomatic(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) SetNetworkSelectionModeManual(
+	ctx context.Context,
+	serial int32,
+	operatorNumeric string,
+	ran radio.AccessNetwork,
+) error {
+	return w.impl.SetNetworkSelectionModeManual(ctx, serial, operatorNumeric, ran)
+}
+
+func (w *radioNetworkStubWrapper) SetNrDualConnectivityState(
+	ctx context.Context,
+	serial int32,
+	nrDualConnectivityState NrDualConnectivityState,
+) error {
+	return w.impl.SetNrDualConnectivityState(ctx, serial, nrDualConnectivityState)
+}
+
+func (w *radioNetworkStubWrapper) SetResponseFunctions(
+	ctx context.Context,
+	radioNetworkResponse IRadioNetworkResponse,
+	radioNetworkIndication IRadioNetworkIndication,
+) error {
+	return w.impl.SetResponseFunctions(ctx, radioNetworkResponse, radioNetworkIndication)
+}
+
+func (w *radioNetworkStubWrapper) SetSignalStrengthReportingCriteria(
+	ctx context.Context,
+	serial int32,
+	signalThresholdInfos []SignalThresholdInfo,
+) error {
+	return w.impl.SetSignalStrengthReportingCriteria(ctx, serial, signalThresholdInfos)
+}
+
+func (w *radioNetworkStubWrapper) SetSuppServiceNotifications(
+	ctx context.Context,
+	serial int32,
+	enable bool,
+) error {
+	return w.impl.SetSuppServiceNotifications(ctx, serial, enable)
+}
+
+func (w *radioNetworkStubWrapper) SetSystemSelectionChannels(
+	ctx context.Context,
+	serial int32,
+	specifyChannels bool,
+	specifiers []RadioAccessSpecifier,
+) error {
+	return w.impl.SetSystemSelectionChannels(ctx, serial, specifyChannels, specifiers)
+}
+
+func (w *radioNetworkStubWrapper) StartNetworkScan(
+	ctx context.Context,
+	serial int32,
+	request NetworkScanRequest,
+) error {
+	return w.impl.StartNetworkScan(ctx, serial, request)
+}
+
+func (w *radioNetworkStubWrapper) StopNetworkScan(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.StopNetworkScan(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) SupplyNetworkDepersonalization(
+	ctx context.Context,
+	serial int32,
+	netPin string,
+) error {
+	return w.impl.SupplyNetworkDepersonalization(ctx, serial, netPin)
+}
+
+func (w *radioNetworkStubWrapper) SetUsageSetting(
+	ctx context.Context,
+	serial int32,
+	usageSetting UsageSetting,
+) error {
+	return w.impl.SetUsageSetting(ctx, serial, usageSetting)
+}
+
+func (w *radioNetworkStubWrapper) GetUsageSetting(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetUsageSetting(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) SetEmergencyMode(
+	ctx context.Context,
+	serial int32,
+	emcModeType EmergencyMode,
+) error {
+	return w.impl.SetEmergencyMode(ctx, serial, emcModeType)
+}
+
+func (w *radioNetworkStubWrapper) TriggerEmergencyNetworkScan(
+	ctx context.Context,
+	serial int32,
+	request EmergencyNetworkScanTrigger,
+) error {
+	return w.impl.TriggerEmergencyNetworkScan(ctx, serial, request)
+}
+
+func (w *radioNetworkStubWrapper) CancelEmergencyNetworkScan(
+	ctx context.Context,
+	serial int32,
+	resetScan bool,
+) error {
+	return w.impl.CancelEmergencyNetworkScan(ctx, serial, resetScan)
+}
+
+func (w *radioNetworkStubWrapper) ExitEmergencyMode(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.ExitEmergencyMode(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) SetNullCipherAndIntegrityEnabled(
+	ctx context.Context,
+	serial int32,
+	enabled bool,
+) error {
+	return w.impl.SetNullCipherAndIntegrityEnabled(ctx, serial, enabled)
+}
+
+func (w *radioNetworkStubWrapper) IsNullCipherAndIntegrityEnabled(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.IsNullCipherAndIntegrityEnabled(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) IsN1ModeEnabled(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.IsN1ModeEnabled(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) SetN1ModeEnabled(
+	ctx context.Context,
+	serial int32,
+	enable bool,
+) error {
+	return w.impl.SetN1ModeEnabled(ctx, serial, enable)
+}
+
+func (w *radioNetworkStubWrapper) IsCellularIdentifierTransparencyEnabled(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.IsCellularIdentifierTransparencyEnabled(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) SetCellularIdentifierTransparencyEnabled(
+	ctx context.Context,
+	serial int32,
+	enabled bool,
+) error {
+	return w.impl.SetCellularIdentifierTransparencyEnabled(ctx, serial, enabled)
+}
+
+func (w *radioNetworkStubWrapper) SetSecurityAlgorithmsUpdatedEnabled(
+	ctx context.Context,
+	serial int32,
+	enable bool,
+) error {
+	return w.impl.SetSecurityAlgorithmsUpdatedEnabled(ctx, serial, enable)
+}
+
+func (w *radioNetworkStubWrapper) IsSecurityAlgorithmsUpdatedEnabled(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.IsSecurityAlgorithmsUpdatedEnabled(ctx, serial)
+}
+
+func (w *radioNetworkStubWrapper) SetSatellitePlmn(
+	ctx context.Context,
+	serial int32,
+	simSlot int32,
+	carrierPlmnArray []string,
+	allSatellitePlmnArray []string,
+) error {
+	return w.impl.SetSatellitePlmn(ctx, serial, simSlot, carrierPlmnArray, allSatellitePlmnArray)
+}
+
+func (w *radioNetworkStubWrapper) SetSatelliteEnabledForCarrier(
+	ctx context.Context,
+	serial int32,
+	simSlot int32,
+	satelliteEnabled bool,
+) error {
+	return w.impl.SetSatelliteEnabledForCarrier(ctx, serial, simSlot, satelliteEnabled)
+}
+
+func (w *radioNetworkStubWrapper) IsSatelliteEnabledForCarrier(
+	ctx context.Context,
+	serial int32,
+	simSlot int32,
+) error {
+	return w.impl.IsSatelliteEnabledForCarrier(ctx, serial, simSlot)
+}
+
+var _ IRadioNetwork = (*radioNetworkStubWrapper)(nil)
+
+// NewRadioNetworkStub creates a server-side IRadioNetwork wrapping the given
+// server implementation. The returned value satisfies IRadioNetwork
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioNetworkStub(
+	impl IRadioNetworkServer,
+) IRadioNetwork {
+	wrapper := &radioNetworkStubWrapper{impl: impl}
+	stub := &RadioNetworkStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

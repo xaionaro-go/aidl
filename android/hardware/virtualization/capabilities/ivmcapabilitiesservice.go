@@ -108,3 +108,43 @@ func (s *VmCapabilitiesServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVmCapabilitiesServiceServer is the server-side interface that user implementations
+// provide to NewVmCapabilitiesServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVmCapabilitiesServiceServer interface {
+	GrantAccessToVendorTeeServices(ctx context.Context, vmFd int32, vendorTeeServices []string) error
+}
+
+type vmCapabilitiesServiceStubWrapper struct {
+	impl       IVmCapabilitiesServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vmCapabilitiesServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vmCapabilitiesServiceStubWrapper) GrantAccessToVendorTeeServices(
+	ctx context.Context,
+	vmFd int32,
+	vendorTeeServices []string,
+) error {
+	return w.impl.GrantAccessToVendorTeeServices(ctx, vmFd, vendorTeeServices)
+}
+
+var _ IVmCapabilitiesService = (*vmCapabilitiesServiceStubWrapper)(nil)
+
+// NewVmCapabilitiesServiceStub creates a server-side IVmCapabilitiesService wrapping the given
+// server implementation. The returned value satisfies IVmCapabilitiesService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVmCapabilitiesServiceStub(
+	impl IVmCapabilitiesServiceServer,
+) IVmCapabilitiesService {
+	wrapper := &vmCapabilitiesServiceStubWrapper{impl: impl}
+	stub := &VmCapabilitiesServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

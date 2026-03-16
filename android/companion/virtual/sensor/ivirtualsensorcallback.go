@@ -248,3 +248,73 @@ func (s *VirtualSensorCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVirtualSensorCallbackServer is the server-side interface that user implementations
+// provide to NewVirtualSensorCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualSensorCallbackServer interface {
+	OnConfigurationChanged(ctx context.Context, sensor VirtualSensor, enabled bool, samplingPeriodMicros int32, batchReportLatencyMicros int32) error
+	OnDirectChannelCreated(ctx context.Context, channelHandle int32, sharedMemory os.SharedMemory) error
+	OnDirectChannelDestroyed(ctx context.Context, channelHandle int32) error
+	OnDirectChannelConfigured(ctx context.Context, channelHandle int32, sensor VirtualSensor, rateLevel int32, reportToken int32) error
+}
+
+type virtualSensorCallbackStubWrapper struct {
+	impl       IVirtualSensorCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualSensorCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualSensorCallbackStubWrapper) OnConfigurationChanged(
+	ctx context.Context,
+	sensor VirtualSensor,
+	enabled bool,
+	samplingPeriodMicros int32,
+	batchReportLatencyMicros int32,
+) error {
+	return w.impl.OnConfigurationChanged(ctx, sensor, enabled, samplingPeriodMicros, batchReportLatencyMicros)
+}
+
+func (w *virtualSensorCallbackStubWrapper) OnDirectChannelCreated(
+	ctx context.Context,
+	channelHandle int32,
+	sharedMemory os.SharedMemory,
+) error {
+	return w.impl.OnDirectChannelCreated(ctx, channelHandle, sharedMemory)
+}
+
+func (w *virtualSensorCallbackStubWrapper) OnDirectChannelDestroyed(
+	ctx context.Context,
+	channelHandle int32,
+) error {
+	return w.impl.OnDirectChannelDestroyed(ctx, channelHandle)
+}
+
+func (w *virtualSensorCallbackStubWrapper) OnDirectChannelConfigured(
+	ctx context.Context,
+	channelHandle int32,
+	sensor VirtualSensor,
+	rateLevel int32,
+	reportToken int32,
+) error {
+	return w.impl.OnDirectChannelConfigured(ctx, channelHandle, sensor, rateLevel, reportToken)
+}
+
+var _ IVirtualSensorCallback = (*virtualSensorCallbackStubWrapper)(nil)
+
+// NewVirtualSensorCallbackStub creates a server-side IVirtualSensorCallback wrapping the given
+// server implementation. The returned value satisfies IVirtualSensorCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualSensorCallbackStub(
+	impl IVirtualSensorCallbackServer,
+) IVirtualSensorCallback {
+	wrapper := &virtualSensorCallbackStubWrapper{impl: impl}
+	stub := &VirtualSensorCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

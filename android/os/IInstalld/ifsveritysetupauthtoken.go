@@ -49,3 +49,34 @@ func (s *FsveritySetupAuthTokenStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFsveritySetupAuthTokenServer is the server-side interface that user implementations
+// provide to NewFsveritySetupAuthTokenStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFsveritySetupAuthTokenServer interface {
+}
+
+type fsveritySetupAuthTokenStubWrapper struct {
+	impl       IFsveritySetupAuthTokenServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fsveritySetupAuthTokenStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IFsveritySetupAuthToken = (*fsveritySetupAuthTokenStubWrapper)(nil)
+
+// NewFsveritySetupAuthTokenStub creates a server-side IFsveritySetupAuthToken wrapping the given
+// server implementation. The returned value satisfies IFsveritySetupAuthToken
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFsveritySetupAuthTokenStub(
+	impl IFsveritySetupAuthTokenServer,
+) IFsveritySetupAuthToken {
+	wrapper := &fsveritySetupAuthTokenStubWrapper{impl: impl}
+	stub := &FsveritySetupAuthTokenStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

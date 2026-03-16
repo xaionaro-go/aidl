@@ -112,7 +112,7 @@ func (p *QSTileServiceProxy) OnClick(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQSTileService)
-	_data.WriteStrongBinder(wtoken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, wtoken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQSTileService, "onClick")
 	if _err != nil {
@@ -200,4 +200,78 @@ func (s *QSTileServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IQSTileServiceServer is the server-side interface that user implementations
+// provide to NewQSTileServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IQSTileServiceServer interface {
+	OnTileAdded(ctx context.Context) error
+	OnTileRemoved(ctx context.Context) error
+	OnStartListening(ctx context.Context) error
+	OnStopListening(ctx context.Context) error
+	OnClick(ctx context.Context, wtoken binder.IBinder) error
+	OnUnlockComplete(ctx context.Context) error
+}
+
+type qSTileServiceStubWrapper struct {
+	impl       IQSTileServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *qSTileServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *qSTileServiceStubWrapper) OnTileAdded(
+	ctx context.Context,
+) error {
+	return w.impl.OnTileAdded(ctx)
+}
+
+func (w *qSTileServiceStubWrapper) OnTileRemoved(
+	ctx context.Context,
+) error {
+	return w.impl.OnTileRemoved(ctx)
+}
+
+func (w *qSTileServiceStubWrapper) OnStartListening(
+	ctx context.Context,
+) error {
+	return w.impl.OnStartListening(ctx)
+}
+
+func (w *qSTileServiceStubWrapper) OnStopListening(
+	ctx context.Context,
+) error {
+	return w.impl.OnStopListening(ctx)
+}
+
+func (w *qSTileServiceStubWrapper) OnClick(
+	ctx context.Context,
+	wtoken binder.IBinder,
+) error {
+	return w.impl.OnClick(ctx, wtoken)
+}
+
+func (w *qSTileServiceStubWrapper) OnUnlockComplete(
+	ctx context.Context,
+) error {
+	return w.impl.OnUnlockComplete(ctx)
+}
+
+var _ IQSTileService = (*qSTileServiceStubWrapper)(nil)
+
+// NewQSTileServiceStub creates a server-side IQSTileService wrapping the given
+// server implementation. The returned value satisfies IQSTileService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewQSTileServiceStub(
+	impl IQSTileServiceServer,
+) IQSTileService {
+	wrapper := &qSTileServiceStubWrapper{impl: impl}
+	stub := &QSTileServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

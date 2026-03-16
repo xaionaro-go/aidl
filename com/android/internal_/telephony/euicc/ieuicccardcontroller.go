@@ -90,7 +90,7 @@ func (p *EuiccCardControllerProxy) GetAllProfiles(
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getAllProfiles")
 	if _err != nil {
@@ -113,7 +113,7 @@ func (p *EuiccCardControllerProxy) GetProfile(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(iccid)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getProfile")
 	if _err != nil {
@@ -136,7 +136,7 @@ func (p *EuiccCardControllerProxy) GetEnabledProfile(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(portIndex)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getEnabledProfile")
 	if _err != nil {
@@ -161,7 +161,7 @@ func (p *EuiccCardControllerProxy) DisableProfile(
 	_data.WriteString16(cardId)
 	_data.WriteString16(iccid)
 	_data.WriteBool(refresh)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "disableProfile")
 	if _err != nil {
@@ -188,7 +188,7 @@ func (p *EuiccCardControllerProxy) SwitchToProfile(
 	_data.WriteString16(iccid)
 	_data.WriteInt32(portIndex)
 	_data.WriteBool(refresh)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "switchToProfile")
 	if _err != nil {
@@ -213,7 +213,7 @@ func (p *EuiccCardControllerProxy) SetNickname(
 	_data.WriteString16(cardId)
 	_data.WriteString16(iccid)
 	_data.WriteString16(nickname)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "setNickname")
 	if _err != nil {
@@ -236,7 +236,7 @@ func (p *EuiccCardControllerProxy) DeleteProfile(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(iccid)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "deleteProfile")
 	if _err != nil {
@@ -259,7 +259,7 @@ func (p *EuiccCardControllerProxy) ResetMemory(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(options)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "resetMemory")
 	if _err != nil {
@@ -280,7 +280,7 @@ func (p *EuiccCardControllerProxy) GetDefaultSmdpAddress(
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getDefaultSmdpAddress")
 	if _err != nil {
@@ -301,7 +301,7 @@ func (p *EuiccCardControllerProxy) GetSmdsAddress(
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getSmdsAddress")
 	if _err != nil {
@@ -324,7 +324,7 @@ func (p *EuiccCardControllerProxy) SetDefaultSmdpAddress(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteString16(address)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "setDefaultSmdpAddress")
 	if _err != nil {
@@ -345,7 +345,7 @@ func (p *EuiccCardControllerProxy) GetRulesAuthTable(
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getRulesAuthTable")
 	if _err != nil {
@@ -366,7 +366,7 @@ func (p *EuiccCardControllerProxy) GetEuiccChallenge(
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getEuiccChallenge")
 	if _err != nil {
@@ -387,7 +387,7 @@ func (p *EuiccCardControllerProxy) GetEuiccInfo1(
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getEuiccInfo1")
 	if _err != nil {
@@ -408,7 +408,7 @@ func (p *EuiccCardControllerProxy) GetEuiccInfo2(
 	_data.WriteInterfaceToken(DescriptorIEuiccCardController)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "getEuiccInfo2")
 	if _err != nil {
@@ -467,7 +467,7 @@ func (p *EuiccCardControllerProxy) AuthenticateServer(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "authenticateServer")
 	if _err != nil {
@@ -524,7 +524,7 @@ func (p *EuiccCardControllerProxy) PrepareDownload(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "prepareDownload")
 	if _err != nil {
@@ -554,7 +554,7 @@ func (p *EuiccCardControllerProxy) LoadBoundProfilePackage(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "loadBoundProfilePackage")
 	if _err != nil {
@@ -586,7 +586,7 @@ func (p *EuiccCardControllerProxy) CancelSession(
 		}
 	}
 	_data.WriteInt32(reason)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "cancelSession")
 	if _err != nil {
@@ -609,7 +609,7 @@ func (p *EuiccCardControllerProxy) ListNotifications(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(events)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "listNotifications")
 	if _err != nil {
@@ -632,7 +632,7 @@ func (p *EuiccCardControllerProxy) RetrieveNotificationList(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(events)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "retrieveNotificationList")
 	if _err != nil {
@@ -655,7 +655,7 @@ func (p *EuiccCardControllerProxy) RetrieveNotification(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(seqNumber)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "retrieveNotification")
 	if _err != nil {
@@ -678,7 +678,7 @@ func (p *EuiccCardControllerProxy) RemoveNotificationFromList(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(cardId)
 	_data.WriteInt32(seqNumber)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccCardController, "removeNotificationFromList")
 	if _err != nil {
@@ -1199,4 +1199,270 @@ func (s *EuiccCardControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IEuiccCardControllerServer is the server-side interface that user implementations
+// provide to NewEuiccCardControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEuiccCardControllerServer interface {
+	GetAllProfiles(ctx context.Context, cardId string, callback IGetAllProfilesCallback) error
+	GetProfile(ctx context.Context, cardId string, iccid string, callback IGetProfileCallback) error
+	GetEnabledProfile(ctx context.Context, cardId string, portIndex int32, callback IGetProfileCallback) error
+	DisableProfile(ctx context.Context, cardId string, iccid string, refresh bool, callback IDisableProfileCallback) error
+	SwitchToProfile(ctx context.Context, cardId string, iccid string, portIndex int32, refresh bool, callback ISwitchToProfileCallback) error
+	SetNickname(ctx context.Context, cardId string, iccid string, nickname string, callback ISetNicknameCallback) error
+	DeleteProfile(ctx context.Context, cardId string, iccid string, callback IDeleteProfileCallback) error
+	ResetMemory(ctx context.Context, cardId string, options int32, callback IResetMemoryCallback) error
+	GetDefaultSmdpAddress(ctx context.Context, cardId string, callback IGetDefaultSmdpAddressCallback) error
+	GetSmdsAddress(ctx context.Context, cardId string, callback IGetSmdsAddressCallback) error
+	SetDefaultSmdpAddress(ctx context.Context, cardId string, address string, callback ISetDefaultSmdpAddressCallback) error
+	GetRulesAuthTable(ctx context.Context, cardId string, callback IGetRulesAuthTableCallback) error
+	GetEuiccChallenge(ctx context.Context, cardId string, callback IGetEuiccChallengeCallback) error
+	GetEuiccInfo1(ctx context.Context, cardId string, callback IGetEuiccInfo1Callback) error
+	GetEuiccInfo2(ctx context.Context, cardId string, callback IGetEuiccInfo2Callback) error
+	AuthenticateServer(ctx context.Context, cardId string, matchingId string, serverSigned1 []byte, serverSignature1 []byte, euiccCiPkIdToBeUsed []byte, serverCertificatein []byte, callback IAuthenticateServerCallback) error
+	PrepareDownload(ctx context.Context, cardId string, hashCc []byte, smdpSigned2 []byte, smdpSignature2 []byte, smdpCertificate []byte, callback IPrepareDownloadCallback) error
+	LoadBoundProfilePackage(ctx context.Context, cardId string, boundProfilePackage []byte, callback ILoadBoundProfilePackageCallback) error
+	CancelSession(ctx context.Context, cardId string, transactionId []byte, reason int32, callback ICancelSessionCallback) error
+	ListNotifications(ctx context.Context, cardId string, events int32, callback IListNotificationsCallback) error
+	RetrieveNotificationList(ctx context.Context, cardId string, events int32, callback IRetrieveNotificationListCallback) error
+	RetrieveNotification(ctx context.Context, cardId string, seqNumber int32, callback IRetrieveNotificationCallback) error
+	RemoveNotificationFromList(ctx context.Context, cardId string, seqNumber int32, callback IRemoveNotificationFromListCallback) error
+}
+
+type euiccCardControllerStubWrapper struct {
+	impl       IEuiccCardControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *euiccCardControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *euiccCardControllerStubWrapper) GetAllProfiles(
+	ctx context.Context,
+	cardId string,
+	callback IGetAllProfilesCallback,
+) error {
+	return w.impl.GetAllProfiles(ctx, cardId, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) GetProfile(
+	ctx context.Context,
+	cardId string,
+	iccid string,
+	callback IGetProfileCallback,
+) error {
+	return w.impl.GetProfile(ctx, cardId, iccid, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) GetEnabledProfile(
+	ctx context.Context,
+	cardId string,
+	portIndex int32,
+	callback IGetProfileCallback,
+) error {
+	return w.impl.GetEnabledProfile(ctx, cardId, portIndex, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) DisableProfile(
+	ctx context.Context,
+	cardId string,
+	iccid string,
+	refresh bool,
+	callback IDisableProfileCallback,
+) error {
+	return w.impl.DisableProfile(ctx, cardId, iccid, refresh, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) SwitchToProfile(
+	ctx context.Context,
+	cardId string,
+	iccid string,
+	portIndex int32,
+	refresh bool,
+	callback ISwitchToProfileCallback,
+) error {
+	return w.impl.SwitchToProfile(ctx, cardId, iccid, portIndex, refresh, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) SetNickname(
+	ctx context.Context,
+	cardId string,
+	iccid string,
+	nickname string,
+	callback ISetNicknameCallback,
+) error {
+	return w.impl.SetNickname(ctx, cardId, iccid, nickname, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) DeleteProfile(
+	ctx context.Context,
+	cardId string,
+	iccid string,
+	callback IDeleteProfileCallback,
+) error {
+	return w.impl.DeleteProfile(ctx, cardId, iccid, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) ResetMemory(
+	ctx context.Context,
+	cardId string,
+	options int32,
+	callback IResetMemoryCallback,
+) error {
+	return w.impl.ResetMemory(ctx, cardId, options, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) GetDefaultSmdpAddress(
+	ctx context.Context,
+	cardId string,
+	callback IGetDefaultSmdpAddressCallback,
+) error {
+	return w.impl.GetDefaultSmdpAddress(ctx, cardId, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) GetSmdsAddress(
+	ctx context.Context,
+	cardId string,
+	callback IGetSmdsAddressCallback,
+) error {
+	return w.impl.GetSmdsAddress(ctx, cardId, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) SetDefaultSmdpAddress(
+	ctx context.Context,
+	cardId string,
+	address string,
+	callback ISetDefaultSmdpAddressCallback,
+) error {
+	return w.impl.SetDefaultSmdpAddress(ctx, cardId, address, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) GetRulesAuthTable(
+	ctx context.Context,
+	cardId string,
+	callback IGetRulesAuthTableCallback,
+) error {
+	return w.impl.GetRulesAuthTable(ctx, cardId, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) GetEuiccChallenge(
+	ctx context.Context,
+	cardId string,
+	callback IGetEuiccChallengeCallback,
+) error {
+	return w.impl.GetEuiccChallenge(ctx, cardId, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) GetEuiccInfo1(
+	ctx context.Context,
+	cardId string,
+	callback IGetEuiccInfo1Callback,
+) error {
+	return w.impl.GetEuiccInfo1(ctx, cardId, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) GetEuiccInfo2(
+	ctx context.Context,
+	cardId string,
+	callback IGetEuiccInfo2Callback,
+) error {
+	return w.impl.GetEuiccInfo2(ctx, cardId, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) AuthenticateServer(
+	ctx context.Context,
+	cardId string,
+	matchingId string,
+	serverSigned1 []byte,
+	serverSignature1 []byte,
+	euiccCiPkIdToBeUsed []byte,
+	serverCertificatein []byte,
+	callback IAuthenticateServerCallback,
+) error {
+	return w.impl.AuthenticateServer(ctx, cardId, matchingId, serverSigned1, serverSignature1, euiccCiPkIdToBeUsed, serverCertificatein, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) PrepareDownload(
+	ctx context.Context,
+	cardId string,
+	hashCc []byte,
+	smdpSigned2 []byte,
+	smdpSignature2 []byte,
+	smdpCertificate []byte,
+	callback IPrepareDownloadCallback,
+) error {
+	return w.impl.PrepareDownload(ctx, cardId, hashCc, smdpSigned2, smdpSignature2, smdpCertificate, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) LoadBoundProfilePackage(
+	ctx context.Context,
+	cardId string,
+	boundProfilePackage []byte,
+	callback ILoadBoundProfilePackageCallback,
+) error {
+	return w.impl.LoadBoundProfilePackage(ctx, cardId, boundProfilePackage, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) CancelSession(
+	ctx context.Context,
+	cardId string,
+	transactionId []byte,
+	reason int32,
+	callback ICancelSessionCallback,
+) error {
+	return w.impl.CancelSession(ctx, cardId, transactionId, reason, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) ListNotifications(
+	ctx context.Context,
+	cardId string,
+	events int32,
+	callback IListNotificationsCallback,
+) error {
+	return w.impl.ListNotifications(ctx, cardId, events, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) RetrieveNotificationList(
+	ctx context.Context,
+	cardId string,
+	events int32,
+	callback IRetrieveNotificationListCallback,
+) error {
+	return w.impl.RetrieveNotificationList(ctx, cardId, events, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) RetrieveNotification(
+	ctx context.Context,
+	cardId string,
+	seqNumber int32,
+	callback IRetrieveNotificationCallback,
+) error {
+	return w.impl.RetrieveNotification(ctx, cardId, seqNumber, callback)
+}
+
+func (w *euiccCardControllerStubWrapper) RemoveNotificationFromList(
+	ctx context.Context,
+	cardId string,
+	seqNumber int32,
+	callback IRemoveNotificationFromListCallback,
+) error {
+	return w.impl.RemoveNotificationFromList(ctx, cardId, seqNumber, callback)
+}
+
+var _ IEuiccCardController = (*euiccCardControllerStubWrapper)(nil)
+
+// NewEuiccCardControllerStub creates a server-side IEuiccCardController wrapping the given
+// server implementation. The returned value satisfies IEuiccCardController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEuiccCardControllerStub(
+	impl IEuiccCardControllerServer,
+) IEuiccCardController {
+	wrapper := &euiccCardControllerStubWrapper{impl: impl}
+	stub := &EuiccCardControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

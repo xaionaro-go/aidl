@@ -362,3 +362,81 @@ func (s *EffectStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEffectServer is the server-side interface that user implementations
+// provide to NewEffectStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEffectServer interface {
+	Enable(ctx context.Context) (int32, error)
+	Disable(ctx context.Context) (int32, error)
+	Command(ctx context.Context, cmdCode int32, cmdData []byte, maxResponseSize int32, response []byte) (int32, error)
+	Disconnect(ctx context.Context) error
+	GetCblk(ctx context.Context) (SharedFileRegion, error)
+	GetConfig(ctx context.Context, config EffectConfig) (int32, error)
+}
+
+type effectStubWrapper struct {
+	impl       IEffectServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *effectStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *effectStubWrapper) Enable(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Enable(ctx)
+}
+
+func (w *effectStubWrapper) Disable(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Disable(ctx)
+}
+
+func (w *effectStubWrapper) Command(
+	ctx context.Context,
+	cmdCode int32,
+	cmdData []byte,
+	maxResponseSize int32,
+	response []byte,
+) (int32, error) {
+	return w.impl.Command(ctx, cmdCode, cmdData, maxResponseSize, response)
+}
+
+func (w *effectStubWrapper) Disconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnect(ctx)
+}
+
+func (w *effectStubWrapper) GetCblk(
+	ctx context.Context,
+) (SharedFileRegion, error) {
+	return w.impl.GetCblk(ctx)
+}
+
+func (w *effectStubWrapper) GetConfig(
+	ctx context.Context,
+	config EffectConfig,
+) (int32, error) {
+	return w.impl.GetConfig(ctx, config)
+}
+
+var _ IEffect = (*effectStubWrapper)(nil)
+
+// NewEffectStub creates a server-side IEffect wrapping the given
+// server implementation. The returned value satisfies IEffect
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEffectStub(
+	impl IEffectServer,
+) IEffect {
+	wrapper := &effectStubWrapper{impl: impl}
+	stub := &EffectStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -113,3 +113,44 @@ func (s *DevicesForAttributesCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDevicesForAttributesCallbackServer is the server-side interface that user implementations
+// provide to NewDevicesForAttributesCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDevicesForAttributesCallbackServer interface {
+	OnDevicesForAttributesChanged(ctx context.Context, attributes AudioAttributes, forVolume bool, devices []AudioDeviceAttributes) error
+}
+
+type devicesForAttributesCallbackStubWrapper struct {
+	impl       IDevicesForAttributesCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *devicesForAttributesCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *devicesForAttributesCallbackStubWrapper) OnDevicesForAttributesChanged(
+	ctx context.Context,
+	attributes AudioAttributes,
+	forVolume bool,
+	devices []AudioDeviceAttributes,
+) error {
+	return w.impl.OnDevicesForAttributesChanged(ctx, attributes, forVolume, devices)
+}
+
+var _ IDevicesForAttributesCallback = (*devicesForAttributesCallbackStubWrapper)(nil)
+
+// NewDevicesForAttributesCallbackStub creates a server-side IDevicesForAttributesCallback wrapping the given
+// server implementation. The returned value satisfies IDevicesForAttributesCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDevicesForAttributesCallbackStub(
+	impl IDevicesForAttributesCallbackServer,
+) IDevicesForAttributesCallback {
+	wrapper := &devicesForAttributesCallbackStubWrapper{impl: impl}
+	stub := &DevicesForAttributesCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

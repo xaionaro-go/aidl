@@ -3,7 +3,6 @@ package bluetooth
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type IBluetoothMcpServiceManager interface {
 	AsBinder() binder.IBinder
-	SetDeviceAuthorized(ctx context.Context, device BluetoothDevice, isAuthorized bool, source content.AttributionSource) error
+	SetDeviceAuthorized(ctx context.Context, device BluetoothDevice, isAuthorized bool, source interface{}) error
 }
 
 type BluetoothMcpServiceManagerProxy struct {
@@ -41,7 +40,7 @@ func (p *BluetoothMcpServiceManagerProxy) SetDeviceAuthorized(
 	ctx context.Context,
 	device BluetoothDevice,
 	isAuthorized bool,
-	source content.AttributionSource,
+	source interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothMcpServiceManager)
@@ -50,10 +49,6 @@ func (p *BluetoothMcpServiceManagerProxy) SetDeviceAuthorized(
 		return _err
 	}
 	_data.WriteBool(isAuthorized)
-	_data.WriteInt32(1)
-	if _err := source.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothMcpServiceManager, "setDeviceAuthorized")
 	if _err != nil {
@@ -107,18 +102,7 @@ func (s *BluetoothMcpServiceManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_source content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_source.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_source interface{}
 		_err = s.Impl.SetDeviceAuthorized(ctx, _arg_device, _arg_isAuthorized, _arg_source)
 		_reply := parcel.New()
 		if _err != nil {
@@ -130,4 +114,45 @@ func (s *BluetoothMcpServiceManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothMcpServiceManagerServer is the server-side interface that user implementations
+// provide to NewBluetoothMcpServiceManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothMcpServiceManagerServer interface {
+	SetDeviceAuthorized(ctx context.Context, device BluetoothDevice, isAuthorized bool, source interface{}) error
+}
+
+type bluetoothMcpServiceManagerStubWrapper struct {
+	impl       IBluetoothMcpServiceManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothMcpServiceManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothMcpServiceManagerStubWrapper) SetDeviceAuthorized(
+	ctx context.Context,
+	device BluetoothDevice,
+	isAuthorized bool,
+	source interface{},
+) error {
+	return w.impl.SetDeviceAuthorized(ctx, device, isAuthorized, source)
+}
+
+var _ IBluetoothMcpServiceManager = (*bluetoothMcpServiceManagerStubWrapper)(nil)
+
+// NewBluetoothMcpServiceManagerStub creates a server-side IBluetoothMcpServiceManager wrapping the given
+// server implementation. The returned value satisfies IBluetoothMcpServiceManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothMcpServiceManagerStub(
+	impl IBluetoothMcpServiceManagerServer,
+) IBluetoothMcpServiceManager {
+	wrapper := &bluetoothMcpServiceManagerStubWrapper{impl: impl}
+	stub := &BluetoothMcpServiceManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

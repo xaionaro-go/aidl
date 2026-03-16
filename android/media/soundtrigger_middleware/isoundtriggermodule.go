@@ -594,3 +594,118 @@ func (s *SoundTriggerModuleStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundTriggerModuleServer is the server-side interface that user implementations
+// provide to NewSoundTriggerModuleStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerModuleServer interface {
+	LoadModel(ctx context.Context, model soundtrigger.SoundModel) (int32, error)
+	LoadPhraseModel(ctx context.Context, model soundtrigger.PhraseSoundModel) (int32, error)
+	UnloadModel(ctx context.Context, modelHandle int32) error
+	StartRecognition(ctx context.Context, modelHandle int32, config hardwareSoundtrigger.SoundTriggerRecognitionConfig) (binder.IBinder, error)
+	StopRecognition(ctx context.Context, modelHandle int32) error
+	ForceRecognitionEvent(ctx context.Context, modelHandle int32) error
+	SetModelParameter(ctx context.Context, modelHandle int32, modelParam soundtrigger.ModelParameter, value int32) error
+	GetModelParameter(ctx context.Context, modelHandle int32, modelParam soundtrigger.ModelParameter) (int32, error)
+	QueryModelParameterSupport(ctx context.Context, modelHandle int32, modelParam soundtrigger.ModelParameter) (soundtrigger.ModelParameterRange, error)
+	Detach(ctx context.Context) error
+}
+
+type soundTriggerModuleStubWrapper struct {
+	impl       ISoundTriggerModuleServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerModuleStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerModuleStubWrapper) LoadModel(
+	ctx context.Context,
+	model soundtrigger.SoundModel,
+) (int32, error) {
+	return w.impl.LoadModel(ctx, model)
+}
+
+func (w *soundTriggerModuleStubWrapper) LoadPhraseModel(
+	ctx context.Context,
+	model soundtrigger.PhraseSoundModel,
+) (int32, error) {
+	return w.impl.LoadPhraseModel(ctx, model)
+}
+
+func (w *soundTriggerModuleStubWrapper) UnloadModel(
+	ctx context.Context,
+	modelHandle int32,
+) error {
+	return w.impl.UnloadModel(ctx, modelHandle)
+}
+
+func (w *soundTriggerModuleStubWrapper) StartRecognition(
+	ctx context.Context,
+	modelHandle int32,
+	config hardwareSoundtrigger.SoundTriggerRecognitionConfig,
+) (binder.IBinder, error) {
+	return w.impl.StartRecognition(ctx, modelHandle, config)
+}
+
+func (w *soundTriggerModuleStubWrapper) StopRecognition(
+	ctx context.Context,
+	modelHandle int32,
+) error {
+	return w.impl.StopRecognition(ctx, modelHandle)
+}
+
+func (w *soundTriggerModuleStubWrapper) ForceRecognitionEvent(
+	ctx context.Context,
+	modelHandle int32,
+) error {
+	return w.impl.ForceRecognitionEvent(ctx, modelHandle)
+}
+
+func (w *soundTriggerModuleStubWrapper) SetModelParameter(
+	ctx context.Context,
+	modelHandle int32,
+	modelParam soundtrigger.ModelParameter,
+	value int32,
+) error {
+	return w.impl.SetModelParameter(ctx, modelHandle, modelParam, value)
+}
+
+func (w *soundTriggerModuleStubWrapper) GetModelParameter(
+	ctx context.Context,
+	modelHandle int32,
+	modelParam soundtrigger.ModelParameter,
+) (int32, error) {
+	return w.impl.GetModelParameter(ctx, modelHandle, modelParam)
+}
+
+func (w *soundTriggerModuleStubWrapper) QueryModelParameterSupport(
+	ctx context.Context,
+	modelHandle int32,
+	modelParam soundtrigger.ModelParameter,
+) (soundtrigger.ModelParameterRange, error) {
+	return w.impl.QueryModelParameterSupport(ctx, modelHandle, modelParam)
+}
+
+func (w *soundTriggerModuleStubWrapper) Detach(
+	ctx context.Context,
+) error {
+	return w.impl.Detach(ctx)
+}
+
+var _ ISoundTriggerModule = (*soundTriggerModuleStubWrapper)(nil)
+
+// NewSoundTriggerModuleStub creates a server-side ISoundTriggerModule wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerModule
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerModuleStub(
+	impl ISoundTriggerModuleServer,
+) ISoundTriggerModule {
+	wrapper := &soundTriggerModuleStubWrapper{impl: impl}
+	stub := &SoundTriggerModuleStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

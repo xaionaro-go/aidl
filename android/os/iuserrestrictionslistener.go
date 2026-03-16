@@ -115,3 +115,43 @@ func (s *UserRestrictionsListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUserRestrictionsListenerServer is the server-side interface that user implementations
+// provide to NewUserRestrictionsListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUserRestrictionsListenerServer interface {
+	OnUserRestrictionsChanged(ctx context.Context, newRestrictions Bundle, prevRestrictions Bundle) error
+}
+
+type userRestrictionsListenerStubWrapper struct {
+	impl       IUserRestrictionsListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *userRestrictionsListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *userRestrictionsListenerStubWrapper) OnUserRestrictionsChanged(
+	ctx context.Context,
+	newRestrictions Bundle,
+	prevRestrictions Bundle,
+) error {
+	return w.impl.OnUserRestrictionsChanged(ctx, newRestrictions, prevRestrictions)
+}
+
+var _ IUserRestrictionsListener = (*userRestrictionsListenerStubWrapper)(nil)
+
+// NewUserRestrictionsListenerStub creates a server-side IUserRestrictionsListener wrapping the given
+// server implementation. The returned value satisfies IUserRestrictionsListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUserRestrictionsListenerStub(
+	impl IUserRestrictionsListenerServer,
+) IUserRestrictionsListener {
+	wrapper := &userRestrictionsListenerStubWrapper{impl: impl}
+	stub := &UserRestrictionsListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

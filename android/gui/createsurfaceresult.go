@@ -20,7 +20,11 @@ func (s *CreateSurfaceResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Handle.Handle())
+	if s.Handle == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Handle.Handle())
+	}
 	p.WriteInt32(s.LayerId)
 	p.WriteString16(s.LayerName)
 	p.WriteInt32(s.TransformHint)

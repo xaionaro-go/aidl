@@ -99,3 +99,43 @@ func (s *OnMediaKeyEventSessionChangedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnMediaKeyEventSessionChangedListenerServer is the server-side interface that user implementations
+// provide to NewOnMediaKeyEventSessionChangedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnMediaKeyEventSessionChangedListenerServer interface {
+	OnMediaKeyEventSessionChanged(ctx context.Context, packageName string, mediaKeyEventSessionToken MediaSessionToken) error
+}
+
+type onMediaKeyEventSessionChangedListenerStubWrapper struct {
+	impl       IOnMediaKeyEventSessionChangedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onMediaKeyEventSessionChangedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onMediaKeyEventSessionChangedListenerStubWrapper) OnMediaKeyEventSessionChanged(
+	ctx context.Context,
+	packageName string,
+	mediaKeyEventSessionToken MediaSessionToken,
+) error {
+	return w.impl.OnMediaKeyEventSessionChanged(ctx, packageName, mediaKeyEventSessionToken)
+}
+
+var _ IOnMediaKeyEventSessionChangedListener = (*onMediaKeyEventSessionChangedListenerStubWrapper)(nil)
+
+// NewOnMediaKeyEventSessionChangedListenerStub creates a server-side IOnMediaKeyEventSessionChangedListener wrapping the given
+// server implementation. The returned value satisfies IOnMediaKeyEventSessionChangedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnMediaKeyEventSessionChangedListenerStub(
+	impl IOnMediaKeyEventSessionChangedListenerServer,
+) IOnMediaKeyEventSessionChangedListener {
+	wrapper := &onMediaKeyEventSessionChangedListenerStubWrapper{impl: impl}
+	stub := &OnMediaKeyEventSessionChangedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

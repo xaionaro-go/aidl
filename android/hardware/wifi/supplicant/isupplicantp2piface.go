@@ -1071,7 +1071,7 @@ func (p *SupplicantP2pIfaceProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISupplicantP2pIface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISupplicantP2pIface, "registerCallback")
 	if _err != nil {
@@ -4007,4 +4007,668 @@ func (s *SupplicantP2pIfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISupplicantP2pIfaceServer is the server-side interface that user implementations
+// provide to NewSupplicantP2pIfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupplicantP2pIfaceServer interface {
+	AddBonjourService(ctx context.Context, query []byte, response []byte) error
+	AddGroup(ctx context.Context, persistent bool, persistentNetworkId int32) error
+	AddGroupWithConfig(ctx context.Context, ssid []byte, pskPassphrase string, persistent bool, freq int32, peerAddress []byte, joinExistingGroup bool) error
+	AddNetwork(ctx context.Context) (ISupplicantP2pNetwork, error)
+	AddUpnpService(ctx context.Context, version int32, serviceName string) error
+	CancelConnect(ctx context.Context) error
+	CancelServiceDiscovery(ctx context.Context, identifier int64) error
+	CancelWps(ctx context.Context, groupIfName string) error
+	ConfigureExtListen(ctx context.Context, periodInMillis int32, intervalInMillis int32) error
+	Connect(ctx context.Context, peerAddress []byte, provisionMethod WpsProvisionMethod, preSelectedPin string, joinExistingGroup bool, persistent bool, goIntent int32) (string, error)
+	CreateNfcHandoverRequestMessage(ctx context.Context) ([]byte, error)
+	CreateNfcHandoverSelectMessage(ctx context.Context) ([]byte, error)
+	EnableWfd(ctx context.Context, enable bool) error
+	Find(ctx context.Context, timeoutInSec int32) error
+	Flush(ctx context.Context) error
+	FlushServices(ctx context.Context) error
+	GetDeviceAddress(ctx context.Context) ([]byte, error)
+	GetEdmg(ctx context.Context) (bool, error)
+	GetGroupCapability(ctx context.Context, peerAddress []byte) (P2pGroupCapabilityMask, error)
+	GetName(ctx context.Context) (string, error)
+	GetNetwork(ctx context.Context, id int32) (ISupplicantP2pNetwork, error)
+	GetSsid(ctx context.Context, peerAddress []byte) ([]byte, error)
+	GetType(ctx context.Context) (IfaceType, error)
+	Invite(ctx context.Context, groupIfName string, goDeviceAddress []byte, peerAddress []byte) error
+	ListNetworks(ctx context.Context) ([]int32, error)
+	ProvisionDiscovery(ctx context.Context, peerAddress []byte, provisionMethod WpsProvisionMethod) error
+	RegisterCallback(ctx context.Context, callback ISupplicantP2pIfaceCallback) error
+	Reinvoke(ctx context.Context, persistentNetworkId int32, peerAddress []byte) error
+	Reject(ctx context.Context, peerAddress []byte) error
+	RemoveBonjourService(ctx context.Context, query []byte) error
+	RemoveGroup(ctx context.Context, groupIfName string) error
+	RemoveNetwork(ctx context.Context, id int32) error
+	RemoveUpnpService(ctx context.Context, version int32, serviceName string) error
+	ReportNfcHandoverInitiation(ctx context.Context, select_ []byte) error
+	ReportNfcHandoverResponse(ctx context.Context, request []byte) error
+	RequestServiceDiscovery(ctx context.Context, peerAddress []byte, query []byte) (int64, error)
+	SaveConfig(ctx context.Context) error
+	SetDisallowedFrequencies(ctx context.Context, ranges []FreqRange) error
+	SetEdmg(ctx context.Context, enable bool) error
+	SetGroupIdle(ctx context.Context, groupIfName string, timeoutInSec int32) error
+	SetListenChannel(ctx context.Context, channel int32, operatingClass int32) error
+	SetMacRandomization(ctx context.Context, enable bool) error
+	SetMiracastMode(ctx context.Context, mode MiracastMode) error
+	SetPowerSave(ctx context.Context, groupIfName string, enable bool) error
+	SetSsidPostfix(ctx context.Context, postfix []byte) error
+	SetWfdDeviceInfo(ctx context.Context, info []byte) error
+	SetWfdR2DeviceInfo(ctx context.Context, info []byte) error
+	RemoveClient(ctx context.Context, peerAddress []byte, isLegacyClient bool) error
+	SetWpsConfigMethods(ctx context.Context, configMethods WpsConfigMethods) error
+	SetWpsDeviceName(ctx context.Context, name string) error
+	SetWpsDeviceType(ctx context.Context, type_ []byte) error
+	SetWpsManufacturer(ctx context.Context, manufacturer string) error
+	SetWpsModelName(ctx context.Context, modelName string) error
+	SetWpsModelNumber(ctx context.Context, modelNumber string) error
+	SetWpsSerialNumber(ctx context.Context, serialNumber string) error
+	StartWpsPbc(ctx context.Context, groupIfName string, bssid []byte) error
+	StartWpsPinDisplay(ctx context.Context, groupIfName string, bssid []byte) (string, error)
+	StartWpsPinKeypad(ctx context.Context, groupIfName string, pin string) error
+	StopFind(ctx context.Context) error
+	FindOnSocialChannels(ctx context.Context, timeoutInSec int32) error
+	FindOnSpecificFrequency(ctx context.Context, freqInHz int32, timeoutInSec int32) error
+	SetVendorElements(ctx context.Context, frameTypeMask P2pFrameTypeMask, vendorElemBytes []byte) error
+	ConfigureEapolIpAddressAllocationParams(ctx context.Context, ipAddressGo int32, ipAddressMask int32, ipAddressStart int32, ipAddressEnd int32) error
+	ConnectWithParams(ctx context.Context, connectInfo P2pConnectInfo) (string, error)
+	FindWithParams(ctx context.Context, discoveryInfo P2pDiscoveryInfo) error
+	ConfigureExtListenWithParams(ctx context.Context, extListenInfo P2pExtListenInfo) error
+	AddGroupWithConfigurationParams(ctx context.Context, groupConfigurationParams P2pAddGroupConfigurationParams) error
+	CreateGroupOwner(ctx context.Context, groupOwnerInfo P2pCreateGroupOwnerInfo) error
+	GetFeatureSet(ctx context.Context) (int64, error)
+	StartUsdBasedServiceDiscovery(ctx context.Context, serviceDiscoveryConfig P2pUsdBasedServiceDiscoveryConfig) (int32, error)
+	StopUsdBasedServiceDiscovery(ctx context.Context, sessionId int32) error
+	StartUsdBasedServiceAdvertisement(ctx context.Context, serviceAdvertisementConfig P2pUsdBasedServiceAdvertisementConfig) (int32, error)
+	StopUsdBasedServiceAdvertisement(ctx context.Context, sessionId int32) error
+	ProvisionDiscoveryWithParams(ctx context.Context, params P2pProvisionDiscoveryParams) error
+	GetDirInfo(ctx context.Context) (P2pDirInfo, error)
+	ValidateDirInfo(ctx context.Context, dirInfo P2pDirInfo) (int32, error)
+	ReinvokePersistentGroup(ctx context.Context, reinvokeGroupParams P2pReinvokePersistentGroupParams) error
+}
+
+type supplicantP2pIfaceStubWrapper struct {
+	impl       ISupplicantP2pIfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supplicantP2pIfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supplicantP2pIfaceStubWrapper) AddBonjourService(
+	ctx context.Context,
+	query []byte,
+	response []byte,
+) error {
+	return w.impl.AddBonjourService(ctx, query, response)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) AddGroup(
+	ctx context.Context,
+	persistent bool,
+	persistentNetworkId int32,
+) error {
+	return w.impl.AddGroup(ctx, persistent, persistentNetworkId)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) AddGroupWithConfig(
+	ctx context.Context,
+	ssid []byte,
+	pskPassphrase string,
+	persistent bool,
+	freq int32,
+	peerAddress []byte,
+	joinExistingGroup bool,
+) error {
+	return w.impl.AddGroupWithConfig(ctx, ssid, pskPassphrase, persistent, freq, peerAddress, joinExistingGroup)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) AddNetwork(
+	ctx context.Context,
+) (ISupplicantP2pNetwork, error) {
+	return w.impl.AddNetwork(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) AddUpnpService(
+	ctx context.Context,
+	version int32,
+	serviceName string,
+) error {
+	return w.impl.AddUpnpService(ctx, version, serviceName)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) CancelConnect(
+	ctx context.Context,
+) error {
+	return w.impl.CancelConnect(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) CancelServiceDiscovery(
+	ctx context.Context,
+	identifier int64,
+) error {
+	return w.impl.CancelServiceDiscovery(ctx, identifier)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) CancelWps(
+	ctx context.Context,
+	groupIfName string,
+) error {
+	return w.impl.CancelWps(ctx, groupIfName)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ConfigureExtListen(
+	ctx context.Context,
+	periodInMillis int32,
+	intervalInMillis int32,
+) error {
+	return w.impl.ConfigureExtListen(ctx, periodInMillis, intervalInMillis)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) Connect(
+	ctx context.Context,
+	peerAddress []byte,
+	provisionMethod WpsProvisionMethod,
+	preSelectedPin string,
+	joinExistingGroup bool,
+	persistent bool,
+	goIntent int32,
+) (string, error) {
+	return w.impl.Connect(ctx, peerAddress, provisionMethod, preSelectedPin, joinExistingGroup, persistent, goIntent)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) CreateNfcHandoverRequestMessage(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.CreateNfcHandoverRequestMessage(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) CreateNfcHandoverSelectMessage(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.CreateNfcHandoverSelectMessage(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) EnableWfd(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.EnableWfd(ctx, enable)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) Find(
+	ctx context.Context,
+	timeoutInSec int32,
+) error {
+	return w.impl.Find(ctx, timeoutInSec)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) Flush(
+	ctx context.Context,
+) error {
+	return w.impl.Flush(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) FlushServices(
+	ctx context.Context,
+) error {
+	return w.impl.FlushServices(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) GetDeviceAddress(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetDeviceAddress(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) GetEdmg(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetEdmg(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) GetGroupCapability(
+	ctx context.Context,
+	peerAddress []byte,
+) (P2pGroupCapabilityMask, error) {
+	return w.impl.GetGroupCapability(ctx, peerAddress)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) GetNetwork(
+	ctx context.Context,
+	id int32,
+) (ISupplicantP2pNetwork, error) {
+	return w.impl.GetNetwork(ctx, id)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) GetSsid(
+	ctx context.Context,
+	peerAddress []byte,
+) ([]byte, error) {
+	return w.impl.GetSsid(ctx, peerAddress)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) GetType(
+	ctx context.Context,
+) (IfaceType, error) {
+	return w.impl.GetType(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) Invite(
+	ctx context.Context,
+	groupIfName string,
+	goDeviceAddress []byte,
+	peerAddress []byte,
+) error {
+	return w.impl.Invite(ctx, groupIfName, goDeviceAddress, peerAddress)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ListNetworks(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.ListNetworks(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ProvisionDiscovery(
+	ctx context.Context,
+	peerAddress []byte,
+	provisionMethod WpsProvisionMethod,
+) error {
+	return w.impl.ProvisionDiscovery(ctx, peerAddress, provisionMethod)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ISupplicantP2pIfaceCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) Reinvoke(
+	ctx context.Context,
+	persistentNetworkId int32,
+	peerAddress []byte,
+) error {
+	return w.impl.Reinvoke(ctx, persistentNetworkId, peerAddress)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) Reject(
+	ctx context.Context,
+	peerAddress []byte,
+) error {
+	return w.impl.Reject(ctx, peerAddress)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) RemoveBonjourService(
+	ctx context.Context,
+	query []byte,
+) error {
+	return w.impl.RemoveBonjourService(ctx, query)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) RemoveGroup(
+	ctx context.Context,
+	groupIfName string,
+) error {
+	return w.impl.RemoveGroup(ctx, groupIfName)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) RemoveNetwork(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.RemoveNetwork(ctx, id)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) RemoveUpnpService(
+	ctx context.Context,
+	version int32,
+	serviceName string,
+) error {
+	return w.impl.RemoveUpnpService(ctx, version, serviceName)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ReportNfcHandoverInitiation(
+	ctx context.Context,
+	select_ []byte,
+) error {
+	return w.impl.ReportNfcHandoverInitiation(ctx, select_)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ReportNfcHandoverResponse(
+	ctx context.Context,
+	request []byte,
+) error {
+	return w.impl.ReportNfcHandoverResponse(ctx, request)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) RequestServiceDiscovery(
+	ctx context.Context,
+	peerAddress []byte,
+	query []byte,
+) (int64, error) {
+	return w.impl.RequestServiceDiscovery(ctx, peerAddress, query)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SaveConfig(
+	ctx context.Context,
+) error {
+	return w.impl.SaveConfig(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetDisallowedFrequencies(
+	ctx context.Context,
+	ranges []FreqRange,
+) error {
+	return w.impl.SetDisallowedFrequencies(ctx, ranges)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetEdmg(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetEdmg(ctx, enable)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetGroupIdle(
+	ctx context.Context,
+	groupIfName string,
+	timeoutInSec int32,
+) error {
+	return w.impl.SetGroupIdle(ctx, groupIfName, timeoutInSec)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetListenChannel(
+	ctx context.Context,
+	channel int32,
+	operatingClass int32,
+) error {
+	return w.impl.SetListenChannel(ctx, channel, operatingClass)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetMacRandomization(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetMacRandomization(ctx, enable)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetMiracastMode(
+	ctx context.Context,
+	mode MiracastMode,
+) error {
+	return w.impl.SetMiracastMode(ctx, mode)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetPowerSave(
+	ctx context.Context,
+	groupIfName string,
+	enable bool,
+) error {
+	return w.impl.SetPowerSave(ctx, groupIfName, enable)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetSsidPostfix(
+	ctx context.Context,
+	postfix []byte,
+) error {
+	return w.impl.SetSsidPostfix(ctx, postfix)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetWfdDeviceInfo(
+	ctx context.Context,
+	info []byte,
+) error {
+	return w.impl.SetWfdDeviceInfo(ctx, info)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetWfdR2DeviceInfo(
+	ctx context.Context,
+	info []byte,
+) error {
+	return w.impl.SetWfdR2DeviceInfo(ctx, info)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) RemoveClient(
+	ctx context.Context,
+	peerAddress []byte,
+	isLegacyClient bool,
+) error {
+	return w.impl.RemoveClient(ctx, peerAddress, isLegacyClient)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetWpsConfigMethods(
+	ctx context.Context,
+	configMethods WpsConfigMethods,
+) error {
+	return w.impl.SetWpsConfigMethods(ctx, configMethods)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetWpsDeviceName(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.SetWpsDeviceName(ctx, name)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetWpsDeviceType(
+	ctx context.Context,
+	type_ []byte,
+) error {
+	return w.impl.SetWpsDeviceType(ctx, type_)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetWpsManufacturer(
+	ctx context.Context,
+	manufacturer string,
+) error {
+	return w.impl.SetWpsManufacturer(ctx, manufacturer)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetWpsModelName(
+	ctx context.Context,
+	modelName string,
+) error {
+	return w.impl.SetWpsModelName(ctx, modelName)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetWpsModelNumber(
+	ctx context.Context,
+	modelNumber string,
+) error {
+	return w.impl.SetWpsModelNumber(ctx, modelNumber)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetWpsSerialNumber(
+	ctx context.Context,
+	serialNumber string,
+) error {
+	return w.impl.SetWpsSerialNumber(ctx, serialNumber)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) StartWpsPbc(
+	ctx context.Context,
+	groupIfName string,
+	bssid []byte,
+) error {
+	return w.impl.StartWpsPbc(ctx, groupIfName, bssid)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) StartWpsPinDisplay(
+	ctx context.Context,
+	groupIfName string,
+	bssid []byte,
+) (string, error) {
+	return w.impl.StartWpsPinDisplay(ctx, groupIfName, bssid)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) StartWpsPinKeypad(
+	ctx context.Context,
+	groupIfName string,
+	pin string,
+) error {
+	return w.impl.StartWpsPinKeypad(ctx, groupIfName, pin)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) StopFind(
+	ctx context.Context,
+) error {
+	return w.impl.StopFind(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) FindOnSocialChannels(
+	ctx context.Context,
+	timeoutInSec int32,
+) error {
+	return w.impl.FindOnSocialChannels(ctx, timeoutInSec)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) FindOnSpecificFrequency(
+	ctx context.Context,
+	freqInHz int32,
+	timeoutInSec int32,
+) error {
+	return w.impl.FindOnSpecificFrequency(ctx, freqInHz, timeoutInSec)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) SetVendorElements(
+	ctx context.Context,
+	frameTypeMask P2pFrameTypeMask,
+	vendorElemBytes []byte,
+) error {
+	return w.impl.SetVendorElements(ctx, frameTypeMask, vendorElemBytes)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ConfigureEapolIpAddressAllocationParams(
+	ctx context.Context,
+	ipAddressGo int32,
+	ipAddressMask int32,
+	ipAddressStart int32,
+	ipAddressEnd int32,
+) error {
+	return w.impl.ConfigureEapolIpAddressAllocationParams(ctx, ipAddressGo, ipAddressMask, ipAddressStart, ipAddressEnd)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ConnectWithParams(
+	ctx context.Context,
+	connectInfo P2pConnectInfo,
+) (string, error) {
+	return w.impl.ConnectWithParams(ctx, connectInfo)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) FindWithParams(
+	ctx context.Context,
+	discoveryInfo P2pDiscoveryInfo,
+) error {
+	return w.impl.FindWithParams(ctx, discoveryInfo)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ConfigureExtListenWithParams(
+	ctx context.Context,
+	extListenInfo P2pExtListenInfo,
+) error {
+	return w.impl.ConfigureExtListenWithParams(ctx, extListenInfo)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) AddGroupWithConfigurationParams(
+	ctx context.Context,
+	groupConfigurationParams P2pAddGroupConfigurationParams,
+) error {
+	return w.impl.AddGroupWithConfigurationParams(ctx, groupConfigurationParams)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) CreateGroupOwner(
+	ctx context.Context,
+	groupOwnerInfo P2pCreateGroupOwnerInfo,
+) error {
+	return w.impl.CreateGroupOwner(ctx, groupOwnerInfo)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) GetFeatureSet(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetFeatureSet(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) StartUsdBasedServiceDiscovery(
+	ctx context.Context,
+	serviceDiscoveryConfig P2pUsdBasedServiceDiscoveryConfig,
+) (int32, error) {
+	return w.impl.StartUsdBasedServiceDiscovery(ctx, serviceDiscoveryConfig)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) StopUsdBasedServiceDiscovery(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.StopUsdBasedServiceDiscovery(ctx, sessionId)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) StartUsdBasedServiceAdvertisement(
+	ctx context.Context,
+	serviceAdvertisementConfig P2pUsdBasedServiceAdvertisementConfig,
+) (int32, error) {
+	return w.impl.StartUsdBasedServiceAdvertisement(ctx, serviceAdvertisementConfig)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) StopUsdBasedServiceAdvertisement(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.StopUsdBasedServiceAdvertisement(ctx, sessionId)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ProvisionDiscoveryWithParams(
+	ctx context.Context,
+	params P2pProvisionDiscoveryParams,
+) error {
+	return w.impl.ProvisionDiscoveryWithParams(ctx, params)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) GetDirInfo(
+	ctx context.Context,
+) (P2pDirInfo, error) {
+	return w.impl.GetDirInfo(ctx)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ValidateDirInfo(
+	ctx context.Context,
+	dirInfo P2pDirInfo,
+) (int32, error) {
+	return w.impl.ValidateDirInfo(ctx, dirInfo)
+}
+
+func (w *supplicantP2pIfaceStubWrapper) ReinvokePersistentGroup(
+	ctx context.Context,
+	reinvokeGroupParams P2pReinvokePersistentGroupParams,
+) error {
+	return w.impl.ReinvokePersistentGroup(ctx, reinvokeGroupParams)
+}
+
+var _ ISupplicantP2pIface = (*supplicantP2pIfaceStubWrapper)(nil)
+
+// NewSupplicantP2pIfaceStub creates a server-side ISupplicantP2pIface wrapping the given
+// server implementation. The returned value satisfies ISupplicantP2pIface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupplicantP2pIfaceStub(
+	impl ISupplicantP2pIfaceServer,
+) ISupplicantP2pIface {
+	wrapper := &supplicantP2pIfaceStubWrapper{impl: impl}
+	stub := &SupplicantP2pIfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

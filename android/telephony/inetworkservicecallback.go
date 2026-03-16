@@ -123,3 +123,50 @@ func (s *NetworkServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INetworkServiceCallbackServer is the server-side interface that user implementations
+// provide to NewNetworkServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkServiceCallbackServer interface {
+	OnRequestNetworkRegistrationInfoComplete(ctx context.Context, result int32, state NetworkRegistrationInfo) error
+	OnNetworkStateChanged(ctx context.Context) error
+}
+
+type networkServiceCallbackStubWrapper struct {
+	impl       INetworkServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkServiceCallbackStubWrapper) OnRequestNetworkRegistrationInfoComplete(
+	ctx context.Context,
+	result int32,
+	state NetworkRegistrationInfo,
+) error {
+	return w.impl.OnRequestNetworkRegistrationInfoComplete(ctx, result, state)
+}
+
+func (w *networkServiceCallbackStubWrapper) OnNetworkStateChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnNetworkStateChanged(ctx)
+}
+
+var _ INetworkServiceCallback = (*networkServiceCallbackStubWrapper)(nil)
+
+// NewNetworkServiceCallbackStub creates a server-side INetworkServiceCallback wrapping the given
+// server implementation. The returned value satisfies INetworkServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkServiceCallbackStub(
+	impl INetworkServiceCallbackServer,
+) INetworkServiceCallback {
+	wrapper := &networkServiceCallbackStubWrapper{impl: impl}
+	stub := &NetworkServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

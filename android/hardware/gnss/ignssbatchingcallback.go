@@ -104,3 +104,42 @@ func (s *GnssBatchingCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssBatchingCallbackServer is the server-side interface that user implementations
+// provide to NewGnssBatchingCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssBatchingCallbackServer interface {
+	GnssLocationBatchCb(ctx context.Context, locations []GnssLocation) error
+}
+
+type gnssBatchingCallbackStubWrapper struct {
+	impl       IGnssBatchingCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssBatchingCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssBatchingCallbackStubWrapper) GnssLocationBatchCb(
+	ctx context.Context,
+	locations []GnssLocation,
+) error {
+	return w.impl.GnssLocationBatchCb(ctx, locations)
+}
+
+var _ IGnssBatchingCallback = (*gnssBatchingCallbackStubWrapper)(nil)
+
+// NewGnssBatchingCallbackStub creates a server-side IGnssBatchingCallback wrapping the given
+// server implementation. The returned value satisfies IGnssBatchingCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssBatchingCallbackStub(
+	impl IGnssBatchingCallbackServer,
+) IGnssBatchingCallback {
+	wrapper := &gnssBatchingCallbackStubWrapper{impl: impl}
+	stub := &GnssBatchingCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

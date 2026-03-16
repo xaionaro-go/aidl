@@ -336,3 +336,80 @@ func (s *MediaHTTPConnectionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaHTTPConnectionServer is the server-side interface that user implementations
+// provide to NewMediaHTTPConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaHTTPConnectionServer interface {
+	Connect(ctx context.Context, uri string, headers string) (binder.IBinder, error)
+	Disconnect(ctx context.Context) error
+	ReadAt(ctx context.Context, offset int64, size int32) (int32, error)
+	GetSize(ctx context.Context) (int64, error)
+	GetMIMEType(ctx context.Context) (string, error)
+	GetUri(ctx context.Context) (string, error)
+}
+
+type mediaHTTPConnectionStubWrapper struct {
+	impl       IMediaHTTPConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaHTTPConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaHTTPConnectionStubWrapper) Connect(
+	ctx context.Context,
+	uri string,
+	headers string,
+) (binder.IBinder, error) {
+	return w.impl.Connect(ctx, uri, headers)
+}
+
+func (w *mediaHTTPConnectionStubWrapper) Disconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnect(ctx)
+}
+
+func (w *mediaHTTPConnectionStubWrapper) ReadAt(
+	ctx context.Context,
+	offset int64,
+	size int32,
+) (int32, error) {
+	return w.impl.ReadAt(ctx, offset, size)
+}
+
+func (w *mediaHTTPConnectionStubWrapper) GetSize(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetSize(ctx)
+}
+
+func (w *mediaHTTPConnectionStubWrapper) GetMIMEType(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetMIMEType(ctx)
+}
+
+func (w *mediaHTTPConnectionStubWrapper) GetUri(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetUri(ctx)
+}
+
+var _ IMediaHTTPConnection = (*mediaHTTPConnectionStubWrapper)(nil)
+
+// NewMediaHTTPConnectionStub creates a server-side IMediaHTTPConnection wrapping the given
+// server implementation. The returned value satisfies IMediaHTTPConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaHTTPConnectionStub(
+	impl IMediaHTTPConnectionServer,
+) IMediaHTTPConnection {
+	wrapper := &mediaHTTPConnectionStubWrapper{impl: impl}
+	stub := &MediaHTTPConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

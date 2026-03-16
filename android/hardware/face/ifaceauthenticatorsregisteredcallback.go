@@ -90,3 +90,42 @@ func (s *FaceAuthenticatorsRegisteredCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFaceAuthenticatorsRegisteredCallbackServer is the server-side interface that user implementations
+// provide to NewFaceAuthenticatorsRegisteredCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFaceAuthenticatorsRegisteredCallbackServer interface {
+	OnAllAuthenticatorsRegistered(ctx context.Context, sensors []FaceSensorPropertiesInternal) error
+}
+
+type faceAuthenticatorsRegisteredCallbackStubWrapper struct {
+	impl       IFaceAuthenticatorsRegisteredCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *faceAuthenticatorsRegisteredCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *faceAuthenticatorsRegisteredCallbackStubWrapper) OnAllAuthenticatorsRegistered(
+	ctx context.Context,
+	sensors []FaceSensorPropertiesInternal,
+) error {
+	return w.impl.OnAllAuthenticatorsRegistered(ctx, sensors)
+}
+
+var _ IFaceAuthenticatorsRegisteredCallback = (*faceAuthenticatorsRegisteredCallbackStubWrapper)(nil)
+
+// NewFaceAuthenticatorsRegisteredCallbackStub creates a server-side IFaceAuthenticatorsRegisteredCallback wrapping the given
+// server implementation. The returned value satisfies IFaceAuthenticatorsRegisteredCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFaceAuthenticatorsRegisteredCallbackStub(
+	impl IFaceAuthenticatorsRegisteredCallbackServer,
+) IFaceAuthenticatorsRegisteredCallback {
+	wrapper := &faceAuthenticatorsRegisteredCallbackStubWrapper{impl: impl}
+	stub := &FaceAuthenticatorsRegisteredCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

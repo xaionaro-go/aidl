@@ -90,3 +90,41 @@ func (s *ResourcesReclaimListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IResourcesReclaimListenerServer is the server-side interface that user implementations
+// provide to NewResourcesReclaimListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResourcesReclaimListenerServer interface {
+	OnReclaimResources(ctx context.Context) error
+}
+
+type resourcesReclaimListenerStubWrapper struct {
+	impl       IResourcesReclaimListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resourcesReclaimListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resourcesReclaimListenerStubWrapper) OnReclaimResources(
+	ctx context.Context,
+) error {
+	return w.impl.OnReclaimResources(ctx)
+}
+
+var _ IResourcesReclaimListener = (*resourcesReclaimListenerStubWrapper)(nil)
+
+// NewResourcesReclaimListenerStub creates a server-side IResourcesReclaimListener wrapping the given
+// server implementation. The returned value satisfies IResourcesReclaimListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResourcesReclaimListenerStub(
+	impl IResourcesReclaimListenerServer,
+) IResourcesReclaimListener {
+	wrapper := &resourcesReclaimListenerStubWrapper{impl: impl}
+	stub := &ResourcesReclaimListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

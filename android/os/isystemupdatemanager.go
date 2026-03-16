@@ -144,3 +144,49 @@ func (s *SystemUpdateManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISystemUpdateManagerServer is the server-side interface that user implementations
+// provide to NewSystemUpdateManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISystemUpdateManagerServer interface {
+	RetrieveSystemUpdateInfo(ctx context.Context) (Bundle, error)
+	UpdateSystemUpdateInfo(ctx context.Context, data interface{}) error
+}
+
+type systemUpdateManagerStubWrapper struct {
+	impl       ISystemUpdateManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *systemUpdateManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *systemUpdateManagerStubWrapper) RetrieveSystemUpdateInfo(
+	ctx context.Context,
+) (Bundle, error) {
+	return w.impl.RetrieveSystemUpdateInfo(ctx)
+}
+
+func (w *systemUpdateManagerStubWrapper) UpdateSystemUpdateInfo(
+	ctx context.Context,
+	data interface{},
+) error {
+	return w.impl.UpdateSystemUpdateInfo(ctx, data)
+}
+
+var _ ISystemUpdateManager = (*systemUpdateManagerStubWrapper)(nil)
+
+// NewSystemUpdateManagerStub creates a server-side ISystemUpdateManager wrapping the given
+// server implementation. The returned value satisfies ISystemUpdateManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSystemUpdateManagerStub(
+	impl ISystemUpdateManagerServer,
+) ISystemUpdateManager {
+	wrapper := &systemUpdateManagerStubWrapper{impl: impl}
+	stub := &SystemUpdateManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

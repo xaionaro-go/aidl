@@ -1,7 +1,6 @@
 package media
 
 import (
-	common "github.com/xaionaro-go/binder/android/media/audio/common"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -11,9 +10,9 @@ import (
 type AudioMix struct {
 	Criteria                            []AudioMixMatchCriterion
 	MixType                             AudioMixType
-	Format                              common.AudioConfig
+	Format                              interface{}
 	RouteFlags                          int32
-	Device                              common.AudioDevice
+	Device                              interface{}
 	CbFlags                             int32
 	AllowPrivilegedMediaPlaybackCapture bool
 	VoiceCommunicationCaptureAllowed    bool
@@ -38,17 +37,15 @@ func (s *AudioMix) MarshalParcel(
 		}
 	}
 	p.WriteInt32(int32(s.MixType))
-	if _err := s.Format.MarshalParcel(p); _err != nil {
-		return _err
-	}
 	p.WriteInt32(s.RouteFlags)
-	if _err := s.Device.MarshalParcel(p); _err != nil {
-		return _err
-	}
 	p.WriteInt32(s.CbFlags)
 	p.WriteBool(s.AllowPrivilegedMediaPlaybackCapture)
 	p.WriteBool(s.VoiceCommunicationCaptureAllowed)
-	p.WriteStrongBinder(s.MToken.Handle())
+	if s.MToken == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.MToken.Handle())
+	}
 	p.WriteInt32(s.MVirtualDeviceId)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
@@ -83,16 +80,8 @@ func (s *AudioMix) UnmarshalParcel(
 	}
 	s.MixType = AudioMixType(_mixTypeRaw)
 
-	if _err = s.Format.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-
 	s.RouteFlags, _err = p.ReadInt32()
 	if _err != nil {
-		return _err
-	}
-
-	if _err = s.Device.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
 

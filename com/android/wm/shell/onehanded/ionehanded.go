@@ -100,3 +100,48 @@ func (s *OneHandedStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOneHandedServer is the server-side interface that user implementations
+// provide to NewOneHandedStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOneHandedServer interface {
+	StartOneHanded(ctx context.Context) error
+	StopOneHanded(ctx context.Context) error
+}
+
+type oneHandedStubWrapper struct {
+	impl       IOneHandedServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *oneHandedStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *oneHandedStubWrapper) StartOneHanded(
+	ctx context.Context,
+) error {
+	return w.impl.StartOneHanded(ctx)
+}
+
+func (w *oneHandedStubWrapper) StopOneHanded(
+	ctx context.Context,
+) error {
+	return w.impl.StopOneHanded(ctx)
+}
+
+var _ IOneHanded = (*oneHandedStubWrapper)(nil)
+
+// NewOneHandedStub creates a server-side IOneHanded wrapping the given
+// server implementation. The returned value satisfies IOneHanded
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOneHandedStub(
+	impl IOneHandedServer,
+) IOneHanded {
+	wrapper := &oneHandedStubWrapper{impl: impl}
+	stub := &OneHandedStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

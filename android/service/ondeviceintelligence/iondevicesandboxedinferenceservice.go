@@ -54,8 +54,8 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) RegisterRemoteStorageService(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOnDeviceSandboxedInferenceService)
-	_data.WriteStrongBinder(storageService.AsBinder().Handle())
-	_data.WriteStrongBinder(remoteCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, storageService.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, remoteCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "registerRemoteStorageService")
 	if _err != nil {
@@ -89,7 +89,7 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) RequestTokenInfo(
 	if _err := cancellationSignal.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(tokenInfoCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tokenInfoCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "requestTokenInfo")
 	if _err != nil {
@@ -130,7 +130,7 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) ProcessRequest(
 	if _err := processingSignal.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "processRequest")
 	if _err != nil {
@@ -171,7 +171,7 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) ProcessRequestStreaming(
 	if _err := processingSignal.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "processRequestStreaming")
 	if _err != nil {
@@ -193,7 +193,7 @@ func (p *OnDeviceSandboxedInferenceServiceProxy) UpdateProcessingState(
 	if _err := processingState.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceSandboxedInferenceService, "updateProcessingState")
 	if _err != nil {
@@ -388,4 +388,93 @@ func (s *OnDeviceSandboxedInferenceServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOnDeviceSandboxedInferenceServiceServer is the server-side interface that user implementations
+// provide to NewOnDeviceSandboxedInferenceServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnDeviceSandboxedInferenceServiceServer interface {
+	RegisterRemoteStorageService(ctx context.Context, storageService IRemoteStorageService, remoteCallback appOndeviceintelligence.IRemoteCallback) error
+	RequestTokenInfo(ctx context.Context, callerUid int32, feature appOndeviceintelligence.Feature, request os.Bundle, cancellationSignal infra.AndroidFuture, tokenInfoCallback appOndeviceintelligence.ITokenInfoCallback) error
+	ProcessRequest(ctx context.Context, callerUid int32, feature appOndeviceintelligence.Feature, request os.Bundle, requestType int32, cancellationSignal infra.AndroidFuture, processingSignal infra.AndroidFuture, callback appOndeviceintelligence.IResponseCallback) error
+	ProcessRequestStreaming(ctx context.Context, callerUid int32, feature appOndeviceintelligence.Feature, request os.Bundle, requestType int32, cancellationSignal infra.AndroidFuture, processingSignal infra.AndroidFuture, callback appOndeviceintelligence.IStreamingResponseCallback) error
+	UpdateProcessingState(ctx context.Context, processingState os.Bundle, callback IProcessingUpdateStatusCallback) error
+}
+
+type onDeviceSandboxedInferenceServiceStubWrapper struct {
+	impl       IOnDeviceSandboxedInferenceServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onDeviceSandboxedInferenceServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onDeviceSandboxedInferenceServiceStubWrapper) RegisterRemoteStorageService(
+	ctx context.Context,
+	storageService IRemoteStorageService,
+	remoteCallback appOndeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.RegisterRemoteStorageService(ctx, storageService, remoteCallback)
+}
+
+func (w *onDeviceSandboxedInferenceServiceStubWrapper) RequestTokenInfo(
+	ctx context.Context,
+	callerUid int32,
+	feature appOndeviceintelligence.Feature,
+	request os.Bundle,
+	cancellationSignal infra.AndroidFuture,
+	tokenInfoCallback appOndeviceintelligence.ITokenInfoCallback,
+) error {
+	return w.impl.RequestTokenInfo(ctx, callerUid, feature, request, cancellationSignal, tokenInfoCallback)
+}
+
+func (w *onDeviceSandboxedInferenceServiceStubWrapper) ProcessRequest(
+	ctx context.Context,
+	callerUid int32,
+	feature appOndeviceintelligence.Feature,
+	request os.Bundle,
+	requestType int32,
+	cancellationSignal infra.AndroidFuture,
+	processingSignal infra.AndroidFuture,
+	callback appOndeviceintelligence.IResponseCallback,
+) error {
+	return w.impl.ProcessRequest(ctx, callerUid, feature, request, requestType, cancellationSignal, processingSignal, callback)
+}
+
+func (w *onDeviceSandboxedInferenceServiceStubWrapper) ProcessRequestStreaming(
+	ctx context.Context,
+	callerUid int32,
+	feature appOndeviceintelligence.Feature,
+	request os.Bundle,
+	requestType int32,
+	cancellationSignal infra.AndroidFuture,
+	processingSignal infra.AndroidFuture,
+	callback appOndeviceintelligence.IStreamingResponseCallback,
+) error {
+	return w.impl.ProcessRequestStreaming(ctx, callerUid, feature, request, requestType, cancellationSignal, processingSignal, callback)
+}
+
+func (w *onDeviceSandboxedInferenceServiceStubWrapper) UpdateProcessingState(
+	ctx context.Context,
+	processingState os.Bundle,
+	callback IProcessingUpdateStatusCallback,
+) error {
+	return w.impl.UpdateProcessingState(ctx, processingState, callback)
+}
+
+var _ IOnDeviceSandboxedInferenceService = (*onDeviceSandboxedInferenceServiceStubWrapper)(nil)
+
+// NewOnDeviceSandboxedInferenceServiceStub creates a server-side IOnDeviceSandboxedInferenceService wrapping the given
+// server implementation. The returned value satisfies IOnDeviceSandboxedInferenceService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnDeviceSandboxedInferenceServiceStub(
+	impl IOnDeviceSandboxedInferenceServiceServer,
+) IOnDeviceSandboxedInferenceService {
+	wrapper := &onDeviceSandboxedInferenceServiceStubWrapper{impl: impl}
+	stub := &OnDeviceSandboxedInferenceServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -76,3 +76,41 @@ func (s *ScreenCaptureObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScreenCaptureObserverServer is the server-side interface that user implementations
+// provide to NewScreenCaptureObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScreenCaptureObserverServer interface {
+	OnScreenCaptured(ctx context.Context) error
+}
+
+type screenCaptureObserverStubWrapper struct {
+	impl       IScreenCaptureObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *screenCaptureObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *screenCaptureObserverStubWrapper) OnScreenCaptured(
+	ctx context.Context,
+) error {
+	return w.impl.OnScreenCaptured(ctx)
+}
+
+var _ IScreenCaptureObserver = (*screenCaptureObserverStubWrapper)(nil)
+
+// NewScreenCaptureObserverStub creates a server-side IScreenCaptureObserver wrapping the given
+// server implementation. The returned value satisfies IScreenCaptureObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScreenCaptureObserverStub(
+	impl IScreenCaptureObserverServer,
+) IScreenCaptureObserver {
+	wrapper := &screenCaptureObserverStubWrapper{impl: impl}
+	stub := &ScreenCaptureObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

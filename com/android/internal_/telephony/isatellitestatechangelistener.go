@@ -82,3 +82,42 @@ func (s *SatelliteStateChangeListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteStateChangeListenerServer is the server-side interface that user implementations
+// provide to NewSatelliteStateChangeListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteStateChangeListenerServer interface {
+	OnSatelliteEnabledStateChanged(ctx context.Context, isEnabled bool) error
+}
+
+type satelliteStateChangeListenerStubWrapper struct {
+	impl       ISatelliteStateChangeListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteStateChangeListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteStateChangeListenerStubWrapper) OnSatelliteEnabledStateChanged(
+	ctx context.Context,
+	isEnabled bool,
+) error {
+	return w.impl.OnSatelliteEnabledStateChanged(ctx, isEnabled)
+}
+
+var _ ISatelliteStateChangeListener = (*satelliteStateChangeListenerStubWrapper)(nil)
+
+// NewSatelliteStateChangeListenerStub creates a server-side ISatelliteStateChangeListener wrapping the given
+// server implementation. The returned value satisfies ISatelliteStateChangeListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteStateChangeListenerStub(
+	impl ISatelliteStateChangeListenerServer,
+) ISatelliteStateChangeListener {
+	wrapper := &satelliteStateChangeListenerStubWrapper{impl: impl}
+	stub := &SatelliteStateChangeListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

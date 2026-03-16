@@ -120,8 +120,8 @@ func (p *InputMethodManagerProxy) AddClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteStrongBinder(inputmethod.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, inputmethod.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(untrustedDisplayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "addClient")
@@ -428,8 +428,8 @@ func (p *InputMethodManagerProxy) ShowSoftInput(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := statsToken.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -481,8 +481,8 @@ func (p *InputMethodManagerProxy) HideSoftInput(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := statsToken.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -563,7 +563,7 @@ func (p *InputMethodManagerProxy) StartInputOrWindowGainedFocus(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteInt32(startInputReason)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	if windowToken != nil {
 		_data.WriteStrongBinder((*windowToken).Handle())
 	} else {
@@ -643,7 +643,7 @@ func (p *InputMethodManagerProxy) StartInputOrWindowGainedFocusAsync(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
 	_data.WriteInt32(startInputReason)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	if windowToken != nil {
 		_data.WriteStrongBinder((*windowToken).Handle())
 	} else {
@@ -703,7 +703,7 @@ func (p *InputMethodManagerProxy) ShowInputMethodPickerFromClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(auxiliarySubtypeMode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "showInputMethodPickerFromClient")
@@ -917,7 +917,7 @@ func (p *InputMethodManagerProxy) GetInputMethodWindowVisibleHeight(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "getInputMethodWindowVisibleHeight")
 	if _err != nil {
@@ -948,7 +948,7 @@ func (p *InputMethodManagerProxy) ReportPerceptibleAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteBool(perceptible)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "reportPerceptibleAsync")
@@ -992,7 +992,7 @@ func (p *InputMethodManagerProxy) RemoveImeSurfaceFromWindowAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "removeImeSurfaceFromWindowAsync")
 	if _err != nil {
@@ -1123,7 +1123,7 @@ func (p *InputMethodManagerProxy) StartStylusHandwriting(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "startStylusHandwriting")
 	if _err != nil {
@@ -1154,7 +1154,7 @@ func (p *InputMethodManagerProxy) StartConnectionlessStylusHandwriting(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(1)
 	if _err := cursorAnchorInfo.MarshalParcel(_data); _err != nil {
@@ -1162,7 +1162,7 @@ func (p *InputMethodManagerProxy) StartConnectionlessStylusHandwriting(
 	}
 	_data.WriteString16(delegatePackageName)
 	_data.WriteString16(delegatorPackageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "startConnectionlessStylusHandwriting")
 	if _err != nil {
@@ -1182,7 +1182,7 @@ func (p *InputMethodManagerProxy) PrepareStylusHandwritingDelegation(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(delegatePackageName)
 	_data.WriteString16(delegatorPackageName)
@@ -1216,7 +1216,7 @@ func (p *InputMethodManagerProxy) AcceptStylusHandwritingDelegation(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(delegatePackageName)
 	_data.WriteString16(delegatorPackageName)
@@ -1255,12 +1255,12 @@ func (p *InputMethodManagerProxy) AcceptStylusHandwritingDelegationAsync(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(delegatePackageName)
 	_data.WriteString16(delegatorPackageName)
 	_data.WriteInt32(flags)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "acceptStylusHandwritingDelegationAsync")
 	if _err != nil {
@@ -1310,7 +1310,7 @@ func (p *InputMethodManagerProxy) AddVirtualStylusIdForTestSession(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "addVirtualStylusIdForTestSession")
 	if _err != nil {
@@ -1337,7 +1337,7 @@ func (p *InputMethodManagerProxy) SetStylusWindowIdleTimeoutForTest(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(timeout)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodManager, "setStylusWindowIdleTimeoutForTest")
@@ -2296,4 +2296,379 @@ func (s *InputMethodManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputMethodManagerServer is the server-side interface that user implementations
+// provide to NewInputMethodManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputMethodManagerServer interface {
+	AddClient(ctx context.Context, client internalInputmethod.IInputMethodClient, inputmethod internalInputmethod.IRemoteInputConnection, untrustedDisplayId int32) error
+	GetCurrentInputMethodInfoAsUser(ctx context.Context) (viewInputmethod.InputMethodInfo, error)
+	GetInputMethodList(ctx context.Context, directBootAwareness int32) (internalInputmethod.InputMethodInfoSafeList, error)
+	GetEnabledInputMethodList(ctx context.Context) (internalInputmethod.InputMethodInfoSafeList, error)
+	GetInputMethodListLegacy(ctx context.Context, directBootAwareness int32) ([]viewInputmethod.InputMethodInfo, error)
+	GetEnabledInputMethodListLegacy(ctx context.Context) ([]viewInputmethod.InputMethodInfo, error)
+	GetEnabledInputMethodSubtypeList(ctx context.Context, imiId string, allowsImplicitlyEnabledSubtypes bool) ([]viewInputmethod.InputMethodSubtype, error)
+	GetLastInputMethodSubtype(ctx context.Context) (viewInputmethod.InputMethodSubtype, error)
+	ShowSoftInput(ctx context.Context, client internalInputmethod.IInputMethodClient, windowToken binder.IBinder, statsToken viewInputmethod.ImeTrackerToken, flags int32, lastClickToolType int32, resultReceiver *os.ResultReceiver, reason int32, async bool) (bool, error)
+	HideSoftInput(ctx context.Context, client internalInputmethod.IInputMethodClient, windowToken binder.IBinder, statsToken viewInputmethod.ImeTrackerToken, flags int32, resultReceiver *os.ResultReceiver, reason int32, async bool) (bool, error)
+	HideSoftInputFromServerForTest(ctx context.Context) error
+	StartInputOrWindowGainedFocus(ctx context.Context, startInputReason int32, client internalInputmethod.IInputMethodClient, windowToken *binder.IBinder, startInputFlags int32, softInputMode int32, windowFlags int32, editorInfo *viewInputmethod.EditorInfo, inputConnection *internalInputmethod.IRemoteInputConnection, remoteAccessibilityInputConnection *internalInputmethod.IRemoteAccessibilityInputConnection, unverifiedTargetSdkVersion int32, imeDispatcher window.ImeOnBackInvokedDispatcher) (internalInputmethod.InputBindResult, error)
+	StartInputOrWindowGainedFocusAsync(ctx context.Context, startInputReason int32, client internalInputmethod.IInputMethodClient, windowToken *binder.IBinder, startInputFlags int32, softInputMode int32, windowFlags int32, editorInfo *viewInputmethod.EditorInfo, inputConnection *internalInputmethod.IRemoteInputConnection, remoteAccessibilityInputConnection *internalInputmethod.IRemoteAccessibilityInputConnection, unverifiedTargetSdkVersion int32, imeDispatcher window.ImeOnBackInvokedDispatcher, startInputSeq int32, useAsyncShowHideMethod bool) error
+	ShowInputMethodPickerFromClient(ctx context.Context, client internalInputmethod.IInputMethodClient, auxiliarySubtypeMode int32) error
+	ShowInputMethodPickerFromSystem(ctx context.Context, auxiliarySubtypeMode int32, displayId int32) error
+	IsInputMethodPickerShownForTest(ctx context.Context) (bool, error)
+	OnImeSwitchButtonClickFromSystem(ctx context.Context, displayId int32) error
+	GetCurrentInputMethodSubtype(ctx context.Context) (viewInputmethod.InputMethodSubtype, error)
+	SetAdditionalInputMethodSubtypes(ctx context.Context, id string, subtypes []viewInputmethod.InputMethodSubtype) error
+	SetExplicitlyEnabledInputMethodSubtypes(ctx context.Context, imeId string, subtypeHashCodes []int32) error
+	GetInputMethodWindowVisibleHeight(ctx context.Context, client internalInputmethod.IInputMethodClient) (int32, error)
+	ReportPerceptibleAsync(ctx context.Context, windowToken binder.IBinder, perceptible bool) error
+	RemoveImeSurface(ctx context.Context, displayId int32) error
+	RemoveImeSurfaceFromWindowAsync(ctx context.Context, windowToken binder.IBinder) error
+	StartProtoDump(ctx context.Context, protoDump []byte, source int32, where string) error
+	IsImeTraceEnabled(ctx context.Context) (bool, error)
+	StartImeTrace(ctx context.Context) error
+	StopImeTrace(ctx context.Context) error
+	StartStylusHandwriting(ctx context.Context, client internalInputmethod.IInputMethodClient) error
+	StartConnectionlessStylusHandwriting(ctx context.Context, client internalInputmethod.IInputMethodClient, cursorAnchorInfo viewInputmethod.CursorAnchorInfo, delegatePackageName string, delegatorPackageName string, callback internalInputmethod.IConnectionlessHandwritingCallback) error
+	PrepareStylusHandwritingDelegation(ctx context.Context, client internalInputmethod.IInputMethodClient, delegatePackageName string, delegatorPackageName string) error
+	AcceptStylusHandwritingDelegation(ctx context.Context, client internalInputmethod.IInputMethodClient, delegatePackageName string, delegatorPackageName string, flags int32) (bool, error)
+	AcceptStylusHandwritingDelegationAsync(ctx context.Context, client internalInputmethod.IInputMethodClient, delegatePackageName string, delegatorPackageName string, flags int32, callback internalInputmethod.IBooleanListener) error
+	IsStylusHandwritingAvailableAsUser(ctx context.Context, connectionless bool) (bool, error)
+	AddVirtualStylusIdForTestSession(ctx context.Context, client internalInputmethod.IInputMethodClient) error
+	SetStylusWindowIdleTimeoutForTest(ctx context.Context, client internalInputmethod.IInputMethodClient, timeout int64) error
+	GetImeTrackerService(ctx context.Context) (internalInputmethod.IImeTracker, error)
+}
+
+type inputMethodManagerStubWrapper struct {
+	impl       IInputMethodManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputMethodManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputMethodManagerStubWrapper) AddClient(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+	inputmethod internalInputmethod.IRemoteInputConnection,
+	untrustedDisplayId int32,
+) error {
+	return w.impl.AddClient(ctx, client, inputmethod, untrustedDisplayId)
+}
+
+func (w *inputMethodManagerStubWrapper) GetCurrentInputMethodInfoAsUser(
+	ctx context.Context,
+) (viewInputmethod.InputMethodInfo, error) {
+	return w.impl.GetCurrentInputMethodInfoAsUser(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) GetInputMethodList(
+	ctx context.Context,
+	directBootAwareness int32,
+) (internalInputmethod.InputMethodInfoSafeList, error) {
+	return w.impl.GetInputMethodList(ctx, directBootAwareness)
+}
+
+func (w *inputMethodManagerStubWrapper) GetEnabledInputMethodList(
+	ctx context.Context,
+) (internalInputmethod.InputMethodInfoSafeList, error) {
+	return w.impl.GetEnabledInputMethodList(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) GetInputMethodListLegacy(
+	ctx context.Context,
+	directBootAwareness int32,
+) ([]viewInputmethod.InputMethodInfo, error) {
+	return w.impl.GetInputMethodListLegacy(ctx, directBootAwareness)
+}
+
+func (w *inputMethodManagerStubWrapper) GetEnabledInputMethodListLegacy(
+	ctx context.Context,
+) ([]viewInputmethod.InputMethodInfo, error) {
+	return w.impl.GetEnabledInputMethodListLegacy(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) GetEnabledInputMethodSubtypeList(
+	ctx context.Context,
+	imiId string,
+	allowsImplicitlyEnabledSubtypes bool,
+) ([]viewInputmethod.InputMethodSubtype, error) {
+	return w.impl.GetEnabledInputMethodSubtypeList(ctx, imiId, allowsImplicitlyEnabledSubtypes)
+}
+
+func (w *inputMethodManagerStubWrapper) GetLastInputMethodSubtype(
+	ctx context.Context,
+) (viewInputmethod.InputMethodSubtype, error) {
+	return w.impl.GetLastInputMethodSubtype(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) ShowSoftInput(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+	windowToken binder.IBinder,
+	statsToken viewInputmethod.ImeTrackerToken,
+	flags int32,
+	lastClickToolType int32,
+	resultReceiver *os.ResultReceiver,
+	reason int32,
+	async bool,
+) (bool, error) {
+	return w.impl.ShowSoftInput(ctx, client, windowToken, statsToken, flags, lastClickToolType, resultReceiver, reason, async)
+}
+
+func (w *inputMethodManagerStubWrapper) HideSoftInput(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+	windowToken binder.IBinder,
+	statsToken viewInputmethod.ImeTrackerToken,
+	flags int32,
+	resultReceiver *os.ResultReceiver,
+	reason int32,
+	async bool,
+) (bool, error) {
+	return w.impl.HideSoftInput(ctx, client, windowToken, statsToken, flags, resultReceiver, reason, async)
+}
+
+func (w *inputMethodManagerStubWrapper) HideSoftInputFromServerForTest(
+	ctx context.Context,
+) error {
+	return w.impl.HideSoftInputFromServerForTest(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) StartInputOrWindowGainedFocus(
+	ctx context.Context,
+	startInputReason int32,
+	client internalInputmethod.IInputMethodClient,
+	windowToken *binder.IBinder,
+	startInputFlags int32,
+	softInputMode int32,
+	windowFlags int32,
+	editorInfo *viewInputmethod.EditorInfo,
+	inputConnection *internalInputmethod.IRemoteInputConnection,
+	remoteAccessibilityInputConnection *internalInputmethod.IRemoteAccessibilityInputConnection,
+	unverifiedTargetSdkVersion int32,
+	imeDispatcher window.ImeOnBackInvokedDispatcher,
+) (internalInputmethod.InputBindResult, error) {
+	return w.impl.StartInputOrWindowGainedFocus(ctx, startInputReason, client, windowToken, startInputFlags, softInputMode, windowFlags, editorInfo, inputConnection, remoteAccessibilityInputConnection, unverifiedTargetSdkVersion, imeDispatcher)
+}
+
+func (w *inputMethodManagerStubWrapper) StartInputOrWindowGainedFocusAsync(
+	ctx context.Context,
+	startInputReason int32,
+	client internalInputmethod.IInputMethodClient,
+	windowToken *binder.IBinder,
+	startInputFlags int32,
+	softInputMode int32,
+	windowFlags int32,
+	editorInfo *viewInputmethod.EditorInfo,
+	inputConnection *internalInputmethod.IRemoteInputConnection,
+	remoteAccessibilityInputConnection *internalInputmethod.IRemoteAccessibilityInputConnection,
+	unverifiedTargetSdkVersion int32,
+	imeDispatcher window.ImeOnBackInvokedDispatcher,
+	startInputSeq int32,
+	useAsyncShowHideMethod bool,
+) error {
+	return w.impl.StartInputOrWindowGainedFocusAsync(ctx, startInputReason, client, windowToken, startInputFlags, softInputMode, windowFlags, editorInfo, inputConnection, remoteAccessibilityInputConnection, unverifiedTargetSdkVersion, imeDispatcher, startInputSeq, useAsyncShowHideMethod)
+}
+
+func (w *inputMethodManagerStubWrapper) ShowInputMethodPickerFromClient(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+	auxiliarySubtypeMode int32,
+) error {
+	return w.impl.ShowInputMethodPickerFromClient(ctx, client, auxiliarySubtypeMode)
+}
+
+func (w *inputMethodManagerStubWrapper) ShowInputMethodPickerFromSystem(
+	ctx context.Context,
+	auxiliarySubtypeMode int32,
+	displayId int32,
+) error {
+	return w.impl.ShowInputMethodPickerFromSystem(ctx, auxiliarySubtypeMode, displayId)
+}
+
+func (w *inputMethodManagerStubWrapper) IsInputMethodPickerShownForTest(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInputMethodPickerShownForTest(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) OnImeSwitchButtonClickFromSystem(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnImeSwitchButtonClickFromSystem(ctx, displayId)
+}
+
+func (w *inputMethodManagerStubWrapper) GetCurrentInputMethodSubtype(
+	ctx context.Context,
+) (viewInputmethod.InputMethodSubtype, error) {
+	return w.impl.GetCurrentInputMethodSubtype(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) SetAdditionalInputMethodSubtypes(
+	ctx context.Context,
+	id string,
+	subtypes []viewInputmethod.InputMethodSubtype,
+) error {
+	return w.impl.SetAdditionalInputMethodSubtypes(ctx, id, subtypes)
+}
+
+func (w *inputMethodManagerStubWrapper) SetExplicitlyEnabledInputMethodSubtypes(
+	ctx context.Context,
+	imeId string,
+	subtypeHashCodes []int32,
+) error {
+	return w.impl.SetExplicitlyEnabledInputMethodSubtypes(ctx, imeId, subtypeHashCodes)
+}
+
+func (w *inputMethodManagerStubWrapper) GetInputMethodWindowVisibleHeight(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+) (int32, error) {
+	return w.impl.GetInputMethodWindowVisibleHeight(ctx, client)
+}
+
+func (w *inputMethodManagerStubWrapper) ReportPerceptibleAsync(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	perceptible bool,
+) error {
+	return w.impl.ReportPerceptibleAsync(ctx, windowToken, perceptible)
+}
+
+func (w *inputMethodManagerStubWrapper) RemoveImeSurface(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.RemoveImeSurface(ctx, displayId)
+}
+
+func (w *inputMethodManagerStubWrapper) RemoveImeSurfaceFromWindowAsync(
+	ctx context.Context,
+	windowToken binder.IBinder,
+) error {
+	return w.impl.RemoveImeSurfaceFromWindowAsync(ctx, windowToken)
+}
+
+func (w *inputMethodManagerStubWrapper) StartProtoDump(
+	ctx context.Context,
+	protoDump []byte,
+	source int32,
+	where string,
+) error {
+	return w.impl.StartProtoDump(ctx, protoDump, source, where)
+}
+
+func (w *inputMethodManagerStubWrapper) IsImeTraceEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsImeTraceEnabled(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) StartImeTrace(
+	ctx context.Context,
+) error {
+	return w.impl.StartImeTrace(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) StopImeTrace(
+	ctx context.Context,
+) error {
+	return w.impl.StopImeTrace(ctx)
+}
+
+func (w *inputMethodManagerStubWrapper) StartStylusHandwriting(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+) error {
+	return w.impl.StartStylusHandwriting(ctx, client)
+}
+
+func (w *inputMethodManagerStubWrapper) StartConnectionlessStylusHandwriting(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+	cursorAnchorInfo viewInputmethod.CursorAnchorInfo,
+	delegatePackageName string,
+	delegatorPackageName string,
+	callback internalInputmethod.IConnectionlessHandwritingCallback,
+) error {
+	return w.impl.StartConnectionlessStylusHandwriting(ctx, client, cursorAnchorInfo, delegatePackageName, delegatorPackageName, callback)
+}
+
+func (w *inputMethodManagerStubWrapper) PrepareStylusHandwritingDelegation(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+	delegatePackageName string,
+	delegatorPackageName string,
+) error {
+	return w.impl.PrepareStylusHandwritingDelegation(ctx, client, delegatePackageName, delegatorPackageName)
+}
+
+func (w *inputMethodManagerStubWrapper) AcceptStylusHandwritingDelegation(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+	delegatePackageName string,
+	delegatorPackageName string,
+	flags int32,
+) (bool, error) {
+	return w.impl.AcceptStylusHandwritingDelegation(ctx, client, delegatePackageName, delegatorPackageName, flags)
+}
+
+func (w *inputMethodManagerStubWrapper) AcceptStylusHandwritingDelegationAsync(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+	delegatePackageName string,
+	delegatorPackageName string,
+	flags int32,
+	callback internalInputmethod.IBooleanListener,
+) error {
+	return w.impl.AcceptStylusHandwritingDelegationAsync(ctx, client, delegatePackageName, delegatorPackageName, flags, callback)
+}
+
+func (w *inputMethodManagerStubWrapper) IsStylusHandwritingAvailableAsUser(
+	ctx context.Context,
+	connectionless bool,
+) (bool, error) {
+	return w.impl.IsStylusHandwritingAvailableAsUser(ctx, connectionless)
+}
+
+func (w *inputMethodManagerStubWrapper) AddVirtualStylusIdForTestSession(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+) error {
+	return w.impl.AddVirtualStylusIdForTestSession(ctx, client)
+}
+
+func (w *inputMethodManagerStubWrapper) SetStylusWindowIdleTimeoutForTest(
+	ctx context.Context,
+	client internalInputmethod.IInputMethodClient,
+	timeout int64,
+) error {
+	return w.impl.SetStylusWindowIdleTimeoutForTest(ctx, client, timeout)
+}
+
+func (w *inputMethodManagerStubWrapper) GetImeTrackerService(
+	ctx context.Context,
+) (internalInputmethod.IImeTracker, error) {
+	return w.impl.GetImeTrackerService(ctx)
+}
+
+var _ IInputMethodManager = (*inputMethodManagerStubWrapper)(nil)
+
+// NewInputMethodManagerStub creates a server-side IInputMethodManager wrapping the given
+// server implementation. The returned value satisfies IInputMethodManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputMethodManagerStub(
+	impl IInputMethodManagerServer,
+) IInputMethodManager {
+	wrapper := &inputMethodManagerStubWrapper{impl: impl}
+	stub := &InputMethodManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

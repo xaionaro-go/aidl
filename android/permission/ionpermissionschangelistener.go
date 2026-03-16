@@ -88,3 +88,43 @@ func (s *OnPermissionsChangeListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnPermissionsChangeListenerServer is the server-side interface that user implementations
+// provide to NewOnPermissionsChangeListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnPermissionsChangeListenerServer interface {
+	OnPermissionsChanged(ctx context.Context, uid int32, persistentDeviceId string) error
+}
+
+type onPermissionsChangeListenerStubWrapper struct {
+	impl       IOnPermissionsChangeListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onPermissionsChangeListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onPermissionsChangeListenerStubWrapper) OnPermissionsChanged(
+	ctx context.Context,
+	uid int32,
+	persistentDeviceId string,
+) error {
+	return w.impl.OnPermissionsChanged(ctx, uid, persistentDeviceId)
+}
+
+var _ IOnPermissionsChangeListener = (*onPermissionsChangeListenerStubWrapper)(nil)
+
+// NewOnPermissionsChangeListenerStub creates a server-side IOnPermissionsChangeListener wrapping the given
+// server implementation. The returned value satisfies IOnPermissionsChangeListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnPermissionsChangeListenerStub(
+	impl IOnPermissionsChangeListenerServer,
+) IOnPermissionsChangeListener {
+	wrapper := &onPermissionsChangeListenerStubWrapper{impl: impl}
+	stub := &OnPermissionsChangeListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -88,3 +88,43 @@ func (s *GetDefaultSmdpAddressCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetDefaultSmdpAddressCallbackServer is the server-side interface that user implementations
+// provide to NewGetDefaultSmdpAddressCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetDefaultSmdpAddressCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, address string) error
+}
+
+type getDefaultSmdpAddressCallbackStubWrapper struct {
+	impl       IGetDefaultSmdpAddressCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getDefaultSmdpAddressCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getDefaultSmdpAddressCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	address string,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, address)
+}
+
+var _ IGetDefaultSmdpAddressCallback = (*getDefaultSmdpAddressCallbackStubWrapper)(nil)
+
+// NewGetDefaultSmdpAddressCallbackStub creates a server-side IGetDefaultSmdpAddressCallback wrapping the given
+// server implementation. The returned value satisfies IGetDefaultSmdpAddressCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetDefaultSmdpAddressCallbackStub(
+	impl IGetDefaultSmdpAddressCallbackServer,
+) IGetDefaultSmdpAddressCallback {
+	wrapper := &getDefaultSmdpAddressCallbackStubWrapper{impl: impl}
+	stub := &GetDefaultSmdpAddressCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

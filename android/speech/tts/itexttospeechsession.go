@@ -76,3 +76,41 @@ func (s *TextToSpeechSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITextToSpeechSessionServer is the server-side interface that user implementations
+// provide to NewTextToSpeechSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITextToSpeechSessionServer interface {
+	Disconnect(ctx context.Context) error
+}
+
+type textToSpeechSessionStubWrapper struct {
+	impl       ITextToSpeechSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *textToSpeechSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *textToSpeechSessionStubWrapper) Disconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnect(ctx)
+}
+
+var _ ITextToSpeechSession = (*textToSpeechSessionStubWrapper)(nil)
+
+// NewTextToSpeechSessionStub creates a server-side ITextToSpeechSession wrapping the given
+// server implementation. The returned value satisfies ITextToSpeechSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTextToSpeechSessionStub(
+	impl ITextToSpeechSessionServer,
+) ITextToSpeechSession {
+	wrapper := &textToSpeechSessionStubWrapper{impl: impl}
+	stub := &TextToSpeechSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -90,3 +90,41 @@ func (s *GnssAssistanceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssAssistanceCallbackServer is the server-side interface that user implementations
+// provide to NewGnssAssistanceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssAssistanceCallbackServer interface {
+	InjectRequestCb(ctx context.Context) error
+}
+
+type gnssAssistanceCallbackStubWrapper struct {
+	impl       IGnssAssistanceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssAssistanceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssAssistanceCallbackStubWrapper) InjectRequestCb(
+	ctx context.Context,
+) error {
+	return w.impl.InjectRequestCb(ctx)
+}
+
+var _ IGnssAssistanceCallback = (*gnssAssistanceCallbackStubWrapper)(nil)
+
+// NewGnssAssistanceCallbackStub creates a server-side IGnssAssistanceCallback wrapping the given
+// server implementation. The returned value satisfies IGnssAssistanceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssAssistanceCallbackStub(
+	impl IGnssAssistanceCallbackServer,
+) IGnssAssistanceCallback {
+	wrapper := &gnssAssistanceCallbackStubWrapper{impl: impl}
+	stub := &GnssAssistanceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

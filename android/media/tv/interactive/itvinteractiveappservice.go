@@ -54,7 +54,7 @@ func (p *TvInteractiveAppServiceProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppService, "registerCallback")
 	if _err != nil {
@@ -71,7 +71,7 @@ func (p *TvInteractiveAppServiceProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppService, "unregisterCallback")
 	if _err != nil {
@@ -95,7 +95,7 @@ func (p *TvInteractiveAppServiceProxy) CreateSession(
 	if _err := channel.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(iAppServiceId)
 	_data.WriteInt32(type_)
 
@@ -292,4 +292,86 @@ func (s *TvInteractiveAppServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvInteractiveAppServiceServer is the server-side interface that user implementations
+// provide to NewTvInteractiveAppServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInteractiveAppServiceServer interface {
+	RegisterCallback(ctx context.Context, callback ITvInteractiveAppServiceCallback) error
+	UnregisterCallback(ctx context.Context, callback ITvInteractiveAppServiceCallback) error
+	CreateSession(ctx context.Context, channel view.InputChannel, callback ITvInteractiveAppSessionCallback, iAppServiceId string, type_ int32) error
+	RegisterAppLinkInfo(ctx context.Context, info AppLinkInfo) error
+	UnregisterAppLinkInfo(ctx context.Context, info AppLinkInfo) error
+	SendAppLinkCommand(ctx context.Context, command os.Bundle) error
+}
+
+type tvInteractiveAppServiceStubWrapper struct {
+	impl       ITvInteractiveAppServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInteractiveAppServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInteractiveAppServiceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ITvInteractiveAppServiceCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *tvInteractiveAppServiceStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback ITvInteractiveAppServiceCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+func (w *tvInteractiveAppServiceStubWrapper) CreateSession(
+	ctx context.Context,
+	channel view.InputChannel,
+	callback ITvInteractiveAppSessionCallback,
+	iAppServiceId string,
+	type_ int32,
+) error {
+	return w.impl.CreateSession(ctx, channel, callback, iAppServiceId, type_)
+}
+
+func (w *tvInteractiveAppServiceStubWrapper) RegisterAppLinkInfo(
+	ctx context.Context,
+	info AppLinkInfo,
+) error {
+	return w.impl.RegisterAppLinkInfo(ctx, info)
+}
+
+func (w *tvInteractiveAppServiceStubWrapper) UnregisterAppLinkInfo(
+	ctx context.Context,
+	info AppLinkInfo,
+) error {
+	return w.impl.UnregisterAppLinkInfo(ctx, info)
+}
+
+func (w *tvInteractiveAppServiceStubWrapper) SendAppLinkCommand(
+	ctx context.Context,
+	command os.Bundle,
+) error {
+	return w.impl.SendAppLinkCommand(ctx, command)
+}
+
+var _ ITvInteractiveAppService = (*tvInteractiveAppServiceStubWrapper)(nil)
+
+// NewTvInteractiveAppServiceStub creates a server-side ITvInteractiveAppService wrapping the given
+// server implementation. The returned value satisfies ITvInteractiveAppService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInteractiveAppServiceStub(
+	impl ITvInteractiveAppServiceServer,
+) ITvInteractiveAppService {
+	wrapper := &tvInteractiveAppServiceStubWrapper{impl: impl}
+	stub := &TvInteractiveAppServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

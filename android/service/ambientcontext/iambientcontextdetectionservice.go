@@ -224,3 +224,63 @@ func (s *AmbientContextDetectionServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAmbientContextDetectionServiceServer is the server-side interface that user implementations
+// provide to NewAmbientContextDetectionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAmbientContextDetectionServiceServer interface {
+	StartDetection(ctx context.Context, request appAmbientcontext.AmbientContextEventRequest, packageName string, detectionResultCallback os.RemoteCallback, statusCallback os.RemoteCallback) error
+	StopDetection(ctx context.Context, packageName string) error
+	QueryServiceStatus(ctx context.Context, eventTypes []int32, packageName string, callback os.RemoteCallback) error
+}
+
+type ambientContextDetectionServiceStubWrapper struct {
+	impl       IAmbientContextDetectionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ambientContextDetectionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ambientContextDetectionServiceStubWrapper) StartDetection(
+	ctx context.Context,
+	request appAmbientcontext.AmbientContextEventRequest,
+	packageName string,
+	detectionResultCallback os.RemoteCallback,
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.StartDetection(ctx, request, packageName, detectionResultCallback, statusCallback)
+}
+
+func (w *ambientContextDetectionServiceStubWrapper) StopDetection(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.StopDetection(ctx, packageName)
+}
+
+func (w *ambientContextDetectionServiceStubWrapper) QueryServiceStatus(
+	ctx context.Context,
+	eventTypes []int32,
+	packageName string,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.QueryServiceStatus(ctx, eventTypes, packageName, callback)
+}
+
+var _ IAmbientContextDetectionService = (*ambientContextDetectionServiceStubWrapper)(nil)
+
+// NewAmbientContextDetectionServiceStub creates a server-side IAmbientContextDetectionService wrapping the given
+// server implementation. The returned value satisfies IAmbientContextDetectionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAmbientContextDetectionServiceStub(
+	impl IAmbientContextDetectionServiceServer,
+) IAmbientContextDetectionService {
+	wrapper := &ambientContextDetectionServiceStubWrapper{impl: impl}
+	stub := &AmbientContextDetectionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

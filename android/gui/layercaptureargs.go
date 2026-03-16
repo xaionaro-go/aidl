@@ -22,7 +22,11 @@ func (s *LayerCaptureArgs) MarshalParcel(
 	if _err := s.CaptureArgs.MarshalParcel(p); _err != nil {
 		return _err
 	}
-	p.WriteStrongBinder(s.LayerHandle.Handle())
+	if s.LayerHandle == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.LayerHandle.Handle())
+	}
 	p.WriteBool(s.ChildrenOnly)
 
 	parcel.WriteParcelableFooter(p, _headerPos)

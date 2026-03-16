@@ -160,3 +160,64 @@ func (s *DataShareWriteAdapterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDataShareWriteAdapterServer is the server-side interface that user implementations
+// provide to NewDataShareWriteAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataShareWriteAdapterServer interface {
+	Write(ctx context.Context, destination int32) error
+	Error(ctx context.Context, errorCode int32) error
+	Rejected(ctx context.Context) error
+	Finish(ctx context.Context) error
+}
+
+type dataShareWriteAdapterStubWrapper struct {
+	impl       IDataShareWriteAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataShareWriteAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dataShareWriteAdapterStubWrapper) Write(
+	ctx context.Context,
+	destination int32,
+) error {
+	return w.impl.Write(ctx, destination)
+}
+
+func (w *dataShareWriteAdapterStubWrapper) Error(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.Error(ctx, errorCode)
+}
+
+func (w *dataShareWriteAdapterStubWrapper) Rejected(
+	ctx context.Context,
+) error {
+	return w.impl.Rejected(ctx)
+}
+
+func (w *dataShareWriteAdapterStubWrapper) Finish(
+	ctx context.Context,
+) error {
+	return w.impl.Finish(ctx)
+}
+
+var _ IDataShareWriteAdapter = (*dataShareWriteAdapterStubWrapper)(nil)
+
+// NewDataShareWriteAdapterStub creates a server-side IDataShareWriteAdapter wrapping the given
+// server implementation. The returned value satisfies IDataShareWriteAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataShareWriteAdapterStub(
+	impl IDataShareWriteAdapterServer,
+) IDataShareWriteAdapter {
+	wrapper := &dataShareWriteAdapterStubWrapper{impl: impl}
+	stub := &DataShareWriteAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

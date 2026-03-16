@@ -53,7 +53,7 @@ func (p *CamMonitoringServiceProxy) AddCamInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamMonitoringService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamMonitoringService, "addCamInfoListener")
 	if _err != nil {
@@ -79,7 +79,7 @@ func (p *CamMonitoringServiceProxy) RemoveCamInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamMonitoringService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamMonitoringService, "removeCamInfoListener")
 	if _err != nil {
@@ -353,4 +353,81 @@ func (s *CamMonitoringServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICamMonitoringServiceServer is the server-side interface that user implementations
+// provide to NewCamMonitoringServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICamMonitoringServiceServer interface {
+	AddCamInfoListener(ctx context.Context, listener ICamInfoListener) error
+	RemoveCamInfoListener(ctx context.Context, listener ICamInfoListener) error
+	GetCamInfo(ctx context.Context, slotId int32) (os.Bundle, error)
+	GetSlotInfo(ctx context.Context, slotId int32) (os.Bundle, error)
+	GetSlotIds(ctx context.Context) ([]int32, error)
+	IsCamSupported(ctx context.Context) (bool, error)
+}
+
+type camMonitoringServiceStubWrapper struct {
+	impl       ICamMonitoringServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *camMonitoringServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *camMonitoringServiceStubWrapper) AddCamInfoListener(
+	ctx context.Context,
+	listener ICamInfoListener,
+) error {
+	return w.impl.AddCamInfoListener(ctx, listener)
+}
+
+func (w *camMonitoringServiceStubWrapper) RemoveCamInfoListener(
+	ctx context.Context,
+	listener ICamInfoListener,
+) error {
+	return w.impl.RemoveCamInfoListener(ctx, listener)
+}
+
+func (w *camMonitoringServiceStubWrapper) GetCamInfo(
+	ctx context.Context,
+	slotId int32,
+) (os.Bundle, error) {
+	return w.impl.GetCamInfo(ctx, slotId)
+}
+
+func (w *camMonitoringServiceStubWrapper) GetSlotInfo(
+	ctx context.Context,
+	slotId int32,
+) (os.Bundle, error) {
+	return w.impl.GetSlotInfo(ctx, slotId)
+}
+
+func (w *camMonitoringServiceStubWrapper) GetSlotIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetSlotIds(ctx)
+}
+
+func (w *camMonitoringServiceStubWrapper) IsCamSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCamSupported(ctx)
+}
+
+var _ ICamMonitoringService = (*camMonitoringServiceStubWrapper)(nil)
+
+// NewCamMonitoringServiceStub creates a server-side ICamMonitoringService wrapping the given
+// server implementation. The returned value satisfies ICamMonitoringService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCamMonitoringServiceStub(
+	impl ICamMonitoringServiceServer,
+) ICamMonitoringService {
+	wrapper := &camMonitoringServiceStubWrapper{impl: impl}
+	stub := &CamMonitoringServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

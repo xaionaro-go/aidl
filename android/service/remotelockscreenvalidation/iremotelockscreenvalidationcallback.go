@@ -124,3 +124,50 @@ func (s *RemoteLockscreenValidationCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoteLockscreenValidationCallbackServer is the server-side interface that user implementations
+// provide to NewRemoteLockscreenValidationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteLockscreenValidationCallbackServer interface {
+	OnSuccess(ctx context.Context, result app.RemoteLockscreenValidationResult) error
+	OnFailure(ctx context.Context, message string) error
+}
+
+type remoteLockscreenValidationCallbackStubWrapper struct {
+	impl       IRemoteLockscreenValidationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteLockscreenValidationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteLockscreenValidationCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result app.RemoteLockscreenValidationResult,
+) error {
+	return w.impl.OnSuccess(ctx, result)
+}
+
+func (w *remoteLockscreenValidationCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	message string,
+) error {
+	return w.impl.OnFailure(ctx, message)
+}
+
+var _ IRemoteLockscreenValidationCallback = (*remoteLockscreenValidationCallbackStubWrapper)(nil)
+
+// NewRemoteLockscreenValidationCallbackStub creates a server-side IRemoteLockscreenValidationCallback wrapping the given
+// server implementation. The returned value satisfies IRemoteLockscreenValidationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteLockscreenValidationCallbackStub(
+	impl IRemoteLockscreenValidationCallbackServer,
+) IRemoteLockscreenValidationCallback {
+	wrapper := &remoteLockscreenValidationCallbackStubWrapper{impl: impl}
+	stub := &RemoteLockscreenValidationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -1256,3 +1256,221 @@ func (s *ColorDisplayManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IColorDisplayManagerServer is the server-side interface that user implementations
+// provide to NewColorDisplayManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IColorDisplayManagerServer interface {
+	IsDeviceColorManaged(ctx context.Context) (bool, error)
+	SetSaturationLevel(ctx context.Context, saturationLevel int32) (bool, error)
+	SetAppSaturationLevel(ctx context.Context, packageName string, saturationLevel int32) (bool, error)
+	IsSaturationActivated(ctx context.Context) (bool, error)
+	GetTransformCapabilities(ctx context.Context) (int32, error)
+	IsNightDisplayActivated(ctx context.Context) (bool, error)
+	SetNightDisplayActivated(ctx context.Context, activated bool) (bool, error)
+	GetNightDisplayColorTemperature(ctx context.Context) (int32, error)
+	SetNightDisplayColorTemperature(ctx context.Context, temperature int32) (bool, error)
+	GetNightDisplayAutoMode(ctx context.Context) (int32, error)
+	GetNightDisplayAutoModeRaw(ctx context.Context) (int32, error)
+	SetNightDisplayAutoMode(ctx context.Context, autoMode int32) (bool, error)
+	GetNightDisplayCustomStartTime(ctx context.Context) (Time, error)
+	SetNightDisplayCustomStartTime(ctx context.Context, time Time) (bool, error)
+	GetNightDisplayCustomEndTime(ctx context.Context) (Time, error)
+	SetNightDisplayCustomEndTime(ctx context.Context, time Time) (bool, error)
+	GetColorMode(ctx context.Context) (int32, error)
+	SetColorMode(ctx context.Context, colorMode int32) error
+	IsDisplayWhiteBalanceEnabled(ctx context.Context) (bool, error)
+	SetDisplayWhiteBalanceEnabled(ctx context.Context, enabled bool) (bool, error)
+	IsReduceBrightColorsActivated(ctx context.Context) (bool, error)
+	SetReduceBrightColorsActivated(ctx context.Context, activated bool) (bool, error)
+	GetReduceBrightColorsStrength(ctx context.Context) (int32, error)
+	SetReduceBrightColorsStrength(ctx context.Context, strength int32) (bool, error)
+	GetReduceBrightColorsOffsetFactor(ctx context.Context) (float32, error)
+}
+
+type colorDisplayManagerStubWrapper struct {
+	impl       IColorDisplayManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *colorDisplayManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *colorDisplayManagerStubWrapper) IsDeviceColorManaged(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDeviceColorManaged(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetSaturationLevel(
+	ctx context.Context,
+	saturationLevel int32,
+) (bool, error) {
+	return w.impl.SetSaturationLevel(ctx, saturationLevel)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetAppSaturationLevel(
+	ctx context.Context,
+	packageName string,
+	saturationLevel int32,
+) (bool, error) {
+	return w.impl.SetAppSaturationLevel(ctx, packageName, saturationLevel)
+}
+
+func (w *colorDisplayManagerStubWrapper) IsSaturationActivated(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSaturationActivated(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) GetTransformCapabilities(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetTransformCapabilities(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) IsNightDisplayActivated(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsNightDisplayActivated(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetNightDisplayActivated(
+	ctx context.Context,
+	activated bool,
+) (bool, error) {
+	return w.impl.SetNightDisplayActivated(ctx, activated)
+}
+
+func (w *colorDisplayManagerStubWrapper) GetNightDisplayColorTemperature(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNightDisplayColorTemperature(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetNightDisplayColorTemperature(
+	ctx context.Context,
+	temperature int32,
+) (bool, error) {
+	return w.impl.SetNightDisplayColorTemperature(ctx, temperature)
+}
+
+func (w *colorDisplayManagerStubWrapper) GetNightDisplayAutoMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNightDisplayAutoMode(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) GetNightDisplayAutoModeRaw(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNightDisplayAutoModeRaw(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetNightDisplayAutoMode(
+	ctx context.Context,
+	autoMode int32,
+) (bool, error) {
+	return w.impl.SetNightDisplayAutoMode(ctx, autoMode)
+}
+
+func (w *colorDisplayManagerStubWrapper) GetNightDisplayCustomStartTime(
+	ctx context.Context,
+) (Time, error) {
+	return w.impl.GetNightDisplayCustomStartTime(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetNightDisplayCustomStartTime(
+	ctx context.Context,
+	time Time,
+) (bool, error) {
+	return w.impl.SetNightDisplayCustomStartTime(ctx, time)
+}
+
+func (w *colorDisplayManagerStubWrapper) GetNightDisplayCustomEndTime(
+	ctx context.Context,
+) (Time, error) {
+	return w.impl.GetNightDisplayCustomEndTime(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetNightDisplayCustomEndTime(
+	ctx context.Context,
+	time Time,
+) (bool, error) {
+	return w.impl.SetNightDisplayCustomEndTime(ctx, time)
+}
+
+func (w *colorDisplayManagerStubWrapper) GetColorMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetColorMode(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetColorMode(
+	ctx context.Context,
+	colorMode int32,
+) error {
+	return w.impl.SetColorMode(ctx, colorMode)
+}
+
+func (w *colorDisplayManagerStubWrapper) IsDisplayWhiteBalanceEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDisplayWhiteBalanceEnabled(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetDisplayWhiteBalanceEnabled(
+	ctx context.Context,
+	enabled bool,
+) (bool, error) {
+	return w.impl.SetDisplayWhiteBalanceEnabled(ctx, enabled)
+}
+
+func (w *colorDisplayManagerStubWrapper) IsReduceBrightColorsActivated(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsReduceBrightColorsActivated(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetReduceBrightColorsActivated(
+	ctx context.Context,
+	activated bool,
+) (bool, error) {
+	return w.impl.SetReduceBrightColorsActivated(ctx, activated)
+}
+
+func (w *colorDisplayManagerStubWrapper) GetReduceBrightColorsStrength(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetReduceBrightColorsStrength(ctx)
+}
+
+func (w *colorDisplayManagerStubWrapper) SetReduceBrightColorsStrength(
+	ctx context.Context,
+	strength int32,
+) (bool, error) {
+	return w.impl.SetReduceBrightColorsStrength(ctx, strength)
+}
+
+func (w *colorDisplayManagerStubWrapper) GetReduceBrightColorsOffsetFactor(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetReduceBrightColorsOffsetFactor(ctx)
+}
+
+var _ IColorDisplayManager = (*colorDisplayManagerStubWrapper)(nil)
+
+// NewColorDisplayManagerStub creates a server-side IColorDisplayManager wrapping the given
+// server implementation. The returned value satisfies IColorDisplayManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewColorDisplayManagerStub(
+	impl IColorDisplayManagerServer,
+) IColorDisplayManager {
+	wrapper := &colorDisplayManagerStubWrapper{impl: impl}
+	stub := &ColorDisplayManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

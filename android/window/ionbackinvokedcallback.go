@@ -139,7 +139,7 @@ func (p *OnBackInvokedCallbackProxy) SetHandoffHandler(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOnBackInvokedCallback)
-	_data.WriteStrongBinder(handoffHandler.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, handoffHandler.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnBackInvokedCallback, "setHandoffHandler")
 	if _err != nil {
@@ -240,4 +240,81 @@ func (s *OnBackInvokedCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOnBackInvokedCallbackServer is the server-side interface that user implementations
+// provide to NewOnBackInvokedCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnBackInvokedCallbackServer interface {
+	OnBackStarted(ctx context.Context, backMotionEvent BackMotionEvent) error
+	OnBackProgressed(ctx context.Context, backMotionEvent BackMotionEvent) error
+	OnBackCancelled(ctx context.Context) error
+	OnBackInvoked(ctx context.Context) error
+	SetTriggerBack(ctx context.Context, triggerBack bool) error
+	SetHandoffHandler(ctx context.Context, handoffHandler IBackAnimationHandoffHandler) error
+}
+
+type onBackInvokedCallbackStubWrapper struct {
+	impl       IOnBackInvokedCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onBackInvokedCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onBackInvokedCallbackStubWrapper) OnBackStarted(
+	ctx context.Context,
+	backMotionEvent BackMotionEvent,
+) error {
+	return w.impl.OnBackStarted(ctx, backMotionEvent)
+}
+
+func (w *onBackInvokedCallbackStubWrapper) OnBackProgressed(
+	ctx context.Context,
+	backMotionEvent BackMotionEvent,
+) error {
+	return w.impl.OnBackProgressed(ctx, backMotionEvent)
+}
+
+func (w *onBackInvokedCallbackStubWrapper) OnBackCancelled(
+	ctx context.Context,
+) error {
+	return w.impl.OnBackCancelled(ctx)
+}
+
+func (w *onBackInvokedCallbackStubWrapper) OnBackInvoked(
+	ctx context.Context,
+) error {
+	return w.impl.OnBackInvoked(ctx)
+}
+
+func (w *onBackInvokedCallbackStubWrapper) SetTriggerBack(
+	ctx context.Context,
+	triggerBack bool,
+) error {
+	return w.impl.SetTriggerBack(ctx, triggerBack)
+}
+
+func (w *onBackInvokedCallbackStubWrapper) SetHandoffHandler(
+	ctx context.Context,
+	handoffHandler IBackAnimationHandoffHandler,
+) error {
+	return w.impl.SetHandoffHandler(ctx, handoffHandler)
+}
+
+var _ IOnBackInvokedCallback = (*onBackInvokedCallbackStubWrapper)(nil)
+
+// NewOnBackInvokedCallbackStub creates a server-side IOnBackInvokedCallback wrapping the given
+// server implementation. The returned value satisfies IOnBackInvokedCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnBackInvokedCallbackStub(
+	impl IOnBackInvokedCallbackServer,
+) IOnBackInvokedCallback {
+	wrapper := &onBackInvokedCallbackStubWrapper{impl: impl}
+	stub := &OnBackInvokedCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

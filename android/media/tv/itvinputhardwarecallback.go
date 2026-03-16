@@ -114,3 +114,49 @@ func (s *TvInputHardwareCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITvInputHardwareCallbackServer is the server-side interface that user implementations
+// provide to NewTvInputHardwareCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInputHardwareCallbackServer interface {
+	OnReleased(ctx context.Context) error
+	OnStreamConfigChanged(ctx context.Context, configs []TvStreamConfig) error
+}
+
+type tvInputHardwareCallbackStubWrapper struct {
+	impl       ITvInputHardwareCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInputHardwareCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInputHardwareCallbackStubWrapper) OnReleased(
+	ctx context.Context,
+) error {
+	return w.impl.OnReleased(ctx)
+}
+
+func (w *tvInputHardwareCallbackStubWrapper) OnStreamConfigChanged(
+	ctx context.Context,
+	configs []TvStreamConfig,
+) error {
+	return w.impl.OnStreamConfigChanged(ctx, configs)
+}
+
+var _ ITvInputHardwareCallback = (*tvInputHardwareCallbackStubWrapper)(nil)
+
+// NewTvInputHardwareCallbackStub creates a server-side ITvInputHardwareCallback wrapping the given
+// server implementation. The returned value satisfies ITvInputHardwareCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInputHardwareCallbackStub(
+	impl ITvInputHardwareCallbackServer,
+) ITvInputHardwareCallback {
+	wrapper := &tvInputHardwareCallbackStubWrapper{impl: impl}
+	stub := &TvInputHardwareCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

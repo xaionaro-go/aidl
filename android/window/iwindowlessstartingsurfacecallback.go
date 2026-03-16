@@ -3,7 +3,6 @@ package window
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type IWindowlessStartingSurfaceCallback interface {
 	AsBinder() binder.IBinder
-	OnSurfaceAdded(ctx context.Context, addedSurface view.SurfaceControl) error
+	OnSurfaceAdded(ctx context.Context, addedSurface interface{}) error
 }
 
 type WindowlessStartingSurfaceCallbackProxy struct {
@@ -39,14 +38,10 @@ var _ IWindowlessStartingSurfaceCallback = (*WindowlessStartingSurfaceCallbackPr
 
 func (p *WindowlessStartingSurfaceCallbackProxy) OnSurfaceAdded(
 	ctx context.Context,
-	addedSurface view.SurfaceControl,
+	addedSurface interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowlessStartingSurfaceCallback)
-	_data.WriteInt32(1)
-	if _err := addedSurface.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowlessStartingSurfaceCallback, "onSurfaceAdded")
 	if _err != nil {
@@ -84,18 +79,7 @@ func (s *WindowlessStartingSurfaceCallbackStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_addedSurface view.SurfaceControl
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_addedSurface.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_addedSurface interface{}
 		_err := s.Impl.OnSurfaceAdded(ctx, _arg_addedSurface)
 		_reply := parcel.New()
 		if _err != nil {
@@ -107,4 +91,43 @@ func (s *WindowlessStartingSurfaceCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWindowlessStartingSurfaceCallbackServer is the server-side interface that user implementations
+// provide to NewWindowlessStartingSurfaceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowlessStartingSurfaceCallbackServer interface {
+	OnSurfaceAdded(ctx context.Context, addedSurface interface{}) error
+}
+
+type windowlessStartingSurfaceCallbackStubWrapper struct {
+	impl       IWindowlessStartingSurfaceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowlessStartingSurfaceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *windowlessStartingSurfaceCallbackStubWrapper) OnSurfaceAdded(
+	ctx context.Context,
+	addedSurface interface{},
+) error {
+	return w.impl.OnSurfaceAdded(ctx, addedSurface)
+}
+
+var _ IWindowlessStartingSurfaceCallback = (*windowlessStartingSurfaceCallbackStubWrapper)(nil)
+
+// NewWindowlessStartingSurfaceCallbackStub creates a server-side IWindowlessStartingSurfaceCallback wrapping the given
+// server implementation. The returned value satisfies IWindowlessStartingSurfaceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowlessStartingSurfaceCallbackStub(
+	impl IWindowlessStartingSurfaceCallbackServer,
+) IWindowlessStartingSurfaceCallback {
+	wrapper := &windowlessStartingSurfaceCallbackStubWrapper{impl: impl}
+	stub := &WindowlessStartingSurfaceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

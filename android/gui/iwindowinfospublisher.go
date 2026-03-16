@@ -88,3 +88,43 @@ func (s *WindowInfosPublisherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWindowInfosPublisherServer is the server-side interface that user implementations
+// provide to NewWindowInfosPublisherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowInfosPublisherServer interface {
+	AckWindowInfosReceived(ctx context.Context, vsyncId int64, listenerId int64) error
+}
+
+type windowInfosPublisherStubWrapper struct {
+	impl       IWindowInfosPublisherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowInfosPublisherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *windowInfosPublisherStubWrapper) AckWindowInfosReceived(
+	ctx context.Context,
+	vsyncId int64,
+	listenerId int64,
+) error {
+	return w.impl.AckWindowInfosReceived(ctx, vsyncId, listenerId)
+}
+
+var _ IWindowInfosPublisher = (*windowInfosPublisherStubWrapper)(nil)
+
+// NewWindowInfosPublisherStub creates a server-side IWindowInfosPublisher wrapping the given
+// server implementation. The returned value satisfies IWindowInfosPublisher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowInfosPublisherStub(
+	impl IWindowInfosPublisherServer,
+) IWindowInfosPublisher {
+	wrapper := &windowInfosPublisherStubWrapper{impl: impl}
+	stub := &WindowInfosPublisherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

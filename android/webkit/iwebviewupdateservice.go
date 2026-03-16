@@ -449,3 +449,91 @@ func (s *WebViewUpdateServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWebViewUpdateServiceServer is the server-side interface that user implementations
+// provide to NewWebViewUpdateServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWebViewUpdateServiceServer interface {
+	NotifyRelroCreationCompleted(ctx context.Context) error
+	WaitForAndGetProvider(ctx context.Context) (WebViewProviderResponse, error)
+	ChangeProviderAndSetting(ctx context.Context, newProvider string) (string, error)
+	GetValidWebViewPackages(ctx context.Context) ([]WebViewProviderInfo, error)
+	GetAllWebViewPackages(ctx context.Context) ([]WebViewProviderInfo, error)
+	GetCurrentWebViewPackageName(ctx context.Context) (string, error)
+	GetCurrentWebViewPackage(ctx context.Context) (pm.PackageInfo, error)
+	GetDefaultWebViewPackage(ctx context.Context) (WebViewProviderInfo, error)
+}
+
+type webViewUpdateServiceStubWrapper struct {
+	impl       IWebViewUpdateServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *webViewUpdateServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *webViewUpdateServiceStubWrapper) NotifyRelroCreationCompleted(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyRelroCreationCompleted(ctx)
+}
+
+func (w *webViewUpdateServiceStubWrapper) WaitForAndGetProvider(
+	ctx context.Context,
+) (WebViewProviderResponse, error) {
+	return w.impl.WaitForAndGetProvider(ctx)
+}
+
+func (w *webViewUpdateServiceStubWrapper) ChangeProviderAndSetting(
+	ctx context.Context,
+	newProvider string,
+) (string, error) {
+	return w.impl.ChangeProviderAndSetting(ctx, newProvider)
+}
+
+func (w *webViewUpdateServiceStubWrapper) GetValidWebViewPackages(
+	ctx context.Context,
+) ([]WebViewProviderInfo, error) {
+	return w.impl.GetValidWebViewPackages(ctx)
+}
+
+func (w *webViewUpdateServiceStubWrapper) GetAllWebViewPackages(
+	ctx context.Context,
+) ([]WebViewProviderInfo, error) {
+	return w.impl.GetAllWebViewPackages(ctx)
+}
+
+func (w *webViewUpdateServiceStubWrapper) GetCurrentWebViewPackageName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCurrentWebViewPackageName(ctx)
+}
+
+func (w *webViewUpdateServiceStubWrapper) GetCurrentWebViewPackage(
+	ctx context.Context,
+) (pm.PackageInfo, error) {
+	return w.impl.GetCurrentWebViewPackage(ctx)
+}
+
+func (w *webViewUpdateServiceStubWrapper) GetDefaultWebViewPackage(
+	ctx context.Context,
+) (WebViewProviderInfo, error) {
+	return w.impl.GetDefaultWebViewPackage(ctx)
+}
+
+var _ IWebViewUpdateService = (*webViewUpdateServiceStubWrapper)(nil)
+
+// NewWebViewUpdateServiceStub creates a server-side IWebViewUpdateService wrapping the given
+// server implementation. The returned value satisfies IWebViewUpdateService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWebViewUpdateServiceStub(
+	impl IWebViewUpdateServiceServer,
+) IWebViewUpdateService {
+	wrapper := &webViewUpdateServiceStubWrapper{impl: impl}
+	stub := &WebViewUpdateServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

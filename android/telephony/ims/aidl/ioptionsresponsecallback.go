@@ -130,3 +130,52 @@ func (s *OptionsResponseCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOptionsResponseCallbackServer is the server-side interface that user implementations
+// provide to NewOptionsResponseCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOptionsResponseCallbackServer interface {
+	OnCommandError(ctx context.Context, code int32) error
+	OnNetworkResponse(ctx context.Context, code int32, reason string, theirCaps []string) error
+}
+
+type optionsResponseCallbackStubWrapper struct {
+	impl       IOptionsResponseCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *optionsResponseCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *optionsResponseCallbackStubWrapper) OnCommandError(
+	ctx context.Context,
+	code int32,
+) error {
+	return w.impl.OnCommandError(ctx, code)
+}
+
+func (w *optionsResponseCallbackStubWrapper) OnNetworkResponse(
+	ctx context.Context,
+	code int32,
+	reason string,
+	theirCaps []string,
+) error {
+	return w.impl.OnNetworkResponse(ctx, code, reason, theirCaps)
+}
+
+var _ IOptionsResponseCallback = (*optionsResponseCallbackStubWrapper)(nil)
+
+// NewOptionsResponseCallbackStub creates a server-side IOptionsResponseCallback wrapping the given
+// server implementation. The returned value satisfies IOptionsResponseCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOptionsResponseCallbackStub(
+	impl IOptionsResponseCallbackServer,
+) IOptionsResponseCallback {
+	wrapper := &optionsResponseCallbackStubWrapper{impl: impl}
+	stub := &OptionsResponseCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

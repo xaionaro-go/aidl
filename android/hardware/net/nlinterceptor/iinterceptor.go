@@ -299,3 +299,70 @@ func (s *InterceptorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInterceptorServer is the server-side interface that user implementations
+// provide to NewInterceptorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInterceptorServer interface {
+	CreateSocket(ctx context.Context, nlFamily int32, clientNlPid int32, clientName string) (InterceptedSocket, error)
+	CloseSocket(ctx context.Context, handle InterceptedSocket) error
+	SubscribeGroup(ctx context.Context, handle InterceptedSocket, nlGroup int32) error
+	UnsubscribeGroup(ctx context.Context, handle InterceptedSocket, nlGroup int32) error
+}
+
+type interceptorStubWrapper struct {
+	impl       IInterceptorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *interceptorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *interceptorStubWrapper) CreateSocket(
+	ctx context.Context,
+	nlFamily int32,
+	clientNlPid int32,
+	clientName string,
+) (InterceptedSocket, error) {
+	return w.impl.CreateSocket(ctx, nlFamily, clientNlPid, clientName)
+}
+
+func (w *interceptorStubWrapper) CloseSocket(
+	ctx context.Context,
+	handle InterceptedSocket,
+) error {
+	return w.impl.CloseSocket(ctx, handle)
+}
+
+func (w *interceptorStubWrapper) SubscribeGroup(
+	ctx context.Context,
+	handle InterceptedSocket,
+	nlGroup int32,
+) error {
+	return w.impl.SubscribeGroup(ctx, handle, nlGroup)
+}
+
+func (w *interceptorStubWrapper) UnsubscribeGroup(
+	ctx context.Context,
+	handle InterceptedSocket,
+	nlGroup int32,
+) error {
+	return w.impl.UnsubscribeGroup(ctx, handle, nlGroup)
+}
+
+var _ IInterceptor = (*interceptorStubWrapper)(nil)
+
+// NewInterceptorStub creates a server-side IInterceptor wrapping the given
+// server implementation. The returned value satisfies IInterceptor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInterceptorStub(
+	impl IInterceptorServer,
+) IInterceptor {
+	wrapper := &interceptorStubWrapper{impl: impl}
+	stub := &InterceptorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

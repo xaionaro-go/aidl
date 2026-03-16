@@ -150,7 +150,7 @@ func (p *SoundTriggerMiddlewareServiceProxy) AttachAsOriginator(
 	if _err := identity.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "attachAsOriginator")
 	if _err != nil {
@@ -195,7 +195,7 @@ func (p *SoundTriggerMiddlewareServiceProxy) AttachAsMiddleman(
 	if _err := originatorIdentity.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteBool(isTrusted)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "attachAsMiddleman")
@@ -227,7 +227,7 @@ func (p *SoundTriggerMiddlewareServiceProxy) AttachFakeHalInjection(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerMiddlewareService)
-	_data.WriteStrongBinder(injection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, injection.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerMiddlewareService, "attachFakeHalInjection")
 	if _err != nil {
@@ -425,4 +425,82 @@ func (s *SoundTriggerMiddlewareServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISoundTriggerMiddlewareServiceServer is the server-side interface that user implementations
+// provide to NewSoundTriggerMiddlewareServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerMiddlewareServiceServer interface {
+	ListModulesAsOriginator(ctx context.Context, identity Descriptor.Identity) ([]SoundTriggerModuleDescriptor, error)
+	ListModulesAsMiddleman(ctx context.Context, middlemanIdentity Descriptor.Identity, originatorIdentity Descriptor.Identity) ([]SoundTriggerModuleDescriptor, error)
+	AttachAsOriginator(ctx context.Context, handle int32, identity Descriptor.Identity, callback ISoundTriggerCallback) (ISoundTriggerModule, error)
+	AttachAsMiddleman(ctx context.Context, handle int32, middlemanIdentity Descriptor.Identity, originatorIdentity Descriptor.Identity, callback ISoundTriggerCallback, isTrusted bool) (ISoundTriggerModule, error)
+	AttachFakeHalInjection(ctx context.Context, injection ISoundTriggerInjection) error
+}
+
+type soundTriggerMiddlewareServiceStubWrapper struct {
+	impl       ISoundTriggerMiddlewareServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerMiddlewareServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerMiddlewareServiceStubWrapper) ListModulesAsOriginator(
+	ctx context.Context,
+	identity Descriptor.Identity,
+) ([]SoundTriggerModuleDescriptor, error) {
+	return w.impl.ListModulesAsOriginator(ctx, identity)
+}
+
+func (w *soundTriggerMiddlewareServiceStubWrapper) ListModulesAsMiddleman(
+	ctx context.Context,
+	middlemanIdentity Descriptor.Identity,
+	originatorIdentity Descriptor.Identity,
+) ([]SoundTriggerModuleDescriptor, error) {
+	return w.impl.ListModulesAsMiddleman(ctx, middlemanIdentity, originatorIdentity)
+}
+
+func (w *soundTriggerMiddlewareServiceStubWrapper) AttachAsOriginator(
+	ctx context.Context,
+	handle int32,
+	identity Descriptor.Identity,
+	callback ISoundTriggerCallback,
+) (ISoundTriggerModule, error) {
+	return w.impl.AttachAsOriginator(ctx, handle, identity, callback)
+}
+
+func (w *soundTriggerMiddlewareServiceStubWrapper) AttachAsMiddleman(
+	ctx context.Context,
+	handle int32,
+	middlemanIdentity Descriptor.Identity,
+	originatorIdentity Descriptor.Identity,
+	callback ISoundTriggerCallback,
+	isTrusted bool,
+) (ISoundTriggerModule, error) {
+	return w.impl.AttachAsMiddleman(ctx, handle, middlemanIdentity, originatorIdentity, callback, isTrusted)
+}
+
+func (w *soundTriggerMiddlewareServiceStubWrapper) AttachFakeHalInjection(
+	ctx context.Context,
+	injection ISoundTriggerInjection,
+) error {
+	return w.impl.AttachFakeHalInjection(ctx, injection)
+}
+
+var _ ISoundTriggerMiddlewareService = (*soundTriggerMiddlewareServiceStubWrapper)(nil)
+
+// NewSoundTriggerMiddlewareServiceStub creates a server-side ISoundTriggerMiddlewareService wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerMiddlewareService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerMiddlewareServiceStub(
+	impl ISoundTriggerMiddlewareServiceServer,
+) ISoundTriggerMiddlewareService {
+	wrapper := &soundTriggerMiddlewareServiceStubWrapper{impl: impl}
+	stub := &SoundTriggerMiddlewareServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

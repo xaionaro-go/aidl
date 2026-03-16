@@ -131,3 +131,51 @@ func (s *FrontendCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFrontendCallbackServer is the server-side interface that user implementations
+// provide to NewFrontendCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFrontendCallbackServer interface {
+	OnEvent(ctx context.Context, frontendEventType FrontendEventType) error
+	OnScanMessage(ctx context.Context, type_ FrontendScanMessageType, message FrontendScanMessage) error
+}
+
+type frontendCallbackStubWrapper struct {
+	impl       IFrontendCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *frontendCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *frontendCallbackStubWrapper) OnEvent(
+	ctx context.Context,
+	frontendEventType FrontendEventType,
+) error {
+	return w.impl.OnEvent(ctx, frontendEventType)
+}
+
+func (w *frontendCallbackStubWrapper) OnScanMessage(
+	ctx context.Context,
+	type_ FrontendScanMessageType,
+	message FrontendScanMessage,
+) error {
+	return w.impl.OnScanMessage(ctx, type_, message)
+}
+
+var _ IFrontendCallback = (*frontendCallbackStubWrapper)(nil)
+
+// NewFrontendCallbackStub creates a server-side IFrontendCallback wrapping the given
+// server implementation. The returned value satisfies IFrontendCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFrontendCallbackStub(
+	impl IFrontendCallbackServer,
+) IFrontendCallback {
+	wrapper := &frontendCallbackStubWrapper{impl: impl}
+	stub := &FrontendCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

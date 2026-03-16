@@ -75,7 +75,7 @@ func (p *VirtualDeviceManagerProxy) CreateVirtualDevice(
 	var _result IVirtualDevice
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDeviceManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -85,8 +85,8 @@ func (p *VirtualDeviceManagerProxy) CreateVirtualDevice(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(activityListener.AsBinder().Handle())
-	_data.WriteStrongBinder(soundEffectListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityListener.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, soundEffectListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceManager, "createVirtualDevice")
 	if _err != nil {
@@ -191,7 +191,7 @@ func (p *VirtualDeviceManagerProxy) RegisterVirtualDeviceListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDeviceManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceManager, "registerVirtualDeviceListener")
 	if _err != nil {
@@ -217,7 +217,7 @@ func (p *VirtualDeviceManagerProxy) UnregisterVirtualDeviceListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualDeviceManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVirtualDeviceManager, "unregisterVirtualDeviceListener")
 	if _err != nil {
@@ -808,4 +808,152 @@ func (s *VirtualDeviceManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVirtualDeviceManagerServer is the server-side interface that user implementations
+// provide to NewVirtualDeviceManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualDeviceManagerServer interface {
+	CreateVirtualDevice(ctx context.Context, token binder.IBinder, attributionSource content.AttributionSource, associationId int32, params VirtualDeviceParams, activityListener IVirtualDeviceActivityListener, soundEffectListener IVirtualDeviceSoundEffectListener) (IVirtualDevice, error)
+	GetVirtualDevices(ctx context.Context) ([]VirtualDevice, error)
+	GetVirtualDevice(ctx context.Context, deviceId int32) (VirtualDevice, error)
+	RegisterVirtualDeviceListener(ctx context.Context, listener IVirtualDeviceListener) error
+	UnregisterVirtualDeviceListener(ctx context.Context, listener IVirtualDeviceListener) error
+	GetDeviceIdForDisplayId(ctx context.Context, displayId int32) (int32, error)
+	GetDisplayNameForPersistentDeviceId(ctx context.Context, persistentDeviceId string) (interface{}, error)
+	IsValidVirtualDeviceId(ctx context.Context, deviceId int32) (bool, error)
+	GetDevicePolicy(ctx context.Context, deviceId int32, policyType int32) (int32, error)
+	GetAudioPlaybackSessionId(ctx context.Context, deviceId int32) (int32, error)
+	GetAudioRecordingSessionId(ctx context.Context, deviceId int32) (int32, error)
+	PlaySoundEffect(ctx context.Context, deviceId int32, effectType int32) error
+	IsVirtualDeviceOwnedMirrorDisplay(ctx context.Context, displayId int32) (bool, error)
+	GetAllPersistentDeviceIds(ctx context.Context) ([]string, error)
+}
+
+type virtualDeviceManagerStubWrapper struct {
+	impl       IVirtualDeviceManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualDeviceManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualDeviceManagerStubWrapper) CreateVirtualDevice(
+	ctx context.Context,
+	token binder.IBinder,
+	attributionSource content.AttributionSource,
+	associationId int32,
+	params VirtualDeviceParams,
+	activityListener IVirtualDeviceActivityListener,
+	soundEffectListener IVirtualDeviceSoundEffectListener,
+) (IVirtualDevice, error) {
+	return w.impl.CreateVirtualDevice(ctx, token, attributionSource, associationId, params, activityListener, soundEffectListener)
+}
+
+func (w *virtualDeviceManagerStubWrapper) GetVirtualDevices(
+	ctx context.Context,
+) ([]VirtualDevice, error) {
+	return w.impl.GetVirtualDevices(ctx)
+}
+
+func (w *virtualDeviceManagerStubWrapper) GetVirtualDevice(
+	ctx context.Context,
+	deviceId int32,
+) (VirtualDevice, error) {
+	return w.impl.GetVirtualDevice(ctx, deviceId)
+}
+
+func (w *virtualDeviceManagerStubWrapper) RegisterVirtualDeviceListener(
+	ctx context.Context,
+	listener IVirtualDeviceListener,
+) error {
+	return w.impl.RegisterVirtualDeviceListener(ctx, listener)
+}
+
+func (w *virtualDeviceManagerStubWrapper) UnregisterVirtualDeviceListener(
+	ctx context.Context,
+	listener IVirtualDeviceListener,
+) error {
+	return w.impl.UnregisterVirtualDeviceListener(ctx, listener)
+}
+
+func (w *virtualDeviceManagerStubWrapper) GetDeviceIdForDisplayId(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetDeviceIdForDisplayId(ctx, displayId)
+}
+
+func (w *virtualDeviceManagerStubWrapper) GetDisplayNameForPersistentDeviceId(
+	ctx context.Context,
+	persistentDeviceId string,
+) (interface{}, error) {
+	return w.impl.GetDisplayNameForPersistentDeviceId(ctx, persistentDeviceId)
+}
+
+func (w *virtualDeviceManagerStubWrapper) IsValidVirtualDeviceId(
+	ctx context.Context,
+	deviceId int32,
+) (bool, error) {
+	return w.impl.IsValidVirtualDeviceId(ctx, deviceId)
+}
+
+func (w *virtualDeviceManagerStubWrapper) GetDevicePolicy(
+	ctx context.Context,
+	deviceId int32,
+	policyType int32,
+) (int32, error) {
+	return w.impl.GetDevicePolicy(ctx, deviceId, policyType)
+}
+
+func (w *virtualDeviceManagerStubWrapper) GetAudioPlaybackSessionId(
+	ctx context.Context,
+	deviceId int32,
+) (int32, error) {
+	return w.impl.GetAudioPlaybackSessionId(ctx, deviceId)
+}
+
+func (w *virtualDeviceManagerStubWrapper) GetAudioRecordingSessionId(
+	ctx context.Context,
+	deviceId int32,
+) (int32, error) {
+	return w.impl.GetAudioRecordingSessionId(ctx, deviceId)
+}
+
+func (w *virtualDeviceManagerStubWrapper) PlaySoundEffect(
+	ctx context.Context,
+	deviceId int32,
+	effectType int32,
+) error {
+	return w.impl.PlaySoundEffect(ctx, deviceId, effectType)
+}
+
+func (w *virtualDeviceManagerStubWrapper) IsVirtualDeviceOwnedMirrorDisplay(
+	ctx context.Context,
+	displayId int32,
+) (bool, error) {
+	return w.impl.IsVirtualDeviceOwnedMirrorDisplay(ctx, displayId)
+}
+
+func (w *virtualDeviceManagerStubWrapper) GetAllPersistentDeviceIds(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetAllPersistentDeviceIds(ctx)
+}
+
+var _ IVirtualDeviceManager = (*virtualDeviceManagerStubWrapper)(nil)
+
+// NewVirtualDeviceManagerStub creates a server-side IVirtualDeviceManager wrapping the given
+// server implementation. The returned value satisfies IVirtualDeviceManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualDeviceManagerStub(
+	impl IVirtualDeviceManagerServer,
+) IVirtualDeviceManager {
+	wrapper := &virtualDeviceManagerStubWrapper{impl: impl}
+	stub := &VirtualDeviceManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

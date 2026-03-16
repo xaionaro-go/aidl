@@ -102,3 +102,42 @@ func (s *CarTelemetryCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICarTelemetryCallbackServer is the server-side interface that user implementations
+// provide to NewCarTelemetryCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarTelemetryCallbackServer interface {
+	OnChange(ctx context.Context, ids []int32) error
+}
+
+type carTelemetryCallbackStubWrapper struct {
+	impl       ICarTelemetryCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carTelemetryCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carTelemetryCallbackStubWrapper) OnChange(
+	ctx context.Context,
+	ids []int32,
+) error {
+	return w.impl.OnChange(ctx, ids)
+}
+
+var _ ICarTelemetryCallback = (*carTelemetryCallbackStubWrapper)(nil)
+
+// NewCarTelemetryCallbackStub creates a server-side ICarTelemetryCallback wrapping the given
+// server implementation. The returned value satisfies ICarTelemetryCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarTelemetryCallbackStub(
+	impl ICarTelemetryCallbackServer,
+) ICarTelemetryCallback {
+	wrapper := &carTelemetryCallbackStubWrapper{impl: impl}
+	stub := &CarTelemetryCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

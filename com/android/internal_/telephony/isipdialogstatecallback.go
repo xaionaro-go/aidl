@@ -91,3 +91,42 @@ func (s *SipDialogStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISipDialogStateCallbackServer is the server-side interface that user implementations
+// provide to NewSipDialogStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISipDialogStateCallbackServer interface {
+	OnActiveSipDialogsChanged(ctx context.Context, dialogs []ims.SipDialogState) error
+}
+
+type sipDialogStateCallbackStubWrapper struct {
+	impl       ISipDialogStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sipDialogStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sipDialogStateCallbackStubWrapper) OnActiveSipDialogsChanged(
+	ctx context.Context,
+	dialogs []ims.SipDialogState,
+) error {
+	return w.impl.OnActiveSipDialogsChanged(ctx, dialogs)
+}
+
+var _ ISipDialogStateCallback = (*sipDialogStateCallbackStubWrapper)(nil)
+
+// NewSipDialogStateCallbackStub creates a server-side ISipDialogStateCallback wrapping the given
+// server implementation. The returned value satisfies ISipDialogStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSipDialogStateCallbackStub(
+	impl ISipDialogStateCallbackServer,
+) ISipDialogStateCallback {
+	wrapper := &sipDialogStateCallbackStubWrapper{impl: impl}
+	stub := &SipDialogStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

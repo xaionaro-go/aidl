@@ -375,3 +375,113 @@ func (s *BluetoothLeBroadcastCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothLeBroadcastCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothLeBroadcastCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothLeBroadcastCallbackServer interface {
+	OnBroadcastStarted(ctx context.Context, reason int32, broadcastId int32) error
+	OnBroadcastStartFailed(ctx context.Context, reason int32) error
+	OnBroadcastStopped(ctx context.Context, reason int32, broadcastId int32) error
+	OnBroadcastStopFailed(ctx context.Context, reason int32) error
+	OnPlaybackStarted(ctx context.Context, reason int32, broadcastId int32) error
+	OnPlaybackStopped(ctx context.Context, reason int32, broadcastId int32) error
+	OnBroadcastUpdated(ctx context.Context, reason int32, broadcastId int32) error
+	OnBroadcastUpdateFailed(ctx context.Context, reason int32, broadcastId int32) error
+	OnBroadcastMetadataChanged(ctx context.Context, broadcastId int32, metadata BluetoothLeBroadcastMetadata) error
+}
+
+type bluetoothLeBroadcastCallbackStubWrapper struct {
+	impl       IBluetoothLeBroadcastCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) OnBroadcastStarted(
+	ctx context.Context,
+	reason int32,
+	broadcastId int32,
+) error {
+	return w.impl.OnBroadcastStarted(ctx, reason, broadcastId)
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) OnBroadcastStartFailed(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnBroadcastStartFailed(ctx, reason)
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) OnBroadcastStopped(
+	ctx context.Context,
+	reason int32,
+	broadcastId int32,
+) error {
+	return w.impl.OnBroadcastStopped(ctx, reason, broadcastId)
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) OnBroadcastStopFailed(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnBroadcastStopFailed(ctx, reason)
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) OnPlaybackStarted(
+	ctx context.Context,
+	reason int32,
+	broadcastId int32,
+) error {
+	return w.impl.OnPlaybackStarted(ctx, reason, broadcastId)
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) OnPlaybackStopped(
+	ctx context.Context,
+	reason int32,
+	broadcastId int32,
+) error {
+	return w.impl.OnPlaybackStopped(ctx, reason, broadcastId)
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) OnBroadcastUpdated(
+	ctx context.Context,
+	reason int32,
+	broadcastId int32,
+) error {
+	return w.impl.OnBroadcastUpdated(ctx, reason, broadcastId)
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) OnBroadcastUpdateFailed(
+	ctx context.Context,
+	reason int32,
+	broadcastId int32,
+) error {
+	return w.impl.OnBroadcastUpdateFailed(ctx, reason, broadcastId)
+}
+
+func (w *bluetoothLeBroadcastCallbackStubWrapper) OnBroadcastMetadataChanged(
+	ctx context.Context,
+	broadcastId int32,
+	metadata BluetoothLeBroadcastMetadata,
+) error {
+	return w.impl.OnBroadcastMetadataChanged(ctx, broadcastId, metadata)
+}
+
+var _ IBluetoothLeBroadcastCallback = (*bluetoothLeBroadcastCallbackStubWrapper)(nil)
+
+// NewBluetoothLeBroadcastCallbackStub creates a server-side IBluetoothLeBroadcastCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothLeBroadcastCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothLeBroadcastCallbackStub(
+	impl IBluetoothLeBroadcastCallbackServer,
+) IBluetoothLeBroadcastCallback {
+	wrapper := &bluetoothLeBroadcastCallbackStubWrapper{impl: impl}
+	stub := &BluetoothLeBroadcastCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

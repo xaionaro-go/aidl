@@ -648,3 +648,167 @@ func (s *RadioVoiceIndicationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioVoiceIndicationServer is the server-side interface that user implementations
+// provide to NewRadioVoiceIndicationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioVoiceIndicationServer interface {
+	CallRing(ctx context.Context, type_ radio.RadioIndicationType, isGsm bool, record CdmaSignalInfoRecord) error
+	CallStateChanged(ctx context.Context, type_ radio.RadioIndicationType) error
+	CdmaCallWaiting(ctx context.Context, type_ radio.RadioIndicationType, callWaitingRecord CdmaCallWaiting) error
+	CdmaInfoRec(ctx context.Context, type_ radio.RadioIndicationType, records []CdmaInformationRecord) error
+	CdmaOtaProvisionStatus(ctx context.Context, type_ radio.RadioIndicationType, status CdmaOtaProvisionStatus) error
+	CurrentEmergencyNumberList(ctx context.Context, type_ radio.RadioIndicationType, emergencyNumberList []EmergencyNumber) error
+	EnterEmergencyCallbackMode(ctx context.Context, type_ radio.RadioIndicationType) error
+	ExitEmergencyCallbackMode(ctx context.Context, type_ radio.RadioIndicationType) error
+	IndicateRingbackTone(ctx context.Context, type_ radio.RadioIndicationType, start bool) error
+	OnSupplementaryServiceIndication(ctx context.Context, type_ radio.RadioIndicationType, ss StkCcUnsolSsResult) error
+	OnUssd(ctx context.Context, type_ radio.RadioIndicationType, modeType UssdModeType, msg string) error
+	ResendIncallMute(ctx context.Context, type_ radio.RadioIndicationType) error
+	SrvccStateNotify(ctx context.Context, type_ radio.RadioIndicationType, state SrvccState) error
+	StkCallControlAlphaNotify(ctx context.Context, type_ radio.RadioIndicationType, alpha string) error
+	StkCallSetup(ctx context.Context, type_ radio.RadioIndicationType, timeout int64) error
+}
+
+type radioVoiceIndicationStubWrapper struct {
+	impl       IRadioVoiceIndicationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioVoiceIndicationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioVoiceIndicationStubWrapper) CallRing(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	isGsm bool,
+	record CdmaSignalInfoRecord,
+) error {
+	return w.impl.CallRing(ctx, type_, isGsm, record)
+}
+
+func (w *radioVoiceIndicationStubWrapper) CallStateChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.CallStateChanged(ctx, type_)
+}
+
+func (w *radioVoiceIndicationStubWrapper) CdmaCallWaiting(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	callWaitingRecord CdmaCallWaiting,
+) error {
+	return w.impl.CdmaCallWaiting(ctx, type_, callWaitingRecord)
+}
+
+func (w *radioVoiceIndicationStubWrapper) CdmaInfoRec(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	records []CdmaInformationRecord,
+) error {
+	return w.impl.CdmaInfoRec(ctx, type_, records)
+}
+
+func (w *radioVoiceIndicationStubWrapper) CdmaOtaProvisionStatus(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	status CdmaOtaProvisionStatus,
+) error {
+	return w.impl.CdmaOtaProvisionStatus(ctx, type_, status)
+}
+
+func (w *radioVoiceIndicationStubWrapper) CurrentEmergencyNumberList(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	emergencyNumberList []EmergencyNumber,
+) error {
+	return w.impl.CurrentEmergencyNumberList(ctx, type_, emergencyNumberList)
+}
+
+func (w *radioVoiceIndicationStubWrapper) EnterEmergencyCallbackMode(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.EnterEmergencyCallbackMode(ctx, type_)
+}
+
+func (w *radioVoiceIndicationStubWrapper) ExitEmergencyCallbackMode(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.ExitEmergencyCallbackMode(ctx, type_)
+}
+
+func (w *radioVoiceIndicationStubWrapper) IndicateRingbackTone(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	start bool,
+) error {
+	return w.impl.IndicateRingbackTone(ctx, type_, start)
+}
+
+func (w *radioVoiceIndicationStubWrapper) OnSupplementaryServiceIndication(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	ss StkCcUnsolSsResult,
+) error {
+	return w.impl.OnSupplementaryServiceIndication(ctx, type_, ss)
+}
+
+func (w *radioVoiceIndicationStubWrapper) OnUssd(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	modeType UssdModeType,
+	msg string,
+) error {
+	return w.impl.OnUssd(ctx, type_, modeType, msg)
+}
+
+func (w *radioVoiceIndicationStubWrapper) ResendIncallMute(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.ResendIncallMute(ctx, type_)
+}
+
+func (w *radioVoiceIndicationStubWrapper) SrvccStateNotify(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	state SrvccState,
+) error {
+	return w.impl.SrvccStateNotify(ctx, type_, state)
+}
+
+func (w *radioVoiceIndicationStubWrapper) StkCallControlAlphaNotify(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	alpha string,
+) error {
+	return w.impl.StkCallControlAlphaNotify(ctx, type_, alpha)
+}
+
+func (w *radioVoiceIndicationStubWrapper) StkCallSetup(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	timeout int64,
+) error {
+	return w.impl.StkCallSetup(ctx, type_, timeout)
+}
+
+var _ IRadioVoiceIndication = (*radioVoiceIndicationStubWrapper)(nil)
+
+// NewRadioVoiceIndicationStub creates a server-side IRadioVoiceIndication wrapping the given
+// server implementation. The returned value satisfies IRadioVoiceIndication
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioVoiceIndicationStub(
+	impl IRadioVoiceIndicationServer,
+) IRadioVoiceIndication {
+	wrapper := &radioVoiceIndicationStubWrapper{impl: impl}
+	stub := &RadioVoiceIndicationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

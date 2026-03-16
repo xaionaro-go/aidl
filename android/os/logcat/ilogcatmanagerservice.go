@@ -148,3 +148,56 @@ func (s *LogcatManagerServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILogcatManagerServiceServer is the server-side interface that user implementations
+// provide to NewLogcatManagerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILogcatManagerServiceServer interface {
+	StartThread(ctx context.Context, uid int32, gid int32, pid int32, fd int32) error
+	FinishThread(ctx context.Context, uid int32, gid int32, pid int32, fd int32) error
+}
+
+type logcatManagerServiceStubWrapper struct {
+	impl       ILogcatManagerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *logcatManagerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *logcatManagerServiceStubWrapper) StartThread(
+	ctx context.Context,
+	uid int32,
+	gid int32,
+	pid int32,
+	fd int32,
+) error {
+	return w.impl.StartThread(ctx, uid, gid, pid, fd)
+}
+
+func (w *logcatManagerServiceStubWrapper) FinishThread(
+	ctx context.Context,
+	uid int32,
+	gid int32,
+	pid int32,
+	fd int32,
+) error {
+	return w.impl.FinishThread(ctx, uid, gid, pid, fd)
+}
+
+var _ ILogcatManagerService = (*logcatManagerServiceStubWrapper)(nil)
+
+// NewLogcatManagerServiceStub creates a server-side ILogcatManagerService wrapping the given
+// server implementation. The returned value satisfies ILogcatManagerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLogcatManagerServiceStub(
+	impl ILogcatManagerServiceServer,
+) ILogcatManagerService {
+	wrapper := &logcatManagerServiceStubWrapper{impl: impl}
+	stub := &LogcatManagerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

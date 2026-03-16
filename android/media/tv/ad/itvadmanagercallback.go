@@ -142,3 +142,58 @@ func (s *TvAdManagerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITvAdManagerCallbackServer is the server-side interface that user implementations
+// provide to NewTvAdManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvAdManagerCallbackServer interface {
+	OnAdServiceAdded(ctx context.Context, serviceId string) error
+	OnAdServiceRemoved(ctx context.Context, serviceId string) error
+	OnAdServiceUpdated(ctx context.Context, serviceId string) error
+}
+
+type tvAdManagerCallbackStubWrapper struct {
+	impl       ITvAdManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvAdManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvAdManagerCallbackStubWrapper) OnAdServiceAdded(
+	ctx context.Context,
+	serviceId string,
+) error {
+	return w.impl.OnAdServiceAdded(ctx, serviceId)
+}
+
+func (w *tvAdManagerCallbackStubWrapper) OnAdServiceRemoved(
+	ctx context.Context,
+	serviceId string,
+) error {
+	return w.impl.OnAdServiceRemoved(ctx, serviceId)
+}
+
+func (w *tvAdManagerCallbackStubWrapper) OnAdServiceUpdated(
+	ctx context.Context,
+	serviceId string,
+) error {
+	return w.impl.OnAdServiceUpdated(ctx, serviceId)
+}
+
+var _ ITvAdManagerCallback = (*tvAdManagerCallbackStubWrapper)(nil)
+
+// NewTvAdManagerCallbackStub creates a server-side ITvAdManagerCallback wrapping the given
+// server implementation. The returned value satisfies ITvAdManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvAdManagerCallbackStub(
+	impl ITvAdManagerCallbackServer,
+) ITvAdManagerCallback {
+	wrapper := &tvAdManagerCallbackStubWrapper{impl: impl}
+	stub := &TvAdManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

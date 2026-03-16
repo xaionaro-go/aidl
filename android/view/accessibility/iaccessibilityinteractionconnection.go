@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
-	view "github.com/xaionaro-go/binder/android/view"
 	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -29,16 +28,16 @@ const (
 
 type IAccessibilityInteractionConnection interface {
 	AsBinder() binder.IBinder
-	FindAccessibilityNodeInfoByAccessibilityId(ctx context.Context, accessibilityNodeId int64, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec view.MagnificationSpec, matrixValues []float32, arguments interface{}) error
-	FindAccessibilityNodeInfosByViewId(ctx context.Context, accessibilityNodeId int64, viewId string, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec view.MagnificationSpec, matrix []float32) error
-	FindAccessibilityNodeInfosByText(ctx context.Context, accessibilityNodeId int64, text string, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec view.MagnificationSpec, matrixValues []float32) error
-	FindFocus(ctx context.Context, accessibilityNodeId int64, focusType int32, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec view.MagnificationSpec, matrixValues []float32) error
-	FocusSearch(ctx context.Context, accessibilityNodeId int64, direction int32, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec view.MagnificationSpec, matrixValues []float32) error
+	FindAccessibilityNodeInfoByAccessibilityId(ctx context.Context, accessibilityNodeId int64, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrixValues []float32, arguments interface{}) error
+	FindAccessibilityNodeInfosByViewId(ctx context.Context, accessibilityNodeId int64, viewId string, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrix []float32) error
+	FindAccessibilityNodeInfosByText(ctx context.Context, accessibilityNodeId int64, text string, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrixValues []float32) error
+	FindFocus(ctx context.Context, accessibilityNodeId int64, focusType int32, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrixValues []float32) error
+	FocusSearch(ctx context.Context, accessibilityNodeId int64, direction int32, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrixValues []float32) error
 	PerformAccessibilityAction(ctx context.Context, accessibilityNodeId int64, action int32, arguments interface{}, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64) error
 	ClearAccessibilityFocus(ctx context.Context) error
 	NotifyOutsideTouch(ctx context.Context) error
 	TakeScreenshotOfWindow(ctx context.Context, interactionId int32, listener window.ScreenCaptureScreenCaptureListener, callback IAccessibilityInteractionConnectionCallback) error
-	AttachAccessibilityOverlayToWindow(ctx context.Context, sc view.SurfaceControl, interactionId int32, callback IAccessibilityInteractionConnectionCallback) error
+	AttachAccessibilityOverlayToWindow(ctx context.Context, sc interface{}, interactionId int32, callback IAccessibilityInteractionConnectionCallback) error
 }
 
 type AccessibilityInteractionConnectionProxy struct {
@@ -66,7 +65,7 @@ func (p *AccessibilityInteractionConnectionProxy) FindAccessibilityNodeInfoByAcc
 	flags int32,
 	interrogatingPid int32,
 	interrogatingTid int64,
-	spec view.MagnificationSpec,
+	spec interface{},
 	matrixValues []float32,
 	arguments interface{},
 ) error {
@@ -78,14 +77,10 @@ func (p *AccessibilityInteractionConnectionProxy) FindAccessibilityNodeInfoByAcc
 		return _err
 	}
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteInt32(interrogatingPid)
 	_data.WriteInt64(interrogatingTid)
-	_data.WriteInt32(1)
-	if _err := spec.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	if matrixValues == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -114,7 +109,7 @@ func (p *AccessibilityInteractionConnectionProxy) FindAccessibilityNodeInfosByVi
 	flags int32,
 	interrogatingPid int32,
 	interrogatingTid int64,
-	spec view.MagnificationSpec,
+	spec interface{},
 	matrix []float32,
 ) error {
 	_data := parcel.New()
@@ -126,14 +121,10 @@ func (p *AccessibilityInteractionConnectionProxy) FindAccessibilityNodeInfosByVi
 		return _err
 	}
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteInt32(interrogatingPid)
 	_data.WriteInt64(interrogatingTid)
-	_data.WriteInt32(1)
-	if _err := spec.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	if matrix == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -162,7 +153,7 @@ func (p *AccessibilityInteractionConnectionProxy) FindAccessibilityNodeInfosByTe
 	flags int32,
 	interrogatingPid int32,
 	interrogatingTid int64,
-	spec view.MagnificationSpec,
+	spec interface{},
 	matrixValues []float32,
 ) error {
 	_data := parcel.New()
@@ -174,14 +165,10 @@ func (p *AccessibilityInteractionConnectionProxy) FindAccessibilityNodeInfosByTe
 		return _err
 	}
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteInt32(interrogatingPid)
 	_data.WriteInt64(interrogatingTid)
-	_data.WriteInt32(1)
-	if _err := spec.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	if matrixValues == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -210,7 +197,7 @@ func (p *AccessibilityInteractionConnectionProxy) FindFocus(
 	flags int32,
 	interrogatingPid int32,
 	interrogatingTid int64,
-	spec view.MagnificationSpec,
+	spec interface{},
 	matrixValues []float32,
 ) error {
 	_data := parcel.New()
@@ -222,14 +209,10 @@ func (p *AccessibilityInteractionConnectionProxy) FindFocus(
 		return _err
 	}
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteInt32(interrogatingPid)
 	_data.WriteInt64(interrogatingTid)
-	_data.WriteInt32(1)
-	if _err := spec.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	if matrixValues == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -258,7 +241,7 @@ func (p *AccessibilityInteractionConnectionProxy) FocusSearch(
 	flags int32,
 	interrogatingPid int32,
 	interrogatingTid int64,
-	spec view.MagnificationSpec,
+	spec interface{},
 	matrixValues []float32,
 ) error {
 	_data := parcel.New()
@@ -270,14 +253,10 @@ func (p *AccessibilityInteractionConnectionProxy) FocusSearch(
 		return _err
 	}
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteInt32(interrogatingPid)
 	_data.WriteInt64(interrogatingTid)
-	_data.WriteInt32(1)
-	if _err := spec.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	if matrixValues == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -312,7 +291,7 @@ func (p *AccessibilityInteractionConnectionProxy) PerformAccessibilityAction(
 	_data.WriteInt64(accessibilityNodeId)
 	_data.WriteInt32(action)
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteInt32(interrogatingPid)
 	_data.WriteInt64(interrogatingTid)
@@ -369,7 +348,7 @@ func (p *AccessibilityInteractionConnectionProxy) TakeScreenshotOfWindow(
 	if _err := listener.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnection, "takeScreenshotOfWindow")
 	if _err != nil {
@@ -382,18 +361,14 @@ func (p *AccessibilityInteractionConnectionProxy) TakeScreenshotOfWindow(
 
 func (p *AccessibilityInteractionConnectionProxy) AttachAccessibilityOverlayToWindow(
 	ctx context.Context,
-	sc view.SurfaceControl,
+	sc interface{},
 	interactionId int32,
 	callback IAccessibilityInteractionConnectionCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityInteractionConnection)
-	_data.WriteInt32(1)
-	if _err := sc.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInteractionConnection, "attachAccessibilityOverlayToWindow")
 	if _err != nil {
@@ -457,18 +432,7 @@ func (s *AccessibilityInteractionConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_spec view.MagnificationSpec
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_spec.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_spec interface{}
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_matrixValues []float32
 		_ = _arg_matrixValues
@@ -519,18 +483,7 @@ func (s *AccessibilityInteractionConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_spec view.MagnificationSpec
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_spec.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_spec interface{}
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_matrix []float32
 		_ = _arg_matrix
@@ -580,18 +533,7 @@ func (s *AccessibilityInteractionConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_spec view.MagnificationSpec
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_spec.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_spec interface{}
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_matrixValues []float32
 		_ = _arg_matrixValues
@@ -641,18 +583,7 @@ func (s *AccessibilityInteractionConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_spec view.MagnificationSpec
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_spec.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_spec interface{}
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_matrixValues []float32
 		_ = _arg_matrixValues
@@ -702,18 +633,7 @@ func (s *AccessibilityInteractionConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_spec view.MagnificationSpec
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_spec.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_spec interface{}
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_matrixValues []float32
 		_ = _arg_matrixValues
@@ -799,18 +719,7 @@ func (s *AccessibilityInteractionConnectionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_sc view.SurfaceControl
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_sc.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_sc interface{}
 		_arg_interactionId, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -824,4 +733,169 @@ func (s *AccessibilityInteractionConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAccessibilityInteractionConnectionServer is the server-side interface that user implementations
+// provide to NewAccessibilityInteractionConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccessibilityInteractionConnectionServer interface {
+	FindAccessibilityNodeInfoByAccessibilityId(ctx context.Context, accessibilityNodeId int64, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrixValues []float32, arguments interface{}) error
+	FindAccessibilityNodeInfosByViewId(ctx context.Context, accessibilityNodeId int64, viewId string, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrix []float32) error
+	FindAccessibilityNodeInfosByText(ctx context.Context, accessibilityNodeId int64, text string, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrixValues []float32) error
+	FindFocus(ctx context.Context, accessibilityNodeId int64, focusType int32, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrixValues []float32) error
+	FocusSearch(ctx context.Context, accessibilityNodeId int64, direction int32, bounds graphics.Region, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64, spec interface{}, matrixValues []float32) error
+	PerformAccessibilityAction(ctx context.Context, accessibilityNodeId int64, action int32, arguments interface{}, interactionId int32, callback IAccessibilityInteractionConnectionCallback, flags int32, interrogatingPid int32, interrogatingTid int64) error
+	ClearAccessibilityFocus(ctx context.Context) error
+	NotifyOutsideTouch(ctx context.Context) error
+	TakeScreenshotOfWindow(ctx context.Context, interactionId int32, listener window.ScreenCaptureScreenCaptureListener, callback IAccessibilityInteractionConnectionCallback) error
+	AttachAccessibilityOverlayToWindow(ctx context.Context, sc interface{}, interactionId int32, callback IAccessibilityInteractionConnectionCallback) error
+}
+
+type accessibilityInteractionConnectionStubWrapper struct {
+	impl       IAccessibilityInteractionConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) FindAccessibilityNodeInfoByAccessibilityId(
+	ctx context.Context,
+	accessibilityNodeId int64,
+	bounds graphics.Region,
+	interactionId int32,
+	callback IAccessibilityInteractionConnectionCallback,
+	flags int32,
+	interrogatingPid int32,
+	interrogatingTid int64,
+	spec interface{},
+	matrixValues []float32,
+	arguments interface{},
+) error {
+	return w.impl.FindAccessibilityNodeInfoByAccessibilityId(ctx, accessibilityNodeId, bounds, interactionId, callback, flags, interrogatingPid, interrogatingTid, spec, matrixValues, arguments)
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) FindAccessibilityNodeInfosByViewId(
+	ctx context.Context,
+	accessibilityNodeId int64,
+	viewId string,
+	bounds graphics.Region,
+	interactionId int32,
+	callback IAccessibilityInteractionConnectionCallback,
+	flags int32,
+	interrogatingPid int32,
+	interrogatingTid int64,
+	spec interface{},
+	matrix []float32,
+) error {
+	return w.impl.FindAccessibilityNodeInfosByViewId(ctx, accessibilityNodeId, viewId, bounds, interactionId, callback, flags, interrogatingPid, interrogatingTid, spec, matrix)
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) FindAccessibilityNodeInfosByText(
+	ctx context.Context,
+	accessibilityNodeId int64,
+	text string,
+	bounds graphics.Region,
+	interactionId int32,
+	callback IAccessibilityInteractionConnectionCallback,
+	flags int32,
+	interrogatingPid int32,
+	interrogatingTid int64,
+	spec interface{},
+	matrixValues []float32,
+) error {
+	return w.impl.FindAccessibilityNodeInfosByText(ctx, accessibilityNodeId, text, bounds, interactionId, callback, flags, interrogatingPid, interrogatingTid, spec, matrixValues)
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) FindFocus(
+	ctx context.Context,
+	accessibilityNodeId int64,
+	focusType int32,
+	bounds graphics.Region,
+	interactionId int32,
+	callback IAccessibilityInteractionConnectionCallback,
+	flags int32,
+	interrogatingPid int32,
+	interrogatingTid int64,
+	spec interface{},
+	matrixValues []float32,
+) error {
+	return w.impl.FindFocus(ctx, accessibilityNodeId, focusType, bounds, interactionId, callback, flags, interrogatingPid, interrogatingTid, spec, matrixValues)
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) FocusSearch(
+	ctx context.Context,
+	accessibilityNodeId int64,
+	direction int32,
+	bounds graphics.Region,
+	interactionId int32,
+	callback IAccessibilityInteractionConnectionCallback,
+	flags int32,
+	interrogatingPid int32,
+	interrogatingTid int64,
+	spec interface{},
+	matrixValues []float32,
+) error {
+	return w.impl.FocusSearch(ctx, accessibilityNodeId, direction, bounds, interactionId, callback, flags, interrogatingPid, interrogatingTid, spec, matrixValues)
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) PerformAccessibilityAction(
+	ctx context.Context,
+	accessibilityNodeId int64,
+	action int32,
+	arguments interface{},
+	interactionId int32,
+	callback IAccessibilityInteractionConnectionCallback,
+	flags int32,
+	interrogatingPid int32,
+	interrogatingTid int64,
+) error {
+	return w.impl.PerformAccessibilityAction(ctx, accessibilityNodeId, action, arguments, interactionId, callback, flags, interrogatingPid, interrogatingTid)
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) ClearAccessibilityFocus(
+	ctx context.Context,
+) error {
+	return w.impl.ClearAccessibilityFocus(ctx)
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) NotifyOutsideTouch(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyOutsideTouch(ctx)
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) TakeScreenshotOfWindow(
+	ctx context.Context,
+	interactionId int32,
+	listener window.ScreenCaptureScreenCaptureListener,
+	callback IAccessibilityInteractionConnectionCallback,
+) error {
+	return w.impl.TakeScreenshotOfWindow(ctx, interactionId, listener, callback)
+}
+
+func (w *accessibilityInteractionConnectionStubWrapper) AttachAccessibilityOverlayToWindow(
+	ctx context.Context,
+	sc interface{},
+	interactionId int32,
+	callback IAccessibilityInteractionConnectionCallback,
+) error {
+	return w.impl.AttachAccessibilityOverlayToWindow(ctx, sc, interactionId, callback)
+}
+
+var _ IAccessibilityInteractionConnection = (*accessibilityInteractionConnectionStubWrapper)(nil)
+
+// NewAccessibilityInteractionConnectionStub creates a server-side IAccessibilityInteractionConnection wrapping the given
+// server implementation. The returned value satisfies IAccessibilityInteractionConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccessibilityInteractionConnectionStub(
+	impl IAccessibilityInteractionConnectionServer,
+) IAccessibilityInteractionConnection {
+	wrapper := &accessibilityInteractionConnectionStubWrapper{impl: impl}
+	stub := &AccessibilityInteractionConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

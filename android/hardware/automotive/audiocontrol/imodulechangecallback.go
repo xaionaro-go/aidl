@@ -91,3 +91,42 @@ func (s *ModuleChangeCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IModuleChangeCallbackServer is the server-side interface that user implementations
+// provide to NewModuleChangeCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IModuleChangeCallbackServer interface {
+	OnAudioPortsChanged(ctx context.Context, audioPorts []common.AudioPort) error
+}
+
+type moduleChangeCallbackStubWrapper struct {
+	impl       IModuleChangeCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *moduleChangeCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *moduleChangeCallbackStubWrapper) OnAudioPortsChanged(
+	ctx context.Context,
+	audioPorts []common.AudioPort,
+) error {
+	return w.impl.OnAudioPortsChanged(ctx, audioPorts)
+}
+
+var _ IModuleChangeCallback = (*moduleChangeCallbackStubWrapper)(nil)
+
+// NewModuleChangeCallbackStub creates a server-side IModuleChangeCallback wrapping the given
+// server implementation. The returned value satisfies IModuleChangeCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewModuleChangeCallbackStub(
+	impl IModuleChangeCallbackServer,
+) IModuleChangeCallback {
+	wrapper := &moduleChangeCallbackStubWrapper{impl: impl}
+	stub := &ModuleChangeCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

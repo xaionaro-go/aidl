@@ -47,8 +47,8 @@ func (p *TextToSpeechSessionCallbackProxy) OnConnected(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechSessionCallback)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
-	_data.WriteStrongBinder(serviceBinder.Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, serviceBinder, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextToSpeechSessionCallback, "onConnected")
 	if _err != nil {
@@ -139,4 +139,59 @@ func (s *TextToSpeechSessionCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITextToSpeechSessionCallbackServer is the server-side interface that user implementations
+// provide to NewTextToSpeechSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITextToSpeechSessionCallbackServer interface {
+	OnConnected(ctx context.Context, session ITextToSpeechSession, serviceBinder binder.IBinder) error
+	OnDisconnected(ctx context.Context) error
+	OnError(ctx context.Context, errorInfo string) error
+}
+
+type textToSpeechSessionCallbackStubWrapper struct {
+	impl       ITextToSpeechSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *textToSpeechSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *textToSpeechSessionCallbackStubWrapper) OnConnected(
+	ctx context.Context,
+	session ITextToSpeechSession,
+	serviceBinder binder.IBinder,
+) error {
+	return w.impl.OnConnected(ctx, session, serviceBinder)
+}
+
+func (w *textToSpeechSessionCallbackStubWrapper) OnDisconnected(
+	ctx context.Context,
+) error {
+	return w.impl.OnDisconnected(ctx)
+}
+
+func (w *textToSpeechSessionCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorInfo string,
+) error {
+	return w.impl.OnError(ctx, errorInfo)
+}
+
+var _ ITextToSpeechSessionCallback = (*textToSpeechSessionCallbackStubWrapper)(nil)
+
+// NewTextToSpeechSessionCallbackStub creates a server-side ITextToSpeechSessionCallback wrapping the given
+// server implementation. The returned value satisfies ITextToSpeechSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTextToSpeechSessionCallbackStub(
+	impl ITextToSpeechSessionCallbackServer,
+) ITextToSpeechSessionCallback {
+	wrapper := &textToSpeechSessionCallbackStubWrapper{impl: impl}
+	stub := &TextToSpeechSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

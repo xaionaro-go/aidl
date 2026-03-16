@@ -111,3 +111,43 @@ func (s *SystemSuspendStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISystemSuspendServer is the server-side interface that user implementations
+// provide to NewSystemSuspendStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISystemSuspendServer interface {
+	AcquireWakeLock(ctx context.Context, type_ WakeLockType, name string) (IWakeLock, error)
+}
+
+type systemSuspendStubWrapper struct {
+	impl       ISystemSuspendServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *systemSuspendStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *systemSuspendStubWrapper) AcquireWakeLock(
+	ctx context.Context,
+	type_ WakeLockType,
+	name string,
+) (IWakeLock, error) {
+	return w.impl.AcquireWakeLock(ctx, type_, name)
+}
+
+var _ ISystemSuspend = (*systemSuspendStubWrapper)(nil)
+
+// NewSystemSuspendStub creates a server-side ISystemSuspend wrapping the given
+// server implementation. The returned value satisfies ISystemSuspend
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSystemSuspendStub(
+	impl ISystemSuspendServer,
+) ISystemSuspend {
+	wrapper := &systemSuspendStubWrapper{impl: impl}
+	stub := &SystemSuspendStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

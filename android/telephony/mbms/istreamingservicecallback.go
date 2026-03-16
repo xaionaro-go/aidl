@@ -208,3 +208,75 @@ func (s *StreamingServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStreamingServiceCallbackServer is the server-side interface that user implementations
+// provide to NewStreamingServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStreamingServiceCallbackServer interface {
+	OnError(ctx context.Context, errorCode int32, message string) error
+	OnStreamStateUpdated(ctx context.Context, state int32, reason int32) error
+	OnMediaDescriptionUpdated(ctx context.Context) error
+	OnBroadcastSignalStrengthUpdated(ctx context.Context, signalStrength int32) error
+	OnStreamMethodUpdated(ctx context.Context, methodType int32) error
+}
+
+type streamingServiceCallbackStubWrapper struct {
+	impl       IStreamingServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *streamingServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *streamingServiceCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorCode, message)
+}
+
+func (w *streamingServiceCallbackStubWrapper) OnStreamStateUpdated(
+	ctx context.Context,
+	state int32,
+	reason int32,
+) error {
+	return w.impl.OnStreamStateUpdated(ctx, state, reason)
+}
+
+func (w *streamingServiceCallbackStubWrapper) OnMediaDescriptionUpdated(
+	ctx context.Context,
+) error {
+	return w.impl.OnMediaDescriptionUpdated(ctx)
+}
+
+func (w *streamingServiceCallbackStubWrapper) OnBroadcastSignalStrengthUpdated(
+	ctx context.Context,
+	signalStrength int32,
+) error {
+	return w.impl.OnBroadcastSignalStrengthUpdated(ctx, signalStrength)
+}
+
+func (w *streamingServiceCallbackStubWrapper) OnStreamMethodUpdated(
+	ctx context.Context,
+	methodType int32,
+) error {
+	return w.impl.OnStreamMethodUpdated(ctx, methodType)
+}
+
+var _ IStreamingServiceCallback = (*streamingServiceCallbackStubWrapper)(nil)
+
+// NewStreamingServiceCallbackStub creates a server-side IStreamingServiceCallback wrapping the given
+// server implementation. The returned value satisfies IStreamingServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStreamingServiceCallbackStub(
+	impl IStreamingServiceCallbackServer,
+) IStreamingServiceCallback {
+	wrapper := &streamingServiceCallbackStubWrapper{impl: impl}
+	stub := &StreamingServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

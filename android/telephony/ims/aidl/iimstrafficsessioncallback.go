@@ -118,3 +118,49 @@ func (s *ImsTrafficSessionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsTrafficSessionCallbackServer is the server-side interface that user implementations
+// provide to NewImsTrafficSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsTrafficSessionCallbackServer interface {
+	OnReady(ctx context.Context) error
+	OnError(ctx context.Context, info ims.ConnectionFailureInfo) error
+}
+
+type imsTrafficSessionCallbackStubWrapper struct {
+	impl       IImsTrafficSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsTrafficSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsTrafficSessionCallbackStubWrapper) OnReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnReady(ctx)
+}
+
+func (w *imsTrafficSessionCallbackStubWrapper) OnError(
+	ctx context.Context,
+	info ims.ConnectionFailureInfo,
+) error {
+	return w.impl.OnError(ctx, info)
+}
+
+var _ IImsTrafficSessionCallback = (*imsTrafficSessionCallbackStubWrapper)(nil)
+
+// NewImsTrafficSessionCallbackStub creates a server-side IImsTrafficSessionCallback wrapping the given
+// server implementation. The returned value satisfies IImsTrafficSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsTrafficSessionCallbackStub(
+	impl IImsTrafficSessionCallbackServer,
+) IImsTrafficSessionCallback {
+	wrapper := &imsTrafficSessionCallbackStubWrapper{impl: impl}
+	stub := &ImsTrafficSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

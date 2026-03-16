@@ -49,3 +49,34 @@ func (s *DataSourceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDataSourceServer is the server-side interface that user implementations
+// provide to NewDataSourceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataSourceServer interface {
+}
+
+type dataSourceStubWrapper struct {
+	impl       IDataSourceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataSourceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IDataSource = (*dataSourceStubWrapper)(nil)
+
+// NewDataSourceStub creates a server-side IDataSource wrapping the given
+// server implementation. The returned value satisfies IDataSource
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataSourceStub(
+	impl IDataSourceServer,
+) IDataSource {
+	wrapper := &dataSourceStubWrapper{impl: impl}
+	stub := &DataSourceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

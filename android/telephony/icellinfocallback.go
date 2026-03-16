@@ -132,3 +132,52 @@ func (s *CellInfoCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICellInfoCallbackServer is the server-side interface that user implementations
+// provide to NewCellInfoCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICellInfoCallbackServer interface {
+	OnCellInfo(ctx context.Context, state []CellInfo) error
+	OnError(ctx context.Context, errorCode int32, exceptionName string, message string) error
+}
+
+type cellInfoCallbackStubWrapper struct {
+	impl       ICellInfoCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cellInfoCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cellInfoCallbackStubWrapper) OnCellInfo(
+	ctx context.Context,
+	state []CellInfo,
+) error {
+	return w.impl.OnCellInfo(ctx, state)
+}
+
+func (w *cellInfoCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+	exceptionName string,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorCode, exceptionName, message)
+}
+
+var _ ICellInfoCallback = (*cellInfoCallbackStubWrapper)(nil)
+
+// NewCellInfoCallbackStub creates a server-side ICellInfoCallback wrapping the given
+// server implementation. The returned value satisfies ICellInfoCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCellInfoCallbackStub(
+	impl ICellInfoCallbackServer,
+) ICellInfoCallback {
+	wrapper := &cellInfoCallbackStubWrapper{impl: impl}
+	stub := &CellInfoCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

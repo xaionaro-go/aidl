@@ -44,7 +44,7 @@ func (p *ControlsActionCallbackProxy) Accept(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIControlsActionCallback)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(controlId)
 	_data.WriteInt32(response)
 
@@ -92,4 +92,45 @@ func (s *ControlsActionCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IControlsActionCallbackServer is the server-side interface that user implementations
+// provide to NewControlsActionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IControlsActionCallbackServer interface {
+	Accept(ctx context.Context, token binder.IBinder, controlId string, response int32) error
+}
+
+type controlsActionCallbackStubWrapper struct {
+	impl       IControlsActionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *controlsActionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *controlsActionCallbackStubWrapper) Accept(
+	ctx context.Context,
+	token binder.IBinder,
+	controlId string,
+	response int32,
+) error {
+	return w.impl.Accept(ctx, token, controlId, response)
+}
+
+var _ IControlsActionCallback = (*controlsActionCallbackStubWrapper)(nil)
+
+// NewControlsActionCallbackStub creates a server-side IControlsActionCallback wrapping the given
+// server implementation. The returned value satisfies IControlsActionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewControlsActionCallbackStub(
+	impl IControlsActionCallbackServer,
+) IControlsActionCallback {
+	wrapper := &controlsActionCallbackStubWrapper{impl: impl}
+	stub := &ControlsActionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

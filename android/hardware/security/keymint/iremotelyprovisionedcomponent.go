@@ -369,3 +369,72 @@ func (s *RemotelyProvisionedComponentStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemotelyProvisionedComponentServer is the server-side interface that user implementations
+// provide to NewRemotelyProvisionedComponentStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemotelyProvisionedComponentServer interface {
+	GetHardwareInfo(ctx context.Context) (RpcHardwareInfo, error)
+	GenerateEcdsaP256KeyPair(ctx context.Context, testMode bool, macedPublicKey MacedPublicKey) ([]byte, error)
+	GenerateCertificateRequest(ctx context.Context, testMode bool, keysToSign []MacedPublicKey, endpointEncryptionCertChain []byte, challenge []byte, deviceInfo DeviceInfo, protectedData ProtectedData) ([]byte, error)
+	GenerateCertificateRequestV2(ctx context.Context, keysToSign []MacedPublicKey, challenge []byte) ([]byte, error)
+}
+
+type remotelyProvisionedComponentStubWrapper struct {
+	impl       IRemotelyProvisionedComponentServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remotelyProvisionedComponentStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remotelyProvisionedComponentStubWrapper) GetHardwareInfo(
+	ctx context.Context,
+) (RpcHardwareInfo, error) {
+	return w.impl.GetHardwareInfo(ctx)
+}
+
+func (w *remotelyProvisionedComponentStubWrapper) GenerateEcdsaP256KeyPair(
+	ctx context.Context,
+	testMode bool,
+	macedPublicKey MacedPublicKey,
+) ([]byte, error) {
+	return w.impl.GenerateEcdsaP256KeyPair(ctx, testMode, macedPublicKey)
+}
+
+func (w *remotelyProvisionedComponentStubWrapper) GenerateCertificateRequest(
+	ctx context.Context,
+	testMode bool,
+	keysToSign []MacedPublicKey,
+	endpointEncryptionCertChain []byte,
+	challenge []byte,
+	deviceInfo DeviceInfo,
+	protectedData ProtectedData,
+) ([]byte, error) {
+	return w.impl.GenerateCertificateRequest(ctx, testMode, keysToSign, endpointEncryptionCertChain, challenge, deviceInfo, protectedData)
+}
+
+func (w *remotelyProvisionedComponentStubWrapper) GenerateCertificateRequestV2(
+	ctx context.Context,
+	keysToSign []MacedPublicKey,
+	challenge []byte,
+) ([]byte, error) {
+	return w.impl.GenerateCertificateRequestV2(ctx, keysToSign, challenge)
+}
+
+var _ IRemotelyProvisionedComponent = (*remotelyProvisionedComponentStubWrapper)(nil)
+
+// NewRemotelyProvisionedComponentStub creates a server-side IRemotelyProvisionedComponent wrapping the given
+// server implementation. The returned value satisfies IRemotelyProvisionedComponent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemotelyProvisionedComponentStub(
+	impl IRemotelyProvisionedComponentServer,
+) IRemotelyProvisionedComponent {
+	wrapper := &remotelyProvisionedComponentStubWrapper{impl: impl}
+	stub := &RemotelyProvisionedComponentStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

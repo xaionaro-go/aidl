@@ -101,7 +101,7 @@ func (p *NetworkManagementServiceProxy) RegisterObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
-	_data.WriteStrongBinder(obs.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, obs.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "registerObserver")
 	if _err != nil {
@@ -127,7 +127,7 @@ func (p *NetworkManagementServiceProxy) UnregisterObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkManagementService)
-	_data.WriteStrongBinder(obs.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, obs.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkManagementService, "unregisterObserver")
 	if _err != nil {
@@ -1502,4 +1502,284 @@ func (s *NetworkManagementServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// INetworkManagementServiceServer is the server-side interface that user implementations
+// provide to NewNetworkManagementServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkManagementServiceServer interface {
+	RegisterObserver(ctx context.Context, obs net.INetworkManagementEventObserver) error
+	UnregisterObserver(ctx context.Context, obs net.INetworkManagementEventObserver) error
+	ListInterfaces(ctx context.Context) ([]string, error)
+	GetInterfaceConfig(ctx context.Context, iface string) (net.InterfaceConfiguration, error)
+	SetInterfaceConfig(ctx context.Context, iface string, cfg net.InterfaceConfiguration) error
+	ClearInterfaceAddresses(ctx context.Context, iface string) error
+	SetInterfaceDown(ctx context.Context, iface string) error
+	SetInterfaceUp(ctx context.Context, iface string) error
+	SetInterfaceIpv6PrivacyExtensions(ctx context.Context, iface string, enable bool) error
+	DisableIpv6(ctx context.Context, iface string) error
+	EnableIpv6(ctx context.Context, iface string) error
+	SetIPv6AddrGenMode(ctx context.Context, iface string, mode int32) error
+	Shutdown(ctx context.Context) error
+	SetInterfaceQuota(ctx context.Context, iface string, quotaBytes int64) error
+	RemoveInterfaceQuota(ctx context.Context, iface string) error
+	SetInterfaceAlert(ctx context.Context, iface string, alertBytes int64) error
+	RemoveInterfaceAlert(ctx context.Context, iface string) error
+	SetUidOnMeteredNetworkDenylist(ctx context.Context, uid int32, enable bool) error
+	SetUidOnMeteredNetworkAllowlist(ctx context.Context, uid int32, enable bool) error
+	SetDataSaverModeEnabled(ctx context.Context, enable bool) (bool, error)
+	SetUidCleartextNetworkPolicy(ctx context.Context, uid int32, policy int32) error
+	IsBandwidthControlEnabled(ctx context.Context) (bool, error)
+	SetFirewallEnabled(ctx context.Context, enabled bool) error
+	IsFirewallEnabled(ctx context.Context) (bool, error)
+	SetFirewallUidRule(ctx context.Context, chain int32, uid int32, rule int32) error
+	SetFirewallUidRules(ctx context.Context, chain int32, uids []int32, rules []int32) error
+	SetFirewallChainEnabled(ctx context.Context, chain int32, enable bool) error
+	AllowProtect(ctx context.Context, uid int32) error
+	DenyProtect(ctx context.Context, uid int32) error
+	IsNetworkRestricted(ctx context.Context, uid int32) (bool, error)
+}
+
+type networkManagementServiceStubWrapper struct {
+	impl       INetworkManagementServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkManagementServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkManagementServiceStubWrapper) RegisterObserver(
+	ctx context.Context,
+	obs net.INetworkManagementEventObserver,
+) error {
+	return w.impl.RegisterObserver(ctx, obs)
+}
+
+func (w *networkManagementServiceStubWrapper) UnregisterObserver(
+	ctx context.Context,
+	obs net.INetworkManagementEventObserver,
+) error {
+	return w.impl.UnregisterObserver(ctx, obs)
+}
+
+func (w *networkManagementServiceStubWrapper) ListInterfaces(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.ListInterfaces(ctx)
+}
+
+func (w *networkManagementServiceStubWrapper) GetInterfaceConfig(
+	ctx context.Context,
+	iface string,
+) (net.InterfaceConfiguration, error) {
+	return w.impl.GetInterfaceConfig(ctx, iface)
+}
+
+func (w *networkManagementServiceStubWrapper) SetInterfaceConfig(
+	ctx context.Context,
+	iface string,
+	cfg net.InterfaceConfiguration,
+) error {
+	return w.impl.SetInterfaceConfig(ctx, iface, cfg)
+}
+
+func (w *networkManagementServiceStubWrapper) ClearInterfaceAddresses(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.ClearInterfaceAddresses(ctx, iface)
+}
+
+func (w *networkManagementServiceStubWrapper) SetInterfaceDown(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.SetInterfaceDown(ctx, iface)
+}
+
+func (w *networkManagementServiceStubWrapper) SetInterfaceUp(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.SetInterfaceUp(ctx, iface)
+}
+
+func (w *networkManagementServiceStubWrapper) SetInterfaceIpv6PrivacyExtensions(
+	ctx context.Context,
+	iface string,
+	enable bool,
+) error {
+	return w.impl.SetInterfaceIpv6PrivacyExtensions(ctx, iface, enable)
+}
+
+func (w *networkManagementServiceStubWrapper) DisableIpv6(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.DisableIpv6(ctx, iface)
+}
+
+func (w *networkManagementServiceStubWrapper) EnableIpv6(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.EnableIpv6(ctx, iface)
+}
+
+func (w *networkManagementServiceStubWrapper) SetIPv6AddrGenMode(
+	ctx context.Context,
+	iface string,
+	mode int32,
+) error {
+	return w.impl.SetIPv6AddrGenMode(ctx, iface, mode)
+}
+
+func (w *networkManagementServiceStubWrapper) Shutdown(
+	ctx context.Context,
+) error {
+	return w.impl.Shutdown(ctx)
+}
+
+func (w *networkManagementServiceStubWrapper) SetInterfaceQuota(
+	ctx context.Context,
+	iface string,
+	quotaBytes int64,
+) error {
+	return w.impl.SetInterfaceQuota(ctx, iface, quotaBytes)
+}
+
+func (w *networkManagementServiceStubWrapper) RemoveInterfaceQuota(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.RemoveInterfaceQuota(ctx, iface)
+}
+
+func (w *networkManagementServiceStubWrapper) SetInterfaceAlert(
+	ctx context.Context,
+	iface string,
+	alertBytes int64,
+) error {
+	return w.impl.SetInterfaceAlert(ctx, iface, alertBytes)
+}
+
+func (w *networkManagementServiceStubWrapper) RemoveInterfaceAlert(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.RemoveInterfaceAlert(ctx, iface)
+}
+
+func (w *networkManagementServiceStubWrapper) SetUidOnMeteredNetworkDenylist(
+	ctx context.Context,
+	uid int32,
+	enable bool,
+) error {
+	return w.impl.SetUidOnMeteredNetworkDenylist(ctx, uid, enable)
+}
+
+func (w *networkManagementServiceStubWrapper) SetUidOnMeteredNetworkAllowlist(
+	ctx context.Context,
+	uid int32,
+	enable bool,
+) error {
+	return w.impl.SetUidOnMeteredNetworkAllowlist(ctx, uid, enable)
+}
+
+func (w *networkManagementServiceStubWrapper) SetDataSaverModeEnabled(
+	ctx context.Context,
+	enable bool,
+) (bool, error) {
+	return w.impl.SetDataSaverModeEnabled(ctx, enable)
+}
+
+func (w *networkManagementServiceStubWrapper) SetUidCleartextNetworkPolicy(
+	ctx context.Context,
+	uid int32,
+	policy int32,
+) error {
+	return w.impl.SetUidCleartextNetworkPolicy(ctx, uid, policy)
+}
+
+func (w *networkManagementServiceStubWrapper) IsBandwidthControlEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBandwidthControlEnabled(ctx)
+}
+
+func (w *networkManagementServiceStubWrapper) SetFirewallEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetFirewallEnabled(ctx, enabled)
+}
+
+func (w *networkManagementServiceStubWrapper) IsFirewallEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsFirewallEnabled(ctx)
+}
+
+func (w *networkManagementServiceStubWrapper) SetFirewallUidRule(
+	ctx context.Context,
+	chain int32,
+	uid int32,
+	rule int32,
+) error {
+	return w.impl.SetFirewallUidRule(ctx, chain, uid, rule)
+}
+
+func (w *networkManagementServiceStubWrapper) SetFirewallUidRules(
+	ctx context.Context,
+	chain int32,
+	uids []int32,
+	rules []int32,
+) error {
+	return w.impl.SetFirewallUidRules(ctx, chain, uids, rules)
+}
+
+func (w *networkManagementServiceStubWrapper) SetFirewallChainEnabled(
+	ctx context.Context,
+	chain int32,
+	enable bool,
+) error {
+	return w.impl.SetFirewallChainEnabled(ctx, chain, enable)
+}
+
+func (w *networkManagementServiceStubWrapper) AllowProtect(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.AllowProtect(ctx, uid)
+}
+
+func (w *networkManagementServiceStubWrapper) DenyProtect(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.DenyProtect(ctx, uid)
+}
+
+func (w *networkManagementServiceStubWrapper) IsNetworkRestricted(
+	ctx context.Context,
+	uid int32,
+) (bool, error) {
+	return w.impl.IsNetworkRestricted(ctx, uid)
+}
+
+var _ INetworkManagementService = (*networkManagementServiceStubWrapper)(nil)
+
+// NewNetworkManagementServiceStub creates a server-side INetworkManagementService wrapping the given
+// server implementation. The returned value satisfies INetworkManagementService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkManagementServiceStub(
+	impl INetworkManagementServiceServer,
+) INetworkManagementService {
+	wrapper := &networkManagementServiceStubWrapper{impl: impl}
+	stub := &NetworkManagementServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

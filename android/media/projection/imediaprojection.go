@@ -3,6 +3,7 @@ package projection
 import (
 	"context"
 	"fmt"
+	app "github.com/xaionaro-go/binder/android/app"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -39,10 +40,10 @@ type IMediaProjection interface {
 	ApplyVirtualDisplayFlags(ctx context.Context, flags int32) (int32, error)
 	RegisterCallback(ctx context.Context, callback IMediaProjectionCallback) error
 	UnregisterCallback(ctx context.Context, callback IMediaProjectionCallback) error
-	GetLaunchCookie(ctx context.Context) (interface{}, error)
+	GetLaunchCookie(ctx context.Context) (app.ActivityOptionsLaunchCookie, error)
 	GetTaskId(ctx context.Context) (int32, error)
 	GetDisplayId(ctx context.Context) (int32, error)
-	SetLaunchCookie(ctx context.Context, launchCookie interface{}) error
+	SetLaunchCookie(ctx context.Context, launchCookie app.ActivityOptionsLaunchCookie) error
 	SetTaskId(ctx context.Context, taskId int32) error
 	IsValid(ctx context.Context) (bool, error)
 	NotifyVirtualDisplayCreated(ctx context.Context, displayId int32) error
@@ -70,7 +71,7 @@ func (p *MediaProjectionProxy) Start(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjection)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjection, "start")
 	if _err != nil {
@@ -240,7 +241,7 @@ func (p *MediaProjectionProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjection)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjection, "registerCallback")
 	if _err != nil {
@@ -266,7 +267,7 @@ func (p *MediaProjectionProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjection)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjection, "unregisterCallback")
 	if _err != nil {
@@ -288,8 +289,8 @@ func (p *MediaProjectionProxy) UnregisterCallback(
 
 func (p *MediaProjectionProxy) GetLaunchCookie(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (app.ActivityOptionsLaunchCookie, error) {
+	var _result app.ActivityOptionsLaunchCookie
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjection)
 
@@ -308,6 +309,15 @@ func (p *MediaProjectionProxy) GetLaunchCookie(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -371,10 +381,14 @@ func (p *MediaProjectionProxy) GetDisplayId(
 
 func (p *MediaProjectionProxy) SetLaunchCookie(
 	ctx context.Context,
-	launchCookie interface{},
+	launchCookie app.ActivityOptionsLaunchCookie,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjection)
+	_data.WriteInt32(1)
+	if _err := launchCookie.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjection, "setLaunchCookie")
 	if _err != nil {
@@ -618,7 +632,10 @@ func (s *MediaProjectionStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIMediaProjectionGetTaskId:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -650,7 +667,18 @@ func (s *MediaProjectionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_launchCookie interface{}
+		var _arg_launchCookie app.ActivityOptionsLaunchCookie
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_launchCookie.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.SetLaunchCookie(ctx, _arg_launchCookie)
 		_reply := parcel.New()
 		if _err != nil {
@@ -707,4 +735,148 @@ func (s *MediaProjectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaProjectionServer is the server-side interface that user implementations
+// provide to NewMediaProjectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaProjectionServer interface {
+	Start(ctx context.Context, callback IMediaProjectionCallback) error
+	Stop(ctx context.Context, stopReason StopReason) error
+	CanProjectAudio(ctx context.Context) (bool, error)
+	CanProjectVideo(ctx context.Context) (bool, error)
+	CanProjectSecureVideo(ctx context.Context) (bool, error)
+	ApplyVirtualDisplayFlags(ctx context.Context, flags int32) (int32, error)
+	RegisterCallback(ctx context.Context, callback IMediaProjectionCallback) error
+	UnregisterCallback(ctx context.Context, callback IMediaProjectionCallback) error
+	GetLaunchCookie(ctx context.Context) (app.ActivityOptionsLaunchCookie, error)
+	GetTaskId(ctx context.Context) (int32, error)
+	GetDisplayId(ctx context.Context) (int32, error)
+	SetLaunchCookie(ctx context.Context, launchCookie app.ActivityOptionsLaunchCookie) error
+	SetTaskId(ctx context.Context, taskId int32) error
+	IsValid(ctx context.Context) (bool, error)
+	NotifyVirtualDisplayCreated(ctx context.Context, displayId int32) error
+}
+
+type mediaProjectionStubWrapper struct {
+	impl       IMediaProjectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaProjectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaProjectionStubWrapper) Start(
+	ctx context.Context,
+	callback IMediaProjectionCallback,
+) error {
+	return w.impl.Start(ctx, callback)
+}
+
+func (w *mediaProjectionStubWrapper) Stop(
+	ctx context.Context,
+	stopReason StopReason,
+) error {
+	return w.impl.Stop(ctx, stopReason)
+}
+
+func (w *mediaProjectionStubWrapper) CanProjectAudio(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanProjectAudio(ctx)
+}
+
+func (w *mediaProjectionStubWrapper) CanProjectVideo(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanProjectVideo(ctx)
+}
+
+func (w *mediaProjectionStubWrapper) CanProjectSecureVideo(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanProjectSecureVideo(ctx)
+}
+
+func (w *mediaProjectionStubWrapper) ApplyVirtualDisplayFlags(
+	ctx context.Context,
+	flags int32,
+) (int32, error) {
+	return w.impl.ApplyVirtualDisplayFlags(ctx, flags)
+}
+
+func (w *mediaProjectionStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IMediaProjectionCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *mediaProjectionStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback IMediaProjectionCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+func (w *mediaProjectionStubWrapper) GetLaunchCookie(
+	ctx context.Context,
+) (app.ActivityOptionsLaunchCookie, error) {
+	return w.impl.GetLaunchCookie(ctx)
+}
+
+func (w *mediaProjectionStubWrapper) GetTaskId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetTaskId(ctx)
+}
+
+func (w *mediaProjectionStubWrapper) GetDisplayId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDisplayId(ctx)
+}
+
+func (w *mediaProjectionStubWrapper) SetLaunchCookie(
+	ctx context.Context,
+	launchCookie app.ActivityOptionsLaunchCookie,
+) error {
+	return w.impl.SetLaunchCookie(ctx, launchCookie)
+}
+
+func (w *mediaProjectionStubWrapper) SetTaskId(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.SetTaskId(ctx, taskId)
+}
+
+func (w *mediaProjectionStubWrapper) IsValid(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsValid(ctx)
+}
+
+func (w *mediaProjectionStubWrapper) NotifyVirtualDisplayCreated(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.NotifyVirtualDisplayCreated(ctx, displayId)
+}
+
+var _ IMediaProjection = (*mediaProjectionStubWrapper)(nil)
+
+// NewMediaProjectionStub creates a server-side IMediaProjection wrapping the given
+// server implementation. The returned value satisfies IMediaProjection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaProjectionStub(
+	impl IMediaProjectionServer,
+) IMediaProjection {
+	wrapper := &mediaProjectionStubWrapper{impl: impl}
+	stub := &MediaProjectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

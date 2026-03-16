@@ -131,3 +131,52 @@ func (s *FeatureDetailsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFeatureDetailsCallbackServer is the server-side interface that user implementations
+// provide to NewFeatureDetailsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFeatureDetailsCallbackServer interface {
+	OnSuccess(ctx context.Context, result FeatureDetails) error
+	OnFailure(ctx context.Context, errorCode int32, errorMessage string, errorParams interface{}) error
+}
+
+type featureDetailsCallbackStubWrapper struct {
+	impl       IFeatureDetailsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *featureDetailsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *featureDetailsCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result FeatureDetails,
+) error {
+	return w.impl.OnSuccess(ctx, result)
+}
+
+func (w *featureDetailsCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	errorCode int32,
+	errorMessage string,
+	errorParams interface{},
+) error {
+	return w.impl.OnFailure(ctx, errorCode, errorMessage, errorParams)
+}
+
+var _ IFeatureDetailsCallback = (*featureDetailsCallbackStubWrapper)(nil)
+
+// NewFeatureDetailsCallbackStub creates a server-side IFeatureDetailsCallback wrapping the given
+// server implementation. The returned value satisfies IFeatureDetailsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFeatureDetailsCallbackStub(
+	impl IFeatureDetailsCallbackServer,
+) IFeatureDetailsCallback {
+	wrapper := &featureDetailsCallbackStubWrapper{impl: impl}
+	stub := &FeatureDetailsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

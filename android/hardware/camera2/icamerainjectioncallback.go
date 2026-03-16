@@ -89,3 +89,42 @@ func (s *CameraInjectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraInjectionCallbackServer is the server-side interface that user implementations
+// provide to NewCameraInjectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraInjectionCallbackServer interface {
+	OnInjectionError(ctx context.Context, errorCode int32) error
+}
+
+type cameraInjectionCallbackStubWrapper struct {
+	impl       ICameraInjectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraInjectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraInjectionCallbackStubWrapper) OnInjectionError(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.OnInjectionError(ctx, errorCode)
+}
+
+var _ ICameraInjectionCallback = (*cameraInjectionCallbackStubWrapper)(nil)
+
+// NewCameraInjectionCallbackStub creates a server-side ICameraInjectionCallback wrapping the given
+// server implementation. The returned value satisfies ICameraInjectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraInjectionCallbackStub(
+	impl ICameraInjectionCallbackServer,
+) ICameraInjectionCallback {
+	wrapper := &cameraInjectionCallbackStubWrapper{impl: impl}
+	stub := &CameraInjectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

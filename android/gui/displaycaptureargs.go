@@ -23,7 +23,11 @@ func (s *DisplayCaptureArgs) MarshalParcel(
 	if _err := s.CaptureArgs.MarshalParcel(p); _err != nil {
 		return _err
 	}
-	p.WriteStrongBinder(s.DisplayToken.Handle())
+	if s.DisplayToken == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.DisplayToken.Handle())
+	}
 	p.WriteInt32(s.Width)
 	p.WriteInt32(s.Height)
 

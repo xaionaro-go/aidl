@@ -300,3 +300,87 @@ func (s *RadioModemIndicationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioModemIndicationServer is the server-side interface that user implementations
+// provide to NewRadioModemIndicationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioModemIndicationServer interface {
+	HardwareConfigChanged(ctx context.Context, type_ radio.RadioIndicationType, configs []HardwareConfig) error
+	ModemReset(ctx context.Context, type_ radio.RadioIndicationType, reason string) error
+	RadioCapabilityIndication(ctx context.Context, type_ radio.RadioIndicationType, rc RadioCapability) error
+	RadioStateChanged(ctx context.Context, type_ radio.RadioIndicationType, radioState RadioState) error
+	RilConnected(ctx context.Context, type_ radio.RadioIndicationType) error
+	OnImeiMappingChanged(ctx context.Context, type_ radio.RadioIndicationType, imeiInfo ImeiInfo) error
+}
+
+type radioModemIndicationStubWrapper struct {
+	impl       IRadioModemIndicationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioModemIndicationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioModemIndicationStubWrapper) HardwareConfigChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	configs []HardwareConfig,
+) error {
+	return w.impl.HardwareConfigChanged(ctx, type_, configs)
+}
+
+func (w *radioModemIndicationStubWrapper) ModemReset(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	reason string,
+) error {
+	return w.impl.ModemReset(ctx, type_, reason)
+}
+
+func (w *radioModemIndicationStubWrapper) RadioCapabilityIndication(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	rc RadioCapability,
+) error {
+	return w.impl.RadioCapabilityIndication(ctx, type_, rc)
+}
+
+func (w *radioModemIndicationStubWrapper) RadioStateChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	radioState RadioState,
+) error {
+	return w.impl.RadioStateChanged(ctx, type_, radioState)
+}
+
+func (w *radioModemIndicationStubWrapper) RilConnected(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.RilConnected(ctx, type_)
+}
+
+func (w *radioModemIndicationStubWrapper) OnImeiMappingChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	imeiInfo ImeiInfo,
+) error {
+	return w.impl.OnImeiMappingChanged(ctx, type_, imeiInfo)
+}
+
+var _ IRadioModemIndication = (*radioModemIndicationStubWrapper)(nil)
+
+// NewRadioModemIndicationStub creates a server-side IRadioModemIndication wrapping the given
+// server implementation. The returned value satisfies IRadioModemIndication
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioModemIndicationStub(
+	impl IRadioModemIndicationServer,
+) IRadioModemIndication {
+	wrapper := &radioModemIndicationStubWrapper{impl: impl}
+	stub := &RadioModemIndicationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

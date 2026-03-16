@@ -74,7 +74,7 @@ func (p *ImsServiceControllerProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsServiceController)
-	_data.WriteStrongBinder(l.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, l.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "setListener")
 	if _err != nil {
@@ -267,7 +267,7 @@ func (p *ImsServiceControllerProxy) AddFeatureStatusCallback(
 	_data.WriteInterfaceToken(DescriptorIImsServiceController)
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(featureType)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "addFeatureStatusCallback")
 	if _err != nil {
@@ -297,7 +297,7 @@ func (p *ImsServiceControllerProxy) RemoveFeatureStatusCallback(
 	_data.WriteInterfaceToken(DescriptorIImsServiceController)
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(featureType)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsServiceController, "removeFeatureStatusCallback")
 	if _err != nil {
@@ -840,4 +840,173 @@ func (s *ImsServiceControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsServiceControllerServer is the server-side interface that user implementations
+// provide to NewImsServiceControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsServiceControllerServer interface {
+	SetListener(ctx context.Context, l IImsServiceControllerListener) error
+	CreateMmTelFeature(ctx context.Context, slotId int32, subId int32) (IImsMmTelFeature, error)
+	CreateEmergencyOnlyMmTelFeature(ctx context.Context, slotId int32) (IImsMmTelFeature, error)
+	CreateRcsFeature(ctx context.Context, slotId int32, subId int32) (IImsRcsFeature, error)
+	QuerySupportedImsFeatures(ctx context.Context) (stub.ImsFeatureConfiguration, error)
+	GetImsServiceCapabilities(ctx context.Context) (int64, error)
+	AddFeatureStatusCallback(ctx context.Context, slotId int32, featureType int32, c internal.IImsFeatureStatusCallback) error
+	RemoveFeatureStatusCallback(ctx context.Context, slotId int32, featureType int32, c internal.IImsFeatureStatusCallback) error
+	NotifyImsServiceReadyForFeatureCreation(ctx context.Context) error
+	RemoveImsFeature(ctx context.Context, slotId int32, featureType int32, changeSubId bool) error
+	GetConfig(ctx context.Context, slotId int32, subId int32) (IImsConfig, error)
+	GetRegistration(ctx context.Context, slotId int32, subId int32) (IImsRegistration, error)
+	GetSipTransport(ctx context.Context, slotId int32) (ISipTransport, error)
+	EnableIms(ctx context.Context, slotId int32, subId int32) error
+	DisableIms(ctx context.Context, slotId int32, subId int32) error
+	ResetIms(ctx context.Context, slotId int32, subId int32) error
+}
+
+type imsServiceControllerStubWrapper struct {
+	impl       IImsServiceControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsServiceControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsServiceControllerStubWrapper) SetListener(
+	ctx context.Context,
+	l IImsServiceControllerListener,
+) error {
+	return w.impl.SetListener(ctx, l)
+}
+
+func (w *imsServiceControllerStubWrapper) CreateMmTelFeature(
+	ctx context.Context,
+	slotId int32,
+	subId int32,
+) (IImsMmTelFeature, error) {
+	return w.impl.CreateMmTelFeature(ctx, slotId, subId)
+}
+
+func (w *imsServiceControllerStubWrapper) CreateEmergencyOnlyMmTelFeature(
+	ctx context.Context,
+	slotId int32,
+) (IImsMmTelFeature, error) {
+	return w.impl.CreateEmergencyOnlyMmTelFeature(ctx, slotId)
+}
+
+func (w *imsServiceControllerStubWrapper) CreateRcsFeature(
+	ctx context.Context,
+	slotId int32,
+	subId int32,
+) (IImsRcsFeature, error) {
+	return w.impl.CreateRcsFeature(ctx, slotId, subId)
+}
+
+func (w *imsServiceControllerStubWrapper) QuerySupportedImsFeatures(
+	ctx context.Context,
+) (stub.ImsFeatureConfiguration, error) {
+	return w.impl.QuerySupportedImsFeatures(ctx)
+}
+
+func (w *imsServiceControllerStubWrapper) GetImsServiceCapabilities(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetImsServiceCapabilities(ctx)
+}
+
+func (w *imsServiceControllerStubWrapper) AddFeatureStatusCallback(
+	ctx context.Context,
+	slotId int32,
+	featureType int32,
+	c internal.IImsFeatureStatusCallback,
+) error {
+	return w.impl.AddFeatureStatusCallback(ctx, slotId, featureType, c)
+}
+
+func (w *imsServiceControllerStubWrapper) RemoveFeatureStatusCallback(
+	ctx context.Context,
+	slotId int32,
+	featureType int32,
+	c internal.IImsFeatureStatusCallback,
+) error {
+	return w.impl.RemoveFeatureStatusCallback(ctx, slotId, featureType, c)
+}
+
+func (w *imsServiceControllerStubWrapper) NotifyImsServiceReadyForFeatureCreation(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyImsServiceReadyForFeatureCreation(ctx)
+}
+
+func (w *imsServiceControllerStubWrapper) RemoveImsFeature(
+	ctx context.Context,
+	slotId int32,
+	featureType int32,
+	changeSubId bool,
+) error {
+	return w.impl.RemoveImsFeature(ctx, slotId, featureType, changeSubId)
+}
+
+func (w *imsServiceControllerStubWrapper) GetConfig(
+	ctx context.Context,
+	slotId int32,
+	subId int32,
+) (IImsConfig, error) {
+	return w.impl.GetConfig(ctx, slotId, subId)
+}
+
+func (w *imsServiceControllerStubWrapper) GetRegistration(
+	ctx context.Context,
+	slotId int32,
+	subId int32,
+) (IImsRegistration, error) {
+	return w.impl.GetRegistration(ctx, slotId, subId)
+}
+
+func (w *imsServiceControllerStubWrapper) GetSipTransport(
+	ctx context.Context,
+	slotId int32,
+) (ISipTransport, error) {
+	return w.impl.GetSipTransport(ctx, slotId)
+}
+
+func (w *imsServiceControllerStubWrapper) EnableIms(
+	ctx context.Context,
+	slotId int32,
+	subId int32,
+) error {
+	return w.impl.EnableIms(ctx, slotId, subId)
+}
+
+func (w *imsServiceControllerStubWrapper) DisableIms(
+	ctx context.Context,
+	slotId int32,
+	subId int32,
+) error {
+	return w.impl.DisableIms(ctx, slotId, subId)
+}
+
+func (w *imsServiceControllerStubWrapper) ResetIms(
+	ctx context.Context,
+	slotId int32,
+	subId int32,
+) error {
+	return w.impl.ResetIms(ctx, slotId, subId)
+}
+
+var _ IImsServiceController = (*imsServiceControllerStubWrapper)(nil)
+
+// NewImsServiceControllerStub creates a server-side IImsServiceController wrapping the given
+// server implementation. The returned value satisfies IImsServiceController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsServiceControllerStub(
+	impl IImsServiceControllerServer,
+) IImsServiceController {
+	wrapper := &imsServiceControllerStubWrapper{impl: impl}
+	stub := &ImsServiceControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

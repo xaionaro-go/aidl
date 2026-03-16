@@ -125,7 +125,7 @@ func (p *PackageManagerNativeProxy) GetPackageUid(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
-	_data.WriteString(packageName)
+	_data.WriteString16(packageName)
 	_data.WriteInt64(flags)
 	_data.WriteInt32(_identity.UserID)
 
@@ -225,7 +225,7 @@ func (p *PackageManagerNativeProxy) IsAudioPlaybackCaptureAllowed(
 	} else {
 		_data.WriteInt32(int32(len(packageNames)))
 		for _, _item := range packageNames {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 
@@ -268,7 +268,7 @@ func (p *PackageManagerNativeProxy) GetLocationFlags(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
-	_data.WriteString(packageName)
+	_data.WriteString16(packageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "getLocationFlags")
 	if _err != nil {
@@ -360,7 +360,7 @@ func (p *PackageManagerNativeProxy) HasSha256SigningCertificate(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
-	_data.WriteString(packageName)
+	_data.WriteString16(packageName)
 	if certificate == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -462,7 +462,7 @@ func (p *PackageManagerNativeProxy) RegisterStagedApexObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "registerStagedApexObserver")
 	if _err != nil {
@@ -488,7 +488,7 @@ func (p *PackageManagerNativeProxy) UnregisterStagedApexObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageManagerNative)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageManagerNative, "unregisterStagedApexObserver")
 	if _err != nil {
@@ -581,7 +581,7 @@ func (s *PackageManagerNativeStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_packageName, _err := _data.ReadString()
+		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -656,7 +656,7 @@ func (s *PackageManagerNativeStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_packageName, _err := _data.ReadString()
+		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -703,7 +703,7 @@ func (s *PackageManagerNativeStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_packageName, _err := _data.ReadString()
+		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -804,4 +804,148 @@ func (s *PackageManagerNativeStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPackageManagerNativeServer is the server-side interface that user implementations
+// provide to NewPackageManagerNativeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageManagerNativeServer interface {
+	GetNamesForUids(ctx context.Context, uids []int32) ([]string, error)
+	GetPackageUid(ctx context.Context, packageName string, flags int64) (int32, error)
+	GetInstallerForPackage(ctx context.Context, packageName string) (string, error)
+	GetVersionCodeForPackage(ctx context.Context, packageName string) (int64, error)
+	IsAudioPlaybackCaptureAllowed(ctx context.Context, packageNames []string) ([]bool, error)
+	GetLocationFlags(ctx context.Context, packageName string) (int32, error)
+	GetTargetSdkVersionForPackage(ctx context.Context, packageName string) (int32, error)
+	GetModuleMetadataPackageName(ctx context.Context) (string, error)
+	HasSha256SigningCertificate(ctx context.Context, packageName string, certificate []byte) (bool, error)
+	IsPackageDebuggable(ctx context.Context, packageName string) (bool, error)
+	HasSystemFeature(ctx context.Context, featureName string, version int32) (bool, error)
+	RegisterStagedApexObserver(ctx context.Context, observer IStagedApexObserver) error
+	UnregisterStagedApexObserver(ctx context.Context, observer IStagedApexObserver) error
+	GetStagedApexInfos(ctx context.Context) ([]StagedApexInfo, error)
+}
+
+type packageManagerNativeStubWrapper struct {
+	impl       IPackageManagerNativeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageManagerNativeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageManagerNativeStubWrapper) GetNamesForUids(
+	ctx context.Context,
+	uids []int32,
+) ([]string, error) {
+	return w.impl.GetNamesForUids(ctx, uids)
+}
+
+func (w *packageManagerNativeStubWrapper) GetPackageUid(
+	ctx context.Context,
+	packageName string,
+	flags int64,
+) (int32, error) {
+	return w.impl.GetPackageUid(ctx, packageName, flags)
+}
+
+func (w *packageManagerNativeStubWrapper) GetInstallerForPackage(
+	ctx context.Context,
+	packageName string,
+) (string, error) {
+	return w.impl.GetInstallerForPackage(ctx, packageName)
+}
+
+func (w *packageManagerNativeStubWrapper) GetVersionCodeForPackage(
+	ctx context.Context,
+	packageName string,
+) (int64, error) {
+	return w.impl.GetVersionCodeForPackage(ctx, packageName)
+}
+
+func (w *packageManagerNativeStubWrapper) IsAudioPlaybackCaptureAllowed(
+	ctx context.Context,
+	packageNames []string,
+) ([]bool, error) {
+	return w.impl.IsAudioPlaybackCaptureAllowed(ctx, packageNames)
+}
+
+func (w *packageManagerNativeStubWrapper) GetLocationFlags(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetLocationFlags(ctx, packageName)
+}
+
+func (w *packageManagerNativeStubWrapper) GetTargetSdkVersionForPackage(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetTargetSdkVersionForPackage(ctx, packageName)
+}
+
+func (w *packageManagerNativeStubWrapper) GetModuleMetadataPackageName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetModuleMetadataPackageName(ctx)
+}
+
+func (w *packageManagerNativeStubWrapper) HasSha256SigningCertificate(
+	ctx context.Context,
+	packageName string,
+	certificate []byte,
+) (bool, error) {
+	return w.impl.HasSha256SigningCertificate(ctx, packageName, certificate)
+}
+
+func (w *packageManagerNativeStubWrapper) IsPackageDebuggable(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsPackageDebuggable(ctx, packageName)
+}
+
+func (w *packageManagerNativeStubWrapper) HasSystemFeature(
+	ctx context.Context,
+	featureName string,
+	version int32,
+) (bool, error) {
+	return w.impl.HasSystemFeature(ctx, featureName, version)
+}
+
+func (w *packageManagerNativeStubWrapper) RegisterStagedApexObserver(
+	ctx context.Context,
+	observer IStagedApexObserver,
+) error {
+	return w.impl.RegisterStagedApexObserver(ctx, observer)
+}
+
+func (w *packageManagerNativeStubWrapper) UnregisterStagedApexObserver(
+	ctx context.Context,
+	observer IStagedApexObserver,
+) error {
+	return w.impl.UnregisterStagedApexObserver(ctx, observer)
+}
+
+func (w *packageManagerNativeStubWrapper) GetStagedApexInfos(
+	ctx context.Context,
+) ([]StagedApexInfo, error) {
+	return w.impl.GetStagedApexInfos(ctx)
+}
+
+var _ IPackageManagerNative = (*packageManagerNativeStubWrapper)(nil)
+
+// NewPackageManagerNativeStub creates a server-side IPackageManagerNative wrapping the given
+// server implementation. The returned value satisfies IPackageManagerNative
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageManagerNativeStub(
+	impl IPackageManagerNativeServer,
+) IPackageManagerNative {
+	wrapper := &packageManagerNativeStubWrapper{impl: impl}
+	stub := &PackageManagerNativeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

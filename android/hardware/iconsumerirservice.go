@@ -213,3 +213,58 @@ func (s *ConsumerIrServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IConsumerIrServiceServer is the server-side interface that user implementations
+// provide to NewConsumerIrServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConsumerIrServiceServer interface {
+	HasIrEmitter(ctx context.Context) (bool, error)
+	Transmit(ctx context.Context, packageName string, carrierFrequency int32, pattern []int32) error
+	GetCarrierFrequencies(ctx context.Context) ([]int32, error)
+}
+
+type consumerIrServiceStubWrapper struct {
+	impl       IConsumerIrServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *consumerIrServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *consumerIrServiceStubWrapper) HasIrEmitter(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasIrEmitter(ctx)
+}
+
+func (w *consumerIrServiceStubWrapper) Transmit(
+	ctx context.Context,
+	packageName string,
+	carrierFrequency int32,
+	pattern []int32,
+) error {
+	return w.impl.Transmit(ctx, packageName, carrierFrequency, pattern)
+}
+
+func (w *consumerIrServiceStubWrapper) GetCarrierFrequencies(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetCarrierFrequencies(ctx)
+}
+
+var _ IConsumerIrService = (*consumerIrServiceStubWrapper)(nil)
+
+// NewConsumerIrServiceStub creates a server-side IConsumerIrService wrapping the given
+// server implementation. The returned value satisfies IConsumerIrService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConsumerIrServiceStub(
+	impl IConsumerIrServiceServer,
+) IConsumerIrService {
+	wrapper := &consumerIrServiceStubWrapper{impl: impl}
+	stub := &ConsumerIrServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

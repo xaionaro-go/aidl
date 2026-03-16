@@ -268,3 +268,91 @@ func (s *VolumeControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVolumeControllerServer is the server-side interface that user implementations
+// provide to NewVolumeControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVolumeControllerServer interface {
+	DisplaySafeVolumeWarning(ctx context.Context, flags int32) error
+	VolumeChanged(ctx context.Context, streamType int32, flags int32) error
+	MasterMuteChanged(ctx context.Context, flags int32) error
+	SetLayoutDirection(ctx context.Context, layoutDirection int32) error
+	Dismiss(ctx context.Context) error
+	SetA11yMode(ctx context.Context, mode int32) error
+	DisplayCsdWarning(ctx context.Context, warning int32, displayDurationMs int32) error
+}
+
+type volumeControllerStubWrapper struct {
+	impl       IVolumeControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *volumeControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *volumeControllerStubWrapper) DisplaySafeVolumeWarning(
+	ctx context.Context,
+	flags int32,
+) error {
+	return w.impl.DisplaySafeVolumeWarning(ctx, flags)
+}
+
+func (w *volumeControllerStubWrapper) VolumeChanged(
+	ctx context.Context,
+	streamType int32,
+	flags int32,
+) error {
+	return w.impl.VolumeChanged(ctx, streamType, flags)
+}
+
+func (w *volumeControllerStubWrapper) MasterMuteChanged(
+	ctx context.Context,
+	flags int32,
+) error {
+	return w.impl.MasterMuteChanged(ctx, flags)
+}
+
+func (w *volumeControllerStubWrapper) SetLayoutDirection(
+	ctx context.Context,
+	layoutDirection int32,
+) error {
+	return w.impl.SetLayoutDirection(ctx, layoutDirection)
+}
+
+func (w *volumeControllerStubWrapper) Dismiss(
+	ctx context.Context,
+) error {
+	return w.impl.Dismiss(ctx)
+}
+
+func (w *volumeControllerStubWrapper) SetA11yMode(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.SetA11yMode(ctx, mode)
+}
+
+func (w *volumeControllerStubWrapper) DisplayCsdWarning(
+	ctx context.Context,
+	warning int32,
+	displayDurationMs int32,
+) error {
+	return w.impl.DisplayCsdWarning(ctx, warning, displayDurationMs)
+}
+
+var _ IVolumeController = (*volumeControllerStubWrapper)(nil)
+
+// NewVolumeControllerStub creates a server-side IVolumeController wrapping the given
+// server implementation. The returned value satisfies IVolumeController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVolumeControllerStub(
+	impl IVolumeControllerServer,
+) IVolumeController {
+	wrapper := &volumeControllerStubWrapper{impl: impl}
+	stub := &VolumeControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

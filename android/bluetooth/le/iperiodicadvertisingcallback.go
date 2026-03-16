@@ -247,3 +247,81 @@ func (s *PeriodicAdvertisingCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPeriodicAdvertisingCallbackServer is the server-side interface that user implementations
+// provide to NewPeriodicAdvertisingCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPeriodicAdvertisingCallbackServer interface {
+	OnSyncEstablished(ctx context.Context, syncHandle int32, device interface{}, advertisingSid int32, skip int32, timeout int32, status int32) error
+	OnPeriodicAdvertisingReport(ctx context.Context, report PeriodicAdvertisingReport) error
+	OnSyncLost(ctx context.Context, syncHandle int32) error
+	OnSyncTransferred(ctx context.Context, device interface{}, status int32) error
+	OnBigInfoAdvertisingReport(ctx context.Context, syncHandle int32, encrypted bool) error
+}
+
+type periodicAdvertisingCallbackStubWrapper struct {
+	impl       IPeriodicAdvertisingCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *periodicAdvertisingCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *periodicAdvertisingCallbackStubWrapper) OnSyncEstablished(
+	ctx context.Context,
+	syncHandle int32,
+	device interface{},
+	advertisingSid int32,
+	skip int32,
+	timeout int32,
+	status int32,
+) error {
+	return w.impl.OnSyncEstablished(ctx, syncHandle, device, advertisingSid, skip, timeout, status)
+}
+
+func (w *periodicAdvertisingCallbackStubWrapper) OnPeriodicAdvertisingReport(
+	ctx context.Context,
+	report PeriodicAdvertisingReport,
+) error {
+	return w.impl.OnPeriodicAdvertisingReport(ctx, report)
+}
+
+func (w *periodicAdvertisingCallbackStubWrapper) OnSyncLost(
+	ctx context.Context,
+	syncHandle int32,
+) error {
+	return w.impl.OnSyncLost(ctx, syncHandle)
+}
+
+func (w *periodicAdvertisingCallbackStubWrapper) OnSyncTransferred(
+	ctx context.Context,
+	device interface{},
+	status int32,
+) error {
+	return w.impl.OnSyncTransferred(ctx, device, status)
+}
+
+func (w *periodicAdvertisingCallbackStubWrapper) OnBigInfoAdvertisingReport(
+	ctx context.Context,
+	syncHandle int32,
+	encrypted bool,
+) error {
+	return w.impl.OnBigInfoAdvertisingReport(ctx, syncHandle, encrypted)
+}
+
+var _ IPeriodicAdvertisingCallback = (*periodicAdvertisingCallbackStubWrapper)(nil)
+
+// NewPeriodicAdvertisingCallbackStub creates a server-side IPeriodicAdvertisingCallback wrapping the given
+// server implementation. The returned value satisfies IPeriodicAdvertisingCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPeriodicAdvertisingCallbackStub(
+	impl IPeriodicAdvertisingCallbackServer,
+) IPeriodicAdvertisingCallback {
+	wrapper := &periodicAdvertisingCallbackStubWrapper{impl: impl}
+	stub := &PeriodicAdvertisingCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

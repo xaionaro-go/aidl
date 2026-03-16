@@ -412,3 +412,98 @@ func (s *OadUpdateInterfaceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOadUpdateInterfaceServer is the server-side interface that user implementations
+// provide to NewOadUpdateInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOadUpdateInterfaceServer interface {
+	SetOadStatus(ctx context.Context, enable bool) error
+	GetOadStatus(ctx context.Context) (bool, error)
+	StartScan(ctx context.Context) error
+	StopScan(ctx context.Context) error
+	StartDetect(ctx context.Context) error
+	StopDetect(ctx context.Context) error
+	StartDownload(ctx context.Context) error
+	StopDownload(ctx context.Context) error
+	GetSoftwareVersion(ctx context.Context) (int32, error)
+}
+
+type oadUpdateInterfaceStubWrapper struct {
+	impl       IOadUpdateInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *oadUpdateInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *oadUpdateInterfaceStubWrapper) SetOadStatus(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetOadStatus(ctx, enable)
+}
+
+func (w *oadUpdateInterfaceStubWrapper) GetOadStatus(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetOadStatus(ctx)
+}
+
+func (w *oadUpdateInterfaceStubWrapper) StartScan(
+	ctx context.Context,
+) error {
+	return w.impl.StartScan(ctx)
+}
+
+func (w *oadUpdateInterfaceStubWrapper) StopScan(
+	ctx context.Context,
+) error {
+	return w.impl.StopScan(ctx)
+}
+
+func (w *oadUpdateInterfaceStubWrapper) StartDetect(
+	ctx context.Context,
+) error {
+	return w.impl.StartDetect(ctx)
+}
+
+func (w *oadUpdateInterfaceStubWrapper) StopDetect(
+	ctx context.Context,
+) error {
+	return w.impl.StopDetect(ctx)
+}
+
+func (w *oadUpdateInterfaceStubWrapper) StartDownload(
+	ctx context.Context,
+) error {
+	return w.impl.StartDownload(ctx)
+}
+
+func (w *oadUpdateInterfaceStubWrapper) StopDownload(
+	ctx context.Context,
+) error {
+	return w.impl.StopDownload(ctx)
+}
+
+func (w *oadUpdateInterfaceStubWrapper) GetSoftwareVersion(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetSoftwareVersion(ctx)
+}
+
+var _ IOadUpdateInterface = (*oadUpdateInterfaceStubWrapper)(nil)
+
+// NewOadUpdateInterfaceStub creates a server-side IOadUpdateInterface wrapping the given
+// server implementation. The returned value satisfies IOadUpdateInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOadUpdateInterfaceStub(
+	impl IOadUpdateInterfaceServer,
+) IOadUpdateInterface {
+	wrapper := &oadUpdateInterfaceStubWrapper{impl: impl}
+	stub := &OadUpdateInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

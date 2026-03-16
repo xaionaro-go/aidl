@@ -90,3 +90,42 @@ func (s *OnAssociationsChangedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnAssociationsChangedListenerServer is the server-side interface that user implementations
+// provide to NewOnAssociationsChangedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnAssociationsChangedListenerServer interface {
+	OnAssociationsChanged(ctx context.Context, associations []AssociationInfo) error
+}
+
+type onAssociationsChangedListenerStubWrapper struct {
+	impl       IOnAssociationsChangedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onAssociationsChangedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onAssociationsChangedListenerStubWrapper) OnAssociationsChanged(
+	ctx context.Context,
+	associations []AssociationInfo,
+) error {
+	return w.impl.OnAssociationsChanged(ctx, associations)
+}
+
+var _ IOnAssociationsChangedListener = (*onAssociationsChangedListenerStubWrapper)(nil)
+
+// NewOnAssociationsChangedListenerStub creates a server-side IOnAssociationsChangedListener wrapping the given
+// server implementation. The returned value satisfies IOnAssociationsChangedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnAssociationsChangedListenerStub(
+	impl IOnAssociationsChangedListenerServer,
+) IOnAssociationsChangedListener {
+	wrapper := &onAssociationsChangedListenerStubWrapper{impl: impl}
+	stub := &OnAssociationsChangedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

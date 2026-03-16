@@ -105,7 +105,7 @@ func (p *SensorPrivacyManagerProxy) AddSensorPrivacyListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensorPrivacyManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISensorPrivacyManager, "addSensorPrivacyListener")
 	if _err != nil {
@@ -131,7 +131,7 @@ func (p *SensorPrivacyManagerProxy) AddToggleSensorPrivacyListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensorPrivacyManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISensorPrivacyManager, "addToggleSensorPrivacyListener")
 	if _err != nil {
@@ -157,7 +157,7 @@ func (p *SensorPrivacyManagerProxy) RemoveSensorPrivacyListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensorPrivacyManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISensorPrivacyManager, "removeSensorPrivacyListener")
 	if _err != nil {
@@ -183,7 +183,7 @@ func (p *SensorPrivacyManagerProxy) RemoveToggleSensorPrivacyListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensorPrivacyManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISensorPrivacyManager, "removeToggleSensorPrivacyListener")
 	if _err != nil {
@@ -878,4 +878,172 @@ func (s *SensorPrivacyManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISensorPrivacyManagerServer is the server-side interface that user implementations
+// provide to NewSensorPrivacyManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISensorPrivacyManagerServer interface {
+	SupportsSensorToggle(ctx context.Context, toggleType int32, sensor int32) (bool, error)
+	AddSensorPrivacyListener(ctx context.Context, listener ISensorPrivacyListener) error
+	AddToggleSensorPrivacyListener(ctx context.Context, listener ISensorPrivacyListener) error
+	RemoveSensorPrivacyListener(ctx context.Context, listener ISensorPrivacyListener) error
+	RemoveToggleSensorPrivacyListener(ctx context.Context, listener ISensorPrivacyListener) error
+	IsSensorPrivacyEnabled(ctx context.Context) (bool, error)
+	IsCombinedToggleSensorPrivacyEnabled(ctx context.Context, sensor int32) (bool, error)
+	IsToggleSensorPrivacyEnabled(ctx context.Context, toggleType int32, sensor int32) (bool, error)
+	SetSensorPrivacy(ctx context.Context, enable bool) error
+	SetToggleSensorPrivacy(ctx context.Context, source int32, sensor int32, enable bool) error
+	SetToggleSensorPrivacyForProfileGroup(ctx context.Context, source int32, sensor int32, enable bool) error
+	GetCameraPrivacyAllowlist(ctx context.Context) ([]string, error)
+	GetToggleSensorPrivacyState(ctx context.Context, toggleType int32, sensor int32) (int32, error)
+	SetToggleSensorPrivacyState(ctx context.Context, source int32, sensor int32, state int32) error
+	SetToggleSensorPrivacyStateForProfileGroup(ctx context.Context, source int32, sensor int32, state int32) error
+	IsCameraPrivacyEnabled(ctx context.Context, packageName string) (bool, error)
+}
+
+type sensorPrivacyManagerStubWrapper struct {
+	impl       ISensorPrivacyManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sensorPrivacyManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sensorPrivacyManagerStubWrapper) SupportsSensorToggle(
+	ctx context.Context,
+	toggleType int32,
+	sensor int32,
+) (bool, error) {
+	return w.impl.SupportsSensorToggle(ctx, toggleType, sensor)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) AddSensorPrivacyListener(
+	ctx context.Context,
+	listener ISensorPrivacyListener,
+) error {
+	return w.impl.AddSensorPrivacyListener(ctx, listener)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) AddToggleSensorPrivacyListener(
+	ctx context.Context,
+	listener ISensorPrivacyListener,
+) error {
+	return w.impl.AddToggleSensorPrivacyListener(ctx, listener)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) RemoveSensorPrivacyListener(
+	ctx context.Context,
+	listener ISensorPrivacyListener,
+) error {
+	return w.impl.RemoveSensorPrivacyListener(ctx, listener)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) RemoveToggleSensorPrivacyListener(
+	ctx context.Context,
+	listener ISensorPrivacyListener,
+) error {
+	return w.impl.RemoveToggleSensorPrivacyListener(ctx, listener)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) IsSensorPrivacyEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSensorPrivacyEnabled(ctx)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) IsCombinedToggleSensorPrivacyEnabled(
+	ctx context.Context,
+	sensor int32,
+) (bool, error) {
+	return w.impl.IsCombinedToggleSensorPrivacyEnabled(ctx, sensor)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) IsToggleSensorPrivacyEnabled(
+	ctx context.Context,
+	toggleType int32,
+	sensor int32,
+) (bool, error) {
+	return w.impl.IsToggleSensorPrivacyEnabled(ctx, toggleType, sensor)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) SetSensorPrivacy(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetSensorPrivacy(ctx, enable)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) SetToggleSensorPrivacy(
+	ctx context.Context,
+	source int32,
+	sensor int32,
+	enable bool,
+) error {
+	return w.impl.SetToggleSensorPrivacy(ctx, source, sensor, enable)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) SetToggleSensorPrivacyForProfileGroup(
+	ctx context.Context,
+	source int32,
+	sensor int32,
+	enable bool,
+) error {
+	return w.impl.SetToggleSensorPrivacyForProfileGroup(ctx, source, sensor, enable)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) GetCameraPrivacyAllowlist(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetCameraPrivacyAllowlist(ctx)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) GetToggleSensorPrivacyState(
+	ctx context.Context,
+	toggleType int32,
+	sensor int32,
+) (int32, error) {
+	return w.impl.GetToggleSensorPrivacyState(ctx, toggleType, sensor)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) SetToggleSensorPrivacyState(
+	ctx context.Context,
+	source int32,
+	sensor int32,
+	state int32,
+) error {
+	return w.impl.SetToggleSensorPrivacyState(ctx, source, sensor, state)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) SetToggleSensorPrivacyStateForProfileGroup(
+	ctx context.Context,
+	source int32,
+	sensor int32,
+	state int32,
+) error {
+	return w.impl.SetToggleSensorPrivacyStateForProfileGroup(ctx, source, sensor, state)
+}
+
+func (w *sensorPrivacyManagerStubWrapper) IsCameraPrivacyEnabled(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsCameraPrivacyEnabled(ctx, packageName)
+}
+
+var _ ISensorPrivacyManager = (*sensorPrivacyManagerStubWrapper)(nil)
+
+// NewSensorPrivacyManagerStub creates a server-side ISensorPrivacyManager wrapping the given
+// server implementation. The returned value satisfies ISensorPrivacyManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSensorPrivacyManagerStub(
+	impl ISensorPrivacyManagerServer,
+) ISensorPrivacyManager {
+	wrapper := &sensorPrivacyManagerStubWrapper{impl: impl}
+	stub := &SensorPrivacyManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

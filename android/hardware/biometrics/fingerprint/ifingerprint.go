@@ -87,7 +87,7 @@ func (p *FingerprintProxy) CreateSession(
 	_data.WriteInterfaceToken(DescriptorIFingerprint)
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFingerprint, "createSession")
 	if _err != nil {
@@ -167,4 +167,51 @@ func (s *FingerprintStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFingerprintServer is the server-side interface that user implementations
+// provide to NewFingerprintStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFingerprintServer interface {
+	GetSensorProps(ctx context.Context) ([]SensorProps, error)
+	CreateSession(ctx context.Context, sensorId int32, cb ISessionCallback) (ISession, error)
+}
+
+type fingerprintStubWrapper struct {
+	impl       IFingerprintServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fingerprintStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fingerprintStubWrapper) GetSensorProps(
+	ctx context.Context,
+) ([]SensorProps, error) {
+	return w.impl.GetSensorProps(ctx)
+}
+
+func (w *fingerprintStubWrapper) CreateSession(
+	ctx context.Context,
+	sensorId int32,
+	cb ISessionCallback,
+) (ISession, error) {
+	return w.impl.CreateSession(ctx, sensorId, cb)
+}
+
+var _ IFingerprint = (*fingerprintStubWrapper)(nil)
+
+// NewFingerprintStub creates a server-side IFingerprint wrapping the given
+// server implementation. The returned value satisfies IFingerprint
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFingerprintStub(
+	impl IFingerprintServer,
+) IFingerprint {
+	wrapper := &fingerprintStubWrapper{impl: impl}
+	stub := &FingerprintStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

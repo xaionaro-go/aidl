@@ -367,3 +367,106 @@ func (s *SatelliteListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteListenerServer is the server-side interface that user implementations
+// provide to NewSatelliteListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteListenerServer interface {
+	OnSatelliteDatagramReceived(ctx context.Context, datagram SatelliteDatagram, pendingCount int32) error
+	OnPendingDatagrams(ctx context.Context) error
+	OnSatellitePositionChanged(ctx context.Context, pointingInfo PointingInfo) error
+	OnSatelliteModemStateChanged(ctx context.Context, state SatelliteModemState) error
+	OnNtnSignalStrengthChanged(ctx context.Context, ntnSignalStrength NtnSignalStrength) error
+	OnSatelliteCapabilitiesChanged(ctx context.Context, capabilities SatelliteCapabilities) error
+	OnSatelliteSupportedStateChanged(ctx context.Context, supported bool) error
+	OnRegistrationFailure(ctx context.Context, causeCode int32) error
+	OnTerrestrialNetworkAvailableChanged(ctx context.Context, isAvailable bool) error
+}
+
+type satelliteListenerStubWrapper struct {
+	impl       ISatelliteListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteListenerStubWrapper) OnSatelliteDatagramReceived(
+	ctx context.Context,
+	datagram SatelliteDatagram,
+	pendingCount int32,
+) error {
+	return w.impl.OnSatelliteDatagramReceived(ctx, datagram, pendingCount)
+}
+
+func (w *satelliteListenerStubWrapper) OnPendingDatagrams(
+	ctx context.Context,
+) error {
+	return w.impl.OnPendingDatagrams(ctx)
+}
+
+func (w *satelliteListenerStubWrapper) OnSatellitePositionChanged(
+	ctx context.Context,
+	pointingInfo PointingInfo,
+) error {
+	return w.impl.OnSatellitePositionChanged(ctx, pointingInfo)
+}
+
+func (w *satelliteListenerStubWrapper) OnSatelliteModemStateChanged(
+	ctx context.Context,
+	state SatelliteModemState,
+) error {
+	return w.impl.OnSatelliteModemStateChanged(ctx, state)
+}
+
+func (w *satelliteListenerStubWrapper) OnNtnSignalStrengthChanged(
+	ctx context.Context,
+	ntnSignalStrength NtnSignalStrength,
+) error {
+	return w.impl.OnNtnSignalStrengthChanged(ctx, ntnSignalStrength)
+}
+
+func (w *satelliteListenerStubWrapper) OnSatelliteCapabilitiesChanged(
+	ctx context.Context,
+	capabilities SatelliteCapabilities,
+) error {
+	return w.impl.OnSatelliteCapabilitiesChanged(ctx, capabilities)
+}
+
+func (w *satelliteListenerStubWrapper) OnSatelliteSupportedStateChanged(
+	ctx context.Context,
+	supported bool,
+) error {
+	return w.impl.OnSatelliteSupportedStateChanged(ctx, supported)
+}
+
+func (w *satelliteListenerStubWrapper) OnRegistrationFailure(
+	ctx context.Context,
+	causeCode int32,
+) error {
+	return w.impl.OnRegistrationFailure(ctx, causeCode)
+}
+
+func (w *satelliteListenerStubWrapper) OnTerrestrialNetworkAvailableChanged(
+	ctx context.Context,
+	isAvailable bool,
+) error {
+	return w.impl.OnTerrestrialNetworkAvailableChanged(ctx, isAvailable)
+}
+
+var _ ISatelliteListener = (*satelliteListenerStubWrapper)(nil)
+
+// NewSatelliteListenerStub creates a server-side ISatelliteListener wrapping the given
+// server implementation. The returned value satisfies ISatelliteListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteListenerStub(
+	impl ISatelliteListenerServer,
+) ISatelliteListener {
+	wrapper := &satelliteListenerStubWrapper{impl: impl}
+	stub := &SatelliteListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

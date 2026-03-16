@@ -1037,7 +1037,7 @@ func (p *MediaQualityManagerProxy) RegisterPictureProfileCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQualityManager)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaQualityManager, "registerPictureProfileCallback")
 	if _err != nil {
@@ -1063,7 +1063,7 @@ func (p *MediaQualityManagerProxy) RegisterSoundProfileCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQualityManager)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaQualityManager, "registerSoundProfileCallback")
 	if _err != nil {
@@ -1089,7 +1089,7 @@ func (p *MediaQualityManagerProxy) RegisterAmbientBacklightCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQualityManager)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaQualityManager, "registerAmbientBacklightCallback")
 	if _err != nil {
@@ -2551,4 +2551,355 @@ func (s *MediaQualityManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaQualityManagerServer is the server-side interface that user implementations
+// provide to NewMediaQualityManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaQualityManagerServer interface {
+	CreatePictureProfile(ctx context.Context, pp PictureProfile, user os.UserHandle) (PictureProfile, error)
+	UpdatePictureProfile(ctx context.Context, id string, pp PictureProfile, user os.UserHandle) error
+	RemovePictureProfile(ctx context.Context, id string, user os.UserHandle) error
+	SetDefaultPictureProfile(ctx context.Context, id string, user os.UserHandle) (bool, error)
+	GetPictureProfile(ctx context.Context, type_ int32, name string, includeParams bool, user os.UserHandle) (PictureProfile, error)
+	GetPictureProfilesByPackage(ctx context.Context, packageName string, includeParams bool, user os.UserHandle) ([]PictureProfile, error)
+	GetAvailablePictureProfiles(ctx context.Context, includeParams bool, user os.UserHandle) ([]PictureProfile, error)
+	GetPictureProfilePackageNames(ctx context.Context, user os.UserHandle) ([]string, error)
+	GetPictureProfileAllowList(ctx context.Context, user os.UserHandle) ([]string, error)
+	SetPictureProfileAllowList(ctx context.Context, packages []string, user os.UserHandle) error
+	GetPictureProfileHandle(ctx context.Context, id []string, user os.UserHandle) ([]PictureProfileHandle, error)
+	CreateSoundProfile(ctx context.Context, pp SoundProfile, user os.UserHandle) (SoundProfile, error)
+	UpdateSoundProfile(ctx context.Context, id string, pp SoundProfile, user os.UserHandle) error
+	RemoveSoundProfile(ctx context.Context, id string, user os.UserHandle) error
+	SetDefaultSoundProfile(ctx context.Context, id string, user os.UserHandle) (bool, error)
+	GetSoundProfile(ctx context.Context, type_ int32, name string, includeParams bool, user os.UserHandle) (SoundProfile, error)
+	GetSoundProfilesByPackage(ctx context.Context, packageName string, includeParams bool, user os.UserHandle) ([]SoundProfile, error)
+	GetAvailableSoundProfiles(ctx context.Context, includeParams bool, user os.UserHandle) ([]SoundProfile, error)
+	GetSoundProfilePackageNames(ctx context.Context, user os.UserHandle) ([]string, error)
+	GetSoundProfileAllowList(ctx context.Context, user os.UserHandle) ([]string, error)
+	SetSoundProfileAllowList(ctx context.Context, packages []string, user os.UserHandle) error
+	GetSoundProfileHandle(ctx context.Context, id []string, user os.UserHandle) ([]SoundProfileHandle, error)
+	RegisterPictureProfileCallback(ctx context.Context, cb IPictureProfileCallback) error
+	RegisterSoundProfileCallback(ctx context.Context, cb ISoundProfileCallback) error
+	RegisterAmbientBacklightCallback(ctx context.Context, cb IAmbientBacklightCallback) error
+	GetParamCapabilities(ctx context.Context, names []string, user os.UserHandle) ([]ParamCapability, error)
+	IsSupported(ctx context.Context, user os.UserHandle) (bool, error)
+	SetAutoPictureQualityEnabled(ctx context.Context, enabled bool, user os.UserHandle) error
+	IsAutoPictureQualityEnabled(ctx context.Context, user os.UserHandle) (bool, error)
+	SetSuperResolutionEnabled(ctx context.Context, enabled bool, user os.UserHandle) error
+	IsSuperResolutionEnabled(ctx context.Context, user os.UserHandle) (bool, error)
+	SetAutoSoundQualityEnabled(ctx context.Context, enabled bool, user os.UserHandle) error
+	IsAutoSoundQualityEnabled(ctx context.Context, user os.UserHandle) (bool, error)
+	SetAmbientBacklightSettings(ctx context.Context, settings AmbientBacklightSettings, user os.UserHandle) error
+	SetAmbientBacklightEnabled(ctx context.Context, enabled bool, user os.UserHandle) error
+	IsAmbientBacklightEnabled(ctx context.Context, user os.UserHandle) (bool, error)
+}
+
+type mediaQualityManagerStubWrapper struct {
+	impl       IMediaQualityManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaQualityManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaQualityManagerStubWrapper) CreatePictureProfile(
+	ctx context.Context,
+	pp PictureProfile,
+	user os.UserHandle,
+) (PictureProfile, error) {
+	return w.impl.CreatePictureProfile(ctx, pp, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) UpdatePictureProfile(
+	ctx context.Context,
+	id string,
+	pp PictureProfile,
+	user os.UserHandle,
+) error {
+	return w.impl.UpdatePictureProfile(ctx, id, pp, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) RemovePictureProfile(
+	ctx context.Context,
+	id string,
+	user os.UserHandle,
+) error {
+	return w.impl.RemovePictureProfile(ctx, id, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) SetDefaultPictureProfile(
+	ctx context.Context,
+	id string,
+	user os.UserHandle,
+) (bool, error) {
+	return w.impl.SetDefaultPictureProfile(ctx, id, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetPictureProfile(
+	ctx context.Context,
+	type_ int32,
+	name string,
+	includeParams bool,
+	user os.UserHandle,
+) (PictureProfile, error) {
+	return w.impl.GetPictureProfile(ctx, type_, name, includeParams, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetPictureProfilesByPackage(
+	ctx context.Context,
+	packageName string,
+	includeParams bool,
+	user os.UserHandle,
+) ([]PictureProfile, error) {
+	return w.impl.GetPictureProfilesByPackage(ctx, packageName, includeParams, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetAvailablePictureProfiles(
+	ctx context.Context,
+	includeParams bool,
+	user os.UserHandle,
+) ([]PictureProfile, error) {
+	return w.impl.GetAvailablePictureProfiles(ctx, includeParams, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetPictureProfilePackageNames(
+	ctx context.Context,
+	user os.UserHandle,
+) ([]string, error) {
+	return w.impl.GetPictureProfilePackageNames(ctx, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetPictureProfileAllowList(
+	ctx context.Context,
+	user os.UserHandle,
+) ([]string, error) {
+	return w.impl.GetPictureProfileAllowList(ctx, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) SetPictureProfileAllowList(
+	ctx context.Context,
+	packages []string,
+	user os.UserHandle,
+) error {
+	return w.impl.SetPictureProfileAllowList(ctx, packages, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetPictureProfileHandle(
+	ctx context.Context,
+	id []string,
+	user os.UserHandle,
+) ([]PictureProfileHandle, error) {
+	return w.impl.GetPictureProfileHandle(ctx, id, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) CreateSoundProfile(
+	ctx context.Context,
+	pp SoundProfile,
+	user os.UserHandle,
+) (SoundProfile, error) {
+	return w.impl.CreateSoundProfile(ctx, pp, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) UpdateSoundProfile(
+	ctx context.Context,
+	id string,
+	pp SoundProfile,
+	user os.UserHandle,
+) error {
+	return w.impl.UpdateSoundProfile(ctx, id, pp, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) RemoveSoundProfile(
+	ctx context.Context,
+	id string,
+	user os.UserHandle,
+) error {
+	return w.impl.RemoveSoundProfile(ctx, id, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) SetDefaultSoundProfile(
+	ctx context.Context,
+	id string,
+	user os.UserHandle,
+) (bool, error) {
+	return w.impl.SetDefaultSoundProfile(ctx, id, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetSoundProfile(
+	ctx context.Context,
+	type_ int32,
+	name string,
+	includeParams bool,
+	user os.UserHandle,
+) (SoundProfile, error) {
+	return w.impl.GetSoundProfile(ctx, type_, name, includeParams, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetSoundProfilesByPackage(
+	ctx context.Context,
+	packageName string,
+	includeParams bool,
+	user os.UserHandle,
+) ([]SoundProfile, error) {
+	return w.impl.GetSoundProfilesByPackage(ctx, packageName, includeParams, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetAvailableSoundProfiles(
+	ctx context.Context,
+	includeParams bool,
+	user os.UserHandle,
+) ([]SoundProfile, error) {
+	return w.impl.GetAvailableSoundProfiles(ctx, includeParams, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetSoundProfilePackageNames(
+	ctx context.Context,
+	user os.UserHandle,
+) ([]string, error) {
+	return w.impl.GetSoundProfilePackageNames(ctx, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetSoundProfileAllowList(
+	ctx context.Context,
+	user os.UserHandle,
+) ([]string, error) {
+	return w.impl.GetSoundProfileAllowList(ctx, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) SetSoundProfileAllowList(
+	ctx context.Context,
+	packages []string,
+	user os.UserHandle,
+) error {
+	return w.impl.SetSoundProfileAllowList(ctx, packages, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetSoundProfileHandle(
+	ctx context.Context,
+	id []string,
+	user os.UserHandle,
+) ([]SoundProfileHandle, error) {
+	return w.impl.GetSoundProfileHandle(ctx, id, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) RegisterPictureProfileCallback(
+	ctx context.Context,
+	cb IPictureProfileCallback,
+) error {
+	return w.impl.RegisterPictureProfileCallback(ctx, cb)
+}
+
+func (w *mediaQualityManagerStubWrapper) RegisterSoundProfileCallback(
+	ctx context.Context,
+	cb ISoundProfileCallback,
+) error {
+	return w.impl.RegisterSoundProfileCallback(ctx, cb)
+}
+
+func (w *mediaQualityManagerStubWrapper) RegisterAmbientBacklightCallback(
+	ctx context.Context,
+	cb IAmbientBacklightCallback,
+) error {
+	return w.impl.RegisterAmbientBacklightCallback(ctx, cb)
+}
+
+func (w *mediaQualityManagerStubWrapper) GetParamCapabilities(
+	ctx context.Context,
+	names []string,
+	user os.UserHandle,
+) ([]ParamCapability, error) {
+	return w.impl.GetParamCapabilities(ctx, names, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) IsSupported(
+	ctx context.Context,
+	user os.UserHandle,
+) (bool, error) {
+	return w.impl.IsSupported(ctx, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) SetAutoPictureQualityEnabled(
+	ctx context.Context,
+	enabled bool,
+	user os.UserHandle,
+) error {
+	return w.impl.SetAutoPictureQualityEnabled(ctx, enabled, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) IsAutoPictureQualityEnabled(
+	ctx context.Context,
+	user os.UserHandle,
+) (bool, error) {
+	return w.impl.IsAutoPictureQualityEnabled(ctx, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) SetSuperResolutionEnabled(
+	ctx context.Context,
+	enabled bool,
+	user os.UserHandle,
+) error {
+	return w.impl.SetSuperResolutionEnabled(ctx, enabled, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) IsSuperResolutionEnabled(
+	ctx context.Context,
+	user os.UserHandle,
+) (bool, error) {
+	return w.impl.IsSuperResolutionEnabled(ctx, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) SetAutoSoundQualityEnabled(
+	ctx context.Context,
+	enabled bool,
+	user os.UserHandle,
+) error {
+	return w.impl.SetAutoSoundQualityEnabled(ctx, enabled, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) IsAutoSoundQualityEnabled(
+	ctx context.Context,
+	user os.UserHandle,
+) (bool, error) {
+	return w.impl.IsAutoSoundQualityEnabled(ctx, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) SetAmbientBacklightSettings(
+	ctx context.Context,
+	settings AmbientBacklightSettings,
+	user os.UserHandle,
+) error {
+	return w.impl.SetAmbientBacklightSettings(ctx, settings, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) SetAmbientBacklightEnabled(
+	ctx context.Context,
+	enabled bool,
+	user os.UserHandle,
+) error {
+	return w.impl.SetAmbientBacklightEnabled(ctx, enabled, user)
+}
+
+func (w *mediaQualityManagerStubWrapper) IsAmbientBacklightEnabled(
+	ctx context.Context,
+	user os.UserHandle,
+) (bool, error) {
+	return w.impl.IsAmbientBacklightEnabled(ctx, user)
+}
+
+var _ IMediaQualityManager = (*mediaQualityManagerStubWrapper)(nil)
+
+// NewMediaQualityManagerStub creates a server-side IMediaQualityManager wrapping the given
+// server implementation. The returned value satisfies IMediaQualityManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaQualityManagerStub(
+	impl IMediaQualityManagerServer,
+) IMediaQualityManager {
+	wrapper := &mediaQualityManagerStubWrapper{impl: impl}
+	stub := &MediaQualityManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

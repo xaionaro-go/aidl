@@ -80,7 +80,7 @@ func (p *ClearCredentialStateCallbackProxy) OnCancellable(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClearCredentialStateCallback)
-	_data.WriteStrongBinder(cancellation.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellation.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClearCredentialStateCallback, "onCancellable")
 	if _err != nil {
@@ -137,4 +137,59 @@ func (s *ClearCredentialStateCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IClearCredentialStateCallbackServer is the server-side interface that user implementations
+// provide to NewClearCredentialStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IClearCredentialStateCallbackServer interface {
+	OnSuccess(ctx context.Context) error
+	OnFailure(ctx context.Context, errorType string, message interface{}) error
+	OnCancellable(ctx context.Context, cancellation ondeviceintelligence.ICancellationSignal) error
+}
+
+type clearCredentialStateCallbackStubWrapper struct {
+	impl       IClearCredentialStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *clearCredentialStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *clearCredentialStateCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+) error {
+	return w.impl.OnSuccess(ctx)
+}
+
+func (w *clearCredentialStateCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	errorType string,
+	message interface{},
+) error {
+	return w.impl.OnFailure(ctx, errorType, message)
+}
+
+func (w *clearCredentialStateCallbackStubWrapper) OnCancellable(
+	ctx context.Context,
+	cancellation ondeviceintelligence.ICancellationSignal,
+) error {
+	return w.impl.OnCancellable(ctx, cancellation)
+}
+
+var _ IClearCredentialStateCallback = (*clearCredentialStateCallbackStubWrapper)(nil)
+
+// NewClearCredentialStateCallbackStub creates a server-side IClearCredentialStateCallback wrapping the given
+// server implementation. The returned value satisfies IClearCredentialStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewClearCredentialStateCallbackStub(
+	impl IClearCredentialStateCallbackServer,
+) IClearCredentialStateCallback {
+	wrapper := &clearCredentialStateCallbackStubWrapper{impl: impl}
+	stub := &ClearCredentialStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

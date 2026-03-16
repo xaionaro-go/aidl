@@ -3,7 +3,7 @@ package session
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
+	app "github.com/xaionaro-go/binder/android/app"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -39,9 +39,9 @@ type ISession interface {
 	GetController(ctx context.Context) (ISessionController, error)
 	SetFlags(ctx context.Context, flags int32) error
 	SetActive(ctx context.Context, active bool) error
-	SetMediaButtonReceiver(ctx context.Context, mbr interface{}) error
-	SetMediaButtonBroadcastReceiver(ctx context.Context, broadcastReceiver content.ComponentName) error
-	SetLaunchPendingIntent(ctx context.Context, pi interface{}) error
+	SetMediaButtonReceiver(ctx context.Context, mbr app.PendingIntent) error
+	SetMediaButtonBroadcastReceiver(ctx context.Context, broadcastReceiver interface{}) error
+	SetLaunchPendingIntent(ctx context.Context, pi app.PendingIntent) error
 	DestroySession(ctx context.Context) error
 	SetMetadata(ctx context.Context, metadata interface{}, duration int64, metadataDescription string) error
 	SetPlaybackState(ctx context.Context, state PlaybackState) error
@@ -182,10 +182,14 @@ func (p *SessionProxy) SetActive(
 
 func (p *SessionProxy) SetMediaButtonReceiver(
 	ctx context.Context,
-	mbr interface{},
+	mbr app.PendingIntent,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISession)
+	_data.WriteInt32(1)
+	if _err := mbr.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISession, "setMediaButtonReceiver")
 	if _err != nil {
@@ -207,14 +211,10 @@ func (p *SessionProxy) SetMediaButtonReceiver(
 
 func (p *SessionProxy) SetMediaButtonBroadcastReceiver(
 	ctx context.Context,
-	broadcastReceiver content.ComponentName,
+	broadcastReceiver interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISession)
-	_data.WriteInt32(1)
-	if _err := broadcastReceiver.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISession, "setMediaButtonBroadcastReceiver")
 	if _err != nil {
@@ -236,10 +236,14 @@ func (p *SessionProxy) SetMediaButtonBroadcastReceiver(
 
 func (p *SessionProxy) SetLaunchPendingIntent(
 	ctx context.Context,
-	pi interface{},
+	pi app.PendingIntent,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISession)
+	_data.WriteInt32(1)
+	if _err := pi.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISession, "setLaunchPendingIntent")
 	if _err != nil {
@@ -633,7 +637,18 @@ func (s *SessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_mbr interface{}
+		var _arg_mbr app.PendingIntent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_mbr.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.SetMediaButtonReceiver(ctx, _arg_mbr)
 		_reply := parcel.New()
 		if _err != nil {
@@ -646,18 +661,7 @@ func (s *SessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_broadcastReceiver content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_broadcastReceiver.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_broadcastReceiver interface{}
 		_err := s.Impl.SetMediaButtonBroadcastReceiver(ctx, _arg_broadcastReceiver)
 		_reply := parcel.New()
 		if _err != nil {
@@ -670,7 +674,18 @@ func (s *SessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_pi interface{}
+		var _arg_pi app.PendingIntent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_pi.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.SetLaunchPendingIntent(ctx, _arg_pi)
 		_reply := parcel.New()
 		if _err != nil {
@@ -860,4 +875,180 @@ func (s *SessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISessionServer is the server-side interface that user implementations
+// provide to NewSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISessionServer interface {
+	SendEvent(ctx context.Context, event string, data interface{}) error
+	GetController(ctx context.Context) (ISessionController, error)
+	SetFlags(ctx context.Context, flags int32) error
+	SetActive(ctx context.Context, active bool) error
+	SetMediaButtonReceiver(ctx context.Context, mbr app.PendingIntent) error
+	SetMediaButtonBroadcastReceiver(ctx context.Context, broadcastReceiver interface{}) error
+	SetLaunchPendingIntent(ctx context.Context, pi app.PendingIntent) error
+	DestroySession(ctx context.Context) error
+	SetMetadata(ctx context.Context, metadata interface{}, duration int64, metadataDescription string) error
+	SetPlaybackState(ctx context.Context, state PlaybackState) error
+	ResetQueue(ctx context.Context) error
+	GetBinderForSetQueue(ctx context.Context) (binder.IBinder, error)
+	SetQueueTitle(ctx context.Context, title interface{}) error
+	SetExtras(ctx context.Context, extras interface{}) error
+	SetRatingType(ctx context.Context, type_ int32) error
+	SetPlaybackToLocal(ctx context.Context, attributes interface{}) error
+	SetPlaybackToRemote(ctx context.Context, control int32, max_ int32, controlId string) error
+	SetCurrentVolume(ctx context.Context, currentVolume int32) error
+}
+
+type sessionStubWrapper struct {
+	impl       ISessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sessionStubWrapper) SendEvent(
+	ctx context.Context,
+	event string,
+	data interface{},
+) error {
+	return w.impl.SendEvent(ctx, event, data)
+}
+
+func (w *sessionStubWrapper) GetController(
+	ctx context.Context,
+) (ISessionController, error) {
+	return w.impl.GetController(ctx)
+}
+
+func (w *sessionStubWrapper) SetFlags(
+	ctx context.Context,
+	flags int32,
+) error {
+	return w.impl.SetFlags(ctx, flags)
+}
+
+func (w *sessionStubWrapper) SetActive(
+	ctx context.Context,
+	active bool,
+) error {
+	return w.impl.SetActive(ctx, active)
+}
+
+func (w *sessionStubWrapper) SetMediaButtonReceiver(
+	ctx context.Context,
+	mbr app.PendingIntent,
+) error {
+	return w.impl.SetMediaButtonReceiver(ctx, mbr)
+}
+
+func (w *sessionStubWrapper) SetMediaButtonBroadcastReceiver(
+	ctx context.Context,
+	broadcastReceiver interface{},
+) error {
+	return w.impl.SetMediaButtonBroadcastReceiver(ctx, broadcastReceiver)
+}
+
+func (w *sessionStubWrapper) SetLaunchPendingIntent(
+	ctx context.Context,
+	pi app.PendingIntent,
+) error {
+	return w.impl.SetLaunchPendingIntent(ctx, pi)
+}
+
+func (w *sessionStubWrapper) DestroySession(
+	ctx context.Context,
+) error {
+	return w.impl.DestroySession(ctx)
+}
+
+func (w *sessionStubWrapper) SetMetadata(
+	ctx context.Context,
+	metadata interface{},
+	duration int64,
+	metadataDescription string,
+) error {
+	return w.impl.SetMetadata(ctx, metadata, duration, metadataDescription)
+}
+
+func (w *sessionStubWrapper) SetPlaybackState(
+	ctx context.Context,
+	state PlaybackState,
+) error {
+	return w.impl.SetPlaybackState(ctx, state)
+}
+
+func (w *sessionStubWrapper) ResetQueue(
+	ctx context.Context,
+) error {
+	return w.impl.ResetQueue(ctx)
+}
+
+func (w *sessionStubWrapper) GetBinderForSetQueue(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.GetBinderForSetQueue(ctx)
+}
+
+func (w *sessionStubWrapper) SetQueueTitle(
+	ctx context.Context,
+	title interface{},
+) error {
+	return w.impl.SetQueueTitle(ctx, title)
+}
+
+func (w *sessionStubWrapper) SetExtras(
+	ctx context.Context,
+	extras interface{},
+) error {
+	return w.impl.SetExtras(ctx, extras)
+}
+
+func (w *sessionStubWrapper) SetRatingType(
+	ctx context.Context,
+	type_ int32,
+) error {
+	return w.impl.SetRatingType(ctx, type_)
+}
+
+func (w *sessionStubWrapper) SetPlaybackToLocal(
+	ctx context.Context,
+	attributes interface{},
+) error {
+	return w.impl.SetPlaybackToLocal(ctx, attributes)
+}
+
+func (w *sessionStubWrapper) SetPlaybackToRemote(
+	ctx context.Context,
+	control int32,
+	max_ int32,
+	controlId string,
+) error {
+	return w.impl.SetPlaybackToRemote(ctx, control, max_, controlId)
+}
+
+func (w *sessionStubWrapper) SetCurrentVolume(
+	ctx context.Context,
+	currentVolume int32,
+) error {
+	return w.impl.SetCurrentVolume(ctx, currentVolume)
+}
+
+var _ ISession = (*sessionStubWrapper)(nil)
+
+// NewSessionStub creates a server-side ISession wrapping the given
+// server implementation. The returned value satisfies ISession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSessionStub(
+	impl ISessionServer,
+) ISession {
+	wrapper := &sessionStubWrapper{impl: impl}
+	stub := &SessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

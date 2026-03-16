@@ -557,3 +557,116 @@ func (s *RemoteViewsFactoryStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoteViewsFactoryServer is the server-side interface that user implementations
+// provide to NewRemoteViewsFactoryStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteViewsFactoryServer interface {
+	OnDataSetChanged(ctx context.Context) error
+	OnDataSetChangedAsync(ctx context.Context) error
+	OnDestroy(ctx context.Context, intent content.Intent) error
+	GetCount(ctx context.Context) (int32, error)
+	GetViewAt(ctx context.Context, position int32) (androidWidget.RemoteViews, error)
+	GetLoadingView(ctx context.Context) (androidWidget.RemoteViews, error)
+	GetViewTypeCount(ctx context.Context) (int32, error)
+	GetItemId(ctx context.Context, position int32) (int64, error)
+	HasStableIds(ctx context.Context) (bool, error)
+	IsCreated(ctx context.Context) (bool, error)
+	GetRemoteCollectionItems(ctx context.Context, capSize int32, capBitmapSize int32) (androidWidget.RemoteViewsRemoteCollectionItems, error)
+}
+
+type remoteViewsFactoryStubWrapper struct {
+	impl       IRemoteViewsFactoryServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteViewsFactoryStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteViewsFactoryStubWrapper) OnDataSetChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnDataSetChanged(ctx)
+}
+
+func (w *remoteViewsFactoryStubWrapper) OnDataSetChangedAsync(
+	ctx context.Context,
+) error {
+	return w.impl.OnDataSetChangedAsync(ctx)
+}
+
+func (w *remoteViewsFactoryStubWrapper) OnDestroy(
+	ctx context.Context,
+	intent content.Intent,
+) error {
+	return w.impl.OnDestroy(ctx, intent)
+}
+
+func (w *remoteViewsFactoryStubWrapper) GetCount(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCount(ctx)
+}
+
+func (w *remoteViewsFactoryStubWrapper) GetViewAt(
+	ctx context.Context,
+	position int32,
+) (androidWidget.RemoteViews, error) {
+	return w.impl.GetViewAt(ctx, position)
+}
+
+func (w *remoteViewsFactoryStubWrapper) GetLoadingView(
+	ctx context.Context,
+) (androidWidget.RemoteViews, error) {
+	return w.impl.GetLoadingView(ctx)
+}
+
+func (w *remoteViewsFactoryStubWrapper) GetViewTypeCount(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetViewTypeCount(ctx)
+}
+
+func (w *remoteViewsFactoryStubWrapper) GetItemId(
+	ctx context.Context,
+	position int32,
+) (int64, error) {
+	return w.impl.GetItemId(ctx, position)
+}
+
+func (w *remoteViewsFactoryStubWrapper) HasStableIds(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasStableIds(ctx)
+}
+
+func (w *remoteViewsFactoryStubWrapper) IsCreated(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCreated(ctx)
+}
+
+func (w *remoteViewsFactoryStubWrapper) GetRemoteCollectionItems(
+	ctx context.Context,
+	capSize int32,
+	capBitmapSize int32,
+) (androidWidget.RemoteViewsRemoteCollectionItems, error) {
+	return w.impl.GetRemoteCollectionItems(ctx, capSize, capBitmapSize)
+}
+
+var _ IRemoteViewsFactory = (*remoteViewsFactoryStubWrapper)(nil)
+
+// NewRemoteViewsFactoryStub creates a server-side IRemoteViewsFactory wrapping the given
+// server implementation. The returned value satisfies IRemoteViewsFactory
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteViewsFactoryStub(
+	impl IRemoteViewsFactoryServer,
+) IRemoteViewsFactory {
+	wrapper := &remoteViewsFactoryStubWrapper{impl: impl}
+	stub := &RemoteViewsFactoryStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

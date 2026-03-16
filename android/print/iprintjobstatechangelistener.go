@@ -93,3 +93,42 @@ func (s *PrintJobStateChangeListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPrintJobStateChangeListenerServer is the server-side interface that user implementations
+// provide to NewPrintJobStateChangeListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrintJobStateChangeListenerServer interface {
+	OnPrintJobStateChanged(ctx context.Context, printJobId PrintJobId) error
+}
+
+type printJobStateChangeListenerStubWrapper struct {
+	impl       IPrintJobStateChangeListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *printJobStateChangeListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *printJobStateChangeListenerStubWrapper) OnPrintJobStateChanged(
+	ctx context.Context,
+	printJobId PrintJobId,
+) error {
+	return w.impl.OnPrintJobStateChanged(ctx, printJobId)
+}
+
+var _ IPrintJobStateChangeListener = (*printJobStateChangeListenerStubWrapper)(nil)
+
+// NewPrintJobStateChangeListenerStub creates a server-side IPrintJobStateChangeListener wrapping the given
+// server implementation. The returned value satisfies IPrintJobStateChangeListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrintJobStateChangeListenerStub(
+	impl IPrintJobStateChangeListenerServer,
+) IPrintJobStateChangeListener {
+	wrapper := &printJobStateChangeListenerStubWrapper{impl: impl}
+	stub := &PrintJobStateChangeListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

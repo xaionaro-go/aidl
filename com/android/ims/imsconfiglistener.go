@@ -214,3 +214,73 @@ func (s *msConfigListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ImsConfigListenerServer is the server-side interface that user implementations
+// provide to NewmsConfigListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ImsConfigListenerServer interface {
+	OnGetFeatureResponse(ctx context.Context, feature int32, network int32, value int32, status int32) error
+	OnSetFeatureResponse(ctx context.Context, feature int32, network int32, value int32, status int32) error
+	OnGetVideoQuality(ctx context.Context, status int32, quality int32) error
+	OnSetVideoQuality(ctx context.Context, status int32) error
+}
+
+type msConfigListenerStubWrapper struct {
+	impl       ImsConfigListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *msConfigListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *msConfigListenerStubWrapper) OnGetFeatureResponse(
+	ctx context.Context,
+	feature int32,
+	network int32,
+	value int32,
+	status int32,
+) error {
+	return w.impl.OnGetFeatureResponse(ctx, feature, network, value, status)
+}
+
+func (w *msConfigListenerStubWrapper) OnSetFeatureResponse(
+	ctx context.Context,
+	feature int32,
+	network int32,
+	value int32,
+	status int32,
+) error {
+	return w.impl.OnSetFeatureResponse(ctx, feature, network, value, status)
+}
+
+func (w *msConfigListenerStubWrapper) OnGetVideoQuality(
+	ctx context.Context,
+	status int32,
+	quality int32,
+) error {
+	return w.impl.OnGetVideoQuality(ctx, status, quality)
+}
+
+func (w *msConfigListenerStubWrapper) OnSetVideoQuality(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnSetVideoQuality(ctx, status)
+}
+
+var _ ImsConfigListener = (*msConfigListenerStubWrapper)(nil)
+
+// NewmsConfigListenerStub creates a server-side ImsConfigListener wrapping the given
+// server implementation. The returned value satisfies ImsConfigListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewmsConfigListenerStub(
+	impl ImsConfigListenerServer,
+) ImsConfigListener {
+	wrapper := &msConfigListenerStubWrapper{impl: impl}
+	stub := &msConfigListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

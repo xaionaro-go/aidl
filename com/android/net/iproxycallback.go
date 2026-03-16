@@ -42,7 +42,7 @@ func (p *ProxyCallbackProxy) GetProxyPort(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProxyCallback)
-	_data.WriteStrongBinder(callback.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIProxyCallback, "getProxyPort")
 	if _err != nil {
@@ -80,4 +80,43 @@ func (s *ProxyCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IProxyCallbackServer is the server-side interface that user implementations
+// provide to NewProxyCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProxyCallbackServer interface {
+	GetProxyPort(ctx context.Context, callback binder.IBinder) error
+}
+
+type proxyCallbackStubWrapper struct {
+	impl       IProxyCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *proxyCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *proxyCallbackStubWrapper) GetProxyPort(
+	ctx context.Context,
+	callback binder.IBinder,
+) error {
+	return w.impl.GetProxyPort(ctx, callback)
+}
+
+var _ IProxyCallback = (*proxyCallbackStubWrapper)(nil)
+
+// NewProxyCallbackStub creates a server-side IProxyCallback wrapping the given
+// server implementation. The returned value satisfies IProxyCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProxyCallbackStub(
+	impl IProxyCallbackServer,
+) IProxyCallback {
+	wrapper := &proxyCallbackStubWrapper{impl: impl}
+	stub := &ProxyCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -136,3 +136,54 @@ func (s *FeatureProvisioningCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFeatureProvisioningCallbackServer is the server-side interface that user implementations
+// provide to NewFeatureProvisioningCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFeatureProvisioningCallbackServer interface {
+	OnFeatureProvisioningChanged(ctx context.Context, capability int32, tech int32, isProvisioned bool) error
+	OnRcsFeatureProvisioningChanged(ctx context.Context, capability int32, tech int32, isProvisioned bool) error
+}
+
+type featureProvisioningCallbackStubWrapper struct {
+	impl       IFeatureProvisioningCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *featureProvisioningCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *featureProvisioningCallbackStubWrapper) OnFeatureProvisioningChanged(
+	ctx context.Context,
+	capability int32,
+	tech int32,
+	isProvisioned bool,
+) error {
+	return w.impl.OnFeatureProvisioningChanged(ctx, capability, tech, isProvisioned)
+}
+
+func (w *featureProvisioningCallbackStubWrapper) OnRcsFeatureProvisioningChanged(
+	ctx context.Context,
+	capability int32,
+	tech int32,
+	isProvisioned bool,
+) error {
+	return w.impl.OnRcsFeatureProvisioningChanged(ctx, capability, tech, isProvisioned)
+}
+
+var _ IFeatureProvisioningCallback = (*featureProvisioningCallbackStubWrapper)(nil)
+
+// NewFeatureProvisioningCallbackStub creates a server-side IFeatureProvisioningCallback wrapping the given
+// server implementation. The returned value satisfies IFeatureProvisioningCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFeatureProvisioningCallbackStub(
+	impl IFeatureProvisioningCallbackServer,
+) IFeatureProvisioningCallback {
+	wrapper := &featureProvisioningCallbackStubWrapper{impl: impl}
+	stub := &FeatureProvisioningCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

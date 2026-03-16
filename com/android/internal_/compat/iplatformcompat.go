@@ -1292,3 +1292,221 @@ func (s *PlatformCompatStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPlatformCompatServer is the server-side interface that user implementations
+// provide to NewPlatformCompatStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPlatformCompatServer interface {
+	ReportChange(ctx context.Context, changeId int64, appInfo pm.ApplicationInfo) error
+	ReportChangeByPackageName(ctx context.Context, changeId int64, packageName string) error
+	ReportChangeByUid(ctx context.Context, changeId int64, uid int32) error
+	IsChangeEnabled(ctx context.Context, changeId int64, appInfo pm.ApplicationInfo) (bool, error)
+	IsChangeEnabledByPackageName(ctx context.Context, changeId int64, packageName string) (bool, error)
+	IsChangeEnabledByUid(ctx context.Context, changeId int64, uid int32) (bool, error)
+	SetOverrides(ctx context.Context, overrides CompatibilityChangeConfig, packageName string) error
+	PutAllOverridesOnReleaseBuilds(ctx context.Context, overridesByPackage CompatibilityOverridesByPackageConfig) error
+	PutOverridesOnReleaseBuilds(ctx context.Context, overrides CompatibilityOverrideConfig, packageName string) error
+	SetOverridesForTest(ctx context.Context, overrides CompatibilityChangeConfig, packageName string) error
+	ClearOverride(ctx context.Context, changeId int64, packageName string) (bool, error)
+	ClearOverrideForTest(ctx context.Context, changeId int64, packageName string) (bool, error)
+	RemoveAllOverridesOnReleaseBuilds(ctx context.Context, overridesToRemoveByPackage CompatibilityOverridesToRemoveByPackageConfig) error
+	RemoveOverridesOnReleaseBuilds(ctx context.Context, overridesToRemove CompatibilityOverridesToRemoveConfig, packageName string) error
+	EnableTargetSdkChanges(ctx context.Context, packageName string, targetSdkVersion int32) (int32, error)
+	DisableTargetSdkChanges(ctx context.Context, packageName string, targetSdkVersion int32) (int32, error)
+	ClearOverrides(ctx context.Context, packageName string) error
+	ClearOverridesForTest(ctx context.Context, packageName string) error
+	GetAppConfig(ctx context.Context, appInfo pm.ApplicationInfo) (CompatibilityChangeConfig, error)
+	ListAllChanges(ctx context.Context) ([]CompatibilityChangeInfo, error)
+	ListUIChanges(ctx context.Context) ([]CompatibilityChangeInfo, error)
+	GetOverrideValidator(ctx context.Context) (IOverrideValidator, error)
+}
+
+type platformCompatStubWrapper struct {
+	impl       IPlatformCompatServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *platformCompatStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *platformCompatStubWrapper) ReportChange(
+	ctx context.Context,
+	changeId int64,
+	appInfo pm.ApplicationInfo,
+) error {
+	return w.impl.ReportChange(ctx, changeId, appInfo)
+}
+
+func (w *platformCompatStubWrapper) ReportChangeByPackageName(
+	ctx context.Context,
+	changeId int64,
+	packageName string,
+) error {
+	return w.impl.ReportChangeByPackageName(ctx, changeId, packageName)
+}
+
+func (w *platformCompatStubWrapper) ReportChangeByUid(
+	ctx context.Context,
+	changeId int64,
+	uid int32,
+) error {
+	return w.impl.ReportChangeByUid(ctx, changeId, uid)
+}
+
+func (w *platformCompatStubWrapper) IsChangeEnabled(
+	ctx context.Context,
+	changeId int64,
+	appInfo pm.ApplicationInfo,
+) (bool, error) {
+	return w.impl.IsChangeEnabled(ctx, changeId, appInfo)
+}
+
+func (w *platformCompatStubWrapper) IsChangeEnabledByPackageName(
+	ctx context.Context,
+	changeId int64,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsChangeEnabledByPackageName(ctx, changeId, packageName)
+}
+
+func (w *platformCompatStubWrapper) IsChangeEnabledByUid(
+	ctx context.Context,
+	changeId int64,
+	uid int32,
+) (bool, error) {
+	return w.impl.IsChangeEnabledByUid(ctx, changeId, uid)
+}
+
+func (w *platformCompatStubWrapper) SetOverrides(
+	ctx context.Context,
+	overrides CompatibilityChangeConfig,
+	packageName string,
+) error {
+	return w.impl.SetOverrides(ctx, overrides, packageName)
+}
+
+func (w *platformCompatStubWrapper) PutAllOverridesOnReleaseBuilds(
+	ctx context.Context,
+	overridesByPackage CompatibilityOverridesByPackageConfig,
+) error {
+	return w.impl.PutAllOverridesOnReleaseBuilds(ctx, overridesByPackage)
+}
+
+func (w *platformCompatStubWrapper) PutOverridesOnReleaseBuilds(
+	ctx context.Context,
+	overrides CompatibilityOverrideConfig,
+	packageName string,
+) error {
+	return w.impl.PutOverridesOnReleaseBuilds(ctx, overrides, packageName)
+}
+
+func (w *platformCompatStubWrapper) SetOverridesForTest(
+	ctx context.Context,
+	overrides CompatibilityChangeConfig,
+	packageName string,
+) error {
+	return w.impl.SetOverridesForTest(ctx, overrides, packageName)
+}
+
+func (w *platformCompatStubWrapper) ClearOverride(
+	ctx context.Context,
+	changeId int64,
+	packageName string,
+) (bool, error) {
+	return w.impl.ClearOverride(ctx, changeId, packageName)
+}
+
+func (w *platformCompatStubWrapper) ClearOverrideForTest(
+	ctx context.Context,
+	changeId int64,
+	packageName string,
+) (bool, error) {
+	return w.impl.ClearOverrideForTest(ctx, changeId, packageName)
+}
+
+func (w *platformCompatStubWrapper) RemoveAllOverridesOnReleaseBuilds(
+	ctx context.Context,
+	overridesToRemoveByPackage CompatibilityOverridesToRemoveByPackageConfig,
+) error {
+	return w.impl.RemoveAllOverridesOnReleaseBuilds(ctx, overridesToRemoveByPackage)
+}
+
+func (w *platformCompatStubWrapper) RemoveOverridesOnReleaseBuilds(
+	ctx context.Context,
+	overridesToRemove CompatibilityOverridesToRemoveConfig,
+	packageName string,
+) error {
+	return w.impl.RemoveOverridesOnReleaseBuilds(ctx, overridesToRemove, packageName)
+}
+
+func (w *platformCompatStubWrapper) EnableTargetSdkChanges(
+	ctx context.Context,
+	packageName string,
+	targetSdkVersion int32,
+) (int32, error) {
+	return w.impl.EnableTargetSdkChanges(ctx, packageName, targetSdkVersion)
+}
+
+func (w *platformCompatStubWrapper) DisableTargetSdkChanges(
+	ctx context.Context,
+	packageName string,
+	targetSdkVersion int32,
+) (int32, error) {
+	return w.impl.DisableTargetSdkChanges(ctx, packageName, targetSdkVersion)
+}
+
+func (w *platformCompatStubWrapper) ClearOverrides(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ClearOverrides(ctx, packageName)
+}
+
+func (w *platformCompatStubWrapper) ClearOverridesForTest(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ClearOverridesForTest(ctx, packageName)
+}
+
+func (w *platformCompatStubWrapper) GetAppConfig(
+	ctx context.Context,
+	appInfo pm.ApplicationInfo,
+) (CompatibilityChangeConfig, error) {
+	return w.impl.GetAppConfig(ctx, appInfo)
+}
+
+func (w *platformCompatStubWrapper) ListAllChanges(
+	ctx context.Context,
+) ([]CompatibilityChangeInfo, error) {
+	return w.impl.ListAllChanges(ctx)
+}
+
+func (w *platformCompatStubWrapper) ListUIChanges(
+	ctx context.Context,
+) ([]CompatibilityChangeInfo, error) {
+	return w.impl.ListUIChanges(ctx)
+}
+
+func (w *platformCompatStubWrapper) GetOverrideValidator(
+	ctx context.Context,
+) (IOverrideValidator, error) {
+	return w.impl.GetOverrideValidator(ctx)
+}
+
+var _ IPlatformCompat = (*platformCompatStubWrapper)(nil)
+
+// NewPlatformCompatStub creates a server-side IPlatformCompat wrapping the given
+// server implementation. The returned value satisfies IPlatformCompat
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPlatformCompatStub(
+	impl IPlatformCompatServer,
+) IPlatformCompat {
+	wrapper := &platformCompatStubWrapper{impl: impl}
+	stub := &PlatformCompatStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

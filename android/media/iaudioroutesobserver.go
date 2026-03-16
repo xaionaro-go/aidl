@@ -93,3 +93,42 @@ func (s *AudioRoutesObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioRoutesObserverServer is the server-side interface that user implementations
+// provide to NewAudioRoutesObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioRoutesObserverServer interface {
+	DispatchAudioRoutesChanged(ctx context.Context, newRoutes AudioRoutesInfo) error
+}
+
+type audioRoutesObserverStubWrapper struct {
+	impl       IAudioRoutesObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioRoutesObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioRoutesObserverStubWrapper) DispatchAudioRoutesChanged(
+	ctx context.Context,
+	newRoutes AudioRoutesInfo,
+) error {
+	return w.impl.DispatchAudioRoutesChanged(ctx, newRoutes)
+}
+
+var _ IAudioRoutesObserver = (*audioRoutesObserverStubWrapper)(nil)
+
+// NewAudioRoutesObserverStub creates a server-side IAudioRoutesObserver wrapping the given
+// server implementation. The returned value satisfies IAudioRoutesObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioRoutesObserverStub(
+	impl IAudioRoutesObserverServer,
+) IAudioRoutesObserver {
+	wrapper := &audioRoutesObserverStubWrapper{impl: impl}
+	stub := &AudioRoutesObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -3,7 +3,6 @@ package session
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type IOnVolumeKeyLongPressListener interface {
 	AsBinder() binder.IBinder
-	OnVolumeKeyLongPress(ctx context.Context, event view.KeyEvent) error
+	OnVolumeKeyLongPress(ctx context.Context, event interface{}) error
 }
 
 type OnVolumeKeyLongPressListenerProxy struct {
@@ -39,14 +38,10 @@ var _ IOnVolumeKeyLongPressListener = (*OnVolumeKeyLongPressListenerProxy)(nil)
 
 func (p *OnVolumeKeyLongPressListenerProxy) OnVolumeKeyLongPress(
 	ctx context.Context,
-	event view.KeyEvent,
+	event interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOnVolumeKeyLongPressListener)
-	_data.WriteInt32(1)
-	if _err := event.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnVolumeKeyLongPressListener, "onVolumeKeyLongPress")
 	if _err != nil {
@@ -75,22 +70,50 @@ func (s *OnVolumeKeyLongPressListenerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_event view.KeyEvent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_event.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_event interface{}
 		_err := s.Impl.OnVolumeKeyLongPress(ctx, _arg_event)
 		_ = _err
 		return nil, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOnVolumeKeyLongPressListenerServer is the server-side interface that user implementations
+// provide to NewOnVolumeKeyLongPressListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnVolumeKeyLongPressListenerServer interface {
+	OnVolumeKeyLongPress(ctx context.Context, event interface{}) error
+}
+
+type onVolumeKeyLongPressListenerStubWrapper struct {
+	impl       IOnVolumeKeyLongPressListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onVolumeKeyLongPressListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onVolumeKeyLongPressListenerStubWrapper) OnVolumeKeyLongPress(
+	ctx context.Context,
+	event interface{},
+) error {
+	return w.impl.OnVolumeKeyLongPress(ctx, event)
+}
+
+var _ IOnVolumeKeyLongPressListener = (*onVolumeKeyLongPressListenerStubWrapper)(nil)
+
+// NewOnVolumeKeyLongPressListenerStub creates a server-side IOnVolumeKeyLongPressListener wrapping the given
+// server implementation. The returned value satisfies IOnVolumeKeyLongPressListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnVolumeKeyLongPressListenerStub(
+	impl IOnVolumeKeyLongPressListenerServer,
+) IOnVolumeKeyLongPressListener {
+	wrapper := &onVolumeKeyLongPressListenerStubWrapper{impl: impl}
+	stub := &OnVolumeKeyLongPressListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

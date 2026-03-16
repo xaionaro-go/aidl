@@ -49,8 +49,8 @@ func (p *ControlsSubscriberProxy) OnSubscribe(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIControlsSubscriber)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteStrongBinder(cs.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, cs.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIControlsSubscriber, "onSubscribe")
 	if _err != nil {
@@ -68,7 +68,7 @@ func (p *ControlsSubscriberProxy) OnNext(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIControlsSubscriber)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := c.MarshalParcel(_data); _err != nil {
 		return _err
@@ -90,7 +90,7 @@ func (p *ControlsSubscriberProxy) OnError(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIControlsSubscriber)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(s_)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIControlsSubscriber, "onError")
@@ -108,7 +108,7 @@ func (p *ControlsSubscriberProxy) OnComplete(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIControlsSubscriber)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIControlsSubscriber, "onComplete")
 	if _err != nil {
@@ -195,4 +195,70 @@ func (s *ControlsSubscriberStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IControlsSubscriberServer is the server-side interface that user implementations
+// provide to NewControlsSubscriberStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IControlsSubscriberServer interface {
+	OnSubscribe(ctx context.Context, token binder.IBinder, cs IControlsSubscription) error
+	OnNext(ctx context.Context, token binder.IBinder, c Control) error
+	OnError(ctx context.Context, token binder.IBinder, s_ string) error
+	OnComplete(ctx context.Context, token binder.IBinder) error
+}
+
+type controlsSubscriberStubWrapper struct {
+	impl       IControlsSubscriberServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *controlsSubscriberStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *controlsSubscriberStubWrapper) OnSubscribe(
+	ctx context.Context,
+	token binder.IBinder,
+	cs IControlsSubscription,
+) error {
+	return w.impl.OnSubscribe(ctx, token, cs)
+}
+
+func (w *controlsSubscriberStubWrapper) OnNext(
+	ctx context.Context,
+	token binder.IBinder,
+	c Control,
+) error {
+	return w.impl.OnNext(ctx, token, c)
+}
+
+func (w *controlsSubscriberStubWrapper) OnError(
+	ctx context.Context,
+	token binder.IBinder,
+	s_ string,
+) error {
+	return w.impl.OnError(ctx, token, s_)
+}
+
+func (w *controlsSubscriberStubWrapper) OnComplete(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.OnComplete(ctx, token)
+}
+
+var _ IControlsSubscriber = (*controlsSubscriberStubWrapper)(nil)
+
+// NewControlsSubscriberStub creates a server-side IControlsSubscriber wrapping the given
+// server implementation. The returned value satisfies IControlsSubscriber
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewControlsSubscriberStub(
+	impl IControlsSubscriberServer,
+) IControlsSubscriber {
+	wrapper := &controlsSubscriberStubWrapper{impl: impl}
+	stub := &ControlsSubscriberStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -172,3 +172,56 @@ func (s *InputThreadStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputThreadServer is the server-side interface that user implementations
+// provide to NewInputThreadStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputThreadServer interface {
+	Finish(ctx context.Context) error
+	Wake(ctx context.Context) error
+	SleepUntil(ctx context.Context, whenNanos int64) error
+}
+
+type inputThreadStubWrapper struct {
+	impl       IInputThreadServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputThreadStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputThreadStubWrapper) Finish(
+	ctx context.Context,
+) error {
+	return w.impl.Finish(ctx)
+}
+
+func (w *inputThreadStubWrapper) Wake(
+	ctx context.Context,
+) error {
+	return w.impl.Wake(ctx)
+}
+
+func (w *inputThreadStubWrapper) SleepUntil(
+	ctx context.Context,
+	whenNanos int64,
+) error {
+	return w.impl.SleepUntil(ctx, whenNanos)
+}
+
+var _ IInputThread = (*inputThreadStubWrapper)(nil)
+
+// NewInputThreadStub creates a server-side IInputThread wrapping the given
+// server implementation. The returned value satisfies IInputThread
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputThreadStub(
+	impl IInputThreadServer,
+) IInputThread {
+	wrapper := &inputThreadStubWrapper{impl: impl}
+	stub := &InputThreadStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -88,3 +88,42 @@ func (s *ThreadChipCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IThreadChipCallbackServer is the server-side interface that user implementations
+// provide to NewThreadChipCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IThreadChipCallbackServer interface {
+	OnReceiveSpinelFrame(ctx context.Context, frame []byte) error
+}
+
+type threadChipCallbackStubWrapper struct {
+	impl       IThreadChipCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *threadChipCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *threadChipCallbackStubWrapper) OnReceiveSpinelFrame(
+	ctx context.Context,
+	frame []byte,
+) error {
+	return w.impl.OnReceiveSpinelFrame(ctx, frame)
+}
+
+var _ IThreadChipCallback = (*threadChipCallbackStubWrapper)(nil)
+
+// NewThreadChipCallbackStub creates a server-side IThreadChipCallback wrapping the given
+// server implementation. The returned value satisfies IThreadChipCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewThreadChipCallbackStub(
+	impl IThreadChipCallbackServer,
+) IThreadChipCallback {
+	wrapper := &threadChipCallbackStubWrapper{impl: impl}
+	stub := &ThreadChipCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

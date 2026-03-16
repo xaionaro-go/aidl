@@ -175,3 +175,58 @@ func (s *CompanionDeviceServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICompanionDeviceServiceServer is the server-side interface that user implementations
+// provide to NewCompanionDeviceServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICompanionDeviceServiceServer interface {
+	OnDeviceAppeared(ctx context.Context, associationInfo AssociationInfo) error
+	OnDeviceDisappeared(ctx context.Context, associationInfo AssociationInfo) error
+	OnDevicePresenceEvent(ctx context.Context, event DevicePresenceEvent) error
+}
+
+type companionDeviceServiceStubWrapper struct {
+	impl       ICompanionDeviceServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *companionDeviceServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *companionDeviceServiceStubWrapper) OnDeviceAppeared(
+	ctx context.Context,
+	associationInfo AssociationInfo,
+) error {
+	return w.impl.OnDeviceAppeared(ctx, associationInfo)
+}
+
+func (w *companionDeviceServiceStubWrapper) OnDeviceDisappeared(
+	ctx context.Context,
+	associationInfo AssociationInfo,
+) error {
+	return w.impl.OnDeviceDisappeared(ctx, associationInfo)
+}
+
+func (w *companionDeviceServiceStubWrapper) OnDevicePresenceEvent(
+	ctx context.Context,
+	event DevicePresenceEvent,
+) error {
+	return w.impl.OnDevicePresenceEvent(ctx, event)
+}
+
+var _ ICompanionDeviceService = (*companionDeviceServiceStubWrapper)(nil)
+
+// NewCompanionDeviceServiceStub creates a server-side ICompanionDeviceService wrapping the given
+// server implementation. The returned value satisfies ICompanionDeviceService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCompanionDeviceServiceStub(
+	impl ICompanionDeviceServiceServer,
+) ICompanionDeviceService {
+	wrapper := &companionDeviceServiceStubWrapper{impl: impl}
+	stub := &CompanionDeviceServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

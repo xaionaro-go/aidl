@@ -83,7 +83,7 @@ func (p *ImsMMTelFeatureProxy) StartSession(
 	if _err := incomingCallIntent.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMMTelFeature, "startSession")
 	if _err != nil {
@@ -230,7 +230,7 @@ func (p *ImsMMTelFeatureProxy) AddRegistrationListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMMTelFeature)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMMTelFeature, "addRegistrationListener")
 	if _err != nil {
@@ -256,7 +256,7 @@ func (p *ImsMMTelFeatureProxy) RemoveRegistrationListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMMTelFeature)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMMTelFeature, "removeRegistrationListener")
 	if _err != nil {
@@ -912,4 +912,170 @@ func (s *ImsMMTelFeatureStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsMMTelFeatureServer is the server-side interface that user implementations
+// provide to NewImsMMTelFeatureStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsMMTelFeatureServer interface {
+	StartSession(ctx context.Context, incomingCallIntent app.PendingIntent, listener IImsRegistrationListener) (int32, error)
+	EndSession(ctx context.Context, sessionId int32) error
+	IsConnected(ctx context.Context, callSessionType int32, callType int32) (bool, error)
+	IsOpened(ctx context.Context) (bool, error)
+	GetFeatureStatus(ctx context.Context) (int32, error)
+	AddRegistrationListener(ctx context.Context, listener IImsRegistrationListener) error
+	RemoveRegistrationListener(ctx context.Context, listener IImsRegistrationListener) error
+	CreateCallProfile(ctx context.Context, sessionId int32, callSessionType int32, callType int32) (ims.ImsCallProfile, error)
+	CreateCallSession(ctx context.Context, sessionId int32, profile ims.ImsCallProfile) (IImsCallSession, error)
+	GetPendingCallSession(ctx context.Context, sessionId int32, callId string) (IImsCallSession, error)
+	GetUtInterface(ctx context.Context) (IImsUt, error)
+	GetConfigInterface(ctx context.Context) (IImsConfig, error)
+	TurnOnIms(ctx context.Context) error
+	TurnOffIms(ctx context.Context) error
+	GetEcbmInterface(ctx context.Context) (IImsEcbm, error)
+	SetUiTTYMode(ctx context.Context, uiTtyMode int32, onComplete contexthub.Message) error
+	GetMultiEndpointInterface(ctx context.Context) (IImsMultiEndpoint, error)
+}
+
+type imsMMTelFeatureStubWrapper struct {
+	impl       IImsMMTelFeatureServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsMMTelFeatureStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsMMTelFeatureStubWrapper) StartSession(
+	ctx context.Context,
+	incomingCallIntent app.PendingIntent,
+	listener IImsRegistrationListener,
+) (int32, error) {
+	return w.impl.StartSession(ctx, incomingCallIntent, listener)
+}
+
+func (w *imsMMTelFeatureStubWrapper) EndSession(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.EndSession(ctx, sessionId)
+}
+
+func (w *imsMMTelFeatureStubWrapper) IsConnected(
+	ctx context.Context,
+	callSessionType int32,
+	callType int32,
+) (bool, error) {
+	return w.impl.IsConnected(ctx, callSessionType, callType)
+}
+
+func (w *imsMMTelFeatureStubWrapper) IsOpened(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsOpened(ctx)
+}
+
+func (w *imsMMTelFeatureStubWrapper) GetFeatureStatus(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetFeatureStatus(ctx)
+}
+
+func (w *imsMMTelFeatureStubWrapper) AddRegistrationListener(
+	ctx context.Context,
+	listener IImsRegistrationListener,
+) error {
+	return w.impl.AddRegistrationListener(ctx, listener)
+}
+
+func (w *imsMMTelFeatureStubWrapper) RemoveRegistrationListener(
+	ctx context.Context,
+	listener IImsRegistrationListener,
+) error {
+	return w.impl.RemoveRegistrationListener(ctx, listener)
+}
+
+func (w *imsMMTelFeatureStubWrapper) CreateCallProfile(
+	ctx context.Context,
+	sessionId int32,
+	callSessionType int32,
+	callType int32,
+) (ims.ImsCallProfile, error) {
+	return w.impl.CreateCallProfile(ctx, sessionId, callSessionType, callType)
+}
+
+func (w *imsMMTelFeatureStubWrapper) CreateCallSession(
+	ctx context.Context,
+	sessionId int32,
+	profile ims.ImsCallProfile,
+) (IImsCallSession, error) {
+	return w.impl.CreateCallSession(ctx, sessionId, profile)
+}
+
+func (w *imsMMTelFeatureStubWrapper) GetPendingCallSession(
+	ctx context.Context,
+	sessionId int32,
+	callId string,
+) (IImsCallSession, error) {
+	return w.impl.GetPendingCallSession(ctx, sessionId, callId)
+}
+
+func (w *imsMMTelFeatureStubWrapper) GetUtInterface(
+	ctx context.Context,
+) (IImsUt, error) {
+	return w.impl.GetUtInterface(ctx)
+}
+
+func (w *imsMMTelFeatureStubWrapper) GetConfigInterface(
+	ctx context.Context,
+) (IImsConfig, error) {
+	return w.impl.GetConfigInterface(ctx)
+}
+
+func (w *imsMMTelFeatureStubWrapper) TurnOnIms(
+	ctx context.Context,
+) error {
+	return w.impl.TurnOnIms(ctx)
+}
+
+func (w *imsMMTelFeatureStubWrapper) TurnOffIms(
+	ctx context.Context,
+) error {
+	return w.impl.TurnOffIms(ctx)
+}
+
+func (w *imsMMTelFeatureStubWrapper) GetEcbmInterface(
+	ctx context.Context,
+) (IImsEcbm, error) {
+	return w.impl.GetEcbmInterface(ctx)
+}
+
+func (w *imsMMTelFeatureStubWrapper) SetUiTTYMode(
+	ctx context.Context,
+	uiTtyMode int32,
+	onComplete contexthub.Message,
+) error {
+	return w.impl.SetUiTTYMode(ctx, uiTtyMode, onComplete)
+}
+
+func (w *imsMMTelFeatureStubWrapper) GetMultiEndpointInterface(
+	ctx context.Context,
+) (IImsMultiEndpoint, error) {
+	return w.impl.GetMultiEndpointInterface(ctx)
+}
+
+var _ IImsMMTelFeature = (*imsMMTelFeatureStubWrapper)(nil)
+
+// NewImsMMTelFeatureStub creates a server-side IImsMMTelFeature wrapping the given
+// server implementation. The returned value satisfies IImsMMTelFeature
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsMMTelFeatureStub(
+	impl IImsMMTelFeatureServer,
+) IImsMMTelFeature {
+	wrapper := &imsMMTelFeatureStubWrapper{impl: impl}
+	stub := &ImsMMTelFeatureStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

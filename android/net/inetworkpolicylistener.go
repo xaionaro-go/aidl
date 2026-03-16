@@ -331,3 +331,98 @@ func (s *NetworkPolicyListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INetworkPolicyListenerServer is the server-side interface that user implementations
+// provide to NewNetworkPolicyListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkPolicyListenerServer interface {
+	OnUidRulesChanged(ctx context.Context, uid int32, uidRules int32) error
+	OnMeteredIfacesChanged(ctx context.Context, meteredIfaces []string) error
+	OnRestrictBackgroundChanged(ctx context.Context, restrictBackground bool) error
+	OnUidPoliciesChanged(ctx context.Context, uid int32, uidPolicies int32) error
+	OnSubscriptionOverride(ctx context.Context, subId int32, overrideMask int32, overrideValue int32, networkTypes []int32) error
+	OnSubscriptionPlansChanged(ctx context.Context, subId int32, plans []telephony.SubscriptionPlan) error
+	OnBlockedReasonChanged(ctx context.Context, uid int32, oldBlockedReason int32, newBlockedReason int32) error
+}
+
+type networkPolicyListenerStubWrapper struct {
+	impl       INetworkPolicyListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkPolicyListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkPolicyListenerStubWrapper) OnUidRulesChanged(
+	ctx context.Context,
+	uid int32,
+	uidRules int32,
+) error {
+	return w.impl.OnUidRulesChanged(ctx, uid, uidRules)
+}
+
+func (w *networkPolicyListenerStubWrapper) OnMeteredIfacesChanged(
+	ctx context.Context,
+	meteredIfaces []string,
+) error {
+	return w.impl.OnMeteredIfacesChanged(ctx, meteredIfaces)
+}
+
+func (w *networkPolicyListenerStubWrapper) OnRestrictBackgroundChanged(
+	ctx context.Context,
+	restrictBackground bool,
+) error {
+	return w.impl.OnRestrictBackgroundChanged(ctx, restrictBackground)
+}
+
+func (w *networkPolicyListenerStubWrapper) OnUidPoliciesChanged(
+	ctx context.Context,
+	uid int32,
+	uidPolicies int32,
+) error {
+	return w.impl.OnUidPoliciesChanged(ctx, uid, uidPolicies)
+}
+
+func (w *networkPolicyListenerStubWrapper) OnSubscriptionOverride(
+	ctx context.Context,
+	subId int32,
+	overrideMask int32,
+	overrideValue int32,
+	networkTypes []int32,
+) error {
+	return w.impl.OnSubscriptionOverride(ctx, subId, overrideMask, overrideValue, networkTypes)
+}
+
+func (w *networkPolicyListenerStubWrapper) OnSubscriptionPlansChanged(
+	ctx context.Context,
+	subId int32,
+	plans []telephony.SubscriptionPlan,
+) error {
+	return w.impl.OnSubscriptionPlansChanged(ctx, subId, plans)
+}
+
+func (w *networkPolicyListenerStubWrapper) OnBlockedReasonChanged(
+	ctx context.Context,
+	uid int32,
+	oldBlockedReason int32,
+	newBlockedReason int32,
+) error {
+	return w.impl.OnBlockedReasonChanged(ctx, uid, oldBlockedReason, newBlockedReason)
+}
+
+var _ INetworkPolicyListener = (*networkPolicyListenerStubWrapper)(nil)
+
+// NewNetworkPolicyListenerStub creates a server-side INetworkPolicyListener wrapping the given
+// server implementation. The returned value satisfies INetworkPolicyListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkPolicyListenerStub(
+	impl INetworkPolicyListenerServer,
+) INetworkPolicyListener {
+	wrapper := &networkPolicyListenerStubWrapper{impl: impl}
+	stub := &NetworkPolicyListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -117,3 +117,49 @@ func (s *GetValueCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetValueCallbackServer is the server-side interface that user implementations
+// provide to NewGetValueCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetValueCallbackServer interface {
+	OnSuccess(ctx context.Context, result GetValueResult) error
+	OnFailure(ctx context.Context) error
+}
+
+type getValueCallbackStubWrapper struct {
+	impl       IGetValueCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getValueCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getValueCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result GetValueResult,
+) error {
+	return w.impl.OnSuccess(ctx, result)
+}
+
+func (w *getValueCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+) error {
+	return w.impl.OnFailure(ctx)
+}
+
+var _ IGetValueCallback = (*getValueCallbackStubWrapper)(nil)
+
+// NewGetValueCallbackStub creates a server-side IGetValueCallback wrapping the given
+// server implementation. The returned value satisfies IGetValueCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetValueCallbackStub(
+	impl IGetValueCallbackServer,
+) IGetValueCallback {
+	wrapper := &getValueCallbackStubWrapper{impl: impl}
+	stub := &GetValueCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

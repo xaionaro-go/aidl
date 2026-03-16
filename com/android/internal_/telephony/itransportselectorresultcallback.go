@@ -42,7 +42,7 @@ func (p *TransportSelectorResultCallbackProxy) OnCompleted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransportSelectorResultCallback)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITransportSelectorResultCallback, "onCompleted")
 	if _err != nil {
@@ -80,4 +80,43 @@ func (s *TransportSelectorResultCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITransportSelectorResultCallbackServer is the server-side interface that user implementations
+// provide to NewTransportSelectorResultCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITransportSelectorResultCallbackServer interface {
+	OnCompleted(ctx context.Context, cb IWwanSelectorCallback) error
+}
+
+type transportSelectorResultCallbackStubWrapper struct {
+	impl       ITransportSelectorResultCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transportSelectorResultCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transportSelectorResultCallbackStubWrapper) OnCompleted(
+	ctx context.Context,
+	cb IWwanSelectorCallback,
+) error {
+	return w.impl.OnCompleted(ctx, cb)
+}
+
+var _ ITransportSelectorResultCallback = (*transportSelectorResultCallbackStubWrapper)(nil)
+
+// NewTransportSelectorResultCallbackStub creates a server-side ITransportSelectorResultCallback wrapping the given
+// server implementation. The returned value satisfies ITransportSelectorResultCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTransportSelectorResultCallbackStub(
+	impl ITransportSelectorResultCallbackServer,
+) ITransportSelectorResultCallback {
+	wrapper := &transportSelectorResultCallbackStubWrapper{impl: impl}
+	stub := &TransportSelectorResultCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

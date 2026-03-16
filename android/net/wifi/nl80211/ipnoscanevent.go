@@ -100,3 +100,48 @@ func (s *PnoScanEventStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPnoScanEventServer is the server-side interface that user implementations
+// provide to NewPnoScanEventStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPnoScanEventServer interface {
+	OnPnoNetworkFound(ctx context.Context) error
+	OnPnoScanFailed(ctx context.Context) error
+}
+
+type pnoScanEventStubWrapper struct {
+	impl       IPnoScanEventServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pnoScanEventStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pnoScanEventStubWrapper) OnPnoNetworkFound(
+	ctx context.Context,
+) error {
+	return w.impl.OnPnoNetworkFound(ctx)
+}
+
+func (w *pnoScanEventStubWrapper) OnPnoScanFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnPnoScanFailed(ctx)
+}
+
+var _ IPnoScanEvent = (*pnoScanEventStubWrapper)(nil)
+
+// NewPnoScanEventStub creates a server-side IPnoScanEvent wrapping the given
+// server implementation. The returned value satisfies IPnoScanEvent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPnoScanEventStub(
+	impl IPnoScanEventServer,
+) IPnoScanEvent {
+	wrapper := &pnoScanEventStubWrapper{impl: impl}
+	stub := &PnoScanEventStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

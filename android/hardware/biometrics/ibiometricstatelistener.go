@@ -153,3 +153,59 @@ func (s *BiometricStateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBiometricStateListenerServer is the server-side interface that user implementations
+// provide to NewBiometricStateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBiometricStateListenerServer interface {
+	OnStateChanged(ctx context.Context, newState int32) error
+	OnBiometricAction(ctx context.Context, action int32) error
+	OnEnrollmentsChanged(ctx context.Context, sensorId int32, hasEnrollments bool) error
+}
+
+type biometricStateListenerStubWrapper struct {
+	impl       IBiometricStateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *biometricStateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *biometricStateListenerStubWrapper) OnStateChanged(
+	ctx context.Context,
+	newState int32,
+) error {
+	return w.impl.OnStateChanged(ctx, newState)
+}
+
+func (w *biometricStateListenerStubWrapper) OnBiometricAction(
+	ctx context.Context,
+	action int32,
+) error {
+	return w.impl.OnBiometricAction(ctx, action)
+}
+
+func (w *biometricStateListenerStubWrapper) OnEnrollmentsChanged(
+	ctx context.Context,
+	sensorId int32,
+	hasEnrollments bool,
+) error {
+	return w.impl.OnEnrollmentsChanged(ctx, sensorId, hasEnrollments)
+}
+
+var _ IBiometricStateListener = (*biometricStateListenerStubWrapper)(nil)
+
+// NewBiometricStateListenerStub creates a server-side IBiometricStateListener wrapping the given
+// server implementation. The returned value satisfies IBiometricStateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBiometricStateListenerStub(
+	impl IBiometricStateListenerServer,
+) IBiometricStateListener {
+	wrapper := &biometricStateListenerStubWrapper{impl: impl}
+	stub := &BiometricStateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

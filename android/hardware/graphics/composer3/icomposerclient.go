@@ -1104,7 +1104,7 @@ func (p *ComposerClientProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIComposerClient)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIComposerClient, "registerCallback")
 	if _err != nil {
@@ -2896,4 +2896,465 @@ func (s *ComposerClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IComposerClientServer is the server-side interface that user implementations
+// provide to NewComposerClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IComposerClientServer interface {
+	CreateLayer(ctx context.Context, display int64, bufferSlotCount int32) (int64, error)
+	CreateVirtualDisplay(ctx context.Context, width int32, height int32, formatHint common.PixelFormat, outputBufferSlotCount int32) (VirtualDisplay, error)
+	DestroyLayer(ctx context.Context, display int64, layer int64) error
+	DestroyVirtualDisplay(ctx context.Context, display int64) error
+	ExecuteCommands(ctx context.Context, commands []DisplayCommand) ([]CommandResultPayload, error)
+	GetActiveConfig(ctx context.Context, display int64) (int32, error)
+	GetColorModes(ctx context.Context, display int64) ([]ColorMode, error)
+	GetDataspaceSaturationMatrix(ctx context.Context, dataspace common.Dataspace) ([]float32, error)
+	GetDisplayAttribute(ctx context.Context, display int64, config int32, attribute DisplayAttribute) (int32, error)
+	GetDisplayCapabilities(ctx context.Context, display int64) ([]DisplayCapability, error)
+	GetDisplayConfigs(ctx context.Context, display int64) ([]int32, error)
+	GetDisplayConnectionType(ctx context.Context, display int64) (DisplayConnectionType, error)
+	GetDisplayIdentificationData(ctx context.Context, display int64) (DisplayIdentification, error)
+	GetDisplayName(ctx context.Context, display int64) (string, error)
+	GetDisplayVsyncPeriod(ctx context.Context, display int64) (int32, error)
+	GetDisplayedContentSample(ctx context.Context, display int64, maxFrames int64, timestamp int64) (DisplayContentSample, error)
+	GetDisplayedContentSamplingAttributes(ctx context.Context, display int64) (DisplayContentSamplingAttributes, error)
+	GetDisplayPhysicalOrientation(ctx context.Context, display int64) (common.Transform, error)
+	GetHdrCapabilities(ctx context.Context, display int64) (HdrCapabilities, error)
+	GetMaxVirtualDisplayCount(ctx context.Context) (int32, error)
+	GetPerFrameMetadataKeys(ctx context.Context, display int64) ([]PerFrameMetadataKey, error)
+	GetReadbackBufferAttributes(ctx context.Context, display int64) (ReadbackBufferAttributes, error)
+	GetReadbackBufferFence(ctx context.Context, display int64) (int32, error)
+	GetRenderIntents(ctx context.Context, display int64, mode ColorMode) ([]RenderIntent, error)
+	GetSupportedContentTypes(ctx context.Context, display int64) ([]ContentType, error)
+	GetDisplayDecorationSupport(ctx context.Context, display int64) (gui.DisplayDecorationSupport, error)
+	RegisterCallback(ctx context.Context, callback IComposerCallback) error
+	SetActiveConfig(ctx context.Context, display int64, config int32) error
+	SetActiveConfigWithConstraints(ctx context.Context, display int64, config int32, vsyncPeriodChangeConstraints VsyncPeriodChangeConstraints) (VsyncPeriodChangeTimeline, error)
+	SetBootDisplayConfig(ctx context.Context, display int64, config int32) error
+	ClearBootDisplayConfig(ctx context.Context, display int64) error
+	GetPreferredBootDisplayConfig(ctx context.Context, display int64) (int32, error)
+	SetAutoLowLatencyMode(ctx context.Context, display int64, on bool) error
+	SetClientTargetSlotCount(ctx context.Context, display int64, clientTargetSlotCount int32) error
+	SetColorMode(ctx context.Context, display int64, mode ColorMode, intent RenderIntent) error
+	SetContentType(ctx context.Context, display int64, type_ ContentType) error
+	SetDisplayedContentSamplingEnabled(ctx context.Context, display int64, enable bool, componentMask FormatColorComponent, maxFrames int64) error
+	SetPowerMode(ctx context.Context, display int64, mode PowerMode) error
+	SetReadbackBuffer(ctx context.Context, display int64, buffer hardwareCommon.NativeHandle, releaseFence *int32) error
+	SetVsyncEnabled(ctx context.Context, display int64, enabled bool) error
+	SetIdleTimerEnabled(ctx context.Context, display int64, timeoutMs int32) error
+	GetOverlaySupport(ctx context.Context) (OverlayProperties, error)
+	GetHdrConversionCapabilities(ctx context.Context) ([]gui.HdrConversionCapability, error)
+	SetHdrConversionStrategy(ctx context.Context, conversionStrategy gui.HdrConversionStrategy) (common.Hdr, error)
+	SetRefreshRateChangedCallbackDebugEnabled(ctx context.Context, display int64, enabled bool) error
+	GetDisplayConfigurations(ctx context.Context, display int64, maxFrameIntervalNs int32) ([]DisplayConfiguration, error)
+	NotifyExpectedPresent(ctx context.Context, display int64, expectedPresentTime ClockMonotonicTimestamp, frameIntervalNs int32) error
+	GetMaxLayerPictureProfiles(ctx context.Context, display int64) (int32, error)
+	StartHdcpNegotiation(ctx context.Context, display int64, levels drm.HdcpLevels) error
+	GetLuts(ctx context.Context, display int64, buffers []Buffer) ([]Luts, error)
+}
+
+type composerClientStubWrapper struct {
+	impl       IComposerClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *composerClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *composerClientStubWrapper) CreateLayer(
+	ctx context.Context,
+	display int64,
+	bufferSlotCount int32,
+) (int64, error) {
+	return w.impl.CreateLayer(ctx, display, bufferSlotCount)
+}
+
+func (w *composerClientStubWrapper) CreateVirtualDisplay(
+	ctx context.Context,
+	width int32,
+	height int32,
+	formatHint common.PixelFormat,
+	outputBufferSlotCount int32,
+) (VirtualDisplay, error) {
+	return w.impl.CreateVirtualDisplay(ctx, width, height, formatHint, outputBufferSlotCount)
+}
+
+func (w *composerClientStubWrapper) DestroyLayer(
+	ctx context.Context,
+	display int64,
+	layer int64,
+) error {
+	return w.impl.DestroyLayer(ctx, display, layer)
+}
+
+func (w *composerClientStubWrapper) DestroyVirtualDisplay(
+	ctx context.Context,
+	display int64,
+) error {
+	return w.impl.DestroyVirtualDisplay(ctx, display)
+}
+
+func (w *composerClientStubWrapper) ExecuteCommands(
+	ctx context.Context,
+	commands []DisplayCommand,
+) ([]CommandResultPayload, error) {
+	return w.impl.ExecuteCommands(ctx, commands)
+}
+
+func (w *composerClientStubWrapper) GetActiveConfig(
+	ctx context.Context,
+	display int64,
+) (int32, error) {
+	return w.impl.GetActiveConfig(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetColorModes(
+	ctx context.Context,
+	display int64,
+) ([]ColorMode, error) {
+	return w.impl.GetColorModes(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetDataspaceSaturationMatrix(
+	ctx context.Context,
+	dataspace common.Dataspace,
+) ([]float32, error) {
+	return w.impl.GetDataspaceSaturationMatrix(ctx, dataspace)
+}
+
+func (w *composerClientStubWrapper) GetDisplayAttribute(
+	ctx context.Context,
+	display int64,
+	config int32,
+	attribute DisplayAttribute,
+) (int32, error) {
+	return w.impl.GetDisplayAttribute(ctx, display, config, attribute)
+}
+
+func (w *composerClientStubWrapper) GetDisplayCapabilities(
+	ctx context.Context,
+	display int64,
+) ([]DisplayCapability, error) {
+	return w.impl.GetDisplayCapabilities(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetDisplayConfigs(
+	ctx context.Context,
+	display int64,
+) ([]int32, error) {
+	return w.impl.GetDisplayConfigs(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetDisplayConnectionType(
+	ctx context.Context,
+	display int64,
+) (DisplayConnectionType, error) {
+	return w.impl.GetDisplayConnectionType(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetDisplayIdentificationData(
+	ctx context.Context,
+	display int64,
+) (DisplayIdentification, error) {
+	return w.impl.GetDisplayIdentificationData(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetDisplayName(
+	ctx context.Context,
+	display int64,
+) (string, error) {
+	return w.impl.GetDisplayName(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetDisplayVsyncPeriod(
+	ctx context.Context,
+	display int64,
+) (int32, error) {
+	return w.impl.GetDisplayVsyncPeriod(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetDisplayedContentSample(
+	ctx context.Context,
+	display int64,
+	maxFrames int64,
+	timestamp int64,
+) (DisplayContentSample, error) {
+	return w.impl.GetDisplayedContentSample(ctx, display, maxFrames, timestamp)
+}
+
+func (w *composerClientStubWrapper) GetDisplayedContentSamplingAttributes(
+	ctx context.Context,
+	display int64,
+) (DisplayContentSamplingAttributes, error) {
+	return w.impl.GetDisplayedContentSamplingAttributes(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetDisplayPhysicalOrientation(
+	ctx context.Context,
+	display int64,
+) (common.Transform, error) {
+	return w.impl.GetDisplayPhysicalOrientation(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetHdrCapabilities(
+	ctx context.Context,
+	display int64,
+) (HdrCapabilities, error) {
+	return w.impl.GetHdrCapabilities(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetMaxVirtualDisplayCount(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMaxVirtualDisplayCount(ctx)
+}
+
+func (w *composerClientStubWrapper) GetPerFrameMetadataKeys(
+	ctx context.Context,
+	display int64,
+) ([]PerFrameMetadataKey, error) {
+	return w.impl.GetPerFrameMetadataKeys(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetReadbackBufferAttributes(
+	ctx context.Context,
+	display int64,
+) (ReadbackBufferAttributes, error) {
+	return w.impl.GetReadbackBufferAttributes(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetReadbackBufferFence(
+	ctx context.Context,
+	display int64,
+) (int32, error) {
+	return w.impl.GetReadbackBufferFence(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetRenderIntents(
+	ctx context.Context,
+	display int64,
+	mode ColorMode,
+) ([]RenderIntent, error) {
+	return w.impl.GetRenderIntents(ctx, display, mode)
+}
+
+func (w *composerClientStubWrapper) GetSupportedContentTypes(
+	ctx context.Context,
+	display int64,
+) ([]ContentType, error) {
+	return w.impl.GetSupportedContentTypes(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetDisplayDecorationSupport(
+	ctx context.Context,
+	display int64,
+) (gui.DisplayDecorationSupport, error) {
+	return w.impl.GetDisplayDecorationSupport(ctx, display)
+}
+
+func (w *composerClientStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IComposerCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *composerClientStubWrapper) SetActiveConfig(
+	ctx context.Context,
+	display int64,
+	config int32,
+) error {
+	return w.impl.SetActiveConfig(ctx, display, config)
+}
+
+func (w *composerClientStubWrapper) SetActiveConfigWithConstraints(
+	ctx context.Context,
+	display int64,
+	config int32,
+	vsyncPeriodChangeConstraints VsyncPeriodChangeConstraints,
+) (VsyncPeriodChangeTimeline, error) {
+	return w.impl.SetActiveConfigWithConstraints(ctx, display, config, vsyncPeriodChangeConstraints)
+}
+
+func (w *composerClientStubWrapper) SetBootDisplayConfig(
+	ctx context.Context,
+	display int64,
+	config int32,
+) error {
+	return w.impl.SetBootDisplayConfig(ctx, display, config)
+}
+
+func (w *composerClientStubWrapper) ClearBootDisplayConfig(
+	ctx context.Context,
+	display int64,
+) error {
+	return w.impl.ClearBootDisplayConfig(ctx, display)
+}
+
+func (w *composerClientStubWrapper) GetPreferredBootDisplayConfig(
+	ctx context.Context,
+	display int64,
+) (int32, error) {
+	return w.impl.GetPreferredBootDisplayConfig(ctx, display)
+}
+
+func (w *composerClientStubWrapper) SetAutoLowLatencyMode(
+	ctx context.Context,
+	display int64,
+	on bool,
+) error {
+	return w.impl.SetAutoLowLatencyMode(ctx, display, on)
+}
+
+func (w *composerClientStubWrapper) SetClientTargetSlotCount(
+	ctx context.Context,
+	display int64,
+	clientTargetSlotCount int32,
+) error {
+	return w.impl.SetClientTargetSlotCount(ctx, display, clientTargetSlotCount)
+}
+
+func (w *composerClientStubWrapper) SetColorMode(
+	ctx context.Context,
+	display int64,
+	mode ColorMode,
+	intent RenderIntent,
+) error {
+	return w.impl.SetColorMode(ctx, display, mode, intent)
+}
+
+func (w *composerClientStubWrapper) SetContentType(
+	ctx context.Context,
+	display int64,
+	type_ ContentType,
+) error {
+	return w.impl.SetContentType(ctx, display, type_)
+}
+
+func (w *composerClientStubWrapper) SetDisplayedContentSamplingEnabled(
+	ctx context.Context,
+	display int64,
+	enable bool,
+	componentMask FormatColorComponent,
+	maxFrames int64,
+) error {
+	return w.impl.SetDisplayedContentSamplingEnabled(ctx, display, enable, componentMask, maxFrames)
+}
+
+func (w *composerClientStubWrapper) SetPowerMode(
+	ctx context.Context,
+	display int64,
+	mode PowerMode,
+) error {
+	return w.impl.SetPowerMode(ctx, display, mode)
+}
+
+func (w *composerClientStubWrapper) SetReadbackBuffer(
+	ctx context.Context,
+	display int64,
+	buffer hardwareCommon.NativeHandle,
+	releaseFence *int32,
+) error {
+	return w.impl.SetReadbackBuffer(ctx, display, buffer, releaseFence)
+}
+
+func (w *composerClientStubWrapper) SetVsyncEnabled(
+	ctx context.Context,
+	display int64,
+	enabled bool,
+) error {
+	return w.impl.SetVsyncEnabled(ctx, display, enabled)
+}
+
+func (w *composerClientStubWrapper) SetIdleTimerEnabled(
+	ctx context.Context,
+	display int64,
+	timeoutMs int32,
+) error {
+	return w.impl.SetIdleTimerEnabled(ctx, display, timeoutMs)
+}
+
+func (w *composerClientStubWrapper) GetOverlaySupport(
+	ctx context.Context,
+) (OverlayProperties, error) {
+	return w.impl.GetOverlaySupport(ctx)
+}
+
+func (w *composerClientStubWrapper) GetHdrConversionCapabilities(
+	ctx context.Context,
+) ([]gui.HdrConversionCapability, error) {
+	return w.impl.GetHdrConversionCapabilities(ctx)
+}
+
+func (w *composerClientStubWrapper) SetHdrConversionStrategy(
+	ctx context.Context,
+	conversionStrategy gui.HdrConversionStrategy,
+) (common.Hdr, error) {
+	return w.impl.SetHdrConversionStrategy(ctx, conversionStrategy)
+}
+
+func (w *composerClientStubWrapper) SetRefreshRateChangedCallbackDebugEnabled(
+	ctx context.Context,
+	display int64,
+	enabled bool,
+) error {
+	return w.impl.SetRefreshRateChangedCallbackDebugEnabled(ctx, display, enabled)
+}
+
+func (w *composerClientStubWrapper) GetDisplayConfigurations(
+	ctx context.Context,
+	display int64,
+	maxFrameIntervalNs int32,
+) ([]DisplayConfiguration, error) {
+	return w.impl.GetDisplayConfigurations(ctx, display, maxFrameIntervalNs)
+}
+
+func (w *composerClientStubWrapper) NotifyExpectedPresent(
+	ctx context.Context,
+	display int64,
+	expectedPresentTime ClockMonotonicTimestamp,
+	frameIntervalNs int32,
+) error {
+	return w.impl.NotifyExpectedPresent(ctx, display, expectedPresentTime, frameIntervalNs)
+}
+
+func (w *composerClientStubWrapper) GetMaxLayerPictureProfiles(
+	ctx context.Context,
+	display int64,
+) (int32, error) {
+	return w.impl.GetMaxLayerPictureProfiles(ctx, display)
+}
+
+func (w *composerClientStubWrapper) StartHdcpNegotiation(
+	ctx context.Context,
+	display int64,
+	levels drm.HdcpLevels,
+) error {
+	return w.impl.StartHdcpNegotiation(ctx, display, levels)
+}
+
+func (w *composerClientStubWrapper) GetLuts(
+	ctx context.Context,
+	display int64,
+	buffers []Buffer,
+) ([]Luts, error) {
+	return w.impl.GetLuts(ctx, display, buffers)
+}
+
+var _ IComposerClient = (*composerClientStubWrapper)(nil)
+
+// NewComposerClientStub creates a server-side IComposerClient wrapping the given
+// server implementation. The returned value satisfies IComposerClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewComposerClientStub(
+	impl IComposerClientServer,
+) IComposerClient {
+	wrapper := &composerClientStubWrapper{impl: impl}
+	stub := &ComposerClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

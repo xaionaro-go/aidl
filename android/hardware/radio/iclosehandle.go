@@ -90,3 +90,41 @@ func (s *CloseHandleStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICloseHandleServer is the server-side interface that user implementations
+// provide to NewCloseHandleStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICloseHandleServer interface {
+	Close(ctx context.Context) error
+}
+
+type closeHandleStubWrapper struct {
+	impl       ICloseHandleServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *closeHandleStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *closeHandleStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ ICloseHandle = (*closeHandleStubWrapper)(nil)
+
+// NewCloseHandleStub creates a server-side ICloseHandle wrapping the given
+// server implementation. The returned value satisfies ICloseHandle
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCloseHandleStub(
+	impl ICloseHandleServer,
+) ICloseHandle {
+	wrapper := &closeHandleStubWrapper{impl: impl}
+	stub := &CloseHandleStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

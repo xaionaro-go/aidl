@@ -76,3 +76,41 @@ func (s *TimeZoneDetectorListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITimeZoneDetectorListenerServer is the server-side interface that user implementations
+// provide to NewTimeZoneDetectorListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITimeZoneDetectorListenerServer interface {
+	OnChange(ctx context.Context) error
+}
+
+type timeZoneDetectorListenerStubWrapper struct {
+	impl       ITimeZoneDetectorListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *timeZoneDetectorListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *timeZoneDetectorListenerStubWrapper) OnChange(
+	ctx context.Context,
+) error {
+	return w.impl.OnChange(ctx)
+}
+
+var _ ITimeZoneDetectorListener = (*timeZoneDetectorListenerStubWrapper)(nil)
+
+// NewTimeZoneDetectorListenerStub creates a server-side ITimeZoneDetectorListener wrapping the given
+// server implementation. The returned value satisfies ITimeZoneDetectorListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTimeZoneDetectorListenerStub(
+	impl ITimeZoneDetectorListenerServer,
+) ITimeZoneDetectorListener {
+	wrapper := &timeZoneDetectorListenerStubWrapper{impl: impl}
+	stub := &TimeZoneDetectorListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

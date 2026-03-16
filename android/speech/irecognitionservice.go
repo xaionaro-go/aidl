@@ -3,7 +3,6 @@ package speech
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -22,11 +21,11 @@ const (
 
 type IRecognitionService interface {
 	AsBinder() binder.IBinder
-	StartListening(ctx context.Context, recognizerIntent content.Intent, listener IRecognitionListener, attributionSource content.AttributionSource) error
+	StartListening(ctx context.Context, recognizerIntent interface{}, listener IRecognitionListener, attributionSource interface{}) error
 	StopListening(ctx context.Context, listener IRecognitionListener) error
 	Cancel(ctx context.Context, listener IRecognitionListener, isShutdown bool) error
-	CheckRecognitionSupport(ctx context.Context, recognizerIntent content.Intent, attributionSource content.AttributionSource, listener IRecognitionSupportCallback) error
-	TriggerModelDownload(ctx context.Context, recognizerIntent content.Intent, attributionSource content.AttributionSource, listener IModelDownloadListener) error
+	CheckRecognitionSupport(ctx context.Context, recognizerIntent interface{}, attributionSource interface{}, listener IRecognitionSupportCallback) error
+	TriggerModelDownload(ctx context.Context, recognizerIntent interface{}, attributionSource interface{}, listener IModelDownloadListener) error
 }
 
 type RecognitionServiceProxy struct {
@@ -47,21 +46,13 @@ var _ IRecognitionService = (*RecognitionServiceProxy)(nil)
 
 func (p *RecognitionServiceProxy) StartListening(
 	ctx context.Context,
-	recognizerIntent content.Intent,
+	recognizerIntent interface{},
 	listener IRecognitionListener,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
-	_data.WriteInt32(1)
-	if _err := recognizerIntent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "startListening")
 	if _err != nil {
@@ -78,7 +69,7 @@ func (p *RecognitionServiceProxy) StopListening(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "stopListening")
 	if _err != nil {
@@ -96,7 +87,7 @@ func (p *RecognitionServiceProxy) Cancel(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteBool(isShutdown)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "cancel")
@@ -110,21 +101,13 @@ func (p *RecognitionServiceProxy) Cancel(
 
 func (p *RecognitionServiceProxy) CheckRecognitionSupport(
 	ctx context.Context,
-	recognizerIntent content.Intent,
-	attributionSource content.AttributionSource,
+	recognizerIntent interface{},
+	attributionSource interface{},
 	listener IRecognitionSupportCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
-	_data.WriteInt32(1)
-	if _err := recognizerIntent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "checkRecognitionSupport")
 	if _err != nil {
@@ -137,21 +120,13 @@ func (p *RecognitionServiceProxy) CheckRecognitionSupport(
 
 func (p *RecognitionServiceProxy) TriggerModelDownload(
 	ctx context.Context,
-	recognizerIntent content.Intent,
-	attributionSource content.AttributionSource,
+	recognizerIntent interface{},
+	attributionSource interface{},
 	listener IModelDownloadListener,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionService)
-	_data.WriteInt32(1)
-	if _err := recognizerIntent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionService, "triggerModelDownload")
 	if _err != nil {
@@ -180,33 +155,11 @@ func (s *RecognitionServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_recognizerIntent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_recognizerIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_recognizerIntent interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_listener IRecognitionListener
 		_ = _arg_listener
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_err := s.Impl.StartListening(ctx, _arg_recognizerIntent, _arg_listener, _arg_attributionSource)
 		_ = _err
 		return nil, nil
@@ -238,30 +191,8 @@ func (s *RecognitionServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_recognizerIntent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_recognizerIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_recognizerIntent interface{}
+		var _arg_attributionSource interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_listener IRecognitionSupportCallback
 		_ = _arg_listener
@@ -272,30 +203,8 @@ func (s *RecognitionServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_recognizerIntent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_recognizerIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_recognizerIntent interface{}
+		var _arg_attributionSource interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_listener IModelDownloadListener
 		_ = _arg_listener
@@ -305,4 +214,82 @@ func (s *RecognitionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRecognitionServiceServer is the server-side interface that user implementations
+// provide to NewRecognitionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecognitionServiceServer interface {
+	StartListening(ctx context.Context, recognizerIntent interface{}, listener IRecognitionListener, attributionSource interface{}) error
+	StopListening(ctx context.Context, listener IRecognitionListener) error
+	Cancel(ctx context.Context, listener IRecognitionListener, isShutdown bool) error
+	CheckRecognitionSupport(ctx context.Context, recognizerIntent interface{}, attributionSource interface{}, listener IRecognitionSupportCallback) error
+	TriggerModelDownload(ctx context.Context, recognizerIntent interface{}, attributionSource interface{}, listener IModelDownloadListener) error
+}
+
+type recognitionServiceStubWrapper struct {
+	impl       IRecognitionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recognitionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recognitionServiceStubWrapper) StartListening(
+	ctx context.Context,
+	recognizerIntent interface{},
+	listener IRecognitionListener,
+	attributionSource interface{},
+) error {
+	return w.impl.StartListening(ctx, recognizerIntent, listener, attributionSource)
+}
+
+func (w *recognitionServiceStubWrapper) StopListening(
+	ctx context.Context,
+	listener IRecognitionListener,
+) error {
+	return w.impl.StopListening(ctx, listener)
+}
+
+func (w *recognitionServiceStubWrapper) Cancel(
+	ctx context.Context,
+	listener IRecognitionListener,
+	isShutdown bool,
+) error {
+	return w.impl.Cancel(ctx, listener, isShutdown)
+}
+
+func (w *recognitionServiceStubWrapper) CheckRecognitionSupport(
+	ctx context.Context,
+	recognizerIntent interface{},
+	attributionSource interface{},
+	listener IRecognitionSupportCallback,
+) error {
+	return w.impl.CheckRecognitionSupport(ctx, recognizerIntent, attributionSource, listener)
+}
+
+func (w *recognitionServiceStubWrapper) TriggerModelDownload(
+	ctx context.Context,
+	recognizerIntent interface{},
+	attributionSource interface{},
+	listener IModelDownloadListener,
+) error {
+	return w.impl.TriggerModelDownload(ctx, recognizerIntent, attributionSource, listener)
+}
+
+var _ IRecognitionService = (*recognitionServiceStubWrapper)(nil)
+
+// NewRecognitionServiceStub creates a server-side IRecognitionService wrapping the given
+// server implementation. The returned value satisfies IRecognitionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecognitionServiceStub(
+	impl IRecognitionServiceServer,
+) IRecognitionService {
+	wrapper := &recognitionServiceStubWrapper{impl: impl}
+	stub := &RecognitionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

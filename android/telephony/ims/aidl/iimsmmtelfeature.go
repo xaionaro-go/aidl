@@ -105,7 +105,7 @@ func (p *ImsMmTelFeatureProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
-	_data.WriteStrongBinder(l.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, l.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setListener")
 	if _err != nil {
@@ -482,7 +482,7 @@ func (p *ImsMmTelFeatureProxy) AddCapabilityCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "addCapabilityCallback")
 	if _err != nil {
@@ -499,7 +499,7 @@ func (p *ImsMmTelFeatureProxy) RemoveCapabilityCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "removeCapabilityCallback")
 	if _err != nil {
@@ -521,7 +521,7 @@ func (p *ImsMmTelFeatureProxy) ChangeCapabilitiesConfiguration(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "changeCapabilitiesConfiguration")
 	if _err != nil {
@@ -542,7 +542,7 @@ func (p *ImsMmTelFeatureProxy) QueryCapabilityConfiguration(
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
 	_data.WriteInt32(capability)
 	_data.WriteInt32(radioTech)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "queryCapabilityConfiguration")
 	if _err != nil {
@@ -559,7 +559,7 @@ func (p *ImsMmTelFeatureProxy) NotifySrvccStarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "notifySrvccStarted")
 	if _err != nil {
@@ -679,7 +679,7 @@ func (p *ImsMmTelFeatureProxy) SetSmsListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelFeature)
-	_data.WriteStrongBinder(l.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, l.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelFeature, "setSmsListener")
 	if _err != nil {
@@ -1361,4 +1361,283 @@ func (s *ImsMmTelFeatureStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsMmTelFeatureServer is the server-side interface that user implementations
+// provide to NewImsMmTelFeatureStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsMmTelFeatureServer interface {
+	SetListener(ctx context.Context, l IImsMmTelListener) error
+	GetFeatureState(ctx context.Context) (int32, error)
+	CreateCallProfile(ctx context.Context, callSessionType int32, callType int32) (ims.ImsCallProfile, error)
+	ChangeOfferedRtpHeaderExtensionTypes(ctx context.Context, types []ims.RtpHeaderExtensionType) error
+	CreateCallSession(ctx context.Context, profile ims.ImsCallProfile) (internal.IImsCallSession, error)
+	ShouldProcessCall(ctx context.Context, uris []string) (int32, error)
+	GetUtInterface(ctx context.Context) (internal.IImsUt, error)
+	GetEcbmInterface(ctx context.Context) (internal.IImsEcbm, error)
+	SetUiTtyMode(ctx context.Context, uiTtyMode int32, onCompleteMessage contexthub.Message) error
+	GetMultiEndpointInterface(ctx context.Context) (internal.IImsMultiEndpoint, error)
+	QueryCapabilityStatus(ctx context.Context) (int32, error)
+	SetTerminalBasedCallWaitingStatus(ctx context.Context, enabled bool) error
+	AddCapabilityCallback(ctx context.Context, c IImsCapabilityCallback) error
+	RemoveCapabilityCallback(ctx context.Context, c IImsCapabilityCallback) error
+	ChangeCapabilitiesConfiguration(ctx context.Context, request feature.CapabilityChangeRequest, c IImsCapabilityCallback) error
+	QueryCapabilityConfiguration(ctx context.Context, capability int32, radioTech int32, c IImsCapabilityCallback) error
+	NotifySrvccStarted(ctx context.Context, cb ISrvccStartedCallback) error
+	NotifySrvccCompleted(ctx context.Context) error
+	NotifySrvccFailed(ctx context.Context) error
+	NotifySrvccCanceled(ctx context.Context) error
+	SetMediaQualityThreshold(ctx context.Context, mediaSessionType int32, threshold ims.MediaThreshold) error
+	QueryMediaQualityStatus(ctx context.Context, mediaSessionType int32) (media.MediaQualityStatus, error)
+	SetSmsListener(ctx context.Context, l IImsSmsListener) error
+	SendSms(ctx context.Context, token int32, messageRef int32, format string, smsc string, retry bool, pdu []byte) error
+	OnMemoryAvailable(ctx context.Context, token int32) error
+	AcknowledgeSms(ctx context.Context, token int32, messageRef int32, result int32) error
+	AcknowledgeSmsWithPdu(ctx context.Context, token int32, messageRef int32, result int32, pdu []byte) error
+	AcknowledgeSmsReport(ctx context.Context, token int32, messageRef int32, result int32) error
+	GetSmsFormat(ctx context.Context) (string, error)
+	OnSmsReady(ctx context.Context) error
+}
+
+type imsMmTelFeatureStubWrapper struct {
+	impl       IImsMmTelFeatureServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsMmTelFeatureStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsMmTelFeatureStubWrapper) SetListener(
+	ctx context.Context,
+	l IImsMmTelListener,
+) error {
+	return w.impl.SetListener(ctx, l)
+}
+
+func (w *imsMmTelFeatureStubWrapper) GetFeatureState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetFeatureState(ctx)
+}
+
+func (w *imsMmTelFeatureStubWrapper) CreateCallProfile(
+	ctx context.Context,
+	callSessionType int32,
+	callType int32,
+) (ims.ImsCallProfile, error) {
+	return w.impl.CreateCallProfile(ctx, callSessionType, callType)
+}
+
+func (w *imsMmTelFeatureStubWrapper) ChangeOfferedRtpHeaderExtensionTypes(
+	ctx context.Context,
+	types []ims.RtpHeaderExtensionType,
+) error {
+	return w.impl.ChangeOfferedRtpHeaderExtensionTypes(ctx, types)
+}
+
+func (w *imsMmTelFeatureStubWrapper) CreateCallSession(
+	ctx context.Context,
+	profile ims.ImsCallProfile,
+) (internal.IImsCallSession, error) {
+	return w.impl.CreateCallSession(ctx, profile)
+}
+
+func (w *imsMmTelFeatureStubWrapper) ShouldProcessCall(
+	ctx context.Context,
+	uris []string,
+) (int32, error) {
+	return w.impl.ShouldProcessCall(ctx, uris)
+}
+
+func (w *imsMmTelFeatureStubWrapper) GetUtInterface(
+	ctx context.Context,
+) (internal.IImsUt, error) {
+	return w.impl.GetUtInterface(ctx)
+}
+
+func (w *imsMmTelFeatureStubWrapper) GetEcbmInterface(
+	ctx context.Context,
+) (internal.IImsEcbm, error) {
+	return w.impl.GetEcbmInterface(ctx)
+}
+
+func (w *imsMmTelFeatureStubWrapper) SetUiTtyMode(
+	ctx context.Context,
+	uiTtyMode int32,
+	onCompleteMessage contexthub.Message,
+) error {
+	return w.impl.SetUiTtyMode(ctx, uiTtyMode, onCompleteMessage)
+}
+
+func (w *imsMmTelFeatureStubWrapper) GetMultiEndpointInterface(
+	ctx context.Context,
+) (internal.IImsMultiEndpoint, error) {
+	return w.impl.GetMultiEndpointInterface(ctx)
+}
+
+func (w *imsMmTelFeatureStubWrapper) QueryCapabilityStatus(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.QueryCapabilityStatus(ctx)
+}
+
+func (w *imsMmTelFeatureStubWrapper) SetTerminalBasedCallWaitingStatus(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetTerminalBasedCallWaitingStatus(ctx, enabled)
+}
+
+func (w *imsMmTelFeatureStubWrapper) AddCapabilityCallback(
+	ctx context.Context,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.AddCapabilityCallback(ctx, c)
+}
+
+func (w *imsMmTelFeatureStubWrapper) RemoveCapabilityCallback(
+	ctx context.Context,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.RemoveCapabilityCallback(ctx, c)
+}
+
+func (w *imsMmTelFeatureStubWrapper) ChangeCapabilitiesConfiguration(
+	ctx context.Context,
+	request feature.CapabilityChangeRequest,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.ChangeCapabilitiesConfiguration(ctx, request, c)
+}
+
+func (w *imsMmTelFeatureStubWrapper) QueryCapabilityConfiguration(
+	ctx context.Context,
+	capability int32,
+	radioTech int32,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.QueryCapabilityConfiguration(ctx, capability, radioTech, c)
+}
+
+func (w *imsMmTelFeatureStubWrapper) NotifySrvccStarted(
+	ctx context.Context,
+	cb ISrvccStartedCallback,
+) error {
+	return w.impl.NotifySrvccStarted(ctx, cb)
+}
+
+func (w *imsMmTelFeatureStubWrapper) NotifySrvccCompleted(
+	ctx context.Context,
+) error {
+	return w.impl.NotifySrvccCompleted(ctx)
+}
+
+func (w *imsMmTelFeatureStubWrapper) NotifySrvccFailed(
+	ctx context.Context,
+) error {
+	return w.impl.NotifySrvccFailed(ctx)
+}
+
+func (w *imsMmTelFeatureStubWrapper) NotifySrvccCanceled(
+	ctx context.Context,
+) error {
+	return w.impl.NotifySrvccCanceled(ctx)
+}
+
+func (w *imsMmTelFeatureStubWrapper) SetMediaQualityThreshold(
+	ctx context.Context,
+	mediaSessionType int32,
+	threshold ims.MediaThreshold,
+) error {
+	return w.impl.SetMediaQualityThreshold(ctx, mediaSessionType, threshold)
+}
+
+func (w *imsMmTelFeatureStubWrapper) QueryMediaQualityStatus(
+	ctx context.Context,
+	mediaSessionType int32,
+) (media.MediaQualityStatus, error) {
+	return w.impl.QueryMediaQualityStatus(ctx, mediaSessionType)
+}
+
+func (w *imsMmTelFeatureStubWrapper) SetSmsListener(
+	ctx context.Context,
+	l IImsSmsListener,
+) error {
+	return w.impl.SetSmsListener(ctx, l)
+}
+
+func (w *imsMmTelFeatureStubWrapper) SendSms(
+	ctx context.Context,
+	token int32,
+	messageRef int32,
+	format string,
+	smsc string,
+	retry bool,
+	pdu []byte,
+) error {
+	return w.impl.SendSms(ctx, token, messageRef, format, smsc, retry, pdu)
+}
+
+func (w *imsMmTelFeatureStubWrapper) OnMemoryAvailable(
+	ctx context.Context,
+	token int32,
+) error {
+	return w.impl.OnMemoryAvailable(ctx, token)
+}
+
+func (w *imsMmTelFeatureStubWrapper) AcknowledgeSms(
+	ctx context.Context,
+	token int32,
+	messageRef int32,
+	result int32,
+) error {
+	return w.impl.AcknowledgeSms(ctx, token, messageRef, result)
+}
+
+func (w *imsMmTelFeatureStubWrapper) AcknowledgeSmsWithPdu(
+	ctx context.Context,
+	token int32,
+	messageRef int32,
+	result int32,
+	pdu []byte,
+) error {
+	return w.impl.AcknowledgeSmsWithPdu(ctx, token, messageRef, result, pdu)
+}
+
+func (w *imsMmTelFeatureStubWrapper) AcknowledgeSmsReport(
+	ctx context.Context,
+	token int32,
+	messageRef int32,
+	result int32,
+) error {
+	return w.impl.AcknowledgeSmsReport(ctx, token, messageRef, result)
+}
+
+func (w *imsMmTelFeatureStubWrapper) GetSmsFormat(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSmsFormat(ctx)
+}
+
+func (w *imsMmTelFeatureStubWrapper) OnSmsReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnSmsReady(ctx)
+}
+
+var _ IImsMmTelFeature = (*imsMmTelFeatureStubWrapper)(nil)
+
+// NewImsMmTelFeatureStub creates a server-side IImsMmTelFeature wrapping the given
+// server implementation. The returned value satisfies IImsMmTelFeature
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsMmTelFeatureStub(
+	impl IImsMmTelFeatureServer,
+) IImsMmTelFeature {
+	wrapper := &imsMmTelFeatureStubWrapper{impl: impl}
+	stub := &ImsMmTelFeatureStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

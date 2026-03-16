@@ -62,7 +62,7 @@ func (p *AAudioServiceProxy) RegisterClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAAudioService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAAudioService, "registerClient")
 	if _err != nil {
@@ -638,4 +638,129 @@ func (s *AAudioServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAAudioServiceServer is the server-side interface that user implementations
+// provide to NewAAudioServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAAudioServiceServer interface {
+	RegisterClient(ctx context.Context, client IAAudioClient) error
+	OpenStream(ctx context.Context, request StreamRequest, paramsOut StreamParameters) (int32, error)
+	CloseStream(ctx context.Context, streamHandle int32) (int32, error)
+	GetStreamDescription(ctx context.Context, streamHandle int32, endpoint Endpoint) (int32, error)
+	StartStream(ctx context.Context, streamHandle int32) (int32, error)
+	PauseStream(ctx context.Context, streamHandle int32) (int32, error)
+	StopStream(ctx context.Context, streamHandle int32) (int32, error)
+	FlushStream(ctx context.Context, streamHandle int32) (int32, error)
+	RegisterAudioThread(ctx context.Context, streamHandle int32, clientThreadId int32, periodNanoseconds int64) (int32, error)
+	UnregisterAudioThread(ctx context.Context, streamHandle int32, clientThreadId int32) (int32, error)
+	ExitStandby(ctx context.Context, streamHandle int32, endpoint Endpoint) (int32, error)
+}
+
+type aAudioServiceStubWrapper struct {
+	impl       IAAudioServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aAudioServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aAudioServiceStubWrapper) RegisterClient(
+	ctx context.Context,
+	client IAAudioClient,
+) error {
+	return w.impl.RegisterClient(ctx, client)
+}
+
+func (w *aAudioServiceStubWrapper) OpenStream(
+	ctx context.Context,
+	request StreamRequest,
+	paramsOut StreamParameters,
+) (int32, error) {
+	return w.impl.OpenStream(ctx, request, paramsOut)
+}
+
+func (w *aAudioServiceStubWrapper) CloseStream(
+	ctx context.Context,
+	streamHandle int32,
+) (int32, error) {
+	return w.impl.CloseStream(ctx, streamHandle)
+}
+
+func (w *aAudioServiceStubWrapper) GetStreamDescription(
+	ctx context.Context,
+	streamHandle int32,
+	endpoint Endpoint,
+) (int32, error) {
+	return w.impl.GetStreamDescription(ctx, streamHandle, endpoint)
+}
+
+func (w *aAudioServiceStubWrapper) StartStream(
+	ctx context.Context,
+	streamHandle int32,
+) (int32, error) {
+	return w.impl.StartStream(ctx, streamHandle)
+}
+
+func (w *aAudioServiceStubWrapper) PauseStream(
+	ctx context.Context,
+	streamHandle int32,
+) (int32, error) {
+	return w.impl.PauseStream(ctx, streamHandle)
+}
+
+func (w *aAudioServiceStubWrapper) StopStream(
+	ctx context.Context,
+	streamHandle int32,
+) (int32, error) {
+	return w.impl.StopStream(ctx, streamHandle)
+}
+
+func (w *aAudioServiceStubWrapper) FlushStream(
+	ctx context.Context,
+	streamHandle int32,
+) (int32, error) {
+	return w.impl.FlushStream(ctx, streamHandle)
+}
+
+func (w *aAudioServiceStubWrapper) RegisterAudioThread(
+	ctx context.Context,
+	streamHandle int32,
+	clientThreadId int32,
+	periodNanoseconds int64,
+) (int32, error) {
+	return w.impl.RegisterAudioThread(ctx, streamHandle, clientThreadId, periodNanoseconds)
+}
+
+func (w *aAudioServiceStubWrapper) UnregisterAudioThread(
+	ctx context.Context,
+	streamHandle int32,
+	clientThreadId int32,
+) (int32, error) {
+	return w.impl.UnregisterAudioThread(ctx, streamHandle, clientThreadId)
+}
+
+func (w *aAudioServiceStubWrapper) ExitStandby(
+	ctx context.Context,
+	streamHandle int32,
+	endpoint Endpoint,
+) (int32, error) {
+	return w.impl.ExitStandby(ctx, streamHandle, endpoint)
+}
+
+var _ IAAudioService = (*aAudioServiceStubWrapper)(nil)
+
+// NewAAudioServiceStub creates a server-side IAAudioService wrapping the given
+// server implementation. The returned value satisfies IAAudioService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAAudioServiceStub(
+	impl IAAudioServiceServer,
+) IAAudioService {
+	wrapper := &aAudioServiceStubWrapper{impl: impl}
+	stub := &AAudioServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

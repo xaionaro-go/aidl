@@ -34,7 +34,11 @@ func (s *GenericDataParcelable) MarshalParcel(
 	p.WriteInt32(s.Data)
 	p.WriteFloat32(s.MajorVersion)
 	p.WriteFloat32(s.MinorVersion)
-	p.WriteStrongBinder(s.Binder.Handle())
+	if s.Binder == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Binder.Handle())
+	}
 	p.WriteFileDescriptor(s.FileDescriptor)
 	if s.Array == nil {
 		p.WriteInt32(-1)

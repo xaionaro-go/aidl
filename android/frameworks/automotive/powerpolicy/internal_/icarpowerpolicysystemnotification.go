@@ -81,7 +81,7 @@ func (p *CarPowerPolicySystemNotificationProxy) NotifyPowerPolicyChange(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICarPowerPolicySystemNotification)
-	_data.WriteString(policyId)
+	_data.WriteString16(policyId)
 	_data.WriteBool(force)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarPowerPolicySystemNotification, "notifyPowerPolicyChange")
@@ -110,13 +110,13 @@ func (p *CarPowerPolicySystemNotificationProxy) NotifyPowerPolicyDefinition(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICarPowerPolicySystemNotification)
-	_data.WriteString(policyId)
+	_data.WriteString16(policyId)
 	if enabledComponents == nil {
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(enabledComponents)))
 		for _, _item := range enabledComponents {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 	if disabledComponents == nil {
@@ -124,7 +124,7 @@ func (p *CarPowerPolicySystemNotificationProxy) NotifyPowerPolicyDefinition(
 	} else {
 		_data.WriteInt32(int32(len(disabledComponents)))
 		for _, _item := range disabledComponents {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 
@@ -180,7 +180,7 @@ func (s *CarPowerPolicySystemNotificationStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_policyId, _err := _data.ReadString()
+		_arg_policyId, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -200,7 +200,7 @@ func (s *CarPowerPolicySystemNotificationStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_policyId, _err := _data.ReadString()
+		_arg_policyId, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -221,4 +221,61 @@ func (s *CarPowerPolicySystemNotificationStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICarPowerPolicySystemNotificationServer is the server-side interface that user implementations
+// provide to NewCarPowerPolicySystemNotificationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarPowerPolicySystemNotificationServer interface {
+	NotifyCarServiceReady(ctx context.Context) (PolicyState, error)
+	NotifyPowerPolicyChange(ctx context.Context, policyId string, force bool) error
+	NotifyPowerPolicyDefinition(ctx context.Context, policyId string, enabledComponents []string, disabledComponents []string) error
+}
+
+type carPowerPolicySystemNotificationStubWrapper struct {
+	impl       ICarPowerPolicySystemNotificationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carPowerPolicySystemNotificationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carPowerPolicySystemNotificationStubWrapper) NotifyCarServiceReady(
+	ctx context.Context,
+) (PolicyState, error) {
+	return w.impl.NotifyCarServiceReady(ctx)
+}
+
+func (w *carPowerPolicySystemNotificationStubWrapper) NotifyPowerPolicyChange(
+	ctx context.Context,
+	policyId string,
+	force bool,
+) error {
+	return w.impl.NotifyPowerPolicyChange(ctx, policyId, force)
+}
+
+func (w *carPowerPolicySystemNotificationStubWrapper) NotifyPowerPolicyDefinition(
+	ctx context.Context,
+	policyId string,
+	enabledComponents []string,
+	disabledComponents []string,
+) error {
+	return w.impl.NotifyPowerPolicyDefinition(ctx, policyId, enabledComponents, disabledComponents)
+}
+
+var _ ICarPowerPolicySystemNotification = (*carPowerPolicySystemNotificationStubWrapper)(nil)
+
+// NewCarPowerPolicySystemNotificationStub creates a server-side ICarPowerPolicySystemNotification wrapping the given
+// server implementation. The returned value satisfies ICarPowerPolicySystemNotification
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarPowerPolicySystemNotificationStub(
+	impl ICarPowerPolicySystemNotificationServer,
+) ICarPowerPolicySystemNotification {
+	wrapper := &carPowerPolicySystemNotificationStubWrapper{impl: impl}
+	stub := &CarPowerPolicySystemNotificationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

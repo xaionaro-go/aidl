@@ -94,3 +94,42 @@ func (s *EventDownloadListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEventDownloadListenerServer is the server-side interface that user implementations
+// provide to NewEventDownloadListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEventDownloadListenerServer interface {
+	OnCompleted(ctx context.Context, status os.Bundle) error
+}
+
+type eventDownloadListenerStubWrapper struct {
+	impl       IEventDownloadListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eventDownloadListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eventDownloadListenerStubWrapper) OnCompleted(
+	ctx context.Context,
+	status os.Bundle,
+) error {
+	return w.impl.OnCompleted(ctx, status)
+}
+
+var _ IEventDownloadListener = (*eventDownloadListenerStubWrapper)(nil)
+
+// NewEventDownloadListenerStub creates a server-side IEventDownloadListener wrapping the given
+// server implementation. The returned value satisfies IEventDownloadListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEventDownloadListenerStub(
+	impl IEventDownloadListenerServer,
+) IEventDownloadListener {
+	wrapper := &eventDownloadListenerStubWrapper{impl: impl}
+	stub := &EventDownloadListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

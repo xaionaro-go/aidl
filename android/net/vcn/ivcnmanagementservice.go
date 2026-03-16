@@ -152,7 +152,7 @@ func (p *VcnManagementServiceProxy) AddVcnUnderlyingNetworkPolicyListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVcnManagementService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVcnManagementService, "addVcnUnderlyingNetworkPolicyListener")
 	if _err != nil {
@@ -178,7 +178,7 @@ func (p *VcnManagementServiceProxy) RemoveVcnUnderlyingNetworkPolicyListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVcnManagementService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVcnManagementService, "removeVcnUnderlyingNetworkPolicyListener")
 	if _err != nil {
@@ -242,7 +242,7 @@ func (p *VcnManagementServiceProxy) RegisterVcnStatusCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVcnManagementService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(opPkgName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVcnManagementService, "registerVcnStatusCallback")
@@ -269,7 +269,7 @@ func (p *VcnManagementServiceProxy) UnregisterVcnStatusCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVcnManagementService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVcnManagementService, "unregisterVcnStatusCallback")
 	if _err != nil {
@@ -453,4 +453,105 @@ func (s *VcnManagementServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVcnManagementServiceServer is the server-side interface that user implementations
+// provide to NewVcnManagementServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVcnManagementServiceServer interface {
+	SetVcnConfig(ctx context.Context, subscriptionGroup interface{}, config VcnConfig, opPkgName string) error
+	ClearVcnConfig(ctx context.Context, subscriptionGroup interface{}, opPkgName string) error
+	GetConfiguredSubscriptionGroups(ctx context.Context, opPkgName string) ([]interface{}, error)
+	AddVcnUnderlyingNetworkPolicyListener(ctx context.Context, listener IVcnUnderlyingNetworkPolicyListener) error
+	RemoveVcnUnderlyingNetworkPolicyListener(ctx context.Context, listener IVcnUnderlyingNetworkPolicyListener) error
+	GetUnderlyingNetworkPolicy(ctx context.Context, nc interface{}, lp interface{}) (VcnUnderlyingNetworkPolicy, error)
+	RegisterVcnStatusCallback(ctx context.Context, subscriptionGroup interface{}, callback IVcnStatusCallback, opPkgName string) error
+	UnregisterVcnStatusCallback(ctx context.Context, callback IVcnStatusCallback) error
+}
+
+type vcnManagementServiceStubWrapper struct {
+	impl       IVcnManagementServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vcnManagementServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vcnManagementServiceStubWrapper) SetVcnConfig(
+	ctx context.Context,
+	subscriptionGroup interface{},
+	config VcnConfig,
+	opPkgName string,
+) error {
+	return w.impl.SetVcnConfig(ctx, subscriptionGroup, config, opPkgName)
+}
+
+func (w *vcnManagementServiceStubWrapper) ClearVcnConfig(
+	ctx context.Context,
+	subscriptionGroup interface{},
+	opPkgName string,
+) error {
+	return w.impl.ClearVcnConfig(ctx, subscriptionGroup, opPkgName)
+}
+
+func (w *vcnManagementServiceStubWrapper) GetConfiguredSubscriptionGroups(
+	ctx context.Context,
+	opPkgName string,
+) ([]interface{}, error) {
+	return w.impl.GetConfiguredSubscriptionGroups(ctx, opPkgName)
+}
+
+func (w *vcnManagementServiceStubWrapper) AddVcnUnderlyingNetworkPolicyListener(
+	ctx context.Context,
+	listener IVcnUnderlyingNetworkPolicyListener,
+) error {
+	return w.impl.AddVcnUnderlyingNetworkPolicyListener(ctx, listener)
+}
+
+func (w *vcnManagementServiceStubWrapper) RemoveVcnUnderlyingNetworkPolicyListener(
+	ctx context.Context,
+	listener IVcnUnderlyingNetworkPolicyListener,
+) error {
+	return w.impl.RemoveVcnUnderlyingNetworkPolicyListener(ctx, listener)
+}
+
+func (w *vcnManagementServiceStubWrapper) GetUnderlyingNetworkPolicy(
+	ctx context.Context,
+	nc interface{},
+	lp interface{},
+) (VcnUnderlyingNetworkPolicy, error) {
+	return w.impl.GetUnderlyingNetworkPolicy(ctx, nc, lp)
+}
+
+func (w *vcnManagementServiceStubWrapper) RegisterVcnStatusCallback(
+	ctx context.Context,
+	subscriptionGroup interface{},
+	callback IVcnStatusCallback,
+	opPkgName string,
+) error {
+	return w.impl.RegisterVcnStatusCallback(ctx, subscriptionGroup, callback, opPkgName)
+}
+
+func (w *vcnManagementServiceStubWrapper) UnregisterVcnStatusCallback(
+	ctx context.Context,
+	callback IVcnStatusCallback,
+) error {
+	return w.impl.UnregisterVcnStatusCallback(ctx, callback)
+}
+
+var _ IVcnManagementService = (*vcnManagementServiceStubWrapper)(nil)
+
+// NewVcnManagementServiceStub creates a server-side IVcnManagementService wrapping the given
+// server implementation. The returned value satisfies IVcnManagementService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVcnManagementServiceStub(
+	impl IVcnManagementServiceServer,
+) IVcnManagementService {
+	wrapper := &vcnManagementServiceStubWrapper{impl: impl}
+	stub := &VcnManagementServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

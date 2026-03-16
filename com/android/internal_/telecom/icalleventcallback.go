@@ -73,7 +73,7 @@ func (p *CallEventCallbackProxy) OnAddCallControl(
 	_data.WriteInterfaceToken(DescriptorICallEventCallback)
 	_data.WriteString16(callId)
 	_data.WriteInt32(resultCode)
-	_data.WriteStrongBinder(callControl.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callControl.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := exception.MarshalParcel(_data); _err != nil {
 		return _err
@@ -651,4 +651,156 @@ func (s *CallEventCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICallEventCallbackServer is the server-side interface that user implementations
+// provide to NewCallEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallEventCallbackServer interface {
+	OnAddCallControl(ctx context.Context, callId string, resultCode int32, callControl ICallControl, exception androidTelecom.CallException) error
+	OnSetActive(ctx context.Context, callId string, callback os.ResultReceiver) error
+	OnSetInactive(ctx context.Context, callId string, callback os.ResultReceiver) error
+	OnAnswer(ctx context.Context, callId string, videoState int32, callback os.ResultReceiver) error
+	OnDisconnect(ctx context.Context, callId string, cause androidTelecom.DisconnectCause, callback os.ResultReceiver) error
+	OnCallStreamingStarted(ctx context.Context, callId string, callback os.ResultReceiver) error
+	OnCallStreamingFailed(ctx context.Context, callId string, reason int32) error
+	OnCallEndpointChanged(ctx context.Context, callId string, endpoint androidTelecom.CallEndpoint) error
+	OnAvailableCallEndpointsChanged(ctx context.Context, callId string, endpoint []androidTelecom.CallEndpoint) error
+	OnMuteStateChanged(ctx context.Context, callId string, isMuted bool) error
+	OnVideoStateChanged(ctx context.Context, callId string, videoState int32) error
+	OnEvent(ctx context.Context, callId string, event string, extras os.Bundle) error
+	RemoveCallFromTransactionalServiceWrapper(ctx context.Context, callId string) error
+}
+
+type callEventCallbackStubWrapper struct {
+	impl       ICallEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callEventCallbackStubWrapper) OnAddCallControl(
+	ctx context.Context,
+	callId string,
+	resultCode int32,
+	callControl ICallControl,
+	exception androidTelecom.CallException,
+) error {
+	return w.impl.OnAddCallControl(ctx, callId, resultCode, callControl, exception)
+}
+
+func (w *callEventCallbackStubWrapper) OnSetActive(
+	ctx context.Context,
+	callId string,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.OnSetActive(ctx, callId, callback)
+}
+
+func (w *callEventCallbackStubWrapper) OnSetInactive(
+	ctx context.Context,
+	callId string,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.OnSetInactive(ctx, callId, callback)
+}
+
+func (w *callEventCallbackStubWrapper) OnAnswer(
+	ctx context.Context,
+	callId string,
+	videoState int32,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.OnAnswer(ctx, callId, videoState, callback)
+}
+
+func (w *callEventCallbackStubWrapper) OnDisconnect(
+	ctx context.Context,
+	callId string,
+	cause androidTelecom.DisconnectCause,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.OnDisconnect(ctx, callId, cause, callback)
+}
+
+func (w *callEventCallbackStubWrapper) OnCallStreamingStarted(
+	ctx context.Context,
+	callId string,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.OnCallStreamingStarted(ctx, callId, callback)
+}
+
+func (w *callEventCallbackStubWrapper) OnCallStreamingFailed(
+	ctx context.Context,
+	callId string,
+	reason int32,
+) error {
+	return w.impl.OnCallStreamingFailed(ctx, callId, reason)
+}
+
+func (w *callEventCallbackStubWrapper) OnCallEndpointChanged(
+	ctx context.Context,
+	callId string,
+	endpoint androidTelecom.CallEndpoint,
+) error {
+	return w.impl.OnCallEndpointChanged(ctx, callId, endpoint)
+}
+
+func (w *callEventCallbackStubWrapper) OnAvailableCallEndpointsChanged(
+	ctx context.Context,
+	callId string,
+	endpoint []androidTelecom.CallEndpoint,
+) error {
+	return w.impl.OnAvailableCallEndpointsChanged(ctx, callId, endpoint)
+}
+
+func (w *callEventCallbackStubWrapper) OnMuteStateChanged(
+	ctx context.Context,
+	callId string,
+	isMuted bool,
+) error {
+	return w.impl.OnMuteStateChanged(ctx, callId, isMuted)
+}
+
+func (w *callEventCallbackStubWrapper) OnVideoStateChanged(
+	ctx context.Context,
+	callId string,
+	videoState int32,
+) error {
+	return w.impl.OnVideoStateChanged(ctx, callId, videoState)
+}
+
+func (w *callEventCallbackStubWrapper) OnEvent(
+	ctx context.Context,
+	callId string,
+	event string,
+	extras os.Bundle,
+) error {
+	return w.impl.OnEvent(ctx, callId, event, extras)
+}
+
+func (w *callEventCallbackStubWrapper) RemoveCallFromTransactionalServiceWrapper(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.RemoveCallFromTransactionalServiceWrapper(ctx, callId)
+}
+
+var _ ICallEventCallback = (*callEventCallbackStubWrapper)(nil)
+
+// NewCallEventCallbackStub creates a server-side ICallEventCallback wrapping the given
+// server implementation. The returned value satisfies ICallEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallEventCallbackStub(
+	impl ICallEventCallbackServer,
+) ICallEventCallback {
+	wrapper := &callEventCallbackStubWrapper{impl: impl}
+	stub := &CallEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

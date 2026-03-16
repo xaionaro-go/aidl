@@ -271,3 +271,69 @@ func (s *NetworkWatchlistManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INetworkWatchlistManagerServer is the server-side interface that user implementations
+// provide to NewNetworkWatchlistManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkWatchlistManagerServer interface {
+	StartWatchlistLogging(ctx context.Context) (bool, error)
+	StopWatchlistLogging(ctx context.Context) (bool, error)
+	ReloadWatchlist(ctx context.Context) error
+	ReportWatchlistIfNecessary(ctx context.Context) error
+	GetWatchlistConfigHash(ctx context.Context) ([]byte, error)
+}
+
+type networkWatchlistManagerStubWrapper struct {
+	impl       INetworkWatchlistManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkWatchlistManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkWatchlistManagerStubWrapper) StartWatchlistLogging(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.StartWatchlistLogging(ctx)
+}
+
+func (w *networkWatchlistManagerStubWrapper) StopWatchlistLogging(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.StopWatchlistLogging(ctx)
+}
+
+func (w *networkWatchlistManagerStubWrapper) ReloadWatchlist(
+	ctx context.Context,
+) error {
+	return w.impl.ReloadWatchlist(ctx)
+}
+
+func (w *networkWatchlistManagerStubWrapper) ReportWatchlistIfNecessary(
+	ctx context.Context,
+) error {
+	return w.impl.ReportWatchlistIfNecessary(ctx)
+}
+
+func (w *networkWatchlistManagerStubWrapper) GetWatchlistConfigHash(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetWatchlistConfigHash(ctx)
+}
+
+var _ INetworkWatchlistManager = (*networkWatchlistManagerStubWrapper)(nil)
+
+// NewNetworkWatchlistManagerStub creates a server-side INetworkWatchlistManager wrapping the given
+// server implementation. The returned value satisfies INetworkWatchlistManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkWatchlistManagerStub(
+	impl INetworkWatchlistManagerServer,
+) INetworkWatchlistManager {
+	wrapper := &networkWatchlistManagerStubWrapper{impl: impl}
+	stub := &NetworkWatchlistManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

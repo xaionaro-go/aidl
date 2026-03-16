@@ -69,7 +69,7 @@ func (p *ThermalServiceProxy) RegisterThermalEventListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermalService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermalService, "registerThermalEventListener")
 	if _err != nil {
@@ -101,7 +101,7 @@ func (p *ThermalServiceProxy) RegisterThermalEventListenerWithType(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermalService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(type_)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermalService, "registerThermalEventListenerWithType")
@@ -133,7 +133,7 @@ func (p *ThermalServiceProxy) UnregisterThermalEventListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermalService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermalService, "unregisterThermalEventListener")
 	if _err != nil {
@@ -236,7 +236,7 @@ func (p *ThermalServiceProxy) RegisterThermalStatusListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermalService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermalService, "registerThermalStatusListener")
 	if _err != nil {
@@ -267,7 +267,7 @@ func (p *ThermalServiceProxy) UnregisterThermalStatusListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermalService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermalService, "unregisterThermalStatusListener")
 	if _err != nil {
@@ -469,7 +469,7 @@ func (p *ThermalServiceProxy) RegisterThermalHeadroomListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermalService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermalService, "registerThermalHeadroomListener")
 	if _err != nil {
@@ -500,7 +500,7 @@ func (p *ThermalServiceProxy) UnregisterThermalHeadroomListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermalService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermalService, "unregisterThermalHeadroomListener")
 	if _err != nil {
@@ -765,4 +765,144 @@ func (s *ThermalServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IThermalServiceServer is the server-side interface that user implementations
+// provide to NewThermalServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IThermalServiceServer interface {
+	RegisterThermalEventListener(ctx context.Context, listener IThermalEventListener) (bool, error)
+	RegisterThermalEventListenerWithType(ctx context.Context, listener IThermalEventListener, type_ int32) (bool, error)
+	UnregisterThermalEventListener(ctx context.Context, listener IThermalEventListener) (bool, error)
+	GetCurrentTemperatures(ctx context.Context) ([]interface{}, error)
+	GetCurrentTemperaturesWithType(ctx context.Context, type_ int32) ([]interface{}, error)
+	RegisterThermalStatusListener(ctx context.Context, listener IThermalStatusListener) (bool, error)
+	UnregisterThermalStatusListener(ctx context.Context, listener IThermalStatusListener) (bool, error)
+	GetCurrentThermalStatus(ctx context.Context) (int32, error)
+	GetCurrentCoolingDevices(ctx context.Context) ([]interface{}, error)
+	GetCurrentCoolingDevicesWithType(ctx context.Context, type_ int32) ([]interface{}, error)
+	GetThermalHeadroom(ctx context.Context, forecastSeconds int32) (float32, error)
+	GetThermalHeadroomThresholds(ctx context.Context) ([]float32, error)
+	RegisterThermalHeadroomListener(ctx context.Context, listener IThermalHeadroomListener) (bool, error)
+	UnregisterThermalHeadroomListener(ctx context.Context, listener IThermalHeadroomListener) (bool, error)
+}
+
+type thermalServiceStubWrapper struct {
+	impl       IThermalServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *thermalServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *thermalServiceStubWrapper) RegisterThermalEventListener(
+	ctx context.Context,
+	listener IThermalEventListener,
+) (bool, error) {
+	return w.impl.RegisterThermalEventListener(ctx, listener)
+}
+
+func (w *thermalServiceStubWrapper) RegisterThermalEventListenerWithType(
+	ctx context.Context,
+	listener IThermalEventListener,
+	type_ int32,
+) (bool, error) {
+	return w.impl.RegisterThermalEventListenerWithType(ctx, listener, type_)
+}
+
+func (w *thermalServiceStubWrapper) UnregisterThermalEventListener(
+	ctx context.Context,
+	listener IThermalEventListener,
+) (bool, error) {
+	return w.impl.UnregisterThermalEventListener(ctx, listener)
+}
+
+func (w *thermalServiceStubWrapper) GetCurrentTemperatures(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetCurrentTemperatures(ctx)
+}
+
+func (w *thermalServiceStubWrapper) GetCurrentTemperaturesWithType(
+	ctx context.Context,
+	type_ int32,
+) ([]interface{}, error) {
+	return w.impl.GetCurrentTemperaturesWithType(ctx, type_)
+}
+
+func (w *thermalServiceStubWrapper) RegisterThermalStatusListener(
+	ctx context.Context,
+	listener IThermalStatusListener,
+) (bool, error) {
+	return w.impl.RegisterThermalStatusListener(ctx, listener)
+}
+
+func (w *thermalServiceStubWrapper) UnregisterThermalStatusListener(
+	ctx context.Context,
+	listener IThermalStatusListener,
+) (bool, error) {
+	return w.impl.UnregisterThermalStatusListener(ctx, listener)
+}
+
+func (w *thermalServiceStubWrapper) GetCurrentThermalStatus(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentThermalStatus(ctx)
+}
+
+func (w *thermalServiceStubWrapper) GetCurrentCoolingDevices(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetCurrentCoolingDevices(ctx)
+}
+
+func (w *thermalServiceStubWrapper) GetCurrentCoolingDevicesWithType(
+	ctx context.Context,
+	type_ int32,
+) ([]interface{}, error) {
+	return w.impl.GetCurrentCoolingDevicesWithType(ctx, type_)
+}
+
+func (w *thermalServiceStubWrapper) GetThermalHeadroom(
+	ctx context.Context,
+	forecastSeconds int32,
+) (float32, error) {
+	return w.impl.GetThermalHeadroom(ctx, forecastSeconds)
+}
+
+func (w *thermalServiceStubWrapper) GetThermalHeadroomThresholds(
+	ctx context.Context,
+) ([]float32, error) {
+	return w.impl.GetThermalHeadroomThresholds(ctx)
+}
+
+func (w *thermalServiceStubWrapper) RegisterThermalHeadroomListener(
+	ctx context.Context,
+	listener IThermalHeadroomListener,
+) (bool, error) {
+	return w.impl.RegisterThermalHeadroomListener(ctx, listener)
+}
+
+func (w *thermalServiceStubWrapper) UnregisterThermalHeadroomListener(
+	ctx context.Context,
+	listener IThermalHeadroomListener,
+) (bool, error) {
+	return w.impl.UnregisterThermalHeadroomListener(ctx, listener)
+}
+
+var _ IThermalService = (*thermalServiceStubWrapper)(nil)
+
+// NewThermalServiceStub creates a server-side IThermalService wrapping the given
+// server implementation. The returned value satisfies IThermalService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewThermalServiceStub(
+	impl IThermalServiceServer,
+) IThermalService {
+	wrapper := &thermalServiceStubWrapper{impl: impl}
+	stub := &ThermalServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

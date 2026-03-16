@@ -98,3 +98,41 @@ func (s *MediaHTTPServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaHTTPServiceServer is the server-side interface that user implementations
+// provide to NewMediaHTTPServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaHTTPServiceServer interface {
+	MakeHTTPConnection(ctx context.Context) (IMediaHTTPConnection, error)
+}
+
+type mediaHTTPServiceStubWrapper struct {
+	impl       IMediaHTTPServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaHTTPServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaHTTPServiceStubWrapper) MakeHTTPConnection(
+	ctx context.Context,
+) (IMediaHTTPConnection, error) {
+	return w.impl.MakeHTTPConnection(ctx)
+}
+
+var _ IMediaHTTPService = (*mediaHTTPServiceStubWrapper)(nil)
+
+// NewMediaHTTPServiceStub creates a server-side IMediaHTTPService wrapping the given
+// server implementation. The returned value satisfies IMediaHTTPService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaHTTPServiceStub(
+	impl IMediaHTTPServiceServer,
+) IMediaHTTPService {
+	wrapper := &mediaHTTPServiceStubWrapper{impl: impl}
+	stub := &MediaHTTPServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

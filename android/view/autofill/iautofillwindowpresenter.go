@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -20,7 +19,7 @@ const (
 
 type IAutofillWindowPresenter interface {
 	AsBinder() binder.IBinder
-	Show(ctx context.Context, p_ view.WindowManagerLayoutParams, transitionEpicenter graphics.Rect, fitsSystemWindows bool, layoutDirection int32) error
+	Show(ctx context.Context, p_ interface{}, transitionEpicenter graphics.Rect, fitsSystemWindows bool, layoutDirection int32) error
 	Hide(ctx context.Context, transitionEpicenter graphics.Rect) error
 }
 
@@ -42,17 +41,13 @@ var _ IAutofillWindowPresenter = (*AutofillWindowPresenterProxy)(nil)
 
 func (p *AutofillWindowPresenterProxy) Show(
 	ctx context.Context,
-	p_ view.WindowManagerLayoutParams,
+	p_ interface{},
 	transitionEpicenter graphics.Rect,
 	fitsSystemWindows bool,
 	layoutDirection int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutofillWindowPresenter)
-	_data.WriteInt32(1)
-	if _err := p_.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(1)
 	if _err := transitionEpicenter.MarshalParcel(_data); _err != nil {
 		return _err
@@ -107,18 +102,7 @@ func (s *AutofillWindowPresenterStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_p_ view.WindowManagerLayoutParams
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_p_.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_p_ interface{}
 		var _arg_transitionEpicenter graphics.Rect
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -164,4 +148,54 @@ func (s *AutofillWindowPresenterStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAutofillWindowPresenterServer is the server-side interface that user implementations
+// provide to NewAutofillWindowPresenterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAutofillWindowPresenterServer interface {
+	Show(ctx context.Context, p_ interface{}, transitionEpicenter graphics.Rect, fitsSystemWindows bool, layoutDirection int32) error
+	Hide(ctx context.Context, transitionEpicenter graphics.Rect) error
+}
+
+type autofillWindowPresenterStubWrapper struct {
+	impl       IAutofillWindowPresenterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *autofillWindowPresenterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *autofillWindowPresenterStubWrapper) Show(
+	ctx context.Context,
+	p_ interface{},
+	transitionEpicenter graphics.Rect,
+	fitsSystemWindows bool,
+	layoutDirection int32,
+) error {
+	return w.impl.Show(ctx, p_, transitionEpicenter, fitsSystemWindows, layoutDirection)
+}
+
+func (w *autofillWindowPresenterStubWrapper) Hide(
+	ctx context.Context,
+	transitionEpicenter graphics.Rect,
+) error {
+	return w.impl.Hide(ctx, transitionEpicenter)
+}
+
+var _ IAutofillWindowPresenter = (*autofillWindowPresenterStubWrapper)(nil)
+
+// NewAutofillWindowPresenterStub creates a server-side IAutofillWindowPresenter wrapping the given
+// server implementation. The returned value satisfies IAutofillWindowPresenter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAutofillWindowPresenterStub(
+	impl IAutofillWindowPresenterServer,
+) IAutofillWindowPresenter {
+	wrapper := &autofillWindowPresenterStubWrapper{impl: impl}
+	stub := &AutofillWindowPresenterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

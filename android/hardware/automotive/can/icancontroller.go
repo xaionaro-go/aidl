@@ -263,3 +263,65 @@ func (s *CanControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICanControllerServer is the server-side interface that user implementations
+// provide to NewCanControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICanControllerServer interface {
+	GetSupportedInterfaceTypes(ctx context.Context) ([]InterfaceType, error)
+	GetInterfaceName(ctx context.Context, busName string) (string, error)
+	UpBus(ctx context.Context, config BusConfig) (string, error)
+	DownBus(ctx context.Context, name string) error
+}
+
+type canControllerStubWrapper struct {
+	impl       ICanControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *canControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *canControllerStubWrapper) GetSupportedInterfaceTypes(
+	ctx context.Context,
+) ([]InterfaceType, error) {
+	return w.impl.GetSupportedInterfaceTypes(ctx)
+}
+
+func (w *canControllerStubWrapper) GetInterfaceName(
+	ctx context.Context,
+	busName string,
+) (string, error) {
+	return w.impl.GetInterfaceName(ctx, busName)
+}
+
+func (w *canControllerStubWrapper) UpBus(
+	ctx context.Context,
+	config BusConfig,
+) (string, error) {
+	return w.impl.UpBus(ctx, config)
+}
+
+func (w *canControllerStubWrapper) DownBus(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.DownBus(ctx, name)
+}
+
+var _ ICanController = (*canControllerStubWrapper)(nil)
+
+// NewCanControllerStub creates a server-side ICanController wrapping the given
+// server implementation. The returned value satisfies ICanController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCanControllerStub(
+	impl ICanControllerServer,
+) ICanController {
+	wrapper := &canControllerStubWrapper{impl: impl}
+	stub := &CanControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

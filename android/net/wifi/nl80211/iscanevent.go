@@ -130,3 +130,56 @@ func (s *ScanEventStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScanEventServer is the server-side interface that user implementations
+// provide to NewScanEventStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScanEventServer interface {
+	OnScanResultReady(ctx context.Context) error
+	OnScanFailed(ctx context.Context) error
+	OnScanRequestFailed(ctx context.Context, errorCode int32) error
+}
+
+type scanEventStubWrapper struct {
+	impl       IScanEventServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scanEventStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scanEventStubWrapper) OnScanResultReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnScanResultReady(ctx)
+}
+
+func (w *scanEventStubWrapper) OnScanFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnScanFailed(ctx)
+}
+
+func (w *scanEventStubWrapper) OnScanRequestFailed(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.OnScanRequestFailed(ctx, errorCode)
+}
+
+var _ IScanEvent = (*scanEventStubWrapper)(nil)
+
+// NewScanEventStub creates a server-side IScanEvent wrapping the given
+// server implementation. The returned value satisfies IScanEvent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScanEventStub(
+	impl IScanEventServer,
+) IScanEvent {
+	wrapper := &scanEventStubWrapper{impl: impl}
+	stub := &ScanEventStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

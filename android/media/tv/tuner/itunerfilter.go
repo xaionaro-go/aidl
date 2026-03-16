@@ -345,7 +345,7 @@ func (p *TunerFilterProxy) SetDataSource(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerFilter)
-	_data.WriteStrongBinder(filter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, filter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerFilter, "setDataSource")
 	if _err != nil {
@@ -892,4 +892,171 @@ func (s *TunerFilterStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITunerFilterServer is the server-side interface that user implementations
+// provide to NewTunerFilterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerFilterServer interface {
+	GetId(ctx context.Context) (int32, error)
+	GetId64Bit(ctx context.Context) (int64, error)
+	GetQueueDesc(ctx context.Context) (fmq.MQDescriptor, error)
+	Configure(ctx context.Context, settings tvTuner.DemuxFilterSettings) error
+	ConfigureMonitorEvent(ctx context.Context, monitorEventTypes int32) error
+	ConfigureIpFilterContextId(ctx context.Context, cid int32) error
+	ConfigureAvStreamType(ctx context.Context, avStreamType tvTuner.AvStreamType) error
+	GetAvSharedHandle(ctx context.Context, avMemory common.NativeHandle) (int64, error)
+	ReleaseAvHandle(ctx context.Context, handle common.NativeHandle, avDataId int64) error
+	SetDataSource(ctx context.Context, filter ITunerFilter) error
+	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
+	Flush(ctx context.Context) error
+	Close(ctx context.Context) error
+	AcquireSharedFilterToken(ctx context.Context) (string, error)
+	FreeSharedFilterToken(ctx context.Context, filterToken string) error
+	GetFilterType(ctx context.Context) (tvTuner.DemuxFilterType, error)
+	SetDelayHint(ctx context.Context, hint tvTuner.FilterDelayHint) error
+}
+
+type tunerFilterStubWrapper struct {
+	impl       ITunerFilterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerFilterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerFilterStubWrapper) GetId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetId(ctx)
+}
+
+func (w *tunerFilterStubWrapper) GetId64Bit(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetId64Bit(ctx)
+}
+
+func (w *tunerFilterStubWrapper) GetQueueDesc(
+	ctx context.Context,
+) (fmq.MQDescriptor, error) {
+	return w.impl.GetQueueDesc(ctx)
+}
+
+func (w *tunerFilterStubWrapper) Configure(
+	ctx context.Context,
+	settings tvTuner.DemuxFilterSettings,
+) error {
+	return w.impl.Configure(ctx, settings)
+}
+
+func (w *tunerFilterStubWrapper) ConfigureMonitorEvent(
+	ctx context.Context,
+	monitorEventTypes int32,
+) error {
+	return w.impl.ConfigureMonitorEvent(ctx, monitorEventTypes)
+}
+
+func (w *tunerFilterStubWrapper) ConfigureIpFilterContextId(
+	ctx context.Context,
+	cid int32,
+) error {
+	return w.impl.ConfigureIpFilterContextId(ctx, cid)
+}
+
+func (w *tunerFilterStubWrapper) ConfigureAvStreamType(
+	ctx context.Context,
+	avStreamType tvTuner.AvStreamType,
+) error {
+	return w.impl.ConfigureAvStreamType(ctx, avStreamType)
+}
+
+func (w *tunerFilterStubWrapper) GetAvSharedHandle(
+	ctx context.Context,
+	avMemory common.NativeHandle,
+) (int64, error) {
+	return w.impl.GetAvSharedHandle(ctx, avMemory)
+}
+
+func (w *tunerFilterStubWrapper) ReleaseAvHandle(
+	ctx context.Context,
+	handle common.NativeHandle,
+	avDataId int64,
+) error {
+	return w.impl.ReleaseAvHandle(ctx, handle, avDataId)
+}
+
+func (w *tunerFilterStubWrapper) SetDataSource(
+	ctx context.Context,
+	filter ITunerFilter,
+) error {
+	return w.impl.SetDataSource(ctx, filter)
+}
+
+func (w *tunerFilterStubWrapper) Start(
+	ctx context.Context,
+) error {
+	return w.impl.Start(ctx)
+}
+
+func (w *tunerFilterStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *tunerFilterStubWrapper) Flush(
+	ctx context.Context,
+) error {
+	return w.impl.Flush(ctx)
+}
+
+func (w *tunerFilterStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *tunerFilterStubWrapper) AcquireSharedFilterToken(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.AcquireSharedFilterToken(ctx)
+}
+
+func (w *tunerFilterStubWrapper) FreeSharedFilterToken(
+	ctx context.Context,
+	filterToken string,
+) error {
+	return w.impl.FreeSharedFilterToken(ctx, filterToken)
+}
+
+func (w *tunerFilterStubWrapper) GetFilterType(
+	ctx context.Context,
+) (tvTuner.DemuxFilterType, error) {
+	return w.impl.GetFilterType(ctx)
+}
+
+func (w *tunerFilterStubWrapper) SetDelayHint(
+	ctx context.Context,
+	hint tvTuner.FilterDelayHint,
+) error {
+	return w.impl.SetDelayHint(ctx, hint)
+}
+
+var _ ITunerFilter = (*tunerFilterStubWrapper)(nil)
+
+// NewTunerFilterStub creates a server-side ITunerFilter wrapping the given
+// server implementation. The returned value satisfies ITunerFilter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerFilterStub(
+	impl ITunerFilterServer,
+) ITunerFilter {
+	wrapper := &tunerFilterStubWrapper{impl: impl}
+	stub := &TunerFilterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -44,7 +44,7 @@ func (p *TextToSpeechManagerProxy) CreateSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechManager)
 	_data.WriteString16(engine)
-	_data.WriteStrongBinder(managerCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, managerCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextToSpeechManager, "createSession")
 	if _err != nil {
@@ -86,4 +86,44 @@ func (s *TextToSpeechManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITextToSpeechManagerServer is the server-side interface that user implementations
+// provide to NewTextToSpeechManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITextToSpeechManagerServer interface {
+	CreateSession(ctx context.Context, engine string, managerCallback ITextToSpeechSessionCallback) error
+}
+
+type textToSpeechManagerStubWrapper struct {
+	impl       ITextToSpeechManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *textToSpeechManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *textToSpeechManagerStubWrapper) CreateSession(
+	ctx context.Context,
+	engine string,
+	managerCallback ITextToSpeechSessionCallback,
+) error {
+	return w.impl.CreateSession(ctx, engine, managerCallback)
+}
+
+var _ ITextToSpeechManager = (*textToSpeechManagerStubWrapper)(nil)
+
+// NewTextToSpeechManagerStub creates a server-side ITextToSpeechManager wrapping the given
+// server implementation. The returned value satisfies ITextToSpeechManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTextToSpeechManagerStub(
+	impl ITextToSpeechManagerServer,
+) ITextToSpeechManager {
+	wrapper := &textToSpeechManagerStubWrapper{impl: impl}
+	stub := &TextToSpeechManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -105,3 +105,44 @@ func (s *ContextHubCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IContextHubCallbackServer is the server-side interface that user implementations
+// provide to NewContextHubCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContextHubCallbackServer interface {
+	OnMessageReceipt(ctx context.Context, hubId int32, nanoAppId int32, msg ContextHubMessage) error
+}
+
+type contextHubCallbackStubWrapper struct {
+	impl       IContextHubCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contextHubCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contextHubCallbackStubWrapper) OnMessageReceipt(
+	ctx context.Context,
+	hubId int32,
+	nanoAppId int32,
+	msg ContextHubMessage,
+) error {
+	return w.impl.OnMessageReceipt(ctx, hubId, nanoAppId, msg)
+}
+
+var _ IContextHubCallback = (*contextHubCallbackStubWrapper)(nil)
+
+// NewContextHubCallbackStub creates a server-side IContextHubCallback wrapping the given
+// server implementation. The returned value satisfies IContextHubCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContextHubCallbackStub(
+	impl IContextHubCallbackServer,
+) IContextHubCallback {
+	wrapper := &contextHubCallbackStubWrapper{impl: impl}
+	stub := &ContextHubCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

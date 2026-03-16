@@ -76,3 +76,41 @@ func (s *OnPrimaryClipChangedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnPrimaryClipChangedListenerServer is the server-side interface that user implementations
+// provide to NewOnPrimaryClipChangedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnPrimaryClipChangedListenerServer interface {
+	DispatchPrimaryClipChanged(ctx context.Context) error
+}
+
+type onPrimaryClipChangedListenerStubWrapper struct {
+	impl       IOnPrimaryClipChangedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onPrimaryClipChangedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onPrimaryClipChangedListenerStubWrapper) DispatchPrimaryClipChanged(
+	ctx context.Context,
+) error {
+	return w.impl.DispatchPrimaryClipChanged(ctx)
+}
+
+var _ IOnPrimaryClipChangedListener = (*onPrimaryClipChangedListenerStubWrapper)(nil)
+
+// NewOnPrimaryClipChangedListenerStub creates a server-side IOnPrimaryClipChangedListener wrapping the given
+// server implementation. The returned value satisfies IOnPrimaryClipChangedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnPrimaryClipChangedListenerStub(
+	impl IOnPrimaryClipChangedListenerServer,
+) IOnPrimaryClipChangedListener {
+	wrapper := &onPrimaryClipChangedListenerStubWrapper{impl: impl}
+	stub := &OnPrimaryClipChangedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

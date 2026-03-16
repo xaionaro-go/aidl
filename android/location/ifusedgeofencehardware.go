@@ -367,3 +367,87 @@ func (s *FusedGeofenceHardwareStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFusedGeofenceHardwareServer is the server-side interface that user implementations
+// provide to NewFusedGeofenceHardwareStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFusedGeofenceHardwareServer interface {
+	IsSupported(ctx context.Context) (bool, error)
+	AddGeofences(ctx context.Context, geofenceRequestsArray []hardwareLocation.GeofenceHardwareRequestParcelable) error
+	RemoveGeofences(ctx context.Context, geofenceIds []int32) error
+	PauseMonitoringGeofence(ctx context.Context, geofenceId int32) error
+	ResumeMonitoringGeofence(ctx context.Context, geofenceId int32, monitorTransitions int32) error
+	ModifyGeofenceOptions(ctx context.Context, geofenceId int32, lastTransition int32, monitorTransitions int32, notificationResponsiveness int32, unknownTimer int32, sourcesToUse int32) error
+}
+
+type fusedGeofenceHardwareStubWrapper struct {
+	impl       IFusedGeofenceHardwareServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fusedGeofenceHardwareStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fusedGeofenceHardwareStubWrapper) IsSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSupported(ctx)
+}
+
+func (w *fusedGeofenceHardwareStubWrapper) AddGeofences(
+	ctx context.Context,
+	geofenceRequestsArray []hardwareLocation.GeofenceHardwareRequestParcelable,
+) error {
+	return w.impl.AddGeofences(ctx, geofenceRequestsArray)
+}
+
+func (w *fusedGeofenceHardwareStubWrapper) RemoveGeofences(
+	ctx context.Context,
+	geofenceIds []int32,
+) error {
+	return w.impl.RemoveGeofences(ctx, geofenceIds)
+}
+
+func (w *fusedGeofenceHardwareStubWrapper) PauseMonitoringGeofence(
+	ctx context.Context,
+	geofenceId int32,
+) error {
+	return w.impl.PauseMonitoringGeofence(ctx, geofenceId)
+}
+
+func (w *fusedGeofenceHardwareStubWrapper) ResumeMonitoringGeofence(
+	ctx context.Context,
+	geofenceId int32,
+	monitorTransitions int32,
+) error {
+	return w.impl.ResumeMonitoringGeofence(ctx, geofenceId, monitorTransitions)
+}
+
+func (w *fusedGeofenceHardwareStubWrapper) ModifyGeofenceOptions(
+	ctx context.Context,
+	geofenceId int32,
+	lastTransition int32,
+	monitorTransitions int32,
+	notificationResponsiveness int32,
+	unknownTimer int32,
+	sourcesToUse int32,
+) error {
+	return w.impl.ModifyGeofenceOptions(ctx, geofenceId, lastTransition, monitorTransitions, notificationResponsiveness, unknownTimer, sourcesToUse)
+}
+
+var _ IFusedGeofenceHardware = (*fusedGeofenceHardwareStubWrapper)(nil)
+
+// NewFusedGeofenceHardwareStub creates a server-side IFusedGeofenceHardware wrapping the given
+// server implementation. The returned value satisfies IFusedGeofenceHardware
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFusedGeofenceHardwareStub(
+	impl IFusedGeofenceHardwareServer,
+) IFusedGeofenceHardware {
+	wrapper := &fusedGeofenceHardwareStubWrapper{impl: impl}
+	stub := &FusedGeofenceHardwareStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

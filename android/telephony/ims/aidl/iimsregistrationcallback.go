@@ -344,3 +344,88 @@ func (s *ImsRegistrationCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsRegistrationCallbackServer is the server-side interface that user implementations
+// provide to NewImsRegistrationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsRegistrationCallbackServer interface {
+	OnRegistered(ctx context.Context, attr ims.ImsRegistrationAttributes) error
+	OnRegistering(ctx context.Context, attr ims.ImsRegistrationAttributes) error
+	OnDeregistered(ctx context.Context, info ims.ImsReasonInfo, suggestedAction int32, imsRadioTech int32) error
+	OnDeregisteredWithDetails(ctx context.Context, info ims.ImsReasonInfo, suggestedAction int32, imsRadioTech int32, detail ims.SipDetails) error
+	OnTechnologyChangeFailed(ctx context.Context, imsRadioTech int32, info ims.ImsReasonInfo) error
+	OnSubscriberAssociatedUriChanged(ctx context.Context, uris []net.Uri) error
+}
+
+type imsRegistrationCallbackStubWrapper struct {
+	impl       IImsRegistrationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsRegistrationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsRegistrationCallbackStubWrapper) OnRegistered(
+	ctx context.Context,
+	attr ims.ImsRegistrationAttributes,
+) error {
+	return w.impl.OnRegistered(ctx, attr)
+}
+
+func (w *imsRegistrationCallbackStubWrapper) OnRegistering(
+	ctx context.Context,
+	attr ims.ImsRegistrationAttributes,
+) error {
+	return w.impl.OnRegistering(ctx, attr)
+}
+
+func (w *imsRegistrationCallbackStubWrapper) OnDeregistered(
+	ctx context.Context,
+	info ims.ImsReasonInfo,
+	suggestedAction int32,
+	imsRadioTech int32,
+) error {
+	return w.impl.OnDeregistered(ctx, info, suggestedAction, imsRadioTech)
+}
+
+func (w *imsRegistrationCallbackStubWrapper) OnDeregisteredWithDetails(
+	ctx context.Context,
+	info ims.ImsReasonInfo,
+	suggestedAction int32,
+	imsRadioTech int32,
+	detail ims.SipDetails,
+) error {
+	return w.impl.OnDeregisteredWithDetails(ctx, info, suggestedAction, imsRadioTech, detail)
+}
+
+func (w *imsRegistrationCallbackStubWrapper) OnTechnologyChangeFailed(
+	ctx context.Context,
+	imsRadioTech int32,
+	info ims.ImsReasonInfo,
+) error {
+	return w.impl.OnTechnologyChangeFailed(ctx, imsRadioTech, info)
+}
+
+func (w *imsRegistrationCallbackStubWrapper) OnSubscriberAssociatedUriChanged(
+	ctx context.Context,
+	uris []net.Uri,
+) error {
+	return w.impl.OnSubscriberAssociatedUriChanged(ctx, uris)
+}
+
+var _ IImsRegistrationCallback = (*imsRegistrationCallbackStubWrapper)(nil)
+
+// NewImsRegistrationCallbackStub creates a server-side IImsRegistrationCallback wrapping the given
+// server implementation. The returned value satisfies IImsRegistrationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsRegistrationCallbackStub(
+	impl IImsRegistrationCallbackServer,
+) IImsRegistrationCallback {
+	wrapper := &imsRegistrationCallbackStubWrapper{impl: impl}
+	stub := &ImsRegistrationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -105,3 +105,44 @@ func (s *KeyboardBacklightListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyboardBacklightListenerServer is the server-side interface that user implementations
+// provide to NewKeyboardBacklightListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyboardBacklightListenerServer interface {
+	OnBrightnessChanged(ctx context.Context, deviceId int32, state IKeyboardBacklightState, isTriggeredByKeyPress bool) error
+}
+
+type keyboardBacklightListenerStubWrapper struct {
+	impl       IKeyboardBacklightListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyboardBacklightListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyboardBacklightListenerStubWrapper) OnBrightnessChanged(
+	ctx context.Context,
+	deviceId int32,
+	state IKeyboardBacklightState,
+	isTriggeredByKeyPress bool,
+) error {
+	return w.impl.OnBrightnessChanged(ctx, deviceId, state, isTriggeredByKeyPress)
+}
+
+var _ IKeyboardBacklightListener = (*keyboardBacklightListenerStubWrapper)(nil)
+
+// NewKeyboardBacklightListenerStub creates a server-side IKeyboardBacklightListener wrapping the given
+// server implementation. The returned value satisfies IKeyboardBacklightListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyboardBacklightListenerStub(
+	impl IKeyboardBacklightListenerServer,
+) IKeyboardBacklightListener {
+	wrapper := &keyboardBacklightListenerStubWrapper{impl: impl}
+	stub := &KeyboardBacklightListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

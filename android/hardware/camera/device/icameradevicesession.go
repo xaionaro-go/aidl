@@ -743,3 +743,131 @@ func (s *CameraDeviceSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraDeviceSessionServer is the server-side interface that user implementations
+// provide to NewCameraDeviceSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraDeviceSessionServer interface {
+	Close(ctx context.Context) error
+	ConfigureStreams(ctx context.Context, requestedConfiguration StreamConfiguration) ([]HalStream, error)
+	ConstructDefaultRequestSettings(ctx context.Context, type_ RequestTemplate) (CameraMetadata, error)
+	Flush(ctx context.Context) error
+	GetCaptureRequestMetadataQueue(ctx context.Context) (fmq.MQDescriptor, error)
+	GetCaptureResultMetadataQueue(ctx context.Context) (fmq.MQDescriptor, error)
+	IsReconfigurationRequired(ctx context.Context, oldSessionParams CameraMetadata, newSessionParams CameraMetadata) (bool, error)
+	ProcessCaptureRequest(ctx context.Context, requests []CaptureRequest, cachesToRemove []BufferCache) (int32, error)
+	SignalStreamFlush(ctx context.Context, streamIds []int32, streamConfigCounter int32) error
+	SwitchToOffline(ctx context.Context, streamsToKeep []int32, offlineSessionInfo CameraOfflineSessionInfo) (ICameraOfflineSession, error)
+	RepeatingRequestEnd(ctx context.Context, frameNumber int32, streamIds []int32) error
+	ConfigureStreamsV2(ctx context.Context, requestedConfiguration StreamConfiguration) (ConfigureStreamsRet, error)
+}
+
+type cameraDeviceSessionStubWrapper struct {
+	impl       ICameraDeviceSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraDeviceSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraDeviceSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *cameraDeviceSessionStubWrapper) ConfigureStreams(
+	ctx context.Context,
+	requestedConfiguration StreamConfiguration,
+) ([]HalStream, error) {
+	return w.impl.ConfigureStreams(ctx, requestedConfiguration)
+}
+
+func (w *cameraDeviceSessionStubWrapper) ConstructDefaultRequestSettings(
+	ctx context.Context,
+	type_ RequestTemplate,
+) (CameraMetadata, error) {
+	return w.impl.ConstructDefaultRequestSettings(ctx, type_)
+}
+
+func (w *cameraDeviceSessionStubWrapper) Flush(
+	ctx context.Context,
+) error {
+	return w.impl.Flush(ctx)
+}
+
+func (w *cameraDeviceSessionStubWrapper) GetCaptureRequestMetadataQueue(
+	ctx context.Context,
+) (fmq.MQDescriptor, error) {
+	return w.impl.GetCaptureRequestMetadataQueue(ctx)
+}
+
+func (w *cameraDeviceSessionStubWrapper) GetCaptureResultMetadataQueue(
+	ctx context.Context,
+) (fmq.MQDescriptor, error) {
+	return w.impl.GetCaptureResultMetadataQueue(ctx)
+}
+
+func (w *cameraDeviceSessionStubWrapper) IsReconfigurationRequired(
+	ctx context.Context,
+	oldSessionParams CameraMetadata,
+	newSessionParams CameraMetadata,
+) (bool, error) {
+	return w.impl.IsReconfigurationRequired(ctx, oldSessionParams, newSessionParams)
+}
+
+func (w *cameraDeviceSessionStubWrapper) ProcessCaptureRequest(
+	ctx context.Context,
+	requests []CaptureRequest,
+	cachesToRemove []BufferCache,
+) (int32, error) {
+	return w.impl.ProcessCaptureRequest(ctx, requests, cachesToRemove)
+}
+
+func (w *cameraDeviceSessionStubWrapper) SignalStreamFlush(
+	ctx context.Context,
+	streamIds []int32,
+	streamConfigCounter int32,
+) error {
+	return w.impl.SignalStreamFlush(ctx, streamIds, streamConfigCounter)
+}
+
+func (w *cameraDeviceSessionStubWrapper) SwitchToOffline(
+	ctx context.Context,
+	streamsToKeep []int32,
+	offlineSessionInfo CameraOfflineSessionInfo,
+) (ICameraOfflineSession, error) {
+	return w.impl.SwitchToOffline(ctx, streamsToKeep, offlineSessionInfo)
+}
+
+func (w *cameraDeviceSessionStubWrapper) RepeatingRequestEnd(
+	ctx context.Context,
+	frameNumber int32,
+	streamIds []int32,
+) error {
+	return w.impl.RepeatingRequestEnd(ctx, frameNumber, streamIds)
+}
+
+func (w *cameraDeviceSessionStubWrapper) ConfigureStreamsV2(
+	ctx context.Context,
+	requestedConfiguration StreamConfiguration,
+) (ConfigureStreamsRet, error) {
+	return w.impl.ConfigureStreamsV2(ctx, requestedConfiguration)
+}
+
+var _ ICameraDeviceSession = (*cameraDeviceSessionStubWrapper)(nil)
+
+// NewCameraDeviceSessionStub creates a server-side ICameraDeviceSession wrapping the given
+// server implementation. The returned value satisfies ICameraDeviceSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraDeviceSessionStub(
+	impl ICameraDeviceSessionServer,
+) ICameraDeviceSession {
+	wrapper := &cameraDeviceSessionStubWrapper{impl: impl}
+	stub := &CameraDeviceSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

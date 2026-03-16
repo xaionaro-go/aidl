@@ -53,7 +53,7 @@ func (p *OpaqueKeyProxy) ExportWrappedKey(
 	var _result []byte
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOpaqueKey)
-	_data.WriteStrongBinder(wrappingKey.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, wrappingKey.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOpaqueKey, "exportWrappedKey")
 	if _err != nil {
@@ -341,4 +341,74 @@ func (s *OpaqueKeyStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOpaqueKeyServer is the server-side interface that user implementations
+// provide to NewOpaqueKeyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOpaqueKeyServer interface {
+	ExportWrappedKey(ctx context.Context, wrappingKey IOpaqueKey) ([]byte, error)
+	GetKeyPolicy(ctx context.Context) (KeyPolicy, error)
+	GetPublicKey(ctx context.Context) ([]byte, error)
+	GetShareableToken(ctx context.Context, sealingDicePolicy []byte) (types.OpaqueKeyToken, error)
+	SetProtectionId(ctx context.Context, protectionId types.ProtectionId, allowedOperations []neuralnetworks.OperationType) error
+}
+
+type opaqueKeyStubWrapper struct {
+	impl       IOpaqueKeyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *opaqueKeyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *opaqueKeyStubWrapper) ExportWrappedKey(
+	ctx context.Context,
+	wrappingKey IOpaqueKey,
+) ([]byte, error) {
+	return w.impl.ExportWrappedKey(ctx, wrappingKey)
+}
+
+func (w *opaqueKeyStubWrapper) GetKeyPolicy(
+	ctx context.Context,
+) (KeyPolicy, error) {
+	return w.impl.GetKeyPolicy(ctx)
+}
+
+func (w *opaqueKeyStubWrapper) GetPublicKey(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetPublicKey(ctx)
+}
+
+func (w *opaqueKeyStubWrapper) GetShareableToken(
+	ctx context.Context,
+	sealingDicePolicy []byte,
+) (types.OpaqueKeyToken, error) {
+	return w.impl.GetShareableToken(ctx, sealingDicePolicy)
+}
+
+func (w *opaqueKeyStubWrapper) SetProtectionId(
+	ctx context.Context,
+	protectionId types.ProtectionId,
+	allowedOperations []neuralnetworks.OperationType,
+) error {
+	return w.impl.SetProtectionId(ctx, protectionId, allowedOperations)
+}
+
+var _ IOpaqueKey = (*opaqueKeyStubWrapper)(nil)
+
+// NewOpaqueKeyStub creates a server-side IOpaqueKey wrapping the given
+// server implementation. The returned value satisfies IOpaqueKey
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOpaqueKeyStub(
+	impl IOpaqueKeyServer,
+) IOpaqueKey {
+	wrapper := &opaqueKeyStubWrapper{impl: impl}
+	stub := &OpaqueKeyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

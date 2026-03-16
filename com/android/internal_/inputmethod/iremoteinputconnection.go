@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
-	view "github.com/xaionaro-go/binder/android/view"
 	viewInputmethod "github.com/xaionaro-go/binder/android/view/inputmethod"
 	"github.com/xaionaro-go/binder/binder"
 	infra "github.com/xaionaro-go/binder/com/android/internal_/infra"
@@ -74,7 +73,7 @@ type IRemoteInputConnection interface {
 	PerformContextMenuAction(ctx context.Context, header InputConnectionCommandHeader, id int32) error
 	BeginBatchEdit(ctx context.Context, header InputConnectionCommandHeader) error
 	EndBatchEdit(ctx context.Context, header InputConnectionCommandHeader) error
-	SendKeyEvent(ctx context.Context, header InputConnectionCommandHeader, event view.KeyEvent) error
+	SendKeyEvent(ctx context.Context, header InputConnectionCommandHeader, event interface{}) error
 	ClearMetaKeyStates(ctx context.Context, header InputConnectionCommandHeader, states int32) error
 	PerformSpellCheck(ctx context.Context, header InputConnectionCommandHeader) error
 	PerformPrivateCommand(ctx context.Context, header InputConnectionCommandHeader, action string, data interface{}) error
@@ -558,16 +557,12 @@ func (p *RemoteInputConnectionProxy) EndBatchEdit(
 func (p *RemoteInputConnectionProxy) SendKeyEvent(
 	ctx context.Context,
 	header InputConnectionCommandHeader,
-	event view.KeyEvent,
+	event interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteInputConnection)
 	_data.WriteInt32(1)
 	if _err := header.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := event.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 
@@ -687,7 +682,7 @@ func (p *RemoteInputConnectionProxy) PreviewHandwritingGesture(
 	if _err := gesture.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(cancellationSignal.Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellationSignal, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteInputConnection, "previewHandwritingGesture")
 	if _err != nil {
@@ -988,7 +983,7 @@ func (p *RemoteInputConnectionProxy) CancelCancellationSignal(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteInputConnection)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteInputConnection, "cancelCancellationSignal")
 	if _err != nil {
@@ -1005,7 +1000,7 @@ func (p *RemoteInputConnectionProxy) ForgetCancellationSignal(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteInputConnection)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteInputConnection, "forgetCancellationSignal")
 	if _err != nil {
@@ -1572,18 +1567,7 @@ func (s *RemoteInputConnectionStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_event view.KeyEvent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_event.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_event interface{}
 		_err := s.Impl.SendKeyEvent(ctx, _arg_header, _arg_event)
 		_ = _err
 		return nil, nil
@@ -2115,4 +2099,392 @@ func (s *RemoteInputConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRemoteInputConnectionServer is the server-side interface that user implementations
+// provide to NewRemoteInputConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteInputConnectionServer interface {
+	GetTextBeforeCursor(ctx context.Context, header InputConnectionCommandHeader, length int32, flags int32, future infra.AndroidFuture) error
+	GetTextAfterCursor(ctx context.Context, header InputConnectionCommandHeader, length int32, flags int32, future infra.AndroidFuture) error
+	GetCursorCapsMode(ctx context.Context, header InputConnectionCommandHeader, reqModes int32, future infra.AndroidFuture) error
+	GetExtractedText(ctx context.Context, header InputConnectionCommandHeader, request viewInputmethod.ExtractedTextRequest, flags int32, future infra.AndroidFuture) error
+	DeleteSurroundingText(ctx context.Context, header InputConnectionCommandHeader, beforeLength int32, afterLength int32) error
+	DeleteSurroundingTextInCodePoints(ctx context.Context, header InputConnectionCommandHeader, beforeLength int32, afterLength int32) error
+	SetComposingText(ctx context.Context, header InputConnectionCommandHeader, text interface{}, newCursorPosition int32) error
+	SetComposingTextWithTextAttribute(ctx context.Context, header InputConnectionCommandHeader, text interface{}, newCursorPosition int32, textAttribute viewInputmethod.TextAttribute) error
+	FinishComposingText(ctx context.Context, header InputConnectionCommandHeader) error
+	CommitText(ctx context.Context, header InputConnectionCommandHeader, text interface{}, newCursorPosition int32) error
+	CommitTextWithTextAttribute(ctx context.Context, header InputConnectionCommandHeader, text interface{}, newCursorPosition int32, textAttribute viewInputmethod.TextAttribute) error
+	CommitCompletion(ctx context.Context, header InputConnectionCommandHeader, completion viewInputmethod.CompletionInfo) error
+	CommitCorrection(ctx context.Context, header InputConnectionCommandHeader, correction viewInputmethod.CorrectionInfo) error
+	SetSelection(ctx context.Context, header InputConnectionCommandHeader, start int32, end int32) error
+	PerformEditorAction(ctx context.Context, header InputConnectionCommandHeader, actionCode int32) error
+	PerformContextMenuAction(ctx context.Context, header InputConnectionCommandHeader, id int32) error
+	BeginBatchEdit(ctx context.Context, header InputConnectionCommandHeader) error
+	EndBatchEdit(ctx context.Context, header InputConnectionCommandHeader) error
+	SendKeyEvent(ctx context.Context, header InputConnectionCommandHeader, event interface{}) error
+	ClearMetaKeyStates(ctx context.Context, header InputConnectionCommandHeader, states int32) error
+	PerformSpellCheck(ctx context.Context, header InputConnectionCommandHeader) error
+	PerformPrivateCommand(ctx context.Context, header InputConnectionCommandHeader, action string, data interface{}) error
+	PerformHandwritingGesture(ctx context.Context, header InputConnectionCommandHeader, gesture viewInputmethod.ParcelableHandwritingGesture, resultReceiver interface{}) error
+	PreviewHandwritingGesture(ctx context.Context, header InputConnectionCommandHeader, gesture viewInputmethod.ParcelableHandwritingGesture, cancellationSignal binder.IBinder) error
+	SetComposingRegion(ctx context.Context, header InputConnectionCommandHeader, start int32, end int32) error
+	SetComposingRegionWithTextAttribute(ctx context.Context, header InputConnectionCommandHeader, start int32, end int32, textAttribute viewInputmethod.TextAttribute) error
+	GetSelectedText(ctx context.Context, header InputConnectionCommandHeader, flags int32, future infra.AndroidFuture) error
+	RequestCursorUpdates(ctx context.Context, header InputConnectionCommandHeader, cursorUpdateMode int32, imeDisplayId int32, future infra.AndroidFuture) error
+	RequestCursorUpdatesWithFilter(ctx context.Context, header InputConnectionCommandHeader, cursorUpdateMode int32, cursorUpdateFilter int32, imeDisplayId int32, future infra.AndroidFuture) error
+	RequestTextBoundsInfo(ctx context.Context, header InputConnectionCommandHeader, bounds graphics.RectF, resultReceiver interface{}) error
+	CommitContent(ctx context.Context, header InputConnectionCommandHeader, inputContentInfo viewInputmethod.InputContentInfo, flags int32, opts interface{}, future infra.AndroidFuture) error
+	GetSurroundingText(ctx context.Context, header InputConnectionCommandHeader, beforeLength int32, afterLength int32, flags int32, future infra.AndroidFuture) error
+	SetImeConsumesInput(ctx context.Context, header InputConnectionCommandHeader, imeConsumesInput bool) error
+	ReplaceText(ctx context.Context, header InputConnectionCommandHeader, start int32, end int32, text interface{}, newCursorPosition int32, textAttribute viewInputmethod.TextAttribute) error
+	CancelCancellationSignal(ctx context.Context, token binder.IBinder) error
+	ForgetCancellationSignal(ctx context.Context, token binder.IBinder) error
+}
+
+type remoteInputConnectionStubWrapper struct {
+	impl       IRemoteInputConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteInputConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteInputConnectionStubWrapper) GetTextBeforeCursor(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	length int32,
+	flags int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.GetTextBeforeCursor(ctx, header, length, flags, future)
+}
+
+func (w *remoteInputConnectionStubWrapper) GetTextAfterCursor(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	length int32,
+	flags int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.GetTextAfterCursor(ctx, header, length, flags, future)
+}
+
+func (w *remoteInputConnectionStubWrapper) GetCursorCapsMode(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	reqModes int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.GetCursorCapsMode(ctx, header, reqModes, future)
+}
+
+func (w *remoteInputConnectionStubWrapper) GetExtractedText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	request viewInputmethod.ExtractedTextRequest,
+	flags int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.GetExtractedText(ctx, header, request, flags, future)
+}
+
+func (w *remoteInputConnectionStubWrapper) DeleteSurroundingText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	beforeLength int32,
+	afterLength int32,
+) error {
+	return w.impl.DeleteSurroundingText(ctx, header, beforeLength, afterLength)
+}
+
+func (w *remoteInputConnectionStubWrapper) DeleteSurroundingTextInCodePoints(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	beforeLength int32,
+	afterLength int32,
+) error {
+	return w.impl.DeleteSurroundingTextInCodePoints(ctx, header, beforeLength, afterLength)
+}
+
+func (w *remoteInputConnectionStubWrapper) SetComposingText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	text interface{},
+	newCursorPosition int32,
+) error {
+	return w.impl.SetComposingText(ctx, header, text, newCursorPosition)
+}
+
+func (w *remoteInputConnectionStubWrapper) SetComposingTextWithTextAttribute(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	text interface{},
+	newCursorPosition int32,
+	textAttribute viewInputmethod.TextAttribute,
+) error {
+	return w.impl.SetComposingTextWithTextAttribute(ctx, header, text, newCursorPosition, textAttribute)
+}
+
+func (w *remoteInputConnectionStubWrapper) FinishComposingText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+) error {
+	return w.impl.FinishComposingText(ctx, header)
+}
+
+func (w *remoteInputConnectionStubWrapper) CommitText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	text interface{},
+	newCursorPosition int32,
+) error {
+	return w.impl.CommitText(ctx, header, text, newCursorPosition)
+}
+
+func (w *remoteInputConnectionStubWrapper) CommitTextWithTextAttribute(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	text interface{},
+	newCursorPosition int32,
+	textAttribute viewInputmethod.TextAttribute,
+) error {
+	return w.impl.CommitTextWithTextAttribute(ctx, header, text, newCursorPosition, textAttribute)
+}
+
+func (w *remoteInputConnectionStubWrapper) CommitCompletion(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	completion viewInputmethod.CompletionInfo,
+) error {
+	return w.impl.CommitCompletion(ctx, header, completion)
+}
+
+func (w *remoteInputConnectionStubWrapper) CommitCorrection(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	correction viewInputmethod.CorrectionInfo,
+) error {
+	return w.impl.CommitCorrection(ctx, header, correction)
+}
+
+func (w *remoteInputConnectionStubWrapper) SetSelection(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	start int32,
+	end int32,
+) error {
+	return w.impl.SetSelection(ctx, header, start, end)
+}
+
+func (w *remoteInputConnectionStubWrapper) PerformEditorAction(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	actionCode int32,
+) error {
+	return w.impl.PerformEditorAction(ctx, header, actionCode)
+}
+
+func (w *remoteInputConnectionStubWrapper) PerformContextMenuAction(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	id int32,
+) error {
+	return w.impl.PerformContextMenuAction(ctx, header, id)
+}
+
+func (w *remoteInputConnectionStubWrapper) BeginBatchEdit(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+) error {
+	return w.impl.BeginBatchEdit(ctx, header)
+}
+
+func (w *remoteInputConnectionStubWrapper) EndBatchEdit(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+) error {
+	return w.impl.EndBatchEdit(ctx, header)
+}
+
+func (w *remoteInputConnectionStubWrapper) SendKeyEvent(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	event interface{},
+) error {
+	return w.impl.SendKeyEvent(ctx, header, event)
+}
+
+func (w *remoteInputConnectionStubWrapper) ClearMetaKeyStates(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	states int32,
+) error {
+	return w.impl.ClearMetaKeyStates(ctx, header, states)
+}
+
+func (w *remoteInputConnectionStubWrapper) PerformSpellCheck(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+) error {
+	return w.impl.PerformSpellCheck(ctx, header)
+}
+
+func (w *remoteInputConnectionStubWrapper) PerformPrivateCommand(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	action string,
+	data interface{},
+) error {
+	return w.impl.PerformPrivateCommand(ctx, header, action, data)
+}
+
+func (w *remoteInputConnectionStubWrapper) PerformHandwritingGesture(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	gesture viewInputmethod.ParcelableHandwritingGesture,
+	resultReceiver interface{},
+) error {
+	return w.impl.PerformHandwritingGesture(ctx, header, gesture, resultReceiver)
+}
+
+func (w *remoteInputConnectionStubWrapper) PreviewHandwritingGesture(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	gesture viewInputmethod.ParcelableHandwritingGesture,
+	cancellationSignal binder.IBinder,
+) error {
+	return w.impl.PreviewHandwritingGesture(ctx, header, gesture, cancellationSignal)
+}
+
+func (w *remoteInputConnectionStubWrapper) SetComposingRegion(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	start int32,
+	end int32,
+) error {
+	return w.impl.SetComposingRegion(ctx, header, start, end)
+}
+
+func (w *remoteInputConnectionStubWrapper) SetComposingRegionWithTextAttribute(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	start int32,
+	end int32,
+	textAttribute viewInputmethod.TextAttribute,
+) error {
+	return w.impl.SetComposingRegionWithTextAttribute(ctx, header, start, end, textAttribute)
+}
+
+func (w *remoteInputConnectionStubWrapper) GetSelectedText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	flags int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.GetSelectedText(ctx, header, flags, future)
+}
+
+func (w *remoteInputConnectionStubWrapper) RequestCursorUpdates(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	cursorUpdateMode int32,
+	imeDisplayId int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.RequestCursorUpdates(ctx, header, cursorUpdateMode, imeDisplayId, future)
+}
+
+func (w *remoteInputConnectionStubWrapper) RequestCursorUpdatesWithFilter(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	cursorUpdateMode int32,
+	cursorUpdateFilter int32,
+	imeDisplayId int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.RequestCursorUpdatesWithFilter(ctx, header, cursorUpdateMode, cursorUpdateFilter, imeDisplayId, future)
+}
+
+func (w *remoteInputConnectionStubWrapper) RequestTextBoundsInfo(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	bounds graphics.RectF,
+	resultReceiver interface{},
+) error {
+	return w.impl.RequestTextBoundsInfo(ctx, header, bounds, resultReceiver)
+}
+
+func (w *remoteInputConnectionStubWrapper) CommitContent(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	inputContentInfo viewInputmethod.InputContentInfo,
+	flags int32,
+	opts interface{},
+	future infra.AndroidFuture,
+) error {
+	return w.impl.CommitContent(ctx, header, inputContentInfo, flags, opts, future)
+}
+
+func (w *remoteInputConnectionStubWrapper) GetSurroundingText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	beforeLength int32,
+	afterLength int32,
+	flags int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.GetSurroundingText(ctx, header, beforeLength, afterLength, flags, future)
+}
+
+func (w *remoteInputConnectionStubWrapper) SetImeConsumesInput(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	imeConsumesInput bool,
+) error {
+	return w.impl.SetImeConsumesInput(ctx, header, imeConsumesInput)
+}
+
+func (w *remoteInputConnectionStubWrapper) ReplaceText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	start int32,
+	end int32,
+	text interface{},
+	newCursorPosition int32,
+	textAttribute viewInputmethod.TextAttribute,
+) error {
+	return w.impl.ReplaceText(ctx, header, start, end, text, newCursorPosition, textAttribute)
+}
+
+func (w *remoteInputConnectionStubWrapper) CancelCancellationSignal(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.CancelCancellationSignal(ctx, token)
+}
+
+func (w *remoteInputConnectionStubWrapper) ForgetCancellationSignal(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ForgetCancellationSignal(ctx, token)
+}
+
+var _ IRemoteInputConnection = (*remoteInputConnectionStubWrapper)(nil)
+
+// NewRemoteInputConnectionStub creates a server-side IRemoteInputConnection wrapping the given
+// server implementation. The returned value satisfies IRemoteInputConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteInputConnectionStub(
+	impl IRemoteInputConnectionServer,
+) IRemoteInputConnection {
+	wrapper := &remoteInputConnectionStubWrapper{impl: impl}
+	stub := &RemoteInputConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

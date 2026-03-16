@@ -196,7 +196,7 @@ func (p *AidlNodeProxy) SetInputSurface(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAidlNode)
-	_data.WriteStrongBinder(bufferSource.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, bufferSource.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAidlNode, "setInputSurface")
 	if _err != nil {
@@ -442,4 +442,102 @@ func (s *AidlNodeStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAidlNodeServer is the server-side interface that user implementations
+// provide to NewAidlNodeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAidlNodeServer interface {
+	FreeNode(ctx context.Context) error
+	GetConsumerUsage(ctx context.Context) (int64, error)
+	GetInputBufferParams(ctx context.Context) (mediaIAidlNode.InputBufferParams, error)
+	SetConsumerUsage(ctx context.Context, usage int64) error
+	SetAdjustTimestampGapUs(ctx context.Context, gapUs int32) error
+	SetInputSurface(ctx context.Context, bufferSource IAidlBufferSource) error
+	SubmitBuffer(ctx context.Context, buffer int32, hBuffer *interface{}, flags int32, timestampUs int64, fence *int32) error
+	OnDataSpaceChanged(ctx context.Context, dataSpace int32, aspects int32, pixelFormat int32) error
+}
+
+type aidlNodeStubWrapper struct {
+	impl       IAidlNodeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aidlNodeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aidlNodeStubWrapper) FreeNode(
+	ctx context.Context,
+) error {
+	return w.impl.FreeNode(ctx)
+}
+
+func (w *aidlNodeStubWrapper) GetConsumerUsage(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetConsumerUsage(ctx)
+}
+
+func (w *aidlNodeStubWrapper) GetInputBufferParams(
+	ctx context.Context,
+) (mediaIAidlNode.InputBufferParams, error) {
+	return w.impl.GetInputBufferParams(ctx)
+}
+
+func (w *aidlNodeStubWrapper) SetConsumerUsage(
+	ctx context.Context,
+	usage int64,
+) error {
+	return w.impl.SetConsumerUsage(ctx, usage)
+}
+
+func (w *aidlNodeStubWrapper) SetAdjustTimestampGapUs(
+	ctx context.Context,
+	gapUs int32,
+) error {
+	return w.impl.SetAdjustTimestampGapUs(ctx, gapUs)
+}
+
+func (w *aidlNodeStubWrapper) SetInputSurface(
+	ctx context.Context,
+	bufferSource IAidlBufferSource,
+) error {
+	return w.impl.SetInputSurface(ctx, bufferSource)
+}
+
+func (w *aidlNodeStubWrapper) SubmitBuffer(
+	ctx context.Context,
+	buffer int32,
+	hBuffer *interface{},
+	flags int32,
+	timestampUs int64,
+	fence *int32,
+) error {
+	return w.impl.SubmitBuffer(ctx, buffer, hBuffer, flags, timestampUs, fence)
+}
+
+func (w *aidlNodeStubWrapper) OnDataSpaceChanged(
+	ctx context.Context,
+	dataSpace int32,
+	aspects int32,
+	pixelFormat int32,
+) error {
+	return w.impl.OnDataSpaceChanged(ctx, dataSpace, aspects, pixelFormat)
+}
+
+var _ IAidlNode = (*aidlNodeStubWrapper)(nil)
+
+// NewAidlNodeStub creates a server-side IAidlNode wrapping the given
+// server implementation. The returned value satisfies IAidlNode
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAidlNodeStub(
+	impl IAidlNodeServer,
+) IAidlNode {
+	wrapper := &aidlNodeStubWrapper{impl: impl}
+	stub := &AidlNodeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -142,3 +142,51 @@ func (s *MusicRecognitionServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMusicRecognitionServiceCallbackServer is the server-side interface that user implementations
+// provide to NewMusicRecognitionServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMusicRecognitionServiceCallbackServer interface {
+	OnRecognitionSucceeded(ctx context.Context, result media.MediaMetadata, extras os.Bundle) error
+	OnRecognitionFailed(ctx context.Context, failureCode int32) error
+}
+
+type musicRecognitionServiceCallbackStubWrapper struct {
+	impl       IMusicRecognitionServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *musicRecognitionServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *musicRecognitionServiceCallbackStubWrapper) OnRecognitionSucceeded(
+	ctx context.Context,
+	result media.MediaMetadata,
+	extras os.Bundle,
+) error {
+	return w.impl.OnRecognitionSucceeded(ctx, result, extras)
+}
+
+func (w *musicRecognitionServiceCallbackStubWrapper) OnRecognitionFailed(
+	ctx context.Context,
+	failureCode int32,
+) error {
+	return w.impl.OnRecognitionFailed(ctx, failureCode)
+}
+
+var _ IMusicRecognitionServiceCallback = (*musicRecognitionServiceCallbackStubWrapper)(nil)
+
+// NewMusicRecognitionServiceCallbackStub creates a server-side IMusicRecognitionServiceCallback wrapping the given
+// server implementation. The returned value satisfies IMusicRecognitionServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMusicRecognitionServiceCallbackStub(
+	impl IMusicRecognitionServiceCallbackServer,
+) IMusicRecognitionServiceCallback {
+	wrapper := &musicRecognitionServiceCallbackStubWrapper{impl: impl}
+	stub := &MusicRecognitionServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

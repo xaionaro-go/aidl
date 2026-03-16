@@ -3,7 +3,6 @@ package voice
 import (
 	"context"
 	"fmt"
-	media "github.com/xaionaro-go/binder/android/media"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -20,7 +19,7 @@ const (
 
 type IMicrophoneHotwordDetectionVoiceInteractionCallback interface {
 	AsBinder() binder.IBinder
-	OnDetected(ctx context.Context, hotwordDetectedResult HotwordDetectedResult, audioFormat media.AudioFormat, audioStream int32) error
+	OnDetected(ctx context.Context, hotwordDetectedResult HotwordDetectedResult, audioFormat interface{}, audioStream int32) error
 	OnHotwordDetectionServiceFailure(ctx context.Context, hotwordDetectionServiceFailure HotwordDetectionServiceFailure) error
 	OnRejected(ctx context.Context, hotwordRejectedResult HotwordRejectedResult) error
 }
@@ -44,17 +43,13 @@ var _ IMicrophoneHotwordDetectionVoiceInteractionCallback = (*MicrophoneHotwordD
 func (p *MicrophoneHotwordDetectionVoiceInteractionCallbackProxy) OnDetected(
 	ctx context.Context,
 	hotwordDetectedResult HotwordDetectedResult,
-	audioFormat media.AudioFormat,
+	audioFormat interface{},
 	audioStream int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMicrophoneHotwordDetectionVoiceInteractionCallback)
 	_data.WriteInt32(1)
 	if _err := hotwordDetectedResult.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := audioFormat.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteFileDescriptor(audioStream)
@@ -138,18 +133,7 @@ func (s *MicrophoneHotwordDetectionVoiceInteractionCallbackStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_audioFormat media.AudioFormat
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_audioFormat.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_audioFormat interface{}
 		_arg_audioStream, _err := _data.ReadFileDescriptor()
 		if _err != nil {
 			return nil, _err
@@ -198,4 +182,61 @@ func (s *MicrophoneHotwordDetectionVoiceInteractionCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMicrophoneHotwordDetectionVoiceInteractionCallbackServer is the server-side interface that user implementations
+// provide to NewMicrophoneHotwordDetectionVoiceInteractionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMicrophoneHotwordDetectionVoiceInteractionCallbackServer interface {
+	OnDetected(ctx context.Context, hotwordDetectedResult HotwordDetectedResult, audioFormat interface{}, audioStream int32) error
+	OnHotwordDetectionServiceFailure(ctx context.Context, hotwordDetectionServiceFailure HotwordDetectionServiceFailure) error
+	OnRejected(ctx context.Context, hotwordRejectedResult HotwordRejectedResult) error
+}
+
+type microphoneHotwordDetectionVoiceInteractionCallbackStubWrapper struct {
+	impl       IMicrophoneHotwordDetectionVoiceInteractionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *microphoneHotwordDetectionVoiceInteractionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *microphoneHotwordDetectionVoiceInteractionCallbackStubWrapper) OnDetected(
+	ctx context.Context,
+	hotwordDetectedResult HotwordDetectedResult,
+	audioFormat interface{},
+	audioStream int32,
+) error {
+	return w.impl.OnDetected(ctx, hotwordDetectedResult, audioFormat, audioStream)
+}
+
+func (w *microphoneHotwordDetectionVoiceInteractionCallbackStubWrapper) OnHotwordDetectionServiceFailure(
+	ctx context.Context,
+	hotwordDetectionServiceFailure HotwordDetectionServiceFailure,
+) error {
+	return w.impl.OnHotwordDetectionServiceFailure(ctx, hotwordDetectionServiceFailure)
+}
+
+func (w *microphoneHotwordDetectionVoiceInteractionCallbackStubWrapper) OnRejected(
+	ctx context.Context,
+	hotwordRejectedResult HotwordRejectedResult,
+) error {
+	return w.impl.OnRejected(ctx, hotwordRejectedResult)
+}
+
+var _ IMicrophoneHotwordDetectionVoiceInteractionCallback = (*microphoneHotwordDetectionVoiceInteractionCallbackStubWrapper)(nil)
+
+// NewMicrophoneHotwordDetectionVoiceInteractionCallbackStub creates a server-side IMicrophoneHotwordDetectionVoiceInteractionCallback wrapping the given
+// server implementation. The returned value satisfies IMicrophoneHotwordDetectionVoiceInteractionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMicrophoneHotwordDetectionVoiceInteractionCallbackStub(
+	impl IMicrophoneHotwordDetectionVoiceInteractionCallbackServer,
+) IMicrophoneHotwordDetectionVoiceInteractionCallback {
+	wrapper := &microphoneHotwordDetectionVoiceInteractionCallbackStubWrapper{impl: impl}
+	stub := &MicrophoneHotwordDetectionVoiceInteractionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

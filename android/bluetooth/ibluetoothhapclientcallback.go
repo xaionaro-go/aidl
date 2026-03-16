@@ -332,3 +332,90 @@ func (s *BluetoothHapClientCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothHapClientCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothHapClientCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothHapClientCallbackServer interface {
+	OnPresetSelected(ctx context.Context, device BluetoothDevice, presetIndex int32, reasonCode int32) error
+	OnPresetSelectionFailed(ctx context.Context, device BluetoothDevice, statusCode int32) error
+	OnPresetSelectionForGroupFailed(ctx context.Context, hapGroupId int32, statusCode int32) error
+	OnPresetInfoChanged(ctx context.Context, device BluetoothDevice, presetInfoList []BluetoothHapPresetInfo, statusCode int32) error
+	OnSetPresetNameFailed(ctx context.Context, device BluetoothDevice, status int32) error
+	OnSetPresetNameForGroupFailed(ctx context.Context, hapGroupId int32, status int32) error
+}
+
+type bluetoothHapClientCallbackStubWrapper struct {
+	impl       IBluetoothHapClientCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothHapClientCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothHapClientCallbackStubWrapper) OnPresetSelected(
+	ctx context.Context,
+	device BluetoothDevice,
+	presetIndex int32,
+	reasonCode int32,
+) error {
+	return w.impl.OnPresetSelected(ctx, device, presetIndex, reasonCode)
+}
+
+func (w *bluetoothHapClientCallbackStubWrapper) OnPresetSelectionFailed(
+	ctx context.Context,
+	device BluetoothDevice,
+	statusCode int32,
+) error {
+	return w.impl.OnPresetSelectionFailed(ctx, device, statusCode)
+}
+
+func (w *bluetoothHapClientCallbackStubWrapper) OnPresetSelectionForGroupFailed(
+	ctx context.Context,
+	hapGroupId int32,
+	statusCode int32,
+) error {
+	return w.impl.OnPresetSelectionForGroupFailed(ctx, hapGroupId, statusCode)
+}
+
+func (w *bluetoothHapClientCallbackStubWrapper) OnPresetInfoChanged(
+	ctx context.Context,
+	device BluetoothDevice,
+	presetInfoList []BluetoothHapPresetInfo,
+	statusCode int32,
+) error {
+	return w.impl.OnPresetInfoChanged(ctx, device, presetInfoList, statusCode)
+}
+
+func (w *bluetoothHapClientCallbackStubWrapper) OnSetPresetNameFailed(
+	ctx context.Context,
+	device BluetoothDevice,
+	status int32,
+) error {
+	return w.impl.OnSetPresetNameFailed(ctx, device, status)
+}
+
+func (w *bluetoothHapClientCallbackStubWrapper) OnSetPresetNameForGroupFailed(
+	ctx context.Context,
+	hapGroupId int32,
+	status int32,
+) error {
+	return w.impl.OnSetPresetNameForGroupFailed(ctx, hapGroupId, status)
+}
+
+var _ IBluetoothHapClientCallback = (*bluetoothHapClientCallbackStubWrapper)(nil)
+
+// NewBluetoothHapClientCallbackStub creates a server-side IBluetoothHapClientCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothHapClientCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothHapClientCallbackStub(
+	impl IBluetoothHapClientCallbackServer,
+) IBluetoothHapClientCallback {
+	wrapper := &bluetoothHapClientCallbackStubWrapper{impl: impl}
+	stub := &BluetoothHapClientCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

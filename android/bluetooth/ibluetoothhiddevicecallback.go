@@ -515,3 +515,101 @@ func (s *BluetoothHidDeviceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothHidDeviceCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothHidDeviceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothHidDeviceCallbackServer interface {
+	OnAppStatusChanged(ctx context.Context, device BluetoothDevice, registered bool) error
+	OnConnectionStateChanged(ctx context.Context, device BluetoothDevice, state int32) error
+	OnGetReport(ctx context.Context, device BluetoothDevice, type_ byte, id byte, bufferSize int32) error
+	OnSetReport(ctx context.Context, device BluetoothDevice, type_ byte, id byte, data []byte) error
+	OnSetProtocol(ctx context.Context, device BluetoothDevice, protocol byte) error
+	OnInterruptData(ctx context.Context, device BluetoothDevice, reportId byte, data []byte) error
+	OnVirtualCableUnplug(ctx context.Context, device BluetoothDevice) error
+}
+
+type bluetoothHidDeviceCallbackStubWrapper struct {
+	impl       IBluetoothHidDeviceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothHidDeviceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothHidDeviceCallbackStubWrapper) OnAppStatusChanged(
+	ctx context.Context,
+	device BluetoothDevice,
+	registered bool,
+) error {
+	return w.impl.OnAppStatusChanged(ctx, device, registered)
+}
+
+func (w *bluetoothHidDeviceCallbackStubWrapper) OnConnectionStateChanged(
+	ctx context.Context,
+	device BluetoothDevice,
+	state int32,
+) error {
+	return w.impl.OnConnectionStateChanged(ctx, device, state)
+}
+
+func (w *bluetoothHidDeviceCallbackStubWrapper) OnGetReport(
+	ctx context.Context,
+	device BluetoothDevice,
+	type_ byte,
+	id byte,
+	bufferSize int32,
+) error {
+	return w.impl.OnGetReport(ctx, device, type_, id, bufferSize)
+}
+
+func (w *bluetoothHidDeviceCallbackStubWrapper) OnSetReport(
+	ctx context.Context,
+	device BluetoothDevice,
+	type_ byte,
+	id byte,
+	data []byte,
+) error {
+	return w.impl.OnSetReport(ctx, device, type_, id, data)
+}
+
+func (w *bluetoothHidDeviceCallbackStubWrapper) OnSetProtocol(
+	ctx context.Context,
+	device BluetoothDevice,
+	protocol byte,
+) error {
+	return w.impl.OnSetProtocol(ctx, device, protocol)
+}
+
+func (w *bluetoothHidDeviceCallbackStubWrapper) OnInterruptData(
+	ctx context.Context,
+	device BluetoothDevice,
+	reportId byte,
+	data []byte,
+) error {
+	return w.impl.OnInterruptData(ctx, device, reportId, data)
+}
+
+func (w *bluetoothHidDeviceCallbackStubWrapper) OnVirtualCableUnplug(
+	ctx context.Context,
+	device BluetoothDevice,
+) error {
+	return w.impl.OnVirtualCableUnplug(ctx, device)
+}
+
+var _ IBluetoothHidDeviceCallback = (*bluetoothHidDeviceCallbackStubWrapper)(nil)
+
+// NewBluetoothHidDeviceCallbackStub creates a server-side IBluetoothHidDeviceCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothHidDeviceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothHidDeviceCallbackStub(
+	impl IBluetoothHidDeviceCallbackServer,
+) IBluetoothHidDeviceCallback {
+	wrapper := &bluetoothHidDeviceCallbackStubWrapper{impl: impl}
+	stub := &BluetoothHidDeviceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

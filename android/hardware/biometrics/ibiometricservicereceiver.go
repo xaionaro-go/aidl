@@ -244,3 +244,84 @@ func (s *BiometricServiceReceiverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBiometricServiceReceiverServer is the server-side interface that user implementations
+// provide to NewBiometricServiceReceiverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBiometricServiceReceiverServer interface {
+	OnAuthenticationSucceeded(ctx context.Context, authenticationType int32) error
+	OnAuthenticationFailed(ctx context.Context) error
+	OnError(ctx context.Context, modality int32, error_ int32, vendorCode int32) error
+	OnAcquired(ctx context.Context, acquiredInfo int32, message string) error
+	OnDialogDismissed(ctx context.Context, reason int32) error
+	OnSystemEvent(ctx context.Context, event int32) error
+}
+
+type biometricServiceReceiverStubWrapper struct {
+	impl       IBiometricServiceReceiverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *biometricServiceReceiverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *biometricServiceReceiverStubWrapper) OnAuthenticationSucceeded(
+	ctx context.Context,
+	authenticationType int32,
+) error {
+	return w.impl.OnAuthenticationSucceeded(ctx, authenticationType)
+}
+
+func (w *biometricServiceReceiverStubWrapper) OnAuthenticationFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnAuthenticationFailed(ctx)
+}
+
+func (w *biometricServiceReceiverStubWrapper) OnError(
+	ctx context.Context,
+	modality int32,
+	error_ int32,
+	vendorCode int32,
+) error {
+	return w.impl.OnError(ctx, modality, error_, vendorCode)
+}
+
+func (w *biometricServiceReceiverStubWrapper) OnAcquired(
+	ctx context.Context,
+	acquiredInfo int32,
+	message string,
+) error {
+	return w.impl.OnAcquired(ctx, acquiredInfo, message)
+}
+
+func (w *biometricServiceReceiverStubWrapper) OnDialogDismissed(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnDialogDismissed(ctx, reason)
+}
+
+func (w *biometricServiceReceiverStubWrapper) OnSystemEvent(
+	ctx context.Context,
+	event int32,
+) error {
+	return w.impl.OnSystemEvent(ctx, event)
+}
+
+var _ IBiometricServiceReceiver = (*biometricServiceReceiverStubWrapper)(nil)
+
+// NewBiometricServiceReceiverStub creates a server-side IBiometricServiceReceiver wrapping the given
+// server implementation. The returned value satisfies IBiometricServiceReceiver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBiometricServiceReceiverStub(
+	impl IBiometricServiceReceiverServer,
+) IBiometricServiceReceiver {
+	wrapper := &biometricServiceReceiverStubWrapper{impl: impl}
+	stub := &BiometricServiceReceiverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

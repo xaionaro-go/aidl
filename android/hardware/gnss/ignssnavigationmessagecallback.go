@@ -108,3 +108,42 @@ func (s *GnssNavigationMessageCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssNavigationMessageCallbackServer is the server-side interface that user implementations
+// provide to NewGnssNavigationMessageCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssNavigationMessageCallbackServer interface {
+	GnssNavigationMessageCb(ctx context.Context, message gnssIGnssNavigationMessageCallback.GnssNavigationMessage) error
+}
+
+type gnssNavigationMessageCallbackStubWrapper struct {
+	impl       IGnssNavigationMessageCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssNavigationMessageCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssNavigationMessageCallbackStubWrapper) GnssNavigationMessageCb(
+	ctx context.Context,
+	message gnssIGnssNavigationMessageCallback.GnssNavigationMessage,
+) error {
+	return w.impl.GnssNavigationMessageCb(ctx, message)
+}
+
+var _ IGnssNavigationMessageCallback = (*gnssNavigationMessageCallbackStubWrapper)(nil)
+
+// NewGnssNavigationMessageCallbackStub creates a server-side IGnssNavigationMessageCallback wrapping the given
+// server implementation. The returned value satisfies IGnssNavigationMessageCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssNavigationMessageCallbackStub(
+	impl IGnssNavigationMessageCallbackServer,
+) IGnssNavigationMessageCallback {
+	wrapper := &gnssNavigationMessageCallbackStubWrapper{impl: impl}
+	stub := &GnssNavigationMessageCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

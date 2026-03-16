@@ -89,7 +89,7 @@ func (p *DeviceStateManagerProxy) RegisterCallback(
 	var _result DeviceStateInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceStateManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceStateManager, "registerCallback")
 	if _err != nil {
@@ -126,7 +126,7 @@ func (p *DeviceStateManagerProxy) RequestState(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceStateManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(state)
 	_data.WriteInt32(flags)
 
@@ -180,7 +180,7 @@ func (p *DeviceStateManagerProxy) RequestBaseStateOverride(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceStateManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(state)
 	_data.WriteInt32(flags)
 
@@ -390,4 +390,92 @@ func (s *DeviceStateManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDeviceStateManagerServer is the server-side interface that user implementations
+// provide to NewDeviceStateManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceStateManagerServer interface {
+	GetDeviceStateInfo(ctx context.Context) (DeviceStateInfo, error)
+	RegisterCallback(ctx context.Context, callback IDeviceStateManagerCallback) (DeviceStateInfo, error)
+	RequestState(ctx context.Context, token binder.IBinder, state int32, flags int32) error
+	CancelStateRequest(ctx context.Context) error
+	RequestBaseStateOverride(ctx context.Context, token binder.IBinder, state int32, flags int32) error
+	CancelBaseStateOverride(ctx context.Context) error
+	OnStateRequestOverlayDismissed(ctx context.Context, shouldCancelRequest bool) error
+}
+
+type deviceStateManagerStubWrapper struct {
+	impl       IDeviceStateManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceStateManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceStateManagerStubWrapper) GetDeviceStateInfo(
+	ctx context.Context,
+) (DeviceStateInfo, error) {
+	return w.impl.GetDeviceStateInfo(ctx)
+}
+
+func (w *deviceStateManagerStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IDeviceStateManagerCallback,
+) (DeviceStateInfo, error) {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *deviceStateManagerStubWrapper) RequestState(
+	ctx context.Context,
+	token binder.IBinder,
+	state int32,
+	flags int32,
+) error {
+	return w.impl.RequestState(ctx, token, state, flags)
+}
+
+func (w *deviceStateManagerStubWrapper) CancelStateRequest(
+	ctx context.Context,
+) error {
+	return w.impl.CancelStateRequest(ctx)
+}
+
+func (w *deviceStateManagerStubWrapper) RequestBaseStateOverride(
+	ctx context.Context,
+	token binder.IBinder,
+	state int32,
+	flags int32,
+) error {
+	return w.impl.RequestBaseStateOverride(ctx, token, state, flags)
+}
+
+func (w *deviceStateManagerStubWrapper) CancelBaseStateOverride(
+	ctx context.Context,
+) error {
+	return w.impl.CancelBaseStateOverride(ctx)
+}
+
+func (w *deviceStateManagerStubWrapper) OnStateRequestOverlayDismissed(
+	ctx context.Context,
+	shouldCancelRequest bool,
+) error {
+	return w.impl.OnStateRequestOverlayDismissed(ctx, shouldCancelRequest)
+}
+
+var _ IDeviceStateManager = (*deviceStateManagerStubWrapper)(nil)
+
+// NewDeviceStateManagerStub creates a server-side IDeviceStateManager wrapping the given
+// server implementation. The returned value satisfies IDeviceStateManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceStateManagerStub(
+	impl IDeviceStateManagerServer,
+) IDeviceStateManager {
+	wrapper := &deviceStateManagerStubWrapper{impl: impl}
+	stub := &DeviceStateManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

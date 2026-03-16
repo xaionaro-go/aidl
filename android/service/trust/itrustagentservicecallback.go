@@ -135,7 +135,7 @@ func (p *TrustAgentServiceCallbackProxy) OnConfigureCompleted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustAgentServiceCallback)
 	_data.WriteBool(result)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustAgentServiceCallback, "onConfigureCompleted")
 	if _err != nil {
@@ -404,4 +404,118 @@ func (s *TrustAgentServiceCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITrustAgentServiceCallbackServer is the server-side interface that user implementations
+// provide to NewTrustAgentServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITrustAgentServiceCallbackServer interface {
+	GrantTrust(ctx context.Context, message interface{}, durationMs int64, flags int32, resultCallback infra.AndroidFuture) error
+	RevokeTrust(ctx context.Context) error
+	LockUser(ctx context.Context) error
+	SetManagingTrust(ctx context.Context, managingTrust bool) error
+	OnConfigureCompleted(ctx context.Context, result bool, token binder.IBinder) error
+	AddEscrowToken(ctx context.Context, token []byte) error
+	IsEscrowTokenActive(ctx context.Context, handle int64) error
+	RemoveEscrowToken(ctx context.Context, handle int64) error
+	UnlockUserWithToken(ctx context.Context, handle int64, token []byte) error
+	ShowKeyguardErrorMessage(ctx context.Context, message interface{}) error
+}
+
+type trustAgentServiceCallbackStubWrapper struct {
+	impl       ITrustAgentServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) GrantTrust(
+	ctx context.Context,
+	message interface{},
+	durationMs int64,
+	flags int32,
+	resultCallback infra.AndroidFuture,
+) error {
+	return w.impl.GrantTrust(ctx, message, durationMs, flags, resultCallback)
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) RevokeTrust(
+	ctx context.Context,
+) error {
+	return w.impl.RevokeTrust(ctx)
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) LockUser(
+	ctx context.Context,
+) error {
+	return w.impl.LockUser(ctx)
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) SetManagingTrust(
+	ctx context.Context,
+	managingTrust bool,
+) error {
+	return w.impl.SetManagingTrust(ctx, managingTrust)
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) OnConfigureCompleted(
+	ctx context.Context,
+	result bool,
+	token binder.IBinder,
+) error {
+	return w.impl.OnConfigureCompleted(ctx, result, token)
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) AddEscrowToken(
+	ctx context.Context,
+	token []byte,
+) error {
+	return w.impl.AddEscrowToken(ctx, token)
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) IsEscrowTokenActive(
+	ctx context.Context,
+	handle int64,
+) error {
+	return w.impl.IsEscrowTokenActive(ctx, handle)
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) RemoveEscrowToken(
+	ctx context.Context,
+	handle int64,
+) error {
+	return w.impl.RemoveEscrowToken(ctx, handle)
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) UnlockUserWithToken(
+	ctx context.Context,
+	handle int64,
+	token []byte,
+) error {
+	return w.impl.UnlockUserWithToken(ctx, handle, token)
+}
+
+func (w *trustAgentServiceCallbackStubWrapper) ShowKeyguardErrorMessage(
+	ctx context.Context,
+	message interface{},
+) error {
+	return w.impl.ShowKeyguardErrorMessage(ctx, message)
+}
+
+var _ ITrustAgentServiceCallback = (*trustAgentServiceCallbackStubWrapper)(nil)
+
+// NewTrustAgentServiceCallbackStub creates a server-side ITrustAgentServiceCallback wrapping the given
+// server implementation. The returned value satisfies ITrustAgentServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTrustAgentServiceCallbackStub(
+	impl ITrustAgentServiceCallbackServer,
+) ITrustAgentServiceCallback {
+	wrapper := &trustAgentServiceCallbackStubWrapper{impl: impl}
+	stub := &TrustAgentServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

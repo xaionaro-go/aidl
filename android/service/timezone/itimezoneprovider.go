@@ -46,7 +46,7 @@ func (p *TimeZoneProviderProxy) StartUpdates(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITimeZoneProvider)
-	_data.WriteStrongBinder(manager.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, manager.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(initializationTimeoutMillis)
 	_data.WriteInt64(eventFilteringAgeThresholdMillis)
 
@@ -116,4 +116,52 @@ func (s *TimeZoneProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITimeZoneProviderServer is the server-side interface that user implementations
+// provide to NewTimeZoneProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITimeZoneProviderServer interface {
+	StartUpdates(ctx context.Context, manager ITimeZoneProviderManager, initializationTimeoutMillis int64, eventFilteringAgeThresholdMillis int64) error
+	StopUpdates(ctx context.Context) error
+}
+
+type timeZoneProviderStubWrapper struct {
+	impl       ITimeZoneProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *timeZoneProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *timeZoneProviderStubWrapper) StartUpdates(
+	ctx context.Context,
+	manager ITimeZoneProviderManager,
+	initializationTimeoutMillis int64,
+	eventFilteringAgeThresholdMillis int64,
+) error {
+	return w.impl.StartUpdates(ctx, manager, initializationTimeoutMillis, eventFilteringAgeThresholdMillis)
+}
+
+func (w *timeZoneProviderStubWrapper) StopUpdates(
+	ctx context.Context,
+) error {
+	return w.impl.StopUpdates(ctx)
+}
+
+var _ ITimeZoneProvider = (*timeZoneProviderStubWrapper)(nil)
+
+// NewTimeZoneProviderStub creates a server-side ITimeZoneProvider wrapping the given
+// server implementation. The returned value satisfies ITimeZoneProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTimeZoneProviderStub(
+	impl ITimeZoneProviderServer,
+) ITimeZoneProvider {
+	wrapper := &timeZoneProviderStubWrapper{impl: impl}
+	stub := &TimeZoneProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

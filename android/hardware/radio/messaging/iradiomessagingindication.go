@@ -329,3 +329,95 @@ func (s *RadioMessagingIndicationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioMessagingIndicationServer is the server-side interface that user implementations
+// provide to NewRadioMessagingIndicationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioMessagingIndicationServer interface {
+	CdmaNewSms(ctx context.Context, type_ radio.RadioIndicationType, msg CdmaSmsMessage) error
+	CdmaRuimSmsStorageFull(ctx context.Context, type_ radio.RadioIndicationType) error
+	NewBroadcastSms(ctx context.Context, type_ radio.RadioIndicationType, data []byte) error
+	NewSms(ctx context.Context, type_ radio.RadioIndicationType, pdu []byte) error
+	NewSmsOnSim(ctx context.Context, type_ radio.RadioIndicationType, recordNumber int32) error
+	NewSmsStatusReport(ctx context.Context, type_ radio.RadioIndicationType, pdu []byte) error
+	SimSmsStorageFull(ctx context.Context, type_ radio.RadioIndicationType) error
+}
+
+type radioMessagingIndicationStubWrapper struct {
+	impl       IRadioMessagingIndicationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioMessagingIndicationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioMessagingIndicationStubWrapper) CdmaNewSms(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	msg CdmaSmsMessage,
+) error {
+	return w.impl.CdmaNewSms(ctx, type_, msg)
+}
+
+func (w *radioMessagingIndicationStubWrapper) CdmaRuimSmsStorageFull(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.CdmaRuimSmsStorageFull(ctx, type_)
+}
+
+func (w *radioMessagingIndicationStubWrapper) NewBroadcastSms(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	data []byte,
+) error {
+	return w.impl.NewBroadcastSms(ctx, type_, data)
+}
+
+func (w *radioMessagingIndicationStubWrapper) NewSms(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	pdu []byte,
+) error {
+	return w.impl.NewSms(ctx, type_, pdu)
+}
+
+func (w *radioMessagingIndicationStubWrapper) NewSmsOnSim(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	recordNumber int32,
+) error {
+	return w.impl.NewSmsOnSim(ctx, type_, recordNumber)
+}
+
+func (w *radioMessagingIndicationStubWrapper) NewSmsStatusReport(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	pdu []byte,
+) error {
+	return w.impl.NewSmsStatusReport(ctx, type_, pdu)
+}
+
+func (w *radioMessagingIndicationStubWrapper) SimSmsStorageFull(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.SimSmsStorageFull(ctx, type_)
+}
+
+var _ IRadioMessagingIndication = (*radioMessagingIndicationStubWrapper)(nil)
+
+// NewRadioMessagingIndicationStub creates a server-side IRadioMessagingIndication wrapping the given
+// server implementation. The returned value satisfies IRadioMessagingIndication
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioMessagingIndicationStub(
+	impl IRadioMessagingIndicationServer,
+) IRadioMessagingIndication {
+	wrapper := &radioMessagingIndicationStubWrapper{impl: impl}
+	stub := &RadioMessagingIndicationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

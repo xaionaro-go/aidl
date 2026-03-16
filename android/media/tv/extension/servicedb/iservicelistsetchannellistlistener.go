@@ -82,3 +82,42 @@ func (s *ServiceListSetChannelListListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IServiceListSetChannelListListenerServer is the server-side interface that user implementations
+// provide to NewServiceListSetChannelListListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListSetChannelListListenerServer interface {
+	OnCompleted(ctx context.Context, setChannelListResult int32) error
+}
+
+type serviceListSetChannelListListenerStubWrapper struct {
+	impl       IServiceListSetChannelListListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListSetChannelListListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListSetChannelListListenerStubWrapper) OnCompleted(
+	ctx context.Context,
+	setChannelListResult int32,
+) error {
+	return w.impl.OnCompleted(ctx, setChannelListResult)
+}
+
+var _ IServiceListSetChannelListListener = (*serviceListSetChannelListListenerStubWrapper)(nil)
+
+// NewServiceListSetChannelListListenerStub creates a server-side IServiceListSetChannelListListener wrapping the given
+// server implementation. The returned value satisfies IServiceListSetChannelListListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListSetChannelListListenerStub(
+	impl IServiceListSetChannelListListenerServer,
+) IServiceListSetChannelListListener {
+	wrapper := &serviceListSetChannelListListenerStubWrapper{impl: impl}
+	stub := &ServiceListSetChannelListListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

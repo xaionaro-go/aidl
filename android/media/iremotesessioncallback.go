@@ -141,3 +141,51 @@ func (s *RemoteSessionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoteSessionCallbackServer is the server-side interface that user implementations
+// provide to NewRemoteSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteSessionCallbackServer interface {
+	OnVolumeChanged(ctx context.Context, sessionToken session.MediaSessionToken, flags int32) error
+	OnSessionChanged(ctx context.Context, sessionToken session.MediaSessionToken) error
+}
+
+type remoteSessionCallbackStubWrapper struct {
+	impl       IRemoteSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteSessionCallbackStubWrapper) OnVolumeChanged(
+	ctx context.Context,
+	sessionToken session.MediaSessionToken,
+	flags int32,
+) error {
+	return w.impl.OnVolumeChanged(ctx, sessionToken, flags)
+}
+
+func (w *remoteSessionCallbackStubWrapper) OnSessionChanged(
+	ctx context.Context,
+	sessionToken session.MediaSessionToken,
+) error {
+	return w.impl.OnSessionChanged(ctx, sessionToken)
+}
+
+var _ IRemoteSessionCallback = (*remoteSessionCallbackStubWrapper)(nil)
+
+// NewRemoteSessionCallbackStub creates a server-side IRemoteSessionCallback wrapping the given
+// server implementation. The returned value satisfies IRemoteSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteSessionCallbackStub(
+	impl IRemoteSessionCallbackServer,
+) IRemoteSessionCallback {
+	wrapper := &remoteSessionCallbackStubWrapper{impl: impl}
+	stub := &RemoteSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

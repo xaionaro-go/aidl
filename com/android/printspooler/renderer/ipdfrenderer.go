@@ -192,3 +192,61 @@ func (s *PdfRendererStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPdfRendererServer is the server-side interface that user implementations
+// provide to NewPdfRendererStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPdfRendererServer interface {
+	OpenDocument(ctx context.Context, source int32) (int32, error)
+	RenderPage(ctx context.Context, pageIndex int32, bitmapWidth int32, bitmapHeight int32, attributes print.PrintAttributes, destination int32) error
+	CloseDocument(ctx context.Context) error
+}
+
+type pdfRendererStubWrapper struct {
+	impl       IPdfRendererServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pdfRendererStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pdfRendererStubWrapper) OpenDocument(
+	ctx context.Context,
+	source int32,
+) (int32, error) {
+	return w.impl.OpenDocument(ctx, source)
+}
+
+func (w *pdfRendererStubWrapper) RenderPage(
+	ctx context.Context,
+	pageIndex int32,
+	bitmapWidth int32,
+	bitmapHeight int32,
+	attributes print.PrintAttributes,
+	destination int32,
+) error {
+	return w.impl.RenderPage(ctx, pageIndex, bitmapWidth, bitmapHeight, attributes, destination)
+}
+
+func (w *pdfRendererStubWrapper) CloseDocument(
+	ctx context.Context,
+) error {
+	return w.impl.CloseDocument(ctx)
+}
+
+var _ IPdfRenderer = (*pdfRendererStubWrapper)(nil)
+
+// NewPdfRendererStub creates a server-side IPdfRenderer wrapping the given
+// server implementation. The returned value satisfies IPdfRenderer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPdfRendererStub(
+	impl IPdfRendererServer,
+) IPdfRenderer {
+	wrapper := &pdfRendererStubWrapper{impl: impl}
+	stub := &PdfRendererStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -87,3 +87,42 @@ func (s *BiometricEnabledOnKeyguardCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBiometricEnabledOnKeyguardCallbackServer is the server-side interface that user implementations
+// provide to NewBiometricEnabledOnKeyguardCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBiometricEnabledOnKeyguardCallbackServer interface {
+	OnChanged(ctx context.Context, enabled bool) error
+}
+
+type biometricEnabledOnKeyguardCallbackStubWrapper struct {
+	impl       IBiometricEnabledOnKeyguardCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *biometricEnabledOnKeyguardCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *biometricEnabledOnKeyguardCallbackStubWrapper) OnChanged(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.OnChanged(ctx, enabled)
+}
+
+var _ IBiometricEnabledOnKeyguardCallback = (*biometricEnabledOnKeyguardCallbackStubWrapper)(nil)
+
+// NewBiometricEnabledOnKeyguardCallbackStub creates a server-side IBiometricEnabledOnKeyguardCallback wrapping the given
+// server implementation. The returned value satisfies IBiometricEnabledOnKeyguardCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBiometricEnabledOnKeyguardCallbackStub(
+	impl IBiometricEnabledOnKeyguardCallbackServer,
+) IBiometricEnabledOnKeyguardCallback {
+	wrapper := &biometricEnabledOnKeyguardCallbackStubWrapper{impl: impl}
+	stub := &BiometricEnabledOnKeyguardCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

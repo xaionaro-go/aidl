@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type IUnsafeIntentStrictModeCallback interface {
 	AsBinder() binder.IBinder
-	OnUnsafeIntent(ctx context.Context, type_ int32, intent content.Intent) error
+	OnUnsafeIntent(ctx context.Context, type_ int32, intent interface{}) error
 }
 
 type UnsafeIntentStrictModeCallbackProxy struct {
@@ -40,15 +39,11 @@ var _ IUnsafeIntentStrictModeCallback = (*UnsafeIntentStrictModeCallbackProxy)(n
 func (p *UnsafeIntentStrictModeCallbackProxy) OnUnsafeIntent(
 	ctx context.Context,
 	type_ int32,
-	intent content.Intent,
+	intent interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUnsafeIntentStrictModeCallback)
 	_data.WriteInt32(type_)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUnsafeIntentStrictModeCallback, "onUnsafeIntent")
 	if _err != nil {
@@ -81,22 +76,51 @@ func (s *UnsafeIntentStrictModeCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_err = s.Impl.OnUnsafeIntent(ctx, _arg_type_, _arg_intent)
 		_ = _err
 		return nil, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUnsafeIntentStrictModeCallbackServer is the server-side interface that user implementations
+// provide to NewUnsafeIntentStrictModeCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUnsafeIntentStrictModeCallbackServer interface {
+	OnUnsafeIntent(ctx context.Context, type_ int32, intent interface{}) error
+}
+
+type unsafeIntentStrictModeCallbackStubWrapper struct {
+	impl       IUnsafeIntentStrictModeCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *unsafeIntentStrictModeCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *unsafeIntentStrictModeCallbackStubWrapper) OnUnsafeIntent(
+	ctx context.Context,
+	type_ int32,
+	intent interface{},
+) error {
+	return w.impl.OnUnsafeIntent(ctx, type_, intent)
+}
+
+var _ IUnsafeIntentStrictModeCallback = (*unsafeIntentStrictModeCallbackStubWrapper)(nil)
+
+// NewUnsafeIntentStrictModeCallbackStub creates a server-side IUnsafeIntentStrictModeCallback wrapping the given
+// server implementation. The returned value satisfies IUnsafeIntentStrictModeCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUnsafeIntentStrictModeCallbackStub(
+	impl IUnsafeIntentStrictModeCallbackServer,
+) IUnsafeIntentStrictModeCallback {
+	wrapper := &unsafeIntentStrictModeCallbackStubWrapper{impl: impl}
+	stub := &UnsafeIntentStrictModeCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

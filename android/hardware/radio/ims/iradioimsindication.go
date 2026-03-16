@@ -196,3 +196,64 @@ func (s *RadioImsIndicationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioImsIndicationServer is the server-side interface that user implementations
+// provide to NewRadioImsIndicationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioImsIndicationServer interface {
+	OnConnectionSetupFailure(ctx context.Context, type_ radio.RadioIndicationType, token int32, info ConnectionFailureInfo) error
+	NotifyAnbr(ctx context.Context, type_ radio.RadioIndicationType, mediaType ImsStreamType, direction ImsStreamDirection, bitsPerSecond int32) error
+	TriggerImsDeregistration(ctx context.Context, type_ radio.RadioIndicationType, reason ImsDeregistrationReason) error
+}
+
+type radioImsIndicationStubWrapper struct {
+	impl       IRadioImsIndicationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioImsIndicationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioImsIndicationStubWrapper) OnConnectionSetupFailure(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	token int32,
+	info ConnectionFailureInfo,
+) error {
+	return w.impl.OnConnectionSetupFailure(ctx, type_, token, info)
+}
+
+func (w *radioImsIndicationStubWrapper) NotifyAnbr(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	mediaType ImsStreamType,
+	direction ImsStreamDirection,
+	bitsPerSecond int32,
+) error {
+	return w.impl.NotifyAnbr(ctx, type_, mediaType, direction, bitsPerSecond)
+}
+
+func (w *radioImsIndicationStubWrapper) TriggerImsDeregistration(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	reason ImsDeregistrationReason,
+) error {
+	return w.impl.TriggerImsDeregistration(ctx, type_, reason)
+}
+
+var _ IRadioImsIndication = (*radioImsIndicationStubWrapper)(nil)
+
+// NewRadioImsIndicationStub creates a server-side IRadioImsIndication wrapping the given
+// server implementation. The returned value satisfies IRadioImsIndication
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioImsIndicationStub(
+	impl IRadioImsIndicationServer,
+) IRadioImsIndication {
+	wrapper := &radioImsIndicationStubWrapper{impl: impl}
+	stub := &RadioImsIndicationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

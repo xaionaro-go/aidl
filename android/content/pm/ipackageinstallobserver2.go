@@ -3,7 +3,6 @@ package pm
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -19,7 +18,7 @@ const (
 
 type IPackageInstallObserver2 interface {
 	AsBinder() binder.IBinder
-	OnUserActionRequired(ctx context.Context, intent content.Intent) error
+	OnUserActionRequired(ctx context.Context, intent interface{}) error
 	OnPackageInstalled(ctx context.Context, basePackageName string, returnCode int32, msg string, extras interface{}) error
 }
 
@@ -41,14 +40,10 @@ var _ IPackageInstallObserver2 = (*PackageInstallObserver2Proxy)(nil)
 
 func (p *PackageInstallObserver2Proxy) OnUserActionRequired(
 	ctx context.Context,
-	intent content.Intent,
+	intent interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstallObserver2)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstallObserver2, "onUserActionRequired")
 	if _err != nil {
@@ -99,18 +94,7 @@ func (s *PackageInstallObserver2Stub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_err := s.Impl.OnUserActionRequired(ctx, _arg_intent)
 		_ = _err
 		return nil, nil
@@ -137,4 +121,54 @@ func (s *PackageInstallObserver2Stub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPackageInstallObserver2Server is the server-side interface that user implementations
+// provide to NewPackageInstallObserver2Stub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageInstallObserver2Server interface {
+	OnUserActionRequired(ctx context.Context, intent interface{}) error
+	OnPackageInstalled(ctx context.Context, basePackageName string, returnCode int32, msg string, extras interface{}) error
+}
+
+type packageInstallObserver2StubWrapper struct {
+	impl       IPackageInstallObserver2Server
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageInstallObserver2StubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageInstallObserver2StubWrapper) OnUserActionRequired(
+	ctx context.Context,
+	intent interface{},
+) error {
+	return w.impl.OnUserActionRequired(ctx, intent)
+}
+
+func (w *packageInstallObserver2StubWrapper) OnPackageInstalled(
+	ctx context.Context,
+	basePackageName string,
+	returnCode int32,
+	msg string,
+	extras interface{},
+) error {
+	return w.impl.OnPackageInstalled(ctx, basePackageName, returnCode, msg, extras)
+}
+
+var _ IPackageInstallObserver2 = (*packageInstallObserver2StubWrapper)(nil)
+
+// NewPackageInstallObserver2Stub creates a server-side IPackageInstallObserver2 wrapping the given
+// server implementation. The returned value satisfies IPackageInstallObserver2
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageInstallObserver2Stub(
+	impl IPackageInstallObserver2Server,
+) IPackageInstallObserver2 {
+	wrapper := &packageInstallObserver2StubWrapper{impl: impl}
+	stub := &PackageInstallObserver2Stub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -82,3 +82,42 @@ func (s *KeyChainAliasCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyChainAliasCallbackServer is the server-side interface that user implementations
+// provide to NewKeyChainAliasCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyChainAliasCallbackServer interface {
+	Alias(ctx context.Context, alias string) error
+}
+
+type keyChainAliasCallbackStubWrapper struct {
+	impl       IKeyChainAliasCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyChainAliasCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyChainAliasCallbackStubWrapper) Alias(
+	ctx context.Context,
+	alias string,
+) error {
+	return w.impl.Alias(ctx, alias)
+}
+
+var _ IKeyChainAliasCallback = (*keyChainAliasCallbackStubWrapper)(nil)
+
+// NewKeyChainAliasCallbackStub creates a server-side IKeyChainAliasCallback wrapping the given
+// server implementation. The returned value satisfies IKeyChainAliasCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyChainAliasCallbackStub(
+	impl IKeyChainAliasCallbackServer,
+) IKeyChainAliasCallback {
+	wrapper := &keyChainAliasCallbackStubWrapper{impl: impl}
+	stub := &KeyChainAliasCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

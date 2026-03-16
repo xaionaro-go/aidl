@@ -66,7 +66,7 @@ func (p *VideoProviderProxy) AddVideoCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVideoProvider)
-	_data.WriteStrongBinder(videoCallbackBinder.Handle())
+	binder.WriteBinderToParcel(ctx, _data, videoCallbackBinder, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVideoProvider, "addVideoCallback")
 	if _err != nil {
@@ -83,7 +83,7 @@ func (p *VideoProviderProxy) RemoveVideoCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVideoProvider)
-	_data.WriteStrongBinder(videoCallbackBinder.Handle())
+	binder.WriteBinderToParcel(ctx, _data, videoCallbackBinder, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVideoProvider, "removeVideoCallback")
 	if _err != nil {
@@ -453,4 +453,132 @@ func (s *VideoProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVideoProviderServer is the server-side interface that user implementations
+// provide to NewVideoProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVideoProviderServer interface {
+	AddVideoCallback(ctx context.Context, videoCallbackBinder binder.IBinder) error
+	RemoveVideoCallback(ctx context.Context, videoCallbackBinder binder.IBinder) error
+	SetCamera(ctx context.Context, cameraId string, mCallingPackageName string, targetSdkVersion int32) error
+	SetPreviewSurface(ctx context.Context, surface interface{}) error
+	SetDisplaySurface(ctx context.Context, surface interface{}) error
+	SetDeviceOrientation(ctx context.Context, rotation int32) error
+	SetZoom(ctx context.Context, value float32) error
+	SendSessionModifyRequest(ctx context.Context, fromProfile androidTelecom.VideoProfile, toProfile androidTelecom.VideoProfile) error
+	SendSessionModifyResponse(ctx context.Context, responseProfile androidTelecom.VideoProfile) error
+	RequestCameraCapabilities(ctx context.Context) error
+	RequestCallDataUsage(ctx context.Context) error
+	SetPauseImage(ctx context.Context, uri net.Uri) error
+}
+
+type videoProviderStubWrapper struct {
+	impl       IVideoProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *videoProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *videoProviderStubWrapper) AddVideoCallback(
+	ctx context.Context,
+	videoCallbackBinder binder.IBinder,
+) error {
+	return w.impl.AddVideoCallback(ctx, videoCallbackBinder)
+}
+
+func (w *videoProviderStubWrapper) RemoveVideoCallback(
+	ctx context.Context,
+	videoCallbackBinder binder.IBinder,
+) error {
+	return w.impl.RemoveVideoCallback(ctx, videoCallbackBinder)
+}
+
+func (w *videoProviderStubWrapper) SetCamera(
+	ctx context.Context,
+	cameraId string,
+	mCallingPackageName string,
+	targetSdkVersion int32,
+) error {
+	return w.impl.SetCamera(ctx, cameraId, mCallingPackageName, targetSdkVersion)
+}
+
+func (w *videoProviderStubWrapper) SetPreviewSurface(
+	ctx context.Context,
+	surface interface{},
+) error {
+	return w.impl.SetPreviewSurface(ctx, surface)
+}
+
+func (w *videoProviderStubWrapper) SetDisplaySurface(
+	ctx context.Context,
+	surface interface{},
+) error {
+	return w.impl.SetDisplaySurface(ctx, surface)
+}
+
+func (w *videoProviderStubWrapper) SetDeviceOrientation(
+	ctx context.Context,
+	rotation int32,
+) error {
+	return w.impl.SetDeviceOrientation(ctx, rotation)
+}
+
+func (w *videoProviderStubWrapper) SetZoom(
+	ctx context.Context,
+	value float32,
+) error {
+	return w.impl.SetZoom(ctx, value)
+}
+
+func (w *videoProviderStubWrapper) SendSessionModifyRequest(
+	ctx context.Context,
+	fromProfile androidTelecom.VideoProfile,
+	toProfile androidTelecom.VideoProfile,
+) error {
+	return w.impl.SendSessionModifyRequest(ctx, fromProfile, toProfile)
+}
+
+func (w *videoProviderStubWrapper) SendSessionModifyResponse(
+	ctx context.Context,
+	responseProfile androidTelecom.VideoProfile,
+) error {
+	return w.impl.SendSessionModifyResponse(ctx, responseProfile)
+}
+
+func (w *videoProviderStubWrapper) RequestCameraCapabilities(
+	ctx context.Context,
+) error {
+	return w.impl.RequestCameraCapabilities(ctx)
+}
+
+func (w *videoProviderStubWrapper) RequestCallDataUsage(
+	ctx context.Context,
+) error {
+	return w.impl.RequestCallDataUsage(ctx)
+}
+
+func (w *videoProviderStubWrapper) SetPauseImage(
+	ctx context.Context,
+	uri net.Uri,
+) error {
+	return w.impl.SetPauseImage(ctx, uri)
+}
+
+var _ IVideoProvider = (*videoProviderStubWrapper)(nil)
+
+// NewVideoProviderStub creates a server-side IVideoProvider wrapping the given
+// server implementation. The returned value satisfies IVideoProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVideoProviderStub(
+	impl IVideoProviderServer,
+) IVideoProvider {
+	wrapper := &videoProviderStubWrapper{impl: impl}
+	stub := &VideoProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

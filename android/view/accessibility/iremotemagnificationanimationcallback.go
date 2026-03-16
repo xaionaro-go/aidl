@@ -82,3 +82,42 @@ func (s *RemoteMagnificationAnimationCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoteMagnificationAnimationCallbackServer is the server-side interface that user implementations
+// provide to NewRemoteMagnificationAnimationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteMagnificationAnimationCallbackServer interface {
+	OnResult(ctx context.Context, success bool) error
+}
+
+type remoteMagnificationAnimationCallbackStubWrapper struct {
+	impl       IRemoteMagnificationAnimationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteMagnificationAnimationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteMagnificationAnimationCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	success bool,
+) error {
+	return w.impl.OnResult(ctx, success)
+}
+
+var _ IRemoteMagnificationAnimationCallback = (*remoteMagnificationAnimationCallbackStubWrapper)(nil)
+
+// NewRemoteMagnificationAnimationCallbackStub creates a server-side IRemoteMagnificationAnimationCallback wrapping the given
+// server implementation. The returned value satisfies IRemoteMagnificationAnimationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteMagnificationAnimationCallbackStub(
+	impl IRemoteMagnificationAnimationCallbackServer,
+) IRemoteMagnificationAnimationCallback {
+	wrapper := &remoteMagnificationAnimationCallbackStubWrapper{impl: impl}
+	stub := &RemoteMagnificationAnimationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

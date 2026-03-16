@@ -208,3 +208,73 @@ func (s *RcsConfigCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRcsConfigCallbackServer is the server-side interface that user implementations
+// provide to NewRcsConfigCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRcsConfigCallbackServer interface {
+	OnConfigurationChanged(ctx context.Context, config []byte) error
+	OnAutoConfigurationErrorReceived(ctx context.Context, errorCode int32, errorString string) error
+	OnConfigurationReset(ctx context.Context) error
+	OnRemoved(ctx context.Context) error
+	OnPreProvisioningReceived(ctx context.Context, config []byte) error
+}
+
+type rcsConfigCallbackStubWrapper struct {
+	impl       IRcsConfigCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *rcsConfigCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *rcsConfigCallbackStubWrapper) OnConfigurationChanged(
+	ctx context.Context,
+	config []byte,
+) error {
+	return w.impl.OnConfigurationChanged(ctx, config)
+}
+
+func (w *rcsConfigCallbackStubWrapper) OnAutoConfigurationErrorReceived(
+	ctx context.Context,
+	errorCode int32,
+	errorString string,
+) error {
+	return w.impl.OnAutoConfigurationErrorReceived(ctx, errorCode, errorString)
+}
+
+func (w *rcsConfigCallbackStubWrapper) OnConfigurationReset(
+	ctx context.Context,
+) error {
+	return w.impl.OnConfigurationReset(ctx)
+}
+
+func (w *rcsConfigCallbackStubWrapper) OnRemoved(
+	ctx context.Context,
+) error {
+	return w.impl.OnRemoved(ctx)
+}
+
+func (w *rcsConfigCallbackStubWrapper) OnPreProvisioningReceived(
+	ctx context.Context,
+	config []byte,
+) error {
+	return w.impl.OnPreProvisioningReceived(ctx, config)
+}
+
+var _ IRcsConfigCallback = (*rcsConfigCallbackStubWrapper)(nil)
+
+// NewRcsConfigCallbackStub creates a server-side IRcsConfigCallback wrapping the given
+// server implementation. The returned value satisfies IRcsConfigCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRcsConfigCallbackStub(
+	impl IRcsConfigCallbackServer,
+) IRcsConfigCallback {
+	wrapper := &rcsConfigCallbackStubWrapper{impl: impl}
+	stub := &RcsConfigCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

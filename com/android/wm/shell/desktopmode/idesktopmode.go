@@ -222,7 +222,7 @@ func (p *DesktopModeProxy) SetTaskListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDesktopMode)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDesktopMode, "setTaskListener")
 	if _err != nil {
@@ -528,4 +528,119 @@ func (s *DesktopModeStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDesktopModeServer is the server-side interface that user implementations
+// provide to NewDesktopModeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDesktopModeServer interface {
+	ShowDesktopApps(ctx context.Context, displayId int32, remoteTransition window.RemoteTransition) error
+	StashDesktopApps(ctx context.Context, displayId int32) error
+	HideStashedDesktopApps(ctx context.Context, displayId int32) error
+	ShowDesktopApp(ctx context.Context, taskId int32, remoteTransition *window.RemoteTransition) error
+	GetVisibleTaskCount(ctx context.Context, displayId int32) (int32, error)
+	OnDesktopSplitSelectAnimComplete(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo) error
+	SetTaskListener(ctx context.Context, listener IDesktopTaskListener) error
+	MoveToDesktop(ctx context.Context, taskId int32, transitionSource sharedDesktopmode.DesktopModeTransitionSource, remoteTransition *window.RemoteTransition) error
+	RemoveDesktop(ctx context.Context, displayId int32) error
+	MoveToExternalDisplay(ctx context.Context, taskId int32) error
+}
+
+type desktopModeStubWrapper struct {
+	impl       IDesktopModeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *desktopModeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *desktopModeStubWrapper) ShowDesktopApps(
+	ctx context.Context,
+	displayId int32,
+	remoteTransition window.RemoteTransition,
+) error {
+	return w.impl.ShowDesktopApps(ctx, displayId, remoteTransition)
+}
+
+func (w *desktopModeStubWrapper) StashDesktopApps(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.StashDesktopApps(ctx, displayId)
+}
+
+func (w *desktopModeStubWrapper) HideStashedDesktopApps(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.HideStashedDesktopApps(ctx, displayId)
+}
+
+func (w *desktopModeStubWrapper) ShowDesktopApp(
+	ctx context.Context,
+	taskId int32,
+	remoteTransition *window.RemoteTransition,
+) error {
+	return w.impl.ShowDesktopApp(ctx, taskId, remoteTransition)
+}
+
+func (w *desktopModeStubWrapper) GetVisibleTaskCount(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetVisibleTaskCount(ctx, displayId)
+}
+
+func (w *desktopModeStubWrapper) OnDesktopSplitSelectAnimComplete(
+	ctx context.Context,
+	taskInfo app.ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnDesktopSplitSelectAnimComplete(ctx, taskInfo)
+}
+
+func (w *desktopModeStubWrapper) SetTaskListener(
+	ctx context.Context,
+	listener IDesktopTaskListener,
+) error {
+	return w.impl.SetTaskListener(ctx, listener)
+}
+
+func (w *desktopModeStubWrapper) MoveToDesktop(
+	ctx context.Context,
+	taskId int32,
+	transitionSource sharedDesktopmode.DesktopModeTransitionSource,
+	remoteTransition *window.RemoteTransition,
+) error {
+	return w.impl.MoveToDesktop(ctx, taskId, transitionSource, remoteTransition)
+}
+
+func (w *desktopModeStubWrapper) RemoveDesktop(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.RemoveDesktop(ctx, displayId)
+}
+
+func (w *desktopModeStubWrapper) MoveToExternalDisplay(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.MoveToExternalDisplay(ctx, taskId)
+}
+
+var _ IDesktopMode = (*desktopModeStubWrapper)(nil)
+
+// NewDesktopModeStub creates a server-side IDesktopMode wrapping the given
+// server implementation. The returned value satisfies IDesktopMode
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDesktopModeStub(
+	impl IDesktopModeServer,
+) IDesktopMode {
+	wrapper := &desktopModeStubWrapper{impl: impl}
+	stub := &DesktopModeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

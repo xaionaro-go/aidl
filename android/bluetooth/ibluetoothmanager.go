@@ -3,7 +3,6 @@ package bluetooth
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -37,16 +36,16 @@ type IBluetoothManager interface {
 	AsBinder() binder.IBinder
 	RegisterAdapter(ctx context.Context, callback IBluetoothManagerCallback) (binder.IBinder, error)
 	UnregisterAdapter(ctx context.Context, callback IBluetoothManagerCallback) error
-	Enable(ctx context.Context, attributionSource content.AttributionSource) (bool, error)
-	EnableNoAutoConnect(ctx context.Context, attributionSource content.AttributionSource) (bool, error)
-	Disable(ctx context.Context, attributionSource content.AttributionSource, persist bool) (bool, error)
+	Enable(ctx context.Context, attributionSource interface{}) (bool, error)
+	EnableNoAutoConnect(ctx context.Context, attributionSource interface{}) (bool, error)
+	Disable(ctx context.Context, attributionSource interface{}, persist bool) (bool, error)
 	GetState(ctx context.Context) (int32, error)
-	GetAddress(ctx context.Context, attributionSource content.AttributionSource) (string, error)
-	GetName(ctx context.Context, attributionSource content.AttributionSource) (string, error)
-	OnFactoryReset(ctx context.Context, attributionSource content.AttributionSource) (bool, error)
+	GetAddress(ctx context.Context, attributionSource interface{}) (string, error)
+	GetName(ctx context.Context, attributionSource interface{}) (string, error)
+	OnFactoryReset(ctx context.Context, attributionSource interface{}) (bool, error)
 	IsBleScanAvailable(ctx context.Context) (bool, error)
-	EnableBle(ctx context.Context, attributionSource content.AttributionSource, b binder.IBinder) (bool, error)
-	DisableBle(ctx context.Context, attributionSource content.AttributionSource, b binder.IBinder) (bool, error)
+	EnableBle(ctx context.Context, attributionSource interface{}, b binder.IBinder) (bool, error)
+	DisableBle(ctx context.Context, attributionSource interface{}, b binder.IBinder) (bool, error)
 	IsHearingAidProfileSupported(ctx context.Context) (bool, error)
 	SetBtHciSnoopLogMode(ctx context.Context, mode int32) (int32, error)
 	GetBtHciSnoopLogMode(ctx context.Context) (int32, error)
@@ -83,7 +82,7 @@ func (p *BluetoothManagerProxy) RegisterAdapter(
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "registerAdapter")
 	if _err != nil {
@@ -114,7 +113,7 @@ func (p *BluetoothManagerProxy) UnregisterAdapter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "unregisterAdapter")
 	if _err != nil {
@@ -136,15 +135,11 @@ func (p *BluetoothManagerProxy) UnregisterAdapter(
 
 func (p *BluetoothManagerProxy) Enable(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "enable")
 	if _err != nil {
@@ -170,15 +165,11 @@ func (p *BluetoothManagerProxy) Enable(
 
 func (p *BluetoothManagerProxy) EnableNoAutoConnect(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "enableNoAutoConnect")
 	if _err != nil {
@@ -204,16 +195,12 @@ func (p *BluetoothManagerProxy) EnableNoAutoConnect(
 
 func (p *BluetoothManagerProxy) Disable(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 	persist bool,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteBool(persist)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "disable")
@@ -269,15 +256,11 @@ func (p *BluetoothManagerProxy) GetState(
 
 func (p *BluetoothManagerProxy) GetAddress(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (string, error) {
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "getAddress")
 	if _err != nil {
@@ -303,15 +286,11 @@ func (p *BluetoothManagerProxy) GetAddress(
 
 func (p *BluetoothManagerProxy) GetName(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (string, error) {
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "getName")
 	if _err != nil {
@@ -337,15 +316,11 @@ func (p *BluetoothManagerProxy) GetName(
 
 func (p *BluetoothManagerProxy) OnFactoryReset(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "onFactoryReset")
 	if _err != nil {
@@ -400,17 +375,13 @@ func (p *BluetoothManagerProxy) IsBleScanAvailable(
 
 func (p *BluetoothManagerProxy) EnableBle(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 	b binder.IBinder,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteStrongBinder(b.Handle())
+	binder.WriteBinderToParcel(ctx, _data, b, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "enableBle")
 	if _err != nil {
@@ -436,17 +407,13 @@ func (p *BluetoothManagerProxy) EnableBle(
 
 func (p *BluetoothManagerProxy) DisableBle(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 	b binder.IBinder,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteStrongBinder(b.Handle())
+	binder.WriteBinderToParcel(ctx, _data, b, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManager, "disableBle")
 	if _err != nil {
@@ -693,18 +660,7 @@ func (s *BluetoothManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.Enable(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -718,18 +674,7 @@ func (s *BluetoothManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.EnableNoAutoConnect(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -743,18 +688,7 @@ func (s *BluetoothManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_arg_persist, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -785,18 +719,7 @@ func (s *BluetoothManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetAddress(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -810,18 +733,7 @@ func (s *BluetoothManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetName(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -835,18 +747,7 @@ func (s *BluetoothManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.OnFactoryReset(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -873,18 +774,7 @@ func (s *BluetoothManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_b binder.IBinder
 		_ = _arg_b
@@ -901,18 +791,7 @@ func (s *BluetoothManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_b binder.IBinder
 		_ = _arg_b
@@ -1013,4 +892,176 @@ func (s *BluetoothManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothManagerServer is the server-side interface that user implementations
+// provide to NewBluetoothManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothManagerServer interface {
+	RegisterAdapter(ctx context.Context, callback IBluetoothManagerCallback) (binder.IBinder, error)
+	UnregisterAdapter(ctx context.Context, callback IBluetoothManagerCallback) error
+	Enable(ctx context.Context, attributionSource interface{}) (bool, error)
+	EnableNoAutoConnect(ctx context.Context, attributionSource interface{}) (bool, error)
+	Disable(ctx context.Context, attributionSource interface{}, persist bool) (bool, error)
+	GetState(ctx context.Context) (int32, error)
+	GetAddress(ctx context.Context, attributionSource interface{}) (string, error)
+	GetName(ctx context.Context, attributionSource interface{}) (string, error)
+	OnFactoryReset(ctx context.Context, attributionSource interface{}) (bool, error)
+	IsBleScanAvailable(ctx context.Context) (bool, error)
+	EnableBle(ctx context.Context, attributionSource interface{}, b binder.IBinder) (bool, error)
+	DisableBle(ctx context.Context, attributionSource interface{}, b binder.IBinder) (bool, error)
+	IsHearingAidProfileSupported(ctx context.Context) (bool, error)
+	SetBtHciSnoopLogMode(ctx context.Context, mode int32) (int32, error)
+	GetBtHciSnoopLogMode(ctx context.Context) (int32, error)
+	IsAutoOnSupported(ctx context.Context) (bool, error)
+	IsAutoOnEnabled(ctx context.Context) (bool, error)
+	SetAutoOnEnabled(ctx context.Context, status bool) error
+}
+
+type bluetoothManagerStubWrapper struct {
+	impl       IBluetoothManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothManagerStubWrapper) RegisterAdapter(
+	ctx context.Context,
+	callback IBluetoothManagerCallback,
+) (binder.IBinder, error) {
+	return w.impl.RegisterAdapter(ctx, callback)
+}
+
+func (w *bluetoothManagerStubWrapper) UnregisterAdapter(
+	ctx context.Context,
+	callback IBluetoothManagerCallback,
+) error {
+	return w.impl.UnregisterAdapter(ctx, callback)
+}
+
+func (w *bluetoothManagerStubWrapper) Enable(
+	ctx context.Context,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.Enable(ctx, attributionSource)
+}
+
+func (w *bluetoothManagerStubWrapper) EnableNoAutoConnect(
+	ctx context.Context,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.EnableNoAutoConnect(ctx, attributionSource)
+}
+
+func (w *bluetoothManagerStubWrapper) Disable(
+	ctx context.Context,
+	attributionSource interface{},
+	persist bool,
+) (bool, error) {
+	return w.impl.Disable(ctx, attributionSource, persist)
+}
+
+func (w *bluetoothManagerStubWrapper) GetState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetState(ctx)
+}
+
+func (w *bluetoothManagerStubWrapper) GetAddress(
+	ctx context.Context,
+	attributionSource interface{},
+) (string, error) {
+	return w.impl.GetAddress(ctx, attributionSource)
+}
+
+func (w *bluetoothManagerStubWrapper) GetName(
+	ctx context.Context,
+	attributionSource interface{},
+) (string, error) {
+	return w.impl.GetName(ctx, attributionSource)
+}
+
+func (w *bluetoothManagerStubWrapper) OnFactoryReset(
+	ctx context.Context,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.OnFactoryReset(ctx, attributionSource)
+}
+
+func (w *bluetoothManagerStubWrapper) IsBleScanAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBleScanAvailable(ctx)
+}
+
+func (w *bluetoothManagerStubWrapper) EnableBle(
+	ctx context.Context,
+	attributionSource interface{},
+	b binder.IBinder,
+) (bool, error) {
+	return w.impl.EnableBle(ctx, attributionSource, b)
+}
+
+func (w *bluetoothManagerStubWrapper) DisableBle(
+	ctx context.Context,
+	attributionSource interface{},
+	b binder.IBinder,
+) (bool, error) {
+	return w.impl.DisableBle(ctx, attributionSource, b)
+}
+
+func (w *bluetoothManagerStubWrapper) IsHearingAidProfileSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHearingAidProfileSupported(ctx)
+}
+
+func (w *bluetoothManagerStubWrapper) SetBtHciSnoopLogMode(
+	ctx context.Context,
+	mode int32,
+) (int32, error) {
+	return w.impl.SetBtHciSnoopLogMode(ctx, mode)
+}
+
+func (w *bluetoothManagerStubWrapper) GetBtHciSnoopLogMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetBtHciSnoopLogMode(ctx)
+}
+
+func (w *bluetoothManagerStubWrapper) IsAutoOnSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAutoOnSupported(ctx)
+}
+
+func (w *bluetoothManagerStubWrapper) IsAutoOnEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAutoOnEnabled(ctx)
+}
+
+func (w *bluetoothManagerStubWrapper) SetAutoOnEnabled(
+	ctx context.Context,
+	status bool,
+) error {
+	return w.impl.SetAutoOnEnabled(ctx, status)
+}
+
+var _ IBluetoothManager = (*bluetoothManagerStubWrapper)(nil)
+
+// NewBluetoothManagerStub creates a server-side IBluetoothManager wrapping the given
+// server implementation. The returned value satisfies IBluetoothManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothManagerStub(
+	impl IBluetoothManagerServer,
+) IBluetoothManager {
+	wrapper := &bluetoothManagerStubWrapper{impl: impl}
+	stub := &BluetoothManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

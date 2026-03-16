@@ -256,3 +256,72 @@ func (s *OMXBufferSourceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOMXBufferSourceServer is the server-side interface that user implementations
+// provide to NewOMXBufferSourceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOMXBufferSourceServer interface {
+	OnOmxExecuting(ctx context.Context) error
+	OnOmxIdle(ctx context.Context) error
+	OnOmxLoaded(ctx context.Context) error
+	OnInputBufferAdded(ctx context.Context, bufferID int32) error
+	OnInputBufferEmptied(ctx context.Context, bufferID int32, fenceParcel interface{}) error
+}
+
+type oMXBufferSourceStubWrapper struct {
+	impl       IOMXBufferSourceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *oMXBufferSourceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *oMXBufferSourceStubWrapper) OnOmxExecuting(
+	ctx context.Context,
+) error {
+	return w.impl.OnOmxExecuting(ctx)
+}
+
+func (w *oMXBufferSourceStubWrapper) OnOmxIdle(
+	ctx context.Context,
+) error {
+	return w.impl.OnOmxIdle(ctx)
+}
+
+func (w *oMXBufferSourceStubWrapper) OnOmxLoaded(
+	ctx context.Context,
+) error {
+	return w.impl.OnOmxLoaded(ctx)
+}
+
+func (w *oMXBufferSourceStubWrapper) OnInputBufferAdded(
+	ctx context.Context,
+	bufferID int32,
+) error {
+	return w.impl.OnInputBufferAdded(ctx, bufferID)
+}
+
+func (w *oMXBufferSourceStubWrapper) OnInputBufferEmptied(
+	ctx context.Context,
+	bufferID int32,
+	fenceParcel interface{},
+) error {
+	return w.impl.OnInputBufferEmptied(ctx, bufferID, fenceParcel)
+}
+
+var _ IOMXBufferSource = (*oMXBufferSourceStubWrapper)(nil)
+
+// NewOMXBufferSourceStub creates a server-side IOMXBufferSource wrapping the given
+// server implementation. The returned value satisfies IOMXBufferSource
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOMXBufferSourceStub(
+	impl IOMXBufferSourceServer,
+) IOMXBufferSource {
+	wrapper := &oMXBufferSourceStubWrapper{impl: impl}
+	stub := &OMXBufferSourceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

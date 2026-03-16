@@ -188,7 +188,7 @@ func (p *GeofenceHardwareProxy) AddCircularFence(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "addCircularFence")
 	if _err != nil {
@@ -322,7 +322,7 @@ func (p *GeofenceHardwareProxy) RegisterForMonitorStateChangeCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGeofenceHardware)
 	_data.WriteInt32(monitoringType)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "registerForMonitorStateChangeCallback")
 	if _err != nil {
@@ -355,7 +355,7 @@ func (p *GeofenceHardwareProxy) UnregisterForMonitorStateChangeCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGeofenceHardware)
 	_data.WriteInt32(monitoringType)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceHardware, "unregisterForMonitorStateChangeCallback")
 	if _err != nil {
@@ -592,4 +592,122 @@ func (s *GeofenceHardwareStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGeofenceHardwareServer is the server-side interface that user implementations
+// provide to NewGeofenceHardwareStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGeofenceHardwareServer interface {
+	SetGpsGeofenceHardware(ctx context.Context, service interface{}) error
+	SetFusedGeofenceHardware(ctx context.Context, service interface{}) error
+	GetMonitoringTypes(ctx context.Context) ([]int32, error)
+	GetStatusOfMonitoringType(ctx context.Context, monitoringType int32) (int32, error)
+	AddCircularFence(ctx context.Context, monitoringType int32, request GeofenceHardwareRequestParcelable, callback IGeofenceHardwareCallback) (bool, error)
+	RemoveGeofence(ctx context.Context, id int32, monitoringType int32) (bool, error)
+	PauseGeofence(ctx context.Context, id int32, monitoringType int32) (bool, error)
+	ResumeGeofence(ctx context.Context, id int32, monitoringType int32, monitorTransitions int32) (bool, error)
+	RegisterForMonitorStateChangeCallback(ctx context.Context, monitoringType int32, callback IGeofenceHardwareMonitorCallback) (bool, error)
+	UnregisterForMonitorStateChangeCallback(ctx context.Context, monitoringType int32, callback IGeofenceHardwareMonitorCallback) (bool, error)
+}
+
+type geofenceHardwareStubWrapper struct {
+	impl       IGeofenceHardwareServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *geofenceHardwareStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *geofenceHardwareStubWrapper) SetGpsGeofenceHardware(
+	ctx context.Context,
+	service interface{},
+) error {
+	return w.impl.SetGpsGeofenceHardware(ctx, service)
+}
+
+func (w *geofenceHardwareStubWrapper) SetFusedGeofenceHardware(
+	ctx context.Context,
+	service interface{},
+) error {
+	return w.impl.SetFusedGeofenceHardware(ctx, service)
+}
+
+func (w *geofenceHardwareStubWrapper) GetMonitoringTypes(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetMonitoringTypes(ctx)
+}
+
+func (w *geofenceHardwareStubWrapper) GetStatusOfMonitoringType(
+	ctx context.Context,
+	monitoringType int32,
+) (int32, error) {
+	return w.impl.GetStatusOfMonitoringType(ctx, monitoringType)
+}
+
+func (w *geofenceHardwareStubWrapper) AddCircularFence(
+	ctx context.Context,
+	monitoringType int32,
+	request GeofenceHardwareRequestParcelable,
+	callback IGeofenceHardwareCallback,
+) (bool, error) {
+	return w.impl.AddCircularFence(ctx, monitoringType, request, callback)
+}
+
+func (w *geofenceHardwareStubWrapper) RemoveGeofence(
+	ctx context.Context,
+	id int32,
+	monitoringType int32,
+) (bool, error) {
+	return w.impl.RemoveGeofence(ctx, id, monitoringType)
+}
+
+func (w *geofenceHardwareStubWrapper) PauseGeofence(
+	ctx context.Context,
+	id int32,
+	monitoringType int32,
+) (bool, error) {
+	return w.impl.PauseGeofence(ctx, id, monitoringType)
+}
+
+func (w *geofenceHardwareStubWrapper) ResumeGeofence(
+	ctx context.Context,
+	id int32,
+	monitoringType int32,
+	monitorTransitions int32,
+) (bool, error) {
+	return w.impl.ResumeGeofence(ctx, id, monitoringType, monitorTransitions)
+}
+
+func (w *geofenceHardwareStubWrapper) RegisterForMonitorStateChangeCallback(
+	ctx context.Context,
+	monitoringType int32,
+	callback IGeofenceHardwareMonitorCallback,
+) (bool, error) {
+	return w.impl.RegisterForMonitorStateChangeCallback(ctx, monitoringType, callback)
+}
+
+func (w *geofenceHardwareStubWrapper) UnregisterForMonitorStateChangeCallback(
+	ctx context.Context,
+	monitoringType int32,
+	callback IGeofenceHardwareMonitorCallback,
+) (bool, error) {
+	return w.impl.UnregisterForMonitorStateChangeCallback(ctx, monitoringType, callback)
+}
+
+var _ IGeofenceHardware = (*geofenceHardwareStubWrapper)(nil)
+
+// NewGeofenceHardwareStub creates a server-side IGeofenceHardware wrapping the given
+// server implementation. The returned value satisfies IGeofenceHardware
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGeofenceHardwareStub(
+	impl IGeofenceHardwareServer,
+) IGeofenceHardware {
+	wrapper := &geofenceHardwareStubWrapper{impl: impl}
+	stub := &GeofenceHardwareStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

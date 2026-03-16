@@ -107,7 +107,7 @@ func (p *SoundDoseProxy) RegisterSoundDoseCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundDose)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundDose, "registerSoundDoseCallback")
 	if _err != nil {
@@ -188,4 +188,58 @@ func (s *SoundDoseStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISoundDoseServer is the server-side interface that user implementations
+// provide to NewSoundDoseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundDoseServer interface {
+	SetOutputRs2UpperBound(ctx context.Context, rs2ValueDbA float32) error
+	GetOutputRs2UpperBound(ctx context.Context) (float32, error)
+	RegisterSoundDoseCallback(ctx context.Context, callback sounddoseISoundDose.IHalSoundDoseCallback) error
+}
+
+type soundDoseStubWrapper struct {
+	impl       ISoundDoseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundDoseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundDoseStubWrapper) SetOutputRs2UpperBound(
+	ctx context.Context,
+	rs2ValueDbA float32,
+) error {
+	return w.impl.SetOutputRs2UpperBound(ctx, rs2ValueDbA)
+}
+
+func (w *soundDoseStubWrapper) GetOutputRs2UpperBound(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetOutputRs2UpperBound(ctx)
+}
+
+func (w *soundDoseStubWrapper) RegisterSoundDoseCallback(
+	ctx context.Context,
+	callback sounddoseISoundDose.IHalSoundDoseCallback,
+) error {
+	return w.impl.RegisterSoundDoseCallback(ctx, callback)
+}
+
+var _ ISoundDose = (*soundDoseStubWrapper)(nil)
+
+// NewSoundDoseStub creates a server-side ISoundDose wrapping the given
+// server implementation. The returned value satisfies ISoundDose
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundDoseStub(
+	impl ISoundDoseServer,
+) ISoundDose {
+	wrapper := &soundDoseStubWrapper{impl: impl}
+	stub := &SoundDoseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -94,3 +94,42 @@ func (s *FavoriteNetworkListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFavoriteNetworkListenerServer is the server-side interface that user implementations
+// provide to NewFavoriteNetworkListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFavoriteNetworkListenerServer interface {
+	OnDetectFavoriteNetwork(ctx context.Context, detectFavoriteNetworks os.Bundle) error
+}
+
+type favoriteNetworkListenerStubWrapper struct {
+	impl       IFavoriteNetworkListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *favoriteNetworkListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *favoriteNetworkListenerStubWrapper) OnDetectFavoriteNetwork(
+	ctx context.Context,
+	detectFavoriteNetworks os.Bundle,
+) error {
+	return w.impl.OnDetectFavoriteNetwork(ctx, detectFavoriteNetworks)
+}
+
+var _ IFavoriteNetworkListener = (*favoriteNetworkListenerStubWrapper)(nil)
+
+// NewFavoriteNetworkListenerStub creates a server-side IFavoriteNetworkListener wrapping the given
+// server implementation. The returned value satisfies IFavoriteNetworkListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFavoriteNetworkListenerStub(
+	impl IFavoriteNetworkListenerServer,
+) IFavoriteNetworkListener {
+	wrapper := &favoriteNetworkListenerStubWrapper{impl: impl}
+	stub := &FavoriteNetworkListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

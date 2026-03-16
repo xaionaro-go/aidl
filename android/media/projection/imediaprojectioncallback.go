@@ -142,3 +142,58 @@ func (s *MediaProjectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaProjectionCallbackServer is the server-side interface that user implementations
+// provide to NewMediaProjectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaProjectionCallbackServer interface {
+	OnStop(ctx context.Context) error
+	OnCapturedContentResize(ctx context.Context, width int32, height int32) error
+	OnCapturedContentVisibilityChanged(ctx context.Context, isVisible bool) error
+}
+
+type mediaProjectionCallbackStubWrapper struct {
+	impl       IMediaProjectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaProjectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaProjectionCallbackStubWrapper) OnStop(
+	ctx context.Context,
+) error {
+	return w.impl.OnStop(ctx)
+}
+
+func (w *mediaProjectionCallbackStubWrapper) OnCapturedContentResize(
+	ctx context.Context,
+	width int32,
+	height int32,
+) error {
+	return w.impl.OnCapturedContentResize(ctx, width, height)
+}
+
+func (w *mediaProjectionCallbackStubWrapper) OnCapturedContentVisibilityChanged(
+	ctx context.Context,
+	isVisible bool,
+) error {
+	return w.impl.OnCapturedContentVisibilityChanged(ctx, isVisible)
+}
+
+var _ IMediaProjectionCallback = (*mediaProjectionCallbackStubWrapper)(nil)
+
+// NewMediaProjectionCallbackStub creates a server-side IMediaProjectionCallback wrapping the given
+// server implementation. The returned value satisfies IMediaProjectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaProjectionCallbackStub(
+	impl IMediaProjectionCallbackServer,
+) IMediaProjectionCallback {
+	wrapper := &mediaProjectionCallbackStubWrapper{impl: impl}
+	stub := &MediaProjectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

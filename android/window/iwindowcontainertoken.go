@@ -49,3 +49,34 @@ func (s *WindowContainerTokenStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWindowContainerTokenServer is the server-side interface that user implementations
+// provide to NewWindowContainerTokenStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowContainerTokenServer interface {
+}
+
+type windowContainerTokenStubWrapper struct {
+	impl       IWindowContainerTokenServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowContainerTokenStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IWindowContainerToken = (*windowContainerTokenStubWrapper)(nil)
+
+// NewWindowContainerTokenStub creates a server-side IWindowContainerToken wrapping the given
+// server implementation. The returned value satisfies IWindowContainerToken
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowContainerTokenStub(
+	impl IWindowContainerTokenServer,
+) IWindowContainerToken {
+	wrapper := &windowContainerTokenStubWrapper{impl: impl}
+	stub := &WindowContainerTokenStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

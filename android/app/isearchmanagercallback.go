@@ -100,3 +100,48 @@ func (s *SearchManagerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISearchManagerCallbackServer is the server-side interface that user implementations
+// provide to NewSearchManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISearchManagerCallbackServer interface {
+	OnDismiss(ctx context.Context) error
+	OnCancel(ctx context.Context) error
+}
+
+type searchManagerCallbackStubWrapper struct {
+	impl       ISearchManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *searchManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *searchManagerCallbackStubWrapper) OnDismiss(
+	ctx context.Context,
+) error {
+	return w.impl.OnDismiss(ctx)
+}
+
+func (w *searchManagerCallbackStubWrapper) OnCancel(
+	ctx context.Context,
+) error {
+	return w.impl.OnCancel(ctx)
+}
+
+var _ ISearchManagerCallback = (*searchManagerCallbackStubWrapper)(nil)
+
+// NewSearchManagerCallbackStub creates a server-side ISearchManagerCallback wrapping the given
+// server implementation. The returned value satisfies ISearchManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSearchManagerCallbackStub(
+	impl ISearchManagerCallbackServer,
+) ISearchManagerCallback {
+	wrapper := &searchManagerCallbackStubWrapper{impl: impl}
+	stub := &SearchManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

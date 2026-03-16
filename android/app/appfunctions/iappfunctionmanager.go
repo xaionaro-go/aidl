@@ -52,7 +52,7 @@ func (p *AppFunctionManagerProxy) ExecuteAppFunction(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppFunctionManager, "executeAppFunction")
 	if _err != nil {
@@ -94,7 +94,7 @@ func (p *AppFunctionManagerProxy) SetAppFunctionEnabled(
 		return _err
 	}
 	_data.WriteInt32(enabledState)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppFunctionManager, "setAppFunctionEnabled")
 	if _err != nil {
@@ -198,4 +198,55 @@ func (s *AppFunctionManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAppFunctionManagerServer is the server-side interface that user implementations
+// provide to NewAppFunctionManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppFunctionManagerServer interface {
+	ExecuteAppFunction(ctx context.Context, request ExecuteAppFunctionAidlRequest, callback IExecuteAppFunctionCallback) (ondeviceintelligence.ICancellationSignal, error)
+	SetAppFunctionEnabled(ctx context.Context, functionIdentifier string, userHandle os.UserHandle, enabledState int32, callback IAppFunctionEnabledCallback) error
+}
+
+type appFunctionManagerStubWrapper struct {
+	impl       IAppFunctionManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appFunctionManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appFunctionManagerStubWrapper) ExecuteAppFunction(
+	ctx context.Context,
+	request ExecuteAppFunctionAidlRequest,
+	callback IExecuteAppFunctionCallback,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.ExecuteAppFunction(ctx, request, callback)
+}
+
+func (w *appFunctionManagerStubWrapper) SetAppFunctionEnabled(
+	ctx context.Context,
+	functionIdentifier string,
+	userHandle os.UserHandle,
+	enabledState int32,
+	callback IAppFunctionEnabledCallback,
+) error {
+	return w.impl.SetAppFunctionEnabled(ctx, functionIdentifier, userHandle, enabledState, callback)
+}
+
+var _ IAppFunctionManager = (*appFunctionManagerStubWrapper)(nil)
+
+// NewAppFunctionManagerStub creates a server-side IAppFunctionManager wrapping the given
+// server implementation. The returned value satisfies IAppFunctionManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppFunctionManagerStub(
+	impl IAppFunctionManagerServer,
+) IAppFunctionManager {
+	wrapper := &appFunctionManagerStubWrapper{impl: impl}
+	stub := &AppFunctionManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

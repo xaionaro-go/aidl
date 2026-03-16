@@ -112,3 +112,50 @@ func (s *SelectBackupTransportCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISelectBackupTransportCallbackServer is the server-side interface that user implementations
+// provide to NewSelectBackupTransportCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISelectBackupTransportCallbackServer interface {
+	OnSuccess(ctx context.Context, transportName string) error
+	OnFailure(ctx context.Context, reason int32) error
+}
+
+type selectBackupTransportCallbackStubWrapper struct {
+	impl       ISelectBackupTransportCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *selectBackupTransportCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *selectBackupTransportCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	transportName string,
+) error {
+	return w.impl.OnSuccess(ctx, transportName)
+}
+
+func (w *selectBackupTransportCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnFailure(ctx, reason)
+}
+
+var _ ISelectBackupTransportCallback = (*selectBackupTransportCallbackStubWrapper)(nil)
+
+// NewSelectBackupTransportCallbackStub creates a server-side ISelectBackupTransportCallback wrapping the given
+// server implementation. The returned value satisfies ISelectBackupTransportCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSelectBackupTransportCallbackStub(
+	impl ISelectBackupTransportCallbackServer,
+) ISelectBackupTransportCallback {
+	wrapper := &selectBackupTransportCallbackStubWrapper{impl: impl}
+	stub := &SelectBackupTransportCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

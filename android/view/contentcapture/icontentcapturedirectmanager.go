@@ -3,7 +3,7 @@ package contentcapture
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
+	pm "github.com/xaionaro-go/binder/android/content/pm"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +18,7 @@ const (
 
 type IContentCaptureDirectManager interface {
 	AsBinder() binder.IBinder
-	SendEvents(ctx context.Context, events interface{}, reason int32, options content.ContentCaptureOptions) error
+	SendEvents(ctx context.Context, events pm.ParceledListSlice, reason int32, options interface{}) error
 }
 
 type ContentCaptureDirectManagerProxy struct {
@@ -39,17 +39,17 @@ var _ IContentCaptureDirectManager = (*ContentCaptureDirectManagerProxy)(nil)
 
 func (p *ContentCaptureDirectManagerProxy) SendEvents(
 	ctx context.Context,
-	events interface{},
+	events pm.ParceledListSlice,
 	reason int32,
-	options content.ContentCaptureOptions,
+	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureDirectManager)
-	_data.WriteInt32(reason)
 	_data.WriteInt32(1)
-	if _err := options.MarshalParcel(_data); _err != nil {
+	if _err := events.MarshalParcel(_data); _err != nil {
 		return _err
 	}
+	_data.WriteInt32(reason)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureDirectManager, "sendEvents")
 	if _err != nil {
@@ -78,27 +78,68 @@ func (s *ContentCaptureDirectManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_events interface{}
-		_arg_reason, _err := _data.ReadInt32()
-		if _err != nil {
-			return nil, _err
-		}
-		var _arg_options content.ContentCaptureOptions
+		var _arg_events pm.ParceledListSlice
 		{
 			_nullInd, _err := _data.ReadInt32()
 			if _err != nil {
 				return nil, _err
 			}
 			if _nullInd != 0 {
-				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
+				if _err = _arg_events.UnmarshalParcel(_data); _err != nil {
 					return nil, _err
 				}
 			}
 		}
+		_arg_reason, _err := _data.ReadInt32()
+		if _err != nil {
+			return nil, _err
+		}
+		var _arg_options interface{}
 		_err = s.Impl.SendEvents(ctx, _arg_events, _arg_reason, _arg_options)
 		_ = _err
 		return nil, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContentCaptureDirectManagerServer is the server-side interface that user implementations
+// provide to NewContentCaptureDirectManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentCaptureDirectManagerServer interface {
+	SendEvents(ctx context.Context, events pm.ParceledListSlice, reason int32, options interface{}) error
+}
+
+type contentCaptureDirectManagerStubWrapper struct {
+	impl       IContentCaptureDirectManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentCaptureDirectManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentCaptureDirectManagerStubWrapper) SendEvents(
+	ctx context.Context,
+	events pm.ParceledListSlice,
+	reason int32,
+	options interface{},
+) error {
+	return w.impl.SendEvents(ctx, events, reason, options)
+}
+
+var _ IContentCaptureDirectManager = (*contentCaptureDirectManagerStubWrapper)(nil)
+
+// NewContentCaptureDirectManagerStub creates a server-side IContentCaptureDirectManager wrapping the given
+// server implementation. The returned value satisfies IContentCaptureDirectManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentCaptureDirectManagerStub(
+	impl IContentCaptureDirectManagerServer,
+) IContentCaptureDirectManager {
+	wrapper := &contentCaptureDirectManagerStubWrapper{impl: impl}
+	stub := &ContentCaptureDirectManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -279,3 +279,83 @@ func (s *SupplicantStaNetworkCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISupplicantStaNetworkCallbackServer is the server-side interface that user implementations
+// provide to NewSupplicantStaNetworkCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupplicantStaNetworkCallbackServer interface {
+	OnNetworkEapIdentityRequest(ctx context.Context) error
+	OnNetworkEapSimGsmAuthRequest(ctx context.Context, params NetworkRequestEapSimGsmAuthParams) error
+	OnNetworkEapSimUmtsAuthRequest(ctx context.Context, params NetworkRequestEapSimUmtsAuthParams) error
+	OnTransitionDisable(ctx context.Context, ind TransitionDisableIndication) error
+	OnServerCertificateAvailable(ctx context.Context, depth int32, subject []byte, certHash []byte, certBlob []byte) error
+	OnPermanentIdReqDenied(ctx context.Context) error
+}
+
+type supplicantStaNetworkCallbackStubWrapper struct {
+	impl       ISupplicantStaNetworkCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supplicantStaNetworkCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supplicantStaNetworkCallbackStubWrapper) OnNetworkEapIdentityRequest(
+	ctx context.Context,
+) error {
+	return w.impl.OnNetworkEapIdentityRequest(ctx)
+}
+
+func (w *supplicantStaNetworkCallbackStubWrapper) OnNetworkEapSimGsmAuthRequest(
+	ctx context.Context,
+	params NetworkRequestEapSimGsmAuthParams,
+) error {
+	return w.impl.OnNetworkEapSimGsmAuthRequest(ctx, params)
+}
+
+func (w *supplicantStaNetworkCallbackStubWrapper) OnNetworkEapSimUmtsAuthRequest(
+	ctx context.Context,
+	params NetworkRequestEapSimUmtsAuthParams,
+) error {
+	return w.impl.OnNetworkEapSimUmtsAuthRequest(ctx, params)
+}
+
+func (w *supplicantStaNetworkCallbackStubWrapper) OnTransitionDisable(
+	ctx context.Context,
+	ind TransitionDisableIndication,
+) error {
+	return w.impl.OnTransitionDisable(ctx, ind)
+}
+
+func (w *supplicantStaNetworkCallbackStubWrapper) OnServerCertificateAvailable(
+	ctx context.Context,
+	depth int32,
+	subject []byte,
+	certHash []byte,
+	certBlob []byte,
+) error {
+	return w.impl.OnServerCertificateAvailable(ctx, depth, subject, certHash, certBlob)
+}
+
+func (w *supplicantStaNetworkCallbackStubWrapper) OnPermanentIdReqDenied(
+	ctx context.Context,
+) error {
+	return w.impl.OnPermanentIdReqDenied(ctx)
+}
+
+var _ ISupplicantStaNetworkCallback = (*supplicantStaNetworkCallbackStubWrapper)(nil)
+
+// NewSupplicantStaNetworkCallbackStub creates a server-side ISupplicantStaNetworkCallback wrapping the given
+// server implementation. The returned value satisfies ISupplicantStaNetworkCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupplicantStaNetworkCallbackStub(
+	impl ISupplicantStaNetworkCallbackServer,
+) ISupplicantStaNetworkCallback {
+	wrapper := &supplicantStaNetworkCallbackStubWrapper{impl: impl}
+	stub := &SupplicantStaNetworkCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

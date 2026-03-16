@@ -190,3 +190,50 @@ func (s *AltitudeServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAltitudeServiceServer is the server-side interface that user implementations
+// provide to NewAltitudeServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAltitudeServiceServer interface {
+	AddMslAltitudeToLocation(ctx context.Context, request AddMslAltitudeToLocationRequest) (AddMslAltitudeToLocationResponse, error)
+	GetGeoidHeight(ctx context.Context, request GetGeoidHeightRequest) (GetGeoidHeightResponse, error)
+}
+
+type altitudeServiceStubWrapper struct {
+	impl       IAltitudeServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *altitudeServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *altitudeServiceStubWrapper) AddMslAltitudeToLocation(
+	ctx context.Context,
+	request AddMslAltitudeToLocationRequest,
+) (AddMslAltitudeToLocationResponse, error) {
+	return w.impl.AddMslAltitudeToLocation(ctx, request)
+}
+
+func (w *altitudeServiceStubWrapper) GetGeoidHeight(
+	ctx context.Context,
+	request GetGeoidHeightRequest,
+) (GetGeoidHeightResponse, error) {
+	return w.impl.GetGeoidHeight(ctx, request)
+}
+
+var _ IAltitudeService = (*altitudeServiceStubWrapper)(nil)
+
+// NewAltitudeServiceStub creates a server-side IAltitudeService wrapping the given
+// server implementation. The returned value satisfies IAltitudeService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAltitudeServiceStub(
+	impl IAltitudeServiceServer,
+) IAltitudeService {
+	wrapper := &altitudeServiceStubWrapper{impl: impl}
+	stub := &AltitudeServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

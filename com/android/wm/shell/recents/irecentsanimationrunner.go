@@ -89,7 +89,7 @@ func (p *RecentsAnimationRunnerProxy) OnAnimationStart(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecentsAnimationRunner)
-	_data.WriteStrongBinder(controller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, controller.AsBinder(), p.remote.Transport())
 	if apps == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -250,4 +250,65 @@ func (s *RecentsAnimationRunnerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRecentsAnimationRunnerServer is the server-side interface that user implementations
+// provide to NewRecentsAnimationRunnerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecentsAnimationRunnerServer interface {
+	OnAnimationCanceled(ctx context.Context, taskIds []int32, taskSnapshots []view.WindowManagerTaskSnapshot) error
+	OnAnimationStart(ctx context.Context, controller IRecentsAnimationController, apps []view.RemoteAnimationTarget, wallpapers []view.RemoteAnimationTarget, homeContentInsets graphics.Rect, minimizedHomeBounds graphics.Rect, extras os.Bundle) error
+	OnTasksAppeared(ctx context.Context, app []view.RemoteAnimationTarget) error
+}
+
+type recentsAnimationRunnerStubWrapper struct {
+	impl       IRecentsAnimationRunnerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recentsAnimationRunnerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recentsAnimationRunnerStubWrapper) OnAnimationCanceled(
+	ctx context.Context,
+	taskIds []int32,
+	taskSnapshots []view.WindowManagerTaskSnapshot,
+) error {
+	return w.impl.OnAnimationCanceled(ctx, taskIds, taskSnapshots)
+}
+
+func (w *recentsAnimationRunnerStubWrapper) OnAnimationStart(
+	ctx context.Context,
+	controller IRecentsAnimationController,
+	apps []view.RemoteAnimationTarget,
+	wallpapers []view.RemoteAnimationTarget,
+	homeContentInsets graphics.Rect,
+	minimizedHomeBounds graphics.Rect,
+	extras os.Bundle,
+) error {
+	return w.impl.OnAnimationStart(ctx, controller, apps, wallpapers, homeContentInsets, minimizedHomeBounds, extras)
+}
+
+func (w *recentsAnimationRunnerStubWrapper) OnTasksAppeared(
+	ctx context.Context,
+	app []view.RemoteAnimationTarget,
+) error {
+	return w.impl.OnTasksAppeared(ctx, app)
+}
+
+var _ IRecentsAnimationRunner = (*recentsAnimationRunnerStubWrapper)(nil)
+
+// NewRecentsAnimationRunnerStub creates a server-side IRecentsAnimationRunner wrapping the given
+// server implementation. The returned value satisfies IRecentsAnimationRunner
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecentsAnimationRunnerStub(
+	impl IRecentsAnimationRunnerServer,
+) IRecentsAnimationRunner {
+	wrapper := &recentsAnimationRunnerStubWrapper{impl: impl}
+	stub := &RecentsAnimationRunnerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -93,3 +93,42 @@ func (s *HdmiInputChangeListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiInputChangeListenerServer is the server-side interface that user implementations
+// provide to NewHdmiInputChangeListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiInputChangeListenerServer interface {
+	OnChanged(ctx context.Context, device HdmiDeviceInfo) error
+}
+
+type hdmiInputChangeListenerStubWrapper struct {
+	impl       IHdmiInputChangeListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiInputChangeListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiInputChangeListenerStubWrapper) OnChanged(
+	ctx context.Context,
+	device HdmiDeviceInfo,
+) error {
+	return w.impl.OnChanged(ctx, device)
+}
+
+var _ IHdmiInputChangeListener = (*hdmiInputChangeListenerStubWrapper)(nil)
+
+// NewHdmiInputChangeListenerStub creates a server-side IHdmiInputChangeListener wrapping the given
+// server implementation. The returned value satisfies IHdmiInputChangeListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiInputChangeListenerStub(
+	impl IHdmiInputChangeListenerServer,
+) IHdmiInputChangeListener {
+	wrapper := &hdmiInputChangeListenerStubWrapper{impl: impl}
+	stub := &HdmiInputChangeListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

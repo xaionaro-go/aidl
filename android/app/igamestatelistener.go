@@ -104,3 +104,43 @@ func (s *GameStateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGameStateListenerServer is the server-side interface that user implementations
+// provide to NewGameStateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGameStateListenerServer interface {
+	OnGameStateChanged(ctx context.Context, packageName string, state GameState) error
+}
+
+type gameStateListenerStubWrapper struct {
+	impl       IGameStateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gameStateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gameStateListenerStubWrapper) OnGameStateChanged(
+	ctx context.Context,
+	packageName string,
+	state GameState,
+) error {
+	return w.impl.OnGameStateChanged(ctx, packageName, state)
+}
+
+var _ IGameStateListener = (*gameStateListenerStubWrapper)(nil)
+
+// NewGameStateListenerStub creates a server-side IGameStateListener wrapping the given
+// server implementation. The returned value satisfies IGameStateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGameStateListenerStub(
+	impl IGameStateListenerServer,
+) IGameStateListener {
+	wrapper := &gameStateListenerStubWrapper{impl: impl}
+	stub := &GameStateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -965,3 +965,203 @@ func (s *PermissionControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPermissionControllerServer is the server-side interface that user implementations
+// provide to NewPermissionControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPermissionControllerServer interface {
+	RevokeRuntimePermissions(ctx context.Context, request os.Bundle, doDryRun bool, reason int32, callerPackageName string, callback infra.AndroidFuture) error
+	GetRuntimePermissionBackup(ctx context.Context, user os.UserHandle, pipe int32) error
+	StageAndApplyRuntimePermissionsBackup(ctx context.Context, user os.UserHandle, pipe int32) error
+	ApplyStagedRuntimePermissionBackup(ctx context.Context, packageName string, user os.UserHandle, callback infra.AndroidFuture) error
+	GetAppPermissions(ctx context.Context, packageName string, callback infra.AndroidFuture) error
+	RevokeRuntimePermission(ctx context.Context, packageName string, permissionName string) error
+	CountPermissionApps(ctx context.Context, permissionNames []string, flags int32, callback infra.AndroidFuture) error
+	GetPermissionUsages(ctx context.Context, countSystem bool, numMillis int64, callback infra.AndroidFuture) error
+	SetRuntimePermissionGrantStateByDeviceAdminFromParams(ctx context.Context, callerPackageName string, params AdminPermissionControlParams, callback infra.AndroidFuture) error
+	GrantOrUpgradeDefaultRuntimePermissions(ctx context.Context, callback infra.AndroidFuture) error
+	NotifyOneTimePermissionSessionTimeout(ctx context.Context, packageName string, deviceId int32) error
+	UpdateUserSensitiveForApp(ctx context.Context, uid int32, callback infra.AndroidFuture) error
+	GetPrivilegesDescriptionStringForProfile(ctx context.Context, deviceProfileName string, callback infra.AndroidFuture) error
+	GetPlatformPermissionsForGroup(ctx context.Context, permissionGroupName string, callback infra.AndroidFuture) error
+	GetGroupOfPlatformPermission(ctx context.Context, permissionName string, callback infra.AndroidFuture) error
+	GetUnusedAppCount(ctx context.Context, callback infra.AndroidFuture) error
+	GetHibernationEligibility(ctx context.Context, packageName string, callback infra.AndroidFuture) error
+	RevokeSelfPermissionsOnKill(ctx context.Context, packageName string, permissions []string, deviceId int32, callback infra.AndroidFuture) error
+}
+
+type permissionControllerStubWrapper struct {
+	impl       IPermissionControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *permissionControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *permissionControllerStubWrapper) RevokeRuntimePermissions(
+	ctx context.Context,
+	request os.Bundle,
+	doDryRun bool,
+	reason int32,
+	callerPackageName string,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.RevokeRuntimePermissions(ctx, request, doDryRun, reason, callerPackageName, callback)
+}
+
+func (w *permissionControllerStubWrapper) GetRuntimePermissionBackup(
+	ctx context.Context,
+	user os.UserHandle,
+	pipe int32,
+) error {
+	return w.impl.GetRuntimePermissionBackup(ctx, user, pipe)
+}
+
+func (w *permissionControllerStubWrapper) StageAndApplyRuntimePermissionsBackup(
+	ctx context.Context,
+	user os.UserHandle,
+	pipe int32,
+) error {
+	return w.impl.StageAndApplyRuntimePermissionsBackup(ctx, user, pipe)
+}
+
+func (w *permissionControllerStubWrapper) ApplyStagedRuntimePermissionBackup(
+	ctx context.Context,
+	packageName string,
+	user os.UserHandle,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.ApplyStagedRuntimePermissionBackup(ctx, packageName, user, callback)
+}
+
+func (w *permissionControllerStubWrapper) GetAppPermissions(
+	ctx context.Context,
+	packageName string,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.GetAppPermissions(ctx, packageName, callback)
+}
+
+func (w *permissionControllerStubWrapper) RevokeRuntimePermission(
+	ctx context.Context,
+	packageName string,
+	permissionName string,
+) error {
+	return w.impl.RevokeRuntimePermission(ctx, packageName, permissionName)
+}
+
+func (w *permissionControllerStubWrapper) CountPermissionApps(
+	ctx context.Context,
+	permissionNames []string,
+	flags int32,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.CountPermissionApps(ctx, permissionNames, flags, callback)
+}
+
+func (w *permissionControllerStubWrapper) GetPermissionUsages(
+	ctx context.Context,
+	countSystem bool,
+	numMillis int64,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.GetPermissionUsages(ctx, countSystem, numMillis, callback)
+}
+
+func (w *permissionControllerStubWrapper) SetRuntimePermissionGrantStateByDeviceAdminFromParams(
+	ctx context.Context,
+	callerPackageName string,
+	params AdminPermissionControlParams,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.SetRuntimePermissionGrantStateByDeviceAdminFromParams(ctx, callerPackageName, params, callback)
+}
+
+func (w *permissionControllerStubWrapper) GrantOrUpgradeDefaultRuntimePermissions(
+	ctx context.Context,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.GrantOrUpgradeDefaultRuntimePermissions(ctx, callback)
+}
+
+func (w *permissionControllerStubWrapper) NotifyOneTimePermissionSessionTimeout(
+	ctx context.Context,
+	packageName string,
+	deviceId int32,
+) error {
+	return w.impl.NotifyOneTimePermissionSessionTimeout(ctx, packageName, deviceId)
+}
+
+func (w *permissionControllerStubWrapper) UpdateUserSensitiveForApp(
+	ctx context.Context,
+	uid int32,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.UpdateUserSensitiveForApp(ctx, uid, callback)
+}
+
+func (w *permissionControllerStubWrapper) GetPrivilegesDescriptionStringForProfile(
+	ctx context.Context,
+	deviceProfileName string,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.GetPrivilegesDescriptionStringForProfile(ctx, deviceProfileName, callback)
+}
+
+func (w *permissionControllerStubWrapper) GetPlatformPermissionsForGroup(
+	ctx context.Context,
+	permissionGroupName string,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.GetPlatformPermissionsForGroup(ctx, permissionGroupName, callback)
+}
+
+func (w *permissionControllerStubWrapper) GetGroupOfPlatformPermission(
+	ctx context.Context,
+	permissionName string,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.GetGroupOfPlatformPermission(ctx, permissionName, callback)
+}
+
+func (w *permissionControllerStubWrapper) GetUnusedAppCount(
+	ctx context.Context,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.GetUnusedAppCount(ctx, callback)
+}
+
+func (w *permissionControllerStubWrapper) GetHibernationEligibility(
+	ctx context.Context,
+	packageName string,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.GetHibernationEligibility(ctx, packageName, callback)
+}
+
+func (w *permissionControllerStubWrapper) RevokeSelfPermissionsOnKill(
+	ctx context.Context,
+	packageName string,
+	permissions []string,
+	deviceId int32,
+	callback infra.AndroidFuture,
+) error {
+	return w.impl.RevokeSelfPermissionsOnKill(ctx, packageName, permissions, deviceId, callback)
+}
+
+var _ IPermissionController = (*permissionControllerStubWrapper)(nil)
+
+// NewPermissionControllerStub creates a server-side IPermissionController wrapping the given
+// server implementation. The returned value satisfies IPermissionController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPermissionControllerStub(
+	impl IPermissionControllerServer,
+) IPermissionController {
+	wrapper := &permissionControllerStubWrapper{impl: impl}
+	stub := &PermissionControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

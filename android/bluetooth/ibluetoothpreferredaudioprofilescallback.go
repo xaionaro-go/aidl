@@ -101,3 +101,44 @@ func (s *BluetoothPreferredAudioProfilesCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothPreferredAudioProfilesCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothPreferredAudioProfilesCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothPreferredAudioProfilesCallbackServer interface {
+	OnPreferredAudioProfilesChanged(ctx context.Context, device BluetoothDevice, preferredAudioProfiles interface{}, status int32) error
+}
+
+type bluetoothPreferredAudioProfilesCallbackStubWrapper struct {
+	impl       IBluetoothPreferredAudioProfilesCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothPreferredAudioProfilesCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothPreferredAudioProfilesCallbackStubWrapper) OnPreferredAudioProfilesChanged(
+	ctx context.Context,
+	device BluetoothDevice,
+	preferredAudioProfiles interface{},
+	status int32,
+) error {
+	return w.impl.OnPreferredAudioProfilesChanged(ctx, device, preferredAudioProfiles, status)
+}
+
+var _ IBluetoothPreferredAudioProfilesCallback = (*bluetoothPreferredAudioProfilesCallbackStubWrapper)(nil)
+
+// NewBluetoothPreferredAudioProfilesCallbackStub creates a server-side IBluetoothPreferredAudioProfilesCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothPreferredAudioProfilesCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothPreferredAudioProfilesCallbackStub(
+	impl IBluetoothPreferredAudioProfilesCallbackServer,
+) IBluetoothPreferredAudioProfilesCallback {
+	wrapper := &bluetoothPreferredAudioProfilesCallbackStubWrapper{impl: impl}
+	stub := &BluetoothPreferredAudioProfilesCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

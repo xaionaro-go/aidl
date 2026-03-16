@@ -19,7 +19,11 @@ func (s *InputApplicationInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Token.Handle())
+	if s.Token == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Token.Handle())
+	}
 	p.WriteString16(s.Name)
 	p.WriteInt64(s.DispatchingTimeoutMillis)
 

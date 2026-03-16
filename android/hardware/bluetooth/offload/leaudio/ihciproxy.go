@@ -44,7 +44,7 @@ func (p *HciProxyProxy) RegisterCallbacks(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHciProxy)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHciProxy, "registerCallbacks")
 	if _err != nil {
@@ -142,4 +142,53 @@ func (s *HciProxyStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IHciProxyServer is the server-side interface that user implementations
+// provide to NewHciProxyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHciProxyServer interface {
+	RegisterCallbacks(ctx context.Context, callbacks IHciProxyCallbacks) error
+	SendPacket(ctx context.Context, handle int32, sequence_number int32, data []byte) error
+}
+
+type hciProxyStubWrapper struct {
+	impl       IHciProxyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hciProxyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hciProxyStubWrapper) RegisterCallbacks(
+	ctx context.Context,
+	callbacks IHciProxyCallbacks,
+) error {
+	return w.impl.RegisterCallbacks(ctx, callbacks)
+}
+
+func (w *hciProxyStubWrapper) SendPacket(
+	ctx context.Context,
+	handle int32,
+	sequence_number int32,
+	data []byte,
+) error {
+	return w.impl.SendPacket(ctx, handle, sequence_number, data)
+}
+
+var _ IHciProxy = (*hciProxyStubWrapper)(nil)
+
+// NewHciProxyStub creates a server-side IHciProxy wrapping the given
+// server implementation. The returned value satisfies IHciProxy
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHciProxyStub(
+	impl IHciProxyServer,
+) IHciProxy {
+	wrapper := &hciProxyStubWrapper{impl: impl}
+	stub := &HciProxyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
-	content "github.com/xaionaro-go/binder/android/content"
 	autofill "github.com/xaionaro-go/binder/android/view/autofill"
 	"github.com/xaionaro-go/binder/binder"
 	os "github.com/xaionaro-go/binder/com/android/internal_/os"
@@ -37,7 +36,7 @@ type ITranslationManager interface {
 	RegisterUiTranslationStateCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
 	UnregisterUiTranslationStateCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
 	GetServiceSettingsActivity(ctx context.Context, result os.IResultReceiver) error
-	OnTranslationFinished(ctx context.Context, activityDestroyed bool, token binder.IBinder, componentName content.ComponentName) error
+	OnTranslationFinished(ctx context.Context, activityDestroyed bool, token binder.IBinder, componentName interface{}) error
 }
 
 type TranslationManagerProxy struct {
@@ -85,7 +84,7 @@ func (p *TranslationManagerProxy) RegisterTranslationCapabilityCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "registerTranslationCapabilityCallback")
@@ -104,7 +103,7 @@ func (p *TranslationManagerProxy) UnregisterTranslationCapabilityCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "unregisterTranslationCapabilityCallback")
@@ -130,7 +129,7 @@ func (p *TranslationManagerProxy) OnSessionCreated(
 		return _err
 	}
 	_data.WriteInt32(sessionId)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "onSessionCreated")
@@ -174,7 +173,7 @@ func (p *TranslationManagerProxy) UpdateUiTranslationState(
 			}
 		}
 	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(taskId)
 	_data.WriteInt32(1)
 	if _err := uiTranslationSpec.MarshalParcel(_data); _err != nil {
@@ -198,7 +197,7 @@ func (p *TranslationManagerProxy) RegisterUiTranslationStateCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "registerUiTranslationStateCallback")
@@ -217,7 +216,7 @@ func (p *TranslationManagerProxy) UnregisterUiTranslationStateCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "unregisterUiTranslationStateCallback")
@@ -236,7 +235,7 @@ func (p *TranslationManagerProxy) GetServiceSettingsActivity(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
-	_data.WriteStrongBinder(result.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, result.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "getServiceSettingsActivity")
@@ -252,17 +251,13 @@ func (p *TranslationManagerProxy) OnTranslationFinished(
 	ctx context.Context,
 	activityDestroyed bool,
 	token binder.IBinder,
-	componentName content.ComponentName,
+	componentName interface{},
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationManager)
 	_data.WriteBool(activityDestroyed)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(1)
-	if _err := componentName.MarshalParcel(_data); _err != nil {
-		return _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationManager, "onTranslationFinished")
@@ -472,18 +467,7 @@ func (s *TranslationManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_componentName content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_componentName interface{}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -493,4 +477,119 @@ func (s *TranslationManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITranslationManagerServer is the server-side interface that user implementations
+// provide to NewTranslationManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITranslationManagerServer interface {
+	OnTranslationCapabilitiesRequest(ctx context.Context, sourceFormat int32, destFormat int32, receiver interface{}) error
+	RegisterTranslationCapabilityCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
+	UnregisterTranslationCapabilityCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
+	OnSessionCreated(ctx context.Context, translationContext TranslationContext, sessionId int32, receiver os.IResultReceiver) error
+	UpdateUiTranslationState(ctx context.Context, state int32, sourceSpec TranslationSpec, targetSpec TranslationSpec, viewIds []autofill.AutofillId, token binder.IBinder, taskId int32, uiTranslationSpec UiTranslationSpec) error
+	RegisterUiTranslationStateCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
+	UnregisterUiTranslationStateCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
+	GetServiceSettingsActivity(ctx context.Context, result os.IResultReceiver) error
+	OnTranslationFinished(ctx context.Context, activityDestroyed bool, token binder.IBinder, componentName interface{}) error
+}
+
+type translationManagerStubWrapper struct {
+	impl       ITranslationManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *translationManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *translationManagerStubWrapper) OnTranslationCapabilitiesRequest(
+	ctx context.Context,
+	sourceFormat int32,
+	destFormat int32,
+	receiver interface{},
+) error {
+	return w.impl.OnTranslationCapabilitiesRequest(ctx, sourceFormat, destFormat, receiver)
+}
+
+func (w *translationManagerStubWrapper) RegisterTranslationCapabilityCallback(
+	ctx context.Context,
+	callback ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.RegisterTranslationCapabilityCallback(ctx, callback)
+}
+
+func (w *translationManagerStubWrapper) UnregisterTranslationCapabilityCallback(
+	ctx context.Context,
+	callback ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.UnregisterTranslationCapabilityCallback(ctx, callback)
+}
+
+func (w *translationManagerStubWrapper) OnSessionCreated(
+	ctx context.Context,
+	translationContext TranslationContext,
+	sessionId int32,
+	receiver os.IResultReceiver,
+) error {
+	return w.impl.OnSessionCreated(ctx, translationContext, sessionId, receiver)
+}
+
+func (w *translationManagerStubWrapper) UpdateUiTranslationState(
+	ctx context.Context,
+	state int32,
+	sourceSpec TranslationSpec,
+	targetSpec TranslationSpec,
+	viewIds []autofill.AutofillId,
+	token binder.IBinder,
+	taskId int32,
+	uiTranslationSpec UiTranslationSpec,
+) error {
+	return w.impl.UpdateUiTranslationState(ctx, state, sourceSpec, targetSpec, viewIds, token, taskId, uiTranslationSpec)
+}
+
+func (w *translationManagerStubWrapper) RegisterUiTranslationStateCallback(
+	ctx context.Context,
+	callback ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.RegisterUiTranslationStateCallback(ctx, callback)
+}
+
+func (w *translationManagerStubWrapper) UnregisterUiTranslationStateCallback(
+	ctx context.Context,
+	callback ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.UnregisterUiTranslationStateCallback(ctx, callback)
+}
+
+func (w *translationManagerStubWrapper) GetServiceSettingsActivity(
+	ctx context.Context,
+	result os.IResultReceiver,
+) error {
+	return w.impl.GetServiceSettingsActivity(ctx, result)
+}
+
+func (w *translationManagerStubWrapper) OnTranslationFinished(
+	ctx context.Context,
+	activityDestroyed bool,
+	token binder.IBinder,
+	componentName interface{},
+) error {
+	return w.impl.OnTranslationFinished(ctx, activityDestroyed, token, componentName)
+}
+
+var _ ITranslationManager = (*translationManagerStubWrapper)(nil)
+
+// NewTranslationManagerStub creates a server-side ITranslationManager wrapping the given
+// server implementation. The returned value satisfies ITranslationManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTranslationManagerStub(
+	impl ITranslationManagerServer,
+) ITranslationManager {
+	wrapper := &translationManagerStubWrapper{impl: impl}
+	stub := &TranslationManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

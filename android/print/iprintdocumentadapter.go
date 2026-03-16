@@ -51,7 +51,7 @@ func (p *PrintDocumentAdapterProxy) SetObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintDocumentAdapter)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "setObserver")
 	if _err != nil {
@@ -95,7 +95,7 @@ func (p *PrintDocumentAdapterProxy) Layout(
 	if _err := newAttributes.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := metadata.MarshalParcel(_data); _err != nil {
 		return _err
@@ -131,7 +131,7 @@ func (p *PrintDocumentAdapterProxy) Write(
 		}
 	}
 	_data.WriteFileDescriptor(fd)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sequence)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintDocumentAdapter, "write")
@@ -270,4 +270,80 @@ func (s *PrintDocumentAdapterStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPrintDocumentAdapterServer is the server-side interface that user implementations
+// provide to NewPrintDocumentAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrintDocumentAdapterServer interface {
+	SetObserver(ctx context.Context, observer IPrintDocumentAdapterObserver) error
+	Start(ctx context.Context) error
+	Layout(ctx context.Context, oldAttributes PrintAttributes, newAttributes PrintAttributes, callback ILayoutResultCallback, metadata os.Bundle, sequence int32) error
+	Write(ctx context.Context, pages []PageRange, fd int32, callback IWriteResultCallback, sequence int32) error
+	Finish(ctx context.Context) error
+}
+
+type printDocumentAdapterStubWrapper struct {
+	impl       IPrintDocumentAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *printDocumentAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *printDocumentAdapterStubWrapper) SetObserver(
+	ctx context.Context,
+	observer IPrintDocumentAdapterObserver,
+) error {
+	return w.impl.SetObserver(ctx, observer)
+}
+
+func (w *printDocumentAdapterStubWrapper) Start(
+	ctx context.Context,
+) error {
+	return w.impl.Start(ctx)
+}
+
+func (w *printDocumentAdapterStubWrapper) Layout(
+	ctx context.Context,
+	oldAttributes PrintAttributes,
+	newAttributes PrintAttributes,
+	callback ILayoutResultCallback,
+	metadata os.Bundle,
+	sequence int32,
+) error {
+	return w.impl.Layout(ctx, oldAttributes, newAttributes, callback, metadata, sequence)
+}
+
+func (w *printDocumentAdapterStubWrapper) Write(
+	ctx context.Context,
+	pages []PageRange,
+	fd int32,
+	callback IWriteResultCallback,
+	sequence int32,
+) error {
+	return w.impl.Write(ctx, pages, fd, callback, sequence)
+}
+
+func (w *printDocumentAdapterStubWrapper) Finish(
+	ctx context.Context,
+) error {
+	return w.impl.Finish(ctx)
+}
+
+var _ IPrintDocumentAdapter = (*printDocumentAdapterStubWrapper)(nil)
+
+// NewPrintDocumentAdapterStub creates a server-side IPrintDocumentAdapter wrapping the given
+// server implementation. The returned value satisfies IPrintDocumentAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrintDocumentAdapterStub(
+	impl IPrintDocumentAdapterServer,
+) IPrintDocumentAdapter {
+	wrapper := &printDocumentAdapterStubWrapper{impl: impl}
+	stub := &PrintDocumentAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

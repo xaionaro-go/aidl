@@ -291,3 +291,76 @@ func (s *JobServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IJobServiceServer is the server-side interface that user implementations
+// provide to NewJobServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IJobServiceServer interface {
+	StartJob(ctx context.Context, jobParams JobParameters) error
+	StopJob(ctx context.Context, jobParams JobParameters) error
+	OnNetworkChanged(ctx context.Context, jobParams JobParameters) error
+	GetTransferredDownloadBytes(ctx context.Context, jobParams JobParameters, jobWorkItem JobWorkItem) error
+	GetTransferredUploadBytes(ctx context.Context, jobParams JobParameters, jobWorkItem JobWorkItem) error
+}
+
+type jobServiceStubWrapper struct {
+	impl       IJobServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *jobServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *jobServiceStubWrapper) StartJob(
+	ctx context.Context,
+	jobParams JobParameters,
+) error {
+	return w.impl.StartJob(ctx, jobParams)
+}
+
+func (w *jobServiceStubWrapper) StopJob(
+	ctx context.Context,
+	jobParams JobParameters,
+) error {
+	return w.impl.StopJob(ctx, jobParams)
+}
+
+func (w *jobServiceStubWrapper) OnNetworkChanged(
+	ctx context.Context,
+	jobParams JobParameters,
+) error {
+	return w.impl.OnNetworkChanged(ctx, jobParams)
+}
+
+func (w *jobServiceStubWrapper) GetTransferredDownloadBytes(
+	ctx context.Context,
+	jobParams JobParameters,
+	jobWorkItem JobWorkItem,
+) error {
+	return w.impl.GetTransferredDownloadBytes(ctx, jobParams, jobWorkItem)
+}
+
+func (w *jobServiceStubWrapper) GetTransferredUploadBytes(
+	ctx context.Context,
+	jobParams JobParameters,
+	jobWorkItem JobWorkItem,
+) error {
+	return w.impl.GetTransferredUploadBytes(ctx, jobParams, jobWorkItem)
+}
+
+var _ IJobService = (*jobServiceStubWrapper)(nil)
+
+// NewJobServiceStub creates a server-side IJobService wrapping the given
+// server implementation. The returned value satisfies IJobService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewJobServiceStub(
+	impl IJobServiceServer,
+) IJobService {
+	wrapper := &jobServiceStubWrapper{impl: impl}
+	stub := &JobServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

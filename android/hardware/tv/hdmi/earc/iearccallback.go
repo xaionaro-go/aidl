@@ -131,3 +131,52 @@ func (s *EArcCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEArcCallbackServer is the server-side interface that user implementations
+// provide to NewEArcCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEArcCallbackServer interface {
+	OnStateChange(ctx context.Context, status IEArcStatus, portId int32) error
+	OnCapabilitiesReported(ctx context.Context, rawCapabilities []byte, portId int32) error
+}
+
+type eArcCallbackStubWrapper struct {
+	impl       IEArcCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eArcCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eArcCallbackStubWrapper) OnStateChange(
+	ctx context.Context,
+	status IEArcStatus,
+	portId int32,
+) error {
+	return w.impl.OnStateChange(ctx, status, portId)
+}
+
+func (w *eArcCallbackStubWrapper) OnCapabilitiesReported(
+	ctx context.Context,
+	rawCapabilities []byte,
+	portId int32,
+) error {
+	return w.impl.OnCapabilitiesReported(ctx, rawCapabilities, portId)
+}
+
+var _ IEArcCallback = (*eArcCallbackStubWrapper)(nil)
+
+// NewEArcCallbackStub creates a server-side IEArcCallback wrapping the given
+// server implementation. The returned value satisfies IEArcCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEArcCallbackStub(
+	impl IEArcCallbackServer,
+) IEArcCallback {
+	wrapper := &eArcCallbackStubWrapper{impl: impl}
+	stub := &EArcCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

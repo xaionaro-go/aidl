@@ -2566,7 +2566,7 @@ func (p *TelecomServiceProxy) AddCall(
 	if _err := callAttributes.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(callId)
 	_data.WriteString16(_identity.PackageName)
 
@@ -4229,4 +4229,612 @@ func (s *TelecomServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITelecomServiceServer is the server-side interface that user implementations
+// provide to NewTelecomServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITelecomServiceServer interface {
+	ShowInCallScreen(ctx context.Context, showDialpad bool) error
+	GetDefaultOutgoingPhoneAccount(ctx context.Context, uriScheme string) (androidTelecom.PhoneAccountHandle, error)
+	GetUserSelectedOutgoingPhoneAccount(ctx context.Context) (androidTelecom.PhoneAccountHandle, error)
+	SetUserSelectedOutgoingPhoneAccount(ctx context.Context, account androidTelecom.PhoneAccountHandle) error
+	GetCallCapablePhoneAccounts(ctx context.Context, includeDisabledAccounts bool, acrossProfiles bool) (pm.ParceledListSlice, error)
+	GetSelfManagedPhoneAccounts(ctx context.Context) (pm.ParceledListSlice, error)
+	GetOwnSelfManagedPhoneAccounts(ctx context.Context) (pm.ParceledListSlice, error)
+	GetPhoneAccountsSupportingScheme(ctx context.Context, uriScheme string) (pm.ParceledListSlice, error)
+	GetPhoneAccountsForPackage(ctx context.Context, packageName string) (pm.ParceledListSlice, error)
+	GetPhoneAccount(ctx context.Context, account androidTelecom.PhoneAccountHandle) (androidTelecom.PhoneAccount, error)
+	GetRegisteredPhoneAccounts(ctx context.Context) (pm.ParceledListSlice, error)
+	GetAllPhoneAccountsCount(ctx context.Context) (int32, error)
+	GetAllPhoneAccounts(ctx context.Context) (pm.ParceledListSlice, error)
+	GetAllPhoneAccountHandles(ctx context.Context) (pm.ParceledListSlice, error)
+	GetSimCallManager(ctx context.Context, subId int32) (androidTelecom.PhoneAccountHandle, error)
+	GetSimCallManagerForUser(ctx context.Context) (androidTelecom.PhoneAccountHandle, error)
+	RegisterPhoneAccount(ctx context.Context, metadata androidTelecom.PhoneAccount) error
+	UnregisterPhoneAccount(ctx context.Context, account androidTelecom.PhoneAccountHandle) error
+	ClearAccounts(ctx context.Context, packageName string) error
+	IsVoiceMailNumber(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, number string) (bool, error)
+	GetVoiceMailNumber(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle) (string, error)
+	GetLine1Number(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle) (string, error)
+	GetDefaultPhoneApp(ctx context.Context) (content.ComponentName, error)
+	GetDefaultDialerPackage(ctx context.Context) (string, error)
+	GetDefaultDialerPackageForUser(ctx context.Context) (string, error)
+	GetSystemDialerPackage(ctx context.Context) (string, error)
+	DumpCallAnalytics(ctx context.Context) (androidTelecom.TelecomAnalytics, error)
+	SilenceRinger(ctx context.Context) error
+	IsInCall(ctx context.Context) (bool, error)
+	HasManageOngoingCallsPermission(ctx context.Context) (bool, error)
+	IsInManagedCall(ctx context.Context) (bool, error)
+	IsRinging(ctx context.Context) (bool, error)
+	GetCallState(ctx context.Context) (int32, error)
+	GetCallStateUsingPackage(ctx context.Context) (int32, error)
+	EndCall(ctx context.Context) (bool, error)
+	AcceptRingingCall(ctx context.Context) error
+	AcceptRingingCallWithVideoState(ctx context.Context, videoState int32) error
+	CancelMissedCallsNotification(ctx context.Context) error
+	HandlePinMmi(ctx context.Context, dialString string) (bool, error)
+	HandlePinMmiForPhoneAccount(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, dialString string) (bool, error)
+	GetAdnUriForPhoneAccount(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle) (net.Uri, error)
+	IsTtySupported(ctx context.Context) (bool, error)
+	GetCurrentTtyMode(ctx context.Context) (int32, error)
+	AddNewIncomingCall(ctx context.Context, phoneAccount androidTelecom.PhoneAccountHandle, extras os.Bundle) error
+	AddNewIncomingConference(ctx context.Context, phoneAccount androidTelecom.PhoneAccountHandle, extras os.Bundle) error
+	AddNewUnknownCall(ctx context.Context, phoneAccount androidTelecom.PhoneAccountHandle, extras os.Bundle) error
+	StartConference(ctx context.Context, participants []net.Uri, extras os.Bundle) error
+	PlaceCall(ctx context.Context, handle net.Uri, extras os.Bundle) error
+	EnablePhoneAccount(ctx context.Context, accountHandle androidTelecom.PhoneAccountHandle, isEnabled bool) (bool, error)
+	SetDefaultDialer(ctx context.Context, packageName string) (bool, error)
+	StopBlockSuppression(ctx context.Context) error
+	CreateManageBlockedNumbersIntent(ctx context.Context) (content.Intent, error)
+	CreateLaunchEmergencyDialerIntent(ctx context.Context, number string) (content.Intent, error)
+	IsIncomingCallPermitted(ctx context.Context, phoneAccountHandle androidTelecom.PhoneAccountHandle) (bool, error)
+	IsOutgoingCallPermitted(ctx context.Context, phoneAccountHandle androidTelecom.PhoneAccountHandle) (bool, error)
+	WaitOnHandlers(ctx context.Context) error
+	AcceptHandover(ctx context.Context, srcAddr net.Uri, videoState int32, destAcct androidTelecom.PhoneAccountHandle) error
+	SetTestEmergencyPhoneAccountPackageNameFilter(ctx context.Context, packageName string) error
+	IsInEmergencyCall(ctx context.Context) (bool, error)
+	HandleCallIntent(ctx context.Context, intent content.Intent, callingPackageProxy string) error
+	CleanupStuckCalls(ctx context.Context) error
+	CleanupOrphanPhoneAccounts(ctx context.Context) (int32, error)
+	IsNonUiInCallServiceBound(ctx context.Context, packageName string) (bool, error)
+	ResetCarMode(ctx context.Context) error
+	SetTestDefaultCallRedirectionApp(ctx context.Context, packageName string) error
+	RequestLogMark(ctx context.Context, message string) error
+	SetTestPhoneAcctSuggestionComponent(ctx context.Context, flattenedComponentName string, userHandle os.UserHandle) error
+	SetTestDefaultCallScreeningApp(ctx context.Context, packageName string) error
+	AddOrRemoveTestCallCompanionApp(ctx context.Context, packageName string, isAdded bool) error
+	SetSystemDialer(ctx context.Context, testComponentName content.ComponentName) error
+	SetTestDefaultDialer(ctx context.Context, packageName string) error
+	SetTestCallDiagnosticService(ctx context.Context, packageName string) error
+	IsInSelfManagedCall(ctx context.Context, packageName string, userHandle os.UserHandle) (bool, error)
+	AddCall(ctx context.Context, callAttributes androidTelecom.CallAttributes, callback ICallEventCallback, callId string) error
+}
+
+type telecomServiceStubWrapper struct {
+	impl       ITelecomServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *telecomServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *telecomServiceStubWrapper) ShowInCallScreen(
+	ctx context.Context,
+	showDialpad bool,
+) error {
+	return w.impl.ShowInCallScreen(ctx, showDialpad)
+}
+
+func (w *telecomServiceStubWrapper) GetDefaultOutgoingPhoneAccount(
+	ctx context.Context,
+	uriScheme string,
+) (androidTelecom.PhoneAccountHandle, error) {
+	return w.impl.GetDefaultOutgoingPhoneAccount(ctx, uriScheme)
+}
+
+func (w *telecomServiceStubWrapper) GetUserSelectedOutgoingPhoneAccount(
+	ctx context.Context,
+) (androidTelecom.PhoneAccountHandle, error) {
+	return w.impl.GetUserSelectedOutgoingPhoneAccount(ctx)
+}
+
+func (w *telecomServiceStubWrapper) SetUserSelectedOutgoingPhoneAccount(
+	ctx context.Context,
+	account androidTelecom.PhoneAccountHandle,
+) error {
+	return w.impl.SetUserSelectedOutgoingPhoneAccount(ctx, account)
+}
+
+func (w *telecomServiceStubWrapper) GetCallCapablePhoneAccounts(
+	ctx context.Context,
+	includeDisabledAccounts bool,
+	acrossProfiles bool,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetCallCapablePhoneAccounts(ctx, includeDisabledAccounts, acrossProfiles)
+}
+
+func (w *telecomServiceStubWrapper) GetSelfManagedPhoneAccounts(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetSelfManagedPhoneAccounts(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetOwnSelfManagedPhoneAccounts(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetOwnSelfManagedPhoneAccounts(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetPhoneAccountsSupportingScheme(
+	ctx context.Context,
+	uriScheme string,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetPhoneAccountsSupportingScheme(ctx, uriScheme)
+}
+
+func (w *telecomServiceStubWrapper) GetPhoneAccountsForPackage(
+	ctx context.Context,
+	packageName string,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetPhoneAccountsForPackage(ctx, packageName)
+}
+
+func (w *telecomServiceStubWrapper) GetPhoneAccount(
+	ctx context.Context,
+	account androidTelecom.PhoneAccountHandle,
+) (androidTelecom.PhoneAccount, error) {
+	return w.impl.GetPhoneAccount(ctx, account)
+}
+
+func (w *telecomServiceStubWrapper) GetRegisteredPhoneAccounts(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetRegisteredPhoneAccounts(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetAllPhoneAccountsCount(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAllPhoneAccountsCount(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetAllPhoneAccounts(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetAllPhoneAccounts(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetAllPhoneAccountHandles(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetAllPhoneAccountHandles(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetSimCallManager(
+	ctx context.Context,
+	subId int32,
+) (androidTelecom.PhoneAccountHandle, error) {
+	return w.impl.GetSimCallManager(ctx, subId)
+}
+
+func (w *telecomServiceStubWrapper) GetSimCallManagerForUser(
+	ctx context.Context,
+) (androidTelecom.PhoneAccountHandle, error) {
+	return w.impl.GetSimCallManagerForUser(ctx)
+}
+
+func (w *telecomServiceStubWrapper) RegisterPhoneAccount(
+	ctx context.Context,
+	metadata androidTelecom.PhoneAccount,
+) error {
+	return w.impl.RegisterPhoneAccount(ctx, metadata)
+}
+
+func (w *telecomServiceStubWrapper) UnregisterPhoneAccount(
+	ctx context.Context,
+	account androidTelecom.PhoneAccountHandle,
+) error {
+	return w.impl.UnregisterPhoneAccount(ctx, account)
+}
+
+func (w *telecomServiceStubWrapper) ClearAccounts(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ClearAccounts(ctx, packageName)
+}
+
+func (w *telecomServiceStubWrapper) IsVoiceMailNumber(
+	ctx context.Context,
+	accountHandle androidTelecom.PhoneAccountHandle,
+	number string,
+) (bool, error) {
+	return w.impl.IsVoiceMailNumber(ctx, accountHandle, number)
+}
+
+func (w *telecomServiceStubWrapper) GetVoiceMailNumber(
+	ctx context.Context,
+	accountHandle androidTelecom.PhoneAccountHandle,
+) (string, error) {
+	return w.impl.GetVoiceMailNumber(ctx, accountHandle)
+}
+
+func (w *telecomServiceStubWrapper) GetLine1Number(
+	ctx context.Context,
+	accountHandle androidTelecom.PhoneAccountHandle,
+) (string, error) {
+	return w.impl.GetLine1Number(ctx, accountHandle)
+}
+
+func (w *telecomServiceStubWrapper) GetDefaultPhoneApp(
+	ctx context.Context,
+) (content.ComponentName, error) {
+	return w.impl.GetDefaultPhoneApp(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetDefaultDialerPackage(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetDefaultDialerPackage(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetDefaultDialerPackageForUser(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetDefaultDialerPackageForUser(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetSystemDialerPackage(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSystemDialerPackage(ctx)
+}
+
+func (w *telecomServiceStubWrapper) DumpCallAnalytics(
+	ctx context.Context,
+) (androidTelecom.TelecomAnalytics, error) {
+	return w.impl.DumpCallAnalytics(ctx)
+}
+
+func (w *telecomServiceStubWrapper) SilenceRinger(
+	ctx context.Context,
+) error {
+	return w.impl.SilenceRinger(ctx)
+}
+
+func (w *telecomServiceStubWrapper) IsInCall(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInCall(ctx)
+}
+
+func (w *telecomServiceStubWrapper) HasManageOngoingCallsPermission(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasManageOngoingCallsPermission(ctx)
+}
+
+func (w *telecomServiceStubWrapper) IsInManagedCall(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInManagedCall(ctx)
+}
+
+func (w *telecomServiceStubWrapper) IsRinging(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsRinging(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetCallState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCallState(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetCallStateUsingPackage(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCallStateUsingPackage(ctx)
+}
+
+func (w *telecomServiceStubWrapper) EndCall(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.EndCall(ctx)
+}
+
+func (w *telecomServiceStubWrapper) AcceptRingingCall(
+	ctx context.Context,
+) error {
+	return w.impl.AcceptRingingCall(ctx)
+}
+
+func (w *telecomServiceStubWrapper) AcceptRingingCallWithVideoState(
+	ctx context.Context,
+	videoState int32,
+) error {
+	return w.impl.AcceptRingingCallWithVideoState(ctx, videoState)
+}
+
+func (w *telecomServiceStubWrapper) CancelMissedCallsNotification(
+	ctx context.Context,
+) error {
+	return w.impl.CancelMissedCallsNotification(ctx)
+}
+
+func (w *telecomServiceStubWrapper) HandlePinMmi(
+	ctx context.Context,
+	dialString string,
+) (bool, error) {
+	return w.impl.HandlePinMmi(ctx, dialString)
+}
+
+func (w *telecomServiceStubWrapper) HandlePinMmiForPhoneAccount(
+	ctx context.Context,
+	accountHandle androidTelecom.PhoneAccountHandle,
+	dialString string,
+) (bool, error) {
+	return w.impl.HandlePinMmiForPhoneAccount(ctx, accountHandle, dialString)
+}
+
+func (w *telecomServiceStubWrapper) GetAdnUriForPhoneAccount(
+	ctx context.Context,
+	accountHandle androidTelecom.PhoneAccountHandle,
+) (net.Uri, error) {
+	return w.impl.GetAdnUriForPhoneAccount(ctx, accountHandle)
+}
+
+func (w *telecomServiceStubWrapper) IsTtySupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsTtySupported(ctx)
+}
+
+func (w *telecomServiceStubWrapper) GetCurrentTtyMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentTtyMode(ctx)
+}
+
+func (w *telecomServiceStubWrapper) AddNewIncomingCall(
+	ctx context.Context,
+	phoneAccount androidTelecom.PhoneAccountHandle,
+	extras os.Bundle,
+) error {
+	return w.impl.AddNewIncomingCall(ctx, phoneAccount, extras)
+}
+
+func (w *telecomServiceStubWrapper) AddNewIncomingConference(
+	ctx context.Context,
+	phoneAccount androidTelecom.PhoneAccountHandle,
+	extras os.Bundle,
+) error {
+	return w.impl.AddNewIncomingConference(ctx, phoneAccount, extras)
+}
+
+func (w *telecomServiceStubWrapper) AddNewUnknownCall(
+	ctx context.Context,
+	phoneAccount androidTelecom.PhoneAccountHandle,
+	extras os.Bundle,
+) error {
+	return w.impl.AddNewUnknownCall(ctx, phoneAccount, extras)
+}
+
+func (w *telecomServiceStubWrapper) StartConference(
+	ctx context.Context,
+	participants []net.Uri,
+	extras os.Bundle,
+) error {
+	return w.impl.StartConference(ctx, participants, extras)
+}
+
+func (w *telecomServiceStubWrapper) PlaceCall(
+	ctx context.Context,
+	handle net.Uri,
+	extras os.Bundle,
+) error {
+	return w.impl.PlaceCall(ctx, handle, extras)
+}
+
+func (w *telecomServiceStubWrapper) EnablePhoneAccount(
+	ctx context.Context,
+	accountHandle androidTelecom.PhoneAccountHandle,
+	isEnabled bool,
+) (bool, error) {
+	return w.impl.EnablePhoneAccount(ctx, accountHandle, isEnabled)
+}
+
+func (w *telecomServiceStubWrapper) SetDefaultDialer(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.SetDefaultDialer(ctx, packageName)
+}
+
+func (w *telecomServiceStubWrapper) StopBlockSuppression(
+	ctx context.Context,
+) error {
+	return w.impl.StopBlockSuppression(ctx)
+}
+
+func (w *telecomServiceStubWrapper) CreateManageBlockedNumbersIntent(
+	ctx context.Context,
+) (content.Intent, error) {
+	return w.impl.CreateManageBlockedNumbersIntent(ctx)
+}
+
+func (w *telecomServiceStubWrapper) CreateLaunchEmergencyDialerIntent(
+	ctx context.Context,
+	number string,
+) (content.Intent, error) {
+	return w.impl.CreateLaunchEmergencyDialerIntent(ctx, number)
+}
+
+func (w *telecomServiceStubWrapper) IsIncomingCallPermitted(
+	ctx context.Context,
+	phoneAccountHandle androidTelecom.PhoneAccountHandle,
+) (bool, error) {
+	return w.impl.IsIncomingCallPermitted(ctx, phoneAccountHandle)
+}
+
+func (w *telecomServiceStubWrapper) IsOutgoingCallPermitted(
+	ctx context.Context,
+	phoneAccountHandle androidTelecom.PhoneAccountHandle,
+) (bool, error) {
+	return w.impl.IsOutgoingCallPermitted(ctx, phoneAccountHandle)
+}
+
+func (w *telecomServiceStubWrapper) WaitOnHandlers(
+	ctx context.Context,
+) error {
+	return w.impl.WaitOnHandlers(ctx)
+}
+
+func (w *telecomServiceStubWrapper) AcceptHandover(
+	ctx context.Context,
+	srcAddr net.Uri,
+	videoState int32,
+	destAcct androidTelecom.PhoneAccountHandle,
+) error {
+	return w.impl.AcceptHandover(ctx, srcAddr, videoState, destAcct)
+}
+
+func (w *telecomServiceStubWrapper) SetTestEmergencyPhoneAccountPackageNameFilter(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.SetTestEmergencyPhoneAccountPackageNameFilter(ctx, packageName)
+}
+
+func (w *telecomServiceStubWrapper) IsInEmergencyCall(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInEmergencyCall(ctx)
+}
+
+func (w *telecomServiceStubWrapper) HandleCallIntent(
+	ctx context.Context,
+	intent content.Intent,
+	callingPackageProxy string,
+) error {
+	return w.impl.HandleCallIntent(ctx, intent, callingPackageProxy)
+}
+
+func (w *telecomServiceStubWrapper) CleanupStuckCalls(
+	ctx context.Context,
+) error {
+	return w.impl.CleanupStuckCalls(ctx)
+}
+
+func (w *telecomServiceStubWrapper) CleanupOrphanPhoneAccounts(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.CleanupOrphanPhoneAccounts(ctx)
+}
+
+func (w *telecomServiceStubWrapper) IsNonUiInCallServiceBound(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsNonUiInCallServiceBound(ctx, packageName)
+}
+
+func (w *telecomServiceStubWrapper) ResetCarMode(
+	ctx context.Context,
+) error {
+	return w.impl.ResetCarMode(ctx)
+}
+
+func (w *telecomServiceStubWrapper) SetTestDefaultCallRedirectionApp(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.SetTestDefaultCallRedirectionApp(ctx, packageName)
+}
+
+func (w *telecomServiceStubWrapper) RequestLogMark(
+	ctx context.Context,
+	message string,
+) error {
+	return w.impl.RequestLogMark(ctx, message)
+}
+
+func (w *telecomServiceStubWrapper) SetTestPhoneAcctSuggestionComponent(
+	ctx context.Context,
+	flattenedComponentName string,
+	userHandle os.UserHandle,
+) error {
+	return w.impl.SetTestPhoneAcctSuggestionComponent(ctx, flattenedComponentName, userHandle)
+}
+
+func (w *telecomServiceStubWrapper) SetTestDefaultCallScreeningApp(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.SetTestDefaultCallScreeningApp(ctx, packageName)
+}
+
+func (w *telecomServiceStubWrapper) AddOrRemoveTestCallCompanionApp(
+	ctx context.Context,
+	packageName string,
+	isAdded bool,
+) error {
+	return w.impl.AddOrRemoveTestCallCompanionApp(ctx, packageName, isAdded)
+}
+
+func (w *telecomServiceStubWrapper) SetSystemDialer(
+	ctx context.Context,
+	testComponentName content.ComponentName,
+) error {
+	return w.impl.SetSystemDialer(ctx, testComponentName)
+}
+
+func (w *telecomServiceStubWrapper) SetTestDefaultDialer(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.SetTestDefaultDialer(ctx, packageName)
+}
+
+func (w *telecomServiceStubWrapper) SetTestCallDiagnosticService(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.SetTestCallDiagnosticService(ctx, packageName)
+}
+
+func (w *telecomServiceStubWrapper) IsInSelfManagedCall(
+	ctx context.Context,
+	packageName string,
+	userHandle os.UserHandle,
+) (bool, error) {
+	return w.impl.IsInSelfManagedCall(ctx, packageName, userHandle)
+}
+
+func (w *telecomServiceStubWrapper) AddCall(
+	ctx context.Context,
+	callAttributes androidTelecom.CallAttributes,
+	callback ICallEventCallback,
+	callId string,
+) error {
+	return w.impl.AddCall(ctx, callAttributes, callback, callId)
+}
+
+var _ ITelecomService = (*telecomServiceStubWrapper)(nil)
+
+// NewTelecomServiceStub creates a server-side ITelecomService wrapping the given
+// server implementation. The returned value satisfies ITelecomService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTelecomServiceStub(
+	impl ITelecomServiceServer,
+) ITelecomService {
+	wrapper := &telecomServiceStubWrapper{impl: impl}
+	stub := &TelecomServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -325,3 +325,93 @@ func (s *VideoCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVideoCallbackServer is the server-side interface that user implementations
+// provide to NewVideoCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVideoCallbackServer interface {
+	ReceiveSessionModifyRequest(ctx context.Context, videoProfile androidTelecom.VideoProfile) error
+	ReceiveSessionModifyResponse(ctx context.Context, status int32, requestedProfile androidTelecom.VideoProfile, responseProfile androidTelecom.VideoProfile) error
+	HandleCallSessionEvent(ctx context.Context, event int32) error
+	ChangePeerDimensions(ctx context.Context, width int32, height int32) error
+	ChangeCallDataUsage(ctx context.Context, dataUsage int64) error
+	ChangeCameraCapabilities(ctx context.Context, cameraCapabilities androidTelecom.VideoProfileCameraCapabilities) error
+	ChangeVideoQuality(ctx context.Context, videoQuality int32) error
+}
+
+type videoCallbackStubWrapper struct {
+	impl       IVideoCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *videoCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *videoCallbackStubWrapper) ReceiveSessionModifyRequest(
+	ctx context.Context,
+	videoProfile androidTelecom.VideoProfile,
+) error {
+	return w.impl.ReceiveSessionModifyRequest(ctx, videoProfile)
+}
+
+func (w *videoCallbackStubWrapper) ReceiveSessionModifyResponse(
+	ctx context.Context,
+	status int32,
+	requestedProfile androidTelecom.VideoProfile,
+	responseProfile androidTelecom.VideoProfile,
+) error {
+	return w.impl.ReceiveSessionModifyResponse(ctx, status, requestedProfile, responseProfile)
+}
+
+func (w *videoCallbackStubWrapper) HandleCallSessionEvent(
+	ctx context.Context,
+	event int32,
+) error {
+	return w.impl.HandleCallSessionEvent(ctx, event)
+}
+
+func (w *videoCallbackStubWrapper) ChangePeerDimensions(
+	ctx context.Context,
+	width int32,
+	height int32,
+) error {
+	return w.impl.ChangePeerDimensions(ctx, width, height)
+}
+
+func (w *videoCallbackStubWrapper) ChangeCallDataUsage(
+	ctx context.Context,
+	dataUsage int64,
+) error {
+	return w.impl.ChangeCallDataUsage(ctx, dataUsage)
+}
+
+func (w *videoCallbackStubWrapper) ChangeCameraCapabilities(
+	ctx context.Context,
+	cameraCapabilities androidTelecom.VideoProfileCameraCapabilities,
+) error {
+	return w.impl.ChangeCameraCapabilities(ctx, cameraCapabilities)
+}
+
+func (w *videoCallbackStubWrapper) ChangeVideoQuality(
+	ctx context.Context,
+	videoQuality int32,
+) error {
+	return w.impl.ChangeVideoQuality(ctx, videoQuality)
+}
+
+var _ IVideoCallback = (*videoCallbackStubWrapper)(nil)
+
+// NewVideoCallbackStub creates a server-side IVideoCallback wrapping the given
+// server implementation. The returned value satisfies IVideoCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVideoCallbackStub(
+	impl IVideoCallbackServer,
+) IVideoCallback {
+	wrapper := &videoCallbackStubWrapper{impl: impl}
+	stub := &VideoCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

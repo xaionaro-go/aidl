@@ -100,3 +100,48 @@ func (s *InputMonitorHostStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputMonitorHostServer is the server-side interface that user implementations
+// provide to NewInputMonitorHostStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputMonitorHostServer interface {
+	PilferPointers(ctx context.Context) error
+	Dispose(ctx context.Context) error
+}
+
+type inputMonitorHostStubWrapper struct {
+	impl       IInputMonitorHostServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputMonitorHostStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputMonitorHostStubWrapper) PilferPointers(
+	ctx context.Context,
+) error {
+	return w.impl.PilferPointers(ctx)
+}
+
+func (w *inputMonitorHostStubWrapper) Dispose(
+	ctx context.Context,
+) error {
+	return w.impl.Dispose(ctx)
+}
+
+var _ IInputMonitorHost = (*inputMonitorHostStubWrapper)(nil)
+
+// NewInputMonitorHostStub creates a server-side IInputMonitorHost wrapping the given
+// server implementation. The returned value satisfies IInputMonitorHost
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputMonitorHostStub(
+	impl IInputMonitorHostServer,
+) IInputMonitorHost {
+	wrapper := &inputMonitorHostStubWrapper{impl: impl}
+	stub := &InputMonitorHostStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

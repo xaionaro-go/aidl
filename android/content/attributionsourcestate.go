@@ -27,8 +27,6 @@ func (s *AttributionSourceState) MarshalParcel(
 	p.WriteInt32(s.Pid)
 	p.WriteInt32(s.Uid)
 	p.WriteInt32(s.DeviceId)
-	// @utf8InCpp only affects the C++ in-memory representation; the wire
-	// format is always UTF-16 (the C++ backend uses writeUtf8AsUtf16).
 	p.WriteString16(s.PackageName)
 	p.WriteString16(s.AttributionTag)
 	if s.Token == nil {
@@ -82,8 +80,6 @@ func (s *AttributionSourceState) UnmarshalParcel(
 		return _err
 	}
 
-	// @utf8InCpp only affects the C++ in-memory representation; the wire
-	// format is always UTF-16 (the C++ backend uses readUtf8FromUtf16).
 	s.PackageName, _err = p.ReadString16()
 	if _err != nil {
 		return _err

@@ -100,3 +100,43 @@ func (s *TrustedPresentationListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITrustedPresentationListenerServer is the server-side interface that user implementations
+// provide to NewTrustedPresentationListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITrustedPresentationListenerServer interface {
+	OnTrustedPresentationChanged(ctx context.Context, enteredTrustedStateIds []int32, exitedTrustedStateIds []int32) error
+}
+
+type trustedPresentationListenerStubWrapper struct {
+	impl       ITrustedPresentationListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *trustedPresentationListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *trustedPresentationListenerStubWrapper) OnTrustedPresentationChanged(
+	ctx context.Context,
+	enteredTrustedStateIds []int32,
+	exitedTrustedStateIds []int32,
+) error {
+	return w.impl.OnTrustedPresentationChanged(ctx, enteredTrustedStateIds, exitedTrustedStateIds)
+}
+
+var _ ITrustedPresentationListener = (*trustedPresentationListenerStubWrapper)(nil)
+
+// NewTrustedPresentationListenerStub creates a server-side ITrustedPresentationListener wrapping the given
+// server implementation. The returned value satisfies ITrustedPresentationListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTrustedPresentationListenerStub(
+	impl ITrustedPresentationListenerServer,
+) ITrustedPresentationListener {
+	wrapper := &trustedPresentationListenerStubWrapper{impl: impl}
+	stub := &TrustedPresentationListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

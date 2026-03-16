@@ -144,3 +144,54 @@ func (s *ShortcutChangeCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IShortcutChangeCallbackServer is the server-side interface that user implementations
+// provide to NewShortcutChangeCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IShortcutChangeCallbackServer interface {
+	OnShortcutsAddedOrUpdated(ctx context.Context, packageName string, shortcuts []ShortcutInfo, user interface{}) error
+	OnShortcutsRemoved(ctx context.Context, packageName string, shortcuts []ShortcutInfo, user interface{}) error
+}
+
+type shortcutChangeCallbackStubWrapper struct {
+	impl       IShortcutChangeCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *shortcutChangeCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *shortcutChangeCallbackStubWrapper) OnShortcutsAddedOrUpdated(
+	ctx context.Context,
+	packageName string,
+	shortcuts []ShortcutInfo,
+	user interface{},
+) error {
+	return w.impl.OnShortcutsAddedOrUpdated(ctx, packageName, shortcuts, user)
+}
+
+func (w *shortcutChangeCallbackStubWrapper) OnShortcutsRemoved(
+	ctx context.Context,
+	packageName string,
+	shortcuts []ShortcutInfo,
+	user interface{},
+) error {
+	return w.impl.OnShortcutsRemoved(ctx, packageName, shortcuts, user)
+}
+
+var _ IShortcutChangeCallback = (*shortcutChangeCallbackStubWrapper)(nil)
+
+// NewShortcutChangeCallbackStub creates a server-side IShortcutChangeCallback wrapping the given
+// server implementation. The returned value satisfies IShortcutChangeCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewShortcutChangeCallbackStub(
+	impl IShortcutChangeCallbackServer,
+) IShortcutChangeCallback {
+	wrapper := &shortcutChangeCallbackStubWrapper{impl: impl}
+	stub := &ShortcutChangeCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

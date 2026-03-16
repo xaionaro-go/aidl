@@ -106,3 +106,46 @@ func (s *HdrLayerInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdrLayerInfoListenerServer is the server-side interface that user implementations
+// provide to NewHdrLayerInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdrLayerInfoListenerServer interface {
+	OnHdrLayerInfoChanged(ctx context.Context, numberOfHdrLayers int32, maxW int32, maxH int32, flags int32, maxDesiredHdrSdrRatio float32) error
+}
+
+type hdrLayerInfoListenerStubWrapper struct {
+	impl       IHdrLayerInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdrLayerInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdrLayerInfoListenerStubWrapper) OnHdrLayerInfoChanged(
+	ctx context.Context,
+	numberOfHdrLayers int32,
+	maxW int32,
+	maxH int32,
+	flags int32,
+	maxDesiredHdrSdrRatio float32,
+) error {
+	return w.impl.OnHdrLayerInfoChanged(ctx, numberOfHdrLayers, maxW, maxH, flags, maxDesiredHdrSdrRatio)
+}
+
+var _ IHdrLayerInfoListener = (*hdrLayerInfoListenerStubWrapper)(nil)
+
+// NewHdrLayerInfoListenerStub creates a server-side IHdrLayerInfoListener wrapping the given
+// server implementation. The returned value satisfies IHdrLayerInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdrLayerInfoListenerStub(
+	impl IHdrLayerInfoListenerServer,
+) IHdrLayerInfoListener {
+	wrapper := &hdrLayerInfoListenerStubWrapper{impl: impl}
+	stub := &HdrLayerInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

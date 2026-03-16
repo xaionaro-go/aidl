@@ -89,3 +89,43 @@ func (s *AdbCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAdbCallbackServer is the server-side interface that user implementations
+// provide to NewAdbCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAdbCallbackServer interface {
+	OnDebuggingChanged(ctx context.Context, enabled bool, type_ AdbTransportType) error
+}
+
+type adbCallbackStubWrapper struct {
+	impl       IAdbCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *adbCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *adbCallbackStubWrapper) OnDebuggingChanged(
+	ctx context.Context,
+	enabled bool,
+	type_ AdbTransportType,
+) error {
+	return w.impl.OnDebuggingChanged(ctx, enabled, type_)
+}
+
+var _ IAdbCallback = (*adbCallbackStubWrapper)(nil)
+
+// NewAdbCallbackStub creates a server-side IAdbCallback wrapping the given
+// server implementation. The returned value satisfies IAdbCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAdbCallbackStub(
+	impl IAdbCallbackServer,
+) IAdbCallback {
+	wrapper := &adbCallbackStubWrapper{impl: impl}
+	stub := &AdbCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

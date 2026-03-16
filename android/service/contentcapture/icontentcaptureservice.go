@@ -60,7 +60,7 @@ func (p *ContentCaptureServiceProxy) OnConnected(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentCaptureService)
-	_data.WriteStrongBinder(callback.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback, p.remote.Transport())
 	_data.WriteBool(verbose)
 	_data.WriteBool(debug)
 
@@ -104,7 +104,7 @@ func (p *ContentCaptureServiceProxy) OnSessionStarted(
 	}
 	_data.WriteInt32(sessionId)
 	_data.WriteInt32(uid)
-	_data.WriteStrongBinder(clientReceiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientReceiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(initialState)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onSessionStarted")
@@ -186,7 +186,7 @@ func (p *ContentCaptureServiceProxy) OnDataShared(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentCaptureService, "onDataShared")
 	if _err != nil {
@@ -387,4 +387,106 @@ func (s *ContentCaptureServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContentCaptureServiceServer is the server-side interface that user implementations
+// provide to NewContentCaptureServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentCaptureServiceServer interface {
+	OnConnected(ctx context.Context, callback binder.IBinder, verbose bool, debug bool) error
+	OnDisconnected(ctx context.Context) error
+	OnSessionStarted(ctx context.Context, context_ viewContentcapture.ContentCaptureContext, sessionId int32, uid int32, clientReceiver os.IResultReceiver, initialState int32) error
+	OnSessionFinished(ctx context.Context, sessionId int32) error
+	OnActivitySnapshot(ctx context.Context, sessionId int32, snapshotData SnapshotData) error
+	OnDataRemovalRequest(ctx context.Context, request viewContentcapture.DataRemovalRequest) error
+	OnDataShared(ctx context.Context, request viewContentcapture.DataShareRequest, callback IDataShareCallback) error
+	OnActivityEvent(ctx context.Context, event ActivityEvent) error
+}
+
+type contentCaptureServiceStubWrapper struct {
+	impl       IContentCaptureServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentCaptureServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentCaptureServiceStubWrapper) OnConnected(
+	ctx context.Context,
+	callback binder.IBinder,
+	verbose bool,
+	debug bool,
+) error {
+	return w.impl.OnConnected(ctx, callback, verbose, debug)
+}
+
+func (w *contentCaptureServiceStubWrapper) OnDisconnected(
+	ctx context.Context,
+) error {
+	return w.impl.OnDisconnected(ctx)
+}
+
+func (w *contentCaptureServiceStubWrapper) OnSessionStarted(
+	ctx context.Context,
+	context_ viewContentcapture.ContentCaptureContext,
+	sessionId int32,
+	uid int32,
+	clientReceiver os.IResultReceiver,
+	initialState int32,
+) error {
+	return w.impl.OnSessionStarted(ctx, context_, sessionId, uid, clientReceiver, initialState)
+}
+
+func (w *contentCaptureServiceStubWrapper) OnSessionFinished(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnSessionFinished(ctx, sessionId)
+}
+
+func (w *contentCaptureServiceStubWrapper) OnActivitySnapshot(
+	ctx context.Context,
+	sessionId int32,
+	snapshotData SnapshotData,
+) error {
+	return w.impl.OnActivitySnapshot(ctx, sessionId, snapshotData)
+}
+
+func (w *contentCaptureServiceStubWrapper) OnDataRemovalRequest(
+	ctx context.Context,
+	request viewContentcapture.DataRemovalRequest,
+) error {
+	return w.impl.OnDataRemovalRequest(ctx, request)
+}
+
+func (w *contentCaptureServiceStubWrapper) OnDataShared(
+	ctx context.Context,
+	request viewContentcapture.DataShareRequest,
+	callback IDataShareCallback,
+) error {
+	return w.impl.OnDataShared(ctx, request, callback)
+}
+
+func (w *contentCaptureServiceStubWrapper) OnActivityEvent(
+	ctx context.Context,
+	event ActivityEvent,
+) error {
+	return w.impl.OnActivityEvent(ctx, event)
+}
+
+var _ IContentCaptureService = (*contentCaptureServiceStubWrapper)(nil)
+
+// NewContentCaptureServiceStub creates a server-side IContentCaptureService wrapping the given
+// server implementation. The returned value satisfies IContentCaptureService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentCaptureServiceStub(
+	impl IContentCaptureServiceServer,
+) IContentCaptureService {
+	wrapper := &contentCaptureServiceStubWrapper{impl: impl}
+	stub := &ContentCaptureServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -58,7 +58,7 @@ func (p *UdfpsOverlayControllerProxy) ShowUdfpsOverlay(
 	_data.WriteInt64(requestId)
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(reason)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUdfpsOverlayController, "showUdfpsOverlay")
 	if _err != nil {
@@ -266,4 +266,89 @@ func (s *UdfpsOverlayControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUdfpsOverlayControllerServer is the server-side interface that user implementations
+// provide to NewUdfpsOverlayControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUdfpsOverlayControllerServer interface {
+	ShowUdfpsOverlay(ctx context.Context, requestId int64, sensorId int32, reason int32, callback IUdfpsOverlayControllerCallback) error
+	HideUdfpsOverlay(ctx context.Context, sensorId int32) error
+	OnAcquired(ctx context.Context, sensorId int32, acquiredInfo int32) error
+	OnEnrollmentProgress(ctx context.Context, sensorId int32, remaining int32) error
+	OnEnrollmentHelp(ctx context.Context, sensorId int32) error
+	SetDebugMessage(ctx context.Context, sensorId int32, message string) error
+}
+
+type udfpsOverlayControllerStubWrapper struct {
+	impl       IUdfpsOverlayControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *udfpsOverlayControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *udfpsOverlayControllerStubWrapper) ShowUdfpsOverlay(
+	ctx context.Context,
+	requestId int64,
+	sensorId int32,
+	reason int32,
+	callback IUdfpsOverlayControllerCallback,
+) error {
+	return w.impl.ShowUdfpsOverlay(ctx, requestId, sensorId, reason, callback)
+}
+
+func (w *udfpsOverlayControllerStubWrapper) HideUdfpsOverlay(
+	ctx context.Context,
+	sensorId int32,
+) error {
+	return w.impl.HideUdfpsOverlay(ctx, sensorId)
+}
+
+func (w *udfpsOverlayControllerStubWrapper) OnAcquired(
+	ctx context.Context,
+	sensorId int32,
+	acquiredInfo int32,
+) error {
+	return w.impl.OnAcquired(ctx, sensorId, acquiredInfo)
+}
+
+func (w *udfpsOverlayControllerStubWrapper) OnEnrollmentProgress(
+	ctx context.Context,
+	sensorId int32,
+	remaining int32,
+) error {
+	return w.impl.OnEnrollmentProgress(ctx, sensorId, remaining)
+}
+
+func (w *udfpsOverlayControllerStubWrapper) OnEnrollmentHelp(
+	ctx context.Context,
+	sensorId int32,
+) error {
+	return w.impl.OnEnrollmentHelp(ctx, sensorId)
+}
+
+func (w *udfpsOverlayControllerStubWrapper) SetDebugMessage(
+	ctx context.Context,
+	sensorId int32,
+	message string,
+) error {
+	return w.impl.SetDebugMessage(ctx, sensorId, message)
+}
+
+var _ IUdfpsOverlayController = (*udfpsOverlayControllerStubWrapper)(nil)
+
+// NewUdfpsOverlayControllerStub creates a server-side IUdfpsOverlayController wrapping the given
+// server implementation. The returned value satisfies IUdfpsOverlayController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUdfpsOverlayControllerStub(
+	impl IUdfpsOverlayControllerServer,
+) IUdfpsOverlayController {
+	wrapper := &udfpsOverlayControllerStubWrapper{impl: impl}
+	stub := &UdfpsOverlayControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

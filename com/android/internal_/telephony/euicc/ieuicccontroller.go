@@ -1374,3 +1374,242 @@ func (s *EuiccControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEuiccControllerServer is the server-side interface that user implementations
+// provide to NewEuiccControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEuiccControllerServer interface {
+	ContinueOperation(ctx context.Context, cardId int32, resolutionIntent content.Intent, resolutionExtras os.Bundle) error
+	GetDownloadableSubscriptionMetadata(ctx context.Context, cardId int32, subscription telephonyEuicc.DownloadableSubscription, callbackIntent app.PendingIntent) error
+	GetDefaultDownloadableSubscriptionList(ctx context.Context, cardId int32, callbackIntent app.PendingIntent) error
+	GetEid(ctx context.Context, cardId int32) (string, error)
+	GetOtaStatus(ctx context.Context, cardId int32) (int32, error)
+	DownloadSubscription(ctx context.Context, cardId int32, subscription telephonyEuicc.DownloadableSubscription, switchAfterDownload bool, resolvedBundle os.Bundle, callbackIntent app.PendingIntent) error
+	GetEuiccInfo(ctx context.Context, cardId int32) (telephonyEuicc.EuiccInfo, error)
+	DeleteSubscription(ctx context.Context, cardId int32, subscriptionId int32, callbackIntent app.PendingIntent) error
+	SwitchToSubscription(ctx context.Context, cardId int32, subscriptionId int32, callbackIntent app.PendingIntent) error
+	SwitchToSubscriptionWithPort(ctx context.Context, cardId int32, subscriptionId int32, portIndex int32, callbackIntent app.PendingIntent) error
+	UpdateSubscriptionNickname(ctx context.Context, cardId int32, subscriptionId int32, nickname string, callbackIntent app.PendingIntent) error
+	EraseSubscriptions(ctx context.Context, cardId int32, callbackIntent app.PendingIntent) error
+	EraseSubscriptionsWithOptions(ctx context.Context, cardId int32, options int32, callbackIntent app.PendingIntent) error
+	RetainSubscriptionsForFactoryReset(ctx context.Context, cardId int32, callbackIntent app.PendingIntent) error
+	SetSupportedCountries(ctx context.Context, isSupported bool, countriesList []string) error
+	GetSupportedCountries(ctx context.Context, isSupported bool) ([]string, error)
+	IsSupportedCountry(ctx context.Context, countryIso string) (bool, error)
+	IsSimPortAvailable(ctx context.Context, cardId int32, portIndex int32) (bool, error)
+	HasCarrierPrivilegesForPackageOnAnyPhone(ctx context.Context) (bool, error)
+	IsCompatChangeEnabled(ctx context.Context, changeId int64) (bool, error)
+	SetPsimConversionSupportedCarriers(ctx context.Context, carrierIds []int32) error
+	IsPsimConversionSupported(ctx context.Context, carrierId int32) (bool, error)
+	GetAvailableMemoryInBytes(ctx context.Context, cardId int32) (int64, error)
+}
+
+type euiccControllerStubWrapper struct {
+	impl       IEuiccControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *euiccControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *euiccControllerStubWrapper) ContinueOperation(
+	ctx context.Context,
+	cardId int32,
+	resolutionIntent content.Intent,
+	resolutionExtras os.Bundle,
+) error {
+	return w.impl.ContinueOperation(ctx, cardId, resolutionIntent, resolutionExtras)
+}
+
+func (w *euiccControllerStubWrapper) GetDownloadableSubscriptionMetadata(
+	ctx context.Context,
+	cardId int32,
+	subscription telephonyEuicc.DownloadableSubscription,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.GetDownloadableSubscriptionMetadata(ctx, cardId, subscription, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) GetDefaultDownloadableSubscriptionList(
+	ctx context.Context,
+	cardId int32,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.GetDefaultDownloadableSubscriptionList(ctx, cardId, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) GetEid(
+	ctx context.Context,
+	cardId int32,
+) (string, error) {
+	return w.impl.GetEid(ctx, cardId)
+}
+
+func (w *euiccControllerStubWrapper) GetOtaStatus(
+	ctx context.Context,
+	cardId int32,
+) (int32, error) {
+	return w.impl.GetOtaStatus(ctx, cardId)
+}
+
+func (w *euiccControllerStubWrapper) DownloadSubscription(
+	ctx context.Context,
+	cardId int32,
+	subscription telephonyEuicc.DownloadableSubscription,
+	switchAfterDownload bool,
+	resolvedBundle os.Bundle,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.DownloadSubscription(ctx, cardId, subscription, switchAfterDownload, resolvedBundle, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) GetEuiccInfo(
+	ctx context.Context,
+	cardId int32,
+) (telephonyEuicc.EuiccInfo, error) {
+	return w.impl.GetEuiccInfo(ctx, cardId)
+}
+
+func (w *euiccControllerStubWrapper) DeleteSubscription(
+	ctx context.Context,
+	cardId int32,
+	subscriptionId int32,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.DeleteSubscription(ctx, cardId, subscriptionId, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) SwitchToSubscription(
+	ctx context.Context,
+	cardId int32,
+	subscriptionId int32,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.SwitchToSubscription(ctx, cardId, subscriptionId, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) SwitchToSubscriptionWithPort(
+	ctx context.Context,
+	cardId int32,
+	subscriptionId int32,
+	portIndex int32,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.SwitchToSubscriptionWithPort(ctx, cardId, subscriptionId, portIndex, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) UpdateSubscriptionNickname(
+	ctx context.Context,
+	cardId int32,
+	subscriptionId int32,
+	nickname string,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.UpdateSubscriptionNickname(ctx, cardId, subscriptionId, nickname, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) EraseSubscriptions(
+	ctx context.Context,
+	cardId int32,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.EraseSubscriptions(ctx, cardId, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) EraseSubscriptionsWithOptions(
+	ctx context.Context,
+	cardId int32,
+	options int32,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.EraseSubscriptionsWithOptions(ctx, cardId, options, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) RetainSubscriptionsForFactoryReset(
+	ctx context.Context,
+	cardId int32,
+	callbackIntent app.PendingIntent,
+) error {
+	return w.impl.RetainSubscriptionsForFactoryReset(ctx, cardId, callbackIntent)
+}
+
+func (w *euiccControllerStubWrapper) SetSupportedCountries(
+	ctx context.Context,
+	isSupported bool,
+	countriesList []string,
+) error {
+	return w.impl.SetSupportedCountries(ctx, isSupported, countriesList)
+}
+
+func (w *euiccControllerStubWrapper) GetSupportedCountries(
+	ctx context.Context,
+	isSupported bool,
+) ([]string, error) {
+	return w.impl.GetSupportedCountries(ctx, isSupported)
+}
+
+func (w *euiccControllerStubWrapper) IsSupportedCountry(
+	ctx context.Context,
+	countryIso string,
+) (bool, error) {
+	return w.impl.IsSupportedCountry(ctx, countryIso)
+}
+
+func (w *euiccControllerStubWrapper) IsSimPortAvailable(
+	ctx context.Context,
+	cardId int32,
+	portIndex int32,
+) (bool, error) {
+	return w.impl.IsSimPortAvailable(ctx, cardId, portIndex)
+}
+
+func (w *euiccControllerStubWrapper) HasCarrierPrivilegesForPackageOnAnyPhone(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasCarrierPrivilegesForPackageOnAnyPhone(ctx)
+}
+
+func (w *euiccControllerStubWrapper) IsCompatChangeEnabled(
+	ctx context.Context,
+	changeId int64,
+) (bool, error) {
+	return w.impl.IsCompatChangeEnabled(ctx, changeId)
+}
+
+func (w *euiccControllerStubWrapper) SetPsimConversionSupportedCarriers(
+	ctx context.Context,
+	carrierIds []int32,
+) error {
+	return w.impl.SetPsimConversionSupportedCarriers(ctx, carrierIds)
+}
+
+func (w *euiccControllerStubWrapper) IsPsimConversionSupported(
+	ctx context.Context,
+	carrierId int32,
+) (bool, error) {
+	return w.impl.IsPsimConversionSupported(ctx, carrierId)
+}
+
+func (w *euiccControllerStubWrapper) GetAvailableMemoryInBytes(
+	ctx context.Context,
+	cardId int32,
+) (int64, error) {
+	return w.impl.GetAvailableMemoryInBytes(ctx, cardId)
+}
+
+var _ IEuiccController = (*euiccControllerStubWrapper)(nil)
+
+// NewEuiccControllerStub creates a server-side IEuiccController wrapping the given
+// server implementation. The returned value satisfies IEuiccController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEuiccControllerStub(
+	impl IEuiccControllerServer,
+) IEuiccController {
+	wrapper := &euiccControllerStubWrapper{impl: impl}
+	stub := &EuiccControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -58,8 +58,8 @@ func (p *TranscodingClientCallbackProxy) OpenFileDescriptor(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranscodingClientCallback)
-	_data.WriteString(fileUri)
-	_data.WriteString(mode)
+	_data.WriteString16(fileUri)
+	_data.WriteString16(mode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranscodingClientCallback, "openFileDescriptor")
 	if _err != nil {
@@ -233,11 +233,11 @@ func (s *TranscodingClientCallbackStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_fileUri, _err := _data.ReadString()
+		_arg_fileUri, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_mode, _err := _data.ReadString()
+		_arg_mode, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -359,4 +359,105 @@ func (s *TranscodingClientCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITranscodingClientCallbackServer is the server-side interface that user implementations
+// provide to NewTranscodingClientCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITranscodingClientCallbackServer interface {
+	OpenFileDescriptor(ctx context.Context, fileUri string, mode string) (int32, error)
+	OnTranscodingStarted(ctx context.Context, sessionId int32) error
+	OnTranscodingPaused(ctx context.Context, sessionId int32) error
+	OnTranscodingResumed(ctx context.Context, sessionId int32) error
+	OnTranscodingFinished(ctx context.Context, sessionId int32, result TranscodingResultParcel) error
+	OnTranscodingFailed(ctx context.Context, sessionId int32, errorCode TranscodingErrorCode) error
+	OnAwaitNumberOfSessionsChanged(ctx context.Context, sessionId int32, oldAwaitNumber int32, newAwaitNumber int32) error
+	OnProgressUpdate(ctx context.Context, sessionId int32, progress int32) error
+}
+
+type transcodingClientCallbackStubWrapper struct {
+	impl       ITranscodingClientCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transcodingClientCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transcodingClientCallbackStubWrapper) OpenFileDescriptor(
+	ctx context.Context,
+	fileUri string,
+	mode string,
+) (int32, error) {
+	return w.impl.OpenFileDescriptor(ctx, fileUri, mode)
+}
+
+func (w *transcodingClientCallbackStubWrapper) OnTranscodingStarted(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnTranscodingStarted(ctx, sessionId)
+}
+
+func (w *transcodingClientCallbackStubWrapper) OnTranscodingPaused(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnTranscodingPaused(ctx, sessionId)
+}
+
+func (w *transcodingClientCallbackStubWrapper) OnTranscodingResumed(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnTranscodingResumed(ctx, sessionId)
+}
+
+func (w *transcodingClientCallbackStubWrapper) OnTranscodingFinished(
+	ctx context.Context,
+	sessionId int32,
+	result TranscodingResultParcel,
+) error {
+	return w.impl.OnTranscodingFinished(ctx, sessionId, result)
+}
+
+func (w *transcodingClientCallbackStubWrapper) OnTranscodingFailed(
+	ctx context.Context,
+	sessionId int32,
+	errorCode TranscodingErrorCode,
+) error {
+	return w.impl.OnTranscodingFailed(ctx, sessionId, errorCode)
+}
+
+func (w *transcodingClientCallbackStubWrapper) OnAwaitNumberOfSessionsChanged(
+	ctx context.Context,
+	sessionId int32,
+	oldAwaitNumber int32,
+	newAwaitNumber int32,
+) error {
+	return w.impl.OnAwaitNumberOfSessionsChanged(ctx, sessionId, oldAwaitNumber, newAwaitNumber)
+}
+
+func (w *transcodingClientCallbackStubWrapper) OnProgressUpdate(
+	ctx context.Context,
+	sessionId int32,
+	progress int32,
+) error {
+	return w.impl.OnProgressUpdate(ctx, sessionId, progress)
+}
+
+var _ ITranscodingClientCallback = (*transcodingClientCallbackStubWrapper)(nil)
+
+// NewTranscodingClientCallbackStub creates a server-side ITranscodingClientCallback wrapping the given
+// server implementation. The returned value satisfies ITranscodingClientCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTranscodingClientCallbackStub(
+	impl ITranscodingClientCallbackServer,
+) ITranscodingClientCallback {
+	wrapper := &transcodingClientCallbackStubWrapper{impl: impl}
+	stub := &TranscodingClientCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

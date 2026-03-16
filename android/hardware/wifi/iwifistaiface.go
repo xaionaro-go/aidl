@@ -596,7 +596,7 @@ func (p *WifiStaIfaceProxy) RegisterEventCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWifiStaIface, "registerEventCallback")
 	if _err != nil {
@@ -1834,4 +1834,316 @@ func (s *WifiStaIfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWifiStaIfaceServer is the server-side interface that user implementations
+// provide to NewWifiStaIfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiStaIfaceServer interface {
+	GetName(ctx context.Context) (string, error)
+	ConfigureRoaming(ctx context.Context, config StaRoamingConfig) error
+	DisableLinkLayerStatsCollection(ctx context.Context) error
+	EnableLinkLayerStatsCollection(ctx context.Context, debug bool) error
+	EnableNdOffload(ctx context.Context, enable bool) error
+	GetApfPacketFilterCapabilities(ctx context.Context) (StaApfPacketFilterCapabilities, error)
+	GetBackgroundScanCapabilities(ctx context.Context) (StaBackgroundScanCapabilities, error)
+	GetFeatureSet(ctx context.Context) (int32, error)
+	GetDebugRxPacketFates(ctx context.Context) ([]WifiDebugRxPacketFateReport, error)
+	GetDebugTxPacketFates(ctx context.Context) ([]WifiDebugTxPacketFateReport, error)
+	GetFactoryMacAddress(ctx context.Context) ([]byte, error)
+	GetLinkLayerStats(ctx context.Context) (StaLinkLayerStats, error)
+	GetRoamingCapabilities(ctx context.Context) (StaRoamingCapabilities, error)
+	InstallApfPacketFilter(ctx context.Context, program []byte) error
+	ReadApfPacketFilterData(ctx context.Context) ([]byte, error)
+	RegisterEventCallback(ctx context.Context, callback IWifiStaIfaceEventCallback) error
+	SetMacAddress(ctx context.Context, mac []byte) error
+	SetRoamingState(ctx context.Context, state StaRoamingState) error
+	SetScanMode(ctx context.Context, enable bool) error
+	StartBackgroundScan(ctx context.Context, cmdId int32, params StaBackgroundScanParameters) error
+	StartDebugPacketFateMonitoring(ctx context.Context) error
+	StartRssiMonitoring(ctx context.Context, cmdId int32, maxRssi int32, minRssi int32) error
+	StartSendingKeepAlivePackets(ctx context.Context, cmdId int32, ipPacketData []byte, etherType uint16, srcAddress []byte, dstAddress []byte, periodInMs int32) error
+	StopBackgroundScan(ctx context.Context, cmdId int32) error
+	StopRssiMonitoring(ctx context.Context, cmdId int32) error
+	StopSendingKeepAlivePackets(ctx context.Context, cmdId int32) error
+	SetDtimMultiplier(ctx context.Context, multiplier int32) error
+	GetCachedScanData(ctx context.Context) (CachedScanData, error)
+	TwtGetCapabilities(ctx context.Context) (TwtCapabilities, error)
+	TwtSessionSetup(ctx context.Context, cmdId int32, twtRequest TwtRequest) error
+	TwtSessionUpdate(ctx context.Context, cmdId int32, sessionId int32, twtRequest TwtRequest) error
+	TwtSessionSuspend(ctx context.Context, cmdId int32, sessionId int32) error
+	TwtSessionResume(ctx context.Context, cmdId int32, sessionId int32) error
+	TwtSessionTeardown(ctx context.Context, cmdId int32, sessionId int32) error
+	TwtSessionGetStats(ctx context.Context, cmdId int32, sessionId int32) error
+}
+
+type wifiStaIfaceStubWrapper struct {
+	impl       IWifiStaIfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiStaIfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiStaIfaceStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) ConfigureRoaming(
+	ctx context.Context,
+	config StaRoamingConfig,
+) error {
+	return w.impl.ConfigureRoaming(ctx, config)
+}
+
+func (w *wifiStaIfaceStubWrapper) DisableLinkLayerStatsCollection(
+	ctx context.Context,
+) error {
+	return w.impl.DisableLinkLayerStatsCollection(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) EnableLinkLayerStatsCollection(
+	ctx context.Context,
+	debug bool,
+) error {
+	return w.impl.EnableLinkLayerStatsCollection(ctx, debug)
+}
+
+func (w *wifiStaIfaceStubWrapper) EnableNdOffload(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.EnableNdOffload(ctx, enable)
+}
+
+func (w *wifiStaIfaceStubWrapper) GetApfPacketFilterCapabilities(
+	ctx context.Context,
+) (StaApfPacketFilterCapabilities, error) {
+	return w.impl.GetApfPacketFilterCapabilities(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) GetBackgroundScanCapabilities(
+	ctx context.Context,
+) (StaBackgroundScanCapabilities, error) {
+	return w.impl.GetBackgroundScanCapabilities(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) GetFeatureSet(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetFeatureSet(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) GetDebugRxPacketFates(
+	ctx context.Context,
+) ([]WifiDebugRxPacketFateReport, error) {
+	return w.impl.GetDebugRxPacketFates(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) GetDebugTxPacketFates(
+	ctx context.Context,
+) ([]WifiDebugTxPacketFateReport, error) {
+	return w.impl.GetDebugTxPacketFates(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) GetFactoryMacAddress(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetFactoryMacAddress(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) GetLinkLayerStats(
+	ctx context.Context,
+) (StaLinkLayerStats, error) {
+	return w.impl.GetLinkLayerStats(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) GetRoamingCapabilities(
+	ctx context.Context,
+) (StaRoamingCapabilities, error) {
+	return w.impl.GetRoamingCapabilities(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) InstallApfPacketFilter(
+	ctx context.Context,
+	program []byte,
+) error {
+	return w.impl.InstallApfPacketFilter(ctx, program)
+}
+
+func (w *wifiStaIfaceStubWrapper) ReadApfPacketFilterData(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.ReadApfPacketFilterData(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) RegisterEventCallback(
+	ctx context.Context,
+	callback IWifiStaIfaceEventCallback,
+) error {
+	return w.impl.RegisterEventCallback(ctx, callback)
+}
+
+func (w *wifiStaIfaceStubWrapper) SetMacAddress(
+	ctx context.Context,
+	mac []byte,
+) error {
+	return w.impl.SetMacAddress(ctx, mac)
+}
+
+func (w *wifiStaIfaceStubWrapper) SetRoamingState(
+	ctx context.Context,
+	state StaRoamingState,
+) error {
+	return w.impl.SetRoamingState(ctx, state)
+}
+
+func (w *wifiStaIfaceStubWrapper) SetScanMode(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetScanMode(ctx, enable)
+}
+
+func (w *wifiStaIfaceStubWrapper) StartBackgroundScan(
+	ctx context.Context,
+	cmdId int32,
+	params StaBackgroundScanParameters,
+) error {
+	return w.impl.StartBackgroundScan(ctx, cmdId, params)
+}
+
+func (w *wifiStaIfaceStubWrapper) StartDebugPacketFateMonitoring(
+	ctx context.Context,
+) error {
+	return w.impl.StartDebugPacketFateMonitoring(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) StartRssiMonitoring(
+	ctx context.Context,
+	cmdId int32,
+	maxRssi int32,
+	minRssi int32,
+) error {
+	return w.impl.StartRssiMonitoring(ctx, cmdId, maxRssi, minRssi)
+}
+
+func (w *wifiStaIfaceStubWrapper) StartSendingKeepAlivePackets(
+	ctx context.Context,
+	cmdId int32,
+	ipPacketData []byte,
+	etherType uint16,
+	srcAddress []byte,
+	dstAddress []byte,
+	periodInMs int32,
+) error {
+	return w.impl.StartSendingKeepAlivePackets(ctx, cmdId, ipPacketData, etherType, srcAddress, dstAddress, periodInMs)
+}
+
+func (w *wifiStaIfaceStubWrapper) StopBackgroundScan(
+	ctx context.Context,
+	cmdId int32,
+) error {
+	return w.impl.StopBackgroundScan(ctx, cmdId)
+}
+
+func (w *wifiStaIfaceStubWrapper) StopRssiMonitoring(
+	ctx context.Context,
+	cmdId int32,
+) error {
+	return w.impl.StopRssiMonitoring(ctx, cmdId)
+}
+
+func (w *wifiStaIfaceStubWrapper) StopSendingKeepAlivePackets(
+	ctx context.Context,
+	cmdId int32,
+) error {
+	return w.impl.StopSendingKeepAlivePackets(ctx, cmdId)
+}
+
+func (w *wifiStaIfaceStubWrapper) SetDtimMultiplier(
+	ctx context.Context,
+	multiplier int32,
+) error {
+	return w.impl.SetDtimMultiplier(ctx, multiplier)
+}
+
+func (w *wifiStaIfaceStubWrapper) GetCachedScanData(
+	ctx context.Context,
+) (CachedScanData, error) {
+	return w.impl.GetCachedScanData(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) TwtGetCapabilities(
+	ctx context.Context,
+) (TwtCapabilities, error) {
+	return w.impl.TwtGetCapabilities(ctx)
+}
+
+func (w *wifiStaIfaceStubWrapper) TwtSessionSetup(
+	ctx context.Context,
+	cmdId int32,
+	twtRequest TwtRequest,
+) error {
+	return w.impl.TwtSessionSetup(ctx, cmdId, twtRequest)
+}
+
+func (w *wifiStaIfaceStubWrapper) TwtSessionUpdate(
+	ctx context.Context,
+	cmdId int32,
+	sessionId int32,
+	twtRequest TwtRequest,
+) error {
+	return w.impl.TwtSessionUpdate(ctx, cmdId, sessionId, twtRequest)
+}
+
+func (w *wifiStaIfaceStubWrapper) TwtSessionSuspend(
+	ctx context.Context,
+	cmdId int32,
+	sessionId int32,
+) error {
+	return w.impl.TwtSessionSuspend(ctx, cmdId, sessionId)
+}
+
+func (w *wifiStaIfaceStubWrapper) TwtSessionResume(
+	ctx context.Context,
+	cmdId int32,
+	sessionId int32,
+) error {
+	return w.impl.TwtSessionResume(ctx, cmdId, sessionId)
+}
+
+func (w *wifiStaIfaceStubWrapper) TwtSessionTeardown(
+	ctx context.Context,
+	cmdId int32,
+	sessionId int32,
+) error {
+	return w.impl.TwtSessionTeardown(ctx, cmdId, sessionId)
+}
+
+func (w *wifiStaIfaceStubWrapper) TwtSessionGetStats(
+	ctx context.Context,
+	cmdId int32,
+	sessionId int32,
+) error {
+	return w.impl.TwtSessionGetStats(ctx, cmdId, sessionId)
+}
+
+var _ IWifiStaIface = (*wifiStaIfaceStubWrapper)(nil)
+
+// NewWifiStaIfaceStub creates a server-side IWifiStaIface wrapping the given
+// server implementation. The returned value satisfies IWifiStaIface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiStaIfaceStub(
+	impl IWifiStaIfaceServer,
+) IWifiStaIface {
+	wrapper := &wifiStaIfaceStubWrapper{impl: impl}
+	stub := &WifiStaIfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -88,3 +88,43 @@ func (s *HdmiControlStatusChangeListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiControlStatusChangeListenerServer is the server-side interface that user implementations
+// provide to NewHdmiControlStatusChangeListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiControlStatusChangeListenerServer interface {
+	OnStatusChange(ctx context.Context, isCecEnabled int32, isCecAvailable bool) error
+}
+
+type hdmiControlStatusChangeListenerStubWrapper struct {
+	impl       IHdmiControlStatusChangeListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiControlStatusChangeListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiControlStatusChangeListenerStubWrapper) OnStatusChange(
+	ctx context.Context,
+	isCecEnabled int32,
+	isCecAvailable bool,
+) error {
+	return w.impl.OnStatusChange(ctx, isCecEnabled, isCecAvailable)
+}
+
+var _ IHdmiControlStatusChangeListener = (*hdmiControlStatusChangeListenerStubWrapper)(nil)
+
+// NewHdmiControlStatusChangeListenerStub creates a server-side IHdmiControlStatusChangeListener wrapping the given
+// server implementation. The returned value satisfies IHdmiControlStatusChangeListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiControlStatusChangeListenerStub(
+	impl IHdmiControlStatusChangeListenerServer,
+) IHdmiControlStatusChangeListener {
+	wrapper := &hdmiControlStatusChangeListenerStubWrapper{impl: impl}
+	stub := &HdmiControlStatusChangeListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

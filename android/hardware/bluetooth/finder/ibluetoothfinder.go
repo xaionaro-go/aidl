@@ -192,3 +192,57 @@ func (s *BluetoothFinderStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothFinderServer is the server-side interface that user implementations
+// provide to NewBluetoothFinderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothFinderServer interface {
+	SendEids(ctx context.Context, eids []Eid) error
+	SetPoweredOffFinderMode(ctx context.Context, enable bool) error
+	GetPoweredOffFinderMode(ctx context.Context) (bool, error)
+}
+
+type bluetoothFinderStubWrapper struct {
+	impl       IBluetoothFinderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothFinderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothFinderStubWrapper) SendEids(
+	ctx context.Context,
+	eids []Eid,
+) error {
+	return w.impl.SendEids(ctx, eids)
+}
+
+func (w *bluetoothFinderStubWrapper) SetPoweredOffFinderMode(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetPoweredOffFinderMode(ctx, enable)
+}
+
+func (w *bluetoothFinderStubWrapper) GetPoweredOffFinderMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetPoweredOffFinderMode(ctx)
+}
+
+var _ IBluetoothFinder = (*bluetoothFinderStubWrapper)(nil)
+
+// NewBluetoothFinderStub creates a server-side IBluetoothFinder wrapping the given
+// server implementation. The returned value satisfies IBluetoothFinder
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothFinderStub(
+	impl IBluetoothFinderServer,
+) IBluetoothFinder {
+	wrapper := &bluetoothFinderStubWrapper{impl: impl}
+	stub := &BluetoothFinderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

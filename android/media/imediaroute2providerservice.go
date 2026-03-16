@@ -60,7 +60,7 @@ func (p *MediaRoute2ProviderServiceProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaRoute2ProviderService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaRoute2ProviderService, "setCallback")
 	if _err != nil {
@@ -461,4 +461,133 @@ func (s *MediaRoute2ProviderServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaRoute2ProviderServiceServer is the server-side interface that user implementations
+// provide to NewMediaRoute2ProviderServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaRoute2ProviderServiceServer interface {
+	SetCallback(ctx context.Context, callback IMediaRoute2ProviderServiceCallback) error
+	UpdateDiscoveryPreference(ctx context.Context, discoveryPreference RouteDiscoveryPreference) error
+	SetRouteVolume(ctx context.Context, requestId int64, routeId string, volume int32) error
+	RequestCreateSession(ctx context.Context, requestId int64, packageName string, routeId string, sessionHints *interface{}) error
+	RequestCreateSystemMediaSession(ctx context.Context, requestId int64, uid int32, packageName string, routeId string, sessionHints *interface{}) error
+	SelectRoute(ctx context.Context, requestId int64, sessionId string, routeId string) error
+	DeselectRoute(ctx context.Context, requestId int64, sessionId string, routeId string) error
+	TransferToRoute(ctx context.Context, requestId int64, sessionId string, routeId string) error
+	SetSessionVolume(ctx context.Context, requestId int64, sessionId string, volume int32) error
+	ReleaseSession(ctx context.Context, requestId int64, sessionId string) error
+}
+
+type mediaRoute2ProviderServiceStubWrapper struct {
+	impl       IMediaRoute2ProviderServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IMediaRoute2ProviderServiceCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) UpdateDiscoveryPreference(
+	ctx context.Context,
+	discoveryPreference RouteDiscoveryPreference,
+) error {
+	return w.impl.UpdateDiscoveryPreference(ctx, discoveryPreference)
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) SetRouteVolume(
+	ctx context.Context,
+	requestId int64,
+	routeId string,
+	volume int32,
+) error {
+	return w.impl.SetRouteVolume(ctx, requestId, routeId, volume)
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) RequestCreateSession(
+	ctx context.Context,
+	requestId int64,
+	packageName string,
+	routeId string,
+	sessionHints *interface{},
+) error {
+	return w.impl.RequestCreateSession(ctx, requestId, packageName, routeId, sessionHints)
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) RequestCreateSystemMediaSession(
+	ctx context.Context,
+	requestId int64,
+	uid int32,
+	packageName string,
+	routeId string,
+	sessionHints *interface{},
+) error {
+	return w.impl.RequestCreateSystemMediaSession(ctx, requestId, uid, packageName, routeId, sessionHints)
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) SelectRoute(
+	ctx context.Context,
+	requestId int64,
+	sessionId string,
+	routeId string,
+) error {
+	return w.impl.SelectRoute(ctx, requestId, sessionId, routeId)
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) DeselectRoute(
+	ctx context.Context,
+	requestId int64,
+	sessionId string,
+	routeId string,
+) error {
+	return w.impl.DeselectRoute(ctx, requestId, sessionId, routeId)
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) TransferToRoute(
+	ctx context.Context,
+	requestId int64,
+	sessionId string,
+	routeId string,
+) error {
+	return w.impl.TransferToRoute(ctx, requestId, sessionId, routeId)
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) SetSessionVolume(
+	ctx context.Context,
+	requestId int64,
+	sessionId string,
+	volume int32,
+) error {
+	return w.impl.SetSessionVolume(ctx, requestId, sessionId, volume)
+}
+
+func (w *mediaRoute2ProviderServiceStubWrapper) ReleaseSession(
+	ctx context.Context,
+	requestId int64,
+	sessionId string,
+) error {
+	return w.impl.ReleaseSession(ctx, requestId, sessionId)
+}
+
+var _ IMediaRoute2ProviderService = (*mediaRoute2ProviderServiceStubWrapper)(nil)
+
+// NewMediaRoute2ProviderServiceStub creates a server-side IMediaRoute2ProviderService wrapping the given
+// server implementation. The returned value satisfies IMediaRoute2ProviderService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaRoute2ProviderServiceStub(
+	impl IMediaRoute2ProviderServiceServer,
+) IMediaRoute2ProviderService {
+	wrapper := &mediaRoute2ProviderServiceStubWrapper{impl: impl}
+	stub := &MediaRoute2ProviderServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

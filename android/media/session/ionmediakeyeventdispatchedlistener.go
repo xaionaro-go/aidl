@@ -3,7 +3,6 @@ package session
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type IOnMediaKeyEventDispatchedListener interface {
 	AsBinder() binder.IBinder
-	OnMediaKeyEventDispatched(ctx context.Context, event view.KeyEvent, packageName string, sessionToken MediaSessionToken) error
+	OnMediaKeyEventDispatched(ctx context.Context, event interface{}, packageName string, sessionToken MediaSessionToken) error
 }
 
 type OnMediaKeyEventDispatchedListenerProxy struct {
@@ -39,16 +38,12 @@ var _ IOnMediaKeyEventDispatchedListener = (*OnMediaKeyEventDispatchedListenerPr
 
 func (p *OnMediaKeyEventDispatchedListenerProxy) OnMediaKeyEventDispatched(
 	ctx context.Context,
-	event view.KeyEvent,
+	event interface{},
 	packageName string,
 	sessionToken MediaSessionToken,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOnMediaKeyEventDispatchedListener)
-	_data.WriteInt32(1)
-	if _err := event.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteString16(packageName)
 	_data.WriteInt32(1)
 	if _err := sessionToken.MarshalParcel(_data); _err != nil {
@@ -82,18 +77,7 @@ func (s *OnMediaKeyEventDispatchedListenerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_event view.KeyEvent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_event.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_event interface{}
 		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -116,4 +100,45 @@ func (s *OnMediaKeyEventDispatchedListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOnMediaKeyEventDispatchedListenerServer is the server-side interface that user implementations
+// provide to NewOnMediaKeyEventDispatchedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnMediaKeyEventDispatchedListenerServer interface {
+	OnMediaKeyEventDispatched(ctx context.Context, event interface{}, packageName string, sessionToken MediaSessionToken) error
+}
+
+type onMediaKeyEventDispatchedListenerStubWrapper struct {
+	impl       IOnMediaKeyEventDispatchedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onMediaKeyEventDispatchedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onMediaKeyEventDispatchedListenerStubWrapper) OnMediaKeyEventDispatched(
+	ctx context.Context,
+	event interface{},
+	packageName string,
+	sessionToken MediaSessionToken,
+) error {
+	return w.impl.OnMediaKeyEventDispatched(ctx, event, packageName, sessionToken)
+}
+
+var _ IOnMediaKeyEventDispatchedListener = (*onMediaKeyEventDispatchedListenerStubWrapper)(nil)
+
+// NewOnMediaKeyEventDispatchedListenerStub creates a server-side IOnMediaKeyEventDispatchedListener wrapping the given
+// server implementation. The returned value satisfies IOnMediaKeyEventDispatchedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnMediaKeyEventDispatchedListenerStub(
+	impl IOnMediaKeyEventDispatchedListenerServer,
+) IOnMediaKeyEventDispatchedListener {
+	wrapper := &onMediaKeyEventDispatchedListenerStubWrapper{impl: impl}
+	stub := &OnMediaKeyEventDispatchedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

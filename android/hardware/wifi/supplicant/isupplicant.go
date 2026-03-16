@@ -326,7 +326,7 @@ func (p *SupplicantProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISupplicant)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISupplicant, "registerCallback")
 	if _err != nil {
@@ -452,7 +452,7 @@ func (p *SupplicantProxy) RegisterNonStandardCertCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISupplicant)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISupplicant, "registerNonStandardCertCallback")
 	if _err != nil {
@@ -717,4 +717,144 @@ func (s *SupplicantStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISupplicantServer is the server-side interface that user implementations
+// provide to NewSupplicantStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupplicantServer interface {
+	AddP2pInterface(ctx context.Context, ifName string) (ISupplicantP2pIface, error)
+	AddStaInterface(ctx context.Context, ifName string) (ISupplicantStaIface, error)
+	GetDebugLevel(ctx context.Context) (DebugLevel, error)
+	GetP2pInterface(ctx context.Context, ifName string) (ISupplicantP2pIface, error)
+	GetStaInterface(ctx context.Context, ifName string) (ISupplicantStaIface, error)
+	IsDebugShowKeysEnabled(ctx context.Context) (bool, error)
+	IsDebugShowTimestampEnabled(ctx context.Context) (bool, error)
+	ListInterfaces(ctx context.Context) ([]IfaceInfo, error)
+	RegisterCallback(ctx context.Context, callback ISupplicantCallback) error
+	RemoveInterface(ctx context.Context, ifaceInfo IfaceInfo) error
+	SetConcurrencyPriority(ctx context.Context, type_ IfaceType) error
+	SetDebugParams(ctx context.Context, level DebugLevel, showTimestamp bool, showKeys bool) error
+	Terminate(ctx context.Context) error
+	RegisterNonStandardCertCallback(ctx context.Context, callback INonStandardCertCallback) error
+}
+
+type supplicantStubWrapper struct {
+	impl       ISupplicantServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supplicantStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supplicantStubWrapper) AddP2pInterface(
+	ctx context.Context,
+	ifName string,
+) (ISupplicantP2pIface, error) {
+	return w.impl.AddP2pInterface(ctx, ifName)
+}
+
+func (w *supplicantStubWrapper) AddStaInterface(
+	ctx context.Context,
+	ifName string,
+) (ISupplicantStaIface, error) {
+	return w.impl.AddStaInterface(ctx, ifName)
+}
+
+func (w *supplicantStubWrapper) GetDebugLevel(
+	ctx context.Context,
+) (DebugLevel, error) {
+	return w.impl.GetDebugLevel(ctx)
+}
+
+func (w *supplicantStubWrapper) GetP2pInterface(
+	ctx context.Context,
+	ifName string,
+) (ISupplicantP2pIface, error) {
+	return w.impl.GetP2pInterface(ctx, ifName)
+}
+
+func (w *supplicantStubWrapper) GetStaInterface(
+	ctx context.Context,
+	ifName string,
+) (ISupplicantStaIface, error) {
+	return w.impl.GetStaInterface(ctx, ifName)
+}
+
+func (w *supplicantStubWrapper) IsDebugShowKeysEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDebugShowKeysEnabled(ctx)
+}
+
+func (w *supplicantStubWrapper) IsDebugShowTimestampEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDebugShowTimestampEnabled(ctx)
+}
+
+func (w *supplicantStubWrapper) ListInterfaces(
+	ctx context.Context,
+) ([]IfaceInfo, error) {
+	return w.impl.ListInterfaces(ctx)
+}
+
+func (w *supplicantStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ISupplicantCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *supplicantStubWrapper) RemoveInterface(
+	ctx context.Context,
+	ifaceInfo IfaceInfo,
+) error {
+	return w.impl.RemoveInterface(ctx, ifaceInfo)
+}
+
+func (w *supplicantStubWrapper) SetConcurrencyPriority(
+	ctx context.Context,
+	type_ IfaceType,
+) error {
+	return w.impl.SetConcurrencyPriority(ctx, type_)
+}
+
+func (w *supplicantStubWrapper) SetDebugParams(
+	ctx context.Context,
+	level DebugLevel,
+	showTimestamp bool,
+	showKeys bool,
+) error {
+	return w.impl.SetDebugParams(ctx, level, showTimestamp, showKeys)
+}
+
+func (w *supplicantStubWrapper) Terminate(
+	ctx context.Context,
+) error {
+	return w.impl.Terminate(ctx)
+}
+
+func (w *supplicantStubWrapper) RegisterNonStandardCertCallback(
+	ctx context.Context,
+	callback INonStandardCertCallback,
+) error {
+	return w.impl.RegisterNonStandardCertCallback(ctx, callback)
+}
+
+var _ ISupplicant = (*supplicantStubWrapper)(nil)
+
+// NewSupplicantStub creates a server-side ISupplicant wrapping the given
+// server implementation. The returned value satisfies ISupplicant
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupplicantStub(
+	impl ISupplicantServer,
+) ISupplicant {
+	wrapper := &supplicantStubWrapper{impl: impl}
+	stub := &SupplicantStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -65,7 +65,7 @@ func (p *ImsMmTelListenerProxy) OnIncomingCall(
 	var _result IImsCallSessionListener
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMmTelListener)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 	_data.WriteString16(callId)
 	_data.WriteInt32(1)
 	if _err := extras.MarshalParcel(_data); _err != nil {
@@ -194,7 +194,7 @@ func (p *ImsMmTelListenerProxy) OnStartImsTrafficSession(
 	_data.WriteInt32(trafficType)
 	_data.WriteInt32(accessNetworkType)
 	_data.WriteInt32(trafficDirection)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMmTelListener, "onStartImsTrafficSession")
 	if _err != nil {
@@ -451,4 +451,115 @@ func (s *ImsMmTelListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsMmTelListenerServer is the server-side interface that user implementations
+// provide to NewImsMmTelListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsMmTelListenerServer interface {
+	OnIncomingCall(ctx context.Context, c internal.IImsCallSession, callId string, extras os.Bundle) (IImsCallSessionListener, error)
+	OnRejectedCall(ctx context.Context, callProfile ims.ImsCallProfile, reason ims.ImsReasonInfo) error
+	OnVoiceMessageCountUpdate(ctx context.Context, count int32) error
+	OnAudioModeIsVoipChanged(ctx context.Context, imsAudioHandler int32) error
+	OnTriggerEpsFallback(ctx context.Context, reason int32) error
+	OnStartImsTrafficSession(ctx context.Context, token int32, trafficType int32, accessNetworkType int32, trafficDirection int32, callback IImsTrafficSessionCallback) error
+	OnModifyImsTrafficSession(ctx context.Context, token int32, accessNetworkType int32) error
+	OnStopImsTrafficSession(ctx context.Context, token int32) error
+	OnMediaQualityStatusChanged(ctx context.Context, status media.MediaQualityStatus) error
+}
+
+type imsMmTelListenerStubWrapper struct {
+	impl       IImsMmTelListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsMmTelListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsMmTelListenerStubWrapper) OnIncomingCall(
+	ctx context.Context,
+	c internal.IImsCallSession,
+	callId string,
+	extras os.Bundle,
+) (IImsCallSessionListener, error) {
+	return w.impl.OnIncomingCall(ctx, c, callId, extras)
+}
+
+func (w *imsMmTelListenerStubWrapper) OnRejectedCall(
+	ctx context.Context,
+	callProfile ims.ImsCallProfile,
+	reason ims.ImsReasonInfo,
+) error {
+	return w.impl.OnRejectedCall(ctx, callProfile, reason)
+}
+
+func (w *imsMmTelListenerStubWrapper) OnVoiceMessageCountUpdate(
+	ctx context.Context,
+	count int32,
+) error {
+	return w.impl.OnVoiceMessageCountUpdate(ctx, count)
+}
+
+func (w *imsMmTelListenerStubWrapper) OnAudioModeIsVoipChanged(
+	ctx context.Context,
+	imsAudioHandler int32,
+) error {
+	return w.impl.OnAudioModeIsVoipChanged(ctx, imsAudioHandler)
+}
+
+func (w *imsMmTelListenerStubWrapper) OnTriggerEpsFallback(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnTriggerEpsFallback(ctx, reason)
+}
+
+func (w *imsMmTelListenerStubWrapper) OnStartImsTrafficSession(
+	ctx context.Context,
+	token int32,
+	trafficType int32,
+	accessNetworkType int32,
+	trafficDirection int32,
+	callback IImsTrafficSessionCallback,
+) error {
+	return w.impl.OnStartImsTrafficSession(ctx, token, trafficType, accessNetworkType, trafficDirection, callback)
+}
+
+func (w *imsMmTelListenerStubWrapper) OnModifyImsTrafficSession(
+	ctx context.Context,
+	token int32,
+	accessNetworkType int32,
+) error {
+	return w.impl.OnModifyImsTrafficSession(ctx, token, accessNetworkType)
+}
+
+func (w *imsMmTelListenerStubWrapper) OnStopImsTrafficSession(
+	ctx context.Context,
+	token int32,
+) error {
+	return w.impl.OnStopImsTrafficSession(ctx, token)
+}
+
+func (w *imsMmTelListenerStubWrapper) OnMediaQualityStatusChanged(
+	ctx context.Context,
+	status media.MediaQualityStatus,
+) error {
+	return w.impl.OnMediaQualityStatusChanged(ctx, status)
+}
+
+var _ IImsMmTelListener = (*imsMmTelListenerStubWrapper)(nil)
+
+// NewImsMmTelListenerStub creates a server-side IImsMmTelListener wrapping the given
+// server implementation. The returned value satisfies IImsMmTelListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsMmTelListenerStub(
+	impl IImsMmTelListenerServer,
+) IImsMmTelListener {
+	wrapper := &imsMmTelListenerStubWrapper{impl: impl}
+	stub := &ImsMmTelListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -302,3 +302,72 @@ func (s *InputFilterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputFilterServer is the server-side interface that user implementations
+// provide to NewInputFilterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputFilterServer interface {
+	IsEnabled(ctx context.Context) (bool, error)
+	NotifyKey(ctx context.Context, event KeyEvent) error
+	NotifyInputDevicesChanged(ctx context.Context, deviceInfos []DeviceInfo) error
+	NotifyConfigurationChanged(ctx context.Context, config InputFilterConfiguration) error
+	DumpFilter(ctx context.Context) (string, error)
+}
+
+type inputFilterStubWrapper struct {
+	impl       IInputFilterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputFilterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputFilterStubWrapper) IsEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsEnabled(ctx)
+}
+
+func (w *inputFilterStubWrapper) NotifyKey(
+	ctx context.Context,
+	event KeyEvent,
+) error {
+	return w.impl.NotifyKey(ctx, event)
+}
+
+func (w *inputFilterStubWrapper) NotifyInputDevicesChanged(
+	ctx context.Context,
+	deviceInfos []DeviceInfo,
+) error {
+	return w.impl.NotifyInputDevicesChanged(ctx, deviceInfos)
+}
+
+func (w *inputFilterStubWrapper) NotifyConfigurationChanged(
+	ctx context.Context,
+	config InputFilterConfiguration,
+) error {
+	return w.impl.NotifyConfigurationChanged(ctx, config)
+}
+
+func (w *inputFilterStubWrapper) DumpFilter(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.DumpFilter(ctx)
+}
+
+var _ IInputFilter = (*inputFilterStubWrapper)(nil)
+
+// NewInputFilterStub creates a server-side IInputFilter wrapping the given
+// server implementation. The returned value satisfies IInputFilter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputFilterStub(
+	impl IInputFilterServer,
+) IInputFilter {
+	wrapper := &inputFilterStubWrapper{impl: impl}
+	stub := &InputFilterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

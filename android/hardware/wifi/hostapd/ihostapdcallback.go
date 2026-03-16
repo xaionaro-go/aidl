@@ -170,3 +170,59 @@ func (s *HostapdCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHostapdCallbackServer is the server-side interface that user implementations
+// provide to NewHostapdCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHostapdCallbackServer interface {
+	OnApInstanceInfoChanged(ctx context.Context, apInfo ApInfo) error
+	OnConnectedClientsChanged(ctx context.Context, clientInfo ClientInfo) error
+	OnFailure(ctx context.Context, ifaceName string, instanceName string) error
+}
+
+type hostapdCallbackStubWrapper struct {
+	impl       IHostapdCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hostapdCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hostapdCallbackStubWrapper) OnApInstanceInfoChanged(
+	ctx context.Context,
+	apInfo ApInfo,
+) error {
+	return w.impl.OnApInstanceInfoChanged(ctx, apInfo)
+}
+
+func (w *hostapdCallbackStubWrapper) OnConnectedClientsChanged(
+	ctx context.Context,
+	clientInfo ClientInfo,
+) error {
+	return w.impl.OnConnectedClientsChanged(ctx, clientInfo)
+}
+
+func (w *hostapdCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	ifaceName string,
+	instanceName string,
+) error {
+	return w.impl.OnFailure(ctx, ifaceName, instanceName)
+}
+
+var _ IHostapdCallback = (*hostapdCallbackStubWrapper)(nil)
+
+// NewHostapdCallbackStub creates a server-side IHostapdCallback wrapping the given
+// server implementation. The returned value satisfies IHostapdCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHostapdCallbackStub(
+	impl IHostapdCallbackServer,
+) IHostapdCallback {
+	wrapper := &hostapdCallbackStubWrapper{impl: impl}
+	stub := &HostapdCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

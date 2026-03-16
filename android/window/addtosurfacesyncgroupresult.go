@@ -18,8 +18,16 @@ func (s *AddToSurfaceSyncGroupResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.MParentSyncGroup.AsBinder().Handle())
-	p.WriteStrongBinder(s.MTransactionReadyCallback.AsBinder().Handle())
+	if s.MParentSyncGroup == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.MParentSyncGroup.AsBinder().Handle())
+	}
+	if s.MTransactionReadyCallback == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.MTransactionReadyCallback.AsBinder().Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

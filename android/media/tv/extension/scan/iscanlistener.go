@@ -201,3 +201,67 @@ func (s *ScanListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScanListenerServer is the server-side interface that user implementations
+// provide to NewScanListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScanListenerServer interface {
+	OnEvent(ctx context.Context, eventArgs os.Bundle) error
+	OnScanProgress(ctx context.Context, scanProgress string, scanProgressInfo os.Bundle) error
+	OnScanCompleted(ctx context.Context, scanResult int32) error
+	OnStoreCompleted(ctx context.Context, storeResult int32) error
+}
+
+type scanListenerStubWrapper struct {
+	impl       IScanListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scanListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scanListenerStubWrapper) OnEvent(
+	ctx context.Context,
+	eventArgs os.Bundle,
+) error {
+	return w.impl.OnEvent(ctx, eventArgs)
+}
+
+func (w *scanListenerStubWrapper) OnScanProgress(
+	ctx context.Context,
+	scanProgress string,
+	scanProgressInfo os.Bundle,
+) error {
+	return w.impl.OnScanProgress(ctx, scanProgress, scanProgressInfo)
+}
+
+func (w *scanListenerStubWrapper) OnScanCompleted(
+	ctx context.Context,
+	scanResult int32,
+) error {
+	return w.impl.OnScanCompleted(ctx, scanResult)
+}
+
+func (w *scanListenerStubWrapper) OnStoreCompleted(
+	ctx context.Context,
+	storeResult int32,
+) error {
+	return w.impl.OnStoreCompleted(ctx, storeResult)
+}
+
+var _ IScanListener = (*scanListenerStubWrapper)(nil)
+
+// NewScanListenerStub creates a server-side IScanListener wrapping the given
+// server implementation. The returned value satisfies IScanListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScanListenerStub(
+	impl IScanListenerServer,
+) IScanListener {
+	wrapper := &scanListenerStubWrapper{impl: impl}
+	stub := &ScanListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

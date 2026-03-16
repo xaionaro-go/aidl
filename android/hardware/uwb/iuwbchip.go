@@ -83,7 +83,7 @@ func (p *UwbChipProxy) Open(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUwbChip)
-	_data.WriteStrongBinder(clientCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUwbChip, "open")
 	if _err != nil {
@@ -358,4 +358,87 @@ func (s *UwbChipStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUwbChipServer is the server-side interface that user implementations
+// provide to NewUwbChipStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUwbChipServer interface {
+	GetName(ctx context.Context) (string, error)
+	Open(ctx context.Context, clientCallback IUwbClientCallback) error
+	Close(ctx context.Context) error
+	CoreInit(ctx context.Context) error
+	SessionInit(ctx context.Context, sessionId int32) error
+	GetSupportedAndroidUciVersion(ctx context.Context) (int32, error)
+	SendUciMessage(ctx context.Context, data []byte) (int32, error)
+}
+
+type uwbChipStubWrapper struct {
+	impl       IUwbChipServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *uwbChipStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *uwbChipStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+func (w *uwbChipStubWrapper) Open(
+	ctx context.Context,
+	clientCallback IUwbClientCallback,
+) error {
+	return w.impl.Open(ctx, clientCallback)
+}
+
+func (w *uwbChipStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *uwbChipStubWrapper) CoreInit(
+	ctx context.Context,
+) error {
+	return w.impl.CoreInit(ctx)
+}
+
+func (w *uwbChipStubWrapper) SessionInit(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.SessionInit(ctx, sessionId)
+}
+
+func (w *uwbChipStubWrapper) GetSupportedAndroidUciVersion(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetSupportedAndroidUciVersion(ctx)
+}
+
+func (w *uwbChipStubWrapper) SendUciMessage(
+	ctx context.Context,
+	data []byte,
+) (int32, error) {
+	return w.impl.SendUciMessage(ctx, data)
+}
+
+var _ IUwbChip = (*uwbChipStubWrapper)(nil)
+
+// NewUwbChipStub creates a server-side IUwbChip wrapping the given
+// server implementation. The returned value satisfies IUwbChip
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUwbChipStub(
+	impl IUwbChipServer,
+) IUwbChip {
+	wrapper := &uwbChipStubWrapper{impl: impl}
+	stub := &UwbChipStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

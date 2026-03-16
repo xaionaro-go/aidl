@@ -102,3 +102,42 @@ func (s *IncrementalServiceConnectorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIncrementalServiceConnectorServer is the server-side interface that user implementations
+// provide to NewIncrementalServiceConnectorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIncrementalServiceConnectorServer interface {
+	SetStorageParams(ctx context.Context, enableReadLogs bool) (int32, error)
+}
+
+type incrementalServiceConnectorStubWrapper struct {
+	impl       IIncrementalServiceConnectorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *incrementalServiceConnectorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *incrementalServiceConnectorStubWrapper) SetStorageParams(
+	ctx context.Context,
+	enableReadLogs bool,
+) (int32, error) {
+	return w.impl.SetStorageParams(ctx, enableReadLogs)
+}
+
+var _ IIncrementalServiceConnector = (*incrementalServiceConnectorStubWrapper)(nil)
+
+// NewIncrementalServiceConnectorStub creates a server-side IIncrementalServiceConnector wrapping the given
+// server implementation. The returned value satisfies IIncrementalServiceConnector
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIncrementalServiceConnectorStub(
+	impl IIncrementalServiceConnectorServer,
+) IIncrementalServiceConnector {
+	wrapper := &incrementalServiceConnectorStubWrapper{impl: impl}
+	stub := &IncrementalServiceConnectorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

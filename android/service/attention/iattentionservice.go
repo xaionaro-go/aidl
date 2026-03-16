@@ -48,7 +48,7 @@ func (p *AttentionServiceProxy) CheckAttention(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAttentionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAttentionService, "checkAttention")
 	if _err != nil {
@@ -65,7 +65,7 @@ func (p *AttentionServiceProxy) CancelAttentionCheck(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAttentionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAttentionService, "cancelAttentionCheck")
 	if _err != nil {
@@ -82,7 +82,7 @@ func (p *AttentionServiceProxy) OnStartProximityUpdates(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAttentionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAttentionService, "onStartProximityUpdates")
 	if _err != nil {
@@ -162,4 +162,66 @@ func (s *AttentionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAttentionServiceServer is the server-side interface that user implementations
+// provide to NewAttentionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAttentionServiceServer interface {
+	CheckAttention(ctx context.Context, callback IAttentionCallback) error
+	CancelAttentionCheck(ctx context.Context, callback IAttentionCallback) error
+	OnStartProximityUpdates(ctx context.Context, callback IProximityUpdateCallback) error
+	OnStopProximityUpdates(ctx context.Context) error
+}
+
+type attentionServiceStubWrapper struct {
+	impl       IAttentionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *attentionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *attentionServiceStubWrapper) CheckAttention(
+	ctx context.Context,
+	callback IAttentionCallback,
+) error {
+	return w.impl.CheckAttention(ctx, callback)
+}
+
+func (w *attentionServiceStubWrapper) CancelAttentionCheck(
+	ctx context.Context,
+	callback IAttentionCallback,
+) error {
+	return w.impl.CancelAttentionCheck(ctx, callback)
+}
+
+func (w *attentionServiceStubWrapper) OnStartProximityUpdates(
+	ctx context.Context,
+	callback IProximityUpdateCallback,
+) error {
+	return w.impl.OnStartProximityUpdates(ctx, callback)
+}
+
+func (w *attentionServiceStubWrapper) OnStopProximityUpdates(
+	ctx context.Context,
+) error {
+	return w.impl.OnStopProximityUpdates(ctx)
+}
+
+var _ IAttentionService = (*attentionServiceStubWrapper)(nil)
+
+// NewAttentionServiceStub creates a server-side IAttentionService wrapping the given
+// server implementation. The returned value satisfies IAttentionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAttentionServiceStub(
+	impl IAttentionServiceServer,
+) IAttentionService {
+	wrapper := &attentionServiceStubWrapper{impl: impl}
+	stub := &AttentionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

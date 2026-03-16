@@ -180,3 +180,54 @@ func (s *AudioDeviceVolumeDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioDeviceVolumeDispatcherServer is the server-side interface that user implementations
+// provide to NewAudioDeviceVolumeDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioDeviceVolumeDispatcherServer interface {
+	DispatchDeviceVolumeChanged(ctx context.Context, device AudioDeviceAttributes, vol VolumeInfo) error
+	DispatchDeviceVolumeAdjusted(ctx context.Context, device AudioDeviceAttributes, vol VolumeInfo, direction int32, mode int32) error
+}
+
+type audioDeviceVolumeDispatcherStubWrapper struct {
+	impl       IAudioDeviceVolumeDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioDeviceVolumeDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioDeviceVolumeDispatcherStubWrapper) DispatchDeviceVolumeChanged(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+	vol VolumeInfo,
+) error {
+	return w.impl.DispatchDeviceVolumeChanged(ctx, device, vol)
+}
+
+func (w *audioDeviceVolumeDispatcherStubWrapper) DispatchDeviceVolumeAdjusted(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+	vol VolumeInfo,
+	direction int32,
+	mode int32,
+) error {
+	return w.impl.DispatchDeviceVolumeAdjusted(ctx, device, vol, direction, mode)
+}
+
+var _ IAudioDeviceVolumeDispatcher = (*audioDeviceVolumeDispatcherStubWrapper)(nil)
+
+// NewAudioDeviceVolumeDispatcherStub creates a server-side IAudioDeviceVolumeDispatcher wrapping the given
+// server implementation. The returned value satisfies IAudioDeviceVolumeDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioDeviceVolumeDispatcherStub(
+	impl IAudioDeviceVolumeDispatcherServer,
+) IAudioDeviceVolumeDispatcher {
+	wrapper := &audioDeviceVolumeDispatcherStubWrapper{impl: impl}
+	stub := &AudioDeviceVolumeDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

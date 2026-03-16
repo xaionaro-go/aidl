@@ -533,3 +533,105 @@ func (s *SupplicantP2pNetworkStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISupplicantP2pNetworkServer is the server-side interface that user implementations
+// provide to NewSupplicantP2pNetworkStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupplicantP2pNetworkServer interface {
+	GetBssid(ctx context.Context) ([]byte, error)
+	GetClientList(ctx context.Context) ([]MacAddress, error)
+	GetId(ctx context.Context) (int32, error)
+	GetInterfaceName(ctx context.Context) (string, error)
+	GetSsid(ctx context.Context) ([]byte, error)
+	GetType(ctx context.Context) (IfaceType, error)
+	IsCurrent(ctx context.Context) (bool, error)
+	IsGroupOwner(ctx context.Context) (bool, error)
+	IsPersistent(ctx context.Context) (bool, error)
+	SetClientList(ctx context.Context, clients []MacAddress) error
+}
+
+type supplicantP2pNetworkStubWrapper struct {
+	impl       ISupplicantP2pNetworkServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supplicantP2pNetworkStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supplicantP2pNetworkStubWrapper) GetBssid(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetBssid(ctx)
+}
+
+func (w *supplicantP2pNetworkStubWrapper) GetClientList(
+	ctx context.Context,
+) ([]MacAddress, error) {
+	return w.impl.GetClientList(ctx)
+}
+
+func (w *supplicantP2pNetworkStubWrapper) GetId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetId(ctx)
+}
+
+func (w *supplicantP2pNetworkStubWrapper) GetInterfaceName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetInterfaceName(ctx)
+}
+
+func (w *supplicantP2pNetworkStubWrapper) GetSsid(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetSsid(ctx)
+}
+
+func (w *supplicantP2pNetworkStubWrapper) GetType(
+	ctx context.Context,
+) (IfaceType, error) {
+	return w.impl.GetType(ctx)
+}
+
+func (w *supplicantP2pNetworkStubWrapper) IsCurrent(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCurrent(ctx)
+}
+
+func (w *supplicantP2pNetworkStubWrapper) IsGroupOwner(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsGroupOwner(ctx)
+}
+
+func (w *supplicantP2pNetworkStubWrapper) IsPersistent(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsPersistent(ctx)
+}
+
+func (w *supplicantP2pNetworkStubWrapper) SetClientList(
+	ctx context.Context,
+	clients []MacAddress,
+) error {
+	return w.impl.SetClientList(ctx, clients)
+}
+
+var _ ISupplicantP2pNetwork = (*supplicantP2pNetworkStubWrapper)(nil)
+
+// NewSupplicantP2pNetworkStub creates a server-side ISupplicantP2pNetwork wrapping the given
+// server implementation. The returned value satisfies ISupplicantP2pNetwork
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupplicantP2pNetworkStub(
+	impl ISupplicantP2pNetworkServer,
+) ISupplicantP2pNetwork {
+	wrapper := &supplicantP2pNetworkStubWrapper{impl: impl}
+	stub := &SupplicantP2pNetworkStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

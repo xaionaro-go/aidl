@@ -135,3 +135,50 @@ func (s *ContextualSearchCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IContextualSearchCallbackServer is the server-side interface that user implementations
+// provide to NewContextualSearchCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContextualSearchCallbackServer interface {
+	OnResult(ctx context.Context, state ContextualSearchState) error
+	OnError(ctx context.Context, error_ os.ParcelableException) error
+}
+
+type contextualSearchCallbackStubWrapper struct {
+	impl       IContextualSearchCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contextualSearchCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contextualSearchCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	state ContextualSearchState,
+) error {
+	return w.impl.OnResult(ctx, state)
+}
+
+func (w *contextualSearchCallbackStubWrapper) OnError(
+	ctx context.Context,
+	error_ os.ParcelableException,
+) error {
+	return w.impl.OnError(ctx, error_)
+}
+
+var _ IContextualSearchCallback = (*contextualSearchCallbackStubWrapper)(nil)
+
+// NewContextualSearchCallbackStub creates a server-side IContextualSearchCallback wrapping the given
+// server implementation. The returned value satisfies IContextualSearchCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContextualSearchCallbackStub(
+	impl IContextualSearchCallbackServer,
+) IContextualSearchCallback {
+	wrapper := &contextualSearchCallbackStubWrapper{impl: impl}
+	stub := &ContextualSearchCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

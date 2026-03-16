@@ -46,7 +46,7 @@ func (p *GameSessionServiceProxy) Create(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameSessionService)
-	_data.WriteStrongBinder(gameSessionController.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, gameSessionController.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := createGameSessionRequest.MarshalParcel(_data); _err != nil {
 		return _err
@@ -132,4 +132,46 @@ func (s *GameSessionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGameSessionServiceServer is the server-side interface that user implementations
+// provide to NewGameSessionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGameSessionServiceServer interface {
+	Create(ctx context.Context, gameSessionController IGameSessionController, createGameSessionRequest CreateGameSessionRequest, gameSessionViewHostConfiguration GameSessionViewHostConfiguration, createGameSessionResultFuture infra.AndroidFuture) error
+}
+
+type gameSessionServiceStubWrapper struct {
+	impl       IGameSessionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gameSessionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gameSessionServiceStubWrapper) Create(
+	ctx context.Context,
+	gameSessionController IGameSessionController,
+	createGameSessionRequest CreateGameSessionRequest,
+	gameSessionViewHostConfiguration GameSessionViewHostConfiguration,
+	createGameSessionResultFuture infra.AndroidFuture,
+) error {
+	return w.impl.Create(ctx, gameSessionController, createGameSessionRequest, gameSessionViewHostConfiguration, createGameSessionResultFuture)
+}
+
+var _ IGameSessionService = (*gameSessionServiceStubWrapper)(nil)
+
+// NewGameSessionServiceStub creates a server-side IGameSessionService wrapping the given
+// server implementation. The returned value satisfies IGameSessionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGameSessionServiceStub(
+	impl IGameSessionServiceServer,
+) IGameSessionService {
+	wrapper := &gameSessionServiceStubWrapper{impl: impl}
+	stub := &GameSessionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

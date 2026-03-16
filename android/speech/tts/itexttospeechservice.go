@@ -77,7 +77,7 @@ func (p *TextToSpeechServiceProxy) Speak(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechService)
-	_data.WriteStrongBinder(callingInstance.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callingInstance, p.remote.Transport())
 	_data.WriteInt32(queueMode)
 	_data.WriteInt32(1)
 	if _err := params.MarshalParcel(_data); _err != nil {
@@ -118,7 +118,7 @@ func (p *TextToSpeechServiceProxy) SynthesizeToFileDescriptor(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechService)
-	_data.WriteStrongBinder(callingInstance.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callingInstance, p.remote.Transport())
 	_data.WriteFileDescriptor(fileDescriptor)
 	_data.WriteInt32(1)
 	if _err := params.MarshalParcel(_data); _err != nil {
@@ -159,7 +159,7 @@ func (p *TextToSpeechServiceProxy) PlayAudio(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechService)
-	_data.WriteStrongBinder(callingInstance.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callingInstance, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := audioUri.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -203,7 +203,7 @@ func (p *TextToSpeechServiceProxy) PlaySilence(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechService)
-	_data.WriteStrongBinder(callingInstance.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callingInstance, p.remote.Transport())
 	_data.WriteInt64(duration)
 	_data.WriteInt32(queueMode)
 	_data.WriteString16(utteranceId)
@@ -266,7 +266,7 @@ func (p *TextToSpeechServiceProxy) Stop(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechService)
-	_data.WriteStrongBinder(callingInstance.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callingInstance, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextToSpeechService, "stop")
 	if _err != nil {
@@ -458,7 +458,7 @@ func (p *TextToSpeechServiceProxy) LoadLanguage(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechService)
-	_data.WriteStrongBinder(caller.Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller, p.remote.Transport())
 	_data.WriteString16(lang)
 	_data.WriteString16(country)
 	_data.WriteString16(variant)
@@ -492,8 +492,8 @@ func (p *TextToSpeechServiceProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechService)
-	_data.WriteStrongBinder(caller.Handle())
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextToSpeechService, "setCallback")
 	if _err != nil {
@@ -559,7 +559,7 @@ func (p *TextToSpeechServiceProxy) LoadVoice(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextToSpeechService)
-	_data.WriteStrongBinder(caller.Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller, p.remote.Transport())
 	_data.WriteString16(voiceName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextToSpeechService, "loadVoice")
@@ -999,4 +999,177 @@ func (s *TextToSpeechServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITextToSpeechServiceServer is the server-side interface that user implementations
+// provide to NewTextToSpeechServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITextToSpeechServiceServer interface {
+	Speak(ctx context.Context, callingInstance binder.IBinder, text interface{}, queueMode int32, params os.Bundle, utteranceId string) (int32, error)
+	SynthesizeToFileDescriptor(ctx context.Context, callingInstance binder.IBinder, text interface{}, fileDescriptor int32, params os.Bundle, utteranceId string) (int32, error)
+	PlayAudio(ctx context.Context, callingInstance binder.IBinder, audioUri net.Uri, queueMode int32, params os.Bundle, utteranceId string) (int32, error)
+	PlaySilence(ctx context.Context, callingInstance binder.IBinder, duration int64, queueMode int32, utteranceId string) (int32, error)
+	IsSpeaking(ctx context.Context) (bool, error)
+	Stop(ctx context.Context, callingInstance binder.IBinder) (int32, error)
+	GetLanguage(ctx context.Context) ([]string, error)
+	GetClientDefaultLanguage(ctx context.Context) ([]string, error)
+	IsLanguageAvailable(ctx context.Context, lang string, country string, variant string) (int32, error)
+	GetFeaturesForLanguage(ctx context.Context, lang string, country string, variant string) ([]string, error)
+	LoadLanguage(ctx context.Context, caller binder.IBinder, lang string, country string, variant string) (int32, error)
+	SetCallback(ctx context.Context, caller binder.IBinder, cb ITextToSpeechCallback) error
+	GetVoices(ctx context.Context) ([]Voice, error)
+	LoadVoice(ctx context.Context, caller binder.IBinder, voiceName string) (int32, error)
+	GetDefaultVoiceNameFor(ctx context.Context, lang string, country string, variant string) (string, error)
+}
+
+type textToSpeechServiceStubWrapper struct {
+	impl       ITextToSpeechServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *textToSpeechServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *textToSpeechServiceStubWrapper) Speak(
+	ctx context.Context,
+	callingInstance binder.IBinder,
+	text interface{},
+	queueMode int32,
+	params os.Bundle,
+	utteranceId string,
+) (int32, error) {
+	return w.impl.Speak(ctx, callingInstance, text, queueMode, params, utteranceId)
+}
+
+func (w *textToSpeechServiceStubWrapper) SynthesizeToFileDescriptor(
+	ctx context.Context,
+	callingInstance binder.IBinder,
+	text interface{},
+	fileDescriptor int32,
+	params os.Bundle,
+	utteranceId string,
+) (int32, error) {
+	return w.impl.SynthesizeToFileDescriptor(ctx, callingInstance, text, fileDescriptor, params, utteranceId)
+}
+
+func (w *textToSpeechServiceStubWrapper) PlayAudio(
+	ctx context.Context,
+	callingInstance binder.IBinder,
+	audioUri net.Uri,
+	queueMode int32,
+	params os.Bundle,
+	utteranceId string,
+) (int32, error) {
+	return w.impl.PlayAudio(ctx, callingInstance, audioUri, queueMode, params, utteranceId)
+}
+
+func (w *textToSpeechServiceStubWrapper) PlaySilence(
+	ctx context.Context,
+	callingInstance binder.IBinder,
+	duration int64,
+	queueMode int32,
+	utteranceId string,
+) (int32, error) {
+	return w.impl.PlaySilence(ctx, callingInstance, duration, queueMode, utteranceId)
+}
+
+func (w *textToSpeechServiceStubWrapper) IsSpeaking(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSpeaking(ctx)
+}
+
+func (w *textToSpeechServiceStubWrapper) Stop(
+	ctx context.Context,
+	callingInstance binder.IBinder,
+) (int32, error) {
+	return w.impl.Stop(ctx, callingInstance)
+}
+
+func (w *textToSpeechServiceStubWrapper) GetLanguage(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetLanguage(ctx)
+}
+
+func (w *textToSpeechServiceStubWrapper) GetClientDefaultLanguage(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetClientDefaultLanguage(ctx)
+}
+
+func (w *textToSpeechServiceStubWrapper) IsLanguageAvailable(
+	ctx context.Context,
+	lang string,
+	country string,
+	variant string,
+) (int32, error) {
+	return w.impl.IsLanguageAvailable(ctx, lang, country, variant)
+}
+
+func (w *textToSpeechServiceStubWrapper) GetFeaturesForLanguage(
+	ctx context.Context,
+	lang string,
+	country string,
+	variant string,
+) ([]string, error) {
+	return w.impl.GetFeaturesForLanguage(ctx, lang, country, variant)
+}
+
+func (w *textToSpeechServiceStubWrapper) LoadLanguage(
+	ctx context.Context,
+	caller binder.IBinder,
+	lang string,
+	country string,
+	variant string,
+) (int32, error) {
+	return w.impl.LoadLanguage(ctx, caller, lang, country, variant)
+}
+
+func (w *textToSpeechServiceStubWrapper) SetCallback(
+	ctx context.Context,
+	caller binder.IBinder,
+	cb ITextToSpeechCallback,
+) error {
+	return w.impl.SetCallback(ctx, caller, cb)
+}
+
+func (w *textToSpeechServiceStubWrapper) GetVoices(
+	ctx context.Context,
+) ([]Voice, error) {
+	return w.impl.GetVoices(ctx)
+}
+
+func (w *textToSpeechServiceStubWrapper) LoadVoice(
+	ctx context.Context,
+	caller binder.IBinder,
+	voiceName string,
+) (int32, error) {
+	return w.impl.LoadVoice(ctx, caller, voiceName)
+}
+
+func (w *textToSpeechServiceStubWrapper) GetDefaultVoiceNameFor(
+	ctx context.Context,
+	lang string,
+	country string,
+	variant string,
+) (string, error) {
+	return w.impl.GetDefaultVoiceNameFor(ctx, lang, country, variant)
+}
+
+var _ ITextToSpeechService = (*textToSpeechServiceStubWrapper)(nil)
+
+// NewTextToSpeechServiceStub creates a server-side ITextToSpeechService wrapping the given
+// server implementation. The returned value satisfies ITextToSpeechService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTextToSpeechServiceStub(
+	impl ITextToSpeechServiceServer,
+) ITextToSpeechService {
+	wrapper := &textToSpeechServiceStubWrapper{impl: impl}
+	stub := &TextToSpeechServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -116,7 +116,7 @@ func (p *AppWidgetServiceProxy) StartListening(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppWidgetService)
-	_data.WriteStrongBinder(host.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, host.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(hostId)
 	if appWidgetIds == nil {
@@ -903,9 +903,9 @@ func (p *AppWidgetServiceProxy) BindRemoteViewsService(
 	if _err := intent.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppWidgetService, "bindRemoteViewsService")
@@ -2158,4 +2158,326 @@ func (s *AppWidgetServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAppWidgetServiceServer is the server-side interface that user implementations
+// provide to NewAppWidgetServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppWidgetServiceServer interface {
+	StartListening(ctx context.Context, host IAppWidgetHost, hostId int32, appWidgetIds []int32) (pm.ParceledListSlice, error)
+	StopListening(ctx context.Context, hostId int32) error
+	AllocateAppWidgetId(ctx context.Context, hostId int32) (int32, error)
+	DeleteAppWidgetId(ctx context.Context, appWidgetId int32) error
+	DeleteHost(ctx context.Context, packageName string, hostId int32) error
+	DeleteAllHosts(ctx context.Context) error
+	GetAppWidgetViews(ctx context.Context, appWidgetId int32) (widget.RemoteViews, error)
+	GetAppWidgetIdsForHost(ctx context.Context, hostId int32) ([]int32, error)
+	SetAppWidgetHidden(ctx context.Context, hostId int32) error
+	CreateAppWidgetConfigIntentSender(ctx context.Context, appWidgetId int32, intentFlags int32) (content.IntentSender, error)
+	UpdateAppWidgetIds(ctx context.Context, appWidgetIds []int32, views widget.RemoteViews) error
+	UpdateAppWidgetOptions(ctx context.Context, appWidgetId int32, extras os.Bundle) error
+	GetAppWidgetOptions(ctx context.Context, appWidgetId int32) (os.Bundle, error)
+	PartiallyUpdateAppWidgetIds(ctx context.Context, appWidgetIds []int32, views widget.RemoteViews) error
+	UpdateAppWidgetProvider(ctx context.Context, provider content.ComponentName, views widget.RemoteViews) error
+	UpdateAppWidgetProviderInfo(ctx context.Context, provider content.ComponentName, metadataKey string) error
+	NotifyAppWidgetViewDataChanged(ctx context.Context, packageName string, appWidgetIds []int32, viewId int32) error
+	GetInstalledProvidersForProfile(ctx context.Context, categoryFilter int32, profileId int32, packageName string) (pm.ParceledListSlice, error)
+	GetAppWidgetInfo(ctx context.Context, appWidgetId int32) (androidAppwidget.AppWidgetProviderInfo, error)
+	HasBindAppWidgetPermission(ctx context.Context, packageName string) (bool, error)
+	SetBindAppWidgetPermission(ctx context.Context, packageName string, permission bool) error
+	BindAppWidgetId(ctx context.Context, appWidgetId int32, providerProfileId int32, providerComponent content.ComponentName, options os.Bundle) (bool, error)
+	BindRemoteViewsService(ctx context.Context, appWidgetId int32, intent content.Intent, caller app.IApplicationThread, token binder.IBinder, connection app.IServiceConnection, flags int64) (bool, error)
+	NotifyProviderInheritance(ctx context.Context, componentNames []content.ComponentName) error
+	GetMaxBitmapMemory(ctx context.Context) (int32, error)
+	GetAppWidgetIds(ctx context.Context, providerComponent content.ComponentName) ([]int32, error)
+	IsBoundWidgetPackage(ctx context.Context, packageName string) (bool, error)
+	RequestPinAppWidget(ctx context.Context, packageName string, providerComponent content.ComponentName, extras os.Bundle, resultIntent content.IntentSender) (bool, error)
+	IsRequestPinAppWidgetSupported(ctx context.Context) (bool, error)
+	NoteAppWidgetTapped(ctx context.Context, appWidgetId int32) error
+	SetWidgetPreview(ctx context.Context, providerComponent content.ComponentName, widgetCategories int32, preview widget.RemoteViews) (bool, error)
+	GetWidgetPreview(ctx context.Context, providerComponent content.ComponentName, profileId int32, widgetCategory int32) (widget.RemoteViews, error)
+	RemoveWidgetPreview(ctx context.Context, providerComponent content.ComponentName, widgetCategories int32) error
+}
+
+type appWidgetServiceStubWrapper struct {
+	impl       IAppWidgetServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appWidgetServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appWidgetServiceStubWrapper) StartListening(
+	ctx context.Context,
+	host IAppWidgetHost,
+	hostId int32,
+	appWidgetIds []int32,
+) (pm.ParceledListSlice, error) {
+	return w.impl.StartListening(ctx, host, hostId, appWidgetIds)
+}
+
+func (w *appWidgetServiceStubWrapper) StopListening(
+	ctx context.Context,
+	hostId int32,
+) error {
+	return w.impl.StopListening(ctx, hostId)
+}
+
+func (w *appWidgetServiceStubWrapper) AllocateAppWidgetId(
+	ctx context.Context,
+	hostId int32,
+) (int32, error) {
+	return w.impl.AllocateAppWidgetId(ctx, hostId)
+}
+
+func (w *appWidgetServiceStubWrapper) DeleteAppWidgetId(
+	ctx context.Context,
+	appWidgetId int32,
+) error {
+	return w.impl.DeleteAppWidgetId(ctx, appWidgetId)
+}
+
+func (w *appWidgetServiceStubWrapper) DeleteHost(
+	ctx context.Context,
+	packageName string,
+	hostId int32,
+) error {
+	return w.impl.DeleteHost(ctx, packageName, hostId)
+}
+
+func (w *appWidgetServiceStubWrapper) DeleteAllHosts(
+	ctx context.Context,
+) error {
+	return w.impl.DeleteAllHosts(ctx)
+}
+
+func (w *appWidgetServiceStubWrapper) GetAppWidgetViews(
+	ctx context.Context,
+	appWidgetId int32,
+) (widget.RemoteViews, error) {
+	return w.impl.GetAppWidgetViews(ctx, appWidgetId)
+}
+
+func (w *appWidgetServiceStubWrapper) GetAppWidgetIdsForHost(
+	ctx context.Context,
+	hostId int32,
+) ([]int32, error) {
+	return w.impl.GetAppWidgetIdsForHost(ctx, hostId)
+}
+
+func (w *appWidgetServiceStubWrapper) SetAppWidgetHidden(
+	ctx context.Context,
+	hostId int32,
+) error {
+	return w.impl.SetAppWidgetHidden(ctx, hostId)
+}
+
+func (w *appWidgetServiceStubWrapper) CreateAppWidgetConfigIntentSender(
+	ctx context.Context,
+	appWidgetId int32,
+	intentFlags int32,
+) (content.IntentSender, error) {
+	return w.impl.CreateAppWidgetConfigIntentSender(ctx, appWidgetId, intentFlags)
+}
+
+func (w *appWidgetServiceStubWrapper) UpdateAppWidgetIds(
+	ctx context.Context,
+	appWidgetIds []int32,
+	views widget.RemoteViews,
+) error {
+	return w.impl.UpdateAppWidgetIds(ctx, appWidgetIds, views)
+}
+
+func (w *appWidgetServiceStubWrapper) UpdateAppWidgetOptions(
+	ctx context.Context,
+	appWidgetId int32,
+	extras os.Bundle,
+) error {
+	return w.impl.UpdateAppWidgetOptions(ctx, appWidgetId, extras)
+}
+
+func (w *appWidgetServiceStubWrapper) GetAppWidgetOptions(
+	ctx context.Context,
+	appWidgetId int32,
+) (os.Bundle, error) {
+	return w.impl.GetAppWidgetOptions(ctx, appWidgetId)
+}
+
+func (w *appWidgetServiceStubWrapper) PartiallyUpdateAppWidgetIds(
+	ctx context.Context,
+	appWidgetIds []int32,
+	views widget.RemoteViews,
+) error {
+	return w.impl.PartiallyUpdateAppWidgetIds(ctx, appWidgetIds, views)
+}
+
+func (w *appWidgetServiceStubWrapper) UpdateAppWidgetProvider(
+	ctx context.Context,
+	provider content.ComponentName,
+	views widget.RemoteViews,
+) error {
+	return w.impl.UpdateAppWidgetProvider(ctx, provider, views)
+}
+
+func (w *appWidgetServiceStubWrapper) UpdateAppWidgetProviderInfo(
+	ctx context.Context,
+	provider content.ComponentName,
+	metadataKey string,
+) error {
+	return w.impl.UpdateAppWidgetProviderInfo(ctx, provider, metadataKey)
+}
+
+func (w *appWidgetServiceStubWrapper) NotifyAppWidgetViewDataChanged(
+	ctx context.Context,
+	packageName string,
+	appWidgetIds []int32,
+	viewId int32,
+) error {
+	return w.impl.NotifyAppWidgetViewDataChanged(ctx, packageName, appWidgetIds, viewId)
+}
+
+func (w *appWidgetServiceStubWrapper) GetInstalledProvidersForProfile(
+	ctx context.Context,
+	categoryFilter int32,
+	profileId int32,
+	packageName string,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetInstalledProvidersForProfile(ctx, categoryFilter, profileId, packageName)
+}
+
+func (w *appWidgetServiceStubWrapper) GetAppWidgetInfo(
+	ctx context.Context,
+	appWidgetId int32,
+) (androidAppwidget.AppWidgetProviderInfo, error) {
+	return w.impl.GetAppWidgetInfo(ctx, appWidgetId)
+}
+
+func (w *appWidgetServiceStubWrapper) HasBindAppWidgetPermission(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.HasBindAppWidgetPermission(ctx, packageName)
+}
+
+func (w *appWidgetServiceStubWrapper) SetBindAppWidgetPermission(
+	ctx context.Context,
+	packageName string,
+	permission bool,
+) error {
+	return w.impl.SetBindAppWidgetPermission(ctx, packageName, permission)
+}
+
+func (w *appWidgetServiceStubWrapper) BindAppWidgetId(
+	ctx context.Context,
+	appWidgetId int32,
+	providerProfileId int32,
+	providerComponent content.ComponentName,
+	options os.Bundle,
+) (bool, error) {
+	return w.impl.BindAppWidgetId(ctx, appWidgetId, providerProfileId, providerComponent, options)
+}
+
+func (w *appWidgetServiceStubWrapper) BindRemoteViewsService(
+	ctx context.Context,
+	appWidgetId int32,
+	intent content.Intent,
+	caller app.IApplicationThread,
+	token binder.IBinder,
+	connection app.IServiceConnection,
+	flags int64,
+) (bool, error) {
+	return w.impl.BindRemoteViewsService(ctx, appWidgetId, intent, caller, token, connection, flags)
+}
+
+func (w *appWidgetServiceStubWrapper) NotifyProviderInheritance(
+	ctx context.Context,
+	componentNames []content.ComponentName,
+) error {
+	return w.impl.NotifyProviderInheritance(ctx, componentNames)
+}
+
+func (w *appWidgetServiceStubWrapper) GetMaxBitmapMemory(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMaxBitmapMemory(ctx)
+}
+
+func (w *appWidgetServiceStubWrapper) GetAppWidgetIds(
+	ctx context.Context,
+	providerComponent content.ComponentName,
+) ([]int32, error) {
+	return w.impl.GetAppWidgetIds(ctx, providerComponent)
+}
+
+func (w *appWidgetServiceStubWrapper) IsBoundWidgetPackage(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsBoundWidgetPackage(ctx, packageName)
+}
+
+func (w *appWidgetServiceStubWrapper) RequestPinAppWidget(
+	ctx context.Context,
+	packageName string,
+	providerComponent content.ComponentName,
+	extras os.Bundle,
+	resultIntent content.IntentSender,
+) (bool, error) {
+	return w.impl.RequestPinAppWidget(ctx, packageName, providerComponent, extras, resultIntent)
+}
+
+func (w *appWidgetServiceStubWrapper) IsRequestPinAppWidgetSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsRequestPinAppWidgetSupported(ctx)
+}
+
+func (w *appWidgetServiceStubWrapper) NoteAppWidgetTapped(
+	ctx context.Context,
+	appWidgetId int32,
+) error {
+	return w.impl.NoteAppWidgetTapped(ctx, appWidgetId)
+}
+
+func (w *appWidgetServiceStubWrapper) SetWidgetPreview(
+	ctx context.Context,
+	providerComponent content.ComponentName,
+	widgetCategories int32,
+	preview widget.RemoteViews,
+) (bool, error) {
+	return w.impl.SetWidgetPreview(ctx, providerComponent, widgetCategories, preview)
+}
+
+func (w *appWidgetServiceStubWrapper) GetWidgetPreview(
+	ctx context.Context,
+	providerComponent content.ComponentName,
+	profileId int32,
+	widgetCategory int32,
+) (widget.RemoteViews, error) {
+	return w.impl.GetWidgetPreview(ctx, providerComponent, profileId, widgetCategory)
+}
+
+func (w *appWidgetServiceStubWrapper) RemoveWidgetPreview(
+	ctx context.Context,
+	providerComponent content.ComponentName,
+	widgetCategories int32,
+) error {
+	return w.impl.RemoveWidgetPreview(ctx, providerComponent, widgetCategories)
+}
+
+var _ IAppWidgetService = (*appWidgetServiceStubWrapper)(nil)
+
+// NewAppWidgetServiceStub creates a server-side IAppWidgetService wrapping the given
+// server implementation. The returned value satisfies IAppWidgetService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppWidgetServiceStub(
+	impl IAppWidgetServiceServer,
+) IAppWidgetService {
+	wrapper := &appWidgetServiceStubWrapper{impl: impl}
+	stub := &AppWidgetServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

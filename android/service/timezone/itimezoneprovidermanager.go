@@ -93,3 +93,42 @@ func (s *TimeZoneProviderManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITimeZoneProviderManagerServer is the server-side interface that user implementations
+// provide to NewTimeZoneProviderManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITimeZoneProviderManagerServer interface {
+	OnTimeZoneProviderEvent(ctx context.Context, timeZoneProviderEvent TimeZoneProviderEvent) error
+}
+
+type timeZoneProviderManagerStubWrapper struct {
+	impl       ITimeZoneProviderManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *timeZoneProviderManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *timeZoneProviderManagerStubWrapper) OnTimeZoneProviderEvent(
+	ctx context.Context,
+	timeZoneProviderEvent TimeZoneProviderEvent,
+) error {
+	return w.impl.OnTimeZoneProviderEvent(ctx, timeZoneProviderEvent)
+}
+
+var _ ITimeZoneProviderManager = (*timeZoneProviderManagerStubWrapper)(nil)
+
+// NewTimeZoneProviderManagerStub creates a server-side ITimeZoneProviderManager wrapping the given
+// server implementation. The returned value satisfies ITimeZoneProviderManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTimeZoneProviderManagerStub(
+	impl ITimeZoneProviderManagerServer,
+) ITimeZoneProviderManager {
+	wrapper := &timeZoneProviderManagerStubWrapper{impl: impl}
+	stub := &TimeZoneProviderManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -82,3 +82,42 @@ func (s *BooleanConsumerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBooleanConsumerServer is the server-side interface that user implementations
+// provide to NewBooleanConsumerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBooleanConsumerServer interface {
+	Accept(ctx context.Context, result bool) error
+}
+
+type booleanConsumerStubWrapper struct {
+	impl       IBooleanConsumerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *booleanConsumerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *booleanConsumerStubWrapper) Accept(
+	ctx context.Context,
+	result bool,
+) error {
+	return w.impl.Accept(ctx, result)
+}
+
+var _ IBooleanConsumer = (*booleanConsumerStubWrapper)(nil)
+
+// NewBooleanConsumerStub creates a server-side IBooleanConsumer wrapping the given
+// server implementation. The returned value satisfies IBooleanConsumer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBooleanConsumerStub(
+	impl IBooleanConsumerServer,
+) IBooleanConsumer {
+	wrapper := &booleanConsumerStubWrapper{impl: impl}
+	stub := &BooleanConsumerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

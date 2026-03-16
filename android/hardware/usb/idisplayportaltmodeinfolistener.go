@@ -99,3 +99,43 @@ func (s *DisplayPortAltModeInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDisplayPortAltModeInfoListenerServer is the server-side interface that user implementations
+// provide to NewDisplayPortAltModeInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayPortAltModeInfoListenerServer interface {
+	OnDisplayPortAltModeInfoChanged(ctx context.Context, portId string, DisplayPortAltModeInfo DisplayPortAltModeInfo) error
+}
+
+type displayPortAltModeInfoListenerStubWrapper struct {
+	impl       IDisplayPortAltModeInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayPortAltModeInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayPortAltModeInfoListenerStubWrapper) OnDisplayPortAltModeInfoChanged(
+	ctx context.Context,
+	portId string,
+	DisplayPortAltModeInfo DisplayPortAltModeInfo,
+) error {
+	return w.impl.OnDisplayPortAltModeInfoChanged(ctx, portId, DisplayPortAltModeInfo)
+}
+
+var _ IDisplayPortAltModeInfoListener = (*displayPortAltModeInfoListenerStubWrapper)(nil)
+
+// NewDisplayPortAltModeInfoListenerStub creates a server-side IDisplayPortAltModeInfoListener wrapping the given
+// server implementation. The returned value satisfies IDisplayPortAltModeInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayPortAltModeInfoListenerStub(
+	impl IDisplayPortAltModeInfoListenerServer,
+) IDisplayPortAltModeInfoListener {
+	wrapper := &displayPortAltModeInfoListenerStubWrapper{impl: impl}
+	stub := &DisplayPortAltModeInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

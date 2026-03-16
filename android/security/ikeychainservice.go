@@ -1683,3 +1683,274 @@ func (s *KeyChainServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyChainServiceServer is the server-side interface that user implementations
+// provide to NewKeyChainServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyChainServiceServer interface {
+	RequestPrivateKey(ctx context.Context, alias string) (string, error)
+	GetCertificate(ctx context.Context, alias string) ([]byte, error)
+	GetCaCertificates(ctx context.Context, alias string) ([]byte, error)
+	IsUserSelectable(ctx context.Context, alias string) (bool, error)
+	SetUserSelectable(ctx context.Context, alias string, isUserSelectable bool) error
+	GenerateKeyPair(ctx context.Context, algorithm string, spec keystore.ParcelableKeyGenParameterSpec) (int32, error)
+	SetKeyPairCertificate(ctx context.Context, alias string, userCert []byte, certChain []byte) (bool, error)
+	InstallCaCertificate(ctx context.Context, caCertificate []byte) (string, error)
+	InstallKeyPair(ctx context.Context, privateKey []byte, userCert []byte, certChain []byte, alias string, uid int32) (bool, error)
+	RemoveKeyPair(ctx context.Context, alias string) (bool, error)
+	ContainsKeyPair(ctx context.Context, alias string) (bool, error)
+	GetGrants(ctx context.Context, alias string) ([]int32, error)
+	DeleteCaCertificate(ctx context.Context, alias string) (bool, error)
+	Reset(ctx context.Context) (bool, error)
+	GetUserCaAliases(ctx context.Context) (pm.StringParceledListSlice, error)
+	GetSystemCaAliases(ctx context.Context) (pm.StringParceledListSlice, error)
+	ContainsCaAlias(ctx context.Context, alias string) (bool, error)
+	GetEncodedCaCertificate(ctx context.Context, alias string, includeDeletedSystem bool) ([]byte, error)
+	GetCaCertificateChainAliases(ctx context.Context, rootAlias string, includeDeletedSystem bool) ([]string, error)
+	SetCredentialManagementApp(ctx context.Context, packageName string, policy AppUriAuthenticationPolicy) error
+	HasCredentialManagementApp(ctx context.Context) (bool, error)
+	GetCredentialManagementAppPackageName(ctx context.Context) (string, error)
+	GetCredentialManagementAppPolicy(ctx context.Context) (AppUriAuthenticationPolicy, error)
+	GetPredefinedAliasForPackageAndUri(ctx context.Context, packageName string, uri net.Uri) (string, error)
+	RemoveCredentialManagementApp(ctx context.Context) error
+	IsCredentialManagementApp(ctx context.Context, packageName string) (bool, error)
+	SetGrant(ctx context.Context, uid int32, alias string, value bool) (bool, error)
+	HasGrant(ctx context.Context, uid int32, alias string) (bool, error)
+	GetWifiKeyGrantAsUser(ctx context.Context, alias string) (string, error)
+}
+
+type keyChainServiceStubWrapper struct {
+	impl       IKeyChainServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyChainServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyChainServiceStubWrapper) RequestPrivateKey(
+	ctx context.Context,
+	alias string,
+) (string, error) {
+	return w.impl.RequestPrivateKey(ctx, alias)
+}
+
+func (w *keyChainServiceStubWrapper) GetCertificate(
+	ctx context.Context,
+	alias string,
+) ([]byte, error) {
+	return w.impl.GetCertificate(ctx, alias)
+}
+
+func (w *keyChainServiceStubWrapper) GetCaCertificates(
+	ctx context.Context,
+	alias string,
+) ([]byte, error) {
+	return w.impl.GetCaCertificates(ctx, alias)
+}
+
+func (w *keyChainServiceStubWrapper) IsUserSelectable(
+	ctx context.Context,
+	alias string,
+) (bool, error) {
+	return w.impl.IsUserSelectable(ctx, alias)
+}
+
+func (w *keyChainServiceStubWrapper) SetUserSelectable(
+	ctx context.Context,
+	alias string,
+	isUserSelectable bool,
+) error {
+	return w.impl.SetUserSelectable(ctx, alias, isUserSelectable)
+}
+
+func (w *keyChainServiceStubWrapper) GenerateKeyPair(
+	ctx context.Context,
+	algorithm string,
+	spec keystore.ParcelableKeyGenParameterSpec,
+) (int32, error) {
+	return w.impl.GenerateKeyPair(ctx, algorithm, spec)
+}
+
+func (w *keyChainServiceStubWrapper) SetKeyPairCertificate(
+	ctx context.Context,
+	alias string,
+	userCert []byte,
+	certChain []byte,
+) (bool, error) {
+	return w.impl.SetKeyPairCertificate(ctx, alias, userCert, certChain)
+}
+
+func (w *keyChainServiceStubWrapper) InstallCaCertificate(
+	ctx context.Context,
+	caCertificate []byte,
+) (string, error) {
+	return w.impl.InstallCaCertificate(ctx, caCertificate)
+}
+
+func (w *keyChainServiceStubWrapper) InstallKeyPair(
+	ctx context.Context,
+	privateKey []byte,
+	userCert []byte,
+	certChain []byte,
+	alias string,
+	uid int32,
+) (bool, error) {
+	return w.impl.InstallKeyPair(ctx, privateKey, userCert, certChain, alias, uid)
+}
+
+func (w *keyChainServiceStubWrapper) RemoveKeyPair(
+	ctx context.Context,
+	alias string,
+) (bool, error) {
+	return w.impl.RemoveKeyPair(ctx, alias)
+}
+
+func (w *keyChainServiceStubWrapper) ContainsKeyPair(
+	ctx context.Context,
+	alias string,
+) (bool, error) {
+	return w.impl.ContainsKeyPair(ctx, alias)
+}
+
+func (w *keyChainServiceStubWrapper) GetGrants(
+	ctx context.Context,
+	alias string,
+) ([]int32, error) {
+	return w.impl.GetGrants(ctx, alias)
+}
+
+func (w *keyChainServiceStubWrapper) DeleteCaCertificate(
+	ctx context.Context,
+	alias string,
+) (bool, error) {
+	return w.impl.DeleteCaCertificate(ctx, alias)
+}
+
+func (w *keyChainServiceStubWrapper) Reset(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.Reset(ctx)
+}
+
+func (w *keyChainServiceStubWrapper) GetUserCaAliases(
+	ctx context.Context,
+) (pm.StringParceledListSlice, error) {
+	return w.impl.GetUserCaAliases(ctx)
+}
+
+func (w *keyChainServiceStubWrapper) GetSystemCaAliases(
+	ctx context.Context,
+) (pm.StringParceledListSlice, error) {
+	return w.impl.GetSystemCaAliases(ctx)
+}
+
+func (w *keyChainServiceStubWrapper) ContainsCaAlias(
+	ctx context.Context,
+	alias string,
+) (bool, error) {
+	return w.impl.ContainsCaAlias(ctx, alias)
+}
+
+func (w *keyChainServiceStubWrapper) GetEncodedCaCertificate(
+	ctx context.Context,
+	alias string,
+	includeDeletedSystem bool,
+) ([]byte, error) {
+	return w.impl.GetEncodedCaCertificate(ctx, alias, includeDeletedSystem)
+}
+
+func (w *keyChainServiceStubWrapper) GetCaCertificateChainAliases(
+	ctx context.Context,
+	rootAlias string,
+	includeDeletedSystem bool,
+) ([]string, error) {
+	return w.impl.GetCaCertificateChainAliases(ctx, rootAlias, includeDeletedSystem)
+}
+
+func (w *keyChainServiceStubWrapper) SetCredentialManagementApp(
+	ctx context.Context,
+	packageName string,
+	policy AppUriAuthenticationPolicy,
+) error {
+	return w.impl.SetCredentialManagementApp(ctx, packageName, policy)
+}
+
+func (w *keyChainServiceStubWrapper) HasCredentialManagementApp(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasCredentialManagementApp(ctx)
+}
+
+func (w *keyChainServiceStubWrapper) GetCredentialManagementAppPackageName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCredentialManagementAppPackageName(ctx)
+}
+
+func (w *keyChainServiceStubWrapper) GetCredentialManagementAppPolicy(
+	ctx context.Context,
+) (AppUriAuthenticationPolicy, error) {
+	return w.impl.GetCredentialManagementAppPolicy(ctx)
+}
+
+func (w *keyChainServiceStubWrapper) GetPredefinedAliasForPackageAndUri(
+	ctx context.Context,
+	packageName string,
+	uri net.Uri,
+) (string, error) {
+	return w.impl.GetPredefinedAliasForPackageAndUri(ctx, packageName, uri)
+}
+
+func (w *keyChainServiceStubWrapper) RemoveCredentialManagementApp(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveCredentialManagementApp(ctx)
+}
+
+func (w *keyChainServiceStubWrapper) IsCredentialManagementApp(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsCredentialManagementApp(ctx, packageName)
+}
+
+func (w *keyChainServiceStubWrapper) SetGrant(
+	ctx context.Context,
+	uid int32,
+	alias string,
+	value bool,
+) (bool, error) {
+	return w.impl.SetGrant(ctx, uid, alias, value)
+}
+
+func (w *keyChainServiceStubWrapper) HasGrant(
+	ctx context.Context,
+	uid int32,
+	alias string,
+) (bool, error) {
+	return w.impl.HasGrant(ctx, uid, alias)
+}
+
+func (w *keyChainServiceStubWrapper) GetWifiKeyGrantAsUser(
+	ctx context.Context,
+	alias string,
+) (string, error) {
+	return w.impl.GetWifiKeyGrantAsUser(ctx, alias)
+}
+
+var _ IKeyChainService = (*keyChainServiceStubWrapper)(nil)
+
+// NewKeyChainServiceStub creates a server-side IKeyChainService wrapping the given
+// server implementation. The returned value satisfies IKeyChainService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyChainServiceStub(
+	impl IKeyChainServiceServer,
+) IKeyChainService {
+	wrapper := &keyChainServiceStubWrapper{impl: impl}
+	stub := &KeyChainServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

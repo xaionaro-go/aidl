@@ -112,3 +112,43 @@ func (s *InlineSuggestionsResponseCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInlineSuggestionsResponseCallbackServer is the server-side interface that user implementations
+// provide to NewInlineSuggestionsResponseCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInlineSuggestionsResponseCallbackServer interface {
+	OnInlineSuggestionsResponse(ctx context.Context, fieldId autofill.AutofillId, response viewInputmethod.InlineSuggestionsResponse) error
+}
+
+type inlineSuggestionsResponseCallbackStubWrapper struct {
+	impl       IInlineSuggestionsResponseCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inlineSuggestionsResponseCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inlineSuggestionsResponseCallbackStubWrapper) OnInlineSuggestionsResponse(
+	ctx context.Context,
+	fieldId autofill.AutofillId,
+	response viewInputmethod.InlineSuggestionsResponse,
+) error {
+	return w.impl.OnInlineSuggestionsResponse(ctx, fieldId, response)
+}
+
+var _ IInlineSuggestionsResponseCallback = (*inlineSuggestionsResponseCallbackStubWrapper)(nil)
+
+// NewInlineSuggestionsResponseCallbackStub creates a server-side IInlineSuggestionsResponseCallback wrapping the given
+// server implementation. The returned value satisfies IInlineSuggestionsResponseCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInlineSuggestionsResponseCallbackStub(
+	impl IInlineSuggestionsResponseCallbackServer,
+) IInlineSuggestionsResponseCallback {
+	wrapper := &inlineSuggestionsResponseCallbackStubWrapper{impl: impl}
+	stub := &InlineSuggestionsResponseCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

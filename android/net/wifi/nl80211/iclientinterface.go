@@ -238,7 +238,7 @@ func (p *ClientInterfaceProxy) SendMgmtFrame(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(mcs)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClientInterface, "SendMgmtFrame")
@@ -353,4 +353,80 @@ func (s *ClientInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IClientInterfaceServer is the server-side interface that user implementations
+// provide to NewClientInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IClientInterfaceServer interface {
+	GetPacketCounters(ctx context.Context) ([]int32, error)
+	SignalPoll(ctx context.Context) ([]int32, error)
+	GetMacAddress(ctx context.Context) ([]byte, error)
+	GetInterfaceName(ctx context.Context) (string, error)
+	GetWifiScannerImpl(ctx context.Context) (IWifiScannerImpl, error)
+	SendMgmtFrame(ctx context.Context, frame []byte, callback ISendMgmtFrameEvent, mcs int32) error
+}
+
+type clientInterfaceStubWrapper struct {
+	impl       IClientInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *clientInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *clientInterfaceStubWrapper) GetPacketCounters(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetPacketCounters(ctx)
+}
+
+func (w *clientInterfaceStubWrapper) SignalPoll(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.SignalPoll(ctx)
+}
+
+func (w *clientInterfaceStubWrapper) GetMacAddress(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetMacAddress(ctx)
+}
+
+func (w *clientInterfaceStubWrapper) GetInterfaceName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetInterfaceName(ctx)
+}
+
+func (w *clientInterfaceStubWrapper) GetWifiScannerImpl(
+	ctx context.Context,
+) (IWifiScannerImpl, error) {
+	return w.impl.GetWifiScannerImpl(ctx)
+}
+
+func (w *clientInterfaceStubWrapper) SendMgmtFrame(
+	ctx context.Context,
+	frame []byte,
+	callback ISendMgmtFrameEvent,
+	mcs int32,
+) error {
+	return w.impl.SendMgmtFrame(ctx, frame, callback, mcs)
+}
+
+var _ IClientInterface = (*clientInterfaceStubWrapper)(nil)
+
+// NewClientInterfaceStub creates a server-side IClientInterface wrapping the given
+// server implementation. The returned value satisfies IClientInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewClientInterfaceStub(
+	impl IClientInterfaceServer,
+) IClientInterface {
+	wrapper := &clientInterfaceStubWrapper{impl: impl}
+	stub := &ClientInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

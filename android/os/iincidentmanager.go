@@ -78,7 +78,7 @@ func (p *IncidentManagerProxy) ReportIncidentToStream(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncidentManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "reportIncidentToStream")
 	if _err != nil {
@@ -96,7 +96,7 @@ func (p *IncidentManagerProxy) ReportIncidentToDumpstate(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncidentManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "reportIncidentToDumpstate")
 	if _err != nil {
@@ -117,7 +117,7 @@ func (p *IncidentManagerProxy) RegisterSection(
 	_data.WriteInterfaceToken(DescriptorIIncidentManager)
 	_data.WriteInt32(id)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncidentManager, "registerSection")
 	if _err != nil {
@@ -461,4 +461,124 @@ func (s *IncidentManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IIncidentManagerServer is the server-side interface that user implementations
+// provide to NewIncidentManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIncidentManagerServer interface {
+	ReportIncident(ctx context.Context, args interface{}) error
+	ReportIncidentToStream(ctx context.Context, args interface{}, listener IIncidentReportStatusListener, stream interface{}) error
+	ReportIncidentToDumpstate(ctx context.Context, stream interface{}, listener IIncidentReportStatusListener) error
+	RegisterSection(ctx context.Context, id int32, name string, callback IIncidentDumpCallback) error
+	UnregisterSection(ctx context.Context, id int32) error
+	SystemRunning(ctx context.Context) error
+	GetIncidentReportList(ctx context.Context, pkg string, cls string) ([]string, error)
+	GetIncidentReport(ctx context.Context, pkg string, cls string, id string) (interface{}, error)
+	DeleteIncidentReports(ctx context.Context, pkg string, cls string, id string) error
+	DeleteAllIncidentReports(ctx context.Context, pkg string) error
+}
+
+type incidentManagerStubWrapper struct {
+	impl       IIncidentManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *incidentManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *incidentManagerStubWrapper) ReportIncident(
+	ctx context.Context,
+	args interface{},
+) error {
+	return w.impl.ReportIncident(ctx, args)
+}
+
+func (w *incidentManagerStubWrapper) ReportIncidentToStream(
+	ctx context.Context,
+	args interface{},
+	listener IIncidentReportStatusListener,
+	stream interface{},
+) error {
+	return w.impl.ReportIncidentToStream(ctx, args, listener, stream)
+}
+
+func (w *incidentManagerStubWrapper) ReportIncidentToDumpstate(
+	ctx context.Context,
+	stream interface{},
+	listener IIncidentReportStatusListener,
+) error {
+	return w.impl.ReportIncidentToDumpstate(ctx, stream, listener)
+}
+
+func (w *incidentManagerStubWrapper) RegisterSection(
+	ctx context.Context,
+	id int32,
+	name string,
+	callback IIncidentDumpCallback,
+) error {
+	return w.impl.RegisterSection(ctx, id, name, callback)
+}
+
+func (w *incidentManagerStubWrapper) UnregisterSection(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.UnregisterSection(ctx, id)
+}
+
+func (w *incidentManagerStubWrapper) SystemRunning(
+	ctx context.Context,
+) error {
+	return w.impl.SystemRunning(ctx)
+}
+
+func (w *incidentManagerStubWrapper) GetIncidentReportList(
+	ctx context.Context,
+	pkg string,
+	cls string,
+) ([]string, error) {
+	return w.impl.GetIncidentReportList(ctx, pkg, cls)
+}
+
+func (w *incidentManagerStubWrapper) GetIncidentReport(
+	ctx context.Context,
+	pkg string,
+	cls string,
+	id string,
+) (interface{}, error) {
+	return w.impl.GetIncidentReport(ctx, pkg, cls, id)
+}
+
+func (w *incidentManagerStubWrapper) DeleteIncidentReports(
+	ctx context.Context,
+	pkg string,
+	cls string,
+	id string,
+) error {
+	return w.impl.DeleteIncidentReports(ctx, pkg, cls, id)
+}
+
+func (w *incidentManagerStubWrapper) DeleteAllIncidentReports(
+	ctx context.Context,
+	pkg string,
+) error {
+	return w.impl.DeleteAllIncidentReports(ctx, pkg)
+}
+
+var _ IIncidentManager = (*incidentManagerStubWrapper)(nil)
+
+// NewIncidentManagerStub creates a server-side IIncidentManager wrapping the given
+// server implementation. The returned value satisfies IIncidentManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIncidentManagerStub(
+	impl IIncidentManagerServer,
+) IIncidentManager {
+	wrapper := &incidentManagerStubWrapper{impl: impl}
+	stub := &IncidentManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

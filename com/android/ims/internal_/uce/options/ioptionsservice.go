@@ -94,7 +94,7 @@ func (p *OptionsServiceProxy) AddListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOptionsService)
 	_data.WriteInt32(optionsServiceHandle)
-	_data.WriteStrongBinder(optionsListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, optionsListener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := optionsServiceListenerHdl.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -603,4 +603,114 @@ func (s *OptionsServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOptionsServiceServer is the server-side interface that user implementations
+// provide to NewOptionsServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOptionsServiceServer interface {
+	GetVersion(ctx context.Context, optionsServiceHandle int32) (vehicle.StatusCode, error)
+	AddListener(ctx context.Context, optionsServiceHandle int32, optionsListener IOptionsListener, optionsServiceListenerHdl common.UceLong) (vehicle.StatusCode, error)
+	RemoveListener(ctx context.Context, optionsServiceHandle int32, optionsServiceListenerHdl common.UceLong) (vehicle.StatusCode, error)
+	SetMyInfo(ctx context.Context, optionsServiceHandle int32, capInfo common.CapInfo, reqUserData int32) (vehicle.StatusCode, error)
+	GetMyInfo(ctx context.Context, optionsServiceHandle int32, reqUserdata int32) (vehicle.StatusCode, error)
+	GetContactCap(ctx context.Context, optionsServiceHandle int32, remoteURI string, reqUserData int32) (vehicle.StatusCode, error)
+	GetContactListCap(ctx context.Context, optionsServiceHandle int32, remoteURIList []string, reqUserData int32) (vehicle.StatusCode, error)
+	ResponseIncomingOptions(ctx context.Context, optionsServiceHandle int32, tId int32, sipResponseCode int32, reasonPhrase string, capInfo OptionsCapInfo, bContactInBL bool) (vehicle.StatusCode, error)
+}
+
+type optionsServiceStubWrapper struct {
+	impl       IOptionsServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *optionsServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *optionsServiceStubWrapper) GetVersion(
+	ctx context.Context,
+	optionsServiceHandle int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.GetVersion(ctx, optionsServiceHandle)
+}
+
+func (w *optionsServiceStubWrapper) AddListener(
+	ctx context.Context,
+	optionsServiceHandle int32,
+	optionsListener IOptionsListener,
+	optionsServiceListenerHdl common.UceLong,
+) (vehicle.StatusCode, error) {
+	return w.impl.AddListener(ctx, optionsServiceHandle, optionsListener, optionsServiceListenerHdl)
+}
+
+func (w *optionsServiceStubWrapper) RemoveListener(
+	ctx context.Context,
+	optionsServiceHandle int32,
+	optionsServiceListenerHdl common.UceLong,
+) (vehicle.StatusCode, error) {
+	return w.impl.RemoveListener(ctx, optionsServiceHandle, optionsServiceListenerHdl)
+}
+
+func (w *optionsServiceStubWrapper) SetMyInfo(
+	ctx context.Context,
+	optionsServiceHandle int32,
+	capInfo common.CapInfo,
+	reqUserData int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.SetMyInfo(ctx, optionsServiceHandle, capInfo, reqUserData)
+}
+
+func (w *optionsServiceStubWrapper) GetMyInfo(
+	ctx context.Context,
+	optionsServiceHandle int32,
+	reqUserdata int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.GetMyInfo(ctx, optionsServiceHandle, reqUserdata)
+}
+
+func (w *optionsServiceStubWrapper) GetContactCap(
+	ctx context.Context,
+	optionsServiceHandle int32,
+	remoteURI string,
+	reqUserData int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.GetContactCap(ctx, optionsServiceHandle, remoteURI, reqUserData)
+}
+
+func (w *optionsServiceStubWrapper) GetContactListCap(
+	ctx context.Context,
+	optionsServiceHandle int32,
+	remoteURIList []string,
+	reqUserData int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.GetContactListCap(ctx, optionsServiceHandle, remoteURIList, reqUserData)
+}
+
+func (w *optionsServiceStubWrapper) ResponseIncomingOptions(
+	ctx context.Context,
+	optionsServiceHandle int32,
+	tId int32,
+	sipResponseCode int32,
+	reasonPhrase string,
+	capInfo OptionsCapInfo,
+	bContactInBL bool,
+) (vehicle.StatusCode, error) {
+	return w.impl.ResponseIncomingOptions(ctx, optionsServiceHandle, tId, sipResponseCode, reasonPhrase, capInfo, bContactInBL)
+}
+
+var _ IOptionsService = (*optionsServiceStubWrapper)(nil)
+
+// NewOptionsServiceStub creates a server-side IOptionsService wrapping the given
+// server implementation. The returned value satisfies IOptionsService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOptionsServiceStub(
+	impl IOptionsServiceServer,
+) IOptionsService {
+	wrapper := &optionsServiceStubWrapper{impl: impl}
+	stub := &OptionsServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -104,3 +104,42 @@ func (s *JankListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IJankListenerServer is the server-side interface that user implementations
+// provide to NewJankListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IJankListenerServer interface {
+	OnJankData(ctx context.Context, data []JankData) error
+}
+
+type jankListenerStubWrapper struct {
+	impl       IJankListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *jankListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *jankListenerStubWrapper) OnJankData(
+	ctx context.Context,
+	data []JankData,
+) error {
+	return w.impl.OnJankData(ctx, data)
+}
+
+var _ IJankListener = (*jankListenerStubWrapper)(nil)
+
+// NewJankListenerStub creates a server-side IJankListener wrapping the given
+// server implementation. The returned value satisfies IJankListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewJankListenerStub(
+	impl IJankListenerServer,
+) IJankListener {
+	wrapper := &jankListenerStubWrapper{impl: impl}
+	stub := &JankListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

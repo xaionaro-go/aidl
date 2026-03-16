@@ -96,3 +96,43 @@ func (s *WifiRttControllerEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWifiRttControllerEventCallbackServer is the server-side interface that user implementations
+// provide to NewWifiRttControllerEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiRttControllerEventCallbackServer interface {
+	OnResults(ctx context.Context, cmdId int32, results []RttResult) error
+}
+
+type wifiRttControllerEventCallbackStubWrapper struct {
+	impl       IWifiRttControllerEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiRttControllerEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiRttControllerEventCallbackStubWrapper) OnResults(
+	ctx context.Context,
+	cmdId int32,
+	results []RttResult,
+) error {
+	return w.impl.OnResults(ctx, cmdId, results)
+}
+
+var _ IWifiRttControllerEventCallback = (*wifiRttControllerEventCallbackStubWrapper)(nil)
+
+// NewWifiRttControllerEventCallbackStub creates a server-side IWifiRttControllerEventCallback wrapping the given
+// server implementation. The returned value satisfies IWifiRttControllerEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiRttControllerEventCallbackStub(
+	impl IWifiRttControllerEventCallbackServer,
+) IWifiRttControllerEventCallback {
+	wrapper := &wifiRttControllerEventCallbackStubWrapper{impl: impl}
+	stub := &WifiRttControllerEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

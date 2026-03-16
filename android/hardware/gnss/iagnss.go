@@ -52,7 +52,7 @@ func (p *AGnssProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAGnss)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAGnss, "setCallback")
 	if _err != nil {
@@ -129,7 +129,7 @@ func (p *AGnssProxy) SetServer(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAGnss)
 	_data.WriteInt32(int32(type_))
-	_data.WriteString(hostname)
+	_data.WriteString16(hostname)
 	_data.WriteInt32(port)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAGnss, "setServer")
@@ -159,7 +159,7 @@ func (p *AGnssProxy) DataConnOpen(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAGnss)
 	_data.WriteInt64(networkHandle)
-	_data.WriteString(apn)
+	_data.WriteString16(apn)
 	_data.WriteInt32(int32(apnIpType))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAGnss, "dataConnOpen")
@@ -242,7 +242,7 @@ func (s *AGnssStub) OnTransaction(
 			return nil, _err
 		}
 		_arg_type_ := gnssIAGnssCallback.AGnssType(_raw_type_)
-		_arg_hostname, _err := _data.ReadString()
+		_arg_hostname, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -266,7 +266,7 @@ func (s *AGnssStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_apn, _err := _data.ReadString()
+		_arg_apn, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -286,4 +286,77 @@ func (s *AGnssStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAGnssServer is the server-side interface that user implementations
+// provide to NewAGnssStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAGnssServer interface {
+	SetCallback(ctx context.Context, callback IAGnssCallback) error
+	DataConnClosed(ctx context.Context) error
+	DataConnFailed(ctx context.Context) error
+	SetServer(ctx context.Context, type_ gnssIAGnssCallback.AGnssType, hostname string, port int32) error
+	DataConnOpen(ctx context.Context, networkHandle int64, apn string, apnIpType gnssIAGnss.ApnIpType) error
+}
+
+type aGnssStubWrapper struct {
+	impl       IAGnssServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aGnssStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aGnssStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IAGnssCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *aGnssStubWrapper) DataConnClosed(
+	ctx context.Context,
+) error {
+	return w.impl.DataConnClosed(ctx)
+}
+
+func (w *aGnssStubWrapper) DataConnFailed(
+	ctx context.Context,
+) error {
+	return w.impl.DataConnFailed(ctx)
+}
+
+func (w *aGnssStubWrapper) SetServer(
+	ctx context.Context,
+	type_ gnssIAGnssCallback.AGnssType,
+	hostname string,
+	port int32,
+) error {
+	return w.impl.SetServer(ctx, type_, hostname, port)
+}
+
+func (w *aGnssStubWrapper) DataConnOpen(
+	ctx context.Context,
+	networkHandle int64,
+	apn string,
+	apnIpType gnssIAGnss.ApnIpType,
+) error {
+	return w.impl.DataConnOpen(ctx, networkHandle, apn, apnIpType)
+}
+
+var _ IAGnss = (*aGnssStubWrapper)(nil)
+
+// NewAGnssStub creates a server-side IAGnss wrapping the given
+// server implementation. The returned value satisfies IAGnss
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAGnssStub(
+	impl IAGnssServer,
+) IAGnss {
+	wrapper := &aGnssStubWrapper{impl: impl}
+	stub := &AGnssStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

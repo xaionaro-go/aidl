@@ -167,3 +167,50 @@ func (s *LightsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILightsServer is the server-side interface that user implementations
+// provide to NewLightsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILightsServer interface {
+	SetLightState(ctx context.Context, id int32, state HwLightState) error
+	GetLights(ctx context.Context) ([]HwLight, error)
+}
+
+type lightsStubWrapper struct {
+	impl       ILightsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *lightsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *lightsStubWrapper) SetLightState(
+	ctx context.Context,
+	id int32,
+	state HwLightState,
+) error {
+	return w.impl.SetLightState(ctx, id, state)
+}
+
+func (w *lightsStubWrapper) GetLights(
+	ctx context.Context,
+) ([]HwLight, error) {
+	return w.impl.GetLights(ctx)
+}
+
+var _ ILights = (*lightsStubWrapper)(nil)
+
+// NewLightsStub creates a server-side ILights wrapping the given
+// server implementation. The returned value satisfies ILights
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLightsStub(
+	impl ILightsServer,
+) ILights {
+	wrapper := &lightsStubWrapper{impl: impl}
+	stub := &LightsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -82,3 +82,42 @@ func (s *EraseSubscriptionsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEraseSubscriptionsCallbackServer is the server-side interface that user implementations
+// provide to NewEraseSubscriptionsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEraseSubscriptionsCallbackServer interface {
+	OnComplete(ctx context.Context, result int32) error
+}
+
+type eraseSubscriptionsCallbackStubWrapper struct {
+	impl       IEraseSubscriptionsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eraseSubscriptionsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eraseSubscriptionsCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IEraseSubscriptionsCallback = (*eraseSubscriptionsCallbackStubWrapper)(nil)
+
+// NewEraseSubscriptionsCallbackStub creates a server-side IEraseSubscriptionsCallback wrapping the given
+// server implementation. The returned value satisfies IEraseSubscriptionsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEraseSubscriptionsCallbackStub(
+	impl IEraseSubscriptionsCallbackServer,
+) IEraseSubscriptionsCallback {
+	wrapper := &eraseSubscriptionsCallbackStubWrapper{impl: impl}
+	stub := &EraseSubscriptionsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

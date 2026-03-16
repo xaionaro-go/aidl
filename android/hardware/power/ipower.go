@@ -805,3 +805,156 @@ func (s *PowerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPowerServer is the server-side interface that user implementations
+// provide to NewPowerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPowerServer interface {
+	SetMode(ctx context.Context, type_ Mode, enabled bool) error
+	IsModeSupported(ctx context.Context, type_ Mode) (bool, error)
+	SetBoost(ctx context.Context, type_ Boost, durationMs int32) error
+	IsBoostSupported(ctx context.Context, type_ Boost) (bool, error)
+	CreateHintSession(ctx context.Context, tgid int32, uid int32, threadIds []int32, durationNanos int64) (IPowerHintSession, error)
+	GetHintSessionPreferredRate(ctx context.Context) (int64, error)
+	CreateHintSessionWithConfig(ctx context.Context, tgid int32, uid int32, threadIds []int32, durationNanos int64, tag SessionTag, config SessionConfig) (IPowerHintSession, error)
+	GetSessionChannel(ctx context.Context, tgid int32, uid int32) (ChannelConfig, error)
+	CloseSessionChannel(ctx context.Context, tgid int32, uid int32) error
+	GetSupportInfo(ctx context.Context) (SupportInfo, error)
+	GetCpuHeadroom(ctx context.Context, params CpuHeadroomParams) (CpuHeadroomResult, error)
+	GetGpuHeadroom(ctx context.Context, params GpuHeadroomParams) (GpuHeadroomResult, error)
+	SendCompositionData(ctx context.Context, data []CompositionData) error
+	SendCompositionUpdate(ctx context.Context, update CompositionUpdate) error
+}
+
+type powerStubWrapper struct {
+	impl       IPowerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *powerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *powerStubWrapper) SetMode(
+	ctx context.Context,
+	type_ Mode,
+	enabled bool,
+) error {
+	return w.impl.SetMode(ctx, type_, enabled)
+}
+
+func (w *powerStubWrapper) IsModeSupported(
+	ctx context.Context,
+	type_ Mode,
+) (bool, error) {
+	return w.impl.IsModeSupported(ctx, type_)
+}
+
+func (w *powerStubWrapper) SetBoost(
+	ctx context.Context,
+	type_ Boost,
+	durationMs int32,
+) error {
+	return w.impl.SetBoost(ctx, type_, durationMs)
+}
+
+func (w *powerStubWrapper) IsBoostSupported(
+	ctx context.Context,
+	type_ Boost,
+) (bool, error) {
+	return w.impl.IsBoostSupported(ctx, type_)
+}
+
+func (w *powerStubWrapper) CreateHintSession(
+	ctx context.Context,
+	tgid int32,
+	uid int32,
+	threadIds []int32,
+	durationNanos int64,
+) (IPowerHintSession, error) {
+	return w.impl.CreateHintSession(ctx, tgid, uid, threadIds, durationNanos)
+}
+
+func (w *powerStubWrapper) GetHintSessionPreferredRate(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetHintSessionPreferredRate(ctx)
+}
+
+func (w *powerStubWrapper) CreateHintSessionWithConfig(
+	ctx context.Context,
+	tgid int32,
+	uid int32,
+	threadIds []int32,
+	durationNanos int64,
+	tag SessionTag,
+	config SessionConfig,
+) (IPowerHintSession, error) {
+	return w.impl.CreateHintSessionWithConfig(ctx, tgid, uid, threadIds, durationNanos, tag, config)
+}
+
+func (w *powerStubWrapper) GetSessionChannel(
+	ctx context.Context,
+	tgid int32,
+	uid int32,
+) (ChannelConfig, error) {
+	return w.impl.GetSessionChannel(ctx, tgid, uid)
+}
+
+func (w *powerStubWrapper) CloseSessionChannel(
+	ctx context.Context,
+	tgid int32,
+	uid int32,
+) error {
+	return w.impl.CloseSessionChannel(ctx, tgid, uid)
+}
+
+func (w *powerStubWrapper) GetSupportInfo(
+	ctx context.Context,
+) (SupportInfo, error) {
+	return w.impl.GetSupportInfo(ctx)
+}
+
+func (w *powerStubWrapper) GetCpuHeadroom(
+	ctx context.Context,
+	params CpuHeadroomParams,
+) (CpuHeadroomResult, error) {
+	return w.impl.GetCpuHeadroom(ctx, params)
+}
+
+func (w *powerStubWrapper) GetGpuHeadroom(
+	ctx context.Context,
+	params GpuHeadroomParams,
+) (GpuHeadroomResult, error) {
+	return w.impl.GetGpuHeadroom(ctx, params)
+}
+
+func (w *powerStubWrapper) SendCompositionData(
+	ctx context.Context,
+	data []CompositionData,
+) error {
+	return w.impl.SendCompositionData(ctx, data)
+}
+
+func (w *powerStubWrapper) SendCompositionUpdate(
+	ctx context.Context,
+	update CompositionUpdate,
+) error {
+	return w.impl.SendCompositionUpdate(ctx, update)
+}
+
+var _ IPower = (*powerStubWrapper)(nil)
+
+// NewPowerStub creates a server-side IPower wrapping the given
+// server implementation. The returned value satisfies IPower
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPowerStub(
+	impl IPowerServer,
+) IPower {
+	wrapper := &powerStubWrapper{impl: impl}
+	stub := &PowerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

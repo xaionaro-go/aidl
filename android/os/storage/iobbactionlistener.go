@@ -94,3 +94,44 @@ func (s *ObbActionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IObbActionListenerServer is the server-side interface that user implementations
+// provide to NewObbActionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IObbActionListenerServer interface {
+	OnObbResult(ctx context.Context, filename string, nonce int32, status int32) error
+}
+
+type obbActionListenerStubWrapper struct {
+	impl       IObbActionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *obbActionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *obbActionListenerStubWrapper) OnObbResult(
+	ctx context.Context,
+	filename string,
+	nonce int32,
+	status int32,
+) error {
+	return w.impl.OnObbResult(ctx, filename, nonce, status)
+}
+
+var _ IObbActionListener = (*obbActionListenerStubWrapper)(nil)
+
+// NewObbActionListenerStub creates a server-side IObbActionListener wrapping the given
+// server implementation. The returned value satisfies IObbActionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewObbActionListenerStub(
+	impl IObbActionListenerServer,
+) IObbActionListener {
+	wrapper := &obbActionListenerStubWrapper{impl: impl}
+	stub := &ObbActionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

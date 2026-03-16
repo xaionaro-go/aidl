@@ -1402,3 +1402,178 @@ func (s *AidlTestStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAidlTestServer is the server-side interface that user implementations
+// provide to NewAidlTestStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAidlTestServer interface {
+	IntMethod(ctx context.Context, a int32) (int32, error)
+	ParcelableIn(ctx context.Context, p_ AidlTestTestParcelable) (AidlTestTestParcelable, error)
+	ParcelableOut(ctx context.Context, p_ AidlTestTestParcelable) (AidlTestTestParcelable, error)
+	ParcelableInOut(ctx context.Context, p_ AidlTestTestParcelable) (AidlTestTestParcelable, error)
+	ListParcelableLonger(ctx context.Context, list []AidlTestTestParcelable, index int32) (AidlTestTestParcelable, error)
+	ListParcelableShorter(ctx context.Context, list []AidlTestTestParcelable, index int32) (int32, error)
+	BooleanArray(ctx context.Context, a0 []bool, a1 []bool, a2 []bool) ([]bool, error)
+	CharArray(ctx context.Context, a0 []uint16, a1 []uint16, a2 []uint16) ([]uint16, error)
+	IntArray(ctx context.Context, a0 []int32, a1 []int32, a2 []int32) ([]int32, error)
+	LongArray(ctx context.Context, a0 []int64, a1 []int64, a2 []int64) ([]int64, error)
+	FloatArray(ctx context.Context, a0 []float32, a1 []float32, a2 []float32) ([]float32, error)
+	DoubleArray(ctx context.Context, a0 []float64, a1 []float64, a2 []float64) ([]float64, error)
+	StringArray(ctx context.Context, a0 []string, a1 []string, a2 []string) ([]string, error)
+	ParcelableArray(ctx context.Context, a0 []AidlTestTestParcelable, a1 []AidlTestTestParcelable, a2 []AidlTestTestParcelable) ([]AidlTestTestParcelable, error)
+	VoidSecurityException(ctx context.Context) error
+	IntSecurityException(ctx context.Context) (int32, error)
+}
+
+type aidlTestStubWrapper struct {
+	impl       IAidlTestServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aidlTestStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aidlTestStubWrapper) IntMethod(
+	ctx context.Context,
+	a int32,
+) (int32, error) {
+	return w.impl.IntMethod(ctx, a)
+}
+
+func (w *aidlTestStubWrapper) ParcelableIn(
+	ctx context.Context,
+	p_ AidlTestTestParcelable,
+) (AidlTestTestParcelable, error) {
+	return w.impl.ParcelableIn(ctx, p_)
+}
+
+func (w *aidlTestStubWrapper) ParcelableOut(
+	ctx context.Context,
+	p_ AidlTestTestParcelable,
+) (AidlTestTestParcelable, error) {
+	return w.impl.ParcelableOut(ctx, p_)
+}
+
+func (w *aidlTestStubWrapper) ParcelableInOut(
+	ctx context.Context,
+	p_ AidlTestTestParcelable,
+) (AidlTestTestParcelable, error) {
+	return w.impl.ParcelableInOut(ctx, p_)
+}
+
+func (w *aidlTestStubWrapper) ListParcelableLonger(
+	ctx context.Context,
+	list []AidlTestTestParcelable,
+	index int32,
+) (AidlTestTestParcelable, error) {
+	return w.impl.ListParcelableLonger(ctx, list, index)
+}
+
+func (w *aidlTestStubWrapper) ListParcelableShorter(
+	ctx context.Context,
+	list []AidlTestTestParcelable,
+	index int32,
+) (int32, error) {
+	return w.impl.ListParcelableShorter(ctx, list, index)
+}
+
+func (w *aidlTestStubWrapper) BooleanArray(
+	ctx context.Context,
+	a0 []bool,
+	a1 []bool,
+	a2 []bool,
+) ([]bool, error) {
+	return w.impl.BooleanArray(ctx, a0, a1, a2)
+}
+
+func (w *aidlTestStubWrapper) CharArray(
+	ctx context.Context,
+	a0 []uint16,
+	a1 []uint16,
+	a2 []uint16,
+) ([]uint16, error) {
+	return w.impl.CharArray(ctx, a0, a1, a2)
+}
+
+func (w *aidlTestStubWrapper) IntArray(
+	ctx context.Context,
+	a0 []int32,
+	a1 []int32,
+	a2 []int32,
+) ([]int32, error) {
+	return w.impl.IntArray(ctx, a0, a1, a2)
+}
+
+func (w *aidlTestStubWrapper) LongArray(
+	ctx context.Context,
+	a0 []int64,
+	a1 []int64,
+	a2 []int64,
+) ([]int64, error) {
+	return w.impl.LongArray(ctx, a0, a1, a2)
+}
+
+func (w *aidlTestStubWrapper) FloatArray(
+	ctx context.Context,
+	a0 []float32,
+	a1 []float32,
+	a2 []float32,
+) ([]float32, error) {
+	return w.impl.FloatArray(ctx, a0, a1, a2)
+}
+
+func (w *aidlTestStubWrapper) DoubleArray(
+	ctx context.Context,
+	a0 []float64,
+	a1 []float64,
+	a2 []float64,
+) ([]float64, error) {
+	return w.impl.DoubleArray(ctx, a0, a1, a2)
+}
+
+func (w *aidlTestStubWrapper) StringArray(
+	ctx context.Context,
+	a0 []string,
+	a1 []string,
+	a2 []string,
+) ([]string, error) {
+	return w.impl.StringArray(ctx, a0, a1, a2)
+}
+
+func (w *aidlTestStubWrapper) ParcelableArray(
+	ctx context.Context,
+	a0 []AidlTestTestParcelable,
+	a1 []AidlTestTestParcelable,
+	a2 []AidlTestTestParcelable,
+) ([]AidlTestTestParcelable, error) {
+	return w.impl.ParcelableArray(ctx, a0, a1, a2)
+}
+
+func (w *aidlTestStubWrapper) VoidSecurityException(
+	ctx context.Context,
+) error {
+	return w.impl.VoidSecurityException(ctx)
+}
+
+func (w *aidlTestStubWrapper) IntSecurityException(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.IntSecurityException(ctx)
+}
+
+var _ IAidlTest = (*aidlTestStubWrapper)(nil)
+
+// NewAidlTestStub creates a server-side IAidlTest wrapping the given
+// server implementation. The returned value satisfies IAidlTest
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAidlTestStub(
+	impl IAidlTestServer,
+) IAidlTest {
+	wrapper := &aidlTestStubWrapper{impl: impl}
+	stub := &AidlTestStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -415,3 +415,93 @@ func (s *CarrierConfigLoaderStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICarrierConfigLoaderServer is the server-side interface that user implementations
+// provide to NewCarrierConfigLoaderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarrierConfigLoaderServer interface {
+	GetConfigForSubId(ctx context.Context, subId int32) (interface{}, error)
+	GetConfigForSubIdWithFeature(ctx context.Context, subId int32) (interface{}, error)
+	OverrideConfig(ctx context.Context, subId int32, overrides interface{}, persistent bool) error
+	NotifyConfigChangedForSubId(ctx context.Context, subId int32) error
+	UpdateConfigForPhoneId(ctx context.Context, phoneId int32, simState string) error
+	GetDefaultCarrierServicePackageName(ctx context.Context) (string, error)
+	GetConfigSubsetForSubIdWithFeature(ctx context.Context, subId int32, carrierConfigs []string) (interface{}, error)
+}
+
+type carrierConfigLoaderStubWrapper struct {
+	impl       ICarrierConfigLoaderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carrierConfigLoaderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carrierConfigLoaderStubWrapper) GetConfigForSubId(
+	ctx context.Context,
+	subId int32,
+) (interface{}, error) {
+	return w.impl.GetConfigForSubId(ctx, subId)
+}
+
+func (w *carrierConfigLoaderStubWrapper) GetConfigForSubIdWithFeature(
+	ctx context.Context,
+	subId int32,
+) (interface{}, error) {
+	return w.impl.GetConfigForSubIdWithFeature(ctx, subId)
+}
+
+func (w *carrierConfigLoaderStubWrapper) OverrideConfig(
+	ctx context.Context,
+	subId int32,
+	overrides interface{},
+	persistent bool,
+) error {
+	return w.impl.OverrideConfig(ctx, subId, overrides, persistent)
+}
+
+func (w *carrierConfigLoaderStubWrapper) NotifyConfigChangedForSubId(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.NotifyConfigChangedForSubId(ctx, subId)
+}
+
+func (w *carrierConfigLoaderStubWrapper) UpdateConfigForPhoneId(
+	ctx context.Context,
+	phoneId int32,
+	simState string,
+) error {
+	return w.impl.UpdateConfigForPhoneId(ctx, phoneId, simState)
+}
+
+func (w *carrierConfigLoaderStubWrapper) GetDefaultCarrierServicePackageName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetDefaultCarrierServicePackageName(ctx)
+}
+
+func (w *carrierConfigLoaderStubWrapper) GetConfigSubsetForSubIdWithFeature(
+	ctx context.Context,
+	subId int32,
+	carrierConfigs []string,
+) (interface{}, error) {
+	return w.impl.GetConfigSubsetForSubIdWithFeature(ctx, subId, carrierConfigs)
+}
+
+var _ ICarrierConfigLoader = (*carrierConfigLoaderStubWrapper)(nil)
+
+// NewCarrierConfigLoaderStub creates a server-side ICarrierConfigLoader wrapping the given
+// server implementation. The returned value satisfies ICarrierConfigLoader
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarrierConfigLoaderStub(
+	impl ICarrierConfigLoaderServer,
+) ICarrierConfigLoader {
+	wrapper := &carrierConfigLoaderStubWrapper{impl: impl}
+	stub := &CarrierConfigLoaderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

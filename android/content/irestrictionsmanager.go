@@ -3,6 +3,7 @@ package content
 import (
 	"context"
 	"fmt"
+	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -22,8 +23,8 @@ const (
 
 type IRestrictionsManager interface {
 	AsBinder() binder.IBinder
-	GetApplicationRestrictions(ctx context.Context, packageName string) (interface{}, error)
-	GetApplicationRestrictionsPerAdminForUser(ctx context.Context, packageName string) ([]interface{}, error)
+	GetApplicationRestrictions(ctx context.Context, packageName string) (os.Bundle, error)
+	GetApplicationRestrictionsPerAdminForUser(ctx context.Context, packageName string) ([]os.Bundle, error)
 	HasRestrictionsProvider(ctx context.Context) (bool, error)
 	RequestPermission(ctx context.Context, packageName string, requestType string, requestId string, requestData interface{}) error
 	NotifyPermissionResponse(ctx context.Context, packageName string, response interface{}) error
@@ -49,8 +50,8 @@ var _ IRestrictionsManager = (*RestrictionsManagerProxy)(nil)
 func (p *RestrictionsManagerProxy) GetApplicationRestrictions(
 	ctx context.Context,
 	packageName string,
-) (interface{}, error) {
-	var _result interface{}
+) (os.Bundle, error) {
+	var _result os.Bundle
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRestrictionsManager)
 	_data.WriteString16(packageName)
@@ -70,14 +71,23 @@ func (p *RestrictionsManagerProxy) GetApplicationRestrictions(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
 func (p *RestrictionsManagerProxy) GetApplicationRestrictionsPerAdminForUser(
 	ctx context.Context,
 	packageName string,
-) ([]interface{}, error) {
-	var _result []interface{}
+) ([]os.Bundle, error) {
+	var _result []os.Bundle
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRestrictionsManager)
@@ -105,8 +115,11 @@ func (p *RestrictionsManagerProxy) GetApplicationRestrictionsPerAdminForUser(
 	}
 
 	if _count >= 0 {
-		_result = make([]interface{}, _count)
+		_result = make([]os.Bundle, _count)
 		for _i := int32(0); _i < _count; _i++ {
+			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, _err
+			}
 		}
 	}
 	return _result, nil
@@ -262,7 +275,10 @@ func (s *RestrictionsManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIRestrictionsManagerGetApplicationRestrictionsPerAdminForUser:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -359,4 +375,85 @@ func (s *RestrictionsManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRestrictionsManagerServer is the server-side interface that user implementations
+// provide to NewRestrictionsManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRestrictionsManagerServer interface {
+	GetApplicationRestrictions(ctx context.Context, packageName string) (os.Bundle, error)
+	GetApplicationRestrictionsPerAdminForUser(ctx context.Context, packageName string) ([]os.Bundle, error)
+	HasRestrictionsProvider(ctx context.Context) (bool, error)
+	RequestPermission(ctx context.Context, packageName string, requestType string, requestId string, requestData interface{}) error
+	NotifyPermissionResponse(ctx context.Context, packageName string, response interface{}) error
+	CreateLocalApprovalIntent(ctx context.Context) (Intent, error)
+}
+
+type restrictionsManagerStubWrapper struct {
+	impl       IRestrictionsManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *restrictionsManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *restrictionsManagerStubWrapper) GetApplicationRestrictions(
+	ctx context.Context,
+	packageName string,
+) (os.Bundle, error) {
+	return w.impl.GetApplicationRestrictions(ctx, packageName)
+}
+
+func (w *restrictionsManagerStubWrapper) GetApplicationRestrictionsPerAdminForUser(
+	ctx context.Context,
+	packageName string,
+) ([]os.Bundle, error) {
+	return w.impl.GetApplicationRestrictionsPerAdminForUser(ctx, packageName)
+}
+
+func (w *restrictionsManagerStubWrapper) HasRestrictionsProvider(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasRestrictionsProvider(ctx)
+}
+
+func (w *restrictionsManagerStubWrapper) RequestPermission(
+	ctx context.Context,
+	packageName string,
+	requestType string,
+	requestId string,
+	requestData interface{},
+) error {
+	return w.impl.RequestPermission(ctx, packageName, requestType, requestId, requestData)
+}
+
+func (w *restrictionsManagerStubWrapper) NotifyPermissionResponse(
+	ctx context.Context,
+	packageName string,
+	response interface{},
+) error {
+	return w.impl.NotifyPermissionResponse(ctx, packageName, response)
+}
+
+func (w *restrictionsManagerStubWrapper) CreateLocalApprovalIntent(
+	ctx context.Context,
+) (Intent, error) {
+	return w.impl.CreateLocalApprovalIntent(ctx)
+}
+
+var _ IRestrictionsManager = (*restrictionsManagerStubWrapper)(nil)
+
+// NewRestrictionsManagerStub creates a server-side IRestrictionsManager wrapping the given
+// server implementation. The returned value satisfies IRestrictionsManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRestrictionsManagerStub(
+	impl IRestrictionsManagerServer,
+) IRestrictionsManager {
+	wrapper := &restrictionsManagerStubWrapper{impl: impl}
+	stub := &RestrictionsManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

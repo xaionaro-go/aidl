@@ -129,3 +129,50 @@ func (s *SpellCheckerSessionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISpellCheckerSessionListenerServer is the server-side interface that user implementations
+// provide to NewSpellCheckerSessionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpellCheckerSessionListenerServer interface {
+	OnGetSuggestions(ctx context.Context, results []viewTextservice.SuggestionsInfo) error
+	OnGetSentenceSuggestions(ctx context.Context, result []viewTextservice.SentenceSuggestionsInfo) error
+}
+
+type spellCheckerSessionListenerStubWrapper struct {
+	impl       ISpellCheckerSessionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spellCheckerSessionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spellCheckerSessionListenerStubWrapper) OnGetSuggestions(
+	ctx context.Context,
+	results []viewTextservice.SuggestionsInfo,
+) error {
+	return w.impl.OnGetSuggestions(ctx, results)
+}
+
+func (w *spellCheckerSessionListenerStubWrapper) OnGetSentenceSuggestions(
+	ctx context.Context,
+	result []viewTextservice.SentenceSuggestionsInfo,
+) error {
+	return w.impl.OnGetSentenceSuggestions(ctx, result)
+}
+
+var _ ISpellCheckerSessionListener = (*spellCheckerSessionListenerStubWrapper)(nil)
+
+// NewSpellCheckerSessionListenerStub creates a server-side ISpellCheckerSessionListener wrapping the given
+// server implementation. The returned value satisfies ISpellCheckerSessionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpellCheckerSessionListenerStub(
+	impl ISpellCheckerSessionListenerServer,
+) ISpellCheckerSessionListener {
+	wrapper := &spellCheckerSessionListenerStubWrapper{impl: impl}
+	stub := &SpellCheckerSessionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

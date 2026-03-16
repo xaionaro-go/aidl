@@ -481,3 +481,107 @@ func (s *NetdStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INetdServer is the server-side interface that user implementations
+// provide to NewNetdStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetdServer interface {
+	AddInterfaceToOemNetwork(ctx context.Context, networkHandle int64, ifname string) error
+	AddRouteToOemNetwork(ctx context.Context, networkHandle int64, ifname string, destination string, nexthop string) error
+	CreateOemNetwork(ctx context.Context) (netdINetd.OemNetwork, error)
+	DestroyOemNetwork(ctx context.Context, networkHandle int64) error
+	RemoveInterfaceFromOemNetwork(ctx context.Context, networkHandle int64, ifname string) error
+	RemoveRouteFromOemNetwork(ctx context.Context, networkHandle int64, ifname string, destination string, nexthop string) error
+	SetForwardingBetweenInterfaces(ctx context.Context, inputIfName string, outputIfName string, enable bool) error
+	SetIpForwardEnable(ctx context.Context, enable bool) error
+}
+
+type netdStubWrapper struct {
+	impl       INetdServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *netdStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *netdStubWrapper) AddInterfaceToOemNetwork(
+	ctx context.Context,
+	networkHandle int64,
+	ifname string,
+) error {
+	return w.impl.AddInterfaceToOemNetwork(ctx, networkHandle, ifname)
+}
+
+func (w *netdStubWrapper) AddRouteToOemNetwork(
+	ctx context.Context,
+	networkHandle int64,
+	ifname string,
+	destination string,
+	nexthop string,
+) error {
+	return w.impl.AddRouteToOemNetwork(ctx, networkHandle, ifname, destination, nexthop)
+}
+
+func (w *netdStubWrapper) CreateOemNetwork(
+	ctx context.Context,
+) (netdINetd.OemNetwork, error) {
+	return w.impl.CreateOemNetwork(ctx)
+}
+
+func (w *netdStubWrapper) DestroyOemNetwork(
+	ctx context.Context,
+	networkHandle int64,
+) error {
+	return w.impl.DestroyOemNetwork(ctx, networkHandle)
+}
+
+func (w *netdStubWrapper) RemoveInterfaceFromOemNetwork(
+	ctx context.Context,
+	networkHandle int64,
+	ifname string,
+) error {
+	return w.impl.RemoveInterfaceFromOemNetwork(ctx, networkHandle, ifname)
+}
+
+func (w *netdStubWrapper) RemoveRouteFromOemNetwork(
+	ctx context.Context,
+	networkHandle int64,
+	ifname string,
+	destination string,
+	nexthop string,
+) error {
+	return w.impl.RemoveRouteFromOemNetwork(ctx, networkHandle, ifname, destination, nexthop)
+}
+
+func (w *netdStubWrapper) SetForwardingBetweenInterfaces(
+	ctx context.Context,
+	inputIfName string,
+	outputIfName string,
+	enable bool,
+) error {
+	return w.impl.SetForwardingBetweenInterfaces(ctx, inputIfName, outputIfName, enable)
+}
+
+func (w *netdStubWrapper) SetIpForwardEnable(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetIpForwardEnable(ctx, enable)
+}
+
+var _ INetd = (*netdStubWrapper)(nil)
+
+// NewNetdStub creates a server-side INetd wrapping the given
+// server implementation. The returned value satisfies INetd
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetdStub(
+	impl INetdServer,
+) INetd {
+	wrapper := &netdStubWrapper{impl: impl}
+	stub := &NetdStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

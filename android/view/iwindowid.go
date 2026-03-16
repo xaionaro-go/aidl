@@ -46,7 +46,7 @@ func (p *WindowIdProxy) RegisterFocusObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowId)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowId, "registerFocusObserver")
 	if _err != nil {
@@ -72,7 +72,7 @@ func (p *WindowIdProxy) UnregisterFocusObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowId)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowId, "unregisterFocusObserver")
 	if _err != nil {
@@ -181,4 +181,58 @@ func (s *WindowIdStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWindowIdServer is the server-side interface that user implementations
+// provide to NewWindowIdStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowIdServer interface {
+	RegisterFocusObserver(ctx context.Context, observer IWindowFocusObserver) error
+	UnregisterFocusObserver(ctx context.Context, observer IWindowFocusObserver) error
+	IsFocused(ctx context.Context) (bool, error)
+}
+
+type windowIdStubWrapper struct {
+	impl       IWindowIdServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowIdStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *windowIdStubWrapper) RegisterFocusObserver(
+	ctx context.Context,
+	observer IWindowFocusObserver,
+) error {
+	return w.impl.RegisterFocusObserver(ctx, observer)
+}
+
+func (w *windowIdStubWrapper) UnregisterFocusObserver(
+	ctx context.Context,
+	observer IWindowFocusObserver,
+) error {
+	return w.impl.UnregisterFocusObserver(ctx, observer)
+}
+
+func (w *windowIdStubWrapper) IsFocused(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsFocused(ctx)
+}
+
+var _ IWindowId = (*windowIdStubWrapper)(nil)
+
+// NewWindowIdStub creates a server-side IWindowId wrapping the given
+// server implementation. The returned value satisfies IWindowId
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowIdStub(
+	impl IWindowIdServer,
+) IWindowId {
+	wrapper := &windowIdStubWrapper{impl: impl}
+	stub := &WindowIdStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

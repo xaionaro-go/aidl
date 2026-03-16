@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type IServiceConnection interface {
 	AsBinder() binder.IBinder
-	Connected(ctx context.Context, name content.ComponentName, service binder.IBinder, dead bool) error
+	Connected(ctx context.Context, name interface{}, service binder.IBinder, dead bool) error
 }
 
 type ServiceConnectionProxy struct {
@@ -39,17 +38,13 @@ var _ IServiceConnection = (*ServiceConnectionProxy)(nil)
 
 func (p *ServiceConnectionProxy) Connected(
 	ctx context.Context,
-	name content.ComponentName,
+	name interface{},
 	service binder.IBinder,
 	dead bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceConnection)
-	_data.WriteInt32(1)
-	if _err := name.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(service.Handle())
+	binder.WriteBinderToParcel(ctx, _data, service, p.remote.Transport())
 	_data.WriteBool(dead)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceConnection, "connected")
@@ -79,18 +74,7 @@ func (s *ServiceConnectionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_name content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_name.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_name interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_service binder.IBinder
 		_ = _arg_service
@@ -104,4 +88,45 @@ func (s *ServiceConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IServiceConnectionServer is the server-side interface that user implementations
+// provide to NewServiceConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceConnectionServer interface {
+	Connected(ctx context.Context, name interface{}, service binder.IBinder, dead bool) error
+}
+
+type serviceConnectionStubWrapper struct {
+	impl       IServiceConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceConnectionStubWrapper) Connected(
+	ctx context.Context,
+	name interface{},
+	service binder.IBinder,
+	dead bool,
+) error {
+	return w.impl.Connected(ctx, name, service, dead)
+}
+
+var _ IServiceConnection = (*serviceConnectionStubWrapper)(nil)
+
+// NewServiceConnectionStub creates a server-side IServiceConnection wrapping the given
+// server implementation. The returned value satisfies IServiceConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceConnectionStub(
+	impl IServiceConnectionServer,
+) IServiceConnection {
+	wrapper := &serviceConnectionStubWrapper{impl: impl}
+	stub := &ServiceConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

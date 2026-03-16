@@ -44,7 +44,7 @@ func (p *SoundDoseFactoryProxy) GetSoundDose(
 	var _result coreSounddose.ISoundDose
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundDoseFactory)
-	_data.WriteString(module)
+	_data.WriteString16(module)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundDoseFactory, "getSoundDose")
 	if _err != nil {
@@ -87,7 +87,7 @@ func (s *SoundDoseFactoryStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_module, _err := _data.ReadString()
+		_arg_module, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -104,4 +104,43 @@ func (s *SoundDoseFactoryStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISoundDoseFactoryServer is the server-side interface that user implementations
+// provide to NewSoundDoseFactoryStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundDoseFactoryServer interface {
+	GetSoundDose(ctx context.Context, module string) (coreSounddose.ISoundDose, error)
+}
+
+type soundDoseFactoryStubWrapper struct {
+	impl       ISoundDoseFactoryServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundDoseFactoryStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundDoseFactoryStubWrapper) GetSoundDose(
+	ctx context.Context,
+	module string,
+) (coreSounddose.ISoundDose, error) {
+	return w.impl.GetSoundDose(ctx, module)
+}
+
+var _ ISoundDoseFactory = (*soundDoseFactoryStubWrapper)(nil)
+
+// NewSoundDoseFactoryStub creates a server-side ISoundDoseFactory wrapping the given
+// server implementation. The returned value satisfies ISoundDoseFactory
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundDoseFactoryStub(
+	impl ISoundDoseFactoryServer,
+) ISoundDoseFactory {
+	wrapper := &soundDoseFactoryStubWrapper{impl: impl}
+	stub := &SoundDoseFactoryStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

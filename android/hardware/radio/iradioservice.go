@@ -94,7 +94,7 @@ func (p *RadioServiceProxy) OpenTuner(
 		return _result, _err
 	}
 	_data.WriteBool(withAudio)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioService, "openTuner")
 	if _err != nil {
@@ -135,7 +135,7 @@ func (p *RadioServiceProxy) AddAnnouncementListener(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioService, "addAnnouncementListener")
 	if _err != nil {
@@ -248,4 +248,62 @@ func (s *RadioServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRadioServiceServer is the server-side interface that user implementations
+// provide to NewRadioServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioServiceServer interface {
+	ListModules(ctx context.Context) ([]RadioManagerModuleProperties, error)
+	OpenTuner(ctx context.Context, moduleId int32, bandConfig RadioManagerBandConfig, withAudio bool, callback ITunerCallback) (ITuner, error)
+	AddAnnouncementListener(ctx context.Context, enabledTypes []int32, listener IAnnouncementListener) (ICloseHandle, error)
+}
+
+type radioServiceStubWrapper struct {
+	impl       IRadioServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioServiceStubWrapper) ListModules(
+	ctx context.Context,
+) ([]RadioManagerModuleProperties, error) {
+	return w.impl.ListModules(ctx)
+}
+
+func (w *radioServiceStubWrapper) OpenTuner(
+	ctx context.Context,
+	moduleId int32,
+	bandConfig RadioManagerBandConfig,
+	withAudio bool,
+	callback ITunerCallback,
+) (ITuner, error) {
+	return w.impl.OpenTuner(ctx, moduleId, bandConfig, withAudio, callback)
+}
+
+func (w *radioServiceStubWrapper) AddAnnouncementListener(
+	ctx context.Context,
+	enabledTypes []int32,
+	listener IAnnouncementListener,
+) (ICloseHandle, error) {
+	return w.impl.AddAnnouncementListener(ctx, enabledTypes, listener)
+}
+
+var _ IRadioService = (*radioServiceStubWrapper)(nil)
+
+// NewRadioServiceStub creates a server-side IRadioService wrapping the given
+// server implementation. The returned value satisfies IRadioService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioServiceStub(
+	impl IRadioServiceServer,
+) IRadioService {
+	wrapper := &radioServiceStubWrapper{impl: impl}
+	stub := &RadioServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

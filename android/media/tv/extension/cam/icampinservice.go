@@ -49,7 +49,7 @@ func (p *CamPinServiceProxy) AddCamPinCapabilityListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamPinService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamPinService, "addCamPinCapabilityListener")
 	if _err != nil {
@@ -75,7 +75,7 @@ func (p *CamPinServiceProxy) RemoveCamPinCapabilityListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamPinService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamPinService, "removeCamPinCapabilityListener")
 	if _err != nil {
@@ -113,7 +113,7 @@ func (p *CamPinServiceProxy) RequestCamPinValidation(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamPinService, "requestCamPinValidation")
 	if _err != nil {
@@ -260,4 +260,70 @@ func (s *CamPinServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICamPinServiceServer is the server-side interface that user implementations
+// provide to NewCamPinServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICamPinServiceServer interface {
+	AddCamPinCapabilityListener(ctx context.Context, listener ICamPinCapabilityListener) error
+	RemoveCamPinCapabilityListener(ctx context.Context, listener ICamPinCapabilityListener) error
+	RequestCamPinValidation(ctx context.Context, slotId int32, pinCode []int32, listener ICamPinStatusListener) (int32, error)
+	GetCamPinCapability(ctx context.Context, slotId int32, camPinCapability os.Bundle) (int32, error)
+}
+
+type camPinServiceStubWrapper struct {
+	impl       ICamPinServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *camPinServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *camPinServiceStubWrapper) AddCamPinCapabilityListener(
+	ctx context.Context,
+	listener ICamPinCapabilityListener,
+) error {
+	return w.impl.AddCamPinCapabilityListener(ctx, listener)
+}
+
+func (w *camPinServiceStubWrapper) RemoveCamPinCapabilityListener(
+	ctx context.Context,
+	listener ICamPinCapabilityListener,
+) error {
+	return w.impl.RemoveCamPinCapabilityListener(ctx, listener)
+}
+
+func (w *camPinServiceStubWrapper) RequestCamPinValidation(
+	ctx context.Context,
+	slotId int32,
+	pinCode []int32,
+	listener ICamPinStatusListener,
+) (int32, error) {
+	return w.impl.RequestCamPinValidation(ctx, slotId, pinCode, listener)
+}
+
+func (w *camPinServiceStubWrapper) GetCamPinCapability(
+	ctx context.Context,
+	slotId int32,
+	camPinCapability os.Bundle,
+) (int32, error) {
+	return w.impl.GetCamPinCapability(ctx, slotId, camPinCapability)
+}
+
+var _ ICamPinService = (*camPinServiceStubWrapper)(nil)
+
+// NewCamPinServiceStub creates a server-side ICamPinService wrapping the given
+// server implementation. The returned value satisfies ICamPinService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCamPinServiceStub(
+	impl ICamPinServiceServer,
+) ICamPinService {
+	wrapper := &camPinServiceStubWrapper{impl: impl}
+	stub := &CamPinServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

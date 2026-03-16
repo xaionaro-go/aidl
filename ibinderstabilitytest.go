@@ -52,7 +52,7 @@ func (p *BinderStabilityTestProxy) SendBinder(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderStabilityTest)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderStabilityTest, "sendBinder")
 	if _err != nil {
@@ -78,7 +78,7 @@ func (p *BinderStabilityTestProxy) SendAndCallBinder(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderStabilityTest)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderStabilityTest, "sendAndCallBinder")
 	if _err != nil {
@@ -321,4 +321,79 @@ func (s *BinderStabilityTestStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBinderStabilityTestServer is the server-side interface that user implementations
+// provide to NewBinderStabilityTestStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderStabilityTestServer interface {
+	SendBinder(ctx context.Context, binder_ binder.IBinder) error
+	SendAndCallBinder(ctx context.Context, binder_ binder.IBinder) error
+	ReturnNoStabilityBinder(ctx context.Context) (binder.IBinder, error)
+	ReturnLocalStabilityBinder(ctx context.Context) (binder.IBinder, error)
+	ReturnVintfStabilityBinder(ctx context.Context) (binder.IBinder, error)
+	ReturnVendorStabilityBinder(ctx context.Context) (binder.IBinder, error)
+}
+
+type binderStabilityTestStubWrapper struct {
+	impl       IBinderStabilityTestServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderStabilityTestStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderStabilityTestStubWrapper) SendBinder(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) error {
+	return w.impl.SendBinder(ctx, binder_)
+}
+
+func (w *binderStabilityTestStubWrapper) SendAndCallBinder(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) error {
+	return w.impl.SendAndCallBinder(ctx, binder_)
+}
+
+func (w *binderStabilityTestStubWrapper) ReturnNoStabilityBinder(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.ReturnNoStabilityBinder(ctx)
+}
+
+func (w *binderStabilityTestStubWrapper) ReturnLocalStabilityBinder(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.ReturnLocalStabilityBinder(ctx)
+}
+
+func (w *binderStabilityTestStubWrapper) ReturnVintfStabilityBinder(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.ReturnVintfStabilityBinder(ctx)
+}
+
+func (w *binderStabilityTestStubWrapper) ReturnVendorStabilityBinder(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.ReturnVendorStabilityBinder(ctx)
+}
+
+var _ IBinderStabilityTest = (*binderStabilityTestStubWrapper)(nil)
+
+// NewBinderStabilityTestStub creates a server-side IBinderStabilityTest wrapping the given
+// server implementation. The returned value satisfies IBinderStabilityTest
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderStabilityTestStub(
+	impl IBinderStabilityTestServer,
+) IBinderStabilityTest {
+	wrapper := &binderStabilityTestStubWrapper{impl: impl}
+	stub := &BinderStabilityTestStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -145,3 +145,58 @@ func (s *MidiDeviceListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMidiDeviceListenerServer is the server-side interface that user implementations
+// provide to NewMidiDeviceListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMidiDeviceListenerServer interface {
+	OnDeviceAdded(ctx context.Context, device interface{}) error
+	OnDeviceRemoved(ctx context.Context, device interface{}) error
+	OnDeviceStatusChanged(ctx context.Context, status MidiDeviceStatus) error
+}
+
+type midiDeviceListenerStubWrapper struct {
+	impl       IMidiDeviceListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *midiDeviceListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *midiDeviceListenerStubWrapper) OnDeviceAdded(
+	ctx context.Context,
+	device interface{},
+) error {
+	return w.impl.OnDeviceAdded(ctx, device)
+}
+
+func (w *midiDeviceListenerStubWrapper) OnDeviceRemoved(
+	ctx context.Context,
+	device interface{},
+) error {
+	return w.impl.OnDeviceRemoved(ctx, device)
+}
+
+func (w *midiDeviceListenerStubWrapper) OnDeviceStatusChanged(
+	ctx context.Context,
+	status MidiDeviceStatus,
+) error {
+	return w.impl.OnDeviceStatusChanged(ctx, status)
+}
+
+var _ IMidiDeviceListener = (*midiDeviceListenerStubWrapper)(nil)
+
+// NewMidiDeviceListenerStub creates a server-side IMidiDeviceListener wrapping the given
+// server implementation. The returned value satisfies IMidiDeviceListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMidiDeviceListenerStub(
+	impl IMidiDeviceListenerServer,
+) IMidiDeviceListener {
+	wrapper := &midiDeviceListenerStubWrapper{impl: impl}
+	stub := &MidiDeviceListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

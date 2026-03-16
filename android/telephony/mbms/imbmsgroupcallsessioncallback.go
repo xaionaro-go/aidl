@@ -190,3 +190,68 @@ func (s *MbmsGroupCallSessionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMbmsGroupCallSessionCallbackServer is the server-side interface that user implementations
+// provide to NewMbmsGroupCallSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMbmsGroupCallSessionCallbackServer interface {
+	OnError(ctx context.Context, errorCode int32, message string) error
+	OnAvailableSaisUpdated(ctx context.Context, currentSai []interface{}, availableSais []interface{}) error
+	OnServiceInterfaceAvailable(ctx context.Context, interfaceName string, index int32) error
+	OnMiddlewareReady(ctx context.Context) error
+}
+
+type mbmsGroupCallSessionCallbackStubWrapper struct {
+	impl       IMbmsGroupCallSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mbmsGroupCallSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mbmsGroupCallSessionCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorCode, message)
+}
+
+func (w *mbmsGroupCallSessionCallbackStubWrapper) OnAvailableSaisUpdated(
+	ctx context.Context,
+	currentSai []interface{},
+	availableSais []interface{},
+) error {
+	return w.impl.OnAvailableSaisUpdated(ctx, currentSai, availableSais)
+}
+
+func (w *mbmsGroupCallSessionCallbackStubWrapper) OnServiceInterfaceAvailable(
+	ctx context.Context,
+	interfaceName string,
+	index int32,
+) error {
+	return w.impl.OnServiceInterfaceAvailable(ctx, interfaceName, index)
+}
+
+func (w *mbmsGroupCallSessionCallbackStubWrapper) OnMiddlewareReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnMiddlewareReady(ctx)
+}
+
+var _ IMbmsGroupCallSessionCallback = (*mbmsGroupCallSessionCallbackStubWrapper)(nil)
+
+// NewMbmsGroupCallSessionCallbackStub creates a server-side IMbmsGroupCallSessionCallback wrapping the given
+// server implementation. The returned value satisfies IMbmsGroupCallSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMbmsGroupCallSessionCallbackStub(
+	impl IMbmsGroupCallSessionCallbackServer,
+) IMbmsGroupCallSessionCallback {
+	wrapper := &mbmsGroupCallSessionCallbackStubWrapper{impl: impl}
+	stub := &MbmsGroupCallSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

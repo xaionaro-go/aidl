@@ -136,3 +136,52 @@ func (s *CarrierPrivilegesCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICarrierPrivilegesCallbackServer is the server-side interface that user implementations
+// provide to NewCarrierPrivilegesCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarrierPrivilegesCallbackServer interface {
+	OnCarrierPrivilegesChanged(ctx context.Context, privilegedPackageNames []string, privilegedUids []int32) error
+	OnCarrierServiceChanged(ctx context.Context, carrierServicePackageName string, carrierServiceUid int32) error
+}
+
+type carrierPrivilegesCallbackStubWrapper struct {
+	impl       ICarrierPrivilegesCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carrierPrivilegesCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carrierPrivilegesCallbackStubWrapper) OnCarrierPrivilegesChanged(
+	ctx context.Context,
+	privilegedPackageNames []string,
+	privilegedUids []int32,
+) error {
+	return w.impl.OnCarrierPrivilegesChanged(ctx, privilegedPackageNames, privilegedUids)
+}
+
+func (w *carrierPrivilegesCallbackStubWrapper) OnCarrierServiceChanged(
+	ctx context.Context,
+	carrierServicePackageName string,
+	carrierServiceUid int32,
+) error {
+	return w.impl.OnCarrierServiceChanged(ctx, carrierServicePackageName, carrierServiceUid)
+}
+
+var _ ICarrierPrivilegesCallback = (*carrierPrivilegesCallbackStubWrapper)(nil)
+
+// NewCarrierPrivilegesCallbackStub creates a server-side ICarrierPrivilegesCallback wrapping the given
+// server implementation. The returned value satisfies ICarrierPrivilegesCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarrierPrivilegesCallbackStub(
+	impl ICarrierPrivilegesCallbackServer,
+) ICarrierPrivilegesCallback {
+	wrapper := &carrierPrivilegesCallbackStubWrapper{impl: impl}
+	stub := &CarrierPrivilegesCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

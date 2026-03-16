@@ -144,3 +144,61 @@ func (s *ResponseCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IResponseCallbackServer is the server-side interface that user implementations
+// provide to NewResponseCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResponseCallbackServer interface {
+	OnSuccess(ctx context.Context, resultBundle interface{}) error
+	OnFailure(ctx context.Context, errorCode int32, errorMessage string, errorParams interface{}) error
+	OnDataAugmentRequest(ctx context.Context, processedContent interface{}, responseCallback interface{}) error
+}
+
+type responseCallbackStubWrapper struct {
+	impl       IResponseCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *responseCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *responseCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	resultBundle interface{},
+) error {
+	return w.impl.OnSuccess(ctx, resultBundle)
+}
+
+func (w *responseCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	errorCode int32,
+	errorMessage string,
+	errorParams interface{},
+) error {
+	return w.impl.OnFailure(ctx, errorCode, errorMessage, errorParams)
+}
+
+func (w *responseCallbackStubWrapper) OnDataAugmentRequest(
+	ctx context.Context,
+	processedContent interface{},
+	responseCallback interface{},
+) error {
+	return w.impl.OnDataAugmentRequest(ctx, processedContent, responseCallback)
+}
+
+var _ IResponseCallback = (*responseCallbackStubWrapper)(nil)
+
+// NewResponseCallbackStub creates a server-side IResponseCallback wrapping the given
+// server implementation. The returned value satisfies IResponseCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResponseCallbackStub(
+	impl IResponseCallbackServer,
+) IResponseCallback {
+	wrapper := &responseCallbackStubWrapper{impl: impl}
+	stub := &ResponseCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

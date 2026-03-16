@@ -79,7 +79,7 @@ func (p *UserSwitchObserverProxy) OnUserSwitching(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserSwitchObserver)
 	_data.WriteInt32(newUserId)
-	_data.WriteStrongBinder(reply.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, reply.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserSwitchObserver, "onUserSwitching")
 	if _err != nil {
@@ -221,4 +221,76 @@ func (s *UserSwitchObserverStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUserSwitchObserverServer is the server-side interface that user implementations
+// provide to NewUserSwitchObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUserSwitchObserverServer interface {
+	OnBeforeUserSwitching(ctx context.Context, newUserId int32) error
+	OnUserSwitching(ctx context.Context, newUserId int32, reply ondeviceintelligence.IRemoteCallback) error
+	OnUserSwitchComplete(ctx context.Context, newUserId int32) error
+	OnForegroundProfileSwitch(ctx context.Context, newProfileId int32) error
+	OnLockedBootComplete(ctx context.Context, newUserId int32) error
+}
+
+type userSwitchObserverStubWrapper struct {
+	impl       IUserSwitchObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *userSwitchObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *userSwitchObserverStubWrapper) OnBeforeUserSwitching(
+	ctx context.Context,
+	newUserId int32,
+) error {
+	return w.impl.OnBeforeUserSwitching(ctx, newUserId)
+}
+
+func (w *userSwitchObserverStubWrapper) OnUserSwitching(
+	ctx context.Context,
+	newUserId int32,
+	reply ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.OnUserSwitching(ctx, newUserId, reply)
+}
+
+func (w *userSwitchObserverStubWrapper) OnUserSwitchComplete(
+	ctx context.Context,
+	newUserId int32,
+) error {
+	return w.impl.OnUserSwitchComplete(ctx, newUserId)
+}
+
+func (w *userSwitchObserverStubWrapper) OnForegroundProfileSwitch(
+	ctx context.Context,
+	newProfileId int32,
+) error {
+	return w.impl.OnForegroundProfileSwitch(ctx, newProfileId)
+}
+
+func (w *userSwitchObserverStubWrapper) OnLockedBootComplete(
+	ctx context.Context,
+	newUserId int32,
+) error {
+	return w.impl.OnLockedBootComplete(ctx, newUserId)
+}
+
+var _ IUserSwitchObserver = (*userSwitchObserverStubWrapper)(nil)
+
+// NewUserSwitchObserverStub creates a server-side IUserSwitchObserver wrapping the given
+// server implementation. The returned value satisfies IUserSwitchObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUserSwitchObserverStub(
+	impl IUserSwitchObserverServer,
+) IUserSwitchObserver {
+	wrapper := &userSwitchObserverStubWrapper{impl: impl}
+	stub := &UserSwitchObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

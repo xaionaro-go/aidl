@@ -118,3 +118,49 @@ func (s *DomainSelectorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDomainSelectorServer is the server-side interface that user implementations
+// provide to NewDomainSelectorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDomainSelectorServer interface {
+	ReselectDomain(ctx context.Context, attr androidTelephony.DomainSelectionServiceSelectionAttributes) error
+	FinishSelection(ctx context.Context) error
+}
+
+type domainSelectorStubWrapper struct {
+	impl       IDomainSelectorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *domainSelectorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *domainSelectorStubWrapper) ReselectDomain(
+	ctx context.Context,
+	attr androidTelephony.DomainSelectionServiceSelectionAttributes,
+) error {
+	return w.impl.ReselectDomain(ctx, attr)
+}
+
+func (w *domainSelectorStubWrapper) FinishSelection(
+	ctx context.Context,
+) error {
+	return w.impl.FinishSelection(ctx)
+}
+
+var _ IDomainSelector = (*domainSelectorStubWrapper)(nil)
+
+// NewDomainSelectorStub creates a server-side IDomainSelector wrapping the given
+// server implementation. The returned value satisfies IDomainSelector
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDomainSelectorStub(
+	impl IDomainSelectorServer,
+) IDomainSelector {
+	wrapper := &domainSelectorStubWrapper{impl: impl}
+	stub := &DomainSelectorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

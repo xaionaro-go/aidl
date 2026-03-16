@@ -44,7 +44,7 @@ func (p *PopulationDensityProviderProxy) GetDefaultCoarseningLevel(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPopulationDensityProvider)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPopulationDensityProvider, "getDefaultCoarseningLevel")
 	if _err != nil {
@@ -67,7 +67,7 @@ func (p *PopulationDensityProviderProxy) GetCoarsenedS2Cells(
 	_data.WriteFloat64(latitudeDegrees)
 	_data.WriteFloat64(longitudeDegrees)
 	_data.WriteInt32(numAdditionalCells)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPopulationDensityProvider, "getCoarsenedS2Cells")
 	if _err != nil {
@@ -127,4 +127,54 @@ func (s *PopulationDensityProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPopulationDensityProviderServer is the server-side interface that user implementations
+// provide to NewPopulationDensityProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPopulationDensityProviderServer interface {
+	GetDefaultCoarseningLevel(ctx context.Context, callback IS2LevelCallback) error
+	GetCoarsenedS2Cells(ctx context.Context, latitudeDegrees float64, longitudeDegrees float64, numAdditionalCells int32, callback IS2CellIdsCallback) error
+}
+
+type populationDensityProviderStubWrapper struct {
+	impl       IPopulationDensityProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *populationDensityProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *populationDensityProviderStubWrapper) GetDefaultCoarseningLevel(
+	ctx context.Context,
+	callback IS2LevelCallback,
+) error {
+	return w.impl.GetDefaultCoarseningLevel(ctx, callback)
+}
+
+func (w *populationDensityProviderStubWrapper) GetCoarsenedS2Cells(
+	ctx context.Context,
+	latitudeDegrees float64,
+	longitudeDegrees float64,
+	numAdditionalCells int32,
+	callback IS2CellIdsCallback,
+) error {
+	return w.impl.GetCoarsenedS2Cells(ctx, latitudeDegrees, longitudeDegrees, numAdditionalCells, callback)
+}
+
+var _ IPopulationDensityProvider = (*populationDensityProviderStubWrapper)(nil)
+
+// NewPopulationDensityProviderStub creates a server-side IPopulationDensityProvider wrapping the given
+// server implementation. The returned value satisfies IPopulationDensityProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPopulationDensityProviderStub(
+	impl IPopulationDensityProviderServer,
+) IPopulationDensityProvider {
+	wrapper := &populationDensityProviderStubWrapper{impl: impl}
+	stub := &PopulationDensityProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

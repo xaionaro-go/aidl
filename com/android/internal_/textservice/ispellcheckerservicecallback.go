@@ -42,7 +42,7 @@ func (p *SpellCheckerServiceCallbackProxy) OnSessionCreated(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISpellCheckerServiceCallback)
-	_data.WriteStrongBinder(newSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, newSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISpellCheckerServiceCallback, "onSessionCreated")
 	if _err != nil {
@@ -80,4 +80,43 @@ func (s *SpellCheckerServiceCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISpellCheckerServiceCallbackServer is the server-side interface that user implementations
+// provide to NewSpellCheckerServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpellCheckerServiceCallbackServer interface {
+	OnSessionCreated(ctx context.Context, newSession ISpellCheckerSession) error
+}
+
+type spellCheckerServiceCallbackStubWrapper struct {
+	impl       ISpellCheckerServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spellCheckerServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spellCheckerServiceCallbackStubWrapper) OnSessionCreated(
+	ctx context.Context,
+	newSession ISpellCheckerSession,
+) error {
+	return w.impl.OnSessionCreated(ctx, newSession)
+}
+
+var _ ISpellCheckerServiceCallback = (*spellCheckerServiceCallbackStubWrapper)(nil)
+
+// NewSpellCheckerServiceCallbackStub creates a server-side ISpellCheckerServiceCallback wrapping the given
+// server implementation. The returned value satisfies ISpellCheckerServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpellCheckerServiceCallbackStub(
+	impl ISpellCheckerServiceCallbackServer,
+) ISpellCheckerServiceCallback {
+	wrapper := &spellCheckerServiceCallbackStubWrapper{impl: impl}
+	stub := &SpellCheckerServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

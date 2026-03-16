@@ -295,3 +295,88 @@ func (s *AccessibilityInteractionConnectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAccessibilityInteractionConnectionCallbackServer is the server-side interface that user implementations
+// provide to NewAccessibilityInteractionConnectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccessibilityInteractionConnectionCallbackServer interface {
+	SetFindAccessibilityNodeInfoResult(ctx context.Context, info AccessibilityNodeInfo, interactionId int32) error
+	SetFindAccessibilityNodeInfosResult(ctx context.Context, infos []AccessibilityNodeInfo, interactionId int32) error
+	SetPrefetchAccessibilityNodeInfoResult(ctx context.Context, infos []AccessibilityNodeInfo, interactionId int32) error
+	SetPerformAccessibilityActionResult(ctx context.Context, succeeded bool, interactionId int32) error
+	SendTakeScreenshotOfWindowError(ctx context.Context, errorCode int32, interactionId int32) error
+	SendAttachOverlayResult(ctx context.Context, result int32, interactionId int32) error
+}
+
+type accessibilityInteractionConnectionCallbackStubWrapper struct {
+	impl       IAccessibilityInteractionConnectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accessibilityInteractionConnectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accessibilityInteractionConnectionCallbackStubWrapper) SetFindAccessibilityNodeInfoResult(
+	ctx context.Context,
+	info AccessibilityNodeInfo,
+	interactionId int32,
+) error {
+	return w.impl.SetFindAccessibilityNodeInfoResult(ctx, info, interactionId)
+}
+
+func (w *accessibilityInteractionConnectionCallbackStubWrapper) SetFindAccessibilityNodeInfosResult(
+	ctx context.Context,
+	infos []AccessibilityNodeInfo,
+	interactionId int32,
+) error {
+	return w.impl.SetFindAccessibilityNodeInfosResult(ctx, infos, interactionId)
+}
+
+func (w *accessibilityInteractionConnectionCallbackStubWrapper) SetPrefetchAccessibilityNodeInfoResult(
+	ctx context.Context,
+	infos []AccessibilityNodeInfo,
+	interactionId int32,
+) error {
+	return w.impl.SetPrefetchAccessibilityNodeInfoResult(ctx, infos, interactionId)
+}
+
+func (w *accessibilityInteractionConnectionCallbackStubWrapper) SetPerformAccessibilityActionResult(
+	ctx context.Context,
+	succeeded bool,
+	interactionId int32,
+) error {
+	return w.impl.SetPerformAccessibilityActionResult(ctx, succeeded, interactionId)
+}
+
+func (w *accessibilityInteractionConnectionCallbackStubWrapper) SendTakeScreenshotOfWindowError(
+	ctx context.Context,
+	errorCode int32,
+	interactionId int32,
+) error {
+	return w.impl.SendTakeScreenshotOfWindowError(ctx, errorCode, interactionId)
+}
+
+func (w *accessibilityInteractionConnectionCallbackStubWrapper) SendAttachOverlayResult(
+	ctx context.Context,
+	result int32,
+	interactionId int32,
+) error {
+	return w.impl.SendAttachOverlayResult(ctx, result, interactionId)
+}
+
+var _ IAccessibilityInteractionConnectionCallback = (*accessibilityInteractionConnectionCallbackStubWrapper)(nil)
+
+// NewAccessibilityInteractionConnectionCallbackStub creates a server-side IAccessibilityInteractionConnectionCallback wrapping the given
+// server implementation. The returned value satisfies IAccessibilityInteractionConnectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccessibilityInteractionConnectionCallbackStub(
+	impl IAccessibilityInteractionConnectionCallbackServer,
+) IAccessibilityInteractionConnectionCallback {
+	wrapper := &accessibilityInteractionConnectionCallbackStubWrapper{impl: impl}
+	stub := &AccessibilityInteractionConnectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

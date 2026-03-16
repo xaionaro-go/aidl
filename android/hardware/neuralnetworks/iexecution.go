@@ -186,3 +186,52 @@ func (s *ExecutionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IExecutionServer is the server-side interface that user implementations
+// provide to NewExecutionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IExecutionServer interface {
+	ExecuteSynchronously(ctx context.Context, deadlineNs int64) (ExecutionResult, error)
+	ExecuteFenced(ctx context.Context, waitFor []int32, deadlineNs int64, durationNs int64) (FencedExecutionResult, error)
+}
+
+type executionStubWrapper struct {
+	impl       IExecutionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *executionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *executionStubWrapper) ExecuteSynchronously(
+	ctx context.Context,
+	deadlineNs int64,
+) (ExecutionResult, error) {
+	return w.impl.ExecuteSynchronously(ctx, deadlineNs)
+}
+
+func (w *executionStubWrapper) ExecuteFenced(
+	ctx context.Context,
+	waitFor []int32,
+	deadlineNs int64,
+	durationNs int64,
+) (FencedExecutionResult, error) {
+	return w.impl.ExecuteFenced(ctx, waitFor, deadlineNs, durationNs)
+}
+
+var _ IExecution = (*executionStubWrapper)(nil)
+
+// NewExecutionStub creates a server-side IExecution wrapping the given
+// server implementation. The returned value satisfies IExecution
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewExecutionStub(
+	impl IExecutionServer,
+) IExecution {
+	wrapper := &executionStubWrapper{impl: impl}
+	stub := &ExecutionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

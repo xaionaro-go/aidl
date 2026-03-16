@@ -299,3 +299,65 @@ func (s *BurstStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBurstServer is the server-side interface that user implementations
+// provide to NewBurstStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBurstServer interface {
+	ExecuteSynchronously(ctx context.Context, request Request, memoryIdentifierTokens []int64, measureTiming bool, deadlineNs int64, loopTimeoutDurationNs int64) (ExecutionResult, error)
+	ReleaseMemoryResource(ctx context.Context, memoryIdentifierToken int64) error
+	ExecuteSynchronouslyWithConfig(ctx context.Context, request Request, memoryIdentifierTokens []int64, config ExecutionConfig, deadlineNs int64) (ExecutionResult, error)
+}
+
+type burstStubWrapper struct {
+	impl       IBurstServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *burstStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *burstStubWrapper) ExecuteSynchronously(
+	ctx context.Context,
+	request Request,
+	memoryIdentifierTokens []int64,
+	measureTiming bool,
+	deadlineNs int64,
+	loopTimeoutDurationNs int64,
+) (ExecutionResult, error) {
+	return w.impl.ExecuteSynchronously(ctx, request, memoryIdentifierTokens, measureTiming, deadlineNs, loopTimeoutDurationNs)
+}
+
+func (w *burstStubWrapper) ReleaseMemoryResource(
+	ctx context.Context,
+	memoryIdentifierToken int64,
+) error {
+	return w.impl.ReleaseMemoryResource(ctx, memoryIdentifierToken)
+}
+
+func (w *burstStubWrapper) ExecuteSynchronouslyWithConfig(
+	ctx context.Context,
+	request Request,
+	memoryIdentifierTokens []int64,
+	config ExecutionConfig,
+	deadlineNs int64,
+) (ExecutionResult, error) {
+	return w.impl.ExecuteSynchronouslyWithConfig(ctx, request, memoryIdentifierTokens, config, deadlineNs)
+}
+
+var _ IBurst = (*burstStubWrapper)(nil)
+
+// NewBurstStub creates a server-side IBurst wrapping the given
+// server implementation. The returned value satisfies IBurst
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBurstStub(
+	impl IBurstServer,
+) IBurst {
+	wrapper := &burstStubWrapper{impl: impl}
+	stub := &BurstStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

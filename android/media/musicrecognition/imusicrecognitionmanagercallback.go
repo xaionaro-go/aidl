@@ -166,3 +166,58 @@ func (s *MusicRecognitionManagerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMusicRecognitionManagerCallbackServer is the server-side interface that user implementations
+// provide to NewMusicRecognitionManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMusicRecognitionManagerCallbackServer interface {
+	OnRecognitionSucceeded(ctx context.Context, result media.MediaMetadata, extras os.Bundle) error
+	OnRecognitionFailed(ctx context.Context, failureCode int32) error
+	OnAudioStreamClosed(ctx context.Context) error
+}
+
+type musicRecognitionManagerCallbackStubWrapper struct {
+	impl       IMusicRecognitionManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *musicRecognitionManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *musicRecognitionManagerCallbackStubWrapper) OnRecognitionSucceeded(
+	ctx context.Context,
+	result media.MediaMetadata,
+	extras os.Bundle,
+) error {
+	return w.impl.OnRecognitionSucceeded(ctx, result, extras)
+}
+
+func (w *musicRecognitionManagerCallbackStubWrapper) OnRecognitionFailed(
+	ctx context.Context,
+	failureCode int32,
+) error {
+	return w.impl.OnRecognitionFailed(ctx, failureCode)
+}
+
+func (w *musicRecognitionManagerCallbackStubWrapper) OnAudioStreamClosed(
+	ctx context.Context,
+) error {
+	return w.impl.OnAudioStreamClosed(ctx)
+}
+
+var _ IMusicRecognitionManagerCallback = (*musicRecognitionManagerCallbackStubWrapper)(nil)
+
+// NewMusicRecognitionManagerCallbackStub creates a server-side IMusicRecognitionManagerCallback wrapping the given
+// server implementation. The returned value satisfies IMusicRecognitionManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMusicRecognitionManagerCallbackStub(
+	impl IMusicRecognitionManagerCallbackServer,
+) IMusicRecognitionManagerCallback {
+	wrapper := &musicRecognitionManagerCallbackStubWrapper{impl: impl}
+	stub := &MusicRecognitionManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

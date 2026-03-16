@@ -65,7 +65,7 @@ func (p *ContentProtectionServiceProxy) OnUpdateAllowlistRequest(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentProtectionService)
-	_data.WriteStrongBinder(callback.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentProtectionService, "onUpdateAllowlistRequest")
 	if _err != nil {
@@ -122,4 +122,51 @@ func (s *ContentProtectionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContentProtectionServiceServer is the server-side interface that user implementations
+// provide to NewContentProtectionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentProtectionServiceServer interface {
+	OnLoginDetected(ctx context.Context, events pm.ParceledListSlice) error
+	OnUpdateAllowlistRequest(ctx context.Context, callback binder.IBinder) error
+}
+
+type contentProtectionServiceStubWrapper struct {
+	impl       IContentProtectionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentProtectionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentProtectionServiceStubWrapper) OnLoginDetected(
+	ctx context.Context,
+	events pm.ParceledListSlice,
+) error {
+	return w.impl.OnLoginDetected(ctx, events)
+}
+
+func (w *contentProtectionServiceStubWrapper) OnUpdateAllowlistRequest(
+	ctx context.Context,
+	callback binder.IBinder,
+) error {
+	return w.impl.OnUpdateAllowlistRequest(ctx, callback)
+}
+
+var _ IContentProtectionService = (*contentProtectionServiceStubWrapper)(nil)
+
+// NewContentProtectionServiceStub creates a server-side IContentProtectionService wrapping the given
+// server implementation. The returned value satisfies IContentProtectionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentProtectionServiceStub(
+	impl IContentProtectionServiceServer,
+) IContentProtectionService {
+	wrapper := &contentProtectionServiceStubWrapper{impl: impl}
+	stub := &ContentProtectionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

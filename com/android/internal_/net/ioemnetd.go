@@ -73,7 +73,7 @@ func (p *OemNetdProxy) RegisterOemUnsolicitedEventListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOemNetd)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOemNetd, "registerOemUnsolicitedEventListener")
 	if _err != nil {
@@ -138,4 +138,50 @@ func (s *OemNetdStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOemNetdServer is the server-side interface that user implementations
+// provide to NewOemNetdStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOemNetdServer interface {
+	IsAlive(ctx context.Context) (bool, error)
+	RegisterOemUnsolicitedEventListener(ctx context.Context, listener IOemNetdUnsolicitedEventListener) error
+}
+
+type oemNetdStubWrapper struct {
+	impl       IOemNetdServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *oemNetdStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *oemNetdStubWrapper) IsAlive(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAlive(ctx)
+}
+
+func (w *oemNetdStubWrapper) RegisterOemUnsolicitedEventListener(
+	ctx context.Context,
+	listener IOemNetdUnsolicitedEventListener,
+) error {
+	return w.impl.RegisterOemUnsolicitedEventListener(ctx, listener)
+}
+
+var _ IOemNetd = (*oemNetdStubWrapper)(nil)
+
+// NewOemNetdStub creates a server-side IOemNetd wrapping the given
+// server implementation. The returned value satisfies IOemNetd
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOemNetdStub(
+	impl IOemNetdServer,
+) IOemNetd {
+	wrapper := &oemNetdStubWrapper{impl: impl}
+	stub := &OemNetdStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

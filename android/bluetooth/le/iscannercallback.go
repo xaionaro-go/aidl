@@ -244,3 +244,76 @@ func (s *ScannerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScannerCallbackServer is the server-side interface that user implementations
+// provide to NewScannerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScannerCallbackServer interface {
+	OnScannerRegistered(ctx context.Context, status int32, scannerId int32) error
+	OnScanResult(ctx context.Context, scanResult ScanResult) error
+	OnBatchScanResults(ctx context.Context, batchResults []ScanResult) error
+	OnFoundOrLost(ctx context.Context, onFound bool, scanResult ScanResult) error
+	OnScanManagerErrorCallback(ctx context.Context, errorCode int32) error
+}
+
+type scannerCallbackStubWrapper struct {
+	impl       IScannerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scannerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scannerCallbackStubWrapper) OnScannerRegistered(
+	ctx context.Context,
+	status int32,
+	scannerId int32,
+) error {
+	return w.impl.OnScannerRegistered(ctx, status, scannerId)
+}
+
+func (w *scannerCallbackStubWrapper) OnScanResult(
+	ctx context.Context,
+	scanResult ScanResult,
+) error {
+	return w.impl.OnScanResult(ctx, scanResult)
+}
+
+func (w *scannerCallbackStubWrapper) OnBatchScanResults(
+	ctx context.Context,
+	batchResults []ScanResult,
+) error {
+	return w.impl.OnBatchScanResults(ctx, batchResults)
+}
+
+func (w *scannerCallbackStubWrapper) OnFoundOrLost(
+	ctx context.Context,
+	onFound bool,
+	scanResult ScanResult,
+) error {
+	return w.impl.OnFoundOrLost(ctx, onFound, scanResult)
+}
+
+func (w *scannerCallbackStubWrapper) OnScanManagerErrorCallback(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.OnScanManagerErrorCallback(ctx, errorCode)
+}
+
+var _ IScannerCallback = (*scannerCallbackStubWrapper)(nil)
+
+// NewScannerCallbackStub creates a server-side IScannerCallback wrapping the given
+// server implementation. The returned value satisfies IScannerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScannerCallbackStub(
+	impl IScannerCallbackServer,
+) IScannerCallback {
+	wrapper := &scannerCallbackStubWrapper{impl: impl}
+	stub := &ScannerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

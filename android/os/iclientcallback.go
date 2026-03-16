@@ -43,7 +43,7 @@ func (p *ClientCallbackProxy) OnClients(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClientCallback)
-	_data.WriteStrongBinder(registered.Handle())
+	binder.WriteBinderToParcel(ctx, _data, registered, p.remote.Transport())
 	_data.WriteBool(hasClients)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClientCallback, "onClients")
@@ -86,4 +86,44 @@ func (s *ClientCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IClientCallbackServer is the server-side interface that user implementations
+// provide to NewClientCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IClientCallbackServer interface {
+	OnClients(ctx context.Context, registered binder.IBinder, hasClients bool) error
+}
+
+type clientCallbackStubWrapper struct {
+	impl       IClientCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *clientCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *clientCallbackStubWrapper) OnClients(
+	ctx context.Context,
+	registered binder.IBinder,
+	hasClients bool,
+) error {
+	return w.impl.OnClients(ctx, registered, hasClients)
+}
+
+var _ IClientCallback = (*clientCallbackStubWrapper)(nil)
+
+// NewClientCallbackStub creates a server-side IClientCallback wrapping the given
+// server implementation. The returned value satisfies IClientCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewClientCallbackStub(
+	impl IClientCallbackServer,
+) IClientCallback {
+	wrapper := &clientCallbackStubWrapper{impl: impl}
+	stub := &ClientCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

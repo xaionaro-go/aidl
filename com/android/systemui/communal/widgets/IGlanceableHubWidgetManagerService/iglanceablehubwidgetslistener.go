@@ -91,3 +91,42 @@ func (s *GlanceableHubWidgetsListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGlanceableHubWidgetsListenerServer is the server-side interface that user implementations
+// provide to NewGlanceableHubWidgetsListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGlanceableHubWidgetsListenerServer interface {
+	OnWidgetsUpdated(ctx context.Context, widgets []model.CommunalWidgetContentModel) error
+}
+
+type glanceableHubWidgetsListenerStubWrapper struct {
+	impl       IGlanceableHubWidgetsListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *glanceableHubWidgetsListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *glanceableHubWidgetsListenerStubWrapper) OnWidgetsUpdated(
+	ctx context.Context,
+	widgets []model.CommunalWidgetContentModel,
+) error {
+	return w.impl.OnWidgetsUpdated(ctx, widgets)
+}
+
+var _ IGlanceableHubWidgetsListener = (*glanceableHubWidgetsListenerStubWrapper)(nil)
+
+// NewGlanceableHubWidgetsListenerStub creates a server-side IGlanceableHubWidgetsListener wrapping the given
+// server implementation. The returned value satisfies IGlanceableHubWidgetsListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGlanceableHubWidgetsListenerStub(
+	impl IGlanceableHubWidgetsListenerServer,
+) IGlanceableHubWidgetsListener {
+	wrapper := &glanceableHubWidgetsListenerStubWrapper{impl: impl}
+	stub := &GlanceableHubWidgetsListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

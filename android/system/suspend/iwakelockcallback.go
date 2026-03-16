@@ -100,3 +100,48 @@ func (s *WakelockCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWakelockCallbackServer is the server-side interface that user implementations
+// provide to NewWakelockCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWakelockCallbackServer interface {
+	NotifyAcquired(ctx context.Context) error
+	NotifyReleased(ctx context.Context) error
+}
+
+type wakelockCallbackStubWrapper struct {
+	impl       IWakelockCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wakelockCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wakelockCallbackStubWrapper) NotifyAcquired(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyAcquired(ctx)
+}
+
+func (w *wakelockCallbackStubWrapper) NotifyReleased(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyReleased(ctx)
+}
+
+var _ IWakelockCallback = (*wakelockCallbackStubWrapper)(nil)
+
+// NewWakelockCallbackStub creates a server-side IWakelockCallback wrapping the given
+// server implementation. The returned value satisfies IWakelockCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWakelockCallbackStub(
+	impl IWakelockCallbackServer,
+) IWakelockCallback {
+	wrapper := &wakelockCallbackStubWrapper{impl: impl}
+	stub := &WakelockCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

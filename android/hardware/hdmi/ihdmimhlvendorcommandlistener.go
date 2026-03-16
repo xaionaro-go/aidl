@@ -106,3 +106,45 @@ func (s *HdmiMhlVendorCommandListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiMhlVendorCommandListenerServer is the server-side interface that user implementations
+// provide to NewHdmiMhlVendorCommandListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiMhlVendorCommandListenerServer interface {
+	OnReceived(ctx context.Context, portId int32, offset int32, length int32, data []byte) error
+}
+
+type hdmiMhlVendorCommandListenerStubWrapper struct {
+	impl       IHdmiMhlVendorCommandListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiMhlVendorCommandListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiMhlVendorCommandListenerStubWrapper) OnReceived(
+	ctx context.Context,
+	portId int32,
+	offset int32,
+	length int32,
+	data []byte,
+) error {
+	return w.impl.OnReceived(ctx, portId, offset, length, data)
+}
+
+var _ IHdmiMhlVendorCommandListener = (*hdmiMhlVendorCommandListenerStubWrapper)(nil)
+
+// NewHdmiMhlVendorCommandListenerStub creates a server-side IHdmiMhlVendorCommandListener wrapping the given
+// server implementation. The returned value satisfies IHdmiMhlVendorCommandListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiMhlVendorCommandListenerStub(
+	impl IHdmiMhlVendorCommandListenerServer,
+) IHdmiMhlVendorCommandListener {
+	wrapper := &hdmiMhlVendorCommandListenerStubWrapper{impl: impl}
+	stub := &HdmiMhlVendorCommandListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

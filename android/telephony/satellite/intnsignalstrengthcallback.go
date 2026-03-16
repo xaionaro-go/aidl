@@ -93,3 +93,42 @@ func (s *NtnSignalStrengthCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INtnSignalStrengthCallbackServer is the server-side interface that user implementations
+// provide to NewNtnSignalStrengthCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INtnSignalStrengthCallbackServer interface {
+	OnNtnSignalStrengthChanged(ctx context.Context, ntnSignalStrength NtnSignalStrength) error
+}
+
+type ntnSignalStrengthCallbackStubWrapper struct {
+	impl       INtnSignalStrengthCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ntnSignalStrengthCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ntnSignalStrengthCallbackStubWrapper) OnNtnSignalStrengthChanged(
+	ctx context.Context,
+	ntnSignalStrength NtnSignalStrength,
+) error {
+	return w.impl.OnNtnSignalStrengthChanged(ctx, ntnSignalStrength)
+}
+
+var _ INtnSignalStrengthCallback = (*ntnSignalStrengthCallbackStubWrapper)(nil)
+
+// NewNtnSignalStrengthCallbackStub creates a server-side INtnSignalStrengthCallback wrapping the given
+// server implementation. The returned value satisfies INtnSignalStrengthCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNtnSignalStrengthCallbackStub(
+	impl INtnSignalStrengthCallbackServer,
+) INtnSignalStrengthCallback {
+	wrapper := &ntnSignalStrengthCallbackStubWrapper{impl: impl}
+	stub := &NtnSignalStrengthCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

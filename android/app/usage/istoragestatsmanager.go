@@ -874,3 +874,143 @@ func (s *StorageStatsManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStorageStatsManagerServer is the server-side interface that user implementations
+// provide to NewStorageStatsManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStorageStatsManagerServer interface {
+	IsQuotaSupported(ctx context.Context, volumeUuid string) (bool, error)
+	IsReservedSupported(ctx context.Context, volumeUuid string) (bool, error)
+	GetTotalBytes(ctx context.Context, volumeUuid string) (int64, error)
+	GetFreeBytes(ctx context.Context, volumeUuid string) (int64, error)
+	GetCacheBytes(ctx context.Context, volumeUuid string) (int64, error)
+	GetCacheQuotaBytes(ctx context.Context, volumeUuid string, uid int32) (int64, error)
+	QueryStatsForPackage(ctx context.Context, volumeUuid string, packageName string) (StorageStats, error)
+	QueryStatsForUid(ctx context.Context, volumeUuid string, uid int32) (StorageStats, error)
+	QueryStatsForUser(ctx context.Context, volumeUuid string) (StorageStats, error)
+	QueryExternalStatsForUser(ctx context.Context, volumeUuid string) (ExternalStorageStats, error)
+	QueryCratesForPackage(ctx context.Context, volumeUuid string, packageName string) (pm.ParceledListSlice, error)
+	QueryCratesForUid(ctx context.Context, volumeUuid string, uid int32) (pm.ParceledListSlice, error)
+	QueryCratesForUser(ctx context.Context, volumeUuid string) (pm.ParceledListSlice, error)
+}
+
+type storageStatsManagerStubWrapper struct {
+	impl       IStorageStatsManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *storageStatsManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *storageStatsManagerStubWrapper) IsQuotaSupported(
+	ctx context.Context,
+	volumeUuid string,
+) (bool, error) {
+	return w.impl.IsQuotaSupported(ctx, volumeUuid)
+}
+
+func (w *storageStatsManagerStubWrapper) IsReservedSupported(
+	ctx context.Context,
+	volumeUuid string,
+) (bool, error) {
+	return w.impl.IsReservedSupported(ctx, volumeUuid)
+}
+
+func (w *storageStatsManagerStubWrapper) GetTotalBytes(
+	ctx context.Context,
+	volumeUuid string,
+) (int64, error) {
+	return w.impl.GetTotalBytes(ctx, volumeUuid)
+}
+
+func (w *storageStatsManagerStubWrapper) GetFreeBytes(
+	ctx context.Context,
+	volumeUuid string,
+) (int64, error) {
+	return w.impl.GetFreeBytes(ctx, volumeUuid)
+}
+
+func (w *storageStatsManagerStubWrapper) GetCacheBytes(
+	ctx context.Context,
+	volumeUuid string,
+) (int64, error) {
+	return w.impl.GetCacheBytes(ctx, volumeUuid)
+}
+
+func (w *storageStatsManagerStubWrapper) GetCacheQuotaBytes(
+	ctx context.Context,
+	volumeUuid string,
+	uid int32,
+) (int64, error) {
+	return w.impl.GetCacheQuotaBytes(ctx, volumeUuid, uid)
+}
+
+func (w *storageStatsManagerStubWrapper) QueryStatsForPackage(
+	ctx context.Context,
+	volumeUuid string,
+	packageName string,
+) (StorageStats, error) {
+	return w.impl.QueryStatsForPackage(ctx, volumeUuid, packageName)
+}
+
+func (w *storageStatsManagerStubWrapper) QueryStatsForUid(
+	ctx context.Context,
+	volumeUuid string,
+	uid int32,
+) (StorageStats, error) {
+	return w.impl.QueryStatsForUid(ctx, volumeUuid, uid)
+}
+
+func (w *storageStatsManagerStubWrapper) QueryStatsForUser(
+	ctx context.Context,
+	volumeUuid string,
+) (StorageStats, error) {
+	return w.impl.QueryStatsForUser(ctx, volumeUuid)
+}
+
+func (w *storageStatsManagerStubWrapper) QueryExternalStatsForUser(
+	ctx context.Context,
+	volumeUuid string,
+) (ExternalStorageStats, error) {
+	return w.impl.QueryExternalStatsForUser(ctx, volumeUuid)
+}
+
+func (w *storageStatsManagerStubWrapper) QueryCratesForPackage(
+	ctx context.Context,
+	volumeUuid string,
+	packageName string,
+) (pm.ParceledListSlice, error) {
+	return w.impl.QueryCratesForPackage(ctx, volumeUuid, packageName)
+}
+
+func (w *storageStatsManagerStubWrapper) QueryCratesForUid(
+	ctx context.Context,
+	volumeUuid string,
+	uid int32,
+) (pm.ParceledListSlice, error) {
+	return w.impl.QueryCratesForUid(ctx, volumeUuid, uid)
+}
+
+func (w *storageStatsManagerStubWrapper) QueryCratesForUser(
+	ctx context.Context,
+	volumeUuid string,
+) (pm.ParceledListSlice, error) {
+	return w.impl.QueryCratesForUser(ctx, volumeUuid)
+}
+
+var _ IStorageStatsManager = (*storageStatsManagerStubWrapper)(nil)
+
+// NewStorageStatsManagerStub creates a server-side IStorageStatsManager wrapping the given
+// server implementation. The returned value satisfies IStorageStatsManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStorageStatsManagerStub(
+	impl IStorageStatsManagerServer,
+) IStorageStatsManager {
+	wrapper := &storageStatsManagerStubWrapper{impl: impl}
+	stub := &StorageStatsManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

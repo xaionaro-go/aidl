@@ -3,7 +3,6 @@ package autofill
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -19,7 +18,7 @@ const (
 
 type ISaveCallback interface {
 	AsBinder() binder.IBinder
-	OnSuccess(ctx context.Context, intentSender content.IntentSender) error
+	OnSuccess(ctx context.Context, intentSender interface{}) error
 	OnFailure(ctx context.Context, message interface{}) error
 }
 
@@ -41,14 +40,10 @@ var _ ISaveCallback = (*SaveCallbackProxy)(nil)
 
 func (p *SaveCallbackProxy) OnSuccess(
 	ctx context.Context,
-	intentSender content.IntentSender,
+	intentSender interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISaveCallback)
-	_data.WriteInt32(1)
-	if _err := intentSender.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISaveCallback, "onSuccess")
 	if _err != nil {
@@ -111,18 +106,7 @@ func (s *SaveCallbackStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intentSender content.IntentSender
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intentSender.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intentSender interface{}
 		_err := s.Impl.OnSuccess(ctx, _arg_intentSender)
 		_reply := parcel.New()
 		if _err != nil {
@@ -147,4 +131,51 @@ func (s *SaveCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISaveCallbackServer is the server-side interface that user implementations
+// provide to NewSaveCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISaveCallbackServer interface {
+	OnSuccess(ctx context.Context, intentSender interface{}) error
+	OnFailure(ctx context.Context, message interface{}) error
+}
+
+type saveCallbackStubWrapper struct {
+	impl       ISaveCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *saveCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *saveCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	intentSender interface{},
+) error {
+	return w.impl.OnSuccess(ctx, intentSender)
+}
+
+func (w *saveCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	message interface{},
+) error {
+	return w.impl.OnFailure(ctx, message)
+}
+
+var _ ISaveCallback = (*saveCallbackStubWrapper)(nil)
+
+// NewSaveCallbackStub creates a server-side ISaveCallback wrapping the given
+// server implementation. The returned value satisfies ISaveCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSaveCallbackStub(
+	impl ISaveCallbackServer,
+) ISaveCallback {
+	wrapper := &saveCallbackStubWrapper{impl: impl}
+	stub := &SaveCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -83,3 +83,42 @@ func (s *GarbageCollectCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGarbageCollectCallbackServer is the server-side interface that user implementations
+// provide to NewGarbageCollectCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGarbageCollectCallbackServer interface {
+	OnFinish(ctx context.Context, result Result) error
+}
+
+type garbageCollectCallbackStubWrapper struct {
+	impl       IGarbageCollectCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *garbageCollectCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *garbageCollectCallbackStubWrapper) OnFinish(
+	ctx context.Context,
+	result Result,
+) error {
+	return w.impl.OnFinish(ctx, result)
+}
+
+var _ IGarbageCollectCallback = (*garbageCollectCallbackStubWrapper)(nil)
+
+// NewGarbageCollectCallbackStub creates a server-side IGarbageCollectCallback wrapping the given
+// server implementation. The returned value satisfies IGarbageCollectCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGarbageCollectCallbackStub(
+	impl IGarbageCollectCallbackServer,
+) IGarbageCollectCallback {
+	wrapper := &garbageCollectCallbackStubWrapper{impl: impl}
+	stub := &GarbageCollectCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -818,3 +818,152 @@ func (s *BluetoothLeBroadcastAssistantCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothLeBroadcastAssistantCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothLeBroadcastAssistantCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothLeBroadcastAssistantCallbackServer interface {
+	OnSearchStarted(ctx context.Context, reason int32) error
+	OnSearchStartFailed(ctx context.Context, reason int32) error
+	OnSearchStopped(ctx context.Context, reason int32) error
+	OnSearchStopFailed(ctx context.Context, reason int32) error
+	OnSourceFound(ctx context.Context, source BluetoothLeBroadcastMetadata) error
+	OnSourceAdded(ctx context.Context, sink BluetoothDevice, sourceId int32, reason int32) error
+	OnSourceAddFailed(ctx context.Context, sink BluetoothDevice, source BluetoothLeBroadcastMetadata, reason int32) error
+	OnSourceModified(ctx context.Context, sink BluetoothDevice, sourceId int32, reason int32) error
+	OnSourceModifyFailed(ctx context.Context, sink BluetoothDevice, sourceId int32, reason int32) error
+	OnSourceRemoved(ctx context.Context, sink BluetoothDevice, sourceId int32, reason int32) error
+	OnSourceRemoveFailed(ctx context.Context, sink BluetoothDevice, sourceId int32, reason int32) error
+	OnReceiveStateChanged(ctx context.Context, sink BluetoothDevice, sourceId int32, state BluetoothLeBroadcastReceiveState) error
+	OnSourceLost(ctx context.Context, broadcastId int32) error
+}
+
+type bluetoothLeBroadcastAssistantCallbackStubWrapper struct {
+	impl       IBluetoothLeBroadcastAssistantCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSearchStarted(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnSearchStarted(ctx, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSearchStartFailed(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnSearchStartFailed(ctx, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSearchStopped(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnSearchStopped(ctx, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSearchStopFailed(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnSearchStopFailed(ctx, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSourceFound(
+	ctx context.Context,
+	source BluetoothLeBroadcastMetadata,
+) error {
+	return w.impl.OnSourceFound(ctx, source)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSourceAdded(
+	ctx context.Context,
+	sink BluetoothDevice,
+	sourceId int32,
+	reason int32,
+) error {
+	return w.impl.OnSourceAdded(ctx, sink, sourceId, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSourceAddFailed(
+	ctx context.Context,
+	sink BluetoothDevice,
+	source BluetoothLeBroadcastMetadata,
+	reason int32,
+) error {
+	return w.impl.OnSourceAddFailed(ctx, sink, source, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSourceModified(
+	ctx context.Context,
+	sink BluetoothDevice,
+	sourceId int32,
+	reason int32,
+) error {
+	return w.impl.OnSourceModified(ctx, sink, sourceId, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSourceModifyFailed(
+	ctx context.Context,
+	sink BluetoothDevice,
+	sourceId int32,
+	reason int32,
+) error {
+	return w.impl.OnSourceModifyFailed(ctx, sink, sourceId, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSourceRemoved(
+	ctx context.Context,
+	sink BluetoothDevice,
+	sourceId int32,
+	reason int32,
+) error {
+	return w.impl.OnSourceRemoved(ctx, sink, sourceId, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSourceRemoveFailed(
+	ctx context.Context,
+	sink BluetoothDevice,
+	sourceId int32,
+	reason int32,
+) error {
+	return w.impl.OnSourceRemoveFailed(ctx, sink, sourceId, reason)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnReceiveStateChanged(
+	ctx context.Context,
+	sink BluetoothDevice,
+	sourceId int32,
+	state BluetoothLeBroadcastReceiveState,
+) error {
+	return w.impl.OnReceiveStateChanged(ctx, sink, sourceId, state)
+}
+
+func (w *bluetoothLeBroadcastAssistantCallbackStubWrapper) OnSourceLost(
+	ctx context.Context,
+	broadcastId int32,
+) error {
+	return w.impl.OnSourceLost(ctx, broadcastId)
+}
+
+var _ IBluetoothLeBroadcastAssistantCallback = (*bluetoothLeBroadcastAssistantCallbackStubWrapper)(nil)
+
+// NewBluetoothLeBroadcastAssistantCallbackStub creates a server-side IBluetoothLeBroadcastAssistantCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothLeBroadcastAssistantCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothLeBroadcastAssistantCallbackStub(
+	impl IBluetoothLeBroadcastAssistantCallbackServer,
+) IBluetoothLeBroadcastAssistantCallback {
+	wrapper := &bluetoothLeBroadcastAssistantCallbackStubWrapper{impl: impl}
+	stub := &BluetoothLeBroadcastAssistantCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

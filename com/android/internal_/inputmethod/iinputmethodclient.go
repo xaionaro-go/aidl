@@ -502,3 +502,137 @@ func (s *InputMethodClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputMethodClientServer is the server-side interface that user implementations
+// provide to NewInputMethodClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputMethodClientServer interface {
+	OnBindMethod(ctx context.Context, res InputBindResult) error
+	OnStartInputResult(ctx context.Context, res InputBindResult, startInputSeq int32) error
+	OnBindAccessibilityService(ctx context.Context, res InputBindResult, id int32) error
+	OnUnbindMethod(ctx context.Context, sequence int32, unbindReason int32) error
+	OnUnbindAccessibilityService(ctx context.Context, sequence int32, id int32) error
+	SetActive(ctx context.Context, active bool, fullscreen bool) error
+	SetInteractive(ctx context.Context, active bool, fullscreen bool) error
+	SetImeVisibility(ctx context.Context, visible bool, statsToken *viewInputmethod.ImeTrackerToken) error
+	ScheduleStartInputIfNecessary(ctx context.Context, fullscreen bool) error
+	ReportFullscreenMode(ctx context.Context, fullscreen bool) error
+	SetImeTraceEnabled(ctx context.Context, enabled bool) error
+	ThrowExceptionFromSystem(ctx context.Context, message string) error
+}
+
+type inputMethodClientStubWrapper struct {
+	impl       IInputMethodClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputMethodClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputMethodClientStubWrapper) OnBindMethod(
+	ctx context.Context,
+	res InputBindResult,
+) error {
+	return w.impl.OnBindMethod(ctx, res)
+}
+
+func (w *inputMethodClientStubWrapper) OnStartInputResult(
+	ctx context.Context,
+	res InputBindResult,
+	startInputSeq int32,
+) error {
+	return w.impl.OnStartInputResult(ctx, res, startInputSeq)
+}
+
+func (w *inputMethodClientStubWrapper) OnBindAccessibilityService(
+	ctx context.Context,
+	res InputBindResult,
+	id int32,
+) error {
+	return w.impl.OnBindAccessibilityService(ctx, res, id)
+}
+
+func (w *inputMethodClientStubWrapper) OnUnbindMethod(
+	ctx context.Context,
+	sequence int32,
+	unbindReason int32,
+) error {
+	return w.impl.OnUnbindMethod(ctx, sequence, unbindReason)
+}
+
+func (w *inputMethodClientStubWrapper) OnUnbindAccessibilityService(
+	ctx context.Context,
+	sequence int32,
+	id int32,
+) error {
+	return w.impl.OnUnbindAccessibilityService(ctx, sequence, id)
+}
+
+func (w *inputMethodClientStubWrapper) SetActive(
+	ctx context.Context,
+	active bool,
+	fullscreen bool,
+) error {
+	return w.impl.SetActive(ctx, active, fullscreen)
+}
+
+func (w *inputMethodClientStubWrapper) SetInteractive(
+	ctx context.Context,
+	active bool,
+	fullscreen bool,
+) error {
+	return w.impl.SetInteractive(ctx, active, fullscreen)
+}
+
+func (w *inputMethodClientStubWrapper) SetImeVisibility(
+	ctx context.Context,
+	visible bool,
+	statsToken *viewInputmethod.ImeTrackerToken,
+) error {
+	return w.impl.SetImeVisibility(ctx, visible, statsToken)
+}
+
+func (w *inputMethodClientStubWrapper) ScheduleStartInputIfNecessary(
+	ctx context.Context,
+	fullscreen bool,
+) error {
+	return w.impl.ScheduleStartInputIfNecessary(ctx, fullscreen)
+}
+
+func (w *inputMethodClientStubWrapper) ReportFullscreenMode(
+	ctx context.Context,
+	fullscreen bool,
+) error {
+	return w.impl.ReportFullscreenMode(ctx, fullscreen)
+}
+
+func (w *inputMethodClientStubWrapper) SetImeTraceEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetImeTraceEnabled(ctx, enabled)
+}
+
+func (w *inputMethodClientStubWrapper) ThrowExceptionFromSystem(
+	ctx context.Context,
+	message string,
+) error {
+	return w.impl.ThrowExceptionFromSystem(ctx, message)
+}
+
+var _ IInputMethodClient = (*inputMethodClientStubWrapper)(nil)
+
+// NewInputMethodClientStub creates a server-side IInputMethodClient wrapping the given
+// server implementation. The returned value satisfies IInputMethodClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputMethodClientStub(
+	impl IInputMethodClientServer,
+) IInputMethodClient {
+	wrapper := &inputMethodClientStubWrapper{impl: impl}
+	stub := &InputMethodClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

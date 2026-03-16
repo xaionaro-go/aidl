@@ -148,3 +148,59 @@ func (s *UdfpsRefreshRateRequestCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUdfpsRefreshRateRequestCallbackServer is the server-side interface that user implementations
+// provide to NewUdfpsRefreshRateRequestCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUdfpsRefreshRateRequestCallbackServer interface {
+	OnRequestEnabled(ctx context.Context, displayId int32) error
+	OnRequestDisabled(ctx context.Context, displayId int32) error
+	OnAuthenticationPossible(ctx context.Context, displayId int32, isPossible bool) error
+}
+
+type udfpsRefreshRateRequestCallbackStubWrapper struct {
+	impl       IUdfpsRefreshRateRequestCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *udfpsRefreshRateRequestCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *udfpsRefreshRateRequestCallbackStubWrapper) OnRequestEnabled(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnRequestEnabled(ctx, displayId)
+}
+
+func (w *udfpsRefreshRateRequestCallbackStubWrapper) OnRequestDisabled(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnRequestDisabled(ctx, displayId)
+}
+
+func (w *udfpsRefreshRateRequestCallbackStubWrapper) OnAuthenticationPossible(
+	ctx context.Context,
+	displayId int32,
+	isPossible bool,
+) error {
+	return w.impl.OnAuthenticationPossible(ctx, displayId, isPossible)
+}
+
+var _ IUdfpsRefreshRateRequestCallback = (*udfpsRefreshRateRequestCallbackStubWrapper)(nil)
+
+// NewUdfpsRefreshRateRequestCallbackStub creates a server-side IUdfpsRefreshRateRequestCallback wrapping the given
+// server implementation. The returned value satisfies IUdfpsRefreshRateRequestCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUdfpsRefreshRateRequestCallbackStub(
+	impl IUdfpsRefreshRateRequestCallbackServer,
+) IUdfpsRefreshRateRequestCallback {
+	wrapper := &udfpsRefreshRateRequestCallbackStubWrapper{impl: impl}
+	stub := &UdfpsRefreshRateRequestCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

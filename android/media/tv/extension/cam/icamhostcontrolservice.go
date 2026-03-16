@@ -48,7 +48,7 @@ func (p *CamHostControlServiceProxy) AddCamHostcontrolInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamHostControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamHostControlService, "addCamHostcontrolInfoListener")
 	if _err != nil {
@@ -74,7 +74,7 @@ func (p *CamHostControlServiceProxy) RemoveCamHostcontrolInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamHostControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamHostControlService, "removeCamHostcontrolInfoListener")
 	if _err != nil {
@@ -103,7 +103,7 @@ func (p *CamHostControlServiceProxy) SendCamHostControlAskRelease(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamHostControlService)
 	_data.WriteString16(sessionToken)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamHostControlService, "sendCamHostControlAskRelease")
 	if _err != nil {
@@ -242,4 +242,69 @@ func (s *CamHostControlServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICamHostControlServiceServer is the server-side interface that user implementations
+// provide to NewCamHostControlServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICamHostControlServiceServer interface {
+	AddCamHostcontrolInfoListener(ctx context.Context, listener ICamHostControlInfoListener) error
+	RemoveCamHostcontrolInfoListener(ctx context.Context, listener ICamHostControlInfoListener) error
+	SendCamHostControlAskRelease(ctx context.Context, sessionToken string, callback ICamHostControlAskReleaseReplyCallback) (int32, error)
+	SetHostControlMode(ctx context.Context, sessionToken string, enable bool) error
+}
+
+type camHostControlServiceStubWrapper struct {
+	impl       ICamHostControlServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *camHostControlServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *camHostControlServiceStubWrapper) AddCamHostcontrolInfoListener(
+	ctx context.Context,
+	listener ICamHostControlInfoListener,
+) error {
+	return w.impl.AddCamHostcontrolInfoListener(ctx, listener)
+}
+
+func (w *camHostControlServiceStubWrapper) RemoveCamHostcontrolInfoListener(
+	ctx context.Context,
+	listener ICamHostControlInfoListener,
+) error {
+	return w.impl.RemoveCamHostcontrolInfoListener(ctx, listener)
+}
+
+func (w *camHostControlServiceStubWrapper) SendCamHostControlAskRelease(
+	ctx context.Context,
+	sessionToken string,
+	callback ICamHostControlAskReleaseReplyCallback,
+) (int32, error) {
+	return w.impl.SendCamHostControlAskRelease(ctx, sessionToken, callback)
+}
+
+func (w *camHostControlServiceStubWrapper) SetHostControlMode(
+	ctx context.Context,
+	sessionToken string,
+	enable bool,
+) error {
+	return w.impl.SetHostControlMode(ctx, sessionToken, enable)
+}
+
+var _ ICamHostControlService = (*camHostControlServiceStubWrapper)(nil)
+
+// NewCamHostControlServiceStub creates a server-side ICamHostControlService wrapping the given
+// server implementation. The returned value satisfies ICamHostControlService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCamHostControlServiceStub(
+	impl ICamHostControlServiceServer,
+) ICamHostControlService {
+	wrapper := &camHostControlServiceStubWrapper{impl: impl}
+	stub := &CamHostControlServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

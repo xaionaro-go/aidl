@@ -49,3 +49,34 @@ func (s *TestRemoteCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITestRemoteCallbackServer is the server-side interface that user implementations
+// provide to NewTestRemoteCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITestRemoteCallbackServer interface {
+}
+
+type testRemoteCallbackStubWrapper struct {
+	impl       ITestRemoteCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *testRemoteCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ ITestRemoteCallback = (*testRemoteCallbackStubWrapper)(nil)
+
+// NewTestRemoteCallbackStub creates a server-side ITestRemoteCallback wrapping the given
+// server implementation. The returned value satisfies ITestRemoteCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTestRemoteCallbackStub(
+	impl ITestRemoteCallbackServer,
+) ITestRemoteCallback {
+	wrapper := &testRemoteCallbackStubWrapper{impl: impl}
+	stub := &TestRemoteCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -380,3 +380,100 @@ func (s *ImsMediaSessionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsMediaSessionListenerServer is the server-side interface that user implementations
+// provide to NewImsMediaSessionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsMediaSessionListenerServer interface {
+	OnModifySessionResponse(ctx context.Context, config RtpConfig, error_ RtpError) error
+	OnFirstMediaPacketReceived(ctx context.Context, config RtpConfig) error
+	OnHeaderExtensionReceived(ctx context.Context, extensions []RtpHeaderExtension) error
+	NotifyMediaQualityStatus(ctx context.Context, quality MediaQualityStatus) error
+	TriggerAnbrQuery(ctx context.Context, config RtpConfig) error
+	OnDtmfReceived(ctx context.Context, dtmfDigit uint16, durationMs int32) error
+	OnCallQualityChanged(ctx context.Context, callQuality CallQuality) error
+	NotifyRtpReceptionStats(ctx context.Context, stats RtpReceptionStats) error
+}
+
+type imsMediaSessionListenerStubWrapper struct {
+	impl       IImsMediaSessionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsMediaSessionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsMediaSessionListenerStubWrapper) OnModifySessionResponse(
+	ctx context.Context,
+	config RtpConfig,
+	error_ RtpError,
+) error {
+	return w.impl.OnModifySessionResponse(ctx, config, error_)
+}
+
+func (w *imsMediaSessionListenerStubWrapper) OnFirstMediaPacketReceived(
+	ctx context.Context,
+	config RtpConfig,
+) error {
+	return w.impl.OnFirstMediaPacketReceived(ctx, config)
+}
+
+func (w *imsMediaSessionListenerStubWrapper) OnHeaderExtensionReceived(
+	ctx context.Context,
+	extensions []RtpHeaderExtension,
+) error {
+	return w.impl.OnHeaderExtensionReceived(ctx, extensions)
+}
+
+func (w *imsMediaSessionListenerStubWrapper) NotifyMediaQualityStatus(
+	ctx context.Context,
+	quality MediaQualityStatus,
+) error {
+	return w.impl.NotifyMediaQualityStatus(ctx, quality)
+}
+
+func (w *imsMediaSessionListenerStubWrapper) TriggerAnbrQuery(
+	ctx context.Context,
+	config RtpConfig,
+) error {
+	return w.impl.TriggerAnbrQuery(ctx, config)
+}
+
+func (w *imsMediaSessionListenerStubWrapper) OnDtmfReceived(
+	ctx context.Context,
+	dtmfDigit uint16,
+	durationMs int32,
+) error {
+	return w.impl.OnDtmfReceived(ctx, dtmfDigit, durationMs)
+}
+
+func (w *imsMediaSessionListenerStubWrapper) OnCallQualityChanged(
+	ctx context.Context,
+	callQuality CallQuality,
+) error {
+	return w.impl.OnCallQualityChanged(ctx, callQuality)
+}
+
+func (w *imsMediaSessionListenerStubWrapper) NotifyRtpReceptionStats(
+	ctx context.Context,
+	stats RtpReceptionStats,
+) error {
+	return w.impl.NotifyRtpReceptionStats(ctx, stats)
+}
+
+var _ IImsMediaSessionListener = (*imsMediaSessionListenerStubWrapper)(nil)
+
+// NewImsMediaSessionListenerStub creates a server-side IImsMediaSessionListener wrapping the given
+// server implementation. The returned value satisfies IImsMediaSessionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsMediaSessionListenerStub(
+	impl IImsMediaSessionListenerServer,
+) IImsMediaSessionListener {
+	wrapper := &imsMediaSessionListenerStubWrapper{impl: impl}
+	stub := &ImsMediaSessionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -692,3 +692,139 @@ func (s *JobCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IJobCallbackServer is the server-side interface that user implementations
+// provide to NewJobCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IJobCallbackServer interface {
+	AcknowledgeGetTransferredDownloadBytesMessage(ctx context.Context, jobId int32, workId int32, transferredBytes int64) error
+	AcknowledgeGetTransferredUploadBytesMessage(ctx context.Context, jobId int32, workId int32, transferredBytes int64) error
+	AcknowledgeStartMessage(ctx context.Context, jobId int32, ongoing bool) error
+	AcknowledgeStopMessage(ctx context.Context, jobId int32, reschedule bool) error
+	DequeueWork(ctx context.Context, jobId int32) (JobWorkItem, error)
+	CompleteWork(ctx context.Context, jobId int32, workId int32) (bool, error)
+	JobFinished(ctx context.Context, jobId int32, reschedule bool) error
+	HandleAbandonedJob(ctx context.Context, jobId int32) error
+	UpdateEstimatedNetworkBytes(ctx context.Context, jobId int32, item JobWorkItem, downloadBytes int64, uploadBytes int64) error
+	UpdateTransferredNetworkBytes(ctx context.Context, jobId int32, item JobWorkItem, transferredDownloadBytes int64, transferredUploadBytes int64) error
+	SetNotification(ctx context.Context, jobId int32, notificationId int32, notification app.Notification, jobEndNotificationPolicy int32) error
+}
+
+type jobCallbackStubWrapper struct {
+	impl       IJobCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *jobCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *jobCallbackStubWrapper) AcknowledgeGetTransferredDownloadBytesMessage(
+	ctx context.Context,
+	jobId int32,
+	workId int32,
+	transferredBytes int64,
+) error {
+	return w.impl.AcknowledgeGetTransferredDownloadBytesMessage(ctx, jobId, workId, transferredBytes)
+}
+
+func (w *jobCallbackStubWrapper) AcknowledgeGetTransferredUploadBytesMessage(
+	ctx context.Context,
+	jobId int32,
+	workId int32,
+	transferredBytes int64,
+) error {
+	return w.impl.AcknowledgeGetTransferredUploadBytesMessage(ctx, jobId, workId, transferredBytes)
+}
+
+func (w *jobCallbackStubWrapper) AcknowledgeStartMessage(
+	ctx context.Context,
+	jobId int32,
+	ongoing bool,
+) error {
+	return w.impl.AcknowledgeStartMessage(ctx, jobId, ongoing)
+}
+
+func (w *jobCallbackStubWrapper) AcknowledgeStopMessage(
+	ctx context.Context,
+	jobId int32,
+	reschedule bool,
+) error {
+	return w.impl.AcknowledgeStopMessage(ctx, jobId, reschedule)
+}
+
+func (w *jobCallbackStubWrapper) DequeueWork(
+	ctx context.Context,
+	jobId int32,
+) (JobWorkItem, error) {
+	return w.impl.DequeueWork(ctx, jobId)
+}
+
+func (w *jobCallbackStubWrapper) CompleteWork(
+	ctx context.Context,
+	jobId int32,
+	workId int32,
+) (bool, error) {
+	return w.impl.CompleteWork(ctx, jobId, workId)
+}
+
+func (w *jobCallbackStubWrapper) JobFinished(
+	ctx context.Context,
+	jobId int32,
+	reschedule bool,
+) error {
+	return w.impl.JobFinished(ctx, jobId, reschedule)
+}
+
+func (w *jobCallbackStubWrapper) HandleAbandonedJob(
+	ctx context.Context,
+	jobId int32,
+) error {
+	return w.impl.HandleAbandonedJob(ctx, jobId)
+}
+
+func (w *jobCallbackStubWrapper) UpdateEstimatedNetworkBytes(
+	ctx context.Context,
+	jobId int32,
+	item JobWorkItem,
+	downloadBytes int64,
+	uploadBytes int64,
+) error {
+	return w.impl.UpdateEstimatedNetworkBytes(ctx, jobId, item, downloadBytes, uploadBytes)
+}
+
+func (w *jobCallbackStubWrapper) UpdateTransferredNetworkBytes(
+	ctx context.Context,
+	jobId int32,
+	item JobWorkItem,
+	transferredDownloadBytes int64,
+	transferredUploadBytes int64,
+) error {
+	return w.impl.UpdateTransferredNetworkBytes(ctx, jobId, item, transferredDownloadBytes, transferredUploadBytes)
+}
+
+func (w *jobCallbackStubWrapper) SetNotification(
+	ctx context.Context,
+	jobId int32,
+	notificationId int32,
+	notification app.Notification,
+	jobEndNotificationPolicy int32,
+) error {
+	return w.impl.SetNotification(ctx, jobId, notificationId, notification, jobEndNotificationPolicy)
+}
+
+var _ IJobCallback = (*jobCallbackStubWrapper)(nil)
+
+// NewJobCallbackStub creates a server-side IJobCallback wrapping the given
+// server implementation. The returned value satisfies IJobCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewJobCallbackStub(
+	impl IJobCallbackServer,
+) IJobCallback {
+	wrapper := &jobCallbackStubWrapper{impl: impl}
+	stub := &JobCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

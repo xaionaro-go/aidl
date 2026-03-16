@@ -205,3 +205,52 @@ func (s *NoteTaskBubblesServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INoteTaskBubblesServiceServer is the server-side interface that user implementations
+// provide to NewNoteTaskBubblesServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INoteTaskBubblesServiceServer interface {
+	AreBubblesAvailable(ctx context.Context) (bool, error)
+	ShowOrHideAppBubble(ctx context.Context, intent content.Intent, userHandle os.UserHandle, icon drawable.Icon, bubbleExpandBehavior NoteTaskBubbleExpandBehavior) error
+}
+
+type noteTaskBubblesServiceStubWrapper struct {
+	impl       INoteTaskBubblesServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *noteTaskBubblesServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *noteTaskBubblesServiceStubWrapper) AreBubblesAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.AreBubblesAvailable(ctx)
+}
+
+func (w *noteTaskBubblesServiceStubWrapper) ShowOrHideAppBubble(
+	ctx context.Context,
+	intent content.Intent,
+	userHandle os.UserHandle,
+	icon drawable.Icon,
+	bubbleExpandBehavior NoteTaskBubbleExpandBehavior,
+) error {
+	return w.impl.ShowOrHideAppBubble(ctx, intent, userHandle, icon, bubbleExpandBehavior)
+}
+
+var _ INoteTaskBubblesService = (*noteTaskBubblesServiceStubWrapper)(nil)
+
+// NewNoteTaskBubblesServiceStub creates a server-side INoteTaskBubblesService wrapping the given
+// server implementation. The returned value satisfies INoteTaskBubblesService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNoteTaskBubblesServiceStub(
+	impl INoteTaskBubblesServiceServer,
+) INoteTaskBubblesService {
+	wrapper := &noteTaskBubblesServiceStubWrapper{impl: impl}
+	stub := &NoteTaskBubblesServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

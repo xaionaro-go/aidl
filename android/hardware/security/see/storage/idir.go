@@ -113,3 +113,42 @@ func (s *DirStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDirServer is the server-side interface that user implementations
+// provide to NewDirStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDirServer interface {
+	ReadNextFilenames(ctx context.Context, maxCount int32) ([]string, error)
+}
+
+type dirStubWrapper struct {
+	impl       IDirServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dirStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dirStubWrapper) ReadNextFilenames(
+	ctx context.Context,
+	maxCount int32,
+) ([]string, error) {
+	return w.impl.ReadNextFilenames(ctx, maxCount)
+}
+
+var _ IDir = (*dirStubWrapper)(nil)
+
+// NewDirStub creates a server-side IDir wrapping the given
+// server implementation. The returned value satisfies IDir
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDirStub(
+	impl IDirServer,
+) IDir {
+	wrapper := &dirStubWrapper{impl: impl}
+	stub := &DirStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

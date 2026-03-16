@@ -400,3 +400,90 @@ func (s *GnssGeofenceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssGeofenceCallbackServer is the server-side interface that user implementations
+// provide to NewGnssGeofenceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssGeofenceCallbackServer interface {
+	GnssGeofenceTransitionCb(ctx context.Context, geofenceId int32, location GnssLocation, transition int32, timestampMillis int64) error
+	GnssGeofenceStatusCb(ctx context.Context, availability int32, lastLocation GnssLocation) error
+	GnssGeofenceAddCb(ctx context.Context, geofenceId int32, status int32) error
+	GnssGeofenceRemoveCb(ctx context.Context, geofenceId int32, status int32) error
+	GnssGeofencePauseCb(ctx context.Context, geofenceId int32, status int32) error
+	GnssGeofenceResumeCb(ctx context.Context, geofenceId int32, status int32) error
+}
+
+type gnssGeofenceCallbackStubWrapper struct {
+	impl       IGnssGeofenceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssGeofenceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssGeofenceCallbackStubWrapper) GnssGeofenceTransitionCb(
+	ctx context.Context,
+	geofenceId int32,
+	location GnssLocation,
+	transition int32,
+	timestampMillis int64,
+) error {
+	return w.impl.GnssGeofenceTransitionCb(ctx, geofenceId, location, transition, timestampMillis)
+}
+
+func (w *gnssGeofenceCallbackStubWrapper) GnssGeofenceStatusCb(
+	ctx context.Context,
+	availability int32,
+	lastLocation GnssLocation,
+) error {
+	return w.impl.GnssGeofenceStatusCb(ctx, availability, lastLocation)
+}
+
+func (w *gnssGeofenceCallbackStubWrapper) GnssGeofenceAddCb(
+	ctx context.Context,
+	geofenceId int32,
+	status int32,
+) error {
+	return w.impl.GnssGeofenceAddCb(ctx, geofenceId, status)
+}
+
+func (w *gnssGeofenceCallbackStubWrapper) GnssGeofenceRemoveCb(
+	ctx context.Context,
+	geofenceId int32,
+	status int32,
+) error {
+	return w.impl.GnssGeofenceRemoveCb(ctx, geofenceId, status)
+}
+
+func (w *gnssGeofenceCallbackStubWrapper) GnssGeofencePauseCb(
+	ctx context.Context,
+	geofenceId int32,
+	status int32,
+) error {
+	return w.impl.GnssGeofencePauseCb(ctx, geofenceId, status)
+}
+
+func (w *gnssGeofenceCallbackStubWrapper) GnssGeofenceResumeCb(
+	ctx context.Context,
+	geofenceId int32,
+	status int32,
+) error {
+	return w.impl.GnssGeofenceResumeCb(ctx, geofenceId, status)
+}
+
+var _ IGnssGeofenceCallback = (*gnssGeofenceCallbackStubWrapper)(nil)
+
+// NewGnssGeofenceCallbackStub creates a server-side IGnssGeofenceCallback wrapping the given
+// server implementation. The returned value satisfies IGnssGeofenceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssGeofenceCallbackStub(
+	impl IGnssGeofenceCallbackServer,
+) IGnssGeofenceCallback {
+	wrapper := &gnssGeofenceCallbackStubWrapper{impl: impl}
+	stub := &GnssGeofenceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

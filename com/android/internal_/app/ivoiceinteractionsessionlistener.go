@@ -156,3 +156,64 @@ func (s *VoiceInteractionSessionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVoiceInteractionSessionListenerServer is the server-side interface that user implementations
+// provide to NewVoiceInteractionSessionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceInteractionSessionListenerServer interface {
+	OnVoiceSessionShown(ctx context.Context) error
+	OnVoiceSessionHidden(ctx context.Context) error
+	OnVoiceSessionWindowVisibilityChanged(ctx context.Context, visible bool) error
+	OnSetUiHints(ctx context.Context, args interface{}) error
+}
+
+type voiceInteractionSessionListenerStubWrapper struct {
+	impl       IVoiceInteractionSessionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceInteractionSessionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceInteractionSessionListenerStubWrapper) OnVoiceSessionShown(
+	ctx context.Context,
+) error {
+	return w.impl.OnVoiceSessionShown(ctx)
+}
+
+func (w *voiceInteractionSessionListenerStubWrapper) OnVoiceSessionHidden(
+	ctx context.Context,
+) error {
+	return w.impl.OnVoiceSessionHidden(ctx)
+}
+
+func (w *voiceInteractionSessionListenerStubWrapper) OnVoiceSessionWindowVisibilityChanged(
+	ctx context.Context,
+	visible bool,
+) error {
+	return w.impl.OnVoiceSessionWindowVisibilityChanged(ctx, visible)
+}
+
+func (w *voiceInteractionSessionListenerStubWrapper) OnSetUiHints(
+	ctx context.Context,
+	args interface{},
+) error {
+	return w.impl.OnSetUiHints(ctx, args)
+}
+
+var _ IVoiceInteractionSessionListener = (*voiceInteractionSessionListenerStubWrapper)(nil)
+
+// NewVoiceInteractionSessionListenerStub creates a server-side IVoiceInteractionSessionListener wrapping the given
+// server implementation. The returned value satisfies IVoiceInteractionSessionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceInteractionSessionListenerStub(
+	impl IVoiceInteractionSessionListenerServer,
+) IVoiceInteractionSessionListener {
+	wrapper := &voiceInteractionSessionListenerStubWrapper{impl: impl}
+	stub := &VoiceInteractionSessionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

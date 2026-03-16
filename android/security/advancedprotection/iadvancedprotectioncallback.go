@@ -82,3 +82,42 @@ func (s *AdvancedProtectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAdvancedProtectionCallbackServer is the server-side interface that user implementations
+// provide to NewAdvancedProtectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAdvancedProtectionCallbackServer interface {
+	OnAdvancedProtectionChanged(ctx context.Context, enabled bool) error
+}
+
+type advancedProtectionCallbackStubWrapper struct {
+	impl       IAdvancedProtectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *advancedProtectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *advancedProtectionCallbackStubWrapper) OnAdvancedProtectionChanged(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.OnAdvancedProtectionChanged(ctx, enabled)
+}
+
+var _ IAdvancedProtectionCallback = (*advancedProtectionCallbackStubWrapper)(nil)
+
+// NewAdvancedProtectionCallbackStub creates a server-side IAdvancedProtectionCallback wrapping the given
+// server implementation. The returned value satisfies IAdvancedProtectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAdvancedProtectionCallbackStub(
+	impl IAdvancedProtectionCallbackServer,
+) IAdvancedProtectionCallback {
+	wrapper := &advancedProtectionCallbackStubWrapper{impl: impl}
+	stub := &AdvancedProtectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

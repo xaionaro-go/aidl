@@ -42,7 +42,7 @@ func (p *CmdCallbackProxy) OnLaunched(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICmdCallback)
-	_data.WriteStrongBinder(receiver.Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICmdCallback, "onLaunched")
 	if _err != nil {
@@ -94,4 +94,43 @@ func (s *CmdCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICmdCallbackServer is the server-side interface that user implementations
+// provide to NewCmdCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICmdCallbackServer interface {
+	OnLaunched(ctx context.Context, receiver binder.IBinder) error
+}
+
+type cmdCallbackStubWrapper struct {
+	impl       ICmdCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cmdCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cmdCallbackStubWrapper) OnLaunched(
+	ctx context.Context,
+	receiver binder.IBinder,
+) error {
+	return w.impl.OnLaunched(ctx, receiver)
+}
+
+var _ ICmdCallback = (*cmdCallbackStubWrapper)(nil)
+
+// NewCmdCallbackStub creates a server-side ICmdCallback wrapping the given
+// server implementation. The returned value satisfies ICmdCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCmdCallbackStub(
+	impl ICmdCallbackServer,
+) ICmdCallback {
+	wrapper := &cmdCallbackStubWrapper{impl: impl}
+	stub := &CmdCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

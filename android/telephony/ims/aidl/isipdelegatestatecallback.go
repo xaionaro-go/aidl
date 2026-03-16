@@ -52,7 +52,7 @@ func (p *SipDelegateStateCallbackProxy) OnCreated(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISipDelegateStateCallback)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 	if deniedFeatureTags == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -248,4 +248,76 @@ func (s *SipDelegateStateCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISipDelegateStateCallbackServer is the server-side interface that user implementations
+// provide to NewSipDelegateStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISipDelegateStateCallbackServer interface {
+	OnCreated(ctx context.Context, c ISipDelegate, deniedFeatureTags []ims.FeatureTagState) error
+	OnFeatureTagRegistrationChanged(ctx context.Context, registrationState ims.DelegateRegistrationState) error
+	OnImsConfigurationChanged(ctx context.Context, registeredSipConfig ims.SipDelegateImsConfiguration) error
+	OnConfigurationChanged(ctx context.Context, registeredSipConfig ims.SipDelegateConfiguration) error
+	OnDestroyed(ctx context.Context, reason int32) error
+}
+
+type sipDelegateStateCallbackStubWrapper struct {
+	impl       ISipDelegateStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sipDelegateStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sipDelegateStateCallbackStubWrapper) OnCreated(
+	ctx context.Context,
+	c ISipDelegate,
+	deniedFeatureTags []ims.FeatureTagState,
+) error {
+	return w.impl.OnCreated(ctx, c, deniedFeatureTags)
+}
+
+func (w *sipDelegateStateCallbackStubWrapper) OnFeatureTagRegistrationChanged(
+	ctx context.Context,
+	registrationState ims.DelegateRegistrationState,
+) error {
+	return w.impl.OnFeatureTagRegistrationChanged(ctx, registrationState)
+}
+
+func (w *sipDelegateStateCallbackStubWrapper) OnImsConfigurationChanged(
+	ctx context.Context,
+	registeredSipConfig ims.SipDelegateImsConfiguration,
+) error {
+	return w.impl.OnImsConfigurationChanged(ctx, registeredSipConfig)
+}
+
+func (w *sipDelegateStateCallbackStubWrapper) OnConfigurationChanged(
+	ctx context.Context,
+	registeredSipConfig ims.SipDelegateConfiguration,
+) error {
+	return w.impl.OnConfigurationChanged(ctx, registeredSipConfig)
+}
+
+func (w *sipDelegateStateCallbackStubWrapper) OnDestroyed(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnDestroyed(ctx, reason)
+}
+
+var _ ISipDelegateStateCallback = (*sipDelegateStateCallbackStubWrapper)(nil)
+
+// NewSipDelegateStateCallbackStub creates a server-side ISipDelegateStateCallback wrapping the given
+// server implementation. The returned value satisfies ISipDelegateStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSipDelegateStateCallbackStub(
+	impl ISipDelegateStateCallbackServer,
+) ISipDelegateStateCallback {
+	wrapper := &sipDelegateStateCallbackStubWrapper{impl: impl}
+	stub := &SipDelegateStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

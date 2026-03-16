@@ -220,3 +220,77 @@ func (s *DockedStackListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDockedStackListenerServer is the server-side interface that user implementations
+// provide to NewDockedStackListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDockedStackListenerServer interface {
+	OnDividerVisibilityChanged(ctx context.Context, visible bool) error
+	OnDockedStackExistsChanged(ctx context.Context, exists bool) error
+	OnDockedStackMinimizedChanged(ctx context.Context, minimized bool, animDuration int64, isHomeStackResizable bool) error
+	OnAdjustedForImeChanged(ctx context.Context, adjustedForIme bool, animDuration int64) error
+	OnDockSideChanged(ctx context.Context, newDockSide int32) error
+}
+
+type dockedStackListenerStubWrapper struct {
+	impl       IDockedStackListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dockedStackListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dockedStackListenerStubWrapper) OnDividerVisibilityChanged(
+	ctx context.Context,
+	visible bool,
+) error {
+	return w.impl.OnDividerVisibilityChanged(ctx, visible)
+}
+
+func (w *dockedStackListenerStubWrapper) OnDockedStackExistsChanged(
+	ctx context.Context,
+	exists bool,
+) error {
+	return w.impl.OnDockedStackExistsChanged(ctx, exists)
+}
+
+func (w *dockedStackListenerStubWrapper) OnDockedStackMinimizedChanged(
+	ctx context.Context,
+	minimized bool,
+	animDuration int64,
+	isHomeStackResizable bool,
+) error {
+	return w.impl.OnDockedStackMinimizedChanged(ctx, minimized, animDuration, isHomeStackResizable)
+}
+
+func (w *dockedStackListenerStubWrapper) OnAdjustedForImeChanged(
+	ctx context.Context,
+	adjustedForIme bool,
+	animDuration int64,
+) error {
+	return w.impl.OnAdjustedForImeChanged(ctx, adjustedForIme, animDuration)
+}
+
+func (w *dockedStackListenerStubWrapper) OnDockSideChanged(
+	ctx context.Context,
+	newDockSide int32,
+) error {
+	return w.impl.OnDockSideChanged(ctx, newDockSide)
+}
+
+var _ IDockedStackListener = (*dockedStackListenerStubWrapper)(nil)
+
+// NewDockedStackListenerStub creates a server-side IDockedStackListener wrapping the given
+// server implementation. The returned value satisfies IDockedStackListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDockedStackListenerStub(
+	impl IDockedStackListenerServer,
+) IDockedStackListener {
+	wrapper := &dockedStackListenerStubWrapper{impl: impl}
+	stub := &DockedStackListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

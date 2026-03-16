@@ -92,7 +92,7 @@ func (p *DemuxProxy) OpenFilter(
 		return _result, _err
 	}
 	_data.WriteInt32(bufferSize)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDemux, "openFilter")
 	if _err != nil {
@@ -154,7 +154,7 @@ func (p *DemuxProxy) GetAvSyncHwId(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDemux)
-	_data.WriteStrongBinder(filter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, filter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDemux, "getAvSyncHwId")
 	if _err != nil {
@@ -244,7 +244,7 @@ func (p *DemuxProxy) OpenDvr(
 	_data.WriteInterfaceToken(DescriptorIDemux)
 	_data.WritePaddedByte(byte(type_))
 	_data.WriteInt32(bufferSize)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDemux, "openDvr")
 	if _err != nil {
@@ -498,4 +498,108 @@ func (s *DemuxStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDemuxServer is the server-side interface that user implementations
+// provide to NewDemuxStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDemuxServer interface {
+	SetFrontendDataSource(ctx context.Context, frontendId int32) error
+	OpenFilter(ctx context.Context, type_ DemuxFilterType, bufferSize int32, cb IFilterCallback) (IFilter, error)
+	OpenTimeFilter(ctx context.Context) (ITimeFilter, error)
+	GetAvSyncHwId(ctx context.Context, filter IFilter) (int32, error)
+	GetAvSyncTime(ctx context.Context, avSyncHwId int32) (int64, error)
+	Close(ctx context.Context) error
+	OpenDvr(ctx context.Context, type_ DvrType, bufferSize int32, cb IDvrCallback) (IDvr, error)
+	ConnectCiCam(ctx context.Context, ciCamId int32) error
+	DisconnectCiCam(ctx context.Context) error
+}
+
+type demuxStubWrapper struct {
+	impl       IDemuxServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *demuxStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *demuxStubWrapper) SetFrontendDataSource(
+	ctx context.Context,
+	frontendId int32,
+) error {
+	return w.impl.SetFrontendDataSource(ctx, frontendId)
+}
+
+func (w *demuxStubWrapper) OpenFilter(
+	ctx context.Context,
+	type_ DemuxFilterType,
+	bufferSize int32,
+	cb IFilterCallback,
+) (IFilter, error) {
+	return w.impl.OpenFilter(ctx, type_, bufferSize, cb)
+}
+
+func (w *demuxStubWrapper) OpenTimeFilter(
+	ctx context.Context,
+) (ITimeFilter, error) {
+	return w.impl.OpenTimeFilter(ctx)
+}
+
+func (w *demuxStubWrapper) GetAvSyncHwId(
+	ctx context.Context,
+	filter IFilter,
+) (int32, error) {
+	return w.impl.GetAvSyncHwId(ctx, filter)
+}
+
+func (w *demuxStubWrapper) GetAvSyncTime(
+	ctx context.Context,
+	avSyncHwId int32,
+) (int64, error) {
+	return w.impl.GetAvSyncTime(ctx, avSyncHwId)
+}
+
+func (w *demuxStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *demuxStubWrapper) OpenDvr(
+	ctx context.Context,
+	type_ DvrType,
+	bufferSize int32,
+	cb IDvrCallback,
+) (IDvr, error) {
+	return w.impl.OpenDvr(ctx, type_, bufferSize, cb)
+}
+
+func (w *demuxStubWrapper) ConnectCiCam(
+	ctx context.Context,
+	ciCamId int32,
+) error {
+	return w.impl.ConnectCiCam(ctx, ciCamId)
+}
+
+func (w *demuxStubWrapper) DisconnectCiCam(
+	ctx context.Context,
+) error {
+	return w.impl.DisconnectCiCam(ctx)
+}
+
+var _ IDemux = (*demuxStubWrapper)(nil)
+
+// NewDemuxStub creates a server-side IDemux wrapping the given
+// server implementation. The returned value satisfies IDemux
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDemuxStub(
+	impl IDemuxServer,
+) IDemux {
+	wrapper := &demuxStubWrapper{impl: impl}
+	stub := &DemuxStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

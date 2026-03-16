@@ -3,6 +3,7 @@ package session
 import (
 	"context"
 	"fmt"
+	pm "github.com/xaionaro-go/binder/android/content/pm"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -28,7 +29,7 @@ type ISessionControllerCallback interface {
 	OnSessionDestroyed(ctx context.Context) error
 	OnPlaybackStateChanged(ctx context.Context, state PlaybackState) error
 	OnMetadataChanged(ctx context.Context, metadata interface{}) error
-	OnQueueChanged(ctx context.Context, queue interface{}) error
+	OnQueueChanged(ctx context.Context, queue pm.ParceledListSlice) error
 	OnQueueTitleChanged(ctx context.Context, title interface{}) error
 	OnExtrasChanged(ctx context.Context, extras interface{}) error
 	OnVolumeInfoChanged(ctx context.Context, info MediaControllerPlaybackInfo) error
@@ -121,10 +122,14 @@ func (p *SessionControllerCallbackProxy) OnMetadataChanged(
 
 func (p *SessionControllerCallbackProxy) OnQueueChanged(
 	ctx context.Context,
-	queue interface{},
+	queue pm.ParceledListSlice,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionControllerCallback)
+	_data.WriteInt32(1)
+	if _err := queue.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionControllerCallback, "onQueueChanged")
 	if _err != nil {
@@ -251,7 +256,18 @@ func (s *SessionControllerCallbackStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_queue interface{}
+		var _arg_queue pm.ParceledListSlice
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_queue.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.OnQueueChanged(ctx, _arg_queue)
 		_ = _err
 		return nil, nil
@@ -293,4 +309,99 @@ func (s *SessionControllerCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISessionControllerCallbackServer is the server-side interface that user implementations
+// provide to NewSessionControllerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISessionControllerCallbackServer interface {
+	OnEvent(ctx context.Context, event string, extras interface{}) error
+	OnSessionDestroyed(ctx context.Context) error
+	OnPlaybackStateChanged(ctx context.Context, state PlaybackState) error
+	OnMetadataChanged(ctx context.Context, metadata interface{}) error
+	OnQueueChanged(ctx context.Context, queue pm.ParceledListSlice) error
+	OnQueueTitleChanged(ctx context.Context, title interface{}) error
+	OnExtrasChanged(ctx context.Context, extras interface{}) error
+	OnVolumeInfoChanged(ctx context.Context, info MediaControllerPlaybackInfo) error
+}
+
+type sessionControllerCallbackStubWrapper struct {
+	impl       ISessionControllerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sessionControllerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sessionControllerCallbackStubWrapper) OnEvent(
+	ctx context.Context,
+	event string,
+	extras interface{},
+) error {
+	return w.impl.OnEvent(ctx, event, extras)
+}
+
+func (w *sessionControllerCallbackStubWrapper) OnSessionDestroyed(
+	ctx context.Context,
+) error {
+	return w.impl.OnSessionDestroyed(ctx)
+}
+
+func (w *sessionControllerCallbackStubWrapper) OnPlaybackStateChanged(
+	ctx context.Context,
+	state PlaybackState,
+) error {
+	return w.impl.OnPlaybackStateChanged(ctx, state)
+}
+
+func (w *sessionControllerCallbackStubWrapper) OnMetadataChanged(
+	ctx context.Context,
+	metadata interface{},
+) error {
+	return w.impl.OnMetadataChanged(ctx, metadata)
+}
+
+func (w *sessionControllerCallbackStubWrapper) OnQueueChanged(
+	ctx context.Context,
+	queue pm.ParceledListSlice,
+) error {
+	return w.impl.OnQueueChanged(ctx, queue)
+}
+
+func (w *sessionControllerCallbackStubWrapper) OnQueueTitleChanged(
+	ctx context.Context,
+	title interface{},
+) error {
+	return w.impl.OnQueueTitleChanged(ctx, title)
+}
+
+func (w *sessionControllerCallbackStubWrapper) OnExtrasChanged(
+	ctx context.Context,
+	extras interface{},
+) error {
+	return w.impl.OnExtrasChanged(ctx, extras)
+}
+
+func (w *sessionControllerCallbackStubWrapper) OnVolumeInfoChanged(
+	ctx context.Context,
+	info MediaControllerPlaybackInfo,
+) error {
+	return w.impl.OnVolumeInfoChanged(ctx, info)
+}
+
+var _ ISessionControllerCallback = (*sessionControllerCallbackStubWrapper)(nil)
+
+// NewSessionControllerCallbackStub creates a server-side ISessionControllerCallback wrapping the given
+// server implementation. The returned value satisfies ISessionControllerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSessionControllerCallbackStub(
+	impl ISessionControllerCallbackServer,
+) ISessionControllerCallback {
+	wrapper := &sessionControllerCallbackStubWrapper{impl: impl}
+	stub := &SessionControllerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

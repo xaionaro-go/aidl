@@ -214,3 +214,58 @@ func (s *ServiceListImportSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IServiceListImportSessionServer is the server-side interface that user implementations
+// provide to NewServiceListImportSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListImportSessionServer interface {
+	ImportServiceList(ctx context.Context, pfd int32, importParams os.Bundle) (int32, error)
+	Preload(ctx context.Context, pfd int32) (int32, error)
+	Release(ctx context.Context) (int32, error)
+}
+
+type serviceListImportSessionStubWrapper struct {
+	impl       IServiceListImportSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListImportSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListImportSessionStubWrapper) ImportServiceList(
+	ctx context.Context,
+	pfd int32,
+	importParams os.Bundle,
+) (int32, error) {
+	return w.impl.ImportServiceList(ctx, pfd, importParams)
+}
+
+func (w *serviceListImportSessionStubWrapper) Preload(
+	ctx context.Context,
+	pfd int32,
+) (int32, error) {
+	return w.impl.Preload(ctx, pfd)
+}
+
+func (w *serviceListImportSessionStubWrapper) Release(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Release(ctx)
+}
+
+var _ IServiceListImportSession = (*serviceListImportSessionStubWrapper)(nil)
+
+// NewServiceListImportSessionStub creates a server-side IServiceListImportSession wrapping the given
+// server implementation. The returned value satisfies IServiceListImportSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListImportSessionStub(
+	impl IServiceListImportSessionServer,
+) IServiceListImportSession {
+	wrapper := &serviceListImportSessionStubWrapper{impl: impl}
+	stub := &ServiceListImportSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

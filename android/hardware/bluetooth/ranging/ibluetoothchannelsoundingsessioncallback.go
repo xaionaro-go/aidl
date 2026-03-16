@@ -287,3 +287,74 @@ func (s *BluetoothChannelSoundingSessionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothChannelSoundingSessionCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothChannelSoundingSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothChannelSoundingSessionCallbackServer interface {
+	OnOpened(ctx context.Context, reason Reason) error
+	OnOpenFailed(ctx context.Context, reason Reason) error
+	OnResult(ctx context.Context, result RangingResult) error
+	OnClose(ctx context.Context, reason Reason) error
+	OnCloseFailed(ctx context.Context, reason Reason) error
+}
+
+type bluetoothChannelSoundingSessionCallbackStubWrapper struct {
+	impl       IBluetoothChannelSoundingSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothChannelSoundingSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothChannelSoundingSessionCallbackStubWrapper) OnOpened(
+	ctx context.Context,
+	reason Reason,
+) error {
+	return w.impl.OnOpened(ctx, reason)
+}
+
+func (w *bluetoothChannelSoundingSessionCallbackStubWrapper) OnOpenFailed(
+	ctx context.Context,
+	reason Reason,
+) error {
+	return w.impl.OnOpenFailed(ctx, reason)
+}
+
+func (w *bluetoothChannelSoundingSessionCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	result RangingResult,
+) error {
+	return w.impl.OnResult(ctx, result)
+}
+
+func (w *bluetoothChannelSoundingSessionCallbackStubWrapper) OnClose(
+	ctx context.Context,
+	reason Reason,
+) error {
+	return w.impl.OnClose(ctx, reason)
+}
+
+func (w *bluetoothChannelSoundingSessionCallbackStubWrapper) OnCloseFailed(
+	ctx context.Context,
+	reason Reason,
+) error {
+	return w.impl.OnCloseFailed(ctx, reason)
+}
+
+var _ IBluetoothChannelSoundingSessionCallback = (*bluetoothChannelSoundingSessionCallbackStubWrapper)(nil)
+
+// NewBluetoothChannelSoundingSessionCallbackStub creates a server-side IBluetoothChannelSoundingSessionCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothChannelSoundingSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothChannelSoundingSessionCallbackStub(
+	impl IBluetoothChannelSoundingSessionCallbackServer,
+) IBluetoothChannelSoundingSessionCallback {
+	wrapper := &bluetoothChannelSoundingSessionCallbackStubWrapper{impl: impl}
+	stub := &BluetoothChannelSoundingSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -85,7 +85,7 @@ func (p *BeginCreateCredentialCallbackProxy) OnCancellable(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBeginCreateCredentialCallback)
-	_data.WriteStrongBinder(cancellation.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellation.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBeginCreateCredentialCallback, "onCancellable")
 	if _err != nil {
@@ -154,4 +154,60 @@ func (s *BeginCreateCredentialCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBeginCreateCredentialCallbackServer is the server-side interface that user implementations
+// provide to NewBeginCreateCredentialCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBeginCreateCredentialCallbackServer interface {
+	OnSuccess(ctx context.Context, request BeginCreateCredentialResponse) error
+	OnFailure(ctx context.Context, errorType string, message interface{}) error
+	OnCancellable(ctx context.Context, cancellation ondeviceintelligence.ICancellationSignal) error
+}
+
+type beginCreateCredentialCallbackStubWrapper struct {
+	impl       IBeginCreateCredentialCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *beginCreateCredentialCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *beginCreateCredentialCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	request BeginCreateCredentialResponse,
+) error {
+	return w.impl.OnSuccess(ctx, request)
+}
+
+func (w *beginCreateCredentialCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	errorType string,
+	message interface{},
+) error {
+	return w.impl.OnFailure(ctx, errorType, message)
+}
+
+func (w *beginCreateCredentialCallbackStubWrapper) OnCancellable(
+	ctx context.Context,
+	cancellation ondeviceintelligence.ICancellationSignal,
+) error {
+	return w.impl.OnCancellable(ctx, cancellation)
+}
+
+var _ IBeginCreateCredentialCallback = (*beginCreateCredentialCallbackStubWrapper)(nil)
+
+// NewBeginCreateCredentialCallbackStub creates a server-side IBeginCreateCredentialCallback wrapping the given
+// server implementation. The returned value satisfies IBeginCreateCredentialCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBeginCreateCredentialCallbackStub(
+	impl IBeginCreateCredentialCallbackServer,
+) IBeginCreateCredentialCallback {
+	wrapper := &beginCreateCredentialCallbackStubWrapper{impl: impl}
+	stub := &BeginCreateCredentialCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

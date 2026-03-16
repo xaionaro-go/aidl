@@ -160,3 +160,51 @@ func (s *TunerFrontendCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITunerFrontendCallbackServer is the server-side interface that user implementations
+// provide to NewTunerFrontendCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerFrontendCallbackServer interface {
+	OnEvent(ctx context.Context, frontendEventType tvTuner.FrontendEventType) error
+	OnScanMessage(ctx context.Context, messageType tvTuner.FrontendScanMessageType, message tvTuner.FrontendScanMessage) error
+}
+
+type tunerFrontendCallbackStubWrapper struct {
+	impl       ITunerFrontendCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerFrontendCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerFrontendCallbackStubWrapper) OnEvent(
+	ctx context.Context,
+	frontendEventType tvTuner.FrontendEventType,
+) error {
+	return w.impl.OnEvent(ctx, frontendEventType)
+}
+
+func (w *tunerFrontendCallbackStubWrapper) OnScanMessage(
+	ctx context.Context,
+	messageType tvTuner.FrontendScanMessageType,
+	message tvTuner.FrontendScanMessage,
+) error {
+	return w.impl.OnScanMessage(ctx, messageType, message)
+}
+
+var _ ITunerFrontendCallback = (*tunerFrontendCallbackStubWrapper)(nil)
+
+// NewTunerFrontendCallbackStub creates a server-side ITunerFrontendCallback wrapping the given
+// server implementation. The returned value satisfies ITunerFrontendCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerFrontendCallbackStub(
+	impl ITunerFrontendCallbackServer,
+) ITunerFrontendCallback {
+	wrapper := &tunerFrontendCallbackStubWrapper{impl: impl}
+	stub := &TunerFrontendCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -232,3 +232,77 @@ func (s *CarrierMessagingCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICarrierMessagingCallbackServer is the server-side interface that user implementations
+// provide to NewCarrierMessagingCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarrierMessagingCallbackServer interface {
+	OnFilterComplete(ctx context.Context, result int32) error
+	OnSendSmsComplete(ctx context.Context, result int32, messageRef int32) error
+	OnSendMultipartSmsComplete(ctx context.Context, result int32, messageRefs []int32) error
+	OnSendMmsComplete(ctx context.Context, result int32, sendConfPdu []byte) error
+	OnDownloadMmsComplete(ctx context.Context, result int32) error
+}
+
+type carrierMessagingCallbackStubWrapper struct {
+	impl       ICarrierMessagingCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carrierMessagingCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carrierMessagingCallbackStubWrapper) OnFilterComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnFilterComplete(ctx, result)
+}
+
+func (w *carrierMessagingCallbackStubWrapper) OnSendSmsComplete(
+	ctx context.Context,
+	result int32,
+	messageRef int32,
+) error {
+	return w.impl.OnSendSmsComplete(ctx, result, messageRef)
+}
+
+func (w *carrierMessagingCallbackStubWrapper) OnSendMultipartSmsComplete(
+	ctx context.Context,
+	result int32,
+	messageRefs []int32,
+) error {
+	return w.impl.OnSendMultipartSmsComplete(ctx, result, messageRefs)
+}
+
+func (w *carrierMessagingCallbackStubWrapper) OnSendMmsComplete(
+	ctx context.Context,
+	result int32,
+	sendConfPdu []byte,
+) error {
+	return w.impl.OnSendMmsComplete(ctx, result, sendConfPdu)
+}
+
+func (w *carrierMessagingCallbackStubWrapper) OnDownloadMmsComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnDownloadMmsComplete(ctx, result)
+}
+
+var _ ICarrierMessagingCallback = (*carrierMessagingCallbackStubWrapper)(nil)
+
+// NewCarrierMessagingCallbackStub creates a server-side ICarrierMessagingCallback wrapping the given
+// server implementation. The returned value satisfies ICarrierMessagingCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarrierMessagingCallbackStub(
+	impl ICarrierMessagingCallbackServer,
+) ICarrierMessagingCallback {
+	wrapper := &carrierMessagingCallbackStubWrapper{impl: impl}
+	stub := &CarrierMessagingCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

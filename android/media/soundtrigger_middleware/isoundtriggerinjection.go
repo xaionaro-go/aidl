@@ -68,7 +68,7 @@ func (p *SoundTriggerInjectionProxy) RegisterGlobalEventInjection(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerInjection)
-	_data.WriteStrongBinder(globalInjection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, globalInjection.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "registerGlobalEventInjection")
 	if _err != nil {
@@ -85,7 +85,7 @@ func (p *SoundTriggerInjectionProxy) OnRestarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerInjection)
-	_data.WriteStrongBinder(globalSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, globalSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "onRestarted")
 	if _err != nil {
@@ -102,7 +102,7 @@ func (p *SoundTriggerInjectionProxy) OnFrameworkDetached(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerInjection)
-	_data.WriteStrongBinder(globalSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, globalSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "onFrameworkDetached")
 	if _err != nil {
@@ -120,8 +120,8 @@ func (p *SoundTriggerInjectionProxy) OnClientAttached(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerInjection)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteStrongBinder(globalSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, globalSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "onClientAttached")
 	if _err != nil {
@@ -138,7 +138,7 @@ func (p *SoundTriggerInjectionProxy) OnClientDetached(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerInjection)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "onClientDetached")
 	if _err != nil {
@@ -172,8 +172,8 @@ func (p *SoundTriggerInjectionProxy) OnSoundModelLoaded(
 			}
 		}
 	}
-	_data.WriteStrongBinder(modelInjection.AsBinder().Handle())
-	_data.WriteStrongBinder(globalSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, modelInjection.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, globalSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "onSoundModelLoaded")
 	if _err != nil {
@@ -194,7 +194,7 @@ func (p *SoundTriggerInjectionProxy) OnParamSet(
 	_data.WriteInterfaceToken(DescriptorISoundTriggerInjection)
 	_data.WriteInt32(modelParam)
 	_data.WriteInt32(value)
-	_data.WriteStrongBinder(modelSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, modelSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "onParamSet")
 	if _err != nil {
@@ -219,8 +219,8 @@ func (p *SoundTriggerInjectionProxy) OnRecognitionStarted(
 	if _err := config.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(recognitionInjection.AsBinder().Handle())
-	_data.WriteStrongBinder(modelSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, recognitionInjection.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, modelSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "onRecognitionStarted")
 	if _err != nil {
@@ -237,7 +237,7 @@ func (p *SoundTriggerInjectionProxy) OnRecognitionStopped(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerInjection)
-	_data.WriteStrongBinder(recognitionSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, recognitionSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "onRecognitionStopped")
 	if _err != nil {
@@ -254,7 +254,7 @@ func (p *SoundTriggerInjectionProxy) OnSoundModelUnloaded(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerInjection)
-	_data.WriteStrongBinder(modelSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, modelSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerInjection, "onSoundModelUnloaded")
 	if _err != nil {
@@ -452,4 +452,131 @@ func (s *SoundTriggerInjectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISoundTriggerInjectionServer is the server-side interface that user implementations
+// provide to NewSoundTriggerInjectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerInjectionServer interface {
+	RegisterGlobalEventInjection(ctx context.Context, globalInjection IInjectGlobalEvent) error
+	OnRestarted(ctx context.Context, globalSession IInjectGlobalEvent) error
+	OnFrameworkDetached(ctx context.Context, globalSession IInjectGlobalEvent) error
+	OnClientAttached(ctx context.Context, token binder.IBinder, globalSession IInjectGlobalEvent) error
+	OnClientDetached(ctx context.Context, token binder.IBinder) error
+	OnSoundModelLoaded(ctx context.Context, model soundtrigger.SoundModel, phrases []soundtrigger.Phrase, modelInjection IInjectModelEvent, globalSession IInjectGlobalEvent) error
+	OnParamSet(ctx context.Context, modelParam int32, value int32, modelSession IInjectModelEvent) error
+	OnRecognitionStarted(ctx context.Context, audioSessionToken int32, config hardwareSoundtrigger.SoundTriggerRecognitionConfig, recognitionInjection IInjectRecognitionEvent, modelSession IInjectModelEvent) error
+	OnRecognitionStopped(ctx context.Context, recognitionSession IInjectRecognitionEvent) error
+	OnSoundModelUnloaded(ctx context.Context, modelSession IInjectModelEvent) error
+	OnPreempted(ctx context.Context) error
+}
+
+type soundTriggerInjectionStubWrapper struct {
+	impl       ISoundTriggerInjectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerInjectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerInjectionStubWrapper) RegisterGlobalEventInjection(
+	ctx context.Context,
+	globalInjection IInjectGlobalEvent,
+) error {
+	return w.impl.RegisterGlobalEventInjection(ctx, globalInjection)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnRestarted(
+	ctx context.Context,
+	globalSession IInjectGlobalEvent,
+) error {
+	return w.impl.OnRestarted(ctx, globalSession)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnFrameworkDetached(
+	ctx context.Context,
+	globalSession IInjectGlobalEvent,
+) error {
+	return w.impl.OnFrameworkDetached(ctx, globalSession)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnClientAttached(
+	ctx context.Context,
+	token binder.IBinder,
+	globalSession IInjectGlobalEvent,
+) error {
+	return w.impl.OnClientAttached(ctx, token, globalSession)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnClientDetached(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.OnClientDetached(ctx, token)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnSoundModelLoaded(
+	ctx context.Context,
+	model soundtrigger.SoundModel,
+	phrases []soundtrigger.Phrase,
+	modelInjection IInjectModelEvent,
+	globalSession IInjectGlobalEvent,
+) error {
+	return w.impl.OnSoundModelLoaded(ctx, model, phrases, modelInjection, globalSession)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnParamSet(
+	ctx context.Context,
+	modelParam int32,
+	value int32,
+	modelSession IInjectModelEvent,
+) error {
+	return w.impl.OnParamSet(ctx, modelParam, value, modelSession)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnRecognitionStarted(
+	ctx context.Context,
+	audioSessionToken int32,
+	config hardwareSoundtrigger.SoundTriggerRecognitionConfig,
+	recognitionInjection IInjectRecognitionEvent,
+	modelSession IInjectModelEvent,
+) error {
+	return w.impl.OnRecognitionStarted(ctx, audioSessionToken, config, recognitionInjection, modelSession)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnRecognitionStopped(
+	ctx context.Context,
+	recognitionSession IInjectRecognitionEvent,
+) error {
+	return w.impl.OnRecognitionStopped(ctx, recognitionSession)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnSoundModelUnloaded(
+	ctx context.Context,
+	modelSession IInjectModelEvent,
+) error {
+	return w.impl.OnSoundModelUnloaded(ctx, modelSession)
+}
+
+func (w *soundTriggerInjectionStubWrapper) OnPreempted(
+	ctx context.Context,
+) error {
+	return w.impl.OnPreempted(ctx)
+}
+
+var _ ISoundTriggerInjection = (*soundTriggerInjectionStubWrapper)(nil)
+
+// NewSoundTriggerInjectionStub creates a server-side ISoundTriggerInjection wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerInjection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerInjectionStub(
+	impl ISoundTriggerInjectionServer,
+) ISoundTriggerInjection {
+	wrapper := &soundTriggerInjectionStubWrapper{impl: impl}
+	stub := &SoundTriggerInjectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

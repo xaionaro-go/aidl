@@ -49,7 +49,7 @@ func (p *GnssVisibilityControlProxy) EnableNfwLocationAccess(
 	} else {
 		_data.WriteInt32(int32(len(proxyApps)))
 		for _, _item := range proxyApps {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 
@@ -77,7 +77,7 @@ func (p *GnssVisibilityControlProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssVisibilityControl)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGnssVisibilityControl, "setCallback")
 	if _err != nil {
@@ -144,4 +144,51 @@ func (s *GnssVisibilityControlStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssVisibilityControlServer is the server-side interface that user implementations
+// provide to NewGnssVisibilityControlStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssVisibilityControlServer interface {
+	EnableNfwLocationAccess(ctx context.Context, proxyApps []string) error
+	SetCallback(ctx context.Context, callback IGnssVisibilityControlCallback) error
+}
+
+type gnssVisibilityControlStubWrapper struct {
+	impl       IGnssVisibilityControlServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssVisibilityControlStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssVisibilityControlStubWrapper) EnableNfwLocationAccess(
+	ctx context.Context,
+	proxyApps []string,
+) error {
+	return w.impl.EnableNfwLocationAccess(ctx, proxyApps)
+}
+
+func (w *gnssVisibilityControlStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IGnssVisibilityControlCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+var _ IGnssVisibilityControl = (*gnssVisibilityControlStubWrapper)(nil)
+
+// NewGnssVisibilityControlStub creates a server-side IGnssVisibilityControl wrapping the given
+// server implementation. The returned value satisfies IGnssVisibilityControl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssVisibilityControlStub(
+	impl IGnssVisibilityControlServer,
+) IGnssVisibilityControl {
+	wrapper := &gnssVisibilityControlStubWrapper{impl: impl}
+	stub := &GnssVisibilityControlStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -97,3 +97,43 @@ func (s *RetrieveNotificationListCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRetrieveNotificationListCallbackServer is the server-side interface that user implementations
+// provide to NewRetrieveNotificationListCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRetrieveNotificationListCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, notifications []telephonyEuicc.EuiccNotification) error
+}
+
+type retrieveNotificationListCallbackStubWrapper struct {
+	impl       IRetrieveNotificationListCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *retrieveNotificationListCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *retrieveNotificationListCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	notifications []telephonyEuicc.EuiccNotification,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, notifications)
+}
+
+var _ IRetrieveNotificationListCallback = (*retrieveNotificationListCallbackStubWrapper)(nil)
+
+// NewRetrieveNotificationListCallbackStub creates a server-side IRetrieveNotificationListCallback wrapping the given
+// server implementation. The returned value satisfies IRetrieveNotificationListCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRetrieveNotificationListCallbackStub(
+	impl IRetrieveNotificationListCallbackServer,
+) IRetrieveNotificationListCallback {
+	wrapper := &retrieveNotificationListCallbackStubWrapper{impl: impl}
+	stub := &RetrieveNotificationListCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

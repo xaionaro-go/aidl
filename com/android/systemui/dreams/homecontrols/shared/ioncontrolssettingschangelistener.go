@@ -100,3 +100,43 @@ func (s *OnControlsSettingsChangeListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnControlsSettingsChangeListenerServer is the server-side interface that user implementations
+// provide to NewOnControlsSettingsChangeListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnControlsSettingsChangeListenerServer interface {
+	OnControlsSettingsChanged(ctx context.Context, panelComponent content.ComponentName, allowTrivialControlsOnLockscreen bool) error
+}
+
+type onControlsSettingsChangeListenerStubWrapper struct {
+	impl       IOnControlsSettingsChangeListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onControlsSettingsChangeListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onControlsSettingsChangeListenerStubWrapper) OnControlsSettingsChanged(
+	ctx context.Context,
+	panelComponent content.ComponentName,
+	allowTrivialControlsOnLockscreen bool,
+) error {
+	return w.impl.OnControlsSettingsChanged(ctx, panelComponent, allowTrivialControlsOnLockscreen)
+}
+
+var _ IOnControlsSettingsChangeListener = (*onControlsSettingsChangeListenerStubWrapper)(nil)
+
+// NewOnControlsSettingsChangeListenerStub creates a server-side IOnControlsSettingsChangeListener wrapping the given
+// server implementation. The returned value satisfies IOnControlsSettingsChangeListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnControlsSettingsChangeListenerStub(
+	impl IOnControlsSettingsChangeListenerServer,
+) IOnControlsSettingsChangeListener {
+	wrapper := &onControlsSettingsChangeListenerStubWrapper{impl: impl}
+	stub := &OnControlsSettingsChangeListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -134,3 +134,49 @@ func (s *AGnssRilCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAGnssRilCallbackServer is the server-side interface that user implementations
+// provide to NewAGnssRilCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAGnssRilCallbackServer interface {
+	RequestSetIdCb(ctx context.Context, setIdflag int32) error
+	RequestRefLocCb(ctx context.Context) error
+}
+
+type aGnssRilCallbackStubWrapper struct {
+	impl       IAGnssRilCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aGnssRilCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aGnssRilCallbackStubWrapper) RequestSetIdCb(
+	ctx context.Context,
+	setIdflag int32,
+) error {
+	return w.impl.RequestSetIdCb(ctx, setIdflag)
+}
+
+func (w *aGnssRilCallbackStubWrapper) RequestRefLocCb(
+	ctx context.Context,
+) error {
+	return w.impl.RequestRefLocCb(ctx)
+}
+
+var _ IAGnssRilCallback = (*aGnssRilCallbackStubWrapper)(nil)
+
+// NewAGnssRilCallbackStub creates a server-side IAGnssRilCallback wrapping the given
+// server implementation. The returned value satisfies IAGnssRilCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAGnssRilCallbackStub(
+	impl IAGnssRilCallbackServer,
+) IAGnssRilCallback {
+	wrapper := &aGnssRilCallbackStubWrapper{impl: impl}
+	stub := &AGnssRilCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

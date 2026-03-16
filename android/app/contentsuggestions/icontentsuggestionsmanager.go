@@ -119,7 +119,7 @@ func (p *ContentSuggestionsManagerProxy) SuggestContentSelections(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "suggestContentSelections")
 	if _err != nil {
@@ -143,7 +143,7 @@ func (p *ContentSuggestionsManagerProxy) ClassifyContentSelections(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "classifyContentSelections")
 	if _err != nil {
@@ -186,7 +186,7 @@ func (p *ContentSuggestionsManagerProxy) IsEnabled(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentSuggestionsManager)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentSuggestionsManager, "isEnabled")
 	if _err != nil {
@@ -462,4 +462,112 @@ func (s *ContentSuggestionsManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContentSuggestionsManagerServer is the server-side interface that user implementations
+// provide to NewContentSuggestionsManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentSuggestionsManagerServer interface {
+	ProvideContextImage(ctx context.Context, taskId int32, imageContextRequestExtras os.Bundle) error
+	ProvideContextBitmap(ctx context.Context, bitmap graphics.Bitmap, imageContextRequestExtras os.Bundle) error
+	SuggestContentSelections(ctx context.Context, request SelectionsRequest, callback ISelectionsCallback) error
+	ClassifyContentSelections(ctx context.Context, request ClassificationsRequest, callback IClassificationsCallback) error
+	NotifyInteraction(ctx context.Context, requestId string, interaction os.Bundle) error
+	IsEnabled(ctx context.Context, receiver internalOs.IResultReceiver) error
+	ResetTemporaryService(ctx context.Context) error
+	SetTemporaryService(ctx context.Context, serviceName string, duration int32) error
+	SetDefaultServiceEnabled(ctx context.Context, enabled bool) error
+}
+
+type contentSuggestionsManagerStubWrapper struct {
+	impl       IContentSuggestionsManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentSuggestionsManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentSuggestionsManagerStubWrapper) ProvideContextImage(
+	ctx context.Context,
+	taskId int32,
+	imageContextRequestExtras os.Bundle,
+) error {
+	return w.impl.ProvideContextImage(ctx, taskId, imageContextRequestExtras)
+}
+
+func (w *contentSuggestionsManagerStubWrapper) ProvideContextBitmap(
+	ctx context.Context,
+	bitmap graphics.Bitmap,
+	imageContextRequestExtras os.Bundle,
+) error {
+	return w.impl.ProvideContextBitmap(ctx, bitmap, imageContextRequestExtras)
+}
+
+func (w *contentSuggestionsManagerStubWrapper) SuggestContentSelections(
+	ctx context.Context,
+	request SelectionsRequest,
+	callback ISelectionsCallback,
+) error {
+	return w.impl.SuggestContentSelections(ctx, request, callback)
+}
+
+func (w *contentSuggestionsManagerStubWrapper) ClassifyContentSelections(
+	ctx context.Context,
+	request ClassificationsRequest,
+	callback IClassificationsCallback,
+) error {
+	return w.impl.ClassifyContentSelections(ctx, request, callback)
+}
+
+func (w *contentSuggestionsManagerStubWrapper) NotifyInteraction(
+	ctx context.Context,
+	requestId string,
+	interaction os.Bundle,
+) error {
+	return w.impl.NotifyInteraction(ctx, requestId, interaction)
+}
+
+func (w *contentSuggestionsManagerStubWrapper) IsEnabled(
+	ctx context.Context,
+	receiver internalOs.IResultReceiver,
+) error {
+	return w.impl.IsEnabled(ctx, receiver)
+}
+
+func (w *contentSuggestionsManagerStubWrapper) ResetTemporaryService(
+	ctx context.Context,
+) error {
+	return w.impl.ResetTemporaryService(ctx)
+}
+
+func (w *contentSuggestionsManagerStubWrapper) SetTemporaryService(
+	ctx context.Context,
+	serviceName string,
+	duration int32,
+) error {
+	return w.impl.SetTemporaryService(ctx, serviceName, duration)
+}
+
+func (w *contentSuggestionsManagerStubWrapper) SetDefaultServiceEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetDefaultServiceEnabled(ctx, enabled)
+}
+
+var _ IContentSuggestionsManager = (*contentSuggestionsManagerStubWrapper)(nil)
+
+// NewContentSuggestionsManagerStub creates a server-side IContentSuggestionsManager wrapping the given
+// server implementation. The returned value satisfies IContentSuggestionsManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentSuggestionsManagerStub(
+	impl IContentSuggestionsManagerServer,
+) IContentSuggestionsManager {
+	wrapper := &contentSuggestionsManagerStubWrapper{impl: impl}
+	stub := &ContentSuggestionsManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

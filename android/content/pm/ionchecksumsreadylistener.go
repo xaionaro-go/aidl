@@ -90,3 +90,42 @@ func (s *OnChecksumsReadyListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnChecksumsReadyListenerServer is the server-side interface that user implementations
+// provide to NewOnChecksumsReadyListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnChecksumsReadyListenerServer interface {
+	OnChecksumsReady(ctx context.Context, checksums []ApkChecksum) error
+}
+
+type onChecksumsReadyListenerStubWrapper struct {
+	impl       IOnChecksumsReadyListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onChecksumsReadyListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onChecksumsReadyListenerStubWrapper) OnChecksumsReady(
+	ctx context.Context,
+	checksums []ApkChecksum,
+) error {
+	return w.impl.OnChecksumsReady(ctx, checksums)
+}
+
+var _ IOnChecksumsReadyListener = (*onChecksumsReadyListenerStubWrapper)(nil)
+
+// NewOnChecksumsReadyListenerStub creates a server-side IOnChecksumsReadyListener wrapping the given
+// server implementation. The returned value satisfies IOnChecksumsReadyListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnChecksumsReadyListenerStub(
+	impl IOnChecksumsReadyListenerServer,
+) IOnChecksumsReadyListener {
+	wrapper := &onChecksumsReadyListenerStubWrapper{impl: impl}
+	stub := &OnChecksumsReadyListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

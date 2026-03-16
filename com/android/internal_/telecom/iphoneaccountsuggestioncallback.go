@@ -97,3 +97,43 @@ func (s *PhoneAccountSuggestionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPhoneAccountSuggestionCallbackServer is the server-side interface that user implementations
+// provide to NewPhoneAccountSuggestionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPhoneAccountSuggestionCallbackServer interface {
+	SuggestPhoneAccounts(ctx context.Context, number string, suggestions []androidTelecom.PhoneAccountSuggestion) error
+}
+
+type phoneAccountSuggestionCallbackStubWrapper struct {
+	impl       IPhoneAccountSuggestionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *phoneAccountSuggestionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *phoneAccountSuggestionCallbackStubWrapper) SuggestPhoneAccounts(
+	ctx context.Context,
+	number string,
+	suggestions []androidTelecom.PhoneAccountSuggestion,
+) error {
+	return w.impl.SuggestPhoneAccounts(ctx, number, suggestions)
+}
+
+var _ IPhoneAccountSuggestionCallback = (*phoneAccountSuggestionCallbackStubWrapper)(nil)
+
+// NewPhoneAccountSuggestionCallbackStub creates a server-side IPhoneAccountSuggestionCallback wrapping the given
+// server implementation. The returned value satisfies IPhoneAccountSuggestionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPhoneAccountSuggestionCallbackStub(
+	impl IPhoneAccountSuggestionCallbackServer,
+) IPhoneAccountSuggestionCallback {
+	wrapper := &phoneAccountSuggestionCallbackStubWrapper{impl: impl}
+	stub := &PhoneAccountSuggestionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

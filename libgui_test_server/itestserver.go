@@ -130,3 +130,48 @@ func (s *TestServerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITestServerServer is the server-side interface that user implementations
+// provide to NewTestServerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITestServerServer interface {
+	CreateProducer(ctx context.Context) (interface{}, error)
+	KillNow(ctx context.Context) error
+}
+
+type testServerStubWrapper struct {
+	impl       ITestServerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *testServerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *testServerStubWrapper) CreateProducer(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.CreateProducer(ctx)
+}
+
+func (w *testServerStubWrapper) KillNow(
+	ctx context.Context,
+) error {
+	return w.impl.KillNow(ctx)
+}
+
+var _ ITestServer = (*testServerStubWrapper)(nil)
+
+// NewTestServerStub creates a server-side ITestServer wrapping the given
+// server implementation. The returned value satisfies ITestServer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTestServerStub(
+	impl ITestServerServer,
+) ITestServer {
+	wrapper := &testServerStubWrapper{impl: impl}
+	stub := &TestServerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

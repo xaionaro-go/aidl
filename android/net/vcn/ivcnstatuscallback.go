@@ -130,3 +130,53 @@ func (s *VcnStatusCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVcnStatusCallbackServer is the server-side interface that user implementations
+// provide to NewVcnStatusCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVcnStatusCallbackServer interface {
+	OnVcnStatusChanged(ctx context.Context, statusCode int32) error
+	OnGatewayConnectionError(ctx context.Context, gatewayConnectionName string, errorCode int32, exceptionClass string, exceptionMessage string) error
+}
+
+type vcnStatusCallbackStubWrapper struct {
+	impl       IVcnStatusCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vcnStatusCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vcnStatusCallbackStubWrapper) OnVcnStatusChanged(
+	ctx context.Context,
+	statusCode int32,
+) error {
+	return w.impl.OnVcnStatusChanged(ctx, statusCode)
+}
+
+func (w *vcnStatusCallbackStubWrapper) OnGatewayConnectionError(
+	ctx context.Context,
+	gatewayConnectionName string,
+	errorCode int32,
+	exceptionClass string,
+	exceptionMessage string,
+) error {
+	return w.impl.OnGatewayConnectionError(ctx, gatewayConnectionName, errorCode, exceptionClass, exceptionMessage)
+}
+
+var _ IVcnStatusCallback = (*vcnStatusCallbackStubWrapper)(nil)
+
+// NewVcnStatusCallbackStub creates a server-side IVcnStatusCallback wrapping the given
+// server implementation. The returned value satisfies IVcnStatusCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVcnStatusCallbackStub(
+	impl IVcnStatusCallbackServer,
+) IVcnStatusCallback {
+	wrapper := &vcnStatusCallbackStubWrapper{impl: impl}
+	stub := &VcnStatusCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

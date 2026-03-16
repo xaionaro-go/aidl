@@ -120,3 +120,50 @@ func (s *SatelliteProvisionStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteProvisionStateCallbackServer is the server-side interface that user implementations
+// provide to NewSatelliteProvisionStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteProvisionStateCallbackServer interface {
+	OnSatelliteProvisionStateChanged(ctx context.Context, provisioned bool) error
+	OnSatelliteSubscriptionProvisionStateChanged(ctx context.Context, satelliteSubscriberProvisionStatus []SatelliteSubscriberProvisionStatus) error
+}
+
+type satelliteProvisionStateCallbackStubWrapper struct {
+	impl       ISatelliteProvisionStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteProvisionStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteProvisionStateCallbackStubWrapper) OnSatelliteProvisionStateChanged(
+	ctx context.Context,
+	provisioned bool,
+) error {
+	return w.impl.OnSatelliteProvisionStateChanged(ctx, provisioned)
+}
+
+func (w *satelliteProvisionStateCallbackStubWrapper) OnSatelliteSubscriptionProvisionStateChanged(
+	ctx context.Context,
+	satelliteSubscriberProvisionStatus []SatelliteSubscriberProvisionStatus,
+) error {
+	return w.impl.OnSatelliteSubscriptionProvisionStateChanged(ctx, satelliteSubscriberProvisionStatus)
+}
+
+var _ ISatelliteProvisionStateCallback = (*satelliteProvisionStateCallbackStubWrapper)(nil)
+
+// NewSatelliteProvisionStateCallbackStub creates a server-side ISatelliteProvisionStateCallback wrapping the given
+// server implementation. The returned value satisfies ISatelliteProvisionStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteProvisionStateCallbackStub(
+	impl ISatelliteProvisionStateCallbackServer,
+) ISatelliteProvisionStateCallback {
+	wrapper := &satelliteProvisionStateCallbackStubWrapper{impl: impl}
+	stub := &SatelliteProvisionStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -102,3 +102,44 @@ func (s *CapturePresetDevicesRoleDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICapturePresetDevicesRoleDispatcherServer is the server-side interface that user implementations
+// provide to NewCapturePresetDevicesRoleDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICapturePresetDevicesRoleDispatcherServer interface {
+	DispatchDevicesRoleChanged(ctx context.Context, capturePreset int32, role int32, devices []AudioDeviceAttributes) error
+}
+
+type capturePresetDevicesRoleDispatcherStubWrapper struct {
+	impl       ICapturePresetDevicesRoleDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *capturePresetDevicesRoleDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *capturePresetDevicesRoleDispatcherStubWrapper) DispatchDevicesRoleChanged(
+	ctx context.Context,
+	capturePreset int32,
+	role int32,
+	devices []AudioDeviceAttributes,
+) error {
+	return w.impl.DispatchDevicesRoleChanged(ctx, capturePreset, role, devices)
+}
+
+var _ ICapturePresetDevicesRoleDispatcher = (*capturePresetDevicesRoleDispatcherStubWrapper)(nil)
+
+// NewCapturePresetDevicesRoleDispatcherStub creates a server-side ICapturePresetDevicesRoleDispatcher wrapping the given
+// server implementation. The returned value satisfies ICapturePresetDevicesRoleDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCapturePresetDevicesRoleDispatcherStub(
+	impl ICapturePresetDevicesRoleDispatcherServer,
+) ICapturePresetDevicesRoleDispatcher {
+	wrapper := &capturePresetDevicesRoleDispatcherStubWrapper{impl: impl}
+	stub := &CapturePresetDevicesRoleDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

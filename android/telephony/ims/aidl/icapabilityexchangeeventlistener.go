@@ -116,7 +116,7 @@ func (p *CapabilityExchangeEventListenerProxy) OnRemoteCapabilityRequest(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICapabilityExchangeEventListener, "onRemoteCapabilityRequest")
 	if _err != nil {
@@ -206,4 +206,68 @@ func (s *CapabilityExchangeEventListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICapabilityExchangeEventListenerServer is the server-side interface that user implementations
+// provide to NewCapabilityExchangeEventListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICapabilityExchangeEventListenerServer interface {
+	OnRequestPublishCapabilities(ctx context.Context, publishTriggerType int32) error
+	OnUnpublish(ctx context.Context) error
+	OnPublishUpdated(ctx context.Context, details ims.SipDetails) error
+	OnRemoteCapabilityRequest(ctx context.Context, contactUri net.Uri, remoteCapabilities []string, cb IOptionsRequestCallback) error
+}
+
+type capabilityExchangeEventListenerStubWrapper struct {
+	impl       ICapabilityExchangeEventListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *capabilityExchangeEventListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *capabilityExchangeEventListenerStubWrapper) OnRequestPublishCapabilities(
+	ctx context.Context,
+	publishTriggerType int32,
+) error {
+	return w.impl.OnRequestPublishCapabilities(ctx, publishTriggerType)
+}
+
+func (w *capabilityExchangeEventListenerStubWrapper) OnUnpublish(
+	ctx context.Context,
+) error {
+	return w.impl.OnUnpublish(ctx)
+}
+
+func (w *capabilityExchangeEventListenerStubWrapper) OnPublishUpdated(
+	ctx context.Context,
+	details ims.SipDetails,
+) error {
+	return w.impl.OnPublishUpdated(ctx, details)
+}
+
+func (w *capabilityExchangeEventListenerStubWrapper) OnRemoteCapabilityRequest(
+	ctx context.Context,
+	contactUri net.Uri,
+	remoteCapabilities []string,
+	cb IOptionsRequestCallback,
+) error {
+	return w.impl.OnRemoteCapabilityRequest(ctx, contactUri, remoteCapabilities, cb)
+}
+
+var _ ICapabilityExchangeEventListener = (*capabilityExchangeEventListenerStubWrapper)(nil)
+
+// NewCapabilityExchangeEventListenerStub creates a server-side ICapabilityExchangeEventListener wrapping the given
+// server implementation. The returned value satisfies ICapabilityExchangeEventListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCapabilityExchangeEventListenerStub(
+	impl ICapabilityExchangeEventListenerServer,
+) ICapabilityExchangeEventListener {
+	wrapper := &capabilityExchangeEventListenerStubWrapper{impl: impl}
+	stub := &CapabilityExchangeEventListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

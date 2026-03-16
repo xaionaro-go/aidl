@@ -76,3 +76,41 @@ func (s *KeyguardDrawnCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyguardDrawnCallbackServer is the server-side interface that user implementations
+// provide to NewKeyguardDrawnCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyguardDrawnCallbackServer interface {
+	OnDrawn(ctx context.Context) error
+}
+
+type keyguardDrawnCallbackStubWrapper struct {
+	impl       IKeyguardDrawnCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyguardDrawnCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyguardDrawnCallbackStubWrapper) OnDrawn(
+	ctx context.Context,
+) error {
+	return w.impl.OnDrawn(ctx)
+}
+
+var _ IKeyguardDrawnCallback = (*keyguardDrawnCallbackStubWrapper)(nil)
+
+// NewKeyguardDrawnCallbackStub creates a server-side IKeyguardDrawnCallback wrapping the given
+// server implementation. The returned value satisfies IKeyguardDrawnCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyguardDrawnCallbackStub(
+	impl IKeyguardDrawnCallbackServer,
+) IKeyguardDrawnCallback {
+	wrapper := &keyguardDrawnCallbackStubWrapper{impl: impl}
+	stub := &KeyguardDrawnCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

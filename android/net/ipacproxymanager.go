@@ -46,7 +46,7 @@ func (p *PacProxyManagerProxy) AddListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPacProxyManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPacProxyManager, "addListener")
 	if _err != nil {
@@ -72,7 +72,7 @@ func (p *PacProxyManagerProxy) RemoveListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPacProxyManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPacProxyManager, "removeListener")
 	if _err != nil {
@@ -177,4 +177,59 @@ func (s *PacProxyManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPacProxyManagerServer is the server-side interface that user implementations
+// provide to NewPacProxyManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPacProxyManagerServer interface {
+	AddListener(ctx context.Context, listener IPacProxyInstalledListener) error
+	RemoveListener(ctx context.Context, listener IPacProxyInstalledListener) error
+	SetCurrentProxyScriptUrl(ctx context.Context, proxyInfo interface{}) error
+}
+
+type pacProxyManagerStubWrapper struct {
+	impl       IPacProxyManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pacProxyManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pacProxyManagerStubWrapper) AddListener(
+	ctx context.Context,
+	listener IPacProxyInstalledListener,
+) error {
+	return w.impl.AddListener(ctx, listener)
+}
+
+func (w *pacProxyManagerStubWrapper) RemoveListener(
+	ctx context.Context,
+	listener IPacProxyInstalledListener,
+) error {
+	return w.impl.RemoveListener(ctx, listener)
+}
+
+func (w *pacProxyManagerStubWrapper) SetCurrentProxyScriptUrl(
+	ctx context.Context,
+	proxyInfo interface{},
+) error {
+	return w.impl.SetCurrentProxyScriptUrl(ctx, proxyInfo)
+}
+
+var _ IPacProxyManager = (*pacProxyManagerStubWrapper)(nil)
+
+// NewPacProxyManagerStub creates a server-side IPacProxyManager wrapping the given
+// server implementation. The returned value satisfies IPacProxyManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPacProxyManagerStub(
+	impl IPacProxyManagerServer,
+) IPacProxyManager {
+	wrapper := &pacProxyManagerStubWrapper{impl: impl}
+	stub := &PacProxyManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

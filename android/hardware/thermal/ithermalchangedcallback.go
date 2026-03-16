@@ -134,3 +134,50 @@ func (s *ThermalChangedCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IThermalChangedCallbackServer is the server-side interface that user implementations
+// provide to NewThermalChangedCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IThermalChangedCallbackServer interface {
+	NotifyThrottling(ctx context.Context, temperature Temperature) error
+	NotifyThresholdChanged(ctx context.Context, threshold TemperatureThreshold) error
+}
+
+type thermalChangedCallbackStubWrapper struct {
+	impl       IThermalChangedCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *thermalChangedCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *thermalChangedCallbackStubWrapper) NotifyThrottling(
+	ctx context.Context,
+	temperature Temperature,
+) error {
+	return w.impl.NotifyThrottling(ctx, temperature)
+}
+
+func (w *thermalChangedCallbackStubWrapper) NotifyThresholdChanged(
+	ctx context.Context,
+	threshold TemperatureThreshold,
+) error {
+	return w.impl.NotifyThresholdChanged(ctx, threshold)
+}
+
+var _ IThermalChangedCallback = (*thermalChangedCallbackStubWrapper)(nil)
+
+// NewThermalChangedCallbackStub creates a server-side IThermalChangedCallback wrapping the given
+// server implementation. The returned value satisfies IThermalChangedCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewThermalChangedCallbackStub(
+	impl IThermalChangedCallbackServer,
+) IThermalChangedCallback {
+	wrapper := &thermalChangedCallbackStubWrapper{impl: impl}
+	stub := &ThermalChangedCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

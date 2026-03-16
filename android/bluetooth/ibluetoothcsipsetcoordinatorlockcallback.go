@@ -94,3 +94,44 @@ func (s *BluetoothCsipSetCoordinatorLockCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothCsipSetCoordinatorLockCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothCsipSetCoordinatorLockCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothCsipSetCoordinatorLockCallbackServer interface {
+	OnGroupLockSet(ctx context.Context, groupId int32, opStatus int32, isLocked bool) error
+}
+
+type bluetoothCsipSetCoordinatorLockCallbackStubWrapper struct {
+	impl       IBluetoothCsipSetCoordinatorLockCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothCsipSetCoordinatorLockCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothCsipSetCoordinatorLockCallbackStubWrapper) OnGroupLockSet(
+	ctx context.Context,
+	groupId int32,
+	opStatus int32,
+	isLocked bool,
+) error {
+	return w.impl.OnGroupLockSet(ctx, groupId, opStatus, isLocked)
+}
+
+var _ IBluetoothCsipSetCoordinatorLockCallback = (*bluetoothCsipSetCoordinatorLockCallbackStubWrapper)(nil)
+
+// NewBluetoothCsipSetCoordinatorLockCallbackStub creates a server-side IBluetoothCsipSetCoordinatorLockCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothCsipSetCoordinatorLockCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothCsipSetCoordinatorLockCallbackStub(
+	impl IBluetoothCsipSetCoordinatorLockCallbackServer,
+) IBluetoothCsipSetCoordinatorLockCallback {
+	wrapper := &bluetoothCsipSetCoordinatorLockCallbackStubWrapper{impl: impl}
+	stub := &BluetoothCsipSetCoordinatorLockCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

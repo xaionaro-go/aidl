@@ -3,6 +3,7 @@ package accounts
 import (
 	"context"
 	"fmt"
+	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +19,7 @@ const (
 
 type IAccountManagerResponse interface {
 	AsBinder() binder.IBinder
-	OnResult(ctx context.Context, value interface{}) error
+	OnResult(ctx context.Context, value os.Bundle) error
 	OnError(ctx context.Context, errorCode int32, errorMessage string) error
 }
 
@@ -40,10 +41,14 @@ var _ IAccountManagerResponse = (*AccountManagerResponseProxy)(nil)
 
 func (p *AccountManagerResponseProxy) OnResult(
 	ctx context.Context,
-	value interface{},
+	value os.Bundle,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountManagerResponse)
+	_data.WriteInt32(1)
+	if _err := value.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountManagerResponse, "onResult")
 	if _err != nil {
@@ -91,7 +96,18 @@ func (s *AccountManagerResponseStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_value interface{}
+		var _arg_value os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_value.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.OnResult(ctx, _arg_value)
 		_ = _err
 		return nil, nil
@@ -113,4 +129,52 @@ func (s *AccountManagerResponseStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAccountManagerResponseServer is the server-side interface that user implementations
+// provide to NewAccountManagerResponseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccountManagerResponseServer interface {
+	OnResult(ctx context.Context, value os.Bundle) error
+	OnError(ctx context.Context, errorCode int32, errorMessage string) error
+}
+
+type accountManagerResponseStubWrapper struct {
+	impl       IAccountManagerResponseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accountManagerResponseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accountManagerResponseStubWrapper) OnResult(
+	ctx context.Context,
+	value os.Bundle,
+) error {
+	return w.impl.OnResult(ctx, value)
+}
+
+func (w *accountManagerResponseStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+	errorMessage string,
+) error {
+	return w.impl.OnError(ctx, errorCode, errorMessage)
+}
+
+var _ IAccountManagerResponse = (*accountManagerResponseStubWrapper)(nil)
+
+// NewAccountManagerResponseStub creates a server-side IAccountManagerResponse wrapping the given
+// server implementation. The returned value satisfies IAccountManagerResponse
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccountManagerResponseStub(
+	impl IAccountManagerResponseServer,
+) IAccountManagerResponse {
+	wrapper := &accountManagerResponseStubWrapper{impl: impl}
+	stub := &AccountManagerResponseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -532,3 +532,120 @@ func (s *RadioConfigResponseStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioConfigResponseServer is the server-side interface that user implementations
+// provide to NewRadioConfigResponseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioConfigResponseServer interface {
+	GetHalDeviceCapabilitiesResponse(ctx context.Context, info radio.RadioResponseInfo, modemReducedFeatureSet1 bool) error
+	GetNumOfLiveModemsResponse(ctx context.Context, info radio.RadioResponseInfo, numOfLiveModems byte) error
+	GetPhoneCapabilityResponse(ctx context.Context, info radio.RadioResponseInfo, phoneCapability PhoneCapability) error
+	GetSimSlotsStatusResponse(ctx context.Context, info radio.RadioResponseInfo, slotStatus []SimSlotStatus) error
+	SetNumOfLiveModemsResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetPreferredDataModemResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetSimSlotsMappingResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	GetSimultaneousCallingSupportResponse(ctx context.Context, info radio.RadioResponseInfo, enabledLogicalSlots []int32) error
+	GetSimTypeInfoResponse(ctx context.Context, info radio.RadioResponseInfo, simTypeInfo []SimTypeInfo) error
+	SetSimTypeResponse(ctx context.Context, info radio.RadioResponseInfo) error
+}
+
+type radioConfigResponseStubWrapper struct {
+	impl       IRadioConfigResponseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioConfigResponseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioConfigResponseStubWrapper) GetHalDeviceCapabilitiesResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	modemReducedFeatureSet1 bool,
+) error {
+	return w.impl.GetHalDeviceCapabilitiesResponse(ctx, info, modemReducedFeatureSet1)
+}
+
+func (w *radioConfigResponseStubWrapper) GetNumOfLiveModemsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	numOfLiveModems byte,
+) error {
+	return w.impl.GetNumOfLiveModemsResponse(ctx, info, numOfLiveModems)
+}
+
+func (w *radioConfigResponseStubWrapper) GetPhoneCapabilityResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	phoneCapability PhoneCapability,
+) error {
+	return w.impl.GetPhoneCapabilityResponse(ctx, info, phoneCapability)
+}
+
+func (w *radioConfigResponseStubWrapper) GetSimSlotsStatusResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	slotStatus []SimSlotStatus,
+) error {
+	return w.impl.GetSimSlotsStatusResponse(ctx, info, slotStatus)
+}
+
+func (w *radioConfigResponseStubWrapper) SetNumOfLiveModemsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetNumOfLiveModemsResponse(ctx, info)
+}
+
+func (w *radioConfigResponseStubWrapper) SetPreferredDataModemResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetPreferredDataModemResponse(ctx, info)
+}
+
+func (w *radioConfigResponseStubWrapper) SetSimSlotsMappingResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSimSlotsMappingResponse(ctx, info)
+}
+
+func (w *radioConfigResponseStubWrapper) GetSimultaneousCallingSupportResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	enabledLogicalSlots []int32,
+) error {
+	return w.impl.GetSimultaneousCallingSupportResponse(ctx, info, enabledLogicalSlots)
+}
+
+func (w *radioConfigResponseStubWrapper) GetSimTypeInfoResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	simTypeInfo []SimTypeInfo,
+) error {
+	return w.impl.GetSimTypeInfoResponse(ctx, info, simTypeInfo)
+}
+
+func (w *radioConfigResponseStubWrapper) SetSimTypeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSimTypeResponse(ctx, info)
+}
+
+var _ IRadioConfigResponse = (*radioConfigResponseStubWrapper)(nil)
+
+// NewRadioConfigResponseStub creates a server-side IRadioConfigResponse wrapping the given
+// server implementation. The returned value satisfies IRadioConfigResponse
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioConfigResponseStub(
+	impl IRadioConfigResponseServer,
+) IRadioConfigResponse {
+	wrapper := &radioConfigResponseStubWrapper{impl: impl}
+	stub := &RadioConfigResponseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -708,3 +708,131 @@ func (s *AdvancedExtenderImplStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAdvancedExtenderImplServer is the server-side interface that user implementations
+// provide to NewAdvancedExtenderImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAdvancedExtenderImplServer interface {
+	IsExtensionAvailable(ctx context.Context, cameraId string, charsMap map[string]interface{}) (bool, error)
+	Init(ctx context.Context, cameraId string, charsMap map[string]interface{}) error
+	GetEstimatedCaptureLatencyRange(ctx context.Context, cameraId string, outputSize Size, format int32) (LatencyRange, error)
+	GetSupportedPreviewOutputResolutions(ctx context.Context, cameraId string) ([]SizeList, error)
+	GetSupportedCaptureOutputResolutions(ctx context.Context, cameraId string) ([]SizeList, error)
+	GetSupportedPostviewResolutions(ctx context.Context, captureSize Size) ([]SizeList, error)
+	GetSessionProcessor(ctx context.Context) (ISessionProcessorImpl, error)
+	GetAvailableCaptureRequestKeys(ctx context.Context, cameraId string) (interface{}, error)
+	GetAvailableCaptureResultKeys(ctx context.Context, cameraId string) (interface{}, error)
+	IsCaptureProcessProgressAvailable(ctx context.Context) (bool, error)
+	IsPostviewAvailable(ctx context.Context) (bool, error)
+	GetAvailableCharacteristicsKeyValues(ctx context.Context, cameraId string) (interface{}, error)
+}
+
+type advancedExtenderImplStubWrapper struct {
+	impl       IAdvancedExtenderImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *advancedExtenderImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *advancedExtenderImplStubWrapper) IsExtensionAvailable(
+	ctx context.Context,
+	cameraId string,
+	charsMap map[string]interface{},
+) (bool, error) {
+	return w.impl.IsExtensionAvailable(ctx, cameraId, charsMap)
+}
+
+func (w *advancedExtenderImplStubWrapper) Init(
+	ctx context.Context,
+	cameraId string,
+	charsMap map[string]interface{},
+) error {
+	return w.impl.Init(ctx, cameraId, charsMap)
+}
+
+func (w *advancedExtenderImplStubWrapper) GetEstimatedCaptureLatencyRange(
+	ctx context.Context,
+	cameraId string,
+	outputSize Size,
+	format int32,
+) (LatencyRange, error) {
+	return w.impl.GetEstimatedCaptureLatencyRange(ctx, cameraId, outputSize, format)
+}
+
+func (w *advancedExtenderImplStubWrapper) GetSupportedPreviewOutputResolutions(
+	ctx context.Context,
+	cameraId string,
+) ([]SizeList, error) {
+	return w.impl.GetSupportedPreviewOutputResolutions(ctx, cameraId)
+}
+
+func (w *advancedExtenderImplStubWrapper) GetSupportedCaptureOutputResolutions(
+	ctx context.Context,
+	cameraId string,
+) ([]SizeList, error) {
+	return w.impl.GetSupportedCaptureOutputResolutions(ctx, cameraId)
+}
+
+func (w *advancedExtenderImplStubWrapper) GetSupportedPostviewResolutions(
+	ctx context.Context,
+	captureSize Size,
+) ([]SizeList, error) {
+	return w.impl.GetSupportedPostviewResolutions(ctx, captureSize)
+}
+
+func (w *advancedExtenderImplStubWrapper) GetSessionProcessor(
+	ctx context.Context,
+) (ISessionProcessorImpl, error) {
+	return w.impl.GetSessionProcessor(ctx)
+}
+
+func (w *advancedExtenderImplStubWrapper) GetAvailableCaptureRequestKeys(
+	ctx context.Context,
+	cameraId string,
+) (interface{}, error) {
+	return w.impl.GetAvailableCaptureRequestKeys(ctx, cameraId)
+}
+
+func (w *advancedExtenderImplStubWrapper) GetAvailableCaptureResultKeys(
+	ctx context.Context,
+	cameraId string,
+) (interface{}, error) {
+	return w.impl.GetAvailableCaptureResultKeys(ctx, cameraId)
+}
+
+func (w *advancedExtenderImplStubWrapper) IsCaptureProcessProgressAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCaptureProcessProgressAvailable(ctx)
+}
+
+func (w *advancedExtenderImplStubWrapper) IsPostviewAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsPostviewAvailable(ctx)
+}
+
+func (w *advancedExtenderImplStubWrapper) GetAvailableCharacteristicsKeyValues(
+	ctx context.Context,
+	cameraId string,
+) (interface{}, error) {
+	return w.impl.GetAvailableCharacteristicsKeyValues(ctx, cameraId)
+}
+
+var _ IAdvancedExtenderImpl = (*advancedExtenderImplStubWrapper)(nil)
+
+// NewAdvancedExtenderImplStub creates a server-side IAdvancedExtenderImpl wrapping the given
+// server implementation. The returned value satisfies IAdvancedExtenderImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAdvancedExtenderImplStub(
+	impl IAdvancedExtenderImplServer,
+) IAdvancedExtenderImpl {
+	wrapper := &advancedExtenderImplStubWrapper{impl: impl}
+	stub := &AdvancedExtenderImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

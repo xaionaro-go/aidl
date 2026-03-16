@@ -325,3 +325,93 @@ func (s *ImsVideoCallCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsVideoCallCallbackServer is the server-side interface that user implementations
+// provide to NewImsVideoCallCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsVideoCallCallbackServer interface {
+	ReceiveSessionModifyRequest(ctx context.Context, videoProfile telecom.VideoProfile) error
+	ReceiveSessionModifyResponse(ctx context.Context, status int32, requestedProfile telecom.VideoProfile, responseProfile telecom.VideoProfile) error
+	HandleCallSessionEvent(ctx context.Context, event int32) error
+	ChangePeerDimensions(ctx context.Context, width int32, height int32) error
+	ChangeCallDataUsage(ctx context.Context, dataUsage int64) error
+	ChangeCameraCapabilities(ctx context.Context, cameraCapabilities telecom.VideoProfileCameraCapabilities) error
+	ChangeVideoQuality(ctx context.Context, videoQuality int32) error
+}
+
+type imsVideoCallCallbackStubWrapper struct {
+	impl       IImsVideoCallCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsVideoCallCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsVideoCallCallbackStubWrapper) ReceiveSessionModifyRequest(
+	ctx context.Context,
+	videoProfile telecom.VideoProfile,
+) error {
+	return w.impl.ReceiveSessionModifyRequest(ctx, videoProfile)
+}
+
+func (w *imsVideoCallCallbackStubWrapper) ReceiveSessionModifyResponse(
+	ctx context.Context,
+	status int32,
+	requestedProfile telecom.VideoProfile,
+	responseProfile telecom.VideoProfile,
+) error {
+	return w.impl.ReceiveSessionModifyResponse(ctx, status, requestedProfile, responseProfile)
+}
+
+func (w *imsVideoCallCallbackStubWrapper) HandleCallSessionEvent(
+	ctx context.Context,
+	event int32,
+) error {
+	return w.impl.HandleCallSessionEvent(ctx, event)
+}
+
+func (w *imsVideoCallCallbackStubWrapper) ChangePeerDimensions(
+	ctx context.Context,
+	width int32,
+	height int32,
+) error {
+	return w.impl.ChangePeerDimensions(ctx, width, height)
+}
+
+func (w *imsVideoCallCallbackStubWrapper) ChangeCallDataUsage(
+	ctx context.Context,
+	dataUsage int64,
+) error {
+	return w.impl.ChangeCallDataUsage(ctx, dataUsage)
+}
+
+func (w *imsVideoCallCallbackStubWrapper) ChangeCameraCapabilities(
+	ctx context.Context,
+	cameraCapabilities telecom.VideoProfileCameraCapabilities,
+) error {
+	return w.impl.ChangeCameraCapabilities(ctx, cameraCapabilities)
+}
+
+func (w *imsVideoCallCallbackStubWrapper) ChangeVideoQuality(
+	ctx context.Context,
+	videoQuality int32,
+) error {
+	return w.impl.ChangeVideoQuality(ctx, videoQuality)
+}
+
+var _ IImsVideoCallCallback = (*imsVideoCallCallbackStubWrapper)(nil)
+
+// NewImsVideoCallCallbackStub creates a server-side IImsVideoCallCallback wrapping the given
+// server implementation. The returned value satisfies IImsVideoCallCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsVideoCallCallbackStub(
+	impl IImsVideoCallCallbackServer,
+) IImsVideoCallCallback {
+	wrapper := &imsVideoCallCallbackStubWrapper{impl: impl}
+	stub := &ImsVideoCallCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

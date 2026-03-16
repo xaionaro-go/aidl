@@ -603,3 +603,112 @@ func (s *DomainVerificationManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDomainVerificationManagerServer is the server-side interface that user implementations
+// provide to NewDomainVerificationManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDomainVerificationManagerServer interface {
+	QueryValidVerificationPackageNames(ctx context.Context) ([]string, error)
+	GetDomainVerificationInfo(ctx context.Context, packageName string) (DomainVerificationInfo, error)
+	GetDomainVerificationUserState(ctx context.Context, packageName string) (DomainVerificationUserState, error)
+	GetOwnersForDomain(ctx context.Context, domain string) ([]DomainOwner, error)
+	SetDomainVerificationStatus(ctx context.Context, domainSetId string, domains DomainSet, state int32) (int32, error)
+	SetDomainVerificationLinkHandlingAllowed(ctx context.Context, packageName string, allowed bool) error
+	SetDomainVerificationUserSelection(ctx context.Context, domainSetId string, domains DomainSet, enabled bool) (int32, error)
+	SetUriRelativeFilterGroups(ctx context.Context, packageName string, domainToGroupsBundle interface{}) error
+	GetUriRelativeFilterGroups(ctx context.Context, packageName string, domains []string) (interface{}, error)
+}
+
+type domainVerificationManagerStubWrapper struct {
+	impl       IDomainVerificationManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *domainVerificationManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *domainVerificationManagerStubWrapper) QueryValidVerificationPackageNames(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.QueryValidVerificationPackageNames(ctx)
+}
+
+func (w *domainVerificationManagerStubWrapper) GetDomainVerificationInfo(
+	ctx context.Context,
+	packageName string,
+) (DomainVerificationInfo, error) {
+	return w.impl.GetDomainVerificationInfo(ctx, packageName)
+}
+
+func (w *domainVerificationManagerStubWrapper) GetDomainVerificationUserState(
+	ctx context.Context,
+	packageName string,
+) (DomainVerificationUserState, error) {
+	return w.impl.GetDomainVerificationUserState(ctx, packageName)
+}
+
+func (w *domainVerificationManagerStubWrapper) GetOwnersForDomain(
+	ctx context.Context,
+	domain string,
+) ([]DomainOwner, error) {
+	return w.impl.GetOwnersForDomain(ctx, domain)
+}
+
+func (w *domainVerificationManagerStubWrapper) SetDomainVerificationStatus(
+	ctx context.Context,
+	domainSetId string,
+	domains DomainSet,
+	state int32,
+) (int32, error) {
+	return w.impl.SetDomainVerificationStatus(ctx, domainSetId, domains, state)
+}
+
+func (w *domainVerificationManagerStubWrapper) SetDomainVerificationLinkHandlingAllowed(
+	ctx context.Context,
+	packageName string,
+	allowed bool,
+) error {
+	return w.impl.SetDomainVerificationLinkHandlingAllowed(ctx, packageName, allowed)
+}
+
+func (w *domainVerificationManagerStubWrapper) SetDomainVerificationUserSelection(
+	ctx context.Context,
+	domainSetId string,
+	domains DomainSet,
+	enabled bool,
+) (int32, error) {
+	return w.impl.SetDomainVerificationUserSelection(ctx, domainSetId, domains, enabled)
+}
+
+func (w *domainVerificationManagerStubWrapper) SetUriRelativeFilterGroups(
+	ctx context.Context,
+	packageName string,
+	domainToGroupsBundle interface{},
+) error {
+	return w.impl.SetUriRelativeFilterGroups(ctx, packageName, domainToGroupsBundle)
+}
+
+func (w *domainVerificationManagerStubWrapper) GetUriRelativeFilterGroups(
+	ctx context.Context,
+	packageName string,
+	domains []string,
+) (interface{}, error) {
+	return w.impl.GetUriRelativeFilterGroups(ctx, packageName, domains)
+}
+
+var _ IDomainVerificationManager = (*domainVerificationManagerStubWrapper)(nil)
+
+// NewDomainVerificationManagerStub creates a server-side IDomainVerificationManager wrapping the given
+// server implementation. The returned value satisfies IDomainVerificationManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDomainVerificationManagerStub(
+	impl IDomainVerificationManagerServer,
+) IDomainVerificationManager {
+	wrapper := &domainVerificationManagerStubWrapper{impl: impl}
+	stub := &DomainVerificationManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

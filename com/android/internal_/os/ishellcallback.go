@@ -114,3 +114,44 @@ func (s *ShellCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IShellCallbackServer is the server-side interface that user implementations
+// provide to NewShellCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IShellCallbackServer interface {
+	OpenFile(ctx context.Context, path string, seLinuxContext string, mode string) (int32, error)
+}
+
+type shellCallbackStubWrapper struct {
+	impl       IShellCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *shellCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *shellCallbackStubWrapper) OpenFile(
+	ctx context.Context,
+	path string,
+	seLinuxContext string,
+	mode string,
+) (int32, error) {
+	return w.impl.OpenFile(ctx, path, seLinuxContext, mode)
+}
+
+var _ IShellCallback = (*shellCallbackStubWrapper)(nil)
+
+// NewShellCallbackStub creates a server-side IShellCallback wrapping the given
+// server implementation. The returned value satisfies IShellCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewShellCallbackStub(
+	impl IShellCallbackServer,
+) IShellCallback {
+	wrapper := &shellCallbackStubWrapper{impl: impl}
+	stub := &ShellCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

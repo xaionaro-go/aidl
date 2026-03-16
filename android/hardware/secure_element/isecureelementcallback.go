@@ -102,3 +102,43 @@ func (s *SecureElementCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISecureElementCallbackServer is the server-side interface that user implementations
+// provide to NewSecureElementCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecureElementCallbackServer interface {
+	OnStateChange(ctx context.Context, connected bool, debugReason string) error
+}
+
+type secureElementCallbackStubWrapper struct {
+	impl       ISecureElementCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secureElementCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *secureElementCallbackStubWrapper) OnStateChange(
+	ctx context.Context,
+	connected bool,
+	debugReason string,
+) error {
+	return w.impl.OnStateChange(ctx, connected, debugReason)
+}
+
+var _ ISecureElementCallback = (*secureElementCallbackStubWrapper)(nil)
+
+// NewSecureElementCallbackStub creates a server-side ISecureElementCallback wrapping the given
+// server implementation. The returned value satisfies ISecureElementCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecureElementCallbackStub(
+	impl ISecureElementCallbackServer,
+) ISecureElementCallback {
+	wrapper := &secureElementCallbackStubWrapper{impl: impl}
+	stub := &SecureElementCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

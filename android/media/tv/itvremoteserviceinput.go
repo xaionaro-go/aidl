@@ -70,7 +70,7 @@ func (p *TvRemoteServiceInputProxy) OpenInputBridge(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(name)
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
@@ -91,7 +91,7 @@ func (p *TvRemoteServiceInputProxy) CloseInputBridge(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "closeInputBridge")
 	if _err != nil {
@@ -108,7 +108,7 @@ func (p *TvRemoteServiceInputProxy) ClearInputBridge(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "clearInputBridge")
 	if _err != nil {
@@ -126,7 +126,7 @@ func (p *TvRemoteServiceInputProxy) SendTimestamp(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt64(timestamp)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendTimestamp")
@@ -145,7 +145,7 @@ func (p *TvRemoteServiceInputProxy) SendKeyDown(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(keyCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendKeyDown")
@@ -164,7 +164,7 @@ func (p *TvRemoteServiceInputProxy) SendKeyUp(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(keyCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendKeyUp")
@@ -185,7 +185,7 @@ func (p *TvRemoteServiceInputProxy) SendPointerDown(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(pointerId)
 	_data.WriteInt32(x)
 	_data.WriteInt32(y)
@@ -206,7 +206,7 @@ func (p *TvRemoteServiceInputProxy) SendPointerUp(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(pointerId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendPointerUp")
@@ -224,7 +224,7 @@ func (p *TvRemoteServiceInputProxy) SendPointerSync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendPointerSync")
 	if _err != nil {
@@ -242,7 +242,7 @@ func (p *TvRemoteServiceInputProxy) OpenGamepadBridge(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(name)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "openGamepadBridge")
@@ -261,7 +261,7 @@ func (p *TvRemoteServiceInputProxy) SendGamepadKeyDown(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(keyCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendGamepadKeyDown")
@@ -280,7 +280,7 @@ func (p *TvRemoteServiceInputProxy) SendGamepadKeyUp(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(keyCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteServiceInput, "sendGamepadKeyUp")
@@ -300,7 +300,7 @@ func (p *TvRemoteServiceInputProxy) SendGamepadAxisValue(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteServiceInput)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(axis)
 	_data.WriteFloat32(value)
 
@@ -524,4 +524,155 @@ func (s *TvRemoteServiceInputStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvRemoteServiceInputServer is the server-side interface that user implementations
+// provide to NewTvRemoteServiceInputStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvRemoteServiceInputServer interface {
+	OpenInputBridge(ctx context.Context, token binder.IBinder, name string, width int32, height int32, maxPointers int32) error
+	CloseInputBridge(ctx context.Context, token binder.IBinder) error
+	ClearInputBridge(ctx context.Context, token binder.IBinder) error
+	SendTimestamp(ctx context.Context, token binder.IBinder, timestamp int64) error
+	SendKeyDown(ctx context.Context, token binder.IBinder, keyCode int32) error
+	SendKeyUp(ctx context.Context, token binder.IBinder, keyCode int32) error
+	SendPointerDown(ctx context.Context, token binder.IBinder, pointerId int32, x int32, y int32) error
+	SendPointerUp(ctx context.Context, token binder.IBinder, pointerId int32) error
+	SendPointerSync(ctx context.Context, token binder.IBinder) error
+	OpenGamepadBridge(ctx context.Context, token binder.IBinder, name string) error
+	SendGamepadKeyDown(ctx context.Context, token binder.IBinder, keyCode int32) error
+	SendGamepadKeyUp(ctx context.Context, token binder.IBinder, keyCode int32) error
+	SendGamepadAxisValue(ctx context.Context, token binder.IBinder, axis int32, value float32) error
+}
+
+type tvRemoteServiceInputStubWrapper struct {
+	impl       ITvRemoteServiceInputServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvRemoteServiceInputStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvRemoteServiceInputStubWrapper) OpenInputBridge(
+	ctx context.Context,
+	token binder.IBinder,
+	name string,
+	width int32,
+	height int32,
+	maxPointers int32,
+) error {
+	return w.impl.OpenInputBridge(ctx, token, name, width, height, maxPointers)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) CloseInputBridge(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.CloseInputBridge(ctx, token)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) ClearInputBridge(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ClearInputBridge(ctx, token)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) SendTimestamp(
+	ctx context.Context,
+	token binder.IBinder,
+	timestamp int64,
+) error {
+	return w.impl.SendTimestamp(ctx, token, timestamp)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) SendKeyDown(
+	ctx context.Context,
+	token binder.IBinder,
+	keyCode int32,
+) error {
+	return w.impl.SendKeyDown(ctx, token, keyCode)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) SendKeyUp(
+	ctx context.Context,
+	token binder.IBinder,
+	keyCode int32,
+) error {
+	return w.impl.SendKeyUp(ctx, token, keyCode)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) SendPointerDown(
+	ctx context.Context,
+	token binder.IBinder,
+	pointerId int32,
+	x int32,
+	y int32,
+) error {
+	return w.impl.SendPointerDown(ctx, token, pointerId, x, y)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) SendPointerUp(
+	ctx context.Context,
+	token binder.IBinder,
+	pointerId int32,
+) error {
+	return w.impl.SendPointerUp(ctx, token, pointerId)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) SendPointerSync(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.SendPointerSync(ctx, token)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) OpenGamepadBridge(
+	ctx context.Context,
+	token binder.IBinder,
+	name string,
+) error {
+	return w.impl.OpenGamepadBridge(ctx, token, name)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) SendGamepadKeyDown(
+	ctx context.Context,
+	token binder.IBinder,
+	keyCode int32,
+) error {
+	return w.impl.SendGamepadKeyDown(ctx, token, keyCode)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) SendGamepadKeyUp(
+	ctx context.Context,
+	token binder.IBinder,
+	keyCode int32,
+) error {
+	return w.impl.SendGamepadKeyUp(ctx, token, keyCode)
+}
+
+func (w *tvRemoteServiceInputStubWrapper) SendGamepadAxisValue(
+	ctx context.Context,
+	token binder.IBinder,
+	axis int32,
+	value float32,
+) error {
+	return w.impl.SendGamepadAxisValue(ctx, token, axis, value)
+}
+
+var _ ITvRemoteServiceInput = (*tvRemoteServiceInputStubWrapper)(nil)
+
+// NewTvRemoteServiceInputStub creates a server-side ITvRemoteServiceInput wrapping the given
+// server implementation. The returned value satisfies ITvRemoteServiceInput
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvRemoteServiceInputStub(
+	impl ITvRemoteServiceInputServer,
+) ITvRemoteServiceInput {
+	wrapper := &tvRemoteServiceInputStubWrapper{impl: impl}
+	stub := &TvRemoteServiceInputStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

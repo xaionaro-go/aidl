@@ -140,3 +140,48 @@ func (s *ExternalVibrationControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IExternalVibrationControllerServer is the server-side interface that user implementations
+// provide to NewExternalVibrationControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IExternalVibrationControllerServer interface {
+	Mute(ctx context.Context) (bool, error)
+	Unmute(ctx context.Context) (bool, error)
+}
+
+type externalVibrationControllerStubWrapper struct {
+	impl       IExternalVibrationControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *externalVibrationControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *externalVibrationControllerStubWrapper) Mute(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.Mute(ctx)
+}
+
+func (w *externalVibrationControllerStubWrapper) Unmute(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.Unmute(ctx)
+}
+
+var _ IExternalVibrationController = (*externalVibrationControllerStubWrapper)(nil)
+
+// NewExternalVibrationControllerStub creates a server-side IExternalVibrationController wrapping the given
+// server implementation. The returned value satisfies IExternalVibrationController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewExternalVibrationControllerStub(
+	impl IExternalVibrationControllerServer,
+) IExternalVibrationController {
+	wrapper := &externalVibrationControllerStubWrapper{impl: impl}
+	stub := &ExternalVibrationControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

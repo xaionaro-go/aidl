@@ -298,7 +298,7 @@ func (p *ThermalProxy) RegisterThermalChangedCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermal)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "registerThermalChangedCallback")
 	if _err != nil {
@@ -325,7 +325,7 @@ func (p *ThermalProxy) RegisterThermalChangedCallbackWithType(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermal)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(int32(type_))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "registerThermalChangedCallbackWithType")
@@ -352,7 +352,7 @@ func (p *ThermalProxy) UnregisterThermalChangedCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermal)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "unregisterThermalChangedCallback")
 	if _err != nil {
@@ -379,7 +379,7 @@ func (p *ThermalProxy) RegisterCoolingDeviceChangedCallbackWithType(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermal)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(int32(type_))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "registerCoolingDeviceChangedCallbackWithType")
@@ -406,7 +406,7 @@ func (p *ThermalProxy) UnregisterCoolingDeviceChangedCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThermal)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThermal, "unregisterCoolingDeviceChangedCallback")
 	if _err != nil {
@@ -675,4 +675,130 @@ func (s *ThermalStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IThermalServer is the server-side interface that user implementations
+// provide to NewThermalStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IThermalServer interface {
+	GetCoolingDevices(ctx context.Context) ([]CoolingDevice, error)
+	GetCoolingDevicesWithType(ctx context.Context, type_ CoolingType) ([]CoolingDevice, error)
+	GetTemperatures(ctx context.Context) ([]Temperature, error)
+	GetTemperaturesWithType(ctx context.Context, type_ TemperatureType) ([]Temperature, error)
+	GetTemperatureThresholds(ctx context.Context) ([]TemperatureThreshold, error)
+	GetTemperatureThresholdsWithType(ctx context.Context, type_ TemperatureType) ([]TemperatureThreshold, error)
+	RegisterThermalChangedCallback(ctx context.Context, callback IThermalChangedCallback) error
+	RegisterThermalChangedCallbackWithType(ctx context.Context, callback IThermalChangedCallback, type_ TemperatureType) error
+	UnregisterThermalChangedCallback(ctx context.Context, callback IThermalChangedCallback) error
+	RegisterCoolingDeviceChangedCallbackWithType(ctx context.Context, callback ICoolingDeviceChangedCallback, type_ CoolingType) error
+	UnregisterCoolingDeviceChangedCallback(ctx context.Context, callback ICoolingDeviceChangedCallback) error
+	ForecastSkinTemperature(ctx context.Context, forecastSeconds int32) (float32, error)
+}
+
+type thermalStubWrapper struct {
+	impl       IThermalServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *thermalStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *thermalStubWrapper) GetCoolingDevices(
+	ctx context.Context,
+) ([]CoolingDevice, error) {
+	return w.impl.GetCoolingDevices(ctx)
+}
+
+func (w *thermalStubWrapper) GetCoolingDevicesWithType(
+	ctx context.Context,
+	type_ CoolingType,
+) ([]CoolingDevice, error) {
+	return w.impl.GetCoolingDevicesWithType(ctx, type_)
+}
+
+func (w *thermalStubWrapper) GetTemperatures(
+	ctx context.Context,
+) ([]Temperature, error) {
+	return w.impl.GetTemperatures(ctx)
+}
+
+func (w *thermalStubWrapper) GetTemperaturesWithType(
+	ctx context.Context,
+	type_ TemperatureType,
+) ([]Temperature, error) {
+	return w.impl.GetTemperaturesWithType(ctx, type_)
+}
+
+func (w *thermalStubWrapper) GetTemperatureThresholds(
+	ctx context.Context,
+) ([]TemperatureThreshold, error) {
+	return w.impl.GetTemperatureThresholds(ctx)
+}
+
+func (w *thermalStubWrapper) GetTemperatureThresholdsWithType(
+	ctx context.Context,
+	type_ TemperatureType,
+) ([]TemperatureThreshold, error) {
+	return w.impl.GetTemperatureThresholdsWithType(ctx, type_)
+}
+
+func (w *thermalStubWrapper) RegisterThermalChangedCallback(
+	ctx context.Context,
+	callback IThermalChangedCallback,
+) error {
+	return w.impl.RegisterThermalChangedCallback(ctx, callback)
+}
+
+func (w *thermalStubWrapper) RegisterThermalChangedCallbackWithType(
+	ctx context.Context,
+	callback IThermalChangedCallback,
+	type_ TemperatureType,
+) error {
+	return w.impl.RegisterThermalChangedCallbackWithType(ctx, callback, type_)
+}
+
+func (w *thermalStubWrapper) UnregisterThermalChangedCallback(
+	ctx context.Context,
+	callback IThermalChangedCallback,
+) error {
+	return w.impl.UnregisterThermalChangedCallback(ctx, callback)
+}
+
+func (w *thermalStubWrapper) RegisterCoolingDeviceChangedCallbackWithType(
+	ctx context.Context,
+	callback ICoolingDeviceChangedCallback,
+	type_ CoolingType,
+) error {
+	return w.impl.RegisterCoolingDeviceChangedCallbackWithType(ctx, callback, type_)
+}
+
+func (w *thermalStubWrapper) UnregisterCoolingDeviceChangedCallback(
+	ctx context.Context,
+	callback ICoolingDeviceChangedCallback,
+) error {
+	return w.impl.UnregisterCoolingDeviceChangedCallback(ctx, callback)
+}
+
+func (w *thermalStubWrapper) ForecastSkinTemperature(
+	ctx context.Context,
+	forecastSeconds int32,
+) (float32, error) {
+	return w.impl.ForecastSkinTemperature(ctx, forecastSeconds)
+}
+
+var _ IThermal = (*thermalStubWrapper)(nil)
+
+// NewThermalStub creates a server-side IThermal wrapping the given
+// server implementation. The returned value satisfies IThermal
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewThermalStub(
+	impl IThermalServer,
+) IThermal {
+	wrapper := &thermalStubWrapper{impl: impl}
+	stub := &ThermalStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

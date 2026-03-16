@@ -62,7 +62,7 @@ func (p *MediaBrowserServiceProxy) Connect(
 	if _err := rootHints.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "connect")
 	if _err != nil {
@@ -79,7 +79,7 @@ func (p *MediaBrowserServiceProxy) Disconnect(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaBrowserService)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "disconnect")
 	if _err != nil {
@@ -98,7 +98,7 @@ func (p *MediaBrowserServiceProxy) AddSubscriptionDeprecated(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaBrowserService)
 	_data.WriteString16(uri)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "addSubscriptionDeprecated")
 	if _err != nil {
@@ -117,7 +117,7 @@ func (p *MediaBrowserServiceProxy) RemoveSubscriptionDeprecated(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaBrowserService)
 	_data.WriteString16(uri)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "removeSubscriptionDeprecated")
 	if _err != nil {
@@ -141,7 +141,7 @@ func (p *MediaBrowserServiceProxy) GetMediaItem(
 	if _err := cb.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "getMediaItem")
 	if _err != nil {
@@ -162,12 +162,12 @@ func (p *MediaBrowserServiceProxy) AddSubscription(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaBrowserService)
 	_data.WriteString16(uri)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "addSubscription")
 	if _err != nil {
@@ -187,8 +187,8 @@ func (p *MediaBrowserServiceProxy) RemoveSubscription(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaBrowserService)
 	_data.WriteString16(uri)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaBrowserService, "removeSubscription")
 	if _err != nil {
@@ -352,4 +352,102 @@ func (s *MediaBrowserServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaBrowserServiceServer is the server-side interface that user implementations
+// provide to NewMediaBrowserServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaBrowserServiceServer interface {
+	Connect(ctx context.Context, pkg string, rootHints os.Bundle, callbacks IMediaBrowserServiceCallbacks) error
+	Disconnect(ctx context.Context, callbacks IMediaBrowserServiceCallbacks) error
+	AddSubscriptionDeprecated(ctx context.Context, uri string, callbacks IMediaBrowserServiceCallbacks) error
+	RemoveSubscriptionDeprecated(ctx context.Context, uri string, callbacks IMediaBrowserServiceCallbacks) error
+	GetMediaItem(ctx context.Context, uri string, cb os.ResultReceiver, callbacks IMediaBrowserServiceCallbacks) error
+	AddSubscription(ctx context.Context, uri string, token binder.IBinder, options os.Bundle, callbacks IMediaBrowserServiceCallbacks) error
+	RemoveSubscription(ctx context.Context, uri string, token binder.IBinder, callbacks IMediaBrowserServiceCallbacks) error
+}
+
+type mediaBrowserServiceStubWrapper struct {
+	impl       IMediaBrowserServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaBrowserServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaBrowserServiceStubWrapper) Connect(
+	ctx context.Context,
+	pkg string,
+	rootHints os.Bundle,
+	callbacks IMediaBrowserServiceCallbacks,
+) error {
+	return w.impl.Connect(ctx, pkg, rootHints, callbacks)
+}
+
+func (w *mediaBrowserServiceStubWrapper) Disconnect(
+	ctx context.Context,
+	callbacks IMediaBrowserServiceCallbacks,
+) error {
+	return w.impl.Disconnect(ctx, callbacks)
+}
+
+func (w *mediaBrowserServiceStubWrapper) AddSubscriptionDeprecated(
+	ctx context.Context,
+	uri string,
+	callbacks IMediaBrowserServiceCallbacks,
+) error {
+	return w.impl.AddSubscriptionDeprecated(ctx, uri, callbacks)
+}
+
+func (w *mediaBrowserServiceStubWrapper) RemoveSubscriptionDeprecated(
+	ctx context.Context,
+	uri string,
+	callbacks IMediaBrowserServiceCallbacks,
+) error {
+	return w.impl.RemoveSubscriptionDeprecated(ctx, uri, callbacks)
+}
+
+func (w *mediaBrowserServiceStubWrapper) GetMediaItem(
+	ctx context.Context,
+	uri string,
+	cb os.ResultReceiver,
+	callbacks IMediaBrowserServiceCallbacks,
+) error {
+	return w.impl.GetMediaItem(ctx, uri, cb, callbacks)
+}
+
+func (w *mediaBrowserServiceStubWrapper) AddSubscription(
+	ctx context.Context,
+	uri string,
+	token binder.IBinder,
+	options os.Bundle,
+	callbacks IMediaBrowserServiceCallbacks,
+) error {
+	return w.impl.AddSubscription(ctx, uri, token, options, callbacks)
+}
+
+func (w *mediaBrowserServiceStubWrapper) RemoveSubscription(
+	ctx context.Context,
+	uri string,
+	token binder.IBinder,
+	callbacks IMediaBrowserServiceCallbacks,
+) error {
+	return w.impl.RemoveSubscription(ctx, uri, token, callbacks)
+}
+
+var _ IMediaBrowserService = (*mediaBrowserServiceStubWrapper)(nil)
+
+// NewMediaBrowserServiceStub creates a server-side IMediaBrowserService wrapping the given
+// server implementation. The returned value satisfies IMediaBrowserService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaBrowserServiceStub(
+	impl IMediaBrowserServiceServer,
+) IMediaBrowserService {
+	wrapper := &mediaBrowserServiceStubWrapper{impl: impl}
+	stub := &MediaBrowserServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

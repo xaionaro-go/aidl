@@ -134,3 +134,50 @@ func (s *EvsUltrasonicsArrayStreamStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEvsUltrasonicsArrayStreamServer is the server-side interface that user implementations
+// provide to NewEvsUltrasonicsArrayStreamStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEvsUltrasonicsArrayStreamServer interface {
+	DeliverDataFrame(ctx context.Context, dataFrameDesc UltrasonicsDataFrameDesc) error
+	Notify(ctx context.Context, event EvsEventDesc) error
+}
+
+type evsUltrasonicsArrayStreamStubWrapper struct {
+	impl       IEvsUltrasonicsArrayStreamServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *evsUltrasonicsArrayStreamStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *evsUltrasonicsArrayStreamStubWrapper) DeliverDataFrame(
+	ctx context.Context,
+	dataFrameDesc UltrasonicsDataFrameDesc,
+) error {
+	return w.impl.DeliverDataFrame(ctx, dataFrameDesc)
+}
+
+func (w *evsUltrasonicsArrayStreamStubWrapper) Notify(
+	ctx context.Context,
+	event EvsEventDesc,
+) error {
+	return w.impl.Notify(ctx, event)
+}
+
+var _ IEvsUltrasonicsArrayStream = (*evsUltrasonicsArrayStreamStubWrapper)(nil)
+
+// NewEvsUltrasonicsArrayStreamStub creates a server-side IEvsUltrasonicsArrayStream wrapping the given
+// server implementation. The returned value satisfies IEvsUltrasonicsArrayStream
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEvsUltrasonicsArrayStreamStub(
+	impl IEvsUltrasonicsArrayStreamServer,
+) IEvsUltrasonicsArrayStream {
+	wrapper := &evsUltrasonicsArrayStreamStubWrapper{impl: impl}
+	stub := &EvsUltrasonicsArrayStreamStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

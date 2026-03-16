@@ -50,7 +50,7 @@ func (p *WriteResultCallbackProxy) OnWriteStarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWriteResultCallback)
-	_data.WriteStrongBinder(cancellation.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellation.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sequence)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWriteResultCallback, "onWriteStarted")
@@ -193,4 +193,70 @@ func (s *WriteResultCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWriteResultCallbackServer is the server-side interface that user implementations
+// provide to NewWriteResultCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWriteResultCallbackServer interface {
+	OnWriteStarted(ctx context.Context, cancellation ondeviceintelligence.ICancellationSignal, sequence int32) error
+	OnWriteFinished(ctx context.Context, pages []PageRange, sequence int32) error
+	OnWriteFailed(ctx context.Context, error_ interface{}, sequence int32) error
+	OnWriteCanceled(ctx context.Context, sequence int32) error
+}
+
+type writeResultCallbackStubWrapper struct {
+	impl       IWriteResultCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *writeResultCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *writeResultCallbackStubWrapper) OnWriteStarted(
+	ctx context.Context,
+	cancellation ondeviceintelligence.ICancellationSignal,
+	sequence int32,
+) error {
+	return w.impl.OnWriteStarted(ctx, cancellation, sequence)
+}
+
+func (w *writeResultCallbackStubWrapper) OnWriteFinished(
+	ctx context.Context,
+	pages []PageRange,
+	sequence int32,
+) error {
+	return w.impl.OnWriteFinished(ctx, pages, sequence)
+}
+
+func (w *writeResultCallbackStubWrapper) OnWriteFailed(
+	ctx context.Context,
+	error_ interface{},
+	sequence int32,
+) error {
+	return w.impl.OnWriteFailed(ctx, error_, sequence)
+}
+
+func (w *writeResultCallbackStubWrapper) OnWriteCanceled(
+	ctx context.Context,
+	sequence int32,
+) error {
+	return w.impl.OnWriteCanceled(ctx, sequence)
+}
+
+var _ IWriteResultCallback = (*writeResultCallbackStubWrapper)(nil)
+
+// NewWriteResultCallbackStub creates a server-side IWriteResultCallback wrapping the given
+// server implementation. The returned value satisfies IWriteResultCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWriteResultCallbackStub(
+	impl IWriteResultCallbackServer,
+) IWriteResultCallback {
+	wrapper := &writeResultCallbackStubWrapper{impl: impl}
+	stub := &WriteResultCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

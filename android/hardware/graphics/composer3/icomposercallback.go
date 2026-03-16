@@ -422,3 +422,112 @@ func (s *ComposerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IComposerCallbackServer is the server-side interface that user implementations
+// provide to NewComposerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IComposerCallbackServer interface {
+	OnHotplug(ctx context.Context, display int64, connected bool) error
+	OnRefresh(ctx context.Context, display int64) error
+	OnSeamlessPossible(ctx context.Context, display int64) error
+	OnVsync(ctx context.Context, display int64, timestamp int64, vsyncPeriodNanos int32) error
+	OnVsyncPeriodTimingChanged(ctx context.Context, display int64, updatedTimeline VsyncPeriodChangeTimeline) error
+	OnVsyncIdle(ctx context.Context, display int64) error
+	OnRefreshRateChangedDebug(ctx context.Context, data RefreshRateChangedDebugData) error
+	OnHotplugEvent(ctx context.Context, display int64, event common.DisplayHotplugEvent) error
+	OnHdcpLevelsChanged(ctx context.Context, display int64, levels drm.HdcpLevels) error
+}
+
+type composerCallbackStubWrapper struct {
+	impl       IComposerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *composerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *composerCallbackStubWrapper) OnHotplug(
+	ctx context.Context,
+	display int64,
+	connected bool,
+) error {
+	return w.impl.OnHotplug(ctx, display, connected)
+}
+
+func (w *composerCallbackStubWrapper) OnRefresh(
+	ctx context.Context,
+	display int64,
+) error {
+	return w.impl.OnRefresh(ctx, display)
+}
+
+func (w *composerCallbackStubWrapper) OnSeamlessPossible(
+	ctx context.Context,
+	display int64,
+) error {
+	return w.impl.OnSeamlessPossible(ctx, display)
+}
+
+func (w *composerCallbackStubWrapper) OnVsync(
+	ctx context.Context,
+	display int64,
+	timestamp int64,
+	vsyncPeriodNanos int32,
+) error {
+	return w.impl.OnVsync(ctx, display, timestamp, vsyncPeriodNanos)
+}
+
+func (w *composerCallbackStubWrapper) OnVsyncPeriodTimingChanged(
+	ctx context.Context,
+	display int64,
+	updatedTimeline VsyncPeriodChangeTimeline,
+) error {
+	return w.impl.OnVsyncPeriodTimingChanged(ctx, display, updatedTimeline)
+}
+
+func (w *composerCallbackStubWrapper) OnVsyncIdle(
+	ctx context.Context,
+	display int64,
+) error {
+	return w.impl.OnVsyncIdle(ctx, display)
+}
+
+func (w *composerCallbackStubWrapper) OnRefreshRateChangedDebug(
+	ctx context.Context,
+	data RefreshRateChangedDebugData,
+) error {
+	return w.impl.OnRefreshRateChangedDebug(ctx, data)
+}
+
+func (w *composerCallbackStubWrapper) OnHotplugEvent(
+	ctx context.Context,
+	display int64,
+	event common.DisplayHotplugEvent,
+) error {
+	return w.impl.OnHotplugEvent(ctx, display, event)
+}
+
+func (w *composerCallbackStubWrapper) OnHdcpLevelsChanged(
+	ctx context.Context,
+	display int64,
+	levels drm.HdcpLevels,
+) error {
+	return w.impl.OnHdcpLevelsChanged(ctx, display, levels)
+}
+
+var _ IComposerCallback = (*composerCallbackStubWrapper)(nil)
+
+// NewComposerCallbackStub creates a server-side IComposerCallback wrapping the given
+// server implementation. The returned value satisfies IComposerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewComposerCallbackStub(
+	impl IComposerCallbackServer,
+) IComposerCallback {
+	wrapper := &composerCallbackStubWrapper{impl: impl}
+	stub := &ComposerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

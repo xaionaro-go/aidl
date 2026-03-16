@@ -241,3 +241,72 @@ func (s *CellBroadcastServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICellBroadcastServiceServer is the server-side interface that user implementations
+// provide to NewCellBroadcastServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICellBroadcastServiceServer interface {
+	HandleGsmCellBroadcastSms(ctx context.Context, slotId int32, message []byte) error
+	HandleCdmaCellBroadcastSms(ctx context.Context, slotId int32, bearerData []byte, serviceCategory int32) error
+	HandleCdmaScpMessage(ctx context.Context, slotId int32, programData []cdma.CdmaSmsCbProgramData, originatingAddress string, callback interface{}) error
+	GetCellBroadcastAreaInfo(ctx context.Context, slotIndex int32) (interface{}, error)
+}
+
+type cellBroadcastServiceStubWrapper struct {
+	impl       ICellBroadcastServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cellBroadcastServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cellBroadcastServiceStubWrapper) HandleGsmCellBroadcastSms(
+	ctx context.Context,
+	slotId int32,
+	message []byte,
+) error {
+	return w.impl.HandleGsmCellBroadcastSms(ctx, slotId, message)
+}
+
+func (w *cellBroadcastServiceStubWrapper) HandleCdmaCellBroadcastSms(
+	ctx context.Context,
+	slotId int32,
+	bearerData []byte,
+	serviceCategory int32,
+) error {
+	return w.impl.HandleCdmaCellBroadcastSms(ctx, slotId, bearerData, serviceCategory)
+}
+
+func (w *cellBroadcastServiceStubWrapper) HandleCdmaScpMessage(
+	ctx context.Context,
+	slotId int32,
+	programData []cdma.CdmaSmsCbProgramData,
+	originatingAddress string,
+	callback interface{},
+) error {
+	return w.impl.HandleCdmaScpMessage(ctx, slotId, programData, originatingAddress, callback)
+}
+
+func (w *cellBroadcastServiceStubWrapper) GetCellBroadcastAreaInfo(
+	ctx context.Context,
+	slotIndex int32,
+) (interface{}, error) {
+	return w.impl.GetCellBroadcastAreaInfo(ctx, slotIndex)
+}
+
+var _ ICellBroadcastService = (*cellBroadcastServiceStubWrapper)(nil)
+
+// NewCellBroadcastServiceStub creates a server-side ICellBroadcastService wrapping the given
+// server implementation. The returned value satisfies ICellBroadcastService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCellBroadcastServiceStub(
+	impl ICellBroadcastServiceServer,
+) ICellBroadcastService {
+	wrapper := &cellBroadcastServiceStubWrapper{impl: impl}
+	stub := &CellBroadcastServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

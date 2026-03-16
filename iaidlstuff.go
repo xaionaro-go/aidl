@@ -134,3 +134,49 @@ func (s *AidlStuffStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAidlStuffServer is the server-side interface that user implementations
+// provide to NewAidlStuffStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAidlStuffServer interface {
+	CallLocal(ctx context.Context) error
+	Call(ctx context.Context, idx int32) error
+}
+
+type aidlStuffStubWrapper struct {
+	impl       IAidlStuffServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aidlStuffStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aidlStuffStubWrapper) CallLocal(
+	ctx context.Context,
+) error {
+	return w.impl.CallLocal(ctx)
+}
+
+func (w *aidlStuffStubWrapper) Call(
+	ctx context.Context,
+	idx int32,
+) error {
+	return w.impl.Call(ctx, idx)
+}
+
+var _ IAidlStuff = (*aidlStuffStubWrapper)(nil)
+
+// NewAidlStuffStub creates a server-side IAidlStuff wrapping the given
+// server implementation. The returned value satisfies IAidlStuff
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAidlStuffStub(
+	impl IAidlStuffServer,
+) IAidlStuff {
+	wrapper := &aidlStuffStubWrapper{impl: impl}
+	stub := &AidlStuffStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

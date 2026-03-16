@@ -72,7 +72,7 @@ func (p *MbmsDownloadServiceProxy) Initialize(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMbmsDownloadService)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMbmsDownloadService, "initialize")
 	if _err != nil {
@@ -255,7 +255,7 @@ func (p *MbmsDownloadServiceProxy) AddStatusListener(
 	if _err := downloadRequest.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMbmsDownloadService, "addStatusListener")
 	if _err != nil {
@@ -291,7 +291,7 @@ func (p *MbmsDownloadServiceProxy) RemoveStatusListener(
 	if _err := downloadRequest.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMbmsDownloadService, "removeStatusListener")
 	if _err != nil {
@@ -327,7 +327,7 @@ func (p *MbmsDownloadServiceProxy) AddProgressListener(
 	if _err := downloadRequest.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMbmsDownloadService, "addProgressListener")
 	if _err != nil {
@@ -363,7 +363,7 @@ func (p *MbmsDownloadServiceProxy) RemoveProgressListener(
 	if _err := downloadRequest.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMbmsDownloadService, "removeProgressListener")
 	if _err != nil {
@@ -916,4 +916,156 @@ func (s *MbmsDownloadServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMbmsDownloadServiceServer is the server-side interface that user implementations
+// provide to NewMbmsDownloadServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMbmsDownloadServiceServer interface {
+	Initialize(ctx context.Context, subId int32, listener mbms.IMbmsDownloadSessionCallback) (int32, error)
+	RequestUpdateFileServices(ctx context.Context, subId int32, serviceClasses []string) (int32, error)
+	SetTempFileRootDirectory(ctx context.Context, subId int32, rootDirectoryPath string) (int32, error)
+	AddServiceAnnouncement(ctx context.Context, subId int32, contents []byte) (int32, error)
+	Download(ctx context.Context, downloadRequest mbms.DownloadRequest) (int32, error)
+	AddStatusListener(ctx context.Context, downloadRequest mbms.DownloadRequest, listener mbms.IDownloadStatusListener) (int32, error)
+	RemoveStatusListener(ctx context.Context, downloadRequest mbms.DownloadRequest, listener mbms.IDownloadStatusListener) (int32, error)
+	AddProgressListener(ctx context.Context, downloadRequest mbms.DownloadRequest, listener mbms.IDownloadProgressListener) (int32, error)
+	RemoveProgressListener(ctx context.Context, downloadRequest mbms.DownloadRequest, listener mbms.IDownloadProgressListener) (int32, error)
+	ListPendingDownloads(ctx context.Context, subscriptionId int32) ([]mbms.DownloadRequest, error)
+	CancelDownload(ctx context.Context, downloadRequest mbms.DownloadRequest) (int32, error)
+	RequestDownloadState(ctx context.Context, downloadRequest mbms.DownloadRequest, fileInfo mbms.FileInfo) (int32, error)
+	ResetDownloadKnowledge(ctx context.Context, downloadRequest mbms.DownloadRequest) (int32, error)
+	Dispose(ctx context.Context, subId int32) error
+}
+
+type mbmsDownloadServiceStubWrapper struct {
+	impl       IMbmsDownloadServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mbmsDownloadServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mbmsDownloadServiceStubWrapper) Initialize(
+	ctx context.Context,
+	subId int32,
+	listener mbms.IMbmsDownloadSessionCallback,
+) (int32, error) {
+	return w.impl.Initialize(ctx, subId, listener)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) RequestUpdateFileServices(
+	ctx context.Context,
+	subId int32,
+	serviceClasses []string,
+) (int32, error) {
+	return w.impl.RequestUpdateFileServices(ctx, subId, serviceClasses)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) SetTempFileRootDirectory(
+	ctx context.Context,
+	subId int32,
+	rootDirectoryPath string,
+) (int32, error) {
+	return w.impl.SetTempFileRootDirectory(ctx, subId, rootDirectoryPath)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) AddServiceAnnouncement(
+	ctx context.Context,
+	subId int32,
+	contents []byte,
+) (int32, error) {
+	return w.impl.AddServiceAnnouncement(ctx, subId, contents)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) Download(
+	ctx context.Context,
+	downloadRequest mbms.DownloadRequest,
+) (int32, error) {
+	return w.impl.Download(ctx, downloadRequest)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) AddStatusListener(
+	ctx context.Context,
+	downloadRequest mbms.DownloadRequest,
+	listener mbms.IDownloadStatusListener,
+) (int32, error) {
+	return w.impl.AddStatusListener(ctx, downloadRequest, listener)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) RemoveStatusListener(
+	ctx context.Context,
+	downloadRequest mbms.DownloadRequest,
+	listener mbms.IDownloadStatusListener,
+) (int32, error) {
+	return w.impl.RemoveStatusListener(ctx, downloadRequest, listener)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) AddProgressListener(
+	ctx context.Context,
+	downloadRequest mbms.DownloadRequest,
+	listener mbms.IDownloadProgressListener,
+) (int32, error) {
+	return w.impl.AddProgressListener(ctx, downloadRequest, listener)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) RemoveProgressListener(
+	ctx context.Context,
+	downloadRequest mbms.DownloadRequest,
+	listener mbms.IDownloadProgressListener,
+) (int32, error) {
+	return w.impl.RemoveProgressListener(ctx, downloadRequest, listener)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) ListPendingDownloads(
+	ctx context.Context,
+	subscriptionId int32,
+) ([]mbms.DownloadRequest, error) {
+	return w.impl.ListPendingDownloads(ctx, subscriptionId)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) CancelDownload(
+	ctx context.Context,
+	downloadRequest mbms.DownloadRequest,
+) (int32, error) {
+	return w.impl.CancelDownload(ctx, downloadRequest)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) RequestDownloadState(
+	ctx context.Context,
+	downloadRequest mbms.DownloadRequest,
+	fileInfo mbms.FileInfo,
+) (int32, error) {
+	return w.impl.RequestDownloadState(ctx, downloadRequest, fileInfo)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) ResetDownloadKnowledge(
+	ctx context.Context,
+	downloadRequest mbms.DownloadRequest,
+) (int32, error) {
+	return w.impl.ResetDownloadKnowledge(ctx, downloadRequest)
+}
+
+func (w *mbmsDownloadServiceStubWrapper) Dispose(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.Dispose(ctx, subId)
+}
+
+var _ IMbmsDownloadService = (*mbmsDownloadServiceStubWrapper)(nil)
+
+// NewMbmsDownloadServiceStub creates a server-side IMbmsDownloadService wrapping the given
+// server implementation. The returned value satisfies IMbmsDownloadService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMbmsDownloadServiceStub(
+	impl IMbmsDownloadServiceServer,
+) IMbmsDownloadService {
+	wrapper := &mbmsDownloadServiceStubWrapper{impl: impl}
+	stub := &MbmsDownloadServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

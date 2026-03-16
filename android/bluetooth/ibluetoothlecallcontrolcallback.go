@@ -287,3 +287,97 @@ func (s *BluetoothLeCallControlCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothLeCallControlCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothLeCallControlCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothLeCallControlCallbackServer interface {
+	OnBearerRegistered(ctx context.Context, ccid int32) error
+	OnAcceptCall(ctx context.Context, requestId int32, uuid interface{}) error
+	OnTerminateCall(ctx context.Context, requestId int32, uuid interface{}) error
+	OnHoldCall(ctx context.Context, requestId int32, uuid interface{}) error
+	OnUnholdCall(ctx context.Context, requestId int32, uuid interface{}) error
+	OnPlaceCall(ctx context.Context, requestId int32, uuid interface{}, uri string) error
+	OnJoinCalls(ctx context.Context, requestId int32, uuids []interface{}) error
+}
+
+type bluetoothLeCallControlCallbackStubWrapper struct {
+	impl       IBluetoothLeCallControlCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothLeCallControlCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothLeCallControlCallbackStubWrapper) OnBearerRegistered(
+	ctx context.Context,
+	ccid int32,
+) error {
+	return w.impl.OnBearerRegistered(ctx, ccid)
+}
+
+func (w *bluetoothLeCallControlCallbackStubWrapper) OnAcceptCall(
+	ctx context.Context,
+	requestId int32,
+	uuid interface{},
+) error {
+	return w.impl.OnAcceptCall(ctx, requestId, uuid)
+}
+
+func (w *bluetoothLeCallControlCallbackStubWrapper) OnTerminateCall(
+	ctx context.Context,
+	requestId int32,
+	uuid interface{},
+) error {
+	return w.impl.OnTerminateCall(ctx, requestId, uuid)
+}
+
+func (w *bluetoothLeCallControlCallbackStubWrapper) OnHoldCall(
+	ctx context.Context,
+	requestId int32,
+	uuid interface{},
+) error {
+	return w.impl.OnHoldCall(ctx, requestId, uuid)
+}
+
+func (w *bluetoothLeCallControlCallbackStubWrapper) OnUnholdCall(
+	ctx context.Context,
+	requestId int32,
+	uuid interface{},
+) error {
+	return w.impl.OnUnholdCall(ctx, requestId, uuid)
+}
+
+func (w *bluetoothLeCallControlCallbackStubWrapper) OnPlaceCall(
+	ctx context.Context,
+	requestId int32,
+	uuid interface{},
+	uri string,
+) error {
+	return w.impl.OnPlaceCall(ctx, requestId, uuid, uri)
+}
+
+func (w *bluetoothLeCallControlCallbackStubWrapper) OnJoinCalls(
+	ctx context.Context,
+	requestId int32,
+	uuids []interface{},
+) error {
+	return w.impl.OnJoinCalls(ctx, requestId, uuids)
+}
+
+var _ IBluetoothLeCallControlCallback = (*bluetoothLeCallControlCallbackStubWrapper)(nil)
+
+// NewBluetoothLeCallControlCallbackStub creates a server-side IBluetoothLeCallControlCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothLeCallControlCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothLeCallControlCallbackStub(
+	impl IBluetoothLeCallControlCallbackServer,
+) IBluetoothLeCallControlCallback {
+	wrapper := &bluetoothLeCallControlCallbackStubWrapper{impl: impl}
+	stub := &BluetoothLeCallControlCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

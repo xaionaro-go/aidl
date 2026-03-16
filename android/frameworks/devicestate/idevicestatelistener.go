@@ -93,3 +93,42 @@ func (s *DeviceStateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDeviceStateListenerServer is the server-side interface that user implementations
+// provide to NewDeviceStateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceStateListenerServer interface {
+	OnDeviceStateChanged(ctx context.Context, deviceState DeviceStateConfiguration) error
+}
+
+type deviceStateListenerStubWrapper struct {
+	impl       IDeviceStateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceStateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceStateListenerStubWrapper) OnDeviceStateChanged(
+	ctx context.Context,
+	deviceState DeviceStateConfiguration,
+) error {
+	return w.impl.OnDeviceStateChanged(ctx, deviceState)
+}
+
+var _ IDeviceStateListener = (*deviceStateListenerStubWrapper)(nil)
+
+// NewDeviceStateListenerStub creates a server-side IDeviceStateListener wrapping the given
+// server implementation. The returned value satisfies IDeviceStateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceStateListenerStub(
+	impl IDeviceStateListenerServer,
+) IDeviceStateListener {
+	wrapper := &deviceStateListenerStubWrapper{impl: impl}
+	stub := &DeviceStateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

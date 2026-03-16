@@ -222,7 +222,7 @@ func (p *ServiceManagerProxy) AddService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(service.Handle())
+	binder.WriteBinderToParcel(ctx, _data, service, p.remote.Transport())
 	_data.WriteBool(allowIsolated)
 	_data.WriteInt32(dumpPriority)
 
@@ -293,7 +293,7 @@ func (p *ServiceManagerProxy) RegisterForNotifications(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "registerForNotifications")
 	if _err != nil {
@@ -321,7 +321,7 @@ func (p *ServiceManagerProxy) UnregisterForNotifications(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "unregisterForNotifications")
 	if _err != nil {
@@ -530,8 +530,8 @@ func (p *ServiceManagerProxy) RegisterClientCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(service.Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, service, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "registerClientCallback")
 	if _err != nil {
@@ -559,7 +559,7 @@ func (p *ServiceManagerProxy) TryUnregisterService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceManager)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(service.Handle())
+	binder.WriteBinderToParcel(ctx, _data, service, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceManager, "tryUnregisterService")
 	if _err != nil {
@@ -938,4 +938,170 @@ func (s *ServiceManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IServiceManagerServer is the server-side interface that user implementations
+// provide to NewServiceManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceManagerServer interface {
+	GetService(ctx context.Context, name string) (binder.IBinder, error)
+	GetService2(ctx context.Context, name string) (Service, error)
+	CheckService(ctx context.Context, name string) (binder.IBinder, error)
+	CheckService2(ctx context.Context, name string) (Service, error)
+	AddService(ctx context.Context, name string, service binder.IBinder, allowIsolated bool, dumpPriority int32) error
+	ListServices(ctx context.Context, dumpPriority int32) ([]string, error)
+	RegisterForNotifications(ctx context.Context, name string, callback IServiceCallback) error
+	UnregisterForNotifications(ctx context.Context, name string, callback IServiceCallback) error
+	IsDeclared(ctx context.Context, name string) (bool, error)
+	GetDeclaredInstances(ctx context.Context, iface string) ([]string, error)
+	UpdatableViaApex(ctx context.Context, name string) (string, error)
+	GetUpdatableNames(ctx context.Context, apexName string) ([]string, error)
+	GetConnectionInfo(ctx context.Context, name string) (ConnectionInfo, error)
+	RegisterClientCallback(ctx context.Context, name string, service binder.IBinder, callback IClientCallback) error
+	TryUnregisterService(ctx context.Context, name string, service binder.IBinder) error
+	GetServiceDebugInfo(ctx context.Context) ([]ServiceDebugInfo, error)
+}
+
+type serviceManagerStubWrapper struct {
+	impl       IServiceManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceManagerStubWrapper) GetService(
+	ctx context.Context,
+	name string,
+) (binder.IBinder, error) {
+	return w.impl.GetService(ctx, name)
+}
+
+func (w *serviceManagerStubWrapper) GetService2(
+	ctx context.Context,
+	name string,
+) (Service, error) {
+	return w.impl.GetService2(ctx, name)
+}
+
+func (w *serviceManagerStubWrapper) CheckService(
+	ctx context.Context,
+	name string,
+) (binder.IBinder, error) {
+	return w.impl.CheckService(ctx, name)
+}
+
+func (w *serviceManagerStubWrapper) CheckService2(
+	ctx context.Context,
+	name string,
+) (Service, error) {
+	return w.impl.CheckService2(ctx, name)
+}
+
+func (w *serviceManagerStubWrapper) AddService(
+	ctx context.Context,
+	name string,
+	service binder.IBinder,
+	allowIsolated bool,
+	dumpPriority int32,
+) error {
+	return w.impl.AddService(ctx, name, service, allowIsolated, dumpPriority)
+}
+
+func (w *serviceManagerStubWrapper) ListServices(
+	ctx context.Context,
+	dumpPriority int32,
+) ([]string, error) {
+	return w.impl.ListServices(ctx, dumpPriority)
+}
+
+func (w *serviceManagerStubWrapper) RegisterForNotifications(
+	ctx context.Context,
+	name string,
+	callback IServiceCallback,
+) error {
+	return w.impl.RegisterForNotifications(ctx, name, callback)
+}
+
+func (w *serviceManagerStubWrapper) UnregisterForNotifications(
+	ctx context.Context,
+	name string,
+	callback IServiceCallback,
+) error {
+	return w.impl.UnregisterForNotifications(ctx, name, callback)
+}
+
+func (w *serviceManagerStubWrapper) IsDeclared(
+	ctx context.Context,
+	name string,
+) (bool, error) {
+	return w.impl.IsDeclared(ctx, name)
+}
+
+func (w *serviceManagerStubWrapper) GetDeclaredInstances(
+	ctx context.Context,
+	iface string,
+) ([]string, error) {
+	return w.impl.GetDeclaredInstances(ctx, iface)
+}
+
+func (w *serviceManagerStubWrapper) UpdatableViaApex(
+	ctx context.Context,
+	name string,
+) (string, error) {
+	return w.impl.UpdatableViaApex(ctx, name)
+}
+
+func (w *serviceManagerStubWrapper) GetUpdatableNames(
+	ctx context.Context,
+	apexName string,
+) ([]string, error) {
+	return w.impl.GetUpdatableNames(ctx, apexName)
+}
+
+func (w *serviceManagerStubWrapper) GetConnectionInfo(
+	ctx context.Context,
+	name string,
+) (ConnectionInfo, error) {
+	return w.impl.GetConnectionInfo(ctx, name)
+}
+
+func (w *serviceManagerStubWrapper) RegisterClientCallback(
+	ctx context.Context,
+	name string,
+	service binder.IBinder,
+	callback IClientCallback,
+) error {
+	return w.impl.RegisterClientCallback(ctx, name, service, callback)
+}
+
+func (w *serviceManagerStubWrapper) TryUnregisterService(
+	ctx context.Context,
+	name string,
+	service binder.IBinder,
+) error {
+	return w.impl.TryUnregisterService(ctx, name, service)
+}
+
+func (w *serviceManagerStubWrapper) GetServiceDebugInfo(
+	ctx context.Context,
+) ([]ServiceDebugInfo, error) {
+	return w.impl.GetServiceDebugInfo(ctx)
+}
+
+var _ IServiceManager = (*serviceManagerStubWrapper)(nil)
+
+// NewServiceManagerStub creates a server-side IServiceManager wrapping the given
+// server implementation. The returned value satisfies IServiceManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceManagerStub(
+	impl IServiceManagerServer,
+) IServiceManager {
+	wrapper := &serviceManagerStubWrapper{impl: impl}
+	stub := &ServiceManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

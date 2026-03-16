@@ -169,3 +169,63 @@ func (s *VirtualCameraCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVirtualCameraCallbackServer is the server-side interface that user implementations
+// provide to NewVirtualCameraCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualCameraCallbackServer interface {
+	OnStreamConfigured(ctx context.Context, streamId int32, surface interface{}, width int32, height int32, pixelFormat Format) error
+	OnProcessCaptureRequest(ctx context.Context, streamId int32, frameId int32) error
+	OnStreamClosed(ctx context.Context, streamId int32) error
+}
+
+type virtualCameraCallbackStubWrapper struct {
+	impl       IVirtualCameraCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualCameraCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualCameraCallbackStubWrapper) OnStreamConfigured(
+	ctx context.Context,
+	streamId int32,
+	surface interface{},
+	width int32,
+	height int32,
+	pixelFormat Format,
+) error {
+	return w.impl.OnStreamConfigured(ctx, streamId, surface, width, height, pixelFormat)
+}
+
+func (w *virtualCameraCallbackStubWrapper) OnProcessCaptureRequest(
+	ctx context.Context,
+	streamId int32,
+	frameId int32,
+) error {
+	return w.impl.OnProcessCaptureRequest(ctx, streamId, frameId)
+}
+
+func (w *virtualCameraCallbackStubWrapper) OnStreamClosed(
+	ctx context.Context,
+	streamId int32,
+) error {
+	return w.impl.OnStreamClosed(ctx, streamId)
+}
+
+var _ IVirtualCameraCallback = (*virtualCameraCallbackStubWrapper)(nil)
+
+// NewVirtualCameraCallbackStub creates a server-side IVirtualCameraCallback wrapping the given
+// server implementation. The returned value satisfies IVirtualCameraCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualCameraCallbackStub(
+	impl IVirtualCameraCallbackServer,
+) IVirtualCameraCallback {
+	wrapper := &virtualCameraCallbackStubWrapper{impl: impl}
+	stub := &VirtualCameraCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

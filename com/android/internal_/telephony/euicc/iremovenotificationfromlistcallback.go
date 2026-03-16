@@ -82,3 +82,42 @@ func (s *RemoveNotificationFromListCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoveNotificationFromListCallbackServer is the server-side interface that user implementations
+// provide to NewRemoveNotificationFromListCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoveNotificationFromListCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32) error
+}
+
+type removeNotificationFromListCallbackStubWrapper struct {
+	impl       IRemoveNotificationFromListCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *removeNotificationFromListCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *removeNotificationFromListCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+) error {
+	return w.impl.OnComplete(ctx, resultCode)
+}
+
+var _ IRemoveNotificationFromListCallback = (*removeNotificationFromListCallbackStubWrapper)(nil)
+
+// NewRemoveNotificationFromListCallbackStub creates a server-side IRemoveNotificationFromListCallback wrapping the given
+// server implementation. The returned value satisfies IRemoveNotificationFromListCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoveNotificationFromListCallbackStub(
+	impl IRemoveNotificationFromListCallbackServer,
+) IRemoveNotificationFromListCallback {
+	wrapper := &removeNotificationFromListCallbackStubWrapper{impl: impl}
+	stub := &RemoveNotificationFromListCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

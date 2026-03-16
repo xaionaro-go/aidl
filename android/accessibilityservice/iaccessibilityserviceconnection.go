@@ -3,9 +3,9 @@ package accessibilityservice
 import (
 	"context"
 	"fmt"
+	pm "github.com/xaionaro-go/binder/android/content/pm"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	usb "github.com/xaionaro-go/binder/android/hardware/usb"
-	view "github.com/xaionaro-go/binder/android/view"
 	accessibility "github.com/xaionaro-go/binder/android/view/accessibility"
 	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
@@ -109,8 +109,8 @@ type IAccessibilityServiceConnection interface {
 	SwitchToInputMethod(ctx context.Context, imeId string) (bool, error)
 	SetInputMethodEnabled(ctx context.Context, imeId string, enabled bool) (int32, error)
 	IsAccessibilityButtonAvailable(ctx context.Context) (bool, error)
-	SendGesture(ctx context.Context, sequence int32, gestureSteps interface{}) error
-	DispatchGesture(ctx context.Context, sequence int32, gestureSteps interface{}, displayId int32) error
+	SendGesture(ctx context.Context, sequence int32, gestureSteps pm.ParceledListSlice) error
+	DispatchGesture(ctx context.Context, sequence int32, gestureSteps pm.ParceledListSlice, displayId int32) error
 	IsFingerprintGestureDetectionAvailable(ctx context.Context) (bool, error)
 	GetOverlayWindowToken(ctx context.Context, displayid int32) (binder.IBinder, error)
 	GetWindowIdForLeashToken(ctx context.Context, token binder.IBinder) (int32, error)
@@ -130,8 +130,8 @@ type IAccessibilityServiceConnection interface {
 	SetAnimationScale(ctx context.Context, scale float32) error
 	SetInstalledAndEnabledServices(ctx context.Context, infos []AccessibilityServiceInfo) error
 	GetInstalledAndEnabledServices(ctx context.Context) ([]AccessibilityServiceInfo, error)
-	AttachAccessibilityOverlayToDisplay(ctx context.Context, interactionId int32, displayId int32, sc view.SurfaceControl, callback accessibility.IAccessibilityInteractionConnectionCallback) error
-	AttachAccessibilityOverlayToWindow(ctx context.Context, interactionId int32, accessibilityWindowId int32, sc view.SurfaceControl, callback accessibility.IAccessibilityInteractionConnectionCallback) error
+	AttachAccessibilityOverlayToDisplay(ctx context.Context, interactionId int32, displayId int32, sc interface{}, callback accessibility.IAccessibilityInteractionConnectionCallback) error
+	AttachAccessibilityOverlayToWindow(ctx context.Context, interactionId int32, accessibilityWindowId int32, sc interface{}, callback accessibility.IAccessibilityInteractionConnectionCallback) error
 	ConnectBluetoothBrailleDisplay(ctx context.Context, bluetoothAddress string, controller IBrailleDisplayController) error
 	ConnectUsbBrailleDisplay(ctx context.Context, usbDevice usb.UsbDevice, controller IBrailleDisplayController) error
 	SetTestBrailleDisplayData(ctx context.Context, brailleDisplays []interface{}) error
@@ -224,7 +224,7 @@ func (p *AccessibilityServiceConnectionProxy) FindAccessibilityNodeInfoByAccessi
 	_data.WriteInt32(accessibilityWindowId)
 	_data.WriteInt64(accessibilityNodeId)
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteInt64(threadId)
 
@@ -276,7 +276,7 @@ func (p *AccessibilityServiceConnectionProxy) FindAccessibilityNodeInfosByText(
 	_data.WriteInt64(accessibilityNodeId)
 	_data.WriteString16(text)
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(threadId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "findAccessibilityNodeInfosByText")
@@ -327,7 +327,7 @@ func (p *AccessibilityServiceConnectionProxy) FindAccessibilityNodeInfosByViewId
 	_data.WriteInt64(accessibilityNodeId)
 	_data.WriteString16(viewId)
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(threadId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "findAccessibilityNodeInfosByViewId")
@@ -378,7 +378,7 @@ func (p *AccessibilityServiceConnectionProxy) FindFocus(
 	_data.WriteInt64(accessibilityNodeId)
 	_data.WriteInt32(focusType)
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(threadId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "findFocus")
@@ -429,7 +429,7 @@ func (p *AccessibilityServiceConnectionProxy) FocusSearch(
 	_data.WriteInt64(accessibilityNodeId)
 	_data.WriteInt32(direction)
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(threadId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "focusSearch")
@@ -481,7 +481,7 @@ func (p *AccessibilityServiceConnectionProxy) PerformAccessibilityAction(
 	_data.WriteInt64(accessibilityNodeId)
 	_data.WriteInt32(action)
 	_data.WriteInt32(interactionId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(threadId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "performAccessibilityAction")
@@ -1237,11 +1237,15 @@ func (p *AccessibilityServiceConnectionProxy) IsAccessibilityButtonAvailable(
 func (p *AccessibilityServiceConnectionProxy) SendGesture(
 	ctx context.Context,
 	sequence int32,
-	gestureSteps interface{},
+	gestureSteps pm.ParceledListSlice,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
 	_data.WriteInt32(sequence)
+	_data.WriteInt32(1)
+	if _err := gestureSteps.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "sendGesture")
 	if _err != nil {
@@ -1264,12 +1268,16 @@ func (p *AccessibilityServiceConnectionProxy) SendGesture(
 func (p *AccessibilityServiceConnectionProxy) DispatchGesture(
 	ctx context.Context,
 	sequence int32,
-	gestureSteps interface{},
+	gestureSteps pm.ParceledListSlice,
 	displayId int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
 	_data.WriteInt32(sequence)
+	_data.WriteInt32(1)
+	if _err := gestureSteps.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "dispatchGesture")
@@ -1358,7 +1366,7 @@ func (p *AccessibilityServiceConnectionProxy) GetWindowIdForLeashToken(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "getWindowIdForLeashToken")
 	if _err != nil {
@@ -1424,7 +1432,7 @@ func (p *AccessibilityServiceConnectionProxy) TakeScreenshotOfWindow(
 	if _err := listener.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "takeScreenshotOfWindow")
 	if _err != nil {
@@ -1853,18 +1861,14 @@ func (p *AccessibilityServiceConnectionProxy) AttachAccessibilityOverlayToDispla
 	ctx context.Context,
 	interactionId int32,
 	displayId int32,
-	sc view.SurfaceControl,
+	sc interface{},
 	callback accessibility.IAccessibilityInteractionConnectionCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
 	_data.WriteInt32(interactionId)
 	_data.WriteInt32(displayId)
-	_data.WriteInt32(1)
-	if _err := sc.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "attachAccessibilityOverlayToDisplay")
 	if _err != nil {
@@ -1888,18 +1892,14 @@ func (p *AccessibilityServiceConnectionProxy) AttachAccessibilityOverlayToWindow
 	ctx context.Context,
 	interactionId int32,
 	accessibilityWindowId int32,
-	sc view.SurfaceControl,
+	sc interface{},
 	callback accessibility.IAccessibilityInteractionConnectionCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
 	_data.WriteInt32(interactionId)
 	_data.WriteInt32(accessibilityWindowId)
-	_data.WriteInt32(1)
-	if _err := sc.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "attachAccessibilityOverlayToWindow")
 	if _err != nil {
@@ -1927,7 +1927,7 @@ func (p *AccessibilityServiceConnectionProxy) ConnectBluetoothBrailleDisplay(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityServiceConnection)
 	_data.WriteString16(bluetoothAddress)
-	_data.WriteStrongBinder(controller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, controller.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "connectBluetoothBrailleDisplay")
 	if _err != nil {
@@ -1958,7 +1958,7 @@ func (p *AccessibilityServiceConnectionProxy) ConnectUsbBrailleDisplay(
 	if _err := usbDevice.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(controller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, controller.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityServiceConnection, "connectUsbBrailleDisplay")
 	if _err != nil {
@@ -2705,7 +2705,18 @@ func (s *AccessibilityServiceConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_gestureSteps interface{}
+		var _arg_gestureSteps pm.ParceledListSlice
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_gestureSteps.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.SendGesture(ctx, _arg_sequence, _arg_gestureSteps)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2722,7 +2733,18 @@ func (s *AccessibilityServiceConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_gestureSteps interface{}
+		var _arg_gestureSteps pm.ParceledListSlice
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_gestureSteps.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_displayId, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -3122,18 +3144,7 @@ func (s *AccessibilityServiceConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_sc view.SurfaceControl
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_sc.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_sc interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_callback accessibility.IAccessibilityInteractionConnectionCallback
 		_ = _arg_callback
@@ -3157,18 +3168,7 @@ func (s *AccessibilityServiceConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_sc view.SurfaceControl
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_sc.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_sc interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_callback accessibility.IAccessibilityInteractionConnectionCallback
 		_ = _arg_callback
@@ -3244,4 +3244,547 @@ func (s *AccessibilityServiceConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAccessibilityServiceConnectionServer is the server-side interface that user implementations
+// provide to NewAccessibilityServiceConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccessibilityServiceConnectionServer interface {
+	SetServiceInfo(ctx context.Context, info AccessibilityServiceInfo) error
+	SetAttributionTag(ctx context.Context) error
+	FindAccessibilityNodeInfoByAccessibilityId(ctx context.Context, accessibilityWindowId int32, accessibilityNodeId int64, interactionId int32, callback accessibility.IAccessibilityInteractionConnectionCallback, flags int32, threadId int64, arguments interface{}) ([]string, error)
+	FindAccessibilityNodeInfosByText(ctx context.Context, accessibilityWindowId int32, accessibilityNodeId int64, text string, interactionId int32, callback accessibility.IAccessibilityInteractionConnectionCallback, threadId int64) ([]string, error)
+	FindAccessibilityNodeInfosByViewId(ctx context.Context, accessibilityWindowId int32, accessibilityNodeId int64, viewId string, interactionId int32, callback accessibility.IAccessibilityInteractionConnectionCallback, threadId int64) ([]string, error)
+	FindFocus(ctx context.Context, accessibilityWindowId int32, accessibilityNodeId int64, focusType int32, interactionId int32, callback accessibility.IAccessibilityInteractionConnectionCallback, threadId int64) ([]string, error)
+	FocusSearch(ctx context.Context, accessibilityWindowId int32, accessibilityNodeId int64, direction int32, interactionId int32, callback accessibility.IAccessibilityInteractionConnectionCallback, threadId int64) ([]string, error)
+	PerformAccessibilityAction(ctx context.Context, accessibilityWindowId int32, accessibilityNodeId int64, action int32, arguments interface{}, interactionId int32, callback accessibility.IAccessibilityInteractionConnectionCallback, threadId int64) (bool, error)
+	GetWindow(ctx context.Context, windowId int32) (accessibility.AccessibilityWindowInfo, error)
+	GetWindows(ctx context.Context) (accessibility.AccessibilityWindowInfoWindowListSparseArray, error)
+	GetServiceInfo(ctx context.Context) (AccessibilityServiceInfo, error)
+	PerformGlobalAction(ctx context.Context, action int32) (bool, error)
+	GetSystemActions(ctx context.Context) ([]accessibility.AccessibilityNodeInfoAccessibilityAction, error)
+	DisableSelf(ctx context.Context) error
+	SetOnKeyEventResult(ctx context.Context, handled bool, sequence int32) error
+	GetMagnificationConfig(ctx context.Context, displayId int32) (MagnificationConfig, error)
+	GetMagnificationScale(ctx context.Context, displayId int32) (float32, error)
+	GetMagnificationCenterX(ctx context.Context, displayId int32) (float32, error)
+	GetMagnificationCenterY(ctx context.Context, displayId int32) (float32, error)
+	GetMagnificationRegion(ctx context.Context, displayId int32) (graphics.Region, error)
+	GetCurrentMagnificationRegion(ctx context.Context, displayId int32) (graphics.Region, error)
+	ResetMagnification(ctx context.Context, displayId int32, animate bool) (bool, error)
+	ResetCurrentMagnification(ctx context.Context, displayId int32, animate bool) (bool, error)
+	SetMagnificationConfig(ctx context.Context, displayId int32, config MagnificationConfig, animate bool) (bool, error)
+	SetMagnificationCallbackEnabled(ctx context.Context, displayId int32, enabled bool) error
+	SetSoftKeyboardShowMode(ctx context.Context, showMode int32) (bool, error)
+	GetSoftKeyboardShowMode(ctx context.Context) (int32, error)
+	SetSoftKeyboardCallbackEnabled(ctx context.Context, enabled bool) error
+	SwitchToInputMethod(ctx context.Context, imeId string) (bool, error)
+	SetInputMethodEnabled(ctx context.Context, imeId string, enabled bool) (int32, error)
+	IsAccessibilityButtonAvailable(ctx context.Context) (bool, error)
+	SendGesture(ctx context.Context, sequence int32, gestureSteps pm.ParceledListSlice) error
+	DispatchGesture(ctx context.Context, sequence int32, gestureSteps pm.ParceledListSlice, displayId int32) error
+	IsFingerprintGestureDetectionAvailable(ctx context.Context) (bool, error)
+	GetOverlayWindowToken(ctx context.Context, displayid int32) (binder.IBinder, error)
+	GetWindowIdForLeashToken(ctx context.Context, token binder.IBinder) (int32, error)
+	TakeScreenshot(ctx context.Context, displayId int32, callback interface{}) error
+	TakeScreenshotOfWindow(ctx context.Context, accessibilityWindowId int32, interactionId int32, listener window.ScreenCaptureScreenCaptureListener, callback accessibility.IAccessibilityInteractionConnectionCallback) error
+	SetGestureDetectionPassthroughRegion(ctx context.Context, displayId int32, region graphics.Region) error
+	SetTouchExplorationPassthroughRegion(ctx context.Context, displayId int32, region graphics.Region) error
+	SetFocusAppearance(ctx context.Context, strokeWidth int32, color int32) error
+	SetCacheEnabled(ctx context.Context, enabled bool) error
+	LogTrace(ctx context.Context, timestamp int64, where string, loggingTypes int64, callingParams string, processId int32, threadId int64, serializedCallingStackInBundle interface{}) error
+	SetServiceDetectsGesturesEnabled(ctx context.Context, displayId int32, mode bool) error
+	RequestTouchExploration(ctx context.Context, displayId int32) error
+	RequestDragging(ctx context.Context, displayId int32, pointerId int32) error
+	RequestDelegating(ctx context.Context, displayId int32) error
+	OnDoubleTap(ctx context.Context, displayId int32) error
+	OnDoubleTapAndHold(ctx context.Context, displayId int32) error
+	SetAnimationScale(ctx context.Context, scale float32) error
+	SetInstalledAndEnabledServices(ctx context.Context, infos []AccessibilityServiceInfo) error
+	GetInstalledAndEnabledServices(ctx context.Context) ([]AccessibilityServiceInfo, error)
+	AttachAccessibilityOverlayToDisplay(ctx context.Context, interactionId int32, displayId int32, sc interface{}, callback accessibility.IAccessibilityInteractionConnectionCallback) error
+	AttachAccessibilityOverlayToWindow(ctx context.Context, interactionId int32, accessibilityWindowId int32, sc interface{}, callback accessibility.IAccessibilityInteractionConnectionCallback) error
+	ConnectBluetoothBrailleDisplay(ctx context.Context, bluetoothAddress string, controller IBrailleDisplayController) error
+	ConnectUsbBrailleDisplay(ctx context.Context, usbDevice usb.UsbDevice, controller IBrailleDisplayController) error
+	SetTestBrailleDisplayData(ctx context.Context, brailleDisplays []interface{}) error
+}
+
+type accessibilityServiceConnectionStubWrapper struct {
+	impl       IAccessibilityServiceConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetServiceInfo(
+	ctx context.Context,
+	info AccessibilityServiceInfo,
+) error {
+	return w.impl.SetServiceInfo(ctx, info)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetAttributionTag(
+	ctx context.Context,
+) error {
+	return w.impl.SetAttributionTag(ctx)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) FindAccessibilityNodeInfoByAccessibilityId(
+	ctx context.Context,
+	accessibilityWindowId int32,
+	accessibilityNodeId int64,
+	interactionId int32,
+	callback accessibility.IAccessibilityInteractionConnectionCallback,
+	flags int32,
+	threadId int64,
+	arguments interface{},
+) ([]string, error) {
+	return w.impl.FindAccessibilityNodeInfoByAccessibilityId(ctx, accessibilityWindowId, accessibilityNodeId, interactionId, callback, flags, threadId, arguments)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) FindAccessibilityNodeInfosByText(
+	ctx context.Context,
+	accessibilityWindowId int32,
+	accessibilityNodeId int64,
+	text string,
+	interactionId int32,
+	callback accessibility.IAccessibilityInteractionConnectionCallback,
+	threadId int64,
+) ([]string, error) {
+	return w.impl.FindAccessibilityNodeInfosByText(ctx, accessibilityWindowId, accessibilityNodeId, text, interactionId, callback, threadId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) FindAccessibilityNodeInfosByViewId(
+	ctx context.Context,
+	accessibilityWindowId int32,
+	accessibilityNodeId int64,
+	viewId string,
+	interactionId int32,
+	callback accessibility.IAccessibilityInteractionConnectionCallback,
+	threadId int64,
+) ([]string, error) {
+	return w.impl.FindAccessibilityNodeInfosByViewId(ctx, accessibilityWindowId, accessibilityNodeId, viewId, interactionId, callback, threadId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) FindFocus(
+	ctx context.Context,
+	accessibilityWindowId int32,
+	accessibilityNodeId int64,
+	focusType int32,
+	interactionId int32,
+	callback accessibility.IAccessibilityInteractionConnectionCallback,
+	threadId int64,
+) ([]string, error) {
+	return w.impl.FindFocus(ctx, accessibilityWindowId, accessibilityNodeId, focusType, interactionId, callback, threadId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) FocusSearch(
+	ctx context.Context,
+	accessibilityWindowId int32,
+	accessibilityNodeId int64,
+	direction int32,
+	interactionId int32,
+	callback accessibility.IAccessibilityInteractionConnectionCallback,
+	threadId int64,
+) ([]string, error) {
+	return w.impl.FocusSearch(ctx, accessibilityWindowId, accessibilityNodeId, direction, interactionId, callback, threadId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) PerformAccessibilityAction(
+	ctx context.Context,
+	accessibilityWindowId int32,
+	accessibilityNodeId int64,
+	action int32,
+	arguments interface{},
+	interactionId int32,
+	callback accessibility.IAccessibilityInteractionConnectionCallback,
+	threadId int64,
+) (bool, error) {
+	return w.impl.PerformAccessibilityAction(ctx, accessibilityWindowId, accessibilityNodeId, action, arguments, interactionId, callback, threadId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetWindow(
+	ctx context.Context,
+	windowId int32,
+) (accessibility.AccessibilityWindowInfo, error) {
+	return w.impl.GetWindow(ctx, windowId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetWindows(
+	ctx context.Context,
+) (accessibility.AccessibilityWindowInfoWindowListSparseArray, error) {
+	return w.impl.GetWindows(ctx)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetServiceInfo(
+	ctx context.Context,
+) (AccessibilityServiceInfo, error) {
+	return w.impl.GetServiceInfo(ctx)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) PerformGlobalAction(
+	ctx context.Context,
+	action int32,
+) (bool, error) {
+	return w.impl.PerformGlobalAction(ctx, action)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetSystemActions(
+	ctx context.Context,
+) ([]accessibility.AccessibilityNodeInfoAccessibilityAction, error) {
+	return w.impl.GetSystemActions(ctx)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) DisableSelf(
+	ctx context.Context,
+) error {
+	return w.impl.DisableSelf(ctx)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetOnKeyEventResult(
+	ctx context.Context,
+	handled bool,
+	sequence int32,
+) error {
+	return w.impl.SetOnKeyEventResult(ctx, handled, sequence)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetMagnificationConfig(
+	ctx context.Context,
+	displayId int32,
+) (MagnificationConfig, error) {
+	return w.impl.GetMagnificationConfig(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetMagnificationScale(
+	ctx context.Context,
+	displayId int32,
+) (float32, error) {
+	return w.impl.GetMagnificationScale(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetMagnificationCenterX(
+	ctx context.Context,
+	displayId int32,
+) (float32, error) {
+	return w.impl.GetMagnificationCenterX(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetMagnificationCenterY(
+	ctx context.Context,
+	displayId int32,
+) (float32, error) {
+	return w.impl.GetMagnificationCenterY(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetMagnificationRegion(
+	ctx context.Context,
+	displayId int32,
+) (graphics.Region, error) {
+	return w.impl.GetMagnificationRegion(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetCurrentMagnificationRegion(
+	ctx context.Context,
+	displayId int32,
+) (graphics.Region, error) {
+	return w.impl.GetCurrentMagnificationRegion(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) ResetMagnification(
+	ctx context.Context,
+	displayId int32,
+	animate bool,
+) (bool, error) {
+	return w.impl.ResetMagnification(ctx, displayId, animate)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) ResetCurrentMagnification(
+	ctx context.Context,
+	displayId int32,
+	animate bool,
+) (bool, error) {
+	return w.impl.ResetCurrentMagnification(ctx, displayId, animate)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetMagnificationConfig(
+	ctx context.Context,
+	displayId int32,
+	config MagnificationConfig,
+	animate bool,
+) (bool, error) {
+	return w.impl.SetMagnificationConfig(ctx, displayId, config, animate)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetMagnificationCallbackEnabled(
+	ctx context.Context,
+	displayId int32,
+	enabled bool,
+) error {
+	return w.impl.SetMagnificationCallbackEnabled(ctx, displayId, enabled)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetSoftKeyboardShowMode(
+	ctx context.Context,
+	showMode int32,
+) (bool, error) {
+	return w.impl.SetSoftKeyboardShowMode(ctx, showMode)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetSoftKeyboardShowMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetSoftKeyboardShowMode(ctx)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetSoftKeyboardCallbackEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetSoftKeyboardCallbackEnabled(ctx, enabled)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SwitchToInputMethod(
+	ctx context.Context,
+	imeId string,
+) (bool, error) {
+	return w.impl.SwitchToInputMethod(ctx, imeId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetInputMethodEnabled(
+	ctx context.Context,
+	imeId string,
+	enabled bool,
+) (int32, error) {
+	return w.impl.SetInputMethodEnabled(ctx, imeId, enabled)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) IsAccessibilityButtonAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAccessibilityButtonAvailable(ctx)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SendGesture(
+	ctx context.Context,
+	sequence int32,
+	gestureSteps pm.ParceledListSlice,
+) error {
+	return w.impl.SendGesture(ctx, sequence, gestureSteps)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) DispatchGesture(
+	ctx context.Context,
+	sequence int32,
+	gestureSteps pm.ParceledListSlice,
+	displayId int32,
+) error {
+	return w.impl.DispatchGesture(ctx, sequence, gestureSteps, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) IsFingerprintGestureDetectionAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsFingerprintGestureDetectionAvailable(ctx)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetOverlayWindowToken(
+	ctx context.Context,
+	displayid int32,
+) (binder.IBinder, error) {
+	return w.impl.GetOverlayWindowToken(ctx, displayid)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetWindowIdForLeashToken(
+	ctx context.Context,
+	token binder.IBinder,
+) (int32, error) {
+	return w.impl.GetWindowIdForLeashToken(ctx, token)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) TakeScreenshot(
+	ctx context.Context,
+	displayId int32,
+	callback interface{},
+) error {
+	return w.impl.TakeScreenshot(ctx, displayId, callback)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) TakeScreenshotOfWindow(
+	ctx context.Context,
+	accessibilityWindowId int32,
+	interactionId int32,
+	listener window.ScreenCaptureScreenCaptureListener,
+	callback accessibility.IAccessibilityInteractionConnectionCallback,
+) error {
+	return w.impl.TakeScreenshotOfWindow(ctx, accessibilityWindowId, interactionId, listener, callback)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetGestureDetectionPassthroughRegion(
+	ctx context.Context,
+	displayId int32,
+	region graphics.Region,
+) error {
+	return w.impl.SetGestureDetectionPassthroughRegion(ctx, displayId, region)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetTouchExplorationPassthroughRegion(
+	ctx context.Context,
+	displayId int32,
+	region graphics.Region,
+) error {
+	return w.impl.SetTouchExplorationPassthroughRegion(ctx, displayId, region)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetFocusAppearance(
+	ctx context.Context,
+	strokeWidth int32,
+	color int32,
+) error {
+	return w.impl.SetFocusAppearance(ctx, strokeWidth, color)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetCacheEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetCacheEnabled(ctx, enabled)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) LogTrace(
+	ctx context.Context,
+	timestamp int64,
+	where string,
+	loggingTypes int64,
+	callingParams string,
+	processId int32,
+	threadId int64,
+	serializedCallingStackInBundle interface{},
+) error {
+	return w.impl.LogTrace(ctx, timestamp, where, loggingTypes, callingParams, processId, threadId, serializedCallingStackInBundle)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetServiceDetectsGesturesEnabled(
+	ctx context.Context,
+	displayId int32,
+	mode bool,
+) error {
+	return w.impl.SetServiceDetectsGesturesEnabled(ctx, displayId, mode)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) RequestTouchExploration(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.RequestTouchExploration(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) RequestDragging(
+	ctx context.Context,
+	displayId int32,
+	pointerId int32,
+) error {
+	return w.impl.RequestDragging(ctx, displayId, pointerId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) RequestDelegating(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.RequestDelegating(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) OnDoubleTap(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnDoubleTap(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) OnDoubleTapAndHold(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnDoubleTapAndHold(ctx, displayId)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetAnimationScale(
+	ctx context.Context,
+	scale float32,
+) error {
+	return w.impl.SetAnimationScale(ctx, scale)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetInstalledAndEnabledServices(
+	ctx context.Context,
+	infos []AccessibilityServiceInfo,
+) error {
+	return w.impl.SetInstalledAndEnabledServices(ctx, infos)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) GetInstalledAndEnabledServices(
+	ctx context.Context,
+) ([]AccessibilityServiceInfo, error) {
+	return w.impl.GetInstalledAndEnabledServices(ctx)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) AttachAccessibilityOverlayToDisplay(
+	ctx context.Context,
+	interactionId int32,
+	displayId int32,
+	sc interface{},
+	callback accessibility.IAccessibilityInteractionConnectionCallback,
+) error {
+	return w.impl.AttachAccessibilityOverlayToDisplay(ctx, interactionId, displayId, sc, callback)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) AttachAccessibilityOverlayToWindow(
+	ctx context.Context,
+	interactionId int32,
+	accessibilityWindowId int32,
+	sc interface{},
+	callback accessibility.IAccessibilityInteractionConnectionCallback,
+) error {
+	return w.impl.AttachAccessibilityOverlayToWindow(ctx, interactionId, accessibilityWindowId, sc, callback)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) ConnectBluetoothBrailleDisplay(
+	ctx context.Context,
+	bluetoothAddress string,
+	controller IBrailleDisplayController,
+) error {
+	return w.impl.ConnectBluetoothBrailleDisplay(ctx, bluetoothAddress, controller)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) ConnectUsbBrailleDisplay(
+	ctx context.Context,
+	usbDevice usb.UsbDevice,
+	controller IBrailleDisplayController,
+) error {
+	return w.impl.ConnectUsbBrailleDisplay(ctx, usbDevice, controller)
+}
+
+func (w *accessibilityServiceConnectionStubWrapper) SetTestBrailleDisplayData(
+	ctx context.Context,
+	brailleDisplays []interface{},
+) error {
+	return w.impl.SetTestBrailleDisplayData(ctx, brailleDisplays)
+}
+
+var _ IAccessibilityServiceConnection = (*accessibilityServiceConnectionStubWrapper)(nil)
+
+// NewAccessibilityServiceConnectionStub creates a server-side IAccessibilityServiceConnection wrapping the given
+// server implementation. The returned value satisfies IAccessibilityServiceConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccessibilityServiceConnectionStub(
+	impl IAccessibilityServiceConnectionServer,
+) IAccessibilityServiceConnection {
+	wrapper := &accessibilityServiceConnectionStubWrapper{impl: impl}
+	stub := &AccessibilityServiceConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

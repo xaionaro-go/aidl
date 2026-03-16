@@ -170,3 +170,69 @@ func (s *StreamingResponseCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStreamingResponseCallbackServer is the server-side interface that user implementations
+// provide to NewStreamingResponseCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStreamingResponseCallbackServer interface {
+	OnNewContent(ctx context.Context, processedResult interface{}) error
+	OnSuccess(ctx context.Context, result interface{}) error
+	OnFailure(ctx context.Context, errorCode int32, errorMessage string, errorParams interface{}) error
+	OnDataAugmentRequest(ctx context.Context, processedContent interface{}, responseCallback interface{}) error
+}
+
+type streamingResponseCallbackStubWrapper struct {
+	impl       IStreamingResponseCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *streamingResponseCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *streamingResponseCallbackStubWrapper) OnNewContent(
+	ctx context.Context,
+	processedResult interface{},
+) error {
+	return w.impl.OnNewContent(ctx, processedResult)
+}
+
+func (w *streamingResponseCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result interface{},
+) error {
+	return w.impl.OnSuccess(ctx, result)
+}
+
+func (w *streamingResponseCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	errorCode int32,
+	errorMessage string,
+	errorParams interface{},
+) error {
+	return w.impl.OnFailure(ctx, errorCode, errorMessage, errorParams)
+}
+
+func (w *streamingResponseCallbackStubWrapper) OnDataAugmentRequest(
+	ctx context.Context,
+	processedContent interface{},
+	responseCallback interface{},
+) error {
+	return w.impl.OnDataAugmentRequest(ctx, processedContent, responseCallback)
+}
+
+var _ IStreamingResponseCallback = (*streamingResponseCallbackStubWrapper)(nil)
+
+// NewStreamingResponseCallbackStub creates a server-side IStreamingResponseCallback wrapping the given
+// server implementation. The returned value satisfies IStreamingResponseCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStreamingResponseCallbackStub(
+	impl IStreamingResponseCallbackServer,
+) IStreamingResponseCallback {
+	wrapper := &streamingResponseCallbackStubWrapper{impl: impl}
+	stub := &StreamingResponseCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

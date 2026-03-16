@@ -82,3 +82,42 @@ func (s *HdmiCecVolumeControlFeatureListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiCecVolumeControlFeatureListenerServer is the server-side interface that user implementations
+// provide to NewHdmiCecVolumeControlFeatureListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiCecVolumeControlFeatureListenerServer interface {
+	OnHdmiCecVolumeControlFeature(ctx context.Context, hdmiCecVolumeControl int32) error
+}
+
+type hdmiCecVolumeControlFeatureListenerStubWrapper struct {
+	impl       IHdmiCecVolumeControlFeatureListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiCecVolumeControlFeatureListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiCecVolumeControlFeatureListenerStubWrapper) OnHdmiCecVolumeControlFeature(
+	ctx context.Context,
+	hdmiCecVolumeControl int32,
+) error {
+	return w.impl.OnHdmiCecVolumeControlFeature(ctx, hdmiCecVolumeControl)
+}
+
+var _ IHdmiCecVolumeControlFeatureListener = (*hdmiCecVolumeControlFeatureListenerStubWrapper)(nil)
+
+// NewHdmiCecVolumeControlFeatureListenerStub creates a server-side IHdmiCecVolumeControlFeatureListener wrapping the given
+// server implementation. The returned value satisfies IHdmiCecVolumeControlFeatureListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiCecVolumeControlFeatureListenerStub(
+	impl IHdmiCecVolumeControlFeatureListenerServer,
+) IHdmiCecVolumeControlFeatureListener {
+	wrapper := &hdmiCecVolumeControlFeatureListenerStubWrapper{impl: impl}
+	stub := &HdmiCecVolumeControlFeatureListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -164,3 +164,53 @@ func (s *MuteAwaitConnectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMuteAwaitConnectionCallbackServer is the server-side interface that user implementations
+// provide to NewMuteAwaitConnectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMuteAwaitConnectionCallbackServer interface {
+	DispatchOnMutedUntilConnection(ctx context.Context, device AudioDeviceAttributes, mutedUsages []int32) error
+	DispatchOnUnmutedEvent(ctx context.Context, event int32, device AudioDeviceAttributes, mutedUsages []int32) error
+}
+
+type muteAwaitConnectionCallbackStubWrapper struct {
+	impl       IMuteAwaitConnectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *muteAwaitConnectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *muteAwaitConnectionCallbackStubWrapper) DispatchOnMutedUntilConnection(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+	mutedUsages []int32,
+) error {
+	return w.impl.DispatchOnMutedUntilConnection(ctx, device, mutedUsages)
+}
+
+func (w *muteAwaitConnectionCallbackStubWrapper) DispatchOnUnmutedEvent(
+	ctx context.Context,
+	event int32,
+	device AudioDeviceAttributes,
+	mutedUsages []int32,
+) error {
+	return w.impl.DispatchOnUnmutedEvent(ctx, event, device, mutedUsages)
+}
+
+var _ IMuteAwaitConnectionCallback = (*muteAwaitConnectionCallbackStubWrapper)(nil)
+
+// NewMuteAwaitConnectionCallbackStub creates a server-side IMuteAwaitConnectionCallback wrapping the given
+// server implementation. The returned value satisfies IMuteAwaitConnectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMuteAwaitConnectionCallbackStub(
+	impl IMuteAwaitConnectionCallbackServer,
+) IMuteAwaitConnectionCallback {
+	wrapper := &muteAwaitConnectionCallbackStubWrapper{impl: impl}
+	stub := &MuteAwaitConnectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

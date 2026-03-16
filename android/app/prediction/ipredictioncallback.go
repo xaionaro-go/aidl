@@ -94,3 +94,42 @@ func (s *PredictionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPredictionCallbackServer is the server-side interface that user implementations
+// provide to NewPredictionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPredictionCallbackServer interface {
+	OnResult(ctx context.Context, result pm.ParceledListSlice) error
+}
+
+type predictionCallbackStubWrapper struct {
+	impl       IPredictionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *predictionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *predictionCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	result pm.ParceledListSlice,
+) error {
+	return w.impl.OnResult(ctx, result)
+}
+
+var _ IPredictionCallback = (*predictionCallbackStubWrapper)(nil)
+
+// NewPredictionCallbackStub creates a server-side IPredictionCallback wrapping the given
+// server implementation. The returned value satisfies IPredictionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPredictionCallbackStub(
+	impl IPredictionCallbackServer,
+) IPredictionCallback {
+	wrapper := &predictionCallbackStubWrapper{impl: impl}
+	stub := &PredictionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

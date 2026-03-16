@@ -63,7 +63,7 @@ func (p *VrManagerProxy) RegisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVrManager)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "registerListener")
 	if _err != nil {
@@ -89,7 +89,7 @@ func (p *VrManagerProxy) UnregisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVrManager)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "unregisterListener")
 	if _err != nil {
@@ -115,7 +115,7 @@ func (p *VrManagerProxy) RegisterPersistentVrStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVrManager)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "registerPersistentVrStateListener")
 	if _err != nil {
@@ -141,7 +141,7 @@ func (p *VrManagerProxy) UnregisterPersistentVrStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVrManager)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVrManager, "unregisterPersistentVrStateListener")
 	if _err != nil {
@@ -543,4 +543,120 @@ func (s *VrManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVrManagerServer is the server-side interface that user implementations
+// provide to NewVrManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVrManagerServer interface {
+	RegisterListener(ctx context.Context, cb IVrStateCallbacks) error
+	UnregisterListener(ctx context.Context, cb IVrStateCallbacks) error
+	RegisterPersistentVrStateListener(ctx context.Context, cb IPersistentVrStateCallbacks) error
+	UnregisterPersistentVrStateListener(ctx context.Context, cb IPersistentVrStateCallbacks) error
+	GetVrModeState(ctx context.Context) (bool, error)
+	GetPersistentVrModeEnabled(ctx context.Context) (bool, error)
+	SetPersistentVrModeEnabled(ctx context.Context, enabled bool) error
+	SetVr2dDisplayProperties(ctx context.Context, vr2dDisplayProperties app.Vr2dDisplayProperties) error
+	GetVr2dDisplayId(ctx context.Context) (int32, error)
+	SetAndBindCompositor(ctx context.Context, componentName string) error
+	SetStandbyEnabled(ctx context.Context, standby bool) error
+}
+
+type vrManagerStubWrapper struct {
+	impl       IVrManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vrManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vrManagerStubWrapper) RegisterListener(
+	ctx context.Context,
+	cb IVrStateCallbacks,
+) error {
+	return w.impl.RegisterListener(ctx, cb)
+}
+
+func (w *vrManagerStubWrapper) UnregisterListener(
+	ctx context.Context,
+	cb IVrStateCallbacks,
+) error {
+	return w.impl.UnregisterListener(ctx, cb)
+}
+
+func (w *vrManagerStubWrapper) RegisterPersistentVrStateListener(
+	ctx context.Context,
+	cb IPersistentVrStateCallbacks,
+) error {
+	return w.impl.RegisterPersistentVrStateListener(ctx, cb)
+}
+
+func (w *vrManagerStubWrapper) UnregisterPersistentVrStateListener(
+	ctx context.Context,
+	cb IPersistentVrStateCallbacks,
+) error {
+	return w.impl.UnregisterPersistentVrStateListener(ctx, cb)
+}
+
+func (w *vrManagerStubWrapper) GetVrModeState(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetVrModeState(ctx)
+}
+
+func (w *vrManagerStubWrapper) GetPersistentVrModeEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetPersistentVrModeEnabled(ctx)
+}
+
+func (w *vrManagerStubWrapper) SetPersistentVrModeEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetPersistentVrModeEnabled(ctx, enabled)
+}
+
+func (w *vrManagerStubWrapper) SetVr2dDisplayProperties(
+	ctx context.Context,
+	vr2dDisplayProperties app.Vr2dDisplayProperties,
+) error {
+	return w.impl.SetVr2dDisplayProperties(ctx, vr2dDisplayProperties)
+}
+
+func (w *vrManagerStubWrapper) GetVr2dDisplayId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetVr2dDisplayId(ctx)
+}
+
+func (w *vrManagerStubWrapper) SetAndBindCompositor(
+	ctx context.Context,
+	componentName string,
+) error {
+	return w.impl.SetAndBindCompositor(ctx, componentName)
+}
+
+func (w *vrManagerStubWrapper) SetStandbyEnabled(
+	ctx context.Context,
+	standby bool,
+) error {
+	return w.impl.SetStandbyEnabled(ctx, standby)
+}
+
+var _ IVrManager = (*vrManagerStubWrapper)(nil)
+
+// NewVrManagerStub creates a server-side IVrManager wrapping the given
+// server implementation. The returned value satisfies IVrManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVrManagerStub(
+	impl IVrManagerServer,
+) IVrManager {
+	wrapper := &vrManagerStubWrapper{impl: impl}
+	stub := &VrManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

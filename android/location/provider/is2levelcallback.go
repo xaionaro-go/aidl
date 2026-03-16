@@ -106,3 +106,49 @@ func (s *S2LevelCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IS2LevelCallbackServer is the server-side interface that user implementations
+// provide to NewS2LevelCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IS2LevelCallbackServer interface {
+	OnResult(ctx context.Context, s2Level int32) error
+	OnError(ctx context.Context) error
+}
+
+type s2LevelCallbackStubWrapper struct {
+	impl       IS2LevelCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *s2LevelCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *s2LevelCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	s2Level int32,
+) error {
+	return w.impl.OnResult(ctx, s2Level)
+}
+
+func (w *s2LevelCallbackStubWrapper) OnError(
+	ctx context.Context,
+) error {
+	return w.impl.OnError(ctx)
+}
+
+var _ IS2LevelCallback = (*s2LevelCallbackStubWrapper)(nil)
+
+// NewS2LevelCallbackStub creates a server-side IS2LevelCallback wrapping the given
+// server implementation. The returned value satisfies IS2LevelCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewS2LevelCallbackStub(
+	impl IS2LevelCallbackServer,
+) IS2LevelCallback {
+	wrapper := &s2LevelCallbackStubWrapper{impl: impl}
+	stub := &S2LevelCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

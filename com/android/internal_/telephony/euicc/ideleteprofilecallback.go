@@ -82,3 +82,42 @@ func (s *DeleteProfileCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDeleteProfileCallbackServer is the server-side interface that user implementations
+// provide to NewDeleteProfileCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeleteProfileCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32) error
+}
+
+type deleteProfileCallbackStubWrapper struct {
+	impl       IDeleteProfileCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deleteProfileCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deleteProfileCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+) error {
+	return w.impl.OnComplete(ctx, resultCode)
+}
+
+var _ IDeleteProfileCallback = (*deleteProfileCallbackStubWrapper)(nil)
+
+// NewDeleteProfileCallbackStub creates a server-side IDeleteProfileCallback wrapping the given
+// server implementation. The returned value satisfies IDeleteProfileCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeleteProfileCallbackStub(
+	impl IDeleteProfileCallbackServer,
+) IDeleteProfileCallback {
+	wrapper := &deleteProfileCallbackStubWrapper{impl: impl}
+	stub := &DeleteProfileCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

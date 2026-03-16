@@ -45,7 +45,7 @@ func (p *ConfigureWidgetCallbackProxy) OnConfigureWidget(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConfigureWidgetCallback)
 	_data.WriteInt32(appWidgetId)
-	_data.WriteStrongBinder(resultReceiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultReceiver.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIConfigureWidgetCallback, "onConfigureWidget")
 	if _err != nil {
@@ -87,4 +87,44 @@ func (s *ConfigureWidgetCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IConfigureWidgetCallbackServer is the server-side interface that user implementations
+// provide to NewConfigureWidgetCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConfigureWidgetCallbackServer interface {
+	OnConfigureWidget(ctx context.Context, appWidgetId int32, resultReceiver os.IResultReceiver) error
+}
+
+type configureWidgetCallbackStubWrapper struct {
+	impl       IConfigureWidgetCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *configureWidgetCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *configureWidgetCallbackStubWrapper) OnConfigureWidget(
+	ctx context.Context,
+	appWidgetId int32,
+	resultReceiver os.IResultReceiver,
+) error {
+	return w.impl.OnConfigureWidget(ctx, appWidgetId, resultReceiver)
+}
+
+var _ IConfigureWidgetCallback = (*configureWidgetCallbackStubWrapper)(nil)
+
+// NewConfigureWidgetCallbackStub creates a server-side IConfigureWidgetCallback wrapping the given
+// server implementation. The returned value satisfies IConfigureWidgetCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConfigureWidgetCallbackStub(
+	impl IConfigureWidgetCallbackServer,
+) IConfigureWidgetCallback {
+	wrapper := &configureWidgetCallbackStubWrapper{impl: impl}
+	stub := &ConfigureWidgetCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

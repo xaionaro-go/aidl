@@ -728,3 +728,159 @@ func (s *RadioDataResponseStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioDataResponseServer is the server-side interface that user implementations
+// provide to NewRadioDataResponseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioDataResponseServer interface {
+	AcknowledgeRequest(ctx context.Context, serial int32) error
+	AllocatePduSessionIdResponse(ctx context.Context, info radio.RadioResponseInfo, id int32) error
+	CancelHandoverResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	DeactivateDataCallResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	GetDataCallListResponse(ctx context.Context, info radio.RadioResponseInfo, dcResponse []SetupDataCallResult) error
+	GetSlicingConfigResponse(ctx context.Context, info radio.RadioResponseInfo, slicingConfig SlicingConfig) error
+	ReleasePduSessionIdResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetDataAllowedResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetDataProfileResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetDataThrottlingResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetInitialAttachApnResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetupDataCallResponse(ctx context.Context, info radio.RadioResponseInfo, dcResponse SetupDataCallResult) error
+	StartHandoverResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	StartKeepaliveResponse(ctx context.Context, info radio.RadioResponseInfo, status KeepaliveStatus) error
+	StopKeepaliveResponse(ctx context.Context, info radio.RadioResponseInfo) error
+}
+
+type radioDataResponseStubWrapper struct {
+	impl       IRadioDataResponseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioDataResponseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioDataResponseStubWrapper) AcknowledgeRequest(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.AcknowledgeRequest(ctx, serial)
+}
+
+func (w *radioDataResponseStubWrapper) AllocatePduSessionIdResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	id int32,
+) error {
+	return w.impl.AllocatePduSessionIdResponse(ctx, info, id)
+}
+
+func (w *radioDataResponseStubWrapper) CancelHandoverResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.CancelHandoverResponse(ctx, info)
+}
+
+func (w *radioDataResponseStubWrapper) DeactivateDataCallResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.DeactivateDataCallResponse(ctx, info)
+}
+
+func (w *radioDataResponseStubWrapper) GetDataCallListResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	dcResponse []SetupDataCallResult,
+) error {
+	return w.impl.GetDataCallListResponse(ctx, info, dcResponse)
+}
+
+func (w *radioDataResponseStubWrapper) GetSlicingConfigResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	slicingConfig SlicingConfig,
+) error {
+	return w.impl.GetSlicingConfigResponse(ctx, info, slicingConfig)
+}
+
+func (w *radioDataResponseStubWrapper) ReleasePduSessionIdResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.ReleasePduSessionIdResponse(ctx, info)
+}
+
+func (w *radioDataResponseStubWrapper) SetDataAllowedResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetDataAllowedResponse(ctx, info)
+}
+
+func (w *radioDataResponseStubWrapper) SetDataProfileResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetDataProfileResponse(ctx, info)
+}
+
+func (w *radioDataResponseStubWrapper) SetDataThrottlingResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetDataThrottlingResponse(ctx, info)
+}
+
+func (w *radioDataResponseStubWrapper) SetInitialAttachApnResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetInitialAttachApnResponse(ctx, info)
+}
+
+func (w *radioDataResponseStubWrapper) SetupDataCallResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	dcResponse SetupDataCallResult,
+) error {
+	return w.impl.SetupDataCallResponse(ctx, info, dcResponse)
+}
+
+func (w *radioDataResponseStubWrapper) StartHandoverResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.StartHandoverResponse(ctx, info)
+}
+
+func (w *radioDataResponseStubWrapper) StartKeepaliveResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	status KeepaliveStatus,
+) error {
+	return w.impl.StartKeepaliveResponse(ctx, info, status)
+}
+
+func (w *radioDataResponseStubWrapper) StopKeepaliveResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.StopKeepaliveResponse(ctx, info)
+}
+
+var _ IRadioDataResponse = (*radioDataResponseStubWrapper)(nil)
+
+// NewRadioDataResponseStub creates a server-side IRadioDataResponse wrapping the given
+// server implementation. The returned value satisfies IRadioDataResponse
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioDataResponseStub(
+	impl IRadioDataResponseServer,
+) IRadioDataResponse {
+	wrapper := &radioDataResponseStubWrapper{impl: impl}
+	stub := &RadioDataResponseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

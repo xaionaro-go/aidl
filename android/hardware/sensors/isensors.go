@@ -248,7 +248,7 @@ func (p *SensorsProxy) Initialize(
 	if _err := wakeLockDescriptor.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(sensorsCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, sensorsCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISensors, "initialize")
 	if _err != nil {
@@ -621,4 +621,121 @@ func (s *SensorsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISensorsServer is the server-side interface that user implementations
+// provide to NewSensorsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISensorsServer interface {
+	Activate(ctx context.Context, sensorHandle int32, enabled bool) error
+	Batch(ctx context.Context, sensorHandle int32, samplingPeriodNs int64, maxReportLatencyNs int64) error
+	ConfigDirectReport(ctx context.Context, sensorHandle int32, channelHandle int32, rate sensorsISensors.RateLevel) (int32, error)
+	Flush(ctx context.Context, sensorHandle int32) error
+	GetSensorsList(ctx context.Context) ([]SensorInfo, error)
+	Initialize(ctx context.Context, eventQueueDescriptor fmq.MQDescriptor, wakeLockDescriptor fmq.MQDescriptor, sensorsCallback ISensorsCallback) error
+	InjectSensorData(ctx context.Context, event Event) error
+	RegisterDirectChannel(ctx context.Context, mem sensorsISensors.SharedMemInfo) (int32, error)
+	SetOperationMode(ctx context.Context, mode sensorsISensors.OperationMode) error
+	UnregisterDirectChannel(ctx context.Context, channelHandle int32) error
+}
+
+type sensorsStubWrapper struct {
+	impl       ISensorsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sensorsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sensorsStubWrapper) Activate(
+	ctx context.Context,
+	sensorHandle int32,
+	enabled bool,
+) error {
+	return w.impl.Activate(ctx, sensorHandle, enabled)
+}
+
+func (w *sensorsStubWrapper) Batch(
+	ctx context.Context,
+	sensorHandle int32,
+	samplingPeriodNs int64,
+	maxReportLatencyNs int64,
+) error {
+	return w.impl.Batch(ctx, sensorHandle, samplingPeriodNs, maxReportLatencyNs)
+}
+
+func (w *sensorsStubWrapper) ConfigDirectReport(
+	ctx context.Context,
+	sensorHandle int32,
+	channelHandle int32,
+	rate sensorsISensors.RateLevel,
+) (int32, error) {
+	return w.impl.ConfigDirectReport(ctx, sensorHandle, channelHandle, rate)
+}
+
+func (w *sensorsStubWrapper) Flush(
+	ctx context.Context,
+	sensorHandle int32,
+) error {
+	return w.impl.Flush(ctx, sensorHandle)
+}
+
+func (w *sensorsStubWrapper) GetSensorsList(
+	ctx context.Context,
+) ([]SensorInfo, error) {
+	return w.impl.GetSensorsList(ctx)
+}
+
+func (w *sensorsStubWrapper) Initialize(
+	ctx context.Context,
+	eventQueueDescriptor fmq.MQDescriptor,
+	wakeLockDescriptor fmq.MQDescriptor,
+	sensorsCallback ISensorsCallback,
+) error {
+	return w.impl.Initialize(ctx, eventQueueDescriptor, wakeLockDescriptor, sensorsCallback)
+}
+
+func (w *sensorsStubWrapper) InjectSensorData(
+	ctx context.Context,
+	event Event,
+) error {
+	return w.impl.InjectSensorData(ctx, event)
+}
+
+func (w *sensorsStubWrapper) RegisterDirectChannel(
+	ctx context.Context,
+	mem sensorsISensors.SharedMemInfo,
+) (int32, error) {
+	return w.impl.RegisterDirectChannel(ctx, mem)
+}
+
+func (w *sensorsStubWrapper) SetOperationMode(
+	ctx context.Context,
+	mode sensorsISensors.OperationMode,
+) error {
+	return w.impl.SetOperationMode(ctx, mode)
+}
+
+func (w *sensorsStubWrapper) UnregisterDirectChannel(
+	ctx context.Context,
+	channelHandle int32,
+) error {
+	return w.impl.UnregisterDirectChannel(ctx, channelHandle)
+}
+
+var _ ISensors = (*sensorsStubWrapper)(nil)
+
+// NewSensorsStub creates a server-side ISensors wrapping the given
+// server implementation. The returned value satisfies ISensors
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSensorsStub(
+	impl ISensorsServer,
+) ISensors {
+	wrapper := &sensorsStubWrapper{impl: impl}
+	stub := &SensorsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

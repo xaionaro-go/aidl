@@ -165,7 +165,7 @@ func (p *TvAdManagerProxy) CreateSession(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteString16(serviceId)
 	_data.WriteString16(type_)
 	_data.WriteInt32(seq)
@@ -196,7 +196,7 @@ func (p *TvAdManagerProxy) ReleaseSession(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "releaseSession")
@@ -224,7 +224,7 @@ func (p *TvAdManagerProxy) StartAdService(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "startAdService")
@@ -252,7 +252,7 @@ func (p *TvAdManagerProxy) StopAdService(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "stopAdService")
@@ -280,7 +280,7 @@ func (p *TvAdManagerProxy) ResetAdService(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "resetAdService")
@@ -309,7 +309,7 @@ func (p *TvAdManagerProxy) SetSurface(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "setSurface")
@@ -340,7 +340,7 @@ func (p *TvAdManagerProxy) DispatchSurfaceChanged(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(format)
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
@@ -372,7 +372,7 @@ func (p *TvAdManagerProxy) SendCurrentVideoBounds(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := bounds.MarshalParcel(_data); _err != nil {
 		return _err
@@ -405,7 +405,7 @@ func (p *TvAdManagerProxy) SendCurrentChannelUri(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := channelUri.MarshalParcel(_data); _err != nil {
 		return _err
@@ -438,7 +438,7 @@ func (p *TvAdManagerProxy) SendTrackInfoList(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	if tracks == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -477,7 +477,7 @@ func (p *TvAdManagerProxy) SendCurrentTvInputId(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(inputId)
 	_data.WriteInt32(_identity.UserID)
 
@@ -508,7 +508,7 @@ func (p *TvAdManagerProxy) SendSigningResult(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(signingId)
 	if result == nil {
 		_data.WriteInt32(-1)
@@ -547,7 +547,7 @@ func (p *TvAdManagerProxy) NotifyError(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(errMsg)
 	_data.WriteInt32(1)
 	if _err := params.MarshalParcel(_data); _err != nil {
@@ -582,7 +582,7 @@ func (p *TvAdManagerProxy) NotifyTvMessage(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(type_)
 	_data.WriteInt32(1)
 	if _err := data.MarshalParcel(_data); _err != nil {
@@ -615,7 +615,7 @@ func (p *TvAdManagerProxy) RegisterCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "registerCallback")
@@ -643,7 +643,7 @@ func (p *TvAdManagerProxy) UnregisterCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "unregisterCallback")
@@ -673,8 +673,8 @@ func (p *TvAdManagerProxy) CreateMediaView(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := frame.MarshalParcel(_data); _err != nil {
 		return _err
@@ -707,7 +707,7 @@ func (p *TvAdManagerProxy) RelayoutMediaView(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := frame.MarshalParcel(_data); _err != nil {
 		return _err
@@ -739,7 +739,7 @@ func (p *TvAdManagerProxy) RemoveMediaView(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdManager, "removeMediaView")
@@ -769,7 +769,7 @@ func (p *TvAdManagerProxy) NotifyTvInputSessionData(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(type_)
 	_data.WriteInt32(1)
 	if _err := data.MarshalParcel(_data); _err != nil {
@@ -1358,4 +1358,233 @@ func (s *TvAdManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvAdManagerServer is the server-side interface that user implementations
+// provide to NewTvAdManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvAdManagerServer interface {
+	GetTvAdServiceList(ctx context.Context) ([]TvAdServiceInfo, error)
+	SendAppLinkCommand(ctx context.Context, serviceId string, command os.Bundle) error
+	CreateSession(ctx context.Context, client ITvAdClient, serviceId string, type_ string, seq int32) error
+	ReleaseSession(ctx context.Context, sessionToken binder.IBinder) error
+	StartAdService(ctx context.Context, sessionToken binder.IBinder) error
+	StopAdService(ctx context.Context, sessionToken binder.IBinder) error
+	ResetAdService(ctx context.Context, sessionToken binder.IBinder) error
+	SetSurface(ctx context.Context, sessionToken binder.IBinder, surface interface{}) error
+	DispatchSurfaceChanged(ctx context.Context, sessionToken binder.IBinder, format int32, width int32, height int32) error
+	SendCurrentVideoBounds(ctx context.Context, sessionToken binder.IBinder, bounds graphics.Rect) error
+	SendCurrentChannelUri(ctx context.Context, sessionToken binder.IBinder, channelUri net.Uri) error
+	SendTrackInfoList(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo) error
+	SendCurrentTvInputId(ctx context.Context, sessionToken binder.IBinder, inputId string) error
+	SendSigningResult(ctx context.Context, sessionToken binder.IBinder, signingId string, result []byte) error
+	NotifyError(ctx context.Context, sessionToken binder.IBinder, errMsg string, params os.Bundle) error
+	NotifyTvMessage(ctx context.Context, sessionToken binder.IBinder, type_ int32, data os.Bundle) error
+	RegisterCallback(ctx context.Context, callback ITvAdManagerCallback) error
+	UnregisterCallback(ctx context.Context, callback ITvAdManagerCallback) error
+	CreateMediaView(ctx context.Context, sessionToken binder.IBinder, windowToken binder.IBinder, frame graphics.Rect) error
+	RelayoutMediaView(ctx context.Context, sessionToken binder.IBinder, frame graphics.Rect) error
+	RemoveMediaView(ctx context.Context, sessionToken binder.IBinder) error
+	NotifyTvInputSessionData(ctx context.Context, sessionToken binder.IBinder, type_ string, data os.Bundle) error
+}
+
+type tvAdManagerStubWrapper struct {
+	impl       ITvAdManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvAdManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvAdManagerStubWrapper) GetTvAdServiceList(
+	ctx context.Context,
+) ([]TvAdServiceInfo, error) {
+	return w.impl.GetTvAdServiceList(ctx)
+}
+
+func (w *tvAdManagerStubWrapper) SendAppLinkCommand(
+	ctx context.Context,
+	serviceId string,
+	command os.Bundle,
+) error {
+	return w.impl.SendAppLinkCommand(ctx, serviceId, command)
+}
+
+func (w *tvAdManagerStubWrapper) CreateSession(
+	ctx context.Context,
+	client ITvAdClient,
+	serviceId string,
+	type_ string,
+	seq int32,
+) error {
+	return w.impl.CreateSession(ctx, client, serviceId, type_, seq)
+}
+
+func (w *tvAdManagerStubWrapper) ReleaseSession(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.ReleaseSession(ctx, sessionToken)
+}
+
+func (w *tvAdManagerStubWrapper) StartAdService(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.StartAdService(ctx, sessionToken)
+}
+
+func (w *tvAdManagerStubWrapper) StopAdService(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.StopAdService(ctx, sessionToken)
+}
+
+func (w *tvAdManagerStubWrapper) ResetAdService(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.ResetAdService(ctx, sessionToken)
+}
+
+func (w *tvAdManagerStubWrapper) SetSurface(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	surface interface{},
+) error {
+	return w.impl.SetSurface(ctx, sessionToken, surface)
+}
+
+func (w *tvAdManagerStubWrapper) DispatchSurfaceChanged(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	format int32,
+	width int32,
+	height int32,
+) error {
+	return w.impl.DispatchSurfaceChanged(ctx, sessionToken, format, width, height)
+}
+
+func (w *tvAdManagerStubWrapper) SendCurrentVideoBounds(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	bounds graphics.Rect,
+) error {
+	return w.impl.SendCurrentVideoBounds(ctx, sessionToken, bounds)
+}
+
+func (w *tvAdManagerStubWrapper) SendCurrentChannelUri(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	channelUri net.Uri,
+) error {
+	return w.impl.SendCurrentChannelUri(ctx, sessionToken, channelUri)
+}
+
+func (w *tvAdManagerStubWrapper) SendTrackInfoList(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	tracks []tv.TvTrackInfo,
+) error {
+	return w.impl.SendTrackInfoList(ctx, sessionToken, tracks)
+}
+
+func (w *tvAdManagerStubWrapper) SendCurrentTvInputId(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	inputId string,
+) error {
+	return w.impl.SendCurrentTvInputId(ctx, sessionToken, inputId)
+}
+
+func (w *tvAdManagerStubWrapper) SendSigningResult(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	signingId string,
+	result []byte,
+) error {
+	return w.impl.SendSigningResult(ctx, sessionToken, signingId, result)
+}
+
+func (w *tvAdManagerStubWrapper) NotifyError(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	errMsg string,
+	params os.Bundle,
+) error {
+	return w.impl.NotifyError(ctx, sessionToken, errMsg, params)
+}
+
+func (w *tvAdManagerStubWrapper) NotifyTvMessage(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	type_ int32,
+	data os.Bundle,
+) error {
+	return w.impl.NotifyTvMessage(ctx, sessionToken, type_, data)
+}
+
+func (w *tvAdManagerStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ITvAdManagerCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *tvAdManagerStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback ITvAdManagerCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+func (w *tvAdManagerStubWrapper) CreateMediaView(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	windowToken binder.IBinder,
+	frame graphics.Rect,
+) error {
+	return w.impl.CreateMediaView(ctx, sessionToken, windowToken, frame)
+}
+
+func (w *tvAdManagerStubWrapper) RelayoutMediaView(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	frame graphics.Rect,
+) error {
+	return w.impl.RelayoutMediaView(ctx, sessionToken, frame)
+}
+
+func (w *tvAdManagerStubWrapper) RemoveMediaView(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.RemoveMediaView(ctx, sessionToken)
+}
+
+func (w *tvAdManagerStubWrapper) NotifyTvInputSessionData(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	type_ string,
+	data os.Bundle,
+) error {
+	return w.impl.NotifyTvInputSessionData(ctx, sessionToken, type_, data)
+}
+
+var _ ITvAdManager = (*tvAdManagerStubWrapper)(nil)
+
+// NewTvAdManagerStub creates a server-side ITvAdManager wrapping the given
+// server implementation. The returned value satisfies ITvAdManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvAdManagerStub(
+	impl ITvAdManagerServer,
+) ITvAdManager {
+	wrapper := &tvAdManagerStubWrapper{impl: impl}
+	stub := &TvAdManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

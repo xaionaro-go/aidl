@@ -30,7 +30,11 @@ func (s *BeginResult) MarshalParcel(
 			}
 		}
 	}
-	p.WriteStrongBinder(s.Operation.AsBinder().Handle())
+	if s.Operation == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Operation.AsBinder().Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

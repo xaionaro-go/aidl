@@ -82,3 +82,42 @@ func (s *VibratorStateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVibratorStateListenerServer is the server-side interface that user implementations
+// provide to NewVibratorStateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVibratorStateListenerServer interface {
+	OnVibrating(ctx context.Context, vibrating bool) error
+}
+
+type vibratorStateListenerStubWrapper struct {
+	impl       IVibratorStateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vibratorStateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vibratorStateListenerStubWrapper) OnVibrating(
+	ctx context.Context,
+	vibrating bool,
+) error {
+	return w.impl.OnVibrating(ctx, vibrating)
+}
+
+var _ IVibratorStateListener = (*vibratorStateListenerStubWrapper)(nil)
+
+// NewVibratorStateListenerStub creates a server-side IVibratorStateListener wrapping the given
+// server implementation. The returned value satisfies IVibratorStateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVibratorStateListenerStub(
+	impl IVibratorStateListenerServer,
+) IVibratorStateListener {
+	wrapper := &vibratorStateListenerStubWrapper{impl: impl}
+	stub := &VibratorStateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

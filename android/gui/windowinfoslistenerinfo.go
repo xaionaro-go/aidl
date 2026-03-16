@@ -19,7 +19,11 @@ func (s *WindowInfosListenerInfo) MarshalParcel(
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteInt64(s.ListenerId)
-	p.WriteStrongBinder(s.WindowInfosPublisher.AsBinder().Handle())
+	if s.WindowInfosPublisher == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.WindowInfosPublisher.AsBinder().Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

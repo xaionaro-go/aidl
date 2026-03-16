@@ -348,3 +348,87 @@ func (s *BpcTestAppCmdServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBpcTestAppCmdServiceServer is the server-side interface that user implementations
+// provide to NewBpcTestAppCmdServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBpcTestAppCmdServiceServer interface {
+	CreateSystemBinders(ctx context.Context, count int32) error
+	ReleaseSystemBinders(ctx context.Context, count int32) error
+	CreateTestBinders(ctx context.Context, count int32) error
+	ReleaseTestBinders(ctx context.Context, count int32) error
+	ReleaseAllBinders(ctx context.Context) error
+	BindToTestService(ctx context.Context) (string, error)
+	UnbindFromTestService(ctx context.Context) error
+}
+
+type bpcTestAppCmdServiceStubWrapper struct {
+	impl       IBpcTestAppCmdServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bpcTestAppCmdServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bpcTestAppCmdServiceStubWrapper) CreateSystemBinders(
+	ctx context.Context,
+	count int32,
+) error {
+	return w.impl.CreateSystemBinders(ctx, count)
+}
+
+func (w *bpcTestAppCmdServiceStubWrapper) ReleaseSystemBinders(
+	ctx context.Context,
+	count int32,
+) error {
+	return w.impl.ReleaseSystemBinders(ctx, count)
+}
+
+func (w *bpcTestAppCmdServiceStubWrapper) CreateTestBinders(
+	ctx context.Context,
+	count int32,
+) error {
+	return w.impl.CreateTestBinders(ctx, count)
+}
+
+func (w *bpcTestAppCmdServiceStubWrapper) ReleaseTestBinders(
+	ctx context.Context,
+	count int32,
+) error {
+	return w.impl.ReleaseTestBinders(ctx, count)
+}
+
+func (w *bpcTestAppCmdServiceStubWrapper) ReleaseAllBinders(
+	ctx context.Context,
+) error {
+	return w.impl.ReleaseAllBinders(ctx)
+}
+
+func (w *bpcTestAppCmdServiceStubWrapper) BindToTestService(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.BindToTestService(ctx)
+}
+
+func (w *bpcTestAppCmdServiceStubWrapper) UnbindFromTestService(
+	ctx context.Context,
+) error {
+	return w.impl.UnbindFromTestService(ctx)
+}
+
+var _ IBpcTestAppCmdService = (*bpcTestAppCmdServiceStubWrapper)(nil)
+
+// NewBpcTestAppCmdServiceStub creates a server-side IBpcTestAppCmdService wrapping the given
+// server implementation. The returned value satisfies IBpcTestAppCmdService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBpcTestAppCmdServiceStub(
+	impl IBpcTestAppCmdServiceServer,
+) IBpcTestAppCmdService {
+	wrapper := &bpcTestAppCmdServiceStubWrapper{impl: impl}
+	stub := &BpcTestAppCmdServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

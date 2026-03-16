@@ -53,7 +53,7 @@ func (p *DomainSelectionServiceControllerProxy) SelectDomain(
 	if _err := attr.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDomainSelectionServiceController, "selectDomain")
 	if _err != nil {
@@ -205,4 +205,64 @@ func (s *DomainSelectionServiceControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDomainSelectionServiceControllerServer is the server-side interface that user implementations
+// provide to NewDomainSelectionServiceControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDomainSelectionServiceControllerServer interface {
+	SelectDomain(ctx context.Context, attr androidTelephony.DomainSelectionServiceSelectionAttributes, callback ITransportSelectorCallback) error
+	UpdateServiceState(ctx context.Context, slotId int32, subId int32, serviceState androidTelephony.ServiceState) error
+	UpdateBarringInfo(ctx context.Context, slotId int32, subId int32, info network.BarringInfo) error
+}
+
+type domainSelectionServiceControllerStubWrapper struct {
+	impl       IDomainSelectionServiceControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *domainSelectionServiceControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *domainSelectionServiceControllerStubWrapper) SelectDomain(
+	ctx context.Context,
+	attr androidTelephony.DomainSelectionServiceSelectionAttributes,
+	callback ITransportSelectorCallback,
+) error {
+	return w.impl.SelectDomain(ctx, attr, callback)
+}
+
+func (w *domainSelectionServiceControllerStubWrapper) UpdateServiceState(
+	ctx context.Context,
+	slotId int32,
+	subId int32,
+	serviceState androidTelephony.ServiceState,
+) error {
+	return w.impl.UpdateServiceState(ctx, slotId, subId, serviceState)
+}
+
+func (w *domainSelectionServiceControllerStubWrapper) UpdateBarringInfo(
+	ctx context.Context,
+	slotId int32,
+	subId int32,
+	info network.BarringInfo,
+) error {
+	return w.impl.UpdateBarringInfo(ctx, slotId, subId, info)
+}
+
+var _ IDomainSelectionServiceController = (*domainSelectionServiceControllerStubWrapper)(nil)
+
+// NewDomainSelectionServiceControllerStub creates a server-side IDomainSelectionServiceController wrapping the given
+// server implementation. The returned value satisfies IDomainSelectionServiceController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDomainSelectionServiceControllerStub(
+	impl IDomainSelectionServiceControllerServer,
+) IDomainSelectionServiceController {
+	wrapper := &domainSelectionServiceControllerStubWrapper{impl: impl}
+	stub := &DomainSelectionServiceControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -44,7 +44,7 @@ func (p *HomeControlsRemoteProxyProxy) RegisterListenerForCurrentUser(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHomeControlsRemoteProxy)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHomeControlsRemoteProxy, "registerListenerForCurrentUser")
 	if _err != nil {
@@ -61,7 +61,7 @@ func (p *HomeControlsRemoteProxyProxy) UnregisterListenerForCurrentUser(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHomeControlsRemoteProxy)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHomeControlsRemoteProxy, "unregisterListenerForCurrentUser")
 	if _err != nil {
@@ -109,4 +109,51 @@ func (s *HomeControlsRemoteProxyStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IHomeControlsRemoteProxyServer is the server-side interface that user implementations
+// provide to NewHomeControlsRemoteProxyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHomeControlsRemoteProxyServer interface {
+	RegisterListenerForCurrentUser(ctx context.Context, callback IOnControlsSettingsChangeListener) error
+	UnregisterListenerForCurrentUser(ctx context.Context, callback IOnControlsSettingsChangeListener) error
+}
+
+type homeControlsRemoteProxyStubWrapper struct {
+	impl       IHomeControlsRemoteProxyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *homeControlsRemoteProxyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *homeControlsRemoteProxyStubWrapper) RegisterListenerForCurrentUser(
+	ctx context.Context,
+	callback IOnControlsSettingsChangeListener,
+) error {
+	return w.impl.RegisterListenerForCurrentUser(ctx, callback)
+}
+
+func (w *homeControlsRemoteProxyStubWrapper) UnregisterListenerForCurrentUser(
+	ctx context.Context,
+	callback IOnControlsSettingsChangeListener,
+) error {
+	return w.impl.UnregisterListenerForCurrentUser(ctx, callback)
+}
+
+var _ IHomeControlsRemoteProxy = (*homeControlsRemoteProxyStubWrapper)(nil)
+
+// NewHomeControlsRemoteProxyStub creates a server-side IHomeControlsRemoteProxy wrapping the given
+// server implementation. The returned value satisfies IHomeControlsRemoteProxy
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHomeControlsRemoteProxyStub(
+	impl IHomeControlsRemoteProxyServer,
+) IHomeControlsRemoteProxy {
+	wrapper := &homeControlsRemoteProxyStubWrapper{impl: impl}
+	stub := &HomeControlsRemoteProxyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

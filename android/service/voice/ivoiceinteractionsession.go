@@ -4,10 +4,8 @@ import (
 	"context"
 	"fmt"
 	assist "github.com/xaionaro-go/binder/android/app/assist"
-	androidContent "github.com/xaionaro-go/binder/android/content"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	"github.com/xaionaro-go/binder/binder"
-	app "github.com/xaionaro-go/binder/com/android/internal_/app"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -30,12 +28,12 @@ const (
 
 type IVoiceInteractionSession interface {
 	AsBinder() binder.IBinder
-	Show(ctx context.Context, sessionArgs interface{}, flags int32, showCallback app.IVoiceInteractionSessionShowCallback) error
+	Show(ctx context.Context, sessionArgs interface{}, flags int32, showCallback interface{}) error
 	Hide(ctx context.Context) error
 	HandleAssist(ctx context.Context, taskId int32, activityId binder.IBinder, assistData interface{}, structure assist.AssistStructure, content assist.AssistContent, index int32, count int32) error
 	HandleScreenshot(ctx context.Context, screenshot graphics.Bitmap) error
-	TaskStarted(ctx context.Context, intent androidContent.Intent, taskId int32) error
-	TaskFinished(ctx context.Context, intent androidContent.Intent, taskId int32) error
+	TaskStarted(ctx context.Context, intent interface{}, taskId int32) error
+	TaskFinished(ctx context.Context, intent interface{}, taskId int32) error
 	CloseSystemDialogs(ctx context.Context) error
 	OnLockscreenShown(ctx context.Context) error
 	Destroy(ctx context.Context) error
@@ -62,12 +60,11 @@ func (p *VoiceInteractionSessionProxy) Show(
 	ctx context.Context,
 	sessionArgs interface{},
 	flags int32,
-	showCallback app.IVoiceInteractionSessionShowCallback,
+	showCallback interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
 	_data.WriteInt32(flags)
-	_data.WriteStrongBinder(showCallback.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "show")
 	if _err != nil {
@@ -106,7 +103,7 @@ func (p *VoiceInteractionSessionProxy) HandleAssist(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
 	_data.WriteInt32(taskId)
-	_data.WriteStrongBinder(activityId.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityId, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := structure.MarshalParcel(_data); _err != nil {
 		return _err
@@ -149,15 +146,11 @@ func (p *VoiceInteractionSessionProxy) HandleScreenshot(
 
 func (p *VoiceInteractionSessionProxy) TaskStarted(
 	ctx context.Context,
-	intent androidContent.Intent,
+	intent interface{},
 	taskId int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(taskId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "taskStarted")
@@ -171,15 +164,11 @@ func (p *VoiceInteractionSessionProxy) TaskStarted(
 
 func (p *VoiceInteractionSessionProxy) TaskFinished(
 	ctx context.Context,
-	intent androidContent.Intent,
+	intent interface{},
 	taskId int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSession)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(taskId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSession, "taskFinished")
@@ -281,9 +270,7 @@ func (s *VoiceInteractionSessionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_showCallback app.IVoiceInteractionSessionShowCallback
-		_ = _arg_showCallback
+		var _arg_showCallback interface{}
 		_err = s.Impl.Show(ctx, _arg_sessionArgs, _arg_flags, _arg_showCallback)
 		_ = _err
 		return nil, nil
@@ -364,18 +351,7 @@ func (s *VoiceInteractionSessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent androidContent.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_taskId, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -387,18 +363,7 @@ func (s *VoiceInteractionSessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent androidContent.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_taskId, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -453,4 +418,122 @@ func (s *VoiceInteractionSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVoiceInteractionSessionServer is the server-side interface that user implementations
+// provide to NewVoiceInteractionSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceInteractionSessionServer interface {
+	Show(ctx context.Context, sessionArgs interface{}, flags int32, showCallback interface{}) error
+	Hide(ctx context.Context) error
+	HandleAssist(ctx context.Context, taskId int32, activityId binder.IBinder, assistData interface{}, structure assist.AssistStructure, content assist.AssistContent, index int32, count int32) error
+	HandleScreenshot(ctx context.Context, screenshot graphics.Bitmap) error
+	TaskStarted(ctx context.Context, intent interface{}, taskId int32) error
+	TaskFinished(ctx context.Context, intent interface{}, taskId int32) error
+	CloseSystemDialogs(ctx context.Context) error
+	OnLockscreenShown(ctx context.Context) error
+	Destroy(ctx context.Context) error
+	NotifyVisibleActivityInfoChanged(ctx context.Context, visibleActivityInfo VisibleActivityInfo, type_ int32) error
+}
+
+type voiceInteractionSessionStubWrapper struct {
+	impl       IVoiceInteractionSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceInteractionSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceInteractionSessionStubWrapper) Show(
+	ctx context.Context,
+	sessionArgs interface{},
+	flags int32,
+	showCallback interface{},
+) error {
+	return w.impl.Show(ctx, sessionArgs, flags, showCallback)
+}
+
+func (w *voiceInteractionSessionStubWrapper) Hide(
+	ctx context.Context,
+) error {
+	return w.impl.Hide(ctx)
+}
+
+func (w *voiceInteractionSessionStubWrapper) HandleAssist(
+	ctx context.Context,
+	taskId int32,
+	activityId binder.IBinder,
+	assistData interface{},
+	structure assist.AssistStructure,
+	content assist.AssistContent,
+	index int32,
+	count int32,
+) error {
+	return w.impl.HandleAssist(ctx, taskId, activityId, assistData, structure, content, index, count)
+}
+
+func (w *voiceInteractionSessionStubWrapper) HandleScreenshot(
+	ctx context.Context,
+	screenshot graphics.Bitmap,
+) error {
+	return w.impl.HandleScreenshot(ctx, screenshot)
+}
+
+func (w *voiceInteractionSessionStubWrapper) TaskStarted(
+	ctx context.Context,
+	intent interface{},
+	taskId int32,
+) error {
+	return w.impl.TaskStarted(ctx, intent, taskId)
+}
+
+func (w *voiceInteractionSessionStubWrapper) TaskFinished(
+	ctx context.Context,
+	intent interface{},
+	taskId int32,
+) error {
+	return w.impl.TaskFinished(ctx, intent, taskId)
+}
+
+func (w *voiceInteractionSessionStubWrapper) CloseSystemDialogs(
+	ctx context.Context,
+) error {
+	return w.impl.CloseSystemDialogs(ctx)
+}
+
+func (w *voiceInteractionSessionStubWrapper) OnLockscreenShown(
+	ctx context.Context,
+) error {
+	return w.impl.OnLockscreenShown(ctx)
+}
+
+func (w *voiceInteractionSessionStubWrapper) Destroy(
+	ctx context.Context,
+) error {
+	return w.impl.Destroy(ctx)
+}
+
+func (w *voiceInteractionSessionStubWrapper) NotifyVisibleActivityInfoChanged(
+	ctx context.Context,
+	visibleActivityInfo VisibleActivityInfo,
+	type_ int32,
+) error {
+	return w.impl.NotifyVisibleActivityInfoChanged(ctx, visibleActivityInfo, type_)
+}
+
+var _ IVoiceInteractionSession = (*voiceInteractionSessionStubWrapper)(nil)
+
+// NewVoiceInteractionSessionStub creates a server-side IVoiceInteractionSession wrapping the given
+// server implementation. The returned value satisfies IVoiceInteractionSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceInteractionSessionStub(
+	impl IVoiceInteractionSessionServer,
+) IVoiceInteractionSession {
+	wrapper := &voiceInteractionSessionStubWrapper{impl: impl}
+	stub := &VoiceInteractionSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -248,3 +248,60 @@ func (s *WeaverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWeaverServer is the server-side interface that user implementations
+// provide to NewWeaverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWeaverServer interface {
+	GetConfig(ctx context.Context) (WeaverConfig, error)
+	Read(ctx context.Context, slotId int32, key []byte) (WeaverReadResponse, error)
+	Write(ctx context.Context, slotId int32, key []byte, value []byte) error
+}
+
+type weaverStubWrapper struct {
+	impl       IWeaverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *weaverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *weaverStubWrapper) GetConfig(
+	ctx context.Context,
+) (WeaverConfig, error) {
+	return w.impl.GetConfig(ctx)
+}
+
+func (w *weaverStubWrapper) Read(
+	ctx context.Context,
+	slotId int32,
+	key []byte,
+) (WeaverReadResponse, error) {
+	return w.impl.Read(ctx, slotId, key)
+}
+
+func (w *weaverStubWrapper) Write(
+	ctx context.Context,
+	slotId int32,
+	key []byte,
+	value []byte,
+) error {
+	return w.impl.Write(ctx, slotId, key, value)
+}
+
+var _ IWeaver = (*weaverStubWrapper)(nil)
+
+// NewWeaverStub creates a server-side IWeaver wrapping the given
+// server implementation. The returned value satisfies IWeaver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWeaverStub(
+	impl IWeaverServer,
+) IWeaver {
+	wrapper := &weaverStubWrapper{impl: impl}
+	stub := &WeaverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

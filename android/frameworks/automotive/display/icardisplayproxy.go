@@ -358,3 +358,81 @@ func (s *CarDisplayProxyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICarDisplayProxyServer is the server-side interface that user implementations
+// provide to NewCarDisplayProxyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarDisplayProxyServer interface {
+	GetDisplayIdList(ctx context.Context) ([]int64, error)
+	GetDisplayInfo(ctx context.Context, id int64) (DisplayDesc, error)
+	GetHGraphicBufferProducer(ctx context.Context, id int64) (common.NativeHandle, error)
+	HideWindow(ctx context.Context, id int64) error
+	ShowWindow(ctx context.Context, id int64) error
+	GetSurface(ctx context.Context, id int64) (interface{}, error)
+}
+
+type carDisplayProxyStubWrapper struct {
+	impl       ICarDisplayProxyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carDisplayProxyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carDisplayProxyStubWrapper) GetDisplayIdList(
+	ctx context.Context,
+) ([]int64, error) {
+	return w.impl.GetDisplayIdList(ctx)
+}
+
+func (w *carDisplayProxyStubWrapper) GetDisplayInfo(
+	ctx context.Context,
+	id int64,
+) (DisplayDesc, error) {
+	return w.impl.GetDisplayInfo(ctx, id)
+}
+
+func (w *carDisplayProxyStubWrapper) GetHGraphicBufferProducer(
+	ctx context.Context,
+	id int64,
+) (common.NativeHandle, error) {
+	return w.impl.GetHGraphicBufferProducer(ctx, id)
+}
+
+func (w *carDisplayProxyStubWrapper) HideWindow(
+	ctx context.Context,
+	id int64,
+) error {
+	return w.impl.HideWindow(ctx, id)
+}
+
+func (w *carDisplayProxyStubWrapper) ShowWindow(
+	ctx context.Context,
+	id int64,
+) error {
+	return w.impl.ShowWindow(ctx, id)
+}
+
+func (w *carDisplayProxyStubWrapper) GetSurface(
+	ctx context.Context,
+	id int64,
+) (interface{}, error) {
+	return w.impl.GetSurface(ctx, id)
+}
+
+var _ ICarDisplayProxy = (*carDisplayProxyStubWrapper)(nil)
+
+// NewCarDisplayProxyStub creates a server-side ICarDisplayProxy wrapping the given
+// server implementation. The returned value satisfies ICarDisplayProxy
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarDisplayProxyStub(
+	impl ICarDisplayProxyServer,
+) ICarDisplayProxy {
+	wrapper := &carDisplayProxyStubWrapper{impl: impl}
+	stub := &CarDisplayProxyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -93,3 +93,42 @@ func (s *CinematicEffectListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICinematicEffectListenerServer is the server-side interface that user implementations
+// provide to NewCinematicEffectListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICinematicEffectListenerServer interface {
+	OnCinematicEffectGenerated(ctx context.Context, response CinematicEffectResponse) error
+}
+
+type cinematicEffectListenerStubWrapper struct {
+	impl       ICinematicEffectListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cinematicEffectListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cinematicEffectListenerStubWrapper) OnCinematicEffectGenerated(
+	ctx context.Context,
+	response CinematicEffectResponse,
+) error {
+	return w.impl.OnCinematicEffectGenerated(ctx, response)
+}
+
+var _ ICinematicEffectListener = (*cinematicEffectListenerStubWrapper)(nil)
+
+// NewCinematicEffectListenerStub creates a server-side ICinematicEffectListener wrapping the given
+// server implementation. The returned value satisfies ICinematicEffectListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCinematicEffectListenerStub(
+	impl ICinematicEffectListenerServer,
+) ICinematicEffectListener {
+	wrapper := &cinematicEffectListenerStubWrapper{impl: impl}
+	stub := &CinematicEffectListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

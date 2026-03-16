@@ -105,3 +105,43 @@ func (s *AGnssCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAGnssCallbackServer is the server-side interface that user implementations
+// provide to NewAGnssCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAGnssCallbackServer interface {
+	AgnssStatusCb(ctx context.Context, type_ gnssIAGnssCallback.AGnssType, status gnssIAGnssCallback.AGnssStatusValue) error
+}
+
+type aGnssCallbackStubWrapper struct {
+	impl       IAGnssCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aGnssCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aGnssCallbackStubWrapper) AgnssStatusCb(
+	ctx context.Context,
+	type_ gnssIAGnssCallback.AGnssType,
+	status gnssIAGnssCallback.AGnssStatusValue,
+) error {
+	return w.impl.AgnssStatusCb(ctx, type_, status)
+}
+
+var _ IAGnssCallback = (*aGnssCallbackStubWrapper)(nil)
+
+// NewAGnssCallbackStub creates a server-side IAGnssCallback wrapping the given
+// server implementation. The returned value satisfies IAGnssCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAGnssCallbackStub(
+	impl IAGnssCallbackServer,
+) IAGnssCallback {
+	wrapper := &aGnssCallbackStubWrapper{impl: impl}
+	stub := &AGnssCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

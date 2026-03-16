@@ -82,3 +82,42 @@ func (s *KeyguardExitCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyguardExitCallbackServer is the server-side interface that user implementations
+// provide to NewKeyguardExitCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyguardExitCallbackServer interface {
+	OnKeyguardExitResult(ctx context.Context, success bool) error
+}
+
+type keyguardExitCallbackStubWrapper struct {
+	impl       IKeyguardExitCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyguardExitCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyguardExitCallbackStubWrapper) OnKeyguardExitResult(
+	ctx context.Context,
+	success bool,
+) error {
+	return w.impl.OnKeyguardExitResult(ctx, success)
+}
+
+var _ IKeyguardExitCallback = (*keyguardExitCallbackStubWrapper)(nil)
+
+// NewKeyguardExitCallbackStub creates a server-side IKeyguardExitCallback wrapping the given
+// server implementation. The returned value satisfies IKeyguardExitCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyguardExitCallbackStub(
+	impl IKeyguardExitCallbackServer,
+) IKeyguardExitCallback {
+	wrapper := &keyguardExitCallbackStubWrapper{impl: impl}
+	stub := &KeyguardExitCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

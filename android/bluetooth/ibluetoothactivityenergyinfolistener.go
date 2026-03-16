@@ -93,3 +93,42 @@ func (s *BluetoothActivityEnergyInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothActivityEnergyInfoListenerServer is the server-side interface that user implementations
+// provide to NewBluetoothActivityEnergyInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothActivityEnergyInfoListenerServer interface {
+	OnBluetoothActivityEnergyInfoAvailable(ctx context.Context, info BluetoothActivityEnergyInfo) error
+}
+
+type bluetoothActivityEnergyInfoListenerStubWrapper struct {
+	impl       IBluetoothActivityEnergyInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothActivityEnergyInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothActivityEnergyInfoListenerStubWrapper) OnBluetoothActivityEnergyInfoAvailable(
+	ctx context.Context,
+	info BluetoothActivityEnergyInfo,
+) error {
+	return w.impl.OnBluetoothActivityEnergyInfoAvailable(ctx, info)
+}
+
+var _ IBluetoothActivityEnergyInfoListener = (*bluetoothActivityEnergyInfoListenerStubWrapper)(nil)
+
+// NewBluetoothActivityEnergyInfoListenerStub creates a server-side IBluetoothActivityEnergyInfoListener wrapping the given
+// server implementation. The returned value satisfies IBluetoothActivityEnergyInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothActivityEnergyInfoListenerStub(
+	impl IBluetoothActivityEnergyInfoListenerServer,
+) IBluetoothActivityEnergyInfoListener {
+	wrapper := &bluetoothActivityEnergyInfoListenerStubWrapper{impl: impl}
+	stub := &BluetoothActivityEnergyInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -64,7 +64,7 @@ func (p *TvAdClientProxy) OnSessionCreated(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdClient)
 	_data.WriteString16(serviceId)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := channel.MarshalParcel(_data); _err != nil {
 		return _err
@@ -428,4 +428,120 @@ func (s *TvAdClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvAdClientServer is the server-side interface that user implementations
+// provide to NewTvAdClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvAdClientServer interface {
+	OnSessionCreated(ctx context.Context, serviceId string, token binder.IBinder, channel view.InputChannel, seq int32) error
+	OnSessionReleased(ctx context.Context, seq int32) error
+	OnLayoutSurface(ctx context.Context, left int32, top int32, right int32, bottom int32, seq int32) error
+	OnRequestCurrentVideoBounds(ctx context.Context, seq int32) error
+	OnRequestCurrentChannelUri(ctx context.Context, seq int32) error
+	OnRequestTrackInfoList(ctx context.Context, seq int32) error
+	OnRequestCurrentTvInputId(ctx context.Context, seq int32) error
+	OnRequestSigning(ctx context.Context, id string, algorithm string, alias string, data []byte, seq int32) error
+	OnTvAdSessionData(ctx context.Context, type_ string, data os.Bundle, seq int32) error
+}
+
+type tvAdClientStubWrapper struct {
+	impl       ITvAdClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvAdClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvAdClientStubWrapper) OnSessionCreated(
+	ctx context.Context,
+	serviceId string,
+	token binder.IBinder,
+	channel view.InputChannel,
+	seq int32,
+) error {
+	return w.impl.OnSessionCreated(ctx, serviceId, token, channel, seq)
+}
+
+func (w *tvAdClientStubWrapper) OnSessionReleased(
+	ctx context.Context,
+	seq int32,
+) error {
+	return w.impl.OnSessionReleased(ctx, seq)
+}
+
+func (w *tvAdClientStubWrapper) OnLayoutSurface(
+	ctx context.Context,
+	left int32,
+	top int32,
+	right int32,
+	bottom int32,
+	seq int32,
+) error {
+	return w.impl.OnLayoutSurface(ctx, left, top, right, bottom, seq)
+}
+
+func (w *tvAdClientStubWrapper) OnRequestCurrentVideoBounds(
+	ctx context.Context,
+	seq int32,
+) error {
+	return w.impl.OnRequestCurrentVideoBounds(ctx, seq)
+}
+
+func (w *tvAdClientStubWrapper) OnRequestCurrentChannelUri(
+	ctx context.Context,
+	seq int32,
+) error {
+	return w.impl.OnRequestCurrentChannelUri(ctx, seq)
+}
+
+func (w *tvAdClientStubWrapper) OnRequestTrackInfoList(
+	ctx context.Context,
+	seq int32,
+) error {
+	return w.impl.OnRequestTrackInfoList(ctx, seq)
+}
+
+func (w *tvAdClientStubWrapper) OnRequestCurrentTvInputId(
+	ctx context.Context,
+	seq int32,
+) error {
+	return w.impl.OnRequestCurrentTvInputId(ctx, seq)
+}
+
+func (w *tvAdClientStubWrapper) OnRequestSigning(
+	ctx context.Context,
+	id string,
+	algorithm string,
+	alias string,
+	data []byte,
+	seq int32,
+) error {
+	return w.impl.OnRequestSigning(ctx, id, algorithm, alias, data, seq)
+}
+
+func (w *tvAdClientStubWrapper) OnTvAdSessionData(
+	ctx context.Context,
+	type_ string,
+	data os.Bundle,
+	seq int32,
+) error {
+	return w.impl.OnTvAdSessionData(ctx, type_, data, seq)
+}
+
+var _ ITvAdClient = (*tvAdClientStubWrapper)(nil)
+
+// NewTvAdClientStub creates a server-side ITvAdClient wrapping the given
+// server implementation. The returned value satisfies ITvAdClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvAdClientStub(
+	impl ITvAdClientServer,
+) ITvAdClient {
+	wrapper := &tvAdClientStubWrapper{impl: impl}
+	stub := &TvAdClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

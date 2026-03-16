@@ -20,7 +20,11 @@ func (s *CreateOperationResponse) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.IOperation.AsBinder().Handle())
+	if s.IOperation == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.IOperation.AsBinder().Handle())
+	}
 	if _err := s.OperationChallenge.MarshalParcel(p); _err != nil {
 		return _err
 	}

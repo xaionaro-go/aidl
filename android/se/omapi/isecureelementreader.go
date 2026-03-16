@@ -224,3 +224,62 @@ func (s *SecureElementReaderStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISecureElementReaderServer is the server-side interface that user implementations
+// provide to NewSecureElementReaderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecureElementReaderServer interface {
+	IsSecureElementPresent(ctx context.Context) (bool, error)
+	OpenSession(ctx context.Context) (ISecureElementSession, error)
+	CloseSessions(ctx context.Context) error
+	Reset(ctx context.Context) (bool, error)
+}
+
+type secureElementReaderStubWrapper struct {
+	impl       ISecureElementReaderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secureElementReaderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *secureElementReaderStubWrapper) IsSecureElementPresent(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSecureElementPresent(ctx)
+}
+
+func (w *secureElementReaderStubWrapper) OpenSession(
+	ctx context.Context,
+) (ISecureElementSession, error) {
+	return w.impl.OpenSession(ctx)
+}
+
+func (w *secureElementReaderStubWrapper) CloseSessions(
+	ctx context.Context,
+) error {
+	return w.impl.CloseSessions(ctx)
+}
+
+func (w *secureElementReaderStubWrapper) Reset(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.Reset(ctx)
+}
+
+var _ ISecureElementReader = (*secureElementReaderStubWrapper)(nil)
+
+// NewSecureElementReaderStub creates a server-side ISecureElementReader wrapping the given
+// server implementation. The returned value satisfies ISecureElementReader
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecureElementReaderStub(
+	impl ISecureElementReaderServer,
+) ISecureElementReader {
+	wrapper := &secureElementReaderStubWrapper{impl: impl}
+	stub := &SecureElementReaderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

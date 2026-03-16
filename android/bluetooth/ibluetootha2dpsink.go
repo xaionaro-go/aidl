@@ -3,7 +3,6 @@ package bluetooth
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -26,15 +25,15 @@ const (
 
 type IBluetoothA2dpSink interface {
 	AsBinder() binder.IBinder
-	Connect(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
-	Disconnect(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
-	GetConnectedDevices(ctx context.Context, attributionSource content.AttributionSource) ([]BluetoothDevice, error)
-	GetDevicesMatchingConnectionStates(ctx context.Context, states []int32, attributionSource content.AttributionSource) ([]BluetoothDevice, error)
-	GetConnectionState(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (int32, error)
-	GetAudioConfig(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (BluetoothAudioConfig, error)
-	SetConnectionPolicy(ctx context.Context, device BluetoothDevice, connectionPolicy int32, attributionSource content.AttributionSource) (bool, error)
-	GetConnectionPolicy(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (int32, error)
-	IsA2dpPlaying(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
+	Connect(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	Disconnect(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	GetConnectedDevices(ctx context.Context, attributionSource interface{}) ([]BluetoothDevice, error)
+	GetDevicesMatchingConnectionStates(ctx context.Context, states []int32, attributionSource interface{}) ([]BluetoothDevice, error)
+	GetConnectionState(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (int32, error)
+	GetAudioConfig(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (BluetoothAudioConfig, error)
+	SetConnectionPolicy(ctx context.Context, device BluetoothDevice, connectionPolicy int32, attributionSource interface{}) (bool, error)
+	GetConnectionPolicy(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (int32, error)
+	IsA2dpPlaying(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
 }
 
 type BluetoothA2dpSinkProxy struct {
@@ -56,17 +55,13 @@ var _ IBluetoothA2dpSink = (*BluetoothA2dpSinkProxy)(nil)
 func (p *BluetoothA2dpSinkProxy) Connect(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dpSink)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -95,17 +90,13 @@ func (p *BluetoothA2dpSinkProxy) Connect(
 func (p *BluetoothA2dpSinkProxy) Disconnect(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dpSink)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -133,15 +124,11 @@ func (p *BluetoothA2dpSinkProxy) Disconnect(
 
 func (p *BluetoothA2dpSinkProxy) GetConnectedDevices(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) ([]BluetoothDevice, error) {
 	var _result []BluetoothDevice
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dpSink)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothA2dpSink, "getConnectedDevices")
 	if _err != nil {
@@ -177,7 +164,7 @@ func (p *BluetoothA2dpSinkProxy) GetConnectedDevices(
 func (p *BluetoothA2dpSinkProxy) GetDevicesMatchingConnectionStates(
 	ctx context.Context,
 	states []int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) ([]BluetoothDevice, error) {
 	var _result []BluetoothDevice
 	_data := parcel.New()
@@ -189,10 +176,6 @@ func (p *BluetoothA2dpSinkProxy) GetDevicesMatchingConnectionStates(
 		for _, _item := range states {
 			_data.WriteInt32(_item)
 		}
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
 	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothA2dpSink, "getDevicesMatchingConnectionStates")
@@ -229,17 +212,13 @@ func (p *BluetoothA2dpSinkProxy) GetDevicesMatchingConnectionStates(
 func (p *BluetoothA2dpSinkProxy) GetConnectionState(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dpSink)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -268,17 +247,13 @@ func (p *BluetoothA2dpSinkProxy) GetConnectionState(
 func (p *BluetoothA2dpSinkProxy) GetAudioConfig(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (BluetoothAudioConfig, error) {
 	var _result BluetoothAudioConfig
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dpSink)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -313,7 +288,7 @@ func (p *BluetoothA2dpSinkProxy) SetConnectionPolicy(
 	ctx context.Context,
 	device BluetoothDevice,
 	connectionPolicy int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
@@ -323,10 +298,6 @@ func (p *BluetoothA2dpSinkProxy) SetConnectionPolicy(
 		return _result, _err
 	}
 	_data.WriteInt32(connectionPolicy)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothA2dpSink, "setConnectionPolicy")
 	if _err != nil {
@@ -353,17 +324,13 @@ func (p *BluetoothA2dpSinkProxy) SetConnectionPolicy(
 func (p *BluetoothA2dpSinkProxy) GetConnectionPolicy(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dpSink)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -392,17 +359,13 @@ func (p *BluetoothA2dpSinkProxy) GetConnectionPolicy(
 func (p *BluetoothA2dpSinkProxy) IsA2dpPlaying(
 	ctx context.Context,
 	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dpSink)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -458,18 +421,7 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.Connect(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -495,18 +447,7 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.Disconnect(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -520,18 +461,7 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetConnectedDevices(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -549,18 +479,7 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_states []int32
 		_ = _arg_states
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetDevicesMatchingConnectionStates(ctx, _arg_states, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -587,18 +506,7 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetConnectionState(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -624,18 +532,7 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetAudioConfig(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -668,18 +565,7 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.SetConnectionPolicy(ctx, _arg_device, _arg_connectionPolicy, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -705,18 +591,7 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetConnectionPolicy(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -742,18 +617,7 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.IsA2dpPlaying(ctx, _arg_device, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -766,4 +630,116 @@ func (s *BluetoothA2dpSinkStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothA2dpSinkServer is the server-side interface that user implementations
+// provide to NewBluetoothA2dpSinkStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothA2dpSinkServer interface {
+	Connect(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	Disconnect(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+	GetConnectedDevices(ctx context.Context, attributionSource interface{}) ([]BluetoothDevice, error)
+	GetDevicesMatchingConnectionStates(ctx context.Context, states []int32, attributionSource interface{}) ([]BluetoothDevice, error)
+	GetConnectionState(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (int32, error)
+	GetAudioConfig(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (BluetoothAudioConfig, error)
+	SetConnectionPolicy(ctx context.Context, device BluetoothDevice, connectionPolicy int32, attributionSource interface{}) (bool, error)
+	GetConnectionPolicy(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (int32, error)
+	IsA2dpPlaying(ctx context.Context, device BluetoothDevice, attributionSource interface{}) (bool, error)
+}
+
+type bluetoothA2dpSinkStubWrapper struct {
+	impl       IBluetoothA2dpSinkServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) Connect(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.Connect(ctx, device, attributionSource)
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) Disconnect(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.Disconnect(ctx, device, attributionSource)
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) GetConnectedDevices(
+	ctx context.Context,
+	attributionSource interface{},
+) ([]BluetoothDevice, error) {
+	return w.impl.GetConnectedDevices(ctx, attributionSource)
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) GetDevicesMatchingConnectionStates(
+	ctx context.Context,
+	states []int32,
+	attributionSource interface{},
+) ([]BluetoothDevice, error) {
+	return w.impl.GetDevicesMatchingConnectionStates(ctx, states, attributionSource)
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) GetConnectionState(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.GetConnectionState(ctx, device, attributionSource)
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) GetAudioConfig(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (BluetoothAudioConfig, error) {
+	return w.impl.GetAudioConfig(ctx, device, attributionSource)
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) SetConnectionPolicy(
+	ctx context.Context,
+	device BluetoothDevice,
+	connectionPolicy int32,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.SetConnectionPolicy(ctx, device, connectionPolicy, attributionSource)
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) GetConnectionPolicy(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.GetConnectionPolicy(ctx, device, attributionSource)
+}
+
+func (w *bluetoothA2dpSinkStubWrapper) IsA2dpPlaying(
+	ctx context.Context,
+	device BluetoothDevice,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.IsA2dpPlaying(ctx, device, attributionSource)
+}
+
+var _ IBluetoothA2dpSink = (*bluetoothA2dpSinkStubWrapper)(nil)
+
+// NewBluetoothA2dpSinkStub creates a server-side IBluetoothA2dpSink wrapping the given
+// server implementation. The returned value satisfies IBluetoothA2dpSink
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothA2dpSinkStub(
+	impl IBluetoothA2dpSinkServer,
+) IBluetoothA2dpSink {
+	wrapper := &bluetoothA2dpSinkStubWrapper{impl: impl}
+	stub := &BluetoothA2dpSinkStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -100,3 +100,43 @@ func (s *DetectorSessionStorageServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDetectorSessionStorageServiceServer is the server-side interface that user implementations
+// provide to NewDetectorSessionStorageServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDetectorSessionStorageServiceServer interface {
+	OpenFile(ctx context.Context, filename string, future infra.AndroidFuture) error
+}
+
+type detectorSessionStorageServiceStubWrapper struct {
+	impl       IDetectorSessionStorageServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *detectorSessionStorageServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *detectorSessionStorageServiceStubWrapper) OpenFile(
+	ctx context.Context,
+	filename string,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.OpenFile(ctx, filename, future)
+}
+
+var _ IDetectorSessionStorageService = (*detectorSessionStorageServiceStubWrapper)(nil)
+
+// NewDetectorSessionStorageServiceStub creates a server-side IDetectorSessionStorageService wrapping the given
+// server implementation. The returned value satisfies IDetectorSessionStorageService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDetectorSessionStorageServiceStub(
+	impl IDetectorSessionStorageServiceServer,
+) IDetectorSessionStorageService {
+	wrapper := &detectorSessionStorageServiceStubWrapper{impl: impl}
+	stub := &DetectorSessionStorageServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

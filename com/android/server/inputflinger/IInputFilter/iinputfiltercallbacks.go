@@ -5,6 +5,7 @@ import (
 	"fmt"
 	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
+	inputflinger "github.com/xaionaro-go/binder/com/android/server/inputflinger"
 	IInputThread "github.com/xaionaro-go/binder/com/android/server/inputflinger/IInputThread"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -23,7 +24,7 @@ type IInputFilterCallbacks interface {
 	AsBinder() binder.IBinder
 	SendKeyEvent(ctx context.Context, event view.KeyEvent) error
 	OnModifierStateChanged(ctx context.Context, modifierState int32, lockedModifierState int32) error
-	CreateInputFilterThread(ctx context.Context, callback IInputThread.IInputThreadCallback) (interface{}, error)
+	CreateInputFilterThread(ctx context.Context, callback IInputThread.IInputThreadCallback) (inputflinger.IInputThread, error)
 }
 
 type InputFilterCallbacksProxy struct {
@@ -102,11 +103,11 @@ func (p *InputFilterCallbacksProxy) OnModifierStateChanged(
 func (p *InputFilterCallbacksProxy) CreateInputFilterThread(
 	ctx context.Context,
 	callback IInputThread.IInputThreadCallback,
-) (interface{}, error) {
-	var _result interface{}
+) (inputflinger.IInputThread, error) {
+	var _result inputflinger.IInputThread
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputFilterCallbacks)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputFilterCallbacks, "createInputFilterThread")
 	if _err != nil {
@@ -123,6 +124,11 @@ func (p *InputFilterCallbacksProxy) CreateInputFilterThread(
 		return _result, _err
 	}
 
+	_handle, _err := _reply.ReadStrongBinder()
+	if _err != nil {
+		return _result, _err
+	}
+	_result = inputflinger.NewInputThreadProxy(binder.NewProxyBinder(p.remote.Transport(), p.remote.Identity(), _handle))
 	return _result, nil
 }
 
@@ -198,9 +204,66 @@ func (s *InputFilterCallbacksStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
+		// TODO: interface/IBinder return marshaling not yet supported in stubs
 		_ = _result
 		return _reply, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputFilterCallbacksServer is the server-side interface that user implementations
+// provide to NewInputFilterCallbacksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputFilterCallbacksServer interface {
+	SendKeyEvent(ctx context.Context, event view.KeyEvent) error
+	OnModifierStateChanged(ctx context.Context, modifierState int32, lockedModifierState int32) error
+	CreateInputFilterThread(ctx context.Context, callback IInputThread.IInputThreadCallback) (inputflinger.IInputThread, error)
+}
+
+type inputFilterCallbacksStubWrapper struct {
+	impl       IInputFilterCallbacksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputFilterCallbacksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputFilterCallbacksStubWrapper) SendKeyEvent(
+	ctx context.Context,
+	event view.KeyEvent,
+) error {
+	return w.impl.SendKeyEvent(ctx, event)
+}
+
+func (w *inputFilterCallbacksStubWrapper) OnModifierStateChanged(
+	ctx context.Context,
+	modifierState int32,
+	lockedModifierState int32,
+) error {
+	return w.impl.OnModifierStateChanged(ctx, modifierState, lockedModifierState)
+}
+
+func (w *inputFilterCallbacksStubWrapper) CreateInputFilterThread(
+	ctx context.Context,
+	callback IInputThread.IInputThreadCallback,
+) (inputflinger.IInputThread, error) {
+	return w.impl.CreateInputFilterThread(ctx, callback)
+}
+
+var _ IInputFilterCallbacks = (*inputFilterCallbacksStubWrapper)(nil)
+
+// NewInputFilterCallbacksStub creates a server-side IInputFilterCallbacks wrapping the given
+// server implementation. The returned value satisfies IInputFilterCallbacks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputFilterCallbacksStub(
+	impl IInputFilterCallbacksServer,
+) IInputFilterCallbacks {
+	wrapper := &inputFilterCallbacksStubWrapper{impl: impl}
+	stub := &InputFilterCallbacksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

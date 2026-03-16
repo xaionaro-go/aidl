@@ -378,3 +378,84 @@ func (s *TranscodingClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITranscodingClientServer is the server-side interface that user implementations
+// provide to NewTranscodingClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITranscodingClientServer interface {
+	SubmitRequest(ctx context.Context, request TranscodingRequestParcel, session TranscodingSessionParcel) (bool, error)
+	CancelSession(ctx context.Context, sessionId int32) (bool, error)
+	GetSessionWithId(ctx context.Context, sessionId int32, session TranscodingSessionParcel) (bool, error)
+	AddClientUid(ctx context.Context, sessionId int32, clientUid int32) (bool, error)
+	GetClientUids(ctx context.Context, sessionId int32) ([]int32, error)
+	Unregister(ctx context.Context) error
+}
+
+type transcodingClientStubWrapper struct {
+	impl       ITranscodingClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transcodingClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transcodingClientStubWrapper) SubmitRequest(
+	ctx context.Context,
+	request TranscodingRequestParcel,
+	session TranscodingSessionParcel,
+) (bool, error) {
+	return w.impl.SubmitRequest(ctx, request, session)
+}
+
+func (w *transcodingClientStubWrapper) CancelSession(
+	ctx context.Context,
+	sessionId int32,
+) (bool, error) {
+	return w.impl.CancelSession(ctx, sessionId)
+}
+
+func (w *transcodingClientStubWrapper) GetSessionWithId(
+	ctx context.Context,
+	sessionId int32,
+	session TranscodingSessionParcel,
+) (bool, error) {
+	return w.impl.GetSessionWithId(ctx, sessionId, session)
+}
+
+func (w *transcodingClientStubWrapper) AddClientUid(
+	ctx context.Context,
+	sessionId int32,
+	clientUid int32,
+) (bool, error) {
+	return w.impl.AddClientUid(ctx, sessionId, clientUid)
+}
+
+func (w *transcodingClientStubWrapper) GetClientUids(
+	ctx context.Context,
+	sessionId int32,
+) ([]int32, error) {
+	return w.impl.GetClientUids(ctx, sessionId)
+}
+
+func (w *transcodingClientStubWrapper) Unregister(
+	ctx context.Context,
+) error {
+	return w.impl.Unregister(ctx)
+}
+
+var _ ITranscodingClient = (*transcodingClientStubWrapper)(nil)
+
+// NewTranscodingClientStub creates a server-side ITranscodingClient wrapping the given
+// server implementation. The returned value satisfies ITranscodingClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTranscodingClientStub(
+	impl ITranscodingClientServer,
+) ITranscodingClient {
+	wrapper := &transcodingClientStubWrapper{impl: impl}
+	stub := &TranscodingClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

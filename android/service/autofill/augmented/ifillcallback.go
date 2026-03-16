@@ -51,7 +51,7 @@ func (p *FillCallbackProxy) OnCancellable(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFillCallback)
-	_data.WriteStrongBinder(cancellation.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellation.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFillCallback, "onCancellable")
 	if _err != nil {
@@ -257,4 +257,67 @@ func (s *FillCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFillCallbackServer is the server-side interface that user implementations
+// provide to NewFillCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFillCallbackServer interface {
+	OnCancellable(ctx context.Context, cancellation ondeviceintelligence.ICancellationSignal) error
+	OnSuccess(ctx context.Context, inlineSuggestionsData []autofill.Dataset, clientState *os.Bundle, showingFillWindow bool) error
+	IsCompleted(ctx context.Context) (bool, error)
+	Cancel(ctx context.Context) error
+}
+
+type fillCallbackStubWrapper struct {
+	impl       IFillCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fillCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fillCallbackStubWrapper) OnCancellable(
+	ctx context.Context,
+	cancellation ondeviceintelligence.ICancellationSignal,
+) error {
+	return w.impl.OnCancellable(ctx, cancellation)
+}
+
+func (w *fillCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	inlineSuggestionsData []autofill.Dataset,
+	clientState *os.Bundle,
+	showingFillWindow bool,
+) error {
+	return w.impl.OnSuccess(ctx, inlineSuggestionsData, clientState, showingFillWindow)
+}
+
+func (w *fillCallbackStubWrapper) IsCompleted(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCompleted(ctx)
+}
+
+func (w *fillCallbackStubWrapper) Cancel(
+	ctx context.Context,
+) error {
+	return w.impl.Cancel(ctx)
+}
+
+var _ IFillCallback = (*fillCallbackStubWrapper)(nil)
+
+// NewFillCallbackStub creates a server-side IFillCallback wrapping the given
+// server implementation. The returned value satisfies IFillCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFillCallbackStub(
+	impl IFillCallbackServer,
+) IFillCallback {
+	wrapper := &fillCallbackStubWrapper{impl: impl}
+	stub := &FillCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -126,3 +126,43 @@ func (s *CrossProfileServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICrossProfileServiceServer is the server-side interface that user implementations
+// provide to NewCrossProfileServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICrossProfileServiceServer interface {
+	LaunchIntent(ctx context.Context, intent content.Intent, bundle os.Bundle) error
+}
+
+type crossProfileServiceStubWrapper struct {
+	impl       ICrossProfileServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *crossProfileServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *crossProfileServiceStubWrapper) LaunchIntent(
+	ctx context.Context,
+	intent content.Intent,
+	bundle os.Bundle,
+) error {
+	return w.impl.LaunchIntent(ctx, intent, bundle)
+}
+
+var _ ICrossProfileService = (*crossProfileServiceStubWrapper)(nil)
+
+// NewCrossProfileServiceStub creates a server-side ICrossProfileService wrapping the given
+// server implementation. The returned value satisfies ICrossProfileService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCrossProfileServiceStub(
+	impl ICrossProfileServiceServer,
+) ICrossProfileService {
+	wrapper := &crossProfileServiceStubWrapper{impl: impl}
+	stub := &CrossProfileServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

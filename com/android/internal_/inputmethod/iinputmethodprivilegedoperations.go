@@ -103,7 +103,7 @@ func (p *InputMethodPrivilegedOperationsProxy) ReportStartInputAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodPrivilegedOperations)
-	_data.WriteStrongBinder(startInputToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, startInputToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethodPrivilegedOperations, "reportStartInputAsync")
 	if _err != nil {
@@ -386,7 +386,7 @@ func (p *InputMethodPrivilegedOperationsProxy) ApplyImeVisibilityAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethodPrivilegedOperations)
-	_data.WriteStrongBinder(showOrHideInputToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, showOrHideInputToken, p.remote.Transport())
 	_data.WriteBool(setVisible)
 	_data.WriteInt32(1)
 	if _err := statsToken.MarshalParcel(_data); _err != nil {
@@ -903,4 +903,211 @@ func (s *InputMethodPrivilegedOperationsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputMethodPrivilegedOperationsServer is the server-side interface that user implementations
+// provide to NewInputMethodPrivilegedOperationsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputMethodPrivilegedOperationsServer interface {
+	SetImeWindowStatusAsync(ctx context.Context, vis int32, backDisposition int32) error
+	ReportStartInputAsync(ctx context.Context, startInputToken binder.IBinder) error
+	CreateInputContentUriToken(ctx context.Context, contentUri net.Uri, packageName string, future infra.AndroidFuture) error
+	ReportFullscreenModeAsync(ctx context.Context, fullscreen bool) error
+	SetInputMethod(ctx context.Context, id string, future infra.AndroidFuture) error
+	SetInputMethodAndSubtype(ctx context.Context, id string, subtype viewInputmethod.InputMethodSubtype, future infra.AndroidFuture) error
+	HideMySoftInput(ctx context.Context, statsToken viewInputmethod.ImeTrackerToken, flags int32, reason int32, future infra.AndroidFuture) error
+	ShowMySoftInput(ctx context.Context, statsToken viewInputmethod.ImeTrackerToken, flags int32, reason int32, future infra.AndroidFuture) error
+	UpdateStatusIconAsync(ctx context.Context, packageName string, iconId int32) error
+	SwitchToPreviousInputMethod(ctx context.Context, future infra.AndroidFuture) error
+	SwitchToNextInputMethod(ctx context.Context, onlyCurrentIme bool, future infra.AndroidFuture) error
+	ShouldOfferSwitchingToNextInputMethod(ctx context.Context, future infra.AndroidFuture) error
+	OnImeSwitchButtonClickFromClient(ctx context.Context, displayId int32) error
+	NotifyUserActionAsync(ctx context.Context) error
+	ApplyImeVisibilityAsync(ctx context.Context, showOrHideInputToken binder.IBinder, setVisible bool, statsToken viewInputmethod.ImeTrackerToken) error
+	OnStylusHandwritingReady(ctx context.Context, requestId int32, pid int32) error
+	ResetStylusHandwriting(ctx context.Context, requestId int32) error
+	SwitchKeyboardLayoutAsync(ctx context.Context, direction int32) error
+	SetHandwritingSurfaceNotTouchable(ctx context.Context, notTouchable bool) error
+	SetHandwritingTouchableRegion(ctx context.Context, region graphics.Region) error
+}
+
+type inputMethodPrivilegedOperationsStubWrapper struct {
+	impl       IInputMethodPrivilegedOperationsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) SetImeWindowStatusAsync(
+	ctx context.Context,
+	vis int32,
+	backDisposition int32,
+) error {
+	return w.impl.SetImeWindowStatusAsync(ctx, vis, backDisposition)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) ReportStartInputAsync(
+	ctx context.Context,
+	startInputToken binder.IBinder,
+) error {
+	return w.impl.ReportStartInputAsync(ctx, startInputToken)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) CreateInputContentUriToken(
+	ctx context.Context,
+	contentUri net.Uri,
+	packageName string,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.CreateInputContentUriToken(ctx, contentUri, packageName, future)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) ReportFullscreenModeAsync(
+	ctx context.Context,
+	fullscreen bool,
+) error {
+	return w.impl.ReportFullscreenModeAsync(ctx, fullscreen)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) SetInputMethod(
+	ctx context.Context,
+	id string,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.SetInputMethod(ctx, id, future)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) SetInputMethodAndSubtype(
+	ctx context.Context,
+	id string,
+	subtype viewInputmethod.InputMethodSubtype,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.SetInputMethodAndSubtype(ctx, id, subtype, future)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) HideMySoftInput(
+	ctx context.Context,
+	statsToken viewInputmethod.ImeTrackerToken,
+	flags int32,
+	reason int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.HideMySoftInput(ctx, statsToken, flags, reason, future)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) ShowMySoftInput(
+	ctx context.Context,
+	statsToken viewInputmethod.ImeTrackerToken,
+	flags int32,
+	reason int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.ShowMySoftInput(ctx, statsToken, flags, reason, future)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) UpdateStatusIconAsync(
+	ctx context.Context,
+	packageName string,
+	iconId int32,
+) error {
+	return w.impl.UpdateStatusIconAsync(ctx, packageName, iconId)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) SwitchToPreviousInputMethod(
+	ctx context.Context,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.SwitchToPreviousInputMethod(ctx, future)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) SwitchToNextInputMethod(
+	ctx context.Context,
+	onlyCurrentIme bool,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.SwitchToNextInputMethod(ctx, onlyCurrentIme, future)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) ShouldOfferSwitchingToNextInputMethod(
+	ctx context.Context,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.ShouldOfferSwitchingToNextInputMethod(ctx, future)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) OnImeSwitchButtonClickFromClient(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnImeSwitchButtonClickFromClient(ctx, displayId)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) NotifyUserActionAsync(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyUserActionAsync(ctx)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) ApplyImeVisibilityAsync(
+	ctx context.Context,
+	showOrHideInputToken binder.IBinder,
+	setVisible bool,
+	statsToken viewInputmethod.ImeTrackerToken,
+) error {
+	return w.impl.ApplyImeVisibilityAsync(ctx, showOrHideInputToken, setVisible, statsToken)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) OnStylusHandwritingReady(
+	ctx context.Context,
+	requestId int32,
+	pid int32,
+) error {
+	return w.impl.OnStylusHandwritingReady(ctx, requestId, pid)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) ResetStylusHandwriting(
+	ctx context.Context,
+	requestId int32,
+) error {
+	return w.impl.ResetStylusHandwriting(ctx, requestId)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) SwitchKeyboardLayoutAsync(
+	ctx context.Context,
+	direction int32,
+) error {
+	return w.impl.SwitchKeyboardLayoutAsync(ctx, direction)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) SetHandwritingSurfaceNotTouchable(
+	ctx context.Context,
+	notTouchable bool,
+) error {
+	return w.impl.SetHandwritingSurfaceNotTouchable(ctx, notTouchable)
+}
+
+func (w *inputMethodPrivilegedOperationsStubWrapper) SetHandwritingTouchableRegion(
+	ctx context.Context,
+	region graphics.Region,
+) error {
+	return w.impl.SetHandwritingTouchableRegion(ctx, region)
+}
+
+var _ IInputMethodPrivilegedOperations = (*inputMethodPrivilegedOperationsStubWrapper)(nil)
+
+// NewInputMethodPrivilegedOperationsStub creates a server-side IInputMethodPrivilegedOperations wrapping the given
+// server implementation. The returned value satisfies IInputMethodPrivilegedOperations
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputMethodPrivilegedOperationsStub(
+	impl IInputMethodPrivilegedOperationsServer,
+) IInputMethodPrivilegedOperations {
+	wrapper := &inputMethodPrivilegedOperationsStubWrapper{impl: impl}
+	stub := &InputMethodPrivilegedOperationsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -81,3 +81,41 @@ func (s *MusicRecognitionAttributionTagCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMusicRecognitionAttributionTagCallbackServer is the server-side interface that user implementations
+// provide to NewMusicRecognitionAttributionTagCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMusicRecognitionAttributionTagCallbackServer interface {
+	OnAttributionTag(ctx context.Context) error
+}
+
+type musicRecognitionAttributionTagCallbackStubWrapper struct {
+	impl       IMusicRecognitionAttributionTagCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *musicRecognitionAttributionTagCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *musicRecognitionAttributionTagCallbackStubWrapper) OnAttributionTag(
+	ctx context.Context,
+) error {
+	return w.impl.OnAttributionTag(ctx)
+}
+
+var _ IMusicRecognitionAttributionTagCallback = (*musicRecognitionAttributionTagCallbackStubWrapper)(nil)
+
+// NewMusicRecognitionAttributionTagCallbackStub creates a server-side IMusicRecognitionAttributionTagCallback wrapping the given
+// server implementation. The returned value satisfies IMusicRecognitionAttributionTagCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMusicRecognitionAttributionTagCallbackStub(
+	impl IMusicRecognitionAttributionTagCallbackServer,
+) IMusicRecognitionAttributionTagCallback {
+	wrapper := &musicRecognitionAttributionTagCallbackStubWrapper{impl: impl}
+	stub := &MusicRecognitionAttributionTagCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

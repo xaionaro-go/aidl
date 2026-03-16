@@ -55,7 +55,7 @@ func (p *HalAdapterVendorExtensionProxy) ParseVendorParameterIds(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHalAdapterVendorExtension)
 	_data.WriteInt32(int32(scope))
-	_data.WriteString(rawKeys)
+	_data.WriteString16(rawKeys)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHalAdapterVendorExtension, "parseVendorParameterIds")
 	if _err != nil {
@@ -99,7 +99,7 @@ func (p *HalAdapterVendorExtensionProxy) ParseVendorParameters(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHalAdapterVendorExtension)
 	_data.WriteInt32(int32(scope))
-	_data.WriteString(rawKeysAndValues)
+	_data.WriteString16(rawKeysAndValues)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHalAdapterVendorExtension, "parseVendorParameters")
 	if _err != nil {
@@ -150,7 +150,7 @@ func (p *HalAdapterVendorExtensionProxy) ParseBluetoothA2dpReconfigureOffload(
 	var _result []core.VendorParameter
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHalAdapterVendorExtension)
-	_data.WriteString(rawValue)
+	_data.WriteString16(rawValue)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHalAdapterVendorExtension, "parseBluetoothA2dpReconfigureOffload")
 	if _err != nil {
@@ -190,7 +190,7 @@ func (p *HalAdapterVendorExtensionProxy) ParseBluetoothLeReconfigureOffload(
 	var _result []core.VendorParameter
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHalAdapterVendorExtension)
-	_data.WriteString(rawValue)
+	_data.WriteString16(rawValue)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHalAdapterVendorExtension, "parseBluetoothLeReconfigureOffload")
 	if _err != nil {
@@ -288,7 +288,7 @@ func (s *HalAdapterVendorExtensionStub) OnTransaction(
 			return nil, _err
 		}
 		_arg_scope := audioIHalAdapterVendorExtension.ParameterScope(_raw_scope)
-		_arg_rawKeys, _err := _data.ReadString()
+		_arg_rawKeys, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -311,7 +311,7 @@ func (s *HalAdapterVendorExtensionStub) OnTransaction(
 			return nil, _err
 		}
 		_arg_scope := audioIHalAdapterVendorExtension.ParameterScope(_raw_scope)
-		_arg_rawKeysAndValues, _err := _data.ReadString()
+		_arg_rawKeysAndValues, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -329,7 +329,7 @@ func (s *HalAdapterVendorExtensionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_rawValue, _err := _data.ReadString()
+		_arg_rawValue, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -347,7 +347,7 @@ func (s *HalAdapterVendorExtensionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_rawValue, _err := _data.ReadString()
+		_arg_rawValue, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -385,4 +385,80 @@ func (s *HalAdapterVendorExtensionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IHalAdapterVendorExtensionServer is the server-side interface that user implementations
+// provide to NewHalAdapterVendorExtensionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHalAdapterVendorExtensionServer interface {
+	ParseVendorParameterIds(ctx context.Context, scope audioIHalAdapterVendorExtension.ParameterScope, rawKeys string) ([]string, error)
+	ParseVendorParameters(ctx context.Context, scope audioIHalAdapterVendorExtension.ParameterScope, rawKeysAndValues string, syncParameters []core.VendorParameter, asyncParameters []core.VendorParameter) error
+	ParseBluetoothA2dpReconfigureOffload(ctx context.Context, rawValue string) ([]core.VendorParameter, error)
+	ParseBluetoothLeReconfigureOffload(ctx context.Context, rawValue string) ([]core.VendorParameter, error)
+	ProcessVendorParameters(ctx context.Context, scope audioIHalAdapterVendorExtension.ParameterScope, parameters []core.VendorParameter) (string, error)
+}
+
+type halAdapterVendorExtensionStubWrapper struct {
+	impl       IHalAdapterVendorExtensionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *halAdapterVendorExtensionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *halAdapterVendorExtensionStubWrapper) ParseVendorParameterIds(
+	ctx context.Context,
+	scope audioIHalAdapterVendorExtension.ParameterScope,
+	rawKeys string,
+) ([]string, error) {
+	return w.impl.ParseVendorParameterIds(ctx, scope, rawKeys)
+}
+
+func (w *halAdapterVendorExtensionStubWrapper) ParseVendorParameters(
+	ctx context.Context,
+	scope audioIHalAdapterVendorExtension.ParameterScope,
+	rawKeysAndValues string,
+	syncParameters []core.VendorParameter,
+	asyncParameters []core.VendorParameter,
+) error {
+	return w.impl.ParseVendorParameters(ctx, scope, rawKeysAndValues, syncParameters, asyncParameters)
+}
+
+func (w *halAdapterVendorExtensionStubWrapper) ParseBluetoothA2dpReconfigureOffload(
+	ctx context.Context,
+	rawValue string,
+) ([]core.VendorParameter, error) {
+	return w.impl.ParseBluetoothA2dpReconfigureOffload(ctx, rawValue)
+}
+
+func (w *halAdapterVendorExtensionStubWrapper) ParseBluetoothLeReconfigureOffload(
+	ctx context.Context,
+	rawValue string,
+) ([]core.VendorParameter, error) {
+	return w.impl.ParseBluetoothLeReconfigureOffload(ctx, rawValue)
+}
+
+func (w *halAdapterVendorExtensionStubWrapper) ProcessVendorParameters(
+	ctx context.Context,
+	scope audioIHalAdapterVendorExtension.ParameterScope,
+	parameters []core.VendorParameter,
+) (string, error) {
+	return w.impl.ProcessVendorParameters(ctx, scope, parameters)
+}
+
+var _ IHalAdapterVendorExtension = (*halAdapterVendorExtensionStubWrapper)(nil)
+
+// NewHalAdapterVendorExtensionStub creates a server-side IHalAdapterVendorExtension wrapping the given
+// server implementation. The returned value satisfies IHalAdapterVendorExtension
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHalAdapterVendorExtensionStub(
+	impl IHalAdapterVendorExtensionServer,
+) IHalAdapterVendorExtension {
+	wrapper := &halAdapterVendorExtensionStubWrapper{impl: impl}
+	stub := &HalAdapterVendorExtensionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

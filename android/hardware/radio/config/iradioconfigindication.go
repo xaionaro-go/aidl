@@ -134,3 +134,51 @@ func (s *RadioConfigIndicationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioConfigIndicationServer is the server-side interface that user implementations
+// provide to NewRadioConfigIndicationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioConfigIndicationServer interface {
+	SimSlotsStatusChanged(ctx context.Context, type_ radio.RadioIndicationType, slotStatus []SimSlotStatus) error
+	OnSimultaneousCallingSupportChanged(ctx context.Context, enabledLogicalSlots []int32) error
+}
+
+type radioConfigIndicationStubWrapper struct {
+	impl       IRadioConfigIndicationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioConfigIndicationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioConfigIndicationStubWrapper) SimSlotsStatusChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	slotStatus []SimSlotStatus,
+) error {
+	return w.impl.SimSlotsStatusChanged(ctx, type_, slotStatus)
+}
+
+func (w *radioConfigIndicationStubWrapper) OnSimultaneousCallingSupportChanged(
+	ctx context.Context,
+	enabledLogicalSlots []int32,
+) error {
+	return w.impl.OnSimultaneousCallingSupportChanged(ctx, enabledLogicalSlots)
+}
+
+var _ IRadioConfigIndication = (*radioConfigIndicationStubWrapper)(nil)
+
+// NewRadioConfigIndicationStub creates a server-side IRadioConfigIndication wrapping the given
+// server implementation. The returned value satisfies IRadioConfigIndication
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioConfigIndicationStub(
+	impl IRadioConfigIndicationServer,
+) IRadioConfigIndication {
+	wrapper := &radioConfigIndicationStubWrapper{impl: impl}
+	stub := &RadioConfigIndicationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

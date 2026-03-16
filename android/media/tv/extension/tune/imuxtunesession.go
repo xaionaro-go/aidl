@@ -246,3 +246,66 @@ func (s *MuxTuneSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMuxTuneSessionServer is the server-side interface that user implementations
+// provide to NewMuxTuneSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMuxTuneSessionServer interface {
+	Start(ctx context.Context, broadcastType int32, frequency int32, brandwith int32, muxTuneParams os.Bundle) error
+	Stop(ctx context.Context) error
+	Release(ctx context.Context) error
+	GetSessionToken(ctx context.Context) (string, error)
+}
+
+type muxTuneSessionStubWrapper struct {
+	impl       IMuxTuneSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *muxTuneSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *muxTuneSessionStubWrapper) Start(
+	ctx context.Context,
+	broadcastType int32,
+	frequency int32,
+	brandwith int32,
+	muxTuneParams os.Bundle,
+) error {
+	return w.impl.Start(ctx, broadcastType, frequency, brandwith, muxTuneParams)
+}
+
+func (w *muxTuneSessionStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *muxTuneSessionStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+func (w *muxTuneSessionStubWrapper) GetSessionToken(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSessionToken(ctx)
+}
+
+var _ IMuxTuneSession = (*muxTuneSessionStubWrapper)(nil)
+
+// NewMuxTuneSessionStub creates a server-side IMuxTuneSession wrapping the given
+// server implementation. The returned value satisfies IMuxTuneSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMuxTuneSessionStub(
+	impl IMuxTuneSessionServer,
+) IMuxTuneSession {
+	wrapper := &muxTuneSessionStubWrapper{impl: impl}
+	stub := &MuxTuneSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

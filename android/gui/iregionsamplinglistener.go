@@ -82,3 +82,42 @@ func (s *RegionSamplingListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRegionSamplingListenerServer is the server-side interface that user implementations
+// provide to NewRegionSamplingListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRegionSamplingListenerServer interface {
+	OnSampleCollected(ctx context.Context, medianLuma float32) error
+}
+
+type regionSamplingListenerStubWrapper struct {
+	impl       IRegionSamplingListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *regionSamplingListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *regionSamplingListenerStubWrapper) OnSampleCollected(
+	ctx context.Context,
+	medianLuma float32,
+) error {
+	return w.impl.OnSampleCollected(ctx, medianLuma)
+}
+
+var _ IRegionSamplingListener = (*regionSamplingListenerStubWrapper)(nil)
+
+// NewRegionSamplingListenerStub creates a server-side IRegionSamplingListener wrapping the given
+// server implementation. The returned value satisfies IRegionSamplingListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRegionSamplingListenerStub(
+	impl IRegionSamplingListenerServer,
+) IRegionSamplingListener {
+	wrapper := &regionSamplingListenerStubWrapper{impl: impl}
+	stub := &RegionSamplingListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

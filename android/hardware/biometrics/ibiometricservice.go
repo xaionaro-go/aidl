@@ -78,7 +78,7 @@ func (p *BiometricServiceProxy) CreateTestSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
 	_data.WriteInt32(sensorId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "createTestSession")
@@ -155,10 +155,10 @@ func (p *BiometricServiceProxy) Authenticate(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt64(operationId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := promptInfo.MarshalParcel(_data); _err != nil {
@@ -195,7 +195,7 @@ func (p *BiometricServiceProxy) CancelAuthentication(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
@@ -329,7 +329,7 @@ func (p *BiometricServiceProxy) RegisterAuthenticator(
 	_data.WriteInt32(id)
 	_data.WriteInt32(modality)
 	_data.WriteInt32(strength)
-	_data.WriteStrongBinder(authenticator.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, authenticator.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "registerAuthenticator")
 	if _err != nil {
@@ -355,7 +355,7 @@ func (p *BiometricServiceProxy) RegisterEnabledOnKeyguardCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "registerEnabledOnKeyguardCallback")
 	if _err != nil {
@@ -413,7 +413,7 @@ func (p *BiometricServiceProxy) InvalidateAuthenticatorIds(
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(fromSensorId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBiometricService, "invalidateAuthenticatorIds")
 	if _err != nil {
@@ -483,7 +483,7 @@ func (p *BiometricServiceProxy) ResetLockoutTimeBound(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBiometricService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(fromSensorId)
 	_data.WriteInt32(_identity.UserID)
@@ -1039,4 +1039,180 @@ func (s *BiometricServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBiometricServiceServer is the server-side interface that user implementations
+// provide to NewBiometricServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBiometricServiceServer interface {
+	CreateTestSession(ctx context.Context, sensorId int32, callback ITestSessionCallback) (ITestSession, error)
+	GetSensorProperties(ctx context.Context) ([]SensorPropertiesInternal, error)
+	Authenticate(ctx context.Context, token binder.IBinder, operationId int64, receiver IBiometricServiceReceiver, promptInfo PromptInfo) (int64, error)
+	CancelAuthentication(ctx context.Context, token binder.IBinder, requestId int64) error
+	CanAuthenticate(ctx context.Context, authenticators int32) (int32, error)
+	GetLastAuthenticationTime(ctx context.Context, authenticators int32) (int64, error)
+	HasEnrolledBiometrics(ctx context.Context) (bool, error)
+	RegisterAuthenticator(ctx context.Context, id int32, modality int32, strength int32, authenticator IBiometricAuthenticator) error
+	RegisterEnabledOnKeyguardCallback(ctx context.Context, callback IBiometricEnabledOnKeyguardCallback) error
+	OnReadyForAuthentication(ctx context.Context, requestId int64, cookie int32) error
+	InvalidateAuthenticatorIds(ctx context.Context, fromSensorId int32, callback IInvalidationCallback) error
+	GetAuthenticatorIds(ctx context.Context) ([]int64, error)
+	ResetLockoutTimeBound(ctx context.Context, token binder.IBinder, fromSensorId int32, hardwareAuthToken []byte) error
+	ResetLockout(ctx context.Context, hardwareAuthToken []byte) error
+	GetCurrentStrength(ctx context.Context, sensorId int32) (int32, error)
+	GetCurrentModality(ctx context.Context, authenticators int32) (int32, error)
+	GetSupportedModalities(ctx context.Context, authenticators int32) (int32, error)
+}
+
+type biometricServiceStubWrapper struct {
+	impl       IBiometricServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *biometricServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *biometricServiceStubWrapper) CreateTestSession(
+	ctx context.Context,
+	sensorId int32,
+	callback ITestSessionCallback,
+) (ITestSession, error) {
+	return w.impl.CreateTestSession(ctx, sensorId, callback)
+}
+
+func (w *biometricServiceStubWrapper) GetSensorProperties(
+	ctx context.Context,
+) ([]SensorPropertiesInternal, error) {
+	return w.impl.GetSensorProperties(ctx)
+}
+
+func (w *biometricServiceStubWrapper) Authenticate(
+	ctx context.Context,
+	token binder.IBinder,
+	operationId int64,
+	receiver IBiometricServiceReceiver,
+	promptInfo PromptInfo,
+) (int64, error) {
+	return w.impl.Authenticate(ctx, token, operationId, receiver, promptInfo)
+}
+
+func (w *biometricServiceStubWrapper) CancelAuthentication(
+	ctx context.Context,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelAuthentication(ctx, token, requestId)
+}
+
+func (w *biometricServiceStubWrapper) CanAuthenticate(
+	ctx context.Context,
+	authenticators int32,
+) (int32, error) {
+	return w.impl.CanAuthenticate(ctx, authenticators)
+}
+
+func (w *biometricServiceStubWrapper) GetLastAuthenticationTime(
+	ctx context.Context,
+	authenticators int32,
+) (int64, error) {
+	return w.impl.GetLastAuthenticationTime(ctx, authenticators)
+}
+
+func (w *biometricServiceStubWrapper) HasEnrolledBiometrics(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasEnrolledBiometrics(ctx)
+}
+
+func (w *biometricServiceStubWrapper) RegisterAuthenticator(
+	ctx context.Context,
+	id int32,
+	modality int32,
+	strength int32,
+	authenticator IBiometricAuthenticator,
+) error {
+	return w.impl.RegisterAuthenticator(ctx, id, modality, strength, authenticator)
+}
+
+func (w *biometricServiceStubWrapper) RegisterEnabledOnKeyguardCallback(
+	ctx context.Context,
+	callback IBiometricEnabledOnKeyguardCallback,
+) error {
+	return w.impl.RegisterEnabledOnKeyguardCallback(ctx, callback)
+}
+
+func (w *biometricServiceStubWrapper) OnReadyForAuthentication(
+	ctx context.Context,
+	requestId int64,
+	cookie int32,
+) error {
+	return w.impl.OnReadyForAuthentication(ctx, requestId, cookie)
+}
+
+func (w *biometricServiceStubWrapper) InvalidateAuthenticatorIds(
+	ctx context.Context,
+	fromSensorId int32,
+	callback IInvalidationCallback,
+) error {
+	return w.impl.InvalidateAuthenticatorIds(ctx, fromSensorId, callback)
+}
+
+func (w *biometricServiceStubWrapper) GetAuthenticatorIds(
+	ctx context.Context,
+) ([]int64, error) {
+	return w.impl.GetAuthenticatorIds(ctx)
+}
+
+func (w *biometricServiceStubWrapper) ResetLockoutTimeBound(
+	ctx context.Context,
+	token binder.IBinder,
+	fromSensorId int32,
+	hardwareAuthToken []byte,
+) error {
+	return w.impl.ResetLockoutTimeBound(ctx, token, fromSensorId, hardwareAuthToken)
+}
+
+func (w *biometricServiceStubWrapper) ResetLockout(
+	ctx context.Context,
+	hardwareAuthToken []byte,
+) error {
+	return w.impl.ResetLockout(ctx, hardwareAuthToken)
+}
+
+func (w *biometricServiceStubWrapper) GetCurrentStrength(
+	ctx context.Context,
+	sensorId int32,
+) (int32, error) {
+	return w.impl.GetCurrentStrength(ctx, sensorId)
+}
+
+func (w *biometricServiceStubWrapper) GetCurrentModality(
+	ctx context.Context,
+	authenticators int32,
+) (int32, error) {
+	return w.impl.GetCurrentModality(ctx, authenticators)
+}
+
+func (w *biometricServiceStubWrapper) GetSupportedModalities(
+	ctx context.Context,
+	authenticators int32,
+) (int32, error) {
+	return w.impl.GetSupportedModalities(ctx, authenticators)
+}
+
+var _ IBiometricService = (*biometricServiceStubWrapper)(nil)
+
+// NewBiometricServiceStub creates a server-side IBiometricService wrapping the given
+// server implementation. The returned value satisfies IBiometricService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBiometricServiceStub(
+	impl IBiometricServiceServer,
+) IBiometricService {
+	wrapper := &biometricServiceStubWrapper{impl: impl}
+	stub := &BiometricServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

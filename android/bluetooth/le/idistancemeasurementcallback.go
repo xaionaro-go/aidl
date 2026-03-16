@@ -185,3 +185,69 @@ func (s *DistanceMeasurementCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDistanceMeasurementCallbackServer is the server-side interface that user implementations
+// provide to NewDistanceMeasurementCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDistanceMeasurementCallbackServer interface {
+	OnStarted(ctx context.Context, device interface{}) error
+	OnStartFail(ctx context.Context, device interface{}, reason int32) error
+	OnStopped(ctx context.Context, device interface{}, reason int32) error
+	OnResult(ctx context.Context, device interface{}, result DistanceMeasurementResult) error
+}
+
+type distanceMeasurementCallbackStubWrapper struct {
+	impl       IDistanceMeasurementCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *distanceMeasurementCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *distanceMeasurementCallbackStubWrapper) OnStarted(
+	ctx context.Context,
+	device interface{},
+) error {
+	return w.impl.OnStarted(ctx, device)
+}
+
+func (w *distanceMeasurementCallbackStubWrapper) OnStartFail(
+	ctx context.Context,
+	device interface{},
+	reason int32,
+) error {
+	return w.impl.OnStartFail(ctx, device, reason)
+}
+
+func (w *distanceMeasurementCallbackStubWrapper) OnStopped(
+	ctx context.Context,
+	device interface{},
+	reason int32,
+) error {
+	return w.impl.OnStopped(ctx, device, reason)
+}
+
+func (w *distanceMeasurementCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	device interface{},
+	result DistanceMeasurementResult,
+) error {
+	return w.impl.OnResult(ctx, device, result)
+}
+
+var _ IDistanceMeasurementCallback = (*distanceMeasurementCallbackStubWrapper)(nil)
+
+// NewDistanceMeasurementCallbackStub creates a server-side IDistanceMeasurementCallback wrapping the given
+// server implementation. The returned value satisfies IDistanceMeasurementCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDistanceMeasurementCallbackStub(
+	impl IDistanceMeasurementCallbackServer,
+) IDistanceMeasurementCallback {
+	wrapper := &distanceMeasurementCallbackStubWrapper{impl: impl}
+	stub := &DistanceMeasurementCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

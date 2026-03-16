@@ -157,3 +157,49 @@ func (s *RebootEscrowStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRebootEscrowServer is the server-side interface that user implementations
+// provide to NewRebootEscrowStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRebootEscrowServer interface {
+	StoreKey(ctx context.Context, kek []byte) error
+	RetrieveKey(ctx context.Context) ([]byte, error)
+}
+
+type rebootEscrowStubWrapper struct {
+	impl       IRebootEscrowServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *rebootEscrowStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *rebootEscrowStubWrapper) StoreKey(
+	ctx context.Context,
+	kek []byte,
+) error {
+	return w.impl.StoreKey(ctx, kek)
+}
+
+func (w *rebootEscrowStubWrapper) RetrieveKey(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.RetrieveKey(ctx)
+}
+
+var _ IRebootEscrow = (*rebootEscrowStubWrapper)(nil)
+
+// NewRebootEscrowStub creates a server-side IRebootEscrow wrapping the given
+// server implementation. The returned value satisfies IRebootEscrow
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRebootEscrowStub(
+	impl IRebootEscrowServer,
+) IRebootEscrow {
+	wrapper := &rebootEscrowStubWrapper{impl: impl}
+	stub := &RebootEscrowStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

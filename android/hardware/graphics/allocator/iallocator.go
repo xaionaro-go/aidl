@@ -302,3 +302,67 @@ func (s *AllocatorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAllocatorServer is the server-side interface that user implementations
+// provide to NewAllocatorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAllocatorServer interface {
+	Allocate(ctx context.Context, descriptor []byte, count int32) (AllocationResult, error)
+	Allocate2(ctx context.Context, descriptor BufferDescriptorInfo, count int32) (AllocationResult, error)
+	IsSupported(ctx context.Context, descriptor BufferDescriptorInfo) (bool, error)
+	GetIMapperLibrarySuffix(ctx context.Context) (string, error)
+}
+
+type allocatorStubWrapper struct {
+	impl       IAllocatorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *allocatorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *allocatorStubWrapper) Allocate(
+	ctx context.Context,
+	descriptor []byte,
+	count int32,
+) (AllocationResult, error) {
+	return w.impl.Allocate(ctx, descriptor, count)
+}
+
+func (w *allocatorStubWrapper) Allocate2(
+	ctx context.Context,
+	descriptor BufferDescriptorInfo,
+	count int32,
+) (AllocationResult, error) {
+	return w.impl.Allocate2(ctx, descriptor, count)
+}
+
+func (w *allocatorStubWrapper) IsSupported(
+	ctx context.Context,
+	descriptor BufferDescriptorInfo,
+) (bool, error) {
+	return w.impl.IsSupported(ctx, descriptor)
+}
+
+func (w *allocatorStubWrapper) GetIMapperLibrarySuffix(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetIMapperLibrarySuffix(ctx)
+}
+
+var _ IAllocator = (*allocatorStubWrapper)(nil)
+
+// NewAllocatorStub creates a server-side IAllocator wrapping the given
+// server implementation. The returned value satisfies IAllocator
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAllocatorStub(
+	impl IAllocatorServer,
+) IAllocator {
+	wrapper := &allocatorStubWrapper{impl: impl}
+	stub := &AllocatorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -165,3 +165,64 @@ func (s *IncidentReportStatusListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIncidentReportStatusListenerServer is the server-side interface that user implementations
+// provide to NewIncidentReportStatusListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIncidentReportStatusListenerServer interface {
+	OnReportStarted(ctx context.Context) error
+	OnReportSectionStatus(ctx context.Context, section int32, status int32) error
+	OnReportFinished(ctx context.Context) error
+	OnReportFailed(ctx context.Context) error
+}
+
+type incidentReportStatusListenerStubWrapper struct {
+	impl       IIncidentReportStatusListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *incidentReportStatusListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *incidentReportStatusListenerStubWrapper) OnReportStarted(
+	ctx context.Context,
+) error {
+	return w.impl.OnReportStarted(ctx)
+}
+
+func (w *incidentReportStatusListenerStubWrapper) OnReportSectionStatus(
+	ctx context.Context,
+	section int32,
+	status int32,
+) error {
+	return w.impl.OnReportSectionStatus(ctx, section, status)
+}
+
+func (w *incidentReportStatusListenerStubWrapper) OnReportFinished(
+	ctx context.Context,
+) error {
+	return w.impl.OnReportFinished(ctx)
+}
+
+func (w *incidentReportStatusListenerStubWrapper) OnReportFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnReportFailed(ctx)
+}
+
+var _ IIncidentReportStatusListener = (*incidentReportStatusListenerStubWrapper)(nil)
+
+// NewIncidentReportStatusListenerStub creates a server-side IIncidentReportStatusListener wrapping the given
+// server implementation. The returned value satisfies IIncidentReportStatusListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIncidentReportStatusListenerStub(
+	impl IIncidentReportStatusListenerServer,
+) IIncidentReportStatusListener {
+	wrapper := &incidentReportStatusListenerStubWrapper{impl: impl}
+	stub := &IncidentReportStatusListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

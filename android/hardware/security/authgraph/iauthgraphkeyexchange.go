@@ -431,3 +431,74 @@ func (s *AuthGraphKeyExchangeStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAuthGraphKeyExchangeServer is the server-side interface that user implementations
+// provide to NewAuthGraphKeyExchangeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAuthGraphKeyExchangeServer interface {
+	Create(ctx context.Context) (SessionInitiationInfo, error)
+	Init(ctx context.Context, peerPubKey PubKey, peerId Identity, peerNonce []byte, peerVersion int32) (KeInitResult, error)
+	Finish(ctx context.Context, peerPubKey PubKey, peerId Identity, peerSignature SessionIdSignature, peerNonce []byte, peerVersion int32, ownKey Key) (SessionInfo, error)
+	AuthenticationComplete(ctx context.Context, peerSignature SessionIdSignature, sharedKeys []Arc) ([]Arc, error)
+}
+
+type authGraphKeyExchangeStubWrapper struct {
+	impl       IAuthGraphKeyExchangeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *authGraphKeyExchangeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *authGraphKeyExchangeStubWrapper) Create(
+	ctx context.Context,
+) (SessionInitiationInfo, error) {
+	return w.impl.Create(ctx)
+}
+
+func (w *authGraphKeyExchangeStubWrapper) Init(
+	ctx context.Context,
+	peerPubKey PubKey,
+	peerId Identity,
+	peerNonce []byte,
+	peerVersion int32,
+) (KeInitResult, error) {
+	return w.impl.Init(ctx, peerPubKey, peerId, peerNonce, peerVersion)
+}
+
+func (w *authGraphKeyExchangeStubWrapper) Finish(
+	ctx context.Context,
+	peerPubKey PubKey,
+	peerId Identity,
+	peerSignature SessionIdSignature,
+	peerNonce []byte,
+	peerVersion int32,
+	ownKey Key,
+) (SessionInfo, error) {
+	return w.impl.Finish(ctx, peerPubKey, peerId, peerSignature, peerNonce, peerVersion, ownKey)
+}
+
+func (w *authGraphKeyExchangeStubWrapper) AuthenticationComplete(
+	ctx context.Context,
+	peerSignature SessionIdSignature,
+	sharedKeys []Arc,
+) ([]Arc, error) {
+	return w.impl.AuthenticationComplete(ctx, peerSignature, sharedKeys)
+}
+
+var _ IAuthGraphKeyExchange = (*authGraphKeyExchangeStubWrapper)(nil)
+
+// NewAuthGraphKeyExchangeStub creates a server-side IAuthGraphKeyExchange wrapping the given
+// server implementation. The returned value satisfies IAuthGraphKeyExchange
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAuthGraphKeyExchangeStub(
+	impl IAuthGraphKeyExchangeServer,
+) IAuthGraphKeyExchange {
+	wrapper := &authGraphKeyExchangeStubWrapper{impl: impl}
+	stub := &AuthGraphKeyExchangeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

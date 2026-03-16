@@ -44,7 +44,7 @@ func (p *VoiceInteractionSessionServiceProxy) NewSession(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSessionService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(startFlags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSessionService, "newSession")
@@ -88,4 +88,45 @@ func (s *VoiceInteractionSessionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVoiceInteractionSessionServiceServer is the server-side interface that user implementations
+// provide to NewVoiceInteractionSessionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceInteractionSessionServiceServer interface {
+	NewSession(ctx context.Context, token binder.IBinder, args interface{}, startFlags int32) error
+}
+
+type voiceInteractionSessionServiceStubWrapper struct {
+	impl       IVoiceInteractionSessionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceInteractionSessionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceInteractionSessionServiceStubWrapper) NewSession(
+	ctx context.Context,
+	token binder.IBinder,
+	args interface{},
+	startFlags int32,
+) error {
+	return w.impl.NewSession(ctx, token, args, startFlags)
+}
+
+var _ IVoiceInteractionSessionService = (*voiceInteractionSessionServiceStubWrapper)(nil)
+
+// NewVoiceInteractionSessionServiceStub creates a server-side IVoiceInteractionSessionService wrapping the given
+// server implementation. The returned value satisfies IVoiceInteractionSessionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceInteractionSessionServiceStub(
+	impl IVoiceInteractionSessionServiceServer,
+) IVoiceInteractionSessionService {
+	wrapper := &voiceInteractionSessionServiceStubWrapper{impl: impl}
+	stub := &VoiceInteractionSessionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

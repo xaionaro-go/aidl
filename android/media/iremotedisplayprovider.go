@@ -52,7 +52,7 @@ func (p *RemoteDisplayProviderProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteDisplayProvider)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteDisplayProvider, "setCallback")
 	if _err != nil {
@@ -242,4 +242,85 @@ func (s *RemoteDisplayProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRemoteDisplayProviderServer is the server-side interface that user implementations
+// provide to NewRemoteDisplayProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteDisplayProviderServer interface {
+	SetCallback(ctx context.Context, callback IRemoteDisplayCallback) error
+	SetDiscoveryMode(ctx context.Context, mode int32) error
+	Connect(ctx context.Context, id string) error
+	Disconnect(ctx context.Context, id string) error
+	SetVolume(ctx context.Context, id string, volume int32) error
+	AdjustVolume(ctx context.Context, id string, delta int32) error
+}
+
+type remoteDisplayProviderStubWrapper struct {
+	impl       IRemoteDisplayProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteDisplayProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteDisplayProviderStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IRemoteDisplayCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *remoteDisplayProviderStubWrapper) SetDiscoveryMode(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.SetDiscoveryMode(ctx, mode)
+}
+
+func (w *remoteDisplayProviderStubWrapper) Connect(
+	ctx context.Context,
+	id string,
+) error {
+	return w.impl.Connect(ctx, id)
+}
+
+func (w *remoteDisplayProviderStubWrapper) Disconnect(
+	ctx context.Context,
+	id string,
+) error {
+	return w.impl.Disconnect(ctx, id)
+}
+
+func (w *remoteDisplayProviderStubWrapper) SetVolume(
+	ctx context.Context,
+	id string,
+	volume int32,
+) error {
+	return w.impl.SetVolume(ctx, id, volume)
+}
+
+func (w *remoteDisplayProviderStubWrapper) AdjustVolume(
+	ctx context.Context,
+	id string,
+	delta int32,
+) error {
+	return w.impl.AdjustVolume(ctx, id, delta)
+}
+
+var _ IRemoteDisplayProvider = (*remoteDisplayProviderStubWrapper)(nil)
+
+// NewRemoteDisplayProviderStub creates a server-side IRemoteDisplayProvider wrapping the given
+// server implementation. The returned value satisfies IRemoteDisplayProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteDisplayProviderStub(
+	impl IRemoteDisplayProviderServer,
+) IRemoteDisplayProvider {
+	wrapper := &remoteDisplayProviderStubWrapper{impl: impl}
+	stub := &RemoteDisplayProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

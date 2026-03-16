@@ -136,3 +136,57 @@ func (s *PipAnimationListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPipAnimationListenerServer is the server-side interface that user implementations
+// provide to NewPipAnimationListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPipAnimationListenerServer interface {
+	OnPipAnimationStarted(ctx context.Context) error
+	OnPipResourceDimensionsChanged(ctx context.Context, cornerRadius int32, shadowRadius int32) error
+	OnExpandPip(ctx context.Context) error
+}
+
+type pipAnimationListenerStubWrapper struct {
+	impl       IPipAnimationListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pipAnimationListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pipAnimationListenerStubWrapper) OnPipAnimationStarted(
+	ctx context.Context,
+) error {
+	return w.impl.OnPipAnimationStarted(ctx)
+}
+
+func (w *pipAnimationListenerStubWrapper) OnPipResourceDimensionsChanged(
+	ctx context.Context,
+	cornerRadius int32,
+	shadowRadius int32,
+) error {
+	return w.impl.OnPipResourceDimensionsChanged(ctx, cornerRadius, shadowRadius)
+}
+
+func (w *pipAnimationListenerStubWrapper) OnExpandPip(
+	ctx context.Context,
+) error {
+	return w.impl.OnExpandPip(ctx)
+}
+
+var _ IPipAnimationListener = (*pipAnimationListenerStubWrapper)(nil)
+
+// NewPipAnimationListenerStub creates a server-side IPipAnimationListener wrapping the given
+// server implementation. The returned value satisfies IPipAnimationListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPipAnimationListenerStub(
+	impl IPipAnimationListenerServer,
+) IPipAnimationListener {
+	wrapper := &pipAnimationListenerStubWrapper{impl: impl}
+	stub := &PipAnimationListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

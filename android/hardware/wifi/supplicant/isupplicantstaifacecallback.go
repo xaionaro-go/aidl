@@ -1855,3 +1855,425 @@ func (s *SupplicantStaIfaceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISupplicantStaIfaceCallbackServer is the server-side interface that user implementations
+// provide to NewSupplicantStaIfaceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupplicantStaIfaceCallbackServer interface {
+	OnAnqpQueryDone(ctx context.Context, bssid []byte, data AnqpData, hs20Data Hs20AnqpData) error
+	OnAssociationRejected(ctx context.Context, assocRejectData AssociationRejectionData) error
+	OnAuthenticationTimeout(ctx context.Context, bssid []byte) error
+	OnAuxiliarySupplicantEvent(ctx context.Context, eventCode AuxiliarySupplicantEventCode, bssid []byte, reasonString string) error
+	OnBssTmHandlingDone(ctx context.Context, tmData BssTmData) error
+	OnBssidChanged(ctx context.Context, reason BssidChangeReason, bssid []byte) error
+	OnDisconnected(ctx context.Context, bssid []byte, locallyGenerated bool, reasonCode StaIfaceReasonCode) error
+	OnDppFailure(ctx context.Context, code DppFailureCode, ssid string, channelList string, bandList []uint16) error
+	OnDppProgress(ctx context.Context, code DppProgressCode) error
+	OnDppSuccess(ctx context.Context, event DppEventType) error
+	OnDppSuccessConfigReceived(ctx context.Context, ssid []byte, password string, psk []byte, securityAkm DppAkm, dppConnectionKeys DppConnectionKeys) error
+	OnDppSuccessConfigSent(ctx context.Context) error
+	OnEapFailure(ctx context.Context, bssid []byte, errorCode int32) error
+	OnExtRadioWorkStart(ctx context.Context, id int32) error
+	OnExtRadioWorkTimeout(ctx context.Context, id int32) error
+	OnHs20DeauthImminentNotice(ctx context.Context, bssid []byte, reasonCode int32, reAuthDelayInSec int32, url string) error
+	OnHs20IconQueryDone(ctx context.Context, bssid []byte, fileName string, data []byte) error
+	OnHs20SubscriptionRemediation(ctx context.Context, bssid []byte, osuMethod OsuMethod, url string) error
+	OnHs20TermsAndConditionsAcceptanceRequestedNotification(ctx context.Context, bssid []byte, url string) error
+	OnNetworkAdded(ctx context.Context, id int32) error
+	OnNetworkNotFound(ctx context.Context, ssid []byte) error
+	OnNetworkRemoved(ctx context.Context, id int32) error
+	OnPmkCacheAdded(ctx context.Context, expirationTimeInSec int64, serializedEntry []byte) error
+	OnStateChanged(ctx context.Context, newState StaIfaceCallbackState, bssid []byte, id int32, ssid []byte, filsHlpSent bool) error
+	OnWpsEventFail(ctx context.Context, bssid []byte, configError WpsConfigError, errorInd WpsErrorIndication) error
+	OnWpsEventPbcOverlap(ctx context.Context) error
+	OnWpsEventSuccess(ctx context.Context) error
+	OnQosPolicyReset(ctx context.Context) error
+	OnQosPolicyRequest(ctx context.Context, qosPolicyRequestId int32, qosPolicyData []QosPolicyData) error
+	OnMloLinksInfoChanged(ctx context.Context, reason supplicantISupplicantStaIfaceCallback.MloLinkInfoChangeReason) error
+	OnDppConfigReceived(ctx context.Context, configData DppConfigurationData) error
+	OnDppConnectionStatusResultSent(ctx context.Context, code DppStatusErrorCode) error
+	OnBssFrequencyChanged(ctx context.Context, frequencyMhz int32) error
+	OnSupplicantStateChanged(ctx context.Context, stateChangeData SupplicantStateChangeData) error
+	OnQosPolicyResponseForScs(ctx context.Context, qosPolicyScsResponseStatus []QosPolicyScsResponseStatus) error
+	OnPmkSaCacheAdded(ctx context.Context, pmkSaData PmkSaCacheData) error
+	OnUsdPublishStarted(ctx context.Context, cmdId int32, publishId int32) error
+	OnUsdSubscribeStarted(ctx context.Context, cmdId int32, subscribeId int32) error
+	OnUsdPublishConfigFailed(ctx context.Context, cmdId int32) error
+	OnUsdSubscribeConfigFailed(ctx context.Context, cmdId int32) error
+	OnUsdPublishTerminated(ctx context.Context, publishId int32, reasonCode UsdReasonCode) error
+	OnUsdSubscribeTerminated(ctx context.Context, subscribeId int32, reasonCode UsdReasonCode) error
+	OnUsdPublishReplied(ctx context.Context, info UsdServiceDiscoveryInfo) error
+	OnUsdServiceDiscovered(ctx context.Context, info UsdServiceDiscoveryInfo) error
+	OnUsdMessageReceived(ctx context.Context, messageInfo UsdMessageInfo) error
+}
+
+type supplicantStaIfaceCallbackStubWrapper struct {
+	impl       ISupplicantStaIfaceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnAnqpQueryDone(
+	ctx context.Context,
+	bssid []byte,
+	data AnqpData,
+	hs20Data Hs20AnqpData,
+) error {
+	return w.impl.OnAnqpQueryDone(ctx, bssid, data, hs20Data)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnAssociationRejected(
+	ctx context.Context,
+	assocRejectData AssociationRejectionData,
+) error {
+	return w.impl.OnAssociationRejected(ctx, assocRejectData)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnAuthenticationTimeout(
+	ctx context.Context,
+	bssid []byte,
+) error {
+	return w.impl.OnAuthenticationTimeout(ctx, bssid)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnAuxiliarySupplicantEvent(
+	ctx context.Context,
+	eventCode AuxiliarySupplicantEventCode,
+	bssid []byte,
+	reasonString string,
+) error {
+	return w.impl.OnAuxiliarySupplicantEvent(ctx, eventCode, bssid, reasonString)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnBssTmHandlingDone(
+	ctx context.Context,
+	tmData BssTmData,
+) error {
+	return w.impl.OnBssTmHandlingDone(ctx, tmData)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnBssidChanged(
+	ctx context.Context,
+	reason BssidChangeReason,
+	bssid []byte,
+) error {
+	return w.impl.OnBssidChanged(ctx, reason, bssid)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnDisconnected(
+	ctx context.Context,
+	bssid []byte,
+	locallyGenerated bool,
+	reasonCode StaIfaceReasonCode,
+) error {
+	return w.impl.OnDisconnected(ctx, bssid, locallyGenerated, reasonCode)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnDppFailure(
+	ctx context.Context,
+	code DppFailureCode,
+	ssid string,
+	channelList string,
+	bandList []uint16,
+) error {
+	return w.impl.OnDppFailure(ctx, code, ssid, channelList, bandList)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnDppProgress(
+	ctx context.Context,
+	code DppProgressCode,
+) error {
+	return w.impl.OnDppProgress(ctx, code)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnDppSuccess(
+	ctx context.Context,
+	event DppEventType,
+) error {
+	return w.impl.OnDppSuccess(ctx, event)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnDppSuccessConfigReceived(
+	ctx context.Context,
+	ssid []byte,
+	password string,
+	psk []byte,
+	securityAkm DppAkm,
+	dppConnectionKeys DppConnectionKeys,
+) error {
+	return w.impl.OnDppSuccessConfigReceived(ctx, ssid, password, psk, securityAkm, dppConnectionKeys)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnDppSuccessConfigSent(
+	ctx context.Context,
+) error {
+	return w.impl.OnDppSuccessConfigSent(ctx)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnEapFailure(
+	ctx context.Context,
+	bssid []byte,
+	errorCode int32,
+) error {
+	return w.impl.OnEapFailure(ctx, bssid, errorCode)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnExtRadioWorkStart(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.OnExtRadioWorkStart(ctx, id)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnExtRadioWorkTimeout(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.OnExtRadioWorkTimeout(ctx, id)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnHs20DeauthImminentNotice(
+	ctx context.Context,
+	bssid []byte,
+	reasonCode int32,
+	reAuthDelayInSec int32,
+	url string,
+) error {
+	return w.impl.OnHs20DeauthImminentNotice(ctx, bssid, reasonCode, reAuthDelayInSec, url)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnHs20IconQueryDone(
+	ctx context.Context,
+	bssid []byte,
+	fileName string,
+	data []byte,
+) error {
+	return w.impl.OnHs20IconQueryDone(ctx, bssid, fileName, data)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnHs20SubscriptionRemediation(
+	ctx context.Context,
+	bssid []byte,
+	osuMethod OsuMethod,
+	url string,
+) error {
+	return w.impl.OnHs20SubscriptionRemediation(ctx, bssid, osuMethod, url)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnHs20TermsAndConditionsAcceptanceRequestedNotification(
+	ctx context.Context,
+	bssid []byte,
+	url string,
+) error {
+	return w.impl.OnHs20TermsAndConditionsAcceptanceRequestedNotification(ctx, bssid, url)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnNetworkAdded(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.OnNetworkAdded(ctx, id)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnNetworkNotFound(
+	ctx context.Context,
+	ssid []byte,
+) error {
+	return w.impl.OnNetworkNotFound(ctx, ssid)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnNetworkRemoved(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.OnNetworkRemoved(ctx, id)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnPmkCacheAdded(
+	ctx context.Context,
+	expirationTimeInSec int64,
+	serializedEntry []byte,
+) error {
+	return w.impl.OnPmkCacheAdded(ctx, expirationTimeInSec, serializedEntry)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnStateChanged(
+	ctx context.Context,
+	newState StaIfaceCallbackState,
+	bssid []byte,
+	id int32,
+	ssid []byte,
+	filsHlpSent bool,
+) error {
+	return w.impl.OnStateChanged(ctx, newState, bssid, id, ssid, filsHlpSent)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnWpsEventFail(
+	ctx context.Context,
+	bssid []byte,
+	configError WpsConfigError,
+	errorInd WpsErrorIndication,
+) error {
+	return w.impl.OnWpsEventFail(ctx, bssid, configError, errorInd)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnWpsEventPbcOverlap(
+	ctx context.Context,
+) error {
+	return w.impl.OnWpsEventPbcOverlap(ctx)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnWpsEventSuccess(
+	ctx context.Context,
+) error {
+	return w.impl.OnWpsEventSuccess(ctx)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnQosPolicyReset(
+	ctx context.Context,
+) error {
+	return w.impl.OnQosPolicyReset(ctx)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnQosPolicyRequest(
+	ctx context.Context,
+	qosPolicyRequestId int32,
+	qosPolicyData []QosPolicyData,
+) error {
+	return w.impl.OnQosPolicyRequest(ctx, qosPolicyRequestId, qosPolicyData)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnMloLinksInfoChanged(
+	ctx context.Context,
+	reason supplicantISupplicantStaIfaceCallback.MloLinkInfoChangeReason,
+) error {
+	return w.impl.OnMloLinksInfoChanged(ctx, reason)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnDppConfigReceived(
+	ctx context.Context,
+	configData DppConfigurationData,
+) error {
+	return w.impl.OnDppConfigReceived(ctx, configData)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnDppConnectionStatusResultSent(
+	ctx context.Context,
+	code DppStatusErrorCode,
+) error {
+	return w.impl.OnDppConnectionStatusResultSent(ctx, code)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnBssFrequencyChanged(
+	ctx context.Context,
+	frequencyMhz int32,
+) error {
+	return w.impl.OnBssFrequencyChanged(ctx, frequencyMhz)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnSupplicantStateChanged(
+	ctx context.Context,
+	stateChangeData SupplicantStateChangeData,
+) error {
+	return w.impl.OnSupplicantStateChanged(ctx, stateChangeData)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnQosPolicyResponseForScs(
+	ctx context.Context,
+	qosPolicyScsResponseStatus []QosPolicyScsResponseStatus,
+) error {
+	return w.impl.OnQosPolicyResponseForScs(ctx, qosPolicyScsResponseStatus)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnPmkSaCacheAdded(
+	ctx context.Context,
+	pmkSaData PmkSaCacheData,
+) error {
+	return w.impl.OnPmkSaCacheAdded(ctx, pmkSaData)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnUsdPublishStarted(
+	ctx context.Context,
+	cmdId int32,
+	publishId int32,
+) error {
+	return w.impl.OnUsdPublishStarted(ctx, cmdId, publishId)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnUsdSubscribeStarted(
+	ctx context.Context,
+	cmdId int32,
+	subscribeId int32,
+) error {
+	return w.impl.OnUsdSubscribeStarted(ctx, cmdId, subscribeId)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnUsdPublishConfigFailed(
+	ctx context.Context,
+	cmdId int32,
+) error {
+	return w.impl.OnUsdPublishConfigFailed(ctx, cmdId)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnUsdSubscribeConfigFailed(
+	ctx context.Context,
+	cmdId int32,
+) error {
+	return w.impl.OnUsdSubscribeConfigFailed(ctx, cmdId)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnUsdPublishTerminated(
+	ctx context.Context,
+	publishId int32,
+	reasonCode UsdReasonCode,
+) error {
+	return w.impl.OnUsdPublishTerminated(ctx, publishId, reasonCode)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnUsdSubscribeTerminated(
+	ctx context.Context,
+	subscribeId int32,
+	reasonCode UsdReasonCode,
+) error {
+	return w.impl.OnUsdSubscribeTerminated(ctx, subscribeId, reasonCode)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnUsdPublishReplied(
+	ctx context.Context,
+	info UsdServiceDiscoveryInfo,
+) error {
+	return w.impl.OnUsdPublishReplied(ctx, info)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnUsdServiceDiscovered(
+	ctx context.Context,
+	info UsdServiceDiscoveryInfo,
+) error {
+	return w.impl.OnUsdServiceDiscovered(ctx, info)
+}
+
+func (w *supplicantStaIfaceCallbackStubWrapper) OnUsdMessageReceived(
+	ctx context.Context,
+	messageInfo UsdMessageInfo,
+) error {
+	return w.impl.OnUsdMessageReceived(ctx, messageInfo)
+}
+
+var _ ISupplicantStaIfaceCallback = (*supplicantStaIfaceCallbackStubWrapper)(nil)
+
+// NewSupplicantStaIfaceCallbackStub creates a server-side ISupplicantStaIfaceCallback wrapping the given
+// server implementation. The returned value satisfies ISupplicantStaIfaceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupplicantStaIfaceCallbackStub(
+	impl ISupplicantStaIfaceCallbackServer,
+) ISupplicantStaIfaceCallback {
+	wrapper := &supplicantStaIfaceCallbackStubWrapper{impl: impl}
+	stub := &SupplicantStaIfaceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

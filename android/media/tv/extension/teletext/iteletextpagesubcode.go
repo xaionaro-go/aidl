@@ -513,3 +513,102 @@ func (s *TeletextPageSubCodeStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITeletextPageSubCodeServer is the server-side interface that user implementations
+// provide to NewTeletextPageSubCodeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITeletextPageSubCodeServer interface {
+	GetTeletextPageNumber(ctx context.Context, sessionToken string) (os.Bundle, error)
+	SetTeleltextPageNumber(ctx context.Context, sessionToken string, pageNumber int32) error
+	GetTeletextPageSubCode(ctx context.Context, sessionToken string) (os.Bundle, error)
+	SetTeletextPageSubCode(ctx context.Context, sessionToken string, pageSubCode int32) error
+	GetTeletextHasTopInfo(ctx context.Context, sessionToken string) (os.Bundle, error)
+	GetTeletextTopBlockList(ctx context.Context, sessionToken string) (os.Bundle, error)
+	GetTeletextTopGroupList(ctx context.Context, sessionToken string, indexGroup int32) (os.Bundle, error)
+	GetTeletextTopPageList(ctx context.Context, sessionToken string, indexPage int32) (os.Bundle, error)
+}
+
+type teletextPageSubCodeStubWrapper struct {
+	impl       ITeletextPageSubCodeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *teletextPageSubCodeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *teletextPageSubCodeStubWrapper) GetTeletextPageNumber(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetTeletextPageNumber(ctx, sessionToken)
+}
+
+func (w *teletextPageSubCodeStubWrapper) SetTeleltextPageNumber(
+	ctx context.Context,
+	sessionToken string,
+	pageNumber int32,
+) error {
+	return w.impl.SetTeleltextPageNumber(ctx, sessionToken, pageNumber)
+}
+
+func (w *teletextPageSubCodeStubWrapper) GetTeletextPageSubCode(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetTeletextPageSubCode(ctx, sessionToken)
+}
+
+func (w *teletextPageSubCodeStubWrapper) SetTeletextPageSubCode(
+	ctx context.Context,
+	sessionToken string,
+	pageSubCode int32,
+) error {
+	return w.impl.SetTeletextPageSubCode(ctx, sessionToken, pageSubCode)
+}
+
+func (w *teletextPageSubCodeStubWrapper) GetTeletextHasTopInfo(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetTeletextHasTopInfo(ctx, sessionToken)
+}
+
+func (w *teletextPageSubCodeStubWrapper) GetTeletextTopBlockList(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetTeletextTopBlockList(ctx, sessionToken)
+}
+
+func (w *teletextPageSubCodeStubWrapper) GetTeletextTopGroupList(
+	ctx context.Context,
+	sessionToken string,
+	indexGroup int32,
+) (os.Bundle, error) {
+	return w.impl.GetTeletextTopGroupList(ctx, sessionToken, indexGroup)
+}
+
+func (w *teletextPageSubCodeStubWrapper) GetTeletextTopPageList(
+	ctx context.Context,
+	sessionToken string,
+	indexPage int32,
+) (os.Bundle, error) {
+	return w.impl.GetTeletextTopPageList(ctx, sessionToken, indexPage)
+}
+
+var _ ITeletextPageSubCode = (*teletextPageSubCodeStubWrapper)(nil)
+
+// NewTeletextPageSubCodeStub creates a server-side ITeletextPageSubCode wrapping the given
+// server implementation. The returned value satisfies ITeletextPageSubCode
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTeletextPageSubCodeStub(
+	impl ITeletextPageSubCodeServer,
+) ITeletextPageSubCode {
+	wrapper := &teletextPageSubCodeStubWrapper{impl: impl}
+	stub := &TeletextPageSubCodeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

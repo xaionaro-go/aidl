@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/xaionaro-go/binder/binder"
-	app "github.com/xaionaro-go/binder/com/android/internal_/app"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -29,7 +28,7 @@ type IVoiceInteractionService interface {
 	SoundModelsChanged(ctx context.Context) error
 	Shutdown(ctx context.Context) error
 	LaunchVoiceAssistFromKeyguard(ctx context.Context) error
-	GetActiveServiceSupportedActions(ctx context.Context, voiceActions []string, callback app.IVoiceActionCheckCallback) error
+	GetActiveServiceSupportedActions(ctx context.Context, voiceActions []string, callback interface{}) error
 	PrepareToShowSession(ctx context.Context, args interface{}, flags int32) error
 	ShowSessionFailed(ctx context.Context, args interface{}) error
 	DetectorRemoteExceptionOccurred(ctx context.Context, token binder.IBinder, detectorType int32) error
@@ -114,7 +113,7 @@ func (p *VoiceInteractionServiceProxy) LaunchVoiceAssistFromKeyguard(
 func (p *VoiceInteractionServiceProxy) GetActiveServiceSupportedActions(
 	ctx context.Context,
 	voiceActions []string,
-	callback app.IVoiceActionCheckCallback,
+	callback interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionService)
@@ -126,7 +125,6 @@ func (p *VoiceInteractionServiceProxy) GetActiveServiceSupportedActions(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionService, "getActiveServiceSupportedActions")
 	if _err != nil {
@@ -178,7 +176,7 @@ func (p *VoiceInteractionServiceProxy) DetectorRemoteExceptionOccurred(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(detectorType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionService, "detectorRemoteExceptionOccurred")
@@ -239,9 +237,7 @@ func (s *VoiceInteractionServiceStub) OnTransaction(
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_voiceActions []string
 		_ = _arg_voiceActions
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_callback app.IVoiceActionCheckCallback
-		_ = _arg_callback
+		var _arg_callback interface{}
 		_err := s.Impl.GetActiveServiceSupportedActions(ctx, _arg_voiceActions, _arg_callback)
 		_ = _err
 		return nil, nil
@@ -282,4 +278,98 @@ func (s *VoiceInteractionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVoiceInteractionServiceServer is the server-side interface that user implementations
+// provide to NewVoiceInteractionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceInteractionServiceServer interface {
+	Ready(ctx context.Context) error
+	SoundModelsChanged(ctx context.Context) error
+	Shutdown(ctx context.Context) error
+	LaunchVoiceAssistFromKeyguard(ctx context.Context) error
+	GetActiveServiceSupportedActions(ctx context.Context, voiceActions []string, callback interface{}) error
+	PrepareToShowSession(ctx context.Context, args interface{}, flags int32) error
+	ShowSessionFailed(ctx context.Context, args interface{}) error
+	DetectorRemoteExceptionOccurred(ctx context.Context, token binder.IBinder, detectorType int32) error
+}
+
+type voiceInteractionServiceStubWrapper struct {
+	impl       IVoiceInteractionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceInteractionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceInteractionServiceStubWrapper) Ready(
+	ctx context.Context,
+) error {
+	return w.impl.Ready(ctx)
+}
+
+func (w *voiceInteractionServiceStubWrapper) SoundModelsChanged(
+	ctx context.Context,
+) error {
+	return w.impl.SoundModelsChanged(ctx)
+}
+
+func (w *voiceInteractionServiceStubWrapper) Shutdown(
+	ctx context.Context,
+) error {
+	return w.impl.Shutdown(ctx)
+}
+
+func (w *voiceInteractionServiceStubWrapper) LaunchVoiceAssistFromKeyguard(
+	ctx context.Context,
+) error {
+	return w.impl.LaunchVoiceAssistFromKeyguard(ctx)
+}
+
+func (w *voiceInteractionServiceStubWrapper) GetActiveServiceSupportedActions(
+	ctx context.Context,
+	voiceActions []string,
+	callback interface{},
+) error {
+	return w.impl.GetActiveServiceSupportedActions(ctx, voiceActions, callback)
+}
+
+func (w *voiceInteractionServiceStubWrapper) PrepareToShowSession(
+	ctx context.Context,
+	args interface{},
+	flags int32,
+) error {
+	return w.impl.PrepareToShowSession(ctx, args, flags)
+}
+
+func (w *voiceInteractionServiceStubWrapper) ShowSessionFailed(
+	ctx context.Context,
+	args interface{},
+) error {
+	return w.impl.ShowSessionFailed(ctx, args)
+}
+
+func (w *voiceInteractionServiceStubWrapper) DetectorRemoteExceptionOccurred(
+	ctx context.Context,
+	token binder.IBinder,
+	detectorType int32,
+) error {
+	return w.impl.DetectorRemoteExceptionOccurred(ctx, token, detectorType)
+}
+
+var _ IVoiceInteractionService = (*voiceInteractionServiceStubWrapper)(nil)
+
+// NewVoiceInteractionServiceStub creates a server-side IVoiceInteractionService wrapping the given
+// server implementation. The returned value satisfies IVoiceInteractionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceInteractionServiceStub(
+	impl IVoiceInteractionServiceServer,
+) IVoiceInteractionService {
+	wrapper := &voiceInteractionServiceStubWrapper{impl: impl}
+	stub := &VoiceInteractionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

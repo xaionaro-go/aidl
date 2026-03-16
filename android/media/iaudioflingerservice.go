@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	tuner "github.com/xaionaro-go/binder/android/hardware/tv/tuner"
-	common "github.com/xaionaro-go/binder/android/media/audio/common"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -96,7 +95,7 @@ type IAudioFlingerService interface {
 	CreateTrack(ctx context.Context, request CreateTrackRequest) (CreateTrackResponse, error)
 	CreateRecord(ctx context.Context, request CreateRecordRequest) (CreateRecordResponse, error)
 	SampleRate(ctx context.Context, ioHandle int32) (int32, error)
-	Format(ctx context.Context, output int32) (common.AudioFormatDescription, error)
+	Format(ctx context.Context, output int32) (interface{}, error)
 	FrameCount(ctx context.Context, ioHandle int32) (int64, error)
 	Latency(ctx context.Context, output int32) (int32, error)
 	SetMasterVolume(ctx context.Context, value float32) error
@@ -108,14 +107,14 @@ type IAudioFlingerService interface {
 	SetStreamVolume(ctx context.Context, stream tuner.AudioStreamType, value float32, muted bool, output int32) error
 	SetStreamMute(ctx context.Context, stream tuner.AudioStreamType, muted bool) error
 	SetPortsVolume(ctx context.Context, portIds []int32, volume float32, muted bool, output int32) error
-	SetMode(ctx context.Context, mode common.AudioMode) error
+	SetMode(ctx context.Context, mode interface{}) error
 	SetMicMute(ctx context.Context, state bool) error
 	GetMicMute(ctx context.Context) (bool, error)
 	SetRecordSilenced(ctx context.Context, portId int32, silenced bool) error
 	SetParameters(ctx context.Context, ioHandle int32, keyValuePairs string) error
 	GetParameters(ctx context.Context, ioHandle int32, keys string) (string, error)
 	RegisterClient(ctx context.Context, client IAudioFlingerClient) error
-	GetInputBufferSize(ctx context.Context, sampleRate int32, format common.AudioFormatDescription, channelMask common.AudioChannelLayout) (int64, error)
+	GetInputBufferSize(ctx context.Context, sampleRate int32, format interface{}, channelMask interface{}) (int64, error)
 	OpenOutput(ctx context.Context, request OpenOutputRequest) (OpenOutputResponse, error)
 	OpenDuplicateOutput(ctx context.Context, output1 int32, output2 int32) (int32, error)
 	CloseOutput(ctx context.Context, output int32) error
@@ -131,7 +130,7 @@ type IAudioFlingerService interface {
 	ReleaseAudioSessionId(ctx context.Context, audioSession int32, pid int32) error
 	QueryNumberEffects(ctx context.Context) (int32, error)
 	QueryEffect(ctx context.Context, index int32) (EffectDescriptor, error)
-	GetEffectDescriptor(ctx context.Context, effectUUID common.AudioUuid, typeUUID common.AudioUuid, preferredTypeFlag int32) (EffectDescriptor, error)
+	GetEffectDescriptor(ctx context.Context, effectUUID interface{}, typeUUID interface{}, preferredTypeFlag int32) (EffectDescriptor, error)
 	CreateEffect(ctx context.Context, request CreateEffectRequest) (CreateEffectResponse, error)
 	MoveEffects(ctx context.Context, session int32, srcOutput int32, dstOutput int32) error
 	SetEffectSuspended(ctx context.Context, effectId int32, sessionId int32, suspended bool) error
@@ -152,13 +151,13 @@ type IAudioFlingerService interface {
 	SetAudioHalPids(ctx context.Context, pids []int32) error
 	SetVibratorInfos(ctx context.Context, vibratorInfos []AudioVibratorInfo) error
 	UpdateSecondaryOutputs(ctx context.Context, trackSecondaryOutputInfos []TrackSecondaryOutputInfo) error
-	GetMmapPolicyInfos(ctx context.Context, policyType common.AudioMMapPolicyType) ([]common.AudioMMapPolicyInfo, error)
+	GetMmapPolicyInfos(ctx context.Context, policyType interface{}) ([]interface{}, error)
 	GetAAudioMixerBurstCount(ctx context.Context) (int32, error)
 	GetAAudioHardwareBurstMinUsec(ctx context.Context) (int32, error)
 	SetDeviceConnectedState(ctx context.Context, devicePort AudioPortFw, state DeviceConnectedState) error
 	SetSimulateDeviceConnections(ctx context.Context, enabled bool) error
-	SetRequestedLatencyMode(ctx context.Context, output int32, latencyMode common.AudioLatencyMode) error
-	GetSupportedLatencyModes(ctx context.Context, output int32) ([]common.AudioLatencyMode, error)
+	SetRequestedLatencyMode(ctx context.Context, output int32, latencyMode interface{}) error
+	GetSupportedLatencyModes(ctx context.Context, output int32) ([]interface{}, error)
 	SupportsBluetoothVariableLatency(ctx context.Context) (bool, error)
 	SetBluetoothVariableLatencyEnabled(ctx context.Context, enabled bool) error
 	IsBluetoothVariableLatencyEnabled(ctx context.Context) (bool, error)
@@ -298,8 +297,8 @@ func (p *AudioFlingerServiceProxy) SampleRate(
 func (p *AudioFlingerServiceProxy) Format(
 	ctx context.Context,
 	output int32,
-) (common.AudioFormatDescription, error) {
-	var _result common.AudioFormatDescription
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_data.WriteInt32(output)
@@ -319,15 +318,6 @@ func (p *AudioFlingerServiceProxy) Format(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -659,11 +649,10 @@ func (p *AudioFlingerServiceProxy) SetPortsVolume(
 
 func (p *AudioFlingerServiceProxy) SetMode(
 	ctx context.Context,
-	mode common.AudioMode,
+	mode interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
-	_data.WriteInt32(int32(mode))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioFlingerService, "setMode")
 	if _err != nil {
@@ -833,7 +822,7 @@ func (p *AudioFlingerServiceProxy) RegisterClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioFlingerService, "registerClient")
 	if _err != nil {
@@ -856,21 +845,13 @@ func (p *AudioFlingerServiceProxy) RegisterClient(
 func (p *AudioFlingerServiceProxy) GetInputBufferSize(
 	ctx context.Context,
 	sampleRate int32,
-	format common.AudioFormatDescription,
-	channelMask common.AudioChannelLayout,
+	format interface{},
+	channelMask interface{},
 ) (int64, error) {
 	var _result int64
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_data.WriteInt32(sampleRate)
-	_data.WriteInt32(1)
-	if _err := format.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := channelMask.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioFlingerService, "getInputBufferSize")
 	if _err != nil {
@@ -1358,21 +1339,13 @@ func (p *AudioFlingerServiceProxy) QueryEffect(
 
 func (p *AudioFlingerServiceProxy) GetEffectDescriptor(
 	ctx context.Context,
-	effectUUID common.AudioUuid,
-	typeUUID common.AudioUuid,
+	effectUUID interface{},
+	typeUUID interface{},
 	preferredTypeFlag int32,
 ) (EffectDescriptor, error) {
 	var _result EffectDescriptor
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
-	_data.WriteInt32(1)
-	if _err := effectUUID.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := typeUUID.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteInt32(preferredTypeFlag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioFlingerService, "getEffectDescriptor")
@@ -2021,12 +1994,11 @@ func (p *AudioFlingerServiceProxy) UpdateSecondaryOutputs(
 
 func (p *AudioFlingerServiceProxy) GetMmapPolicyInfos(
 	ctx context.Context,
-	policyType common.AudioMMapPolicyType,
-) ([]common.AudioMMapPolicyInfo, error) {
-	var _result []common.AudioMMapPolicyInfo
+	policyType interface{},
+) ([]interface{}, error) {
+	var _result []interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
-	_data.WriteInt32(int32(policyType))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioFlingerService, "getMmapPolicyInfos")
 	if _err != nil {
@@ -2049,11 +2021,8 @@ func (p *AudioFlingerServiceProxy) GetMmapPolicyInfos(
 	}
 
 	if _count >= 0 {
-		_result = make([]common.AudioMMapPolicyInfo, _count)
+		_result = make([]interface{}, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
-				return _result, _err
-			}
 		}
 	}
 	return _result, nil
@@ -2177,12 +2146,11 @@ func (p *AudioFlingerServiceProxy) SetSimulateDeviceConnections(
 func (p *AudioFlingerServiceProxy) SetRequestedLatencyMode(
 	ctx context.Context,
 	output int32,
-	latencyMode common.AudioLatencyMode,
+	latencyMode interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_data.WriteInt32(output)
-	_data.WritePaddedByte(byte(latencyMode))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioFlingerService, "setRequestedLatencyMode")
 	if _err != nil {
@@ -2205,8 +2173,8 @@ func (p *AudioFlingerServiceProxy) SetRequestedLatencyMode(
 func (p *AudioFlingerServiceProxy) GetSupportedLatencyModes(
 	ctx context.Context,
 	output int32,
-) ([]common.AudioLatencyMode, error) {
-	var _result []common.AudioLatencyMode
+) ([]interface{}, error) {
+	var _result []interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_data.WriteInt32(output)
@@ -2232,13 +2200,8 @@ func (p *AudioFlingerServiceProxy) GetSupportedLatencyModes(
 	}
 
 	if _count >= 0 {
-		_result = make([]common.AudioLatencyMode, _count)
+		_result = make([]interface{}, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			_raw, _err := _reply.ReadPaddedByte()
-			if _err != nil {
-				return _result, _err
-			}
-			_result[_i] = common.AudioLatencyMode(_raw)
 		}
 	}
 	return _result, nil
@@ -2335,7 +2298,7 @@ func (p *AudioFlingerServiceProxy) GetSoundDoseInterface(
 	var _result ISoundDose
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioFlingerService, "getSoundDoseInterface")
 	if _err != nil {
@@ -2632,10 +2595,7 @@ func (s *AudioFlingerServiceStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIAudioFlingerServiceFrameCount:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -2839,12 +2799,8 @@ func (s *AudioFlingerServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_raw_mode, _err := _data.ReadInt32()
-		if _err != nil {
-			return nil, _err
-		}
-		_arg_mode := common.AudioMode(_raw_mode)
-		_err = s.Impl.SetMode(ctx, _arg_mode)
+		var _arg_mode interface{}
+		_err := s.Impl.SetMode(ctx, _arg_mode)
 		_reply := parcel.New()
 		if _err != nil {
 			binder.WriteStatus(_reply, _err)
@@ -2965,30 +2921,8 @@ func (s *AudioFlingerServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_format common.AudioFormatDescription
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_format.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
-		var _arg_channelMask common.AudioChannelLayout
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_channelMask.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_format interface{}
+		var _arg_channelMask interface{}
 		_result, _err := s.Impl.GetInputBufferSize(ctx, _arg_sampleRate, _arg_format, _arg_channelMask)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3291,30 +3225,8 @@ func (s *AudioFlingerServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_effectUUID common.AudioUuid
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_effectUUID.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
-		var _arg_typeUUID common.AudioUuid
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_typeUUID.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_effectUUID interface{}
+		var _arg_typeUUID interface{}
 		_arg_preferredTypeFlag, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -3692,11 +3604,7 @@ func (s *AudioFlingerServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_raw_policyType, _err := _data.ReadInt32()
-		if _err != nil {
-			return nil, _err
-		}
-		_arg_policyType := common.AudioMMapPolicyType(_raw_policyType)
+		var _arg_policyType interface{}
 		_result, _err := s.Impl.GetMmapPolicyInfos(ctx, _arg_policyType)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3786,11 +3694,7 @@ func (s *AudioFlingerServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_raw_latencyMode, _err := _data.ReadPaddedByte()
-		if _err != nil {
-			return nil, _err
-		}
-		_arg_latencyMode := common.AudioLatencyMode(_raw_latencyMode)
+		var _arg_latencyMode interface{}
 		_err = s.Impl.SetRequestedLatencyMode(ctx, _arg_output, _arg_latencyMode)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3977,4 +3881,645 @@ func (s *AudioFlingerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAudioFlingerServiceServer is the server-side interface that user implementations
+// provide to NewAudioFlingerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioFlingerServiceServer interface {
+	CreateTrack(ctx context.Context, request CreateTrackRequest) (CreateTrackResponse, error)
+	CreateRecord(ctx context.Context, request CreateRecordRequest) (CreateRecordResponse, error)
+	SampleRate(ctx context.Context, ioHandle int32) (int32, error)
+	Format(ctx context.Context, output int32) (interface{}, error)
+	FrameCount(ctx context.Context, ioHandle int32) (int64, error)
+	Latency(ctx context.Context, output int32) (int32, error)
+	SetMasterVolume(ctx context.Context, value float32) error
+	SetMasterMute(ctx context.Context, muted bool) error
+	MasterVolume(ctx context.Context) (float32, error)
+	MasterMute(ctx context.Context) (bool, error)
+	SetMasterBalance(ctx context.Context, balance float32) error
+	GetMasterBalance(ctx context.Context) (float32, error)
+	SetStreamVolume(ctx context.Context, stream tuner.AudioStreamType, value float32, muted bool, output int32) error
+	SetStreamMute(ctx context.Context, stream tuner.AudioStreamType, muted bool) error
+	SetPortsVolume(ctx context.Context, portIds []int32, volume float32, muted bool, output int32) error
+	SetMode(ctx context.Context, mode interface{}) error
+	SetMicMute(ctx context.Context, state bool) error
+	GetMicMute(ctx context.Context) (bool, error)
+	SetRecordSilenced(ctx context.Context, portId int32, silenced bool) error
+	SetParameters(ctx context.Context, ioHandle int32, keyValuePairs string) error
+	GetParameters(ctx context.Context, ioHandle int32, keys string) (string, error)
+	RegisterClient(ctx context.Context, client IAudioFlingerClient) error
+	GetInputBufferSize(ctx context.Context, sampleRate int32, format interface{}, channelMask interface{}) (int64, error)
+	OpenOutput(ctx context.Context, request OpenOutputRequest) (OpenOutputResponse, error)
+	OpenDuplicateOutput(ctx context.Context, output1 int32, output2 int32) (int32, error)
+	CloseOutput(ctx context.Context, output int32) error
+	SuspendOutput(ctx context.Context, output int32) error
+	RestoreOutput(ctx context.Context, output int32) error
+	OpenInput(ctx context.Context, request OpenInputRequest) (OpenInputResponse, error)
+	CloseInput(ctx context.Context, input int32) error
+	SetVoiceVolume(ctx context.Context, volume float32) error
+	GetRenderPosition(ctx context.Context, output int32) (RenderPosition, error)
+	GetInputFramesLost(ctx context.Context, ioHandle int32) (int32, error)
+	NewAudioUniqueId(ctx context.Context, use AudioUniqueIdUse) (int32, error)
+	AcquireAudioSessionId(ctx context.Context, audioSession int32, pid int32, uid int32) error
+	ReleaseAudioSessionId(ctx context.Context, audioSession int32, pid int32) error
+	QueryNumberEffects(ctx context.Context) (int32, error)
+	QueryEffect(ctx context.Context, index int32) (EffectDescriptor, error)
+	GetEffectDescriptor(ctx context.Context, effectUUID interface{}, typeUUID interface{}, preferredTypeFlag int32) (EffectDescriptor, error)
+	CreateEffect(ctx context.Context, request CreateEffectRequest) (CreateEffectResponse, error)
+	MoveEffects(ctx context.Context, session int32, srcOutput int32, dstOutput int32) error
+	SetEffectSuspended(ctx context.Context, effectId int32, sessionId int32, suspended bool) error
+	LoadHwModule(ctx context.Context, name string) (int32, error)
+	GetPrimaryOutputSamplingRate(ctx context.Context) (int32, error)
+	GetPrimaryOutputFrameCount(ctx context.Context) (int64, error)
+	SetLowRamDevice(ctx context.Context, isLowRamDevice bool, totalMemory int64) error
+	GetAudioPort(ctx context.Context, port AudioPortFw) (AudioPortFw, error)
+	CreateAudioPatch(ctx context.Context, patch AudioPatchFw) (int32, error)
+	ReleaseAudioPatch(ctx context.Context, handle int32) error
+	ListAudioPatches(ctx context.Context, maxCount int32) ([]AudioPatchFw, error)
+	SetAudioPortConfig(ctx context.Context, config AudioPortConfigFw) error
+	GetAudioHwSyncForSession(ctx context.Context, sessionId int32) (int32, error)
+	SystemReady(ctx context.Context) error
+	AudioPolicyReady(ctx context.Context) error
+	FrameCountHAL(ctx context.Context, ioHandle int32) (int64, error)
+	GetMicrophones(ctx context.Context) ([]MicrophoneInfoFw, error)
+	SetAudioHalPids(ctx context.Context, pids []int32) error
+	SetVibratorInfos(ctx context.Context, vibratorInfos []AudioVibratorInfo) error
+	UpdateSecondaryOutputs(ctx context.Context, trackSecondaryOutputInfos []TrackSecondaryOutputInfo) error
+	GetMmapPolicyInfos(ctx context.Context, policyType interface{}) ([]interface{}, error)
+	GetAAudioMixerBurstCount(ctx context.Context) (int32, error)
+	GetAAudioHardwareBurstMinUsec(ctx context.Context) (int32, error)
+	SetDeviceConnectedState(ctx context.Context, devicePort AudioPortFw, state DeviceConnectedState) error
+	SetSimulateDeviceConnections(ctx context.Context, enabled bool) error
+	SetRequestedLatencyMode(ctx context.Context, output int32, latencyMode interface{}) error
+	GetSupportedLatencyModes(ctx context.Context, output int32) ([]interface{}, error)
+	SupportsBluetoothVariableLatency(ctx context.Context) (bool, error)
+	SetBluetoothVariableLatencyEnabled(ctx context.Context, enabled bool) error
+	IsBluetoothVariableLatencyEnabled(ctx context.Context) (bool, error)
+	GetSoundDoseInterface(ctx context.Context, callback ISoundDoseCallback) (ISoundDose, error)
+	InvalidateTracks(ctx context.Context, portIds []int32) error
+	GetAudioPolicyConfig(ctx context.Context) (AudioPolicyConfig, error)
+	GetAudioMixPort(ctx context.Context, devicePort AudioPortFw, mixPort AudioPortFw) (AudioPortFw, error)
+	SetTracksInternalMute(ctx context.Context, tracksInternalMute []TrackInternalMuteInfo) error
+	ResetReferencesForTest(ctx context.Context) error
+}
+
+type audioFlingerServiceStubWrapper struct {
+	impl       IAudioFlingerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioFlingerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioFlingerServiceStubWrapper) CreateTrack(
+	ctx context.Context,
+	request CreateTrackRequest,
+) (CreateTrackResponse, error) {
+	return w.impl.CreateTrack(ctx, request)
+}
+
+func (w *audioFlingerServiceStubWrapper) CreateRecord(
+	ctx context.Context,
+	request CreateRecordRequest,
+) (CreateRecordResponse, error) {
+	return w.impl.CreateRecord(ctx, request)
+}
+
+func (w *audioFlingerServiceStubWrapper) SampleRate(
+	ctx context.Context,
+	ioHandle int32,
+) (int32, error) {
+	return w.impl.SampleRate(ctx, ioHandle)
+}
+
+func (w *audioFlingerServiceStubWrapper) Format(
+	ctx context.Context,
+	output int32,
+) (interface{}, error) {
+	return w.impl.Format(ctx, output)
+}
+
+func (w *audioFlingerServiceStubWrapper) FrameCount(
+	ctx context.Context,
+	ioHandle int32,
+) (int64, error) {
+	return w.impl.FrameCount(ctx, ioHandle)
+}
+
+func (w *audioFlingerServiceStubWrapper) Latency(
+	ctx context.Context,
+	output int32,
+) (int32, error) {
+	return w.impl.Latency(ctx, output)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetMasterVolume(
+	ctx context.Context,
+	value float32,
+) error {
+	return w.impl.SetMasterVolume(ctx, value)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetMasterMute(
+	ctx context.Context,
+	muted bool,
+) error {
+	return w.impl.SetMasterMute(ctx, muted)
+}
+
+func (w *audioFlingerServiceStubWrapper) MasterVolume(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.MasterVolume(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) MasterMute(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.MasterMute(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetMasterBalance(
+	ctx context.Context,
+	balance float32,
+) error {
+	return w.impl.SetMasterBalance(ctx, balance)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetMasterBalance(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetMasterBalance(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetStreamVolume(
+	ctx context.Context,
+	stream tuner.AudioStreamType,
+	value float32,
+	muted bool,
+	output int32,
+) error {
+	return w.impl.SetStreamVolume(ctx, stream, value, muted, output)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetStreamMute(
+	ctx context.Context,
+	stream tuner.AudioStreamType,
+	muted bool,
+) error {
+	return w.impl.SetStreamMute(ctx, stream, muted)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetPortsVolume(
+	ctx context.Context,
+	portIds []int32,
+	volume float32,
+	muted bool,
+	output int32,
+) error {
+	return w.impl.SetPortsVolume(ctx, portIds, volume, muted, output)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetMode(
+	ctx context.Context,
+	mode interface{},
+) error {
+	return w.impl.SetMode(ctx, mode)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetMicMute(
+	ctx context.Context,
+	state bool,
+) error {
+	return w.impl.SetMicMute(ctx, state)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetMicMute(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetMicMute(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetRecordSilenced(
+	ctx context.Context,
+	portId int32,
+	silenced bool,
+) error {
+	return w.impl.SetRecordSilenced(ctx, portId, silenced)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetParameters(
+	ctx context.Context,
+	ioHandle int32,
+	keyValuePairs string,
+) error {
+	return w.impl.SetParameters(ctx, ioHandle, keyValuePairs)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetParameters(
+	ctx context.Context,
+	ioHandle int32,
+	keys string,
+) (string, error) {
+	return w.impl.GetParameters(ctx, ioHandle, keys)
+}
+
+func (w *audioFlingerServiceStubWrapper) RegisterClient(
+	ctx context.Context,
+	client IAudioFlingerClient,
+) error {
+	return w.impl.RegisterClient(ctx, client)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetInputBufferSize(
+	ctx context.Context,
+	sampleRate int32,
+	format interface{},
+	channelMask interface{},
+) (int64, error) {
+	return w.impl.GetInputBufferSize(ctx, sampleRate, format, channelMask)
+}
+
+func (w *audioFlingerServiceStubWrapper) OpenOutput(
+	ctx context.Context,
+	request OpenOutputRequest,
+) (OpenOutputResponse, error) {
+	return w.impl.OpenOutput(ctx, request)
+}
+
+func (w *audioFlingerServiceStubWrapper) OpenDuplicateOutput(
+	ctx context.Context,
+	output1 int32,
+	output2 int32,
+) (int32, error) {
+	return w.impl.OpenDuplicateOutput(ctx, output1, output2)
+}
+
+func (w *audioFlingerServiceStubWrapper) CloseOutput(
+	ctx context.Context,
+	output int32,
+) error {
+	return w.impl.CloseOutput(ctx, output)
+}
+
+func (w *audioFlingerServiceStubWrapper) SuspendOutput(
+	ctx context.Context,
+	output int32,
+) error {
+	return w.impl.SuspendOutput(ctx, output)
+}
+
+func (w *audioFlingerServiceStubWrapper) RestoreOutput(
+	ctx context.Context,
+	output int32,
+) error {
+	return w.impl.RestoreOutput(ctx, output)
+}
+
+func (w *audioFlingerServiceStubWrapper) OpenInput(
+	ctx context.Context,
+	request OpenInputRequest,
+) (OpenInputResponse, error) {
+	return w.impl.OpenInput(ctx, request)
+}
+
+func (w *audioFlingerServiceStubWrapper) CloseInput(
+	ctx context.Context,
+	input int32,
+) error {
+	return w.impl.CloseInput(ctx, input)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetVoiceVolume(
+	ctx context.Context,
+	volume float32,
+) error {
+	return w.impl.SetVoiceVolume(ctx, volume)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetRenderPosition(
+	ctx context.Context,
+	output int32,
+) (RenderPosition, error) {
+	return w.impl.GetRenderPosition(ctx, output)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetInputFramesLost(
+	ctx context.Context,
+	ioHandle int32,
+) (int32, error) {
+	return w.impl.GetInputFramesLost(ctx, ioHandle)
+}
+
+func (w *audioFlingerServiceStubWrapper) NewAudioUniqueId(
+	ctx context.Context,
+	use AudioUniqueIdUse,
+) (int32, error) {
+	return w.impl.NewAudioUniqueId(ctx, use)
+}
+
+func (w *audioFlingerServiceStubWrapper) AcquireAudioSessionId(
+	ctx context.Context,
+	audioSession int32,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.AcquireAudioSessionId(ctx, audioSession, pid, uid)
+}
+
+func (w *audioFlingerServiceStubWrapper) ReleaseAudioSessionId(
+	ctx context.Context,
+	audioSession int32,
+	pid int32,
+) error {
+	return w.impl.ReleaseAudioSessionId(ctx, audioSession, pid)
+}
+
+func (w *audioFlingerServiceStubWrapper) QueryNumberEffects(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.QueryNumberEffects(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) QueryEffect(
+	ctx context.Context,
+	index int32,
+) (EffectDescriptor, error) {
+	return w.impl.QueryEffect(ctx, index)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetEffectDescriptor(
+	ctx context.Context,
+	effectUUID interface{},
+	typeUUID interface{},
+	preferredTypeFlag int32,
+) (EffectDescriptor, error) {
+	return w.impl.GetEffectDescriptor(ctx, effectUUID, typeUUID, preferredTypeFlag)
+}
+
+func (w *audioFlingerServiceStubWrapper) CreateEffect(
+	ctx context.Context,
+	request CreateEffectRequest,
+) (CreateEffectResponse, error) {
+	return w.impl.CreateEffect(ctx, request)
+}
+
+func (w *audioFlingerServiceStubWrapper) MoveEffects(
+	ctx context.Context,
+	session int32,
+	srcOutput int32,
+	dstOutput int32,
+) error {
+	return w.impl.MoveEffects(ctx, session, srcOutput, dstOutput)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetEffectSuspended(
+	ctx context.Context,
+	effectId int32,
+	sessionId int32,
+	suspended bool,
+) error {
+	return w.impl.SetEffectSuspended(ctx, effectId, sessionId, suspended)
+}
+
+func (w *audioFlingerServiceStubWrapper) LoadHwModule(
+	ctx context.Context,
+	name string,
+) (int32, error) {
+	return w.impl.LoadHwModule(ctx, name)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetPrimaryOutputSamplingRate(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPrimaryOutputSamplingRate(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetPrimaryOutputFrameCount(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetPrimaryOutputFrameCount(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetLowRamDevice(
+	ctx context.Context,
+	isLowRamDevice bool,
+	totalMemory int64,
+) error {
+	return w.impl.SetLowRamDevice(ctx, isLowRamDevice, totalMemory)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetAudioPort(
+	ctx context.Context,
+	port AudioPortFw,
+) (AudioPortFw, error) {
+	return w.impl.GetAudioPort(ctx, port)
+}
+
+func (w *audioFlingerServiceStubWrapper) CreateAudioPatch(
+	ctx context.Context,
+	patch AudioPatchFw,
+) (int32, error) {
+	return w.impl.CreateAudioPatch(ctx, patch)
+}
+
+func (w *audioFlingerServiceStubWrapper) ReleaseAudioPatch(
+	ctx context.Context,
+	handle int32,
+) error {
+	return w.impl.ReleaseAudioPatch(ctx, handle)
+}
+
+func (w *audioFlingerServiceStubWrapper) ListAudioPatches(
+	ctx context.Context,
+	maxCount int32,
+) ([]AudioPatchFw, error) {
+	return w.impl.ListAudioPatches(ctx, maxCount)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetAudioPortConfig(
+	ctx context.Context,
+	config AudioPortConfigFw,
+) error {
+	return w.impl.SetAudioPortConfig(ctx, config)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetAudioHwSyncForSession(
+	ctx context.Context,
+	sessionId int32,
+) (int32, error) {
+	return w.impl.GetAudioHwSyncForSession(ctx, sessionId)
+}
+
+func (w *audioFlingerServiceStubWrapper) SystemReady(
+	ctx context.Context,
+) error {
+	return w.impl.SystemReady(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) AudioPolicyReady(
+	ctx context.Context,
+) error {
+	return w.impl.AudioPolicyReady(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) FrameCountHAL(
+	ctx context.Context,
+	ioHandle int32,
+) (int64, error) {
+	return w.impl.FrameCountHAL(ctx, ioHandle)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetMicrophones(
+	ctx context.Context,
+) ([]MicrophoneInfoFw, error) {
+	return w.impl.GetMicrophones(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetAudioHalPids(
+	ctx context.Context,
+	pids []int32,
+) error {
+	return w.impl.SetAudioHalPids(ctx, pids)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetVibratorInfos(
+	ctx context.Context,
+	vibratorInfos []AudioVibratorInfo,
+) error {
+	return w.impl.SetVibratorInfos(ctx, vibratorInfos)
+}
+
+func (w *audioFlingerServiceStubWrapper) UpdateSecondaryOutputs(
+	ctx context.Context,
+	trackSecondaryOutputInfos []TrackSecondaryOutputInfo,
+) error {
+	return w.impl.UpdateSecondaryOutputs(ctx, trackSecondaryOutputInfos)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetMmapPolicyInfos(
+	ctx context.Context,
+	policyType interface{},
+) ([]interface{}, error) {
+	return w.impl.GetMmapPolicyInfos(ctx, policyType)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetAAudioMixerBurstCount(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAAudioMixerBurstCount(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetAAudioHardwareBurstMinUsec(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAAudioHardwareBurstMinUsec(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetDeviceConnectedState(
+	ctx context.Context,
+	devicePort AudioPortFw,
+	state DeviceConnectedState,
+) error {
+	return w.impl.SetDeviceConnectedState(ctx, devicePort, state)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetSimulateDeviceConnections(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetSimulateDeviceConnections(ctx, enabled)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetRequestedLatencyMode(
+	ctx context.Context,
+	output int32,
+	latencyMode interface{},
+) error {
+	return w.impl.SetRequestedLatencyMode(ctx, output, latencyMode)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetSupportedLatencyModes(
+	ctx context.Context,
+	output int32,
+) ([]interface{}, error) {
+	return w.impl.GetSupportedLatencyModes(ctx, output)
+}
+
+func (w *audioFlingerServiceStubWrapper) SupportsBluetoothVariableLatency(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.SupportsBluetoothVariableLatency(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetBluetoothVariableLatencyEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetBluetoothVariableLatencyEnabled(ctx, enabled)
+}
+
+func (w *audioFlingerServiceStubWrapper) IsBluetoothVariableLatencyEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBluetoothVariableLatencyEnabled(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetSoundDoseInterface(
+	ctx context.Context,
+	callback ISoundDoseCallback,
+) (ISoundDose, error) {
+	return w.impl.GetSoundDoseInterface(ctx, callback)
+}
+
+func (w *audioFlingerServiceStubWrapper) InvalidateTracks(
+	ctx context.Context,
+	portIds []int32,
+) error {
+	return w.impl.InvalidateTracks(ctx, portIds)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetAudioPolicyConfig(
+	ctx context.Context,
+) (AudioPolicyConfig, error) {
+	return w.impl.GetAudioPolicyConfig(ctx)
+}
+
+func (w *audioFlingerServiceStubWrapper) GetAudioMixPort(
+	ctx context.Context,
+	devicePort AudioPortFw,
+	mixPort AudioPortFw,
+) (AudioPortFw, error) {
+	return w.impl.GetAudioMixPort(ctx, devicePort, mixPort)
+}
+
+func (w *audioFlingerServiceStubWrapper) SetTracksInternalMute(
+	ctx context.Context,
+	tracksInternalMute []TrackInternalMuteInfo,
+) error {
+	return w.impl.SetTracksInternalMute(ctx, tracksInternalMute)
+}
+
+func (w *audioFlingerServiceStubWrapper) ResetReferencesForTest(
+	ctx context.Context,
+) error {
+	return w.impl.ResetReferencesForTest(ctx)
+}
+
+var _ IAudioFlingerService = (*audioFlingerServiceStubWrapper)(nil)
+
+// NewAudioFlingerServiceStub creates a server-side IAudioFlingerService wrapping the given
+// server implementation. The returned value satisfies IAudioFlingerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioFlingerServiceStub(
+	impl IAudioFlingerServiceServer,
+) IAudioFlingerService {
+	wrapper := &audioFlingerServiceStubWrapper{impl: impl}
+	stub := &AudioFlingerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

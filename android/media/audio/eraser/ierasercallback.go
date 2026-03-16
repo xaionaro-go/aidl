@@ -99,3 +99,43 @@ func (s *EraserCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEraserCallbackServer is the server-side interface that user implementations
+// provide to NewEraserCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEraserCallbackServer interface {
+	OnClassifierUpdate(ctx context.Context, soundSourceId int32, metadata ClassificationMetadataList) error
+}
+
+type eraserCallbackStubWrapper struct {
+	impl       IEraserCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eraserCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eraserCallbackStubWrapper) OnClassifierUpdate(
+	ctx context.Context,
+	soundSourceId int32,
+	metadata ClassificationMetadataList,
+) error {
+	return w.impl.OnClassifierUpdate(ctx, soundSourceId, metadata)
+}
+
+var _ IEraserCallback = (*eraserCallbackStubWrapper)(nil)
+
+// NewEraserCallbackStub creates a server-side IEraserCallback wrapping the given
+// server implementation. The returned value satisfies IEraserCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEraserCallbackStub(
+	impl IEraserCallbackServer,
+) IEraserCallback {
+	wrapper := &eraserCallbackStubWrapper{impl: impl}
+	stub := &EraserCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

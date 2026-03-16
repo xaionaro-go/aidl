@@ -92,7 +92,7 @@ func (p *ImsRcsControllerProxy) RegisterImsRegistrationCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "registerImsRegistrationCallback")
 	if _err != nil {
@@ -120,7 +120,7 @@ func (p *ImsRcsControllerProxy) UnregisterImsRegistrationCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "unregisterImsRegistrationCallback")
 	if _err != nil {
@@ -148,7 +148,7 @@ func (p *ImsRcsControllerProxy) GetImsRcsRegistrationState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(consumer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, consumer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "getImsRcsRegistrationState")
 	if _err != nil {
@@ -176,7 +176,7 @@ func (p *ImsRcsControllerProxy) GetImsRcsRegistrationTransportType(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(consumer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, consumer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "getImsRcsRegistrationTransportType")
 	if _err != nil {
@@ -204,7 +204,7 @@ func (p *ImsRcsControllerProxy) RegisterRcsAvailabilityCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "registerRcsAvailabilityCallback")
 	if _err != nil {
@@ -232,7 +232,7 @@ func (p *ImsRcsControllerProxy) UnregisterRcsAvailabilityCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "unregisterRcsAvailabilityCallback")
 	if _err != nil {
@@ -344,7 +344,7 @@ func (p *ImsRcsControllerProxy) RequestCapabilities(
 			}
 		}
 	}
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "requestCapabilities")
 	if _err != nil {
@@ -380,7 +380,7 @@ func (p *ImsRcsControllerProxy) RequestAvailability(
 	if _err := contactNumber.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "requestAvailability")
 	if _err != nil {
@@ -501,7 +501,7 @@ func (p *ImsRcsControllerProxy) RegisterUcePublishStateCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "registerUcePublishStateCallback")
 	if _err != nil {
@@ -529,7 +529,7 @@ func (p *ImsRcsControllerProxy) UnregisterUcePublishStateCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "unregisterUcePublishStateCallback")
 	if _err != nil {
@@ -596,8 +596,8 @@ func (p *ImsRcsControllerProxy) CreateSipDelegate(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(delegateState.AsBinder().Handle())
-	_data.WriteStrongBinder(delegateMessage.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, delegateState.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, delegateMessage.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "createSipDelegate")
 	if _err != nil {
@@ -626,7 +626,7 @@ func (p *ImsRcsControllerProxy) DestroySipDelegate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(reason)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "destroySipDelegate")
@@ -657,7 +657,7 @@ func (p *ImsRcsControllerProxy) TriggerNetworkRegistration(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sipCode)
 	_data.WriteString16(sipReason)
 
@@ -741,7 +741,7 @@ func (p *ImsRcsControllerProxy) RegisterRcsFeatureCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "registerRcsFeatureCallback")
 	if _err != nil {
@@ -767,7 +767,7 @@ func (p *ImsRcsControllerProxy) UnregisterImsFeatureCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsController)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsController, "unregisterImsFeatureCallback")
 	if _err != nil {
@@ -1304,4 +1304,248 @@ func (s *ImsRcsControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsRcsControllerServer is the server-side interface that user implementations
+// provide to NewImsRcsControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsRcsControllerServer interface {
+	RegisterImsRegistrationCallback(ctx context.Context, subId int32, c IImsRegistrationCallback) error
+	UnregisterImsRegistrationCallback(ctx context.Context, subId int32, c IImsRegistrationCallback) error
+	GetImsRcsRegistrationState(ctx context.Context, subId int32, consumer telephony.IIntegerConsumer) error
+	GetImsRcsRegistrationTransportType(ctx context.Context, subId int32, consumer telephony.IIntegerConsumer) error
+	RegisterRcsAvailabilityCallback(ctx context.Context, subId int32, c IImsCapabilityCallback) error
+	UnregisterRcsAvailabilityCallback(ctx context.Context, subId int32, c IImsCapabilityCallback) error
+	IsCapable(ctx context.Context, subId int32, capability int32, radioTech int32) (bool, error)
+	IsAvailable(ctx context.Context, subId int32, capability int32, radioTech int32) (bool, error)
+	RequestCapabilities(ctx context.Context, subId int32, contactNumbers []net.Uri, c IRcsUceControllerCallback) error
+	RequestAvailability(ctx context.Context, subId int32, contactNumber net.Uri, c IRcsUceControllerCallback) error
+	GetUcePublishState(ctx context.Context, subId int32) (int32, error)
+	IsUceSettingEnabled(ctx context.Context, subId int32) (bool, error)
+	SetUceSettingEnabled(ctx context.Context, subId int32, isEnabled bool) error
+	RegisterUcePublishStateCallback(ctx context.Context, subId int32, c IRcsUcePublishStateCallback) error
+	UnregisterUcePublishStateCallback(ctx context.Context, subId int32, c IRcsUcePublishStateCallback) error
+	IsSipDelegateSupported(ctx context.Context, subId int32) (bool, error)
+	CreateSipDelegate(ctx context.Context, subId int32, request ims.DelegateRequest, packageName string, delegateState ISipDelegateConnectionStateCallback, delegateMessage ISipDelegateMessageCallback) error
+	DestroySipDelegate(ctx context.Context, subId int32, connection ISipDelegate, reason int32) error
+	TriggerNetworkRegistration(ctx context.Context, subId int32, connection ISipDelegate, sipCode int32, sipReason string) error
+	RegisterSipDialogStateCallback(ctx context.Context, subId int32, cb interface{}) error
+	UnregisterSipDialogStateCallback(ctx context.Context, subId int32, cb interface{}) error
+	RegisterRcsFeatureCallback(ctx context.Context, slotId int32, callback internal.IImsServiceFeatureCallback) error
+	UnregisterImsFeatureCallback(ctx context.Context, callback internal.IImsServiceFeatureCallback) error
+}
+
+type imsRcsControllerStubWrapper struct {
+	impl       IImsRcsControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsRcsControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsRcsControllerStubWrapper) RegisterImsRegistrationCallback(
+	ctx context.Context,
+	subId int32,
+	c IImsRegistrationCallback,
+) error {
+	return w.impl.RegisterImsRegistrationCallback(ctx, subId, c)
+}
+
+func (w *imsRcsControllerStubWrapper) UnregisterImsRegistrationCallback(
+	ctx context.Context,
+	subId int32,
+	c IImsRegistrationCallback,
+) error {
+	return w.impl.UnregisterImsRegistrationCallback(ctx, subId, c)
+}
+
+func (w *imsRcsControllerStubWrapper) GetImsRcsRegistrationState(
+	ctx context.Context,
+	subId int32,
+	consumer telephony.IIntegerConsumer,
+) error {
+	return w.impl.GetImsRcsRegistrationState(ctx, subId, consumer)
+}
+
+func (w *imsRcsControllerStubWrapper) GetImsRcsRegistrationTransportType(
+	ctx context.Context,
+	subId int32,
+	consumer telephony.IIntegerConsumer,
+) error {
+	return w.impl.GetImsRcsRegistrationTransportType(ctx, subId, consumer)
+}
+
+func (w *imsRcsControllerStubWrapper) RegisterRcsAvailabilityCallback(
+	ctx context.Context,
+	subId int32,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.RegisterRcsAvailabilityCallback(ctx, subId, c)
+}
+
+func (w *imsRcsControllerStubWrapper) UnregisterRcsAvailabilityCallback(
+	ctx context.Context,
+	subId int32,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.UnregisterRcsAvailabilityCallback(ctx, subId, c)
+}
+
+func (w *imsRcsControllerStubWrapper) IsCapable(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	radioTech int32,
+) (bool, error) {
+	return w.impl.IsCapable(ctx, subId, capability, radioTech)
+}
+
+func (w *imsRcsControllerStubWrapper) IsAvailable(
+	ctx context.Context,
+	subId int32,
+	capability int32,
+	radioTech int32,
+) (bool, error) {
+	return w.impl.IsAvailable(ctx, subId, capability, radioTech)
+}
+
+func (w *imsRcsControllerStubWrapper) RequestCapabilities(
+	ctx context.Context,
+	subId int32,
+	contactNumbers []net.Uri,
+	c IRcsUceControllerCallback,
+) error {
+	return w.impl.RequestCapabilities(ctx, subId, contactNumbers, c)
+}
+
+func (w *imsRcsControllerStubWrapper) RequestAvailability(
+	ctx context.Context,
+	subId int32,
+	contactNumber net.Uri,
+	c IRcsUceControllerCallback,
+) error {
+	return w.impl.RequestAvailability(ctx, subId, contactNumber, c)
+}
+
+func (w *imsRcsControllerStubWrapper) GetUcePublishState(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetUcePublishState(ctx, subId)
+}
+
+func (w *imsRcsControllerStubWrapper) IsUceSettingEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsUceSettingEnabled(ctx, subId)
+}
+
+func (w *imsRcsControllerStubWrapper) SetUceSettingEnabled(
+	ctx context.Context,
+	subId int32,
+	isEnabled bool,
+) error {
+	return w.impl.SetUceSettingEnabled(ctx, subId, isEnabled)
+}
+
+func (w *imsRcsControllerStubWrapper) RegisterUcePublishStateCallback(
+	ctx context.Context,
+	subId int32,
+	c IRcsUcePublishStateCallback,
+) error {
+	return w.impl.RegisterUcePublishStateCallback(ctx, subId, c)
+}
+
+func (w *imsRcsControllerStubWrapper) UnregisterUcePublishStateCallback(
+	ctx context.Context,
+	subId int32,
+	c IRcsUcePublishStateCallback,
+) error {
+	return w.impl.UnregisterUcePublishStateCallback(ctx, subId, c)
+}
+
+func (w *imsRcsControllerStubWrapper) IsSipDelegateSupported(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsSipDelegateSupported(ctx, subId)
+}
+
+func (w *imsRcsControllerStubWrapper) CreateSipDelegate(
+	ctx context.Context,
+	subId int32,
+	request ims.DelegateRequest,
+	packageName string,
+	delegateState ISipDelegateConnectionStateCallback,
+	delegateMessage ISipDelegateMessageCallback,
+) error {
+	return w.impl.CreateSipDelegate(ctx, subId, request, packageName, delegateState, delegateMessage)
+}
+
+func (w *imsRcsControllerStubWrapper) DestroySipDelegate(
+	ctx context.Context,
+	subId int32,
+	connection ISipDelegate,
+	reason int32,
+) error {
+	return w.impl.DestroySipDelegate(ctx, subId, connection, reason)
+}
+
+func (w *imsRcsControllerStubWrapper) TriggerNetworkRegistration(
+	ctx context.Context,
+	subId int32,
+	connection ISipDelegate,
+	sipCode int32,
+	sipReason string,
+) error {
+	return w.impl.TriggerNetworkRegistration(ctx, subId, connection, sipCode, sipReason)
+}
+
+func (w *imsRcsControllerStubWrapper) RegisterSipDialogStateCallback(
+	ctx context.Context,
+	subId int32,
+	cb interface{},
+) error {
+	return w.impl.RegisterSipDialogStateCallback(ctx, subId, cb)
+}
+
+func (w *imsRcsControllerStubWrapper) UnregisterSipDialogStateCallback(
+	ctx context.Context,
+	subId int32,
+	cb interface{},
+) error {
+	return w.impl.UnregisterSipDialogStateCallback(ctx, subId, cb)
+}
+
+func (w *imsRcsControllerStubWrapper) RegisterRcsFeatureCallback(
+	ctx context.Context,
+	slotId int32,
+	callback internal.IImsServiceFeatureCallback,
+) error {
+	return w.impl.RegisterRcsFeatureCallback(ctx, slotId, callback)
+}
+
+func (w *imsRcsControllerStubWrapper) UnregisterImsFeatureCallback(
+	ctx context.Context,
+	callback internal.IImsServiceFeatureCallback,
+) error {
+	return w.impl.UnregisterImsFeatureCallback(ctx, callback)
+}
+
+var _ IImsRcsController = (*imsRcsControllerStubWrapper)(nil)
+
+// NewImsRcsControllerStub creates a server-side IImsRcsController wrapping the given
+// server implementation. The returned value satisfies IImsRcsController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsRcsControllerStub(
+	impl IImsRcsControllerServer,
+) IImsRcsController {
+	wrapper := &imsRcsControllerStubWrapper{impl: impl}
+	stub := &ImsRcsControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -19,8 +18,8 @@ const (
 
 type IInstrumentationWatcher interface {
 	AsBinder() binder.IBinder
-	InstrumentationStatus(ctx context.Context, name content.ComponentName, resultCode int32, results interface{}) error
-	InstrumentationFinished(ctx context.Context, name content.ComponentName, resultCode int32, results interface{}) error
+	InstrumentationStatus(ctx context.Context, name interface{}, resultCode int32, results interface{}) error
+	InstrumentationFinished(ctx context.Context, name interface{}, resultCode int32, results interface{}) error
 }
 
 type InstrumentationWatcherProxy struct {
@@ -41,16 +40,12 @@ var _ IInstrumentationWatcher = (*InstrumentationWatcherProxy)(nil)
 
 func (p *InstrumentationWatcherProxy) InstrumentationStatus(
 	ctx context.Context,
-	name content.ComponentName,
+	name interface{},
 	resultCode int32,
 	results interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstrumentationWatcher)
-	_data.WriteInt32(1)
-	if _err := name.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(resultCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstrumentationWatcher, "instrumentationStatus")
@@ -73,16 +68,12 @@ func (p *InstrumentationWatcherProxy) InstrumentationStatus(
 
 func (p *InstrumentationWatcherProxy) InstrumentationFinished(
 	ctx context.Context,
-	name content.ComponentName,
+	name interface{},
 	resultCode int32,
 	results interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstrumentationWatcher)
-	_data.WriteInt32(1)
-	if _err := name.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteInt32(resultCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInstrumentationWatcher, "instrumentationFinished")
@@ -121,18 +112,7 @@ func (s *InstrumentationWatcherStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_name content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_name.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_name interface{}
 		_arg_resultCode, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -150,18 +130,7 @@ func (s *InstrumentationWatcherStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_name content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_name.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_name interface{}
 		_arg_resultCode, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -178,4 +147,55 @@ func (s *InstrumentationWatcherStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInstrumentationWatcherServer is the server-side interface that user implementations
+// provide to NewInstrumentationWatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInstrumentationWatcherServer interface {
+	InstrumentationStatus(ctx context.Context, name interface{}, resultCode int32, results interface{}) error
+	InstrumentationFinished(ctx context.Context, name interface{}, resultCode int32, results interface{}) error
+}
+
+type instrumentationWatcherStubWrapper struct {
+	impl       IInstrumentationWatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *instrumentationWatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *instrumentationWatcherStubWrapper) InstrumentationStatus(
+	ctx context.Context,
+	name interface{},
+	resultCode int32,
+	results interface{},
+) error {
+	return w.impl.InstrumentationStatus(ctx, name, resultCode, results)
+}
+
+func (w *instrumentationWatcherStubWrapper) InstrumentationFinished(
+	ctx context.Context,
+	name interface{},
+	resultCode int32,
+	results interface{},
+) error {
+	return w.impl.InstrumentationFinished(ctx, name, resultCode, results)
+}
+
+var _ IInstrumentationWatcher = (*instrumentationWatcherStubWrapper)(nil)
+
+// NewInstrumentationWatcherStub creates a server-side IInstrumentationWatcher wrapping the given
+// server implementation. The returned value satisfies IInstrumentationWatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInstrumentationWatcherStub(
+	impl IInstrumentationWatcherServer,
+) IInstrumentationWatcher {
+	wrapper := &instrumentationWatcherStubWrapper{impl: impl}
+	stub := &InstrumentationWatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -64,7 +64,7 @@ func (p *OffloadProxy) InitOffload(
 	_data.WriteInterfaceToken(DescriptorIOffload)
 	_data.WriteFileDescriptor(fd1)
 	_data.WriteFileDescriptor(fd2)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOffload, "initOffload")
 	if _err != nil {
@@ -480,4 +480,107 @@ func (s *OffloadStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOffloadServer is the server-side interface that user implementations
+// provide to NewOffloadStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOffloadServer interface {
+	InitOffload(ctx context.Context, fd1 int32, fd2 int32, cb ITetheringOffloadCallback) error
+	StopOffload(ctx context.Context) error
+	SetLocalPrefixes(ctx context.Context, prefixes []string) error
+	GetForwardedStats(ctx context.Context, upstream string) (ForwardedStats, error)
+	SetDataWarningAndLimit(ctx context.Context, upstream string, warningBytes int64, limitBytes int64) error
+	SetUpstreamParameters(ctx context.Context, iface string, v4Addr string, v4Gw string, v6Gws []string) error
+	AddDownstream(ctx context.Context, iface string, prefix string) error
+	RemoveDownstream(ctx context.Context, iface string, prefix string) error
+}
+
+type offloadStubWrapper struct {
+	impl       IOffloadServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *offloadStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *offloadStubWrapper) InitOffload(
+	ctx context.Context,
+	fd1 int32,
+	fd2 int32,
+	cb ITetheringOffloadCallback,
+) error {
+	return w.impl.InitOffload(ctx, fd1, fd2, cb)
+}
+
+func (w *offloadStubWrapper) StopOffload(
+	ctx context.Context,
+) error {
+	return w.impl.StopOffload(ctx)
+}
+
+func (w *offloadStubWrapper) SetLocalPrefixes(
+	ctx context.Context,
+	prefixes []string,
+) error {
+	return w.impl.SetLocalPrefixes(ctx, prefixes)
+}
+
+func (w *offloadStubWrapper) GetForwardedStats(
+	ctx context.Context,
+	upstream string,
+) (ForwardedStats, error) {
+	return w.impl.GetForwardedStats(ctx, upstream)
+}
+
+func (w *offloadStubWrapper) SetDataWarningAndLimit(
+	ctx context.Context,
+	upstream string,
+	warningBytes int64,
+	limitBytes int64,
+) error {
+	return w.impl.SetDataWarningAndLimit(ctx, upstream, warningBytes, limitBytes)
+}
+
+func (w *offloadStubWrapper) SetUpstreamParameters(
+	ctx context.Context,
+	iface string,
+	v4Addr string,
+	v4Gw string,
+	v6Gws []string,
+) error {
+	return w.impl.SetUpstreamParameters(ctx, iface, v4Addr, v4Gw, v6Gws)
+}
+
+func (w *offloadStubWrapper) AddDownstream(
+	ctx context.Context,
+	iface string,
+	prefix string,
+) error {
+	return w.impl.AddDownstream(ctx, iface, prefix)
+}
+
+func (w *offloadStubWrapper) RemoveDownstream(
+	ctx context.Context,
+	iface string,
+	prefix string,
+) error {
+	return w.impl.RemoveDownstream(ctx, iface, prefix)
+}
+
+var _ IOffload = (*offloadStubWrapper)(nil)
+
+// NewOffloadStub creates a server-side IOffload wrapping the given
+// server implementation. The returned value satisfies IOffload
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOffloadStub(
+	impl IOffloadServer,
+) IOffload {
+	wrapper := &offloadStubWrapper{impl: impl}
+	stub := &OffloadStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

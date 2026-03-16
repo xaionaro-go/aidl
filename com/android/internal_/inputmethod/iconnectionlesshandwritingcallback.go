@@ -108,3 +108,50 @@ func (s *ConnectionlessHandwritingCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IConnectionlessHandwritingCallbackServer is the server-side interface that user implementations
+// provide to NewConnectionlessHandwritingCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConnectionlessHandwritingCallbackServer interface {
+	OnResult(ctx context.Context, text interface{}) error
+	OnError(ctx context.Context, errorCode int32) error
+}
+
+type connectionlessHandwritingCallbackStubWrapper struct {
+	impl       IConnectionlessHandwritingCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *connectionlessHandwritingCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *connectionlessHandwritingCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	text interface{},
+) error {
+	return w.impl.OnResult(ctx, text)
+}
+
+func (w *connectionlessHandwritingCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.OnError(ctx, errorCode)
+}
+
+var _ IConnectionlessHandwritingCallback = (*connectionlessHandwritingCallbackStubWrapper)(nil)
+
+// NewConnectionlessHandwritingCallbackStub creates a server-side IConnectionlessHandwritingCallback wrapping the given
+// server implementation. The returned value satisfies IConnectionlessHandwritingCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConnectionlessHandwritingCallbackStub(
+	impl IConnectionlessHandwritingCallbackServer,
+) IConnectionlessHandwritingCallback {
+	wrapper := &connectionlessHandwritingCallbackStubWrapper{impl: impl}
+	stub := &ConnectionlessHandwritingCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

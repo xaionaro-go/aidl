@@ -47,7 +47,7 @@ func (p *CamAppInfoServiceProxy) AddCamAppInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamAppInfoService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamAppInfoService, "addCamAppInfoListener")
 	if _err != nil {
@@ -73,7 +73,7 @@ func (p *CamAppInfoServiceProxy) RemoveCamAppInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamAppInfoService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamAppInfoService, "removeCamAppInfoListener")
 	if _err != nil {
@@ -193,4 +193,60 @@ func (s *CamAppInfoServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICamAppInfoServiceServer is the server-side interface that user implementations
+// provide to NewCamAppInfoServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICamAppInfoServiceServer interface {
+	AddCamAppInfoListener(ctx context.Context, listener ICamAppInfoListener) error
+	RemoveCamAppInfoListener(ctx context.Context, listener ICamAppInfoListener) error
+	GetCamAppInfo(ctx context.Context, slotId int32, appInfo os.Bundle) (int32, error)
+}
+
+type camAppInfoServiceStubWrapper struct {
+	impl       ICamAppInfoServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *camAppInfoServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *camAppInfoServiceStubWrapper) AddCamAppInfoListener(
+	ctx context.Context,
+	listener ICamAppInfoListener,
+) error {
+	return w.impl.AddCamAppInfoListener(ctx, listener)
+}
+
+func (w *camAppInfoServiceStubWrapper) RemoveCamAppInfoListener(
+	ctx context.Context,
+	listener ICamAppInfoListener,
+) error {
+	return w.impl.RemoveCamAppInfoListener(ctx, listener)
+}
+
+func (w *camAppInfoServiceStubWrapper) GetCamAppInfo(
+	ctx context.Context,
+	slotId int32,
+	appInfo os.Bundle,
+) (int32, error) {
+	return w.impl.GetCamAppInfo(ctx, slotId, appInfo)
+}
+
+var _ ICamAppInfoService = (*camAppInfoServiceStubWrapper)(nil)
+
+// NewCamAppInfoServiceStub creates a server-side ICamAppInfoService wrapping the given
+// server implementation. The returned value satisfies ICamAppInfoService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCamAppInfoServiceStub(
+	impl ICamAppInfoServiceServer,
+) ICamAppInfoService {
+	wrapper := &camAppInfoServiceStubWrapper{impl: impl}
+	stub := &CamAppInfoServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

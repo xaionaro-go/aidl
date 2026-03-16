@@ -1259,3 +1259,189 @@ func (s *KeyMintDeviceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyMintDeviceServer is the server-side interface that user implementations
+// provide to NewKeyMintDeviceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyMintDeviceServer interface {
+	GetHardwareInfo(ctx context.Context) (KeyMintHardwareInfo, error)
+	AddRngEntropy(ctx context.Context, data []byte) error
+	GenerateKey(ctx context.Context, keyParams []KeyParameter, attestationKey *AttestationKey) (KeyCreationResult, error)
+	ImportKey(ctx context.Context, keyParams []KeyParameter, keyFormat KeyFormat, keyData []byte, attestationKey *AttestationKey) (KeyCreationResult, error)
+	ImportWrappedKey(ctx context.Context, wrappedKeyData []byte, wrappingKeyBlob []byte, maskingKey []byte, unwrappingParams []KeyParameter, passwordSid int64, biometricSid int64) (KeyCreationResult, error)
+	UpgradeKey(ctx context.Context, keyBlobToUpgrade []byte, upgradeParams []KeyParameter) ([]byte, error)
+	DeleteKey(ctx context.Context, keyBlob []byte) error
+	DeleteAllKeys(ctx context.Context) error
+	DestroyAttestationIds(ctx context.Context) error
+	Begin(ctx context.Context, purpose KeyPurpose, keyBlob []byte, params []KeyParameter, authToken *HardwareAuthToken) (BeginResult, error)
+	DeviceLocked(ctx context.Context, passwordOnly bool, timestampToken *secureclock.TimeStampToken) error
+	EarlyBootEnded(ctx context.Context) error
+	ConvertStorageKeyToEphemeral(ctx context.Context, storageKeyBlob []byte) ([]byte, error)
+	GetKeyCharacteristics(ctx context.Context, keyBlob []byte, appId []byte, appData []byte) ([]KeyCharacteristics, error)
+	GetRootOfTrustChallenge(ctx context.Context) ([]byte, error)
+	GetRootOfTrust(ctx context.Context, challenge []byte) ([]byte, error)
+	SendRootOfTrust(ctx context.Context, rootOfTrust []byte) error
+	SetAdditionalAttestationInfo(ctx context.Context, info []KeyParameter) error
+}
+
+type keyMintDeviceStubWrapper struct {
+	impl       IKeyMintDeviceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyMintDeviceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyMintDeviceStubWrapper) GetHardwareInfo(
+	ctx context.Context,
+) (KeyMintHardwareInfo, error) {
+	return w.impl.GetHardwareInfo(ctx)
+}
+
+func (w *keyMintDeviceStubWrapper) AddRngEntropy(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.AddRngEntropy(ctx, data)
+}
+
+func (w *keyMintDeviceStubWrapper) GenerateKey(
+	ctx context.Context,
+	keyParams []KeyParameter,
+	attestationKey *AttestationKey,
+) (KeyCreationResult, error) {
+	return w.impl.GenerateKey(ctx, keyParams, attestationKey)
+}
+
+func (w *keyMintDeviceStubWrapper) ImportKey(
+	ctx context.Context,
+	keyParams []KeyParameter,
+	keyFormat KeyFormat,
+	keyData []byte,
+	attestationKey *AttestationKey,
+) (KeyCreationResult, error) {
+	return w.impl.ImportKey(ctx, keyParams, keyFormat, keyData, attestationKey)
+}
+
+func (w *keyMintDeviceStubWrapper) ImportWrappedKey(
+	ctx context.Context,
+	wrappedKeyData []byte,
+	wrappingKeyBlob []byte,
+	maskingKey []byte,
+	unwrappingParams []KeyParameter,
+	passwordSid int64,
+	biometricSid int64,
+) (KeyCreationResult, error) {
+	return w.impl.ImportWrappedKey(ctx, wrappedKeyData, wrappingKeyBlob, maskingKey, unwrappingParams, passwordSid, biometricSid)
+}
+
+func (w *keyMintDeviceStubWrapper) UpgradeKey(
+	ctx context.Context,
+	keyBlobToUpgrade []byte,
+	upgradeParams []KeyParameter,
+) ([]byte, error) {
+	return w.impl.UpgradeKey(ctx, keyBlobToUpgrade, upgradeParams)
+}
+
+func (w *keyMintDeviceStubWrapper) DeleteKey(
+	ctx context.Context,
+	keyBlob []byte,
+) error {
+	return w.impl.DeleteKey(ctx, keyBlob)
+}
+
+func (w *keyMintDeviceStubWrapper) DeleteAllKeys(
+	ctx context.Context,
+) error {
+	return w.impl.DeleteAllKeys(ctx)
+}
+
+func (w *keyMintDeviceStubWrapper) DestroyAttestationIds(
+	ctx context.Context,
+) error {
+	return w.impl.DestroyAttestationIds(ctx)
+}
+
+func (w *keyMintDeviceStubWrapper) Begin(
+	ctx context.Context,
+	purpose KeyPurpose,
+	keyBlob []byte,
+	params []KeyParameter,
+	authToken *HardwareAuthToken,
+) (BeginResult, error) {
+	return w.impl.Begin(ctx, purpose, keyBlob, params, authToken)
+}
+
+func (w *keyMintDeviceStubWrapper) DeviceLocked(
+	ctx context.Context,
+	passwordOnly bool,
+	timestampToken *secureclock.TimeStampToken,
+) error {
+	return w.impl.DeviceLocked(ctx, passwordOnly, timestampToken)
+}
+
+func (w *keyMintDeviceStubWrapper) EarlyBootEnded(
+	ctx context.Context,
+) error {
+	return w.impl.EarlyBootEnded(ctx)
+}
+
+func (w *keyMintDeviceStubWrapper) ConvertStorageKeyToEphemeral(
+	ctx context.Context,
+	storageKeyBlob []byte,
+) ([]byte, error) {
+	return w.impl.ConvertStorageKeyToEphemeral(ctx, storageKeyBlob)
+}
+
+func (w *keyMintDeviceStubWrapper) GetKeyCharacteristics(
+	ctx context.Context,
+	keyBlob []byte,
+	appId []byte,
+	appData []byte,
+) ([]KeyCharacteristics, error) {
+	return w.impl.GetKeyCharacteristics(ctx, keyBlob, appId, appData)
+}
+
+func (w *keyMintDeviceStubWrapper) GetRootOfTrustChallenge(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetRootOfTrustChallenge(ctx)
+}
+
+func (w *keyMintDeviceStubWrapper) GetRootOfTrust(
+	ctx context.Context,
+	challenge []byte,
+) ([]byte, error) {
+	return w.impl.GetRootOfTrust(ctx, challenge)
+}
+
+func (w *keyMintDeviceStubWrapper) SendRootOfTrust(
+	ctx context.Context,
+	rootOfTrust []byte,
+) error {
+	return w.impl.SendRootOfTrust(ctx, rootOfTrust)
+}
+
+func (w *keyMintDeviceStubWrapper) SetAdditionalAttestationInfo(
+	ctx context.Context,
+	info []KeyParameter,
+) error {
+	return w.impl.SetAdditionalAttestationInfo(ctx, info)
+}
+
+var _ IKeyMintDevice = (*keyMintDeviceStubWrapper)(nil)
+
+// NewKeyMintDeviceStub creates a server-side IKeyMintDevice wrapping the given
+// server implementation. The returned value satisfies IKeyMintDevice
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyMintDeviceStub(
+	impl IKeyMintDeviceServer,
+) IKeyMintDevice {
+	wrapper := &keyMintDeviceStubWrapper{impl: impl}
+	stub := &KeyMintDeviceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

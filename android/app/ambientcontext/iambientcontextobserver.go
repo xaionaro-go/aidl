@@ -120,3 +120,50 @@ func (s *AmbientContextObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAmbientContextObserverServer is the server-side interface that user implementations
+// provide to NewAmbientContextObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAmbientContextObserverServer interface {
+	OnEvents(ctx context.Context, events []AmbientContextEvent) error
+	OnRegistrationComplete(ctx context.Context, statusCode int32) error
+}
+
+type ambientContextObserverStubWrapper struct {
+	impl       IAmbientContextObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ambientContextObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ambientContextObserverStubWrapper) OnEvents(
+	ctx context.Context,
+	events []AmbientContextEvent,
+) error {
+	return w.impl.OnEvents(ctx, events)
+}
+
+func (w *ambientContextObserverStubWrapper) OnRegistrationComplete(
+	ctx context.Context,
+	statusCode int32,
+) error {
+	return w.impl.OnRegistrationComplete(ctx, statusCode)
+}
+
+var _ IAmbientContextObserver = (*ambientContextObserverStubWrapper)(nil)
+
+// NewAmbientContextObserverStub creates a server-side IAmbientContextObserver wrapping the given
+// server implementation. The returned value satisfies IAmbientContextObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAmbientContextObserverStub(
+	impl IAmbientContextObserverServer,
+) IAmbientContextObserver {
+	wrapper := &ambientContextObserverStubWrapper{impl: impl}
+	stub := &AmbientContextObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

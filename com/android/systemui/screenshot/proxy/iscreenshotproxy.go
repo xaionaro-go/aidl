@@ -73,7 +73,7 @@ func (p *ScreenshotProxyProxy) DismissKeyguard(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScreenshotProxy)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIScreenshotProxy, "dismissKeyguard")
 	if _err != nil {
@@ -138,4 +138,50 @@ func (s *ScreenshotProxyStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IScreenshotProxyServer is the server-side interface that user implementations
+// provide to NewScreenshotProxyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScreenshotProxyServer interface {
+	IsNotificationShadeExpanded(ctx context.Context) (bool, error)
+	DismissKeyguard(ctx context.Context, callback IOnDoneCallback) error
+}
+
+type screenshotProxyStubWrapper struct {
+	impl       IScreenshotProxyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *screenshotProxyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *screenshotProxyStubWrapper) IsNotificationShadeExpanded(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsNotificationShadeExpanded(ctx)
+}
+
+func (w *screenshotProxyStubWrapper) DismissKeyguard(
+	ctx context.Context,
+	callback IOnDoneCallback,
+) error {
+	return w.impl.DismissKeyguard(ctx, callback)
+}
+
+var _ IScreenshotProxy = (*screenshotProxyStubWrapper)(nil)
+
+// NewScreenshotProxyStub creates a server-side IScreenshotProxy wrapping the given
+// server implementation. The returned value satisfies IScreenshotProxy
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScreenshotProxyStub(
+	impl IScreenshotProxyServer,
+) IScreenshotProxy {
+	wrapper := &screenshotProxyStubWrapper{impl: impl}
+	stub := &ScreenshotProxyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

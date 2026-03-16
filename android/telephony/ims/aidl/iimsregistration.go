@@ -87,7 +87,7 @@ func (p *ImsRegistrationProxy) AddRegistrationCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "addRegistrationCallback")
 	if _err != nil {
@@ -104,7 +104,7 @@ func (p *ImsRegistrationProxy) RemoveRegistrationCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "removeRegistrationCallback")
 	if _err != nil {
@@ -121,7 +121,7 @@ func (p *ImsRegistrationProxy) AddEmergencyRegistrationCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "addEmergencyRegistrationCallback")
 	if _err != nil {
@@ -138,7 +138,7 @@ func (p *ImsRegistrationProxy) RemoveEmergencyRegistrationCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRegistration)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRegistration, "removeEmergencyRegistrationCallback")
 	if _err != nil {
@@ -325,4 +325,105 @@ func (s *ImsRegistrationStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsRegistrationServer is the server-side interface that user implementations
+// provide to NewImsRegistrationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsRegistrationServer interface {
+	GetRegistrationTechnology(ctx context.Context) (int32, error)
+	AddRegistrationCallback(ctx context.Context, c IImsRegistrationCallback) error
+	RemoveRegistrationCallback(ctx context.Context, c IImsRegistrationCallback) error
+	AddEmergencyRegistrationCallback(ctx context.Context, c IImsRegistrationCallback) error
+	RemoveEmergencyRegistrationCallback(ctx context.Context, c IImsRegistrationCallback) error
+	TriggerFullNetworkRegistration(ctx context.Context, sipCode int32, sipReason string) error
+	TriggerUpdateSipDelegateRegistration(ctx context.Context) error
+	TriggerSipDelegateDeregistration(ctx context.Context) error
+	TriggerDeregistration(ctx context.Context, reason int32) error
+}
+
+type imsRegistrationStubWrapper struct {
+	impl       IImsRegistrationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsRegistrationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsRegistrationStubWrapper) GetRegistrationTechnology(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetRegistrationTechnology(ctx)
+}
+
+func (w *imsRegistrationStubWrapper) AddRegistrationCallback(
+	ctx context.Context,
+	c IImsRegistrationCallback,
+) error {
+	return w.impl.AddRegistrationCallback(ctx, c)
+}
+
+func (w *imsRegistrationStubWrapper) RemoveRegistrationCallback(
+	ctx context.Context,
+	c IImsRegistrationCallback,
+) error {
+	return w.impl.RemoveRegistrationCallback(ctx, c)
+}
+
+func (w *imsRegistrationStubWrapper) AddEmergencyRegistrationCallback(
+	ctx context.Context,
+	c IImsRegistrationCallback,
+) error {
+	return w.impl.AddEmergencyRegistrationCallback(ctx, c)
+}
+
+func (w *imsRegistrationStubWrapper) RemoveEmergencyRegistrationCallback(
+	ctx context.Context,
+	c IImsRegistrationCallback,
+) error {
+	return w.impl.RemoveEmergencyRegistrationCallback(ctx, c)
+}
+
+func (w *imsRegistrationStubWrapper) TriggerFullNetworkRegistration(
+	ctx context.Context,
+	sipCode int32,
+	sipReason string,
+) error {
+	return w.impl.TriggerFullNetworkRegistration(ctx, sipCode, sipReason)
+}
+
+func (w *imsRegistrationStubWrapper) TriggerUpdateSipDelegateRegistration(
+	ctx context.Context,
+) error {
+	return w.impl.TriggerUpdateSipDelegateRegistration(ctx)
+}
+
+func (w *imsRegistrationStubWrapper) TriggerSipDelegateDeregistration(
+	ctx context.Context,
+) error {
+	return w.impl.TriggerSipDelegateDeregistration(ctx)
+}
+
+func (w *imsRegistrationStubWrapper) TriggerDeregistration(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.TriggerDeregistration(ctx, reason)
+}
+
+var _ IImsRegistration = (*imsRegistrationStubWrapper)(nil)
+
+// NewImsRegistrationStub creates a server-side IImsRegistration wrapping the given
+// server implementation. The returned value satisfies IImsRegistration
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsRegistrationStub(
+	impl IImsRegistrationServer,
+) IImsRegistration {
+	wrapper := &imsRegistrationStubWrapper{impl: impl}
+	stub := &ImsRegistrationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

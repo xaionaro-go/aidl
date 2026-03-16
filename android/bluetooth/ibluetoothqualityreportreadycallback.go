@@ -116,3 +116,44 @@ func (s *BluetoothQualityReportReadyCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothQualityReportReadyCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothQualityReportReadyCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothQualityReportReadyCallbackServer interface {
+	OnBluetoothQualityReportReady(ctx context.Context, device BluetoothDevice, bluetoothQualityReport BluetoothQualityReport, status int32) error
+}
+
+type bluetoothQualityReportReadyCallbackStubWrapper struct {
+	impl       IBluetoothQualityReportReadyCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothQualityReportReadyCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothQualityReportReadyCallbackStubWrapper) OnBluetoothQualityReportReady(
+	ctx context.Context,
+	device BluetoothDevice,
+	bluetoothQualityReport BluetoothQualityReport,
+	status int32,
+) error {
+	return w.impl.OnBluetoothQualityReportReady(ctx, device, bluetoothQualityReport, status)
+}
+
+var _ IBluetoothQualityReportReadyCallback = (*bluetoothQualityReportReadyCallbackStubWrapper)(nil)
+
+// NewBluetoothQualityReportReadyCallbackStub creates a server-side IBluetoothQualityReportReadyCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothQualityReportReadyCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothQualityReportReadyCallbackStub(
+	impl IBluetoothQualityReportReadyCallbackServer,
+) IBluetoothQualityReportReadyCallback {
+	wrapper := &bluetoothQualityReportReadyCallbackStubWrapper{impl: impl}
+	stub := &BluetoothQualityReportReadyCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

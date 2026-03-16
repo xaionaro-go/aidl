@@ -3,7 +3,6 @@ package window
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -20,7 +19,7 @@ const (
 
 type IDisplayAreaOrganizer interface {
 	AsBinder() binder.IBinder
-	OnDisplayAreaAppeared(ctx context.Context, displayAreaInfo DisplayAreaInfo, leash view.SurfaceControl) error
+	OnDisplayAreaAppeared(ctx context.Context, displayAreaInfo DisplayAreaInfo, leash interface{}) error
 	OnDisplayAreaVanished(ctx context.Context, displayAreaInfo DisplayAreaInfo) error
 	OnDisplayAreaInfoChanged(ctx context.Context, displayAreaInfo DisplayAreaInfo) error
 }
@@ -44,16 +43,12 @@ var _ IDisplayAreaOrganizer = (*DisplayAreaOrganizerProxy)(nil)
 func (p *DisplayAreaOrganizerProxy) OnDisplayAreaAppeared(
 	ctx context.Context,
 	displayAreaInfo DisplayAreaInfo,
-	leash view.SurfaceControl,
+	leash interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDisplayAreaOrganizer)
 	_data.WriteInt32(1)
 	if _err := displayAreaInfo.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := leash.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 
@@ -136,18 +131,7 @@ func (s *DisplayAreaOrganizerStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_leash view.SurfaceControl
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_leash.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_leash interface{}
 		_err := s.Impl.OnDisplayAreaAppeared(ctx, _arg_displayAreaInfo, _arg_leash)
 		_ = _err
 		return nil, nil
@@ -192,4 +176,60 @@ func (s *DisplayAreaOrganizerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDisplayAreaOrganizerServer is the server-side interface that user implementations
+// provide to NewDisplayAreaOrganizerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayAreaOrganizerServer interface {
+	OnDisplayAreaAppeared(ctx context.Context, displayAreaInfo DisplayAreaInfo, leash interface{}) error
+	OnDisplayAreaVanished(ctx context.Context, displayAreaInfo DisplayAreaInfo) error
+	OnDisplayAreaInfoChanged(ctx context.Context, displayAreaInfo DisplayAreaInfo) error
+}
+
+type displayAreaOrganizerStubWrapper struct {
+	impl       IDisplayAreaOrganizerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayAreaOrganizerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayAreaOrganizerStubWrapper) OnDisplayAreaAppeared(
+	ctx context.Context,
+	displayAreaInfo DisplayAreaInfo,
+	leash interface{},
+) error {
+	return w.impl.OnDisplayAreaAppeared(ctx, displayAreaInfo, leash)
+}
+
+func (w *displayAreaOrganizerStubWrapper) OnDisplayAreaVanished(
+	ctx context.Context,
+	displayAreaInfo DisplayAreaInfo,
+) error {
+	return w.impl.OnDisplayAreaVanished(ctx, displayAreaInfo)
+}
+
+func (w *displayAreaOrganizerStubWrapper) OnDisplayAreaInfoChanged(
+	ctx context.Context,
+	displayAreaInfo DisplayAreaInfo,
+) error {
+	return w.impl.OnDisplayAreaInfoChanged(ctx, displayAreaInfo)
+}
+
+var _ IDisplayAreaOrganizer = (*displayAreaOrganizerStubWrapper)(nil)
+
+// NewDisplayAreaOrganizerStub creates a server-side IDisplayAreaOrganizer wrapping the given
+// server implementation. The returned value satisfies IDisplayAreaOrganizer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayAreaOrganizerStub(
+	impl IDisplayAreaOrganizerServer,
+) IDisplayAreaOrganizer {
+	wrapper := &displayAreaOrganizerStubWrapper{impl: impl}
+	stub := &DisplayAreaOrganizerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

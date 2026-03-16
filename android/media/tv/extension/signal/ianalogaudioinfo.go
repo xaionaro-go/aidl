@@ -111,3 +111,42 @@ func (s *AnalogAudioInfoStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAnalogAudioInfoServer is the server-side interface that user implementations
+// provide to NewAnalogAudioInfoStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAnalogAudioInfoServer interface {
+	GetAnalogAudioInfo(ctx context.Context, sessionToken string) (os.Bundle, error)
+}
+
+type analogAudioInfoStubWrapper struct {
+	impl       IAnalogAudioInfoServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *analogAudioInfoStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *analogAudioInfoStubWrapper) GetAnalogAudioInfo(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetAnalogAudioInfo(ctx, sessionToken)
+}
+
+var _ IAnalogAudioInfo = (*analogAudioInfoStubWrapper)(nil)
+
+// NewAnalogAudioInfoStub creates a server-side IAnalogAudioInfo wrapping the given
+// server implementation. The returned value satisfies IAnalogAudioInfo
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAnalogAudioInfoStub(
+	impl IAnalogAudioInfoServer,
+) IAnalogAudioInfo {
+	wrapper := &analogAudioInfoStubWrapper{impl: impl}
+	stub := &AnalogAudioInfoStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

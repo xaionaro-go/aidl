@@ -112,3 +112,50 @@ func (s *SpatializerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISpatializerCallbackServer is the server-side interface that user implementations
+// provide to NewSpatializerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpatializerCallbackServer interface {
+	DispatchSpatializerEnabledChanged(ctx context.Context, enabled bool) error
+	DispatchSpatializerAvailableChanged(ctx context.Context, available bool) error
+}
+
+type spatializerCallbackStubWrapper struct {
+	impl       ISpatializerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spatializerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spatializerCallbackStubWrapper) DispatchSpatializerEnabledChanged(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.DispatchSpatializerEnabledChanged(ctx, enabled)
+}
+
+func (w *spatializerCallbackStubWrapper) DispatchSpatializerAvailableChanged(
+	ctx context.Context,
+	available bool,
+) error {
+	return w.impl.DispatchSpatializerAvailableChanged(ctx, available)
+}
+
+var _ ISpatializerCallback = (*spatializerCallbackStubWrapper)(nil)
+
+// NewSpatializerCallbackStub creates a server-side ISpatializerCallback wrapping the given
+// server implementation. The returned value satisfies ISpatializerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpatializerCallbackStub(
+	impl ISpatializerCallbackServer,
+) ISpatializerCallback {
+	wrapper := &spatializerCallbackStubWrapper{impl: impl}
+	stub := &SpatializerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

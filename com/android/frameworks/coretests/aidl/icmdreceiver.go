@@ -172,3 +172,56 @@ func (s *CmdReceiverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICmdReceiverServer is the server-side interface that user implementations
+// provide to NewCmdReceiverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICmdReceiverServer interface {
+	DoSomeWork(ctx context.Context, durationMs int32) error
+	ShowApplicationOverlay(ctx context.Context) error
+	FinishHost(ctx context.Context) error
+}
+
+type cmdReceiverStubWrapper struct {
+	impl       ICmdReceiverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cmdReceiverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cmdReceiverStubWrapper) DoSomeWork(
+	ctx context.Context,
+	durationMs int32,
+) error {
+	return w.impl.DoSomeWork(ctx, durationMs)
+}
+
+func (w *cmdReceiverStubWrapper) ShowApplicationOverlay(
+	ctx context.Context,
+) error {
+	return w.impl.ShowApplicationOverlay(ctx)
+}
+
+func (w *cmdReceiverStubWrapper) FinishHost(
+	ctx context.Context,
+) error {
+	return w.impl.FinishHost(ctx)
+}
+
+var _ ICmdReceiver = (*cmdReceiverStubWrapper)(nil)
+
+// NewCmdReceiverStub creates a server-side ICmdReceiver wrapping the given
+// server implementation. The returned value satisfies ICmdReceiver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCmdReceiverStub(
+	impl ICmdReceiverServer,
+) ICmdReceiver {
+	wrapper := &cmdReceiverStubWrapper{impl: impl}
+	stub := &CmdReceiverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

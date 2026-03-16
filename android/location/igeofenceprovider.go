@@ -43,7 +43,7 @@ func (p *GeofenceProviderProxy) SetGeofenceHardware(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGeofenceProvider)
-	_data.WriteStrongBinder(proxy.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, proxy.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGeofenceProvider, "setGeofenceHardware")
 	if _err != nil {
@@ -81,4 +81,43 @@ func (s *GeofenceProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGeofenceProviderServer is the server-side interface that user implementations
+// provide to NewGeofenceProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGeofenceProviderServer interface {
+	SetGeofenceHardware(ctx context.Context, proxy hardwareLocation.IGeofenceHardware) error
+}
+
+type geofenceProviderStubWrapper struct {
+	impl       IGeofenceProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *geofenceProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *geofenceProviderStubWrapper) SetGeofenceHardware(
+	ctx context.Context,
+	proxy hardwareLocation.IGeofenceHardware,
+) error {
+	return w.impl.SetGeofenceHardware(ctx, proxy)
+}
+
+var _ IGeofenceProvider = (*geofenceProviderStubWrapper)(nil)
+
+// NewGeofenceProviderStub creates a server-side IGeofenceProvider wrapping the given
+// server implementation. The returned value satisfies IGeofenceProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGeofenceProviderStub(
+	impl IGeofenceProviderServer,
+) IGeofenceProvider {
+	wrapper := &geofenceProviderStubWrapper{impl: impl}
+	stub := &GeofenceProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

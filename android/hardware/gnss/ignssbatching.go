@@ -57,7 +57,7 @@ func (p *GnssBatchingProxy) Init(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssBatching)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGnssBatching, "init")
 	if _err != nil {
@@ -312,4 +312,79 @@ func (s *GnssBatchingStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssBatchingServer is the server-side interface that user implementations
+// provide to NewGnssBatchingStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssBatchingServer interface {
+	Init(ctx context.Context, callback IGnssBatchingCallback) error
+	GetBatchSize(ctx context.Context) (int32, error)
+	Start(ctx context.Context, options gnssIGnssBatching.Options) error
+	Flush(ctx context.Context) error
+	Stop(ctx context.Context) error
+	Cleanup(ctx context.Context) error
+}
+
+type gnssBatchingStubWrapper struct {
+	impl       IGnssBatchingServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssBatchingStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssBatchingStubWrapper) Init(
+	ctx context.Context,
+	callback IGnssBatchingCallback,
+) error {
+	return w.impl.Init(ctx, callback)
+}
+
+func (w *gnssBatchingStubWrapper) GetBatchSize(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetBatchSize(ctx)
+}
+
+func (w *gnssBatchingStubWrapper) Start(
+	ctx context.Context,
+	options gnssIGnssBatching.Options,
+) error {
+	return w.impl.Start(ctx, options)
+}
+
+func (w *gnssBatchingStubWrapper) Flush(
+	ctx context.Context,
+) error {
+	return w.impl.Flush(ctx)
+}
+
+func (w *gnssBatchingStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *gnssBatchingStubWrapper) Cleanup(
+	ctx context.Context,
+) error {
+	return w.impl.Cleanup(ctx)
+}
+
+var _ IGnssBatching = (*gnssBatchingStubWrapper)(nil)
+
+// NewGnssBatchingStub creates a server-side IGnssBatching wrapping the given
+// server implementation. The returned value satisfies IGnssBatching
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssBatchingStub(
+	impl IGnssBatchingServer,
+) IGnssBatching {
+	wrapper := &gnssBatchingStubWrapper{impl: impl}
+	stub := &GnssBatchingStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

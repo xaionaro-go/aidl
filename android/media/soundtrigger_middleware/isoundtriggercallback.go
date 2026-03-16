@@ -236,3 +236,76 @@ func (s *SoundTriggerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundTriggerCallbackServer is the server-side interface that user implementations
+// provide to NewSoundTriggerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerCallbackServer interface {
+	OnRecognition(ctx context.Context, modelHandle int32, event RecognitionEventSys, captureSession int32) error
+	OnPhraseRecognition(ctx context.Context, modelHandle int32, event PhraseRecognitionEventSys, captureSession int32) error
+	OnResourcesAvailable(ctx context.Context) error
+	OnModelUnloaded(ctx context.Context, modelHandle int32) error
+	OnModuleDied(ctx context.Context) error
+}
+
+type soundTriggerCallbackStubWrapper struct {
+	impl       ISoundTriggerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerCallbackStubWrapper) OnRecognition(
+	ctx context.Context,
+	modelHandle int32,
+	event RecognitionEventSys,
+	captureSession int32,
+) error {
+	return w.impl.OnRecognition(ctx, modelHandle, event, captureSession)
+}
+
+func (w *soundTriggerCallbackStubWrapper) OnPhraseRecognition(
+	ctx context.Context,
+	modelHandle int32,
+	event PhraseRecognitionEventSys,
+	captureSession int32,
+) error {
+	return w.impl.OnPhraseRecognition(ctx, modelHandle, event, captureSession)
+}
+
+func (w *soundTriggerCallbackStubWrapper) OnResourcesAvailable(
+	ctx context.Context,
+) error {
+	return w.impl.OnResourcesAvailable(ctx)
+}
+
+func (w *soundTriggerCallbackStubWrapper) OnModelUnloaded(
+	ctx context.Context,
+	modelHandle int32,
+) error {
+	return w.impl.OnModelUnloaded(ctx, modelHandle)
+}
+
+func (w *soundTriggerCallbackStubWrapper) OnModuleDied(
+	ctx context.Context,
+) error {
+	return w.impl.OnModuleDied(ctx)
+}
+
+var _ ISoundTriggerCallback = (*soundTriggerCallbackStubWrapper)(nil)
+
+// NewSoundTriggerCallbackStub creates a server-side ISoundTriggerCallback wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerCallbackStub(
+	impl ISoundTriggerCallbackServer,
+) ISoundTriggerCallback {
+	wrapper := &soundTriggerCallbackStubWrapper{impl: impl}
+	stub := &SoundTriggerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -96,3 +96,42 @@ func (s *OnDoneCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnDoneCallbackServer is the server-side interface that user implementations
+// provide to NewOnDoneCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnDoneCallbackServer interface {
+	OnDone(ctx context.Context, success bool) error
+}
+
+type onDoneCallbackStubWrapper struct {
+	impl       IOnDoneCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onDoneCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onDoneCallbackStubWrapper) OnDone(
+	ctx context.Context,
+	success bool,
+) error {
+	return w.impl.OnDone(ctx, success)
+}
+
+var _ IOnDoneCallback = (*onDoneCallbackStubWrapper)(nil)
+
+// NewOnDoneCallbackStub creates a server-side IOnDoneCallback wrapping the given
+// server implementation. The returned value satisfies IOnDoneCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnDoneCallbackStub(
+	impl IOnDoneCallbackServer,
+) IOnDoneCallback {
+	wrapper := &onDoneCallbackStubWrapper{impl: impl}
+	stub := &OnDoneCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

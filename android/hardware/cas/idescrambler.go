@@ -301,3 +301,70 @@ func (s *DescramblerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDescramblerServer is the server-side interface that user implementations
+// provide to NewDescramblerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDescramblerServer interface {
+	Descramble(ctx context.Context, scramblingControl ScramblingControl, subSamples []SubSample, srcBuffer SharedBuffer, srcOffset int64, dstBuffer DestinationBuffer, dstOffset int64) (int32, error)
+	Release(ctx context.Context) error
+	RequiresSecureDecoderComponent(ctx context.Context, mime string) (bool, error)
+	SetMediaCasSession(ctx context.Context, sessionId []byte) error
+}
+
+type descramblerStubWrapper struct {
+	impl       IDescramblerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *descramblerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *descramblerStubWrapper) Descramble(
+	ctx context.Context,
+	scramblingControl ScramblingControl,
+	subSamples []SubSample,
+	srcBuffer SharedBuffer,
+	srcOffset int64,
+	dstBuffer DestinationBuffer,
+	dstOffset int64,
+) (int32, error) {
+	return w.impl.Descramble(ctx, scramblingControl, subSamples, srcBuffer, srcOffset, dstBuffer, dstOffset)
+}
+
+func (w *descramblerStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+func (w *descramblerStubWrapper) RequiresSecureDecoderComponent(
+	ctx context.Context,
+	mime string,
+) (bool, error) {
+	return w.impl.RequiresSecureDecoderComponent(ctx, mime)
+}
+
+func (w *descramblerStubWrapper) SetMediaCasSession(
+	ctx context.Context,
+	sessionId []byte,
+) error {
+	return w.impl.SetMediaCasSession(ctx, sessionId)
+}
+
+var _ IDescrambler = (*descramblerStubWrapper)(nil)
+
+// NewDescramblerStub creates a server-side IDescrambler wrapping the given
+// server implementation. The returned value satisfies IDescrambler
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDescramblerStub(
+	impl IDescramblerServer,
+) IDescrambler {
+	wrapper := &descramblerStubWrapper{impl: impl}
+	stub := &DescramblerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

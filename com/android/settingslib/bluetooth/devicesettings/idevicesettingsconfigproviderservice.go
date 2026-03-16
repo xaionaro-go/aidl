@@ -47,7 +47,7 @@ func (p *DeviceSettingsConfigProviderServiceProxy) GetDeviceSettingsConfig(
 	if _err := device.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceSettingsConfigProviderService, "getDeviceSettingsConfig")
 	if _err != nil {
@@ -111,4 +111,44 @@ func (s *DeviceSettingsConfigProviderServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDeviceSettingsConfigProviderServiceServer is the server-side interface that user implementations
+// provide to NewDeviceSettingsConfigProviderServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceSettingsConfigProviderServiceServer interface {
+	GetDeviceSettingsConfig(ctx context.Context, device DeviceInfo, callback IGetDeviceSettingsConfigCallback) error
+}
+
+type deviceSettingsConfigProviderServiceStubWrapper struct {
+	impl       IDeviceSettingsConfigProviderServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceSettingsConfigProviderServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceSettingsConfigProviderServiceStubWrapper) GetDeviceSettingsConfig(
+	ctx context.Context,
+	device DeviceInfo,
+	callback IGetDeviceSettingsConfigCallback,
+) error {
+	return w.impl.GetDeviceSettingsConfig(ctx, device, callback)
+}
+
+var _ IDeviceSettingsConfigProviderService = (*deviceSettingsConfigProviderServiceStubWrapper)(nil)
+
+// NewDeviceSettingsConfigProviderServiceStub creates a server-side IDeviceSettingsConfigProviderService wrapping the given
+// server implementation. The returned value satisfies IDeviceSettingsConfigProviderService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceSettingsConfigProviderServiceStub(
+	impl IDeviceSettingsConfigProviderServiceServer,
+) IDeviceSettingsConfigProviderService {
+	wrapper := &deviceSettingsConfigProviderServiceStubWrapper{impl: impl}
+	stub := &DeviceSettingsConfigProviderServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -150,3 +150,58 @@ func (s *MbmsDownloadSessionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMbmsDownloadSessionCallbackServer is the server-side interface that user implementations
+// provide to NewMbmsDownloadSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMbmsDownloadSessionCallbackServer interface {
+	OnError(ctx context.Context, errorCode int32, message string) error
+	OnFileServicesUpdated(ctx context.Context, services []FileServiceInfo) error
+	OnMiddlewareReady(ctx context.Context) error
+}
+
+type mbmsDownloadSessionCallbackStubWrapper struct {
+	impl       IMbmsDownloadSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mbmsDownloadSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mbmsDownloadSessionCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorCode, message)
+}
+
+func (w *mbmsDownloadSessionCallbackStubWrapper) OnFileServicesUpdated(
+	ctx context.Context,
+	services []FileServiceInfo,
+) error {
+	return w.impl.OnFileServicesUpdated(ctx, services)
+}
+
+func (w *mbmsDownloadSessionCallbackStubWrapper) OnMiddlewareReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnMiddlewareReady(ctx)
+}
+
+var _ IMbmsDownloadSessionCallback = (*mbmsDownloadSessionCallbackStubWrapper)(nil)
+
+// NewMbmsDownloadSessionCallbackStub creates a server-side IMbmsDownloadSessionCallback wrapping the given
+// server implementation. The returned value satisfies IMbmsDownloadSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMbmsDownloadSessionCallbackStub(
+	impl IMbmsDownloadSessionCallbackServer,
+) IMbmsDownloadSessionCallback {
+	wrapper := &mbmsDownloadSessionCallbackStubWrapper{impl: impl}
+	stub := &MbmsDownloadSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

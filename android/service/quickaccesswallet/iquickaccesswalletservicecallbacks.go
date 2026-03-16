@@ -258,3 +258,74 @@ func (s *QuickAccessWalletServiceCallbacksStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IQuickAccessWalletServiceCallbacksServer is the server-side interface that user implementations
+// provide to NewQuickAccessWalletServiceCallbacksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IQuickAccessWalletServiceCallbacksServer interface {
+	OnGetWalletCardsSuccess(ctx context.Context, response GetWalletCardsResponse) error
+	OnGetWalletCardsFailure(ctx context.Context, error_ GetWalletCardsError) error
+	OnWalletServiceEvent(ctx context.Context, event WalletServiceEvent) error
+	OnTargetActivityPendingIntentReceived(ctx context.Context, pendingIntent app.PendingIntent) error
+	OnGestureTargetActivityPendingIntentReceived(ctx context.Context, pendingIntent app.PendingIntent) error
+}
+
+type quickAccessWalletServiceCallbacksStubWrapper struct {
+	impl       IQuickAccessWalletServiceCallbacksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *quickAccessWalletServiceCallbacksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *quickAccessWalletServiceCallbacksStubWrapper) OnGetWalletCardsSuccess(
+	ctx context.Context,
+	response GetWalletCardsResponse,
+) error {
+	return w.impl.OnGetWalletCardsSuccess(ctx, response)
+}
+
+func (w *quickAccessWalletServiceCallbacksStubWrapper) OnGetWalletCardsFailure(
+	ctx context.Context,
+	error_ GetWalletCardsError,
+) error {
+	return w.impl.OnGetWalletCardsFailure(ctx, error_)
+}
+
+func (w *quickAccessWalletServiceCallbacksStubWrapper) OnWalletServiceEvent(
+	ctx context.Context,
+	event WalletServiceEvent,
+) error {
+	return w.impl.OnWalletServiceEvent(ctx, event)
+}
+
+func (w *quickAccessWalletServiceCallbacksStubWrapper) OnTargetActivityPendingIntentReceived(
+	ctx context.Context,
+	pendingIntent app.PendingIntent,
+) error {
+	return w.impl.OnTargetActivityPendingIntentReceived(ctx, pendingIntent)
+}
+
+func (w *quickAccessWalletServiceCallbacksStubWrapper) OnGestureTargetActivityPendingIntentReceived(
+	ctx context.Context,
+	pendingIntent app.PendingIntent,
+) error {
+	return w.impl.OnGestureTargetActivityPendingIntentReceived(ctx, pendingIntent)
+}
+
+var _ IQuickAccessWalletServiceCallbacks = (*quickAccessWalletServiceCallbacksStubWrapper)(nil)
+
+// NewQuickAccessWalletServiceCallbacksStub creates a server-side IQuickAccessWalletServiceCallbacks wrapping the given
+// server implementation. The returned value satisfies IQuickAccessWalletServiceCallbacks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewQuickAccessWalletServiceCallbacksStub(
+	impl IQuickAccessWalletServiceCallbacksServer,
+) IQuickAccessWalletServiceCallbacks {
+	wrapper := &quickAccessWalletServiceCallbacksStubWrapper{impl: impl}
+	stub := &QuickAccessWalletServiceCallbacksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

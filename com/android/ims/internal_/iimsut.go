@@ -586,7 +586,7 @@ func (p *ImsUtProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUt)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsUt, "setListener")
 	if _err != nil {
@@ -1128,4 +1128,205 @@ func (s *ImsUtStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsUtServer is the server-side interface that user implementations
+// provide to NewImsUtStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsUtServer interface {
+	Close(ctx context.Context) error
+	QueryCallBarring(ctx context.Context, cbType int32) (int32, error)
+	QueryCallForward(ctx context.Context, condition int32, number string) (int32, error)
+	QueryCallWaiting(ctx context.Context) (int32, error)
+	QueryCLIR(ctx context.Context) (int32, error)
+	QueryCLIP(ctx context.Context) (int32, error)
+	QueryCOLR(ctx context.Context) (int32, error)
+	QueryCOLP(ctx context.Context) (int32, error)
+	Transact(ctx context.Context, ssInfo os.Bundle) (int32, error)
+	UpdateCallBarring(ctx context.Context, cbType int32, action int32, barrList []string) (int32, error)
+	UpdateCallForward(ctx context.Context, action int32, condition int32, number string, serviceClass int32, timeSeconds int32) (int32, error)
+	UpdateCallWaiting(ctx context.Context, enable bool, serviceClass int32) (int32, error)
+	UpdateCLIR(ctx context.Context, clirMode int32) (int32, error)
+	UpdateCLIP(ctx context.Context, enable bool) (int32, error)
+	UpdateCOLR(ctx context.Context, presentation int32) (int32, error)
+	UpdateCOLP(ctx context.Context, enable bool) (int32, error)
+	SetListener(ctx context.Context, listener IImsUtListener) error
+	QueryCallBarringForServiceClass(ctx context.Context, cbType int32, serviceClass int32) (int32, error)
+	UpdateCallBarringForServiceClass(ctx context.Context, cbType int32, action int32, barrList []string, serviceClass int32) (int32, error)
+	UpdateCallBarringWithPassword(ctx context.Context, cbType int32, action int32, barrList []string, serviceClass int32, password string) (int32, error)
+}
+
+type imsUtStubWrapper struct {
+	impl       IImsUtServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsUtStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsUtStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *imsUtStubWrapper) QueryCallBarring(
+	ctx context.Context,
+	cbType int32,
+) (int32, error) {
+	return w.impl.QueryCallBarring(ctx, cbType)
+}
+
+func (w *imsUtStubWrapper) QueryCallForward(
+	ctx context.Context,
+	condition int32,
+	number string,
+) (int32, error) {
+	return w.impl.QueryCallForward(ctx, condition, number)
+}
+
+func (w *imsUtStubWrapper) QueryCallWaiting(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.QueryCallWaiting(ctx)
+}
+
+func (w *imsUtStubWrapper) QueryCLIR(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.QueryCLIR(ctx)
+}
+
+func (w *imsUtStubWrapper) QueryCLIP(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.QueryCLIP(ctx)
+}
+
+func (w *imsUtStubWrapper) QueryCOLR(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.QueryCOLR(ctx)
+}
+
+func (w *imsUtStubWrapper) QueryCOLP(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.QueryCOLP(ctx)
+}
+
+func (w *imsUtStubWrapper) Transact(
+	ctx context.Context,
+	ssInfo os.Bundle,
+) (int32, error) {
+	return w.impl.Transact(ctx, ssInfo)
+}
+
+func (w *imsUtStubWrapper) UpdateCallBarring(
+	ctx context.Context,
+	cbType int32,
+	action int32,
+	barrList []string,
+) (int32, error) {
+	return w.impl.UpdateCallBarring(ctx, cbType, action, barrList)
+}
+
+func (w *imsUtStubWrapper) UpdateCallForward(
+	ctx context.Context,
+	action int32,
+	condition int32,
+	number string,
+	serviceClass int32,
+	timeSeconds int32,
+) (int32, error) {
+	return w.impl.UpdateCallForward(ctx, action, condition, number, serviceClass, timeSeconds)
+}
+
+func (w *imsUtStubWrapper) UpdateCallWaiting(
+	ctx context.Context,
+	enable bool,
+	serviceClass int32,
+) (int32, error) {
+	return w.impl.UpdateCallWaiting(ctx, enable, serviceClass)
+}
+
+func (w *imsUtStubWrapper) UpdateCLIR(
+	ctx context.Context,
+	clirMode int32,
+) (int32, error) {
+	return w.impl.UpdateCLIR(ctx, clirMode)
+}
+
+func (w *imsUtStubWrapper) UpdateCLIP(
+	ctx context.Context,
+	enable bool,
+) (int32, error) {
+	return w.impl.UpdateCLIP(ctx, enable)
+}
+
+func (w *imsUtStubWrapper) UpdateCOLR(
+	ctx context.Context,
+	presentation int32,
+) (int32, error) {
+	return w.impl.UpdateCOLR(ctx, presentation)
+}
+
+func (w *imsUtStubWrapper) UpdateCOLP(
+	ctx context.Context,
+	enable bool,
+) (int32, error) {
+	return w.impl.UpdateCOLP(ctx, enable)
+}
+
+func (w *imsUtStubWrapper) SetListener(
+	ctx context.Context,
+	listener IImsUtListener,
+) error {
+	return w.impl.SetListener(ctx, listener)
+}
+
+func (w *imsUtStubWrapper) QueryCallBarringForServiceClass(
+	ctx context.Context,
+	cbType int32,
+	serviceClass int32,
+) (int32, error) {
+	return w.impl.QueryCallBarringForServiceClass(ctx, cbType, serviceClass)
+}
+
+func (w *imsUtStubWrapper) UpdateCallBarringForServiceClass(
+	ctx context.Context,
+	cbType int32,
+	action int32,
+	barrList []string,
+	serviceClass int32,
+) (int32, error) {
+	return w.impl.UpdateCallBarringForServiceClass(ctx, cbType, action, barrList, serviceClass)
+}
+
+func (w *imsUtStubWrapper) UpdateCallBarringWithPassword(
+	ctx context.Context,
+	cbType int32,
+	action int32,
+	barrList []string,
+	serviceClass int32,
+	password string,
+) (int32, error) {
+	return w.impl.UpdateCallBarringWithPassword(ctx, cbType, action, barrList, serviceClass, password)
+}
+
+var _ IImsUt = (*imsUtStubWrapper)(nil)
+
+// NewImsUtStub creates a server-side IImsUt wrapping the given
+// server implementation. The returned value satisfies IImsUt
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsUtStub(
+	impl IImsUtServer,
+) IImsUt {
+	wrapper := &imsUtStubWrapper{impl: impl}
+	stub := &ImsUtStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

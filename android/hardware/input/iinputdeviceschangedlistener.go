@@ -88,3 +88,42 @@ func (s *InputDevicesChangedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputDevicesChangedListenerServer is the server-side interface that user implementations
+// provide to NewInputDevicesChangedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputDevicesChangedListenerServer interface {
+	OnInputDevicesChanged(ctx context.Context, deviceIdAndGeneration []int32) error
+}
+
+type inputDevicesChangedListenerStubWrapper struct {
+	impl       IInputDevicesChangedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputDevicesChangedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputDevicesChangedListenerStubWrapper) OnInputDevicesChanged(
+	ctx context.Context,
+	deviceIdAndGeneration []int32,
+) error {
+	return w.impl.OnInputDevicesChanged(ctx, deviceIdAndGeneration)
+}
+
+var _ IInputDevicesChangedListener = (*inputDevicesChangedListenerStubWrapper)(nil)
+
+// NewInputDevicesChangedListenerStub creates a server-side IInputDevicesChangedListener wrapping the given
+// server implementation. The returned value satisfies IInputDevicesChangedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputDevicesChangedListenerStub(
+	impl IInputDevicesChangedListenerServer,
+) IInputDevicesChangedListener {
+	wrapper := &inputDevicesChangedListenerStubWrapper{impl: impl}
+	stub := &InputDevicesChangedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -102,3 +102,42 @@ func (s *BinderRustNdkInteropTestStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBinderRustNdkInteropTestServer is the server-side interface that user implementations
+// provide to NewBinderRustNdkInteropTestStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderRustNdkInteropTestServer interface {
+	Echo(ctx context.Context, str string) (string, error)
+}
+
+type binderRustNdkInteropTestStubWrapper struct {
+	impl       IBinderRustNdkInteropTestServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderRustNdkInteropTestStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderRustNdkInteropTestStubWrapper) Echo(
+	ctx context.Context,
+	str string,
+) (string, error) {
+	return w.impl.Echo(ctx, str)
+}
+
+var _ IBinderRustNdkInteropTest = (*binderRustNdkInteropTestStubWrapper)(nil)
+
+// NewBinderRustNdkInteropTestStub creates a server-side IBinderRustNdkInteropTest wrapping the given
+// server implementation. The returned value satisfies IBinderRustNdkInteropTest
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderRustNdkInteropTestStub(
+	impl IBinderRustNdkInteropTestServer,
+) IBinderRustNdkInteropTest {
+	wrapper := &binderRustNdkInteropTestStubWrapper{impl: impl}
+	stub := &BinderRustNdkInteropTestStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

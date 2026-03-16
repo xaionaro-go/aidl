@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	le "github.com/xaionaro-go/binder/android/bluetooth/le"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -24,12 +23,12 @@ const (
 
 type IDistanceMeasurement interface {
 	AsBinder() binder.IBinder
-	GetSupportedDistanceMeasurementMethods(ctx context.Context, attributionSource content.AttributionSource) ([]le.DistanceMeasurementMethod, error)
-	StartDistanceMeasurement(ctx context.Context, uuid interface{}, params le.DistanceMeasurementParams, callback le.IDistanceMeasurementCallback, attributionSource content.AttributionSource) error
-	StopDistanceMeasurement(ctx context.Context, uuid interface{}, device BluetoothDevice, method int32, attributionSource content.AttributionSource) (int32, error)
-	GetChannelSoundingMaxSupportedSecurityLevel(ctx context.Context, remoteDevice BluetoothDevice, attributionSource content.AttributionSource) (int32, error)
-	GetLocalChannelSoundingMaxSupportedSecurityLevel(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
-	GetChannelSoundingSupportedSecurityLevels(ctx context.Context, attributionSource content.AttributionSource) ([]int32, error)
+	GetSupportedDistanceMeasurementMethods(ctx context.Context, attributionSource interface{}) ([]le.DistanceMeasurementMethod, error)
+	StartDistanceMeasurement(ctx context.Context, uuid interface{}, params le.DistanceMeasurementParams, callback le.IDistanceMeasurementCallback, attributionSource interface{}) error
+	StopDistanceMeasurement(ctx context.Context, uuid interface{}, device BluetoothDevice, method int32, attributionSource interface{}) (int32, error)
+	GetChannelSoundingMaxSupportedSecurityLevel(ctx context.Context, remoteDevice BluetoothDevice, attributionSource interface{}) (int32, error)
+	GetLocalChannelSoundingMaxSupportedSecurityLevel(ctx context.Context, attributionSource interface{}) (int32, error)
+	GetChannelSoundingSupportedSecurityLevels(ctx context.Context, attributionSource interface{}) ([]int32, error)
 }
 
 type DistanceMeasurementProxy struct {
@@ -50,15 +49,11 @@ var _ IDistanceMeasurement = (*DistanceMeasurementProxy)(nil)
 
 func (p *DistanceMeasurementProxy) GetSupportedDistanceMeasurementMethods(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) ([]le.DistanceMeasurementMethod, error) {
 	var _result []le.DistanceMeasurementMethod
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDistanceMeasurement)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDistanceMeasurement, "getSupportedDistanceMeasurementMethods")
 	if _err != nil {
@@ -96,7 +91,7 @@ func (p *DistanceMeasurementProxy) StartDistanceMeasurement(
 	uuid interface{},
 	params le.DistanceMeasurementParams,
 	callback le.IDistanceMeasurementCallback,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDistanceMeasurement)
@@ -104,11 +99,7 @@ func (p *DistanceMeasurementProxy) StartDistanceMeasurement(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDistanceMeasurement, "startDistanceMeasurement")
 	if _err != nil {
@@ -133,7 +124,7 @@ func (p *DistanceMeasurementProxy) StopDistanceMeasurement(
 	uuid interface{},
 	device BluetoothDevice,
 	method int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
@@ -143,10 +134,6 @@ func (p *DistanceMeasurementProxy) StopDistanceMeasurement(
 		return _result, _err
 	}
 	_data.WriteInt32(method)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDistanceMeasurement, "stopDistanceMeasurement")
 	if _err != nil {
@@ -173,17 +160,13 @@ func (p *DistanceMeasurementProxy) StopDistanceMeasurement(
 func (p *DistanceMeasurementProxy) GetChannelSoundingMaxSupportedSecurityLevel(
 	ctx context.Context,
 	remoteDevice BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDistanceMeasurement)
 	_data.WriteInt32(1)
 	if _err := remoteDevice.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
 
@@ -211,15 +194,11 @@ func (p *DistanceMeasurementProxy) GetChannelSoundingMaxSupportedSecurityLevel(
 
 func (p *DistanceMeasurementProxy) GetLocalChannelSoundingMaxSupportedSecurityLevel(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDistanceMeasurement)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDistanceMeasurement, "getLocalChannelSoundingMaxSupportedSecurityLevel")
 	if _err != nil {
@@ -245,15 +224,11 @@ func (p *DistanceMeasurementProxy) GetLocalChannelSoundingMaxSupportedSecurityLe
 
 func (p *DistanceMeasurementProxy) GetChannelSoundingSupportedSecurityLevels(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) ([]int32, error) {
 	var _result []int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDistanceMeasurement)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDistanceMeasurement, "getChannelSoundingSupportedSecurityLevels")
 	if _err != nil {
@@ -305,18 +280,7 @@ func (s *DistanceMeasurementStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetSupportedDistanceMeasurementMethods(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -347,18 +311,7 @@ func (s *DistanceMeasurementStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_callback le.IDistanceMeasurementCallback
 		_ = _arg_callback
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_err := s.Impl.StartDistanceMeasurement(ctx, _arg_uuid, _arg_params, _arg_callback, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -388,18 +341,7 @@ func (s *DistanceMeasurementStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.StopDistanceMeasurement(ctx, _arg_uuid, _arg_device, _arg_method, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -425,18 +367,7 @@ func (s *DistanceMeasurementStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetChannelSoundingMaxSupportedSecurityLevel(ctx, _arg_remoteDevice, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -450,18 +381,7 @@ func (s *DistanceMeasurementStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetLocalChannelSoundingMaxSupportedSecurityLevel(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -475,18 +395,7 @@ func (s *DistanceMeasurementStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetChannelSoundingSupportedSecurityLevels(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -500,4 +409,90 @@ func (s *DistanceMeasurementStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDistanceMeasurementServer is the server-side interface that user implementations
+// provide to NewDistanceMeasurementStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDistanceMeasurementServer interface {
+	GetSupportedDistanceMeasurementMethods(ctx context.Context, attributionSource interface{}) ([]le.DistanceMeasurementMethod, error)
+	StartDistanceMeasurement(ctx context.Context, uuid interface{}, params le.DistanceMeasurementParams, callback le.IDistanceMeasurementCallback, attributionSource interface{}) error
+	StopDistanceMeasurement(ctx context.Context, uuid interface{}, device BluetoothDevice, method int32, attributionSource interface{}) (int32, error)
+	GetChannelSoundingMaxSupportedSecurityLevel(ctx context.Context, remoteDevice BluetoothDevice, attributionSource interface{}) (int32, error)
+	GetLocalChannelSoundingMaxSupportedSecurityLevel(ctx context.Context, attributionSource interface{}) (int32, error)
+	GetChannelSoundingSupportedSecurityLevels(ctx context.Context, attributionSource interface{}) ([]int32, error)
+}
+
+type distanceMeasurementStubWrapper struct {
+	impl       IDistanceMeasurementServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *distanceMeasurementStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *distanceMeasurementStubWrapper) GetSupportedDistanceMeasurementMethods(
+	ctx context.Context,
+	attributionSource interface{},
+) ([]le.DistanceMeasurementMethod, error) {
+	return w.impl.GetSupportedDistanceMeasurementMethods(ctx, attributionSource)
+}
+
+func (w *distanceMeasurementStubWrapper) StartDistanceMeasurement(
+	ctx context.Context,
+	uuid interface{},
+	params le.DistanceMeasurementParams,
+	callback le.IDistanceMeasurementCallback,
+	attributionSource interface{},
+) error {
+	return w.impl.StartDistanceMeasurement(ctx, uuid, params, callback, attributionSource)
+}
+
+func (w *distanceMeasurementStubWrapper) StopDistanceMeasurement(
+	ctx context.Context,
+	uuid interface{},
+	device BluetoothDevice,
+	method int32,
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.StopDistanceMeasurement(ctx, uuid, device, method, attributionSource)
+}
+
+func (w *distanceMeasurementStubWrapper) GetChannelSoundingMaxSupportedSecurityLevel(
+	ctx context.Context,
+	remoteDevice BluetoothDevice,
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.GetChannelSoundingMaxSupportedSecurityLevel(ctx, remoteDevice, attributionSource)
+}
+
+func (w *distanceMeasurementStubWrapper) GetLocalChannelSoundingMaxSupportedSecurityLevel(
+	ctx context.Context,
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.GetLocalChannelSoundingMaxSupportedSecurityLevel(ctx, attributionSource)
+}
+
+func (w *distanceMeasurementStubWrapper) GetChannelSoundingSupportedSecurityLevels(
+	ctx context.Context,
+	attributionSource interface{},
+) ([]int32, error) {
+	return w.impl.GetChannelSoundingSupportedSecurityLevels(ctx, attributionSource)
+}
+
+var _ IDistanceMeasurement = (*distanceMeasurementStubWrapper)(nil)
+
+// NewDistanceMeasurementStub creates a server-side IDistanceMeasurement wrapping the given
+// server implementation. The returned value satisfies IDistanceMeasurement
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDistanceMeasurementStub(
+	impl IDistanceMeasurementServer,
+) IDistanceMeasurement {
+	wrapper := &distanceMeasurementStubWrapper{impl: impl}
+	stub := &DistanceMeasurementStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

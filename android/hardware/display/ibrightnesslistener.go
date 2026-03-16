@@ -82,3 +82,42 @@ func (s *BrightnessListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBrightnessListenerServer is the server-side interface that user implementations
+// provide to NewBrightnessListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBrightnessListenerServer interface {
+	OnBrightnessChanged(ctx context.Context, brightness float32) error
+}
+
+type brightnessListenerStubWrapper struct {
+	impl       IBrightnessListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *brightnessListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *brightnessListenerStubWrapper) OnBrightnessChanged(
+	ctx context.Context,
+	brightness float32,
+) error {
+	return w.impl.OnBrightnessChanged(ctx, brightness)
+}
+
+var _ IBrightnessListener = (*brightnessListenerStubWrapper)(nil)
+
+// NewBrightnessListenerStub creates a server-side IBrightnessListener wrapping the given
+// server implementation. The returned value satisfies IBrightnessListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBrightnessListenerStub(
+	impl IBrightnessListenerServer,
+) IBrightnessListener {
+	wrapper := &brightnessListenerStubWrapper{impl: impl}
+	stub := &BrightnessListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

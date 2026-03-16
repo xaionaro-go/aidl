@@ -9,6 +9,7 @@ import (
 	voice "github.com/xaionaro-go/binder/android/hardware/radio/voice"
 	androidTelephony "github.com/xaionaro-go/binder/android/telephony"
 	ims "github.com/xaionaro-go/binder/android/telephony/ims"
+	satellite "github.com/xaionaro-go/binder/android/telephony/satellite"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -142,7 +143,7 @@ type ITelephonyRegistry interface {
 	NotifyCarrierRoamingNtnModeChanged(ctx context.Context, subId int32, active bool) error
 	NotifyCarrierRoamingNtnEligibleStateChanged(ctx context.Context, subId int32, eligible bool) error
 	NotifyCarrierRoamingNtnAvailableServicesChanged(ctx context.Context, subId int32, availableServices []int32) error
-	NotifyCarrierRoamingNtnSignalStrengthChanged(ctx context.Context, subId int32, ntnSignalStrength interface{}) error
+	NotifyCarrierRoamingNtnSignalStrengthChanged(ctx context.Context, subId int32, ntnSignalStrength satellite.NtnSignalStrength) error
 	AddSatelliteStateChangeListener(ctx context.Context, listener ISatelliteStateChangeListener, pkg string, featureId string) error
 	RemoveSatelliteStateChangeListener(ctx context.Context, listener ISatelliteStateChangeListener, pkg string) error
 	NotifySatelliteStateChanged(ctx context.Context, isEnabled bool) error
@@ -176,7 +177,7 @@ func (p *TelephonyRegistryProxy) AddOnSubscriptionsChangedListener(
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteString16(pkg)
 	_data.WriteString16(featureId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "addOnSubscriptionsChangedListener")
 	if _err != nil {
@@ -206,7 +207,7 @@ func (p *TelephonyRegistryProxy) AddOnOpportunisticSubscriptionsChangedListener(
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteString16(pkg)
 	_data.WriteString16(featureId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "addOnOpportunisticSubscriptionsChangedListener")
 	if _err != nil {
@@ -234,7 +235,7 @@ func (p *TelephonyRegistryProxy) RemoveOnSubscriptionsChangedListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteString16(pkg)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeOnSubscriptionsChangedListener")
 	if _err != nil {
@@ -272,7 +273,7 @@ func (p *TelephonyRegistryProxy) ListenWithEventList(
 	_data.WriteInt32(subId)
 	_data.WriteString16(pkg)
 	_data.WriteString16(featureId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	if events == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1600,7 +1601,7 @@ func (p *TelephonyRegistryProxy) AddCarrierPrivilegesCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteInt32(phoneId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(pkg)
 	_data.WriteString16(featureId)
 
@@ -1629,7 +1630,7 @@ func (p *TelephonyRegistryProxy) RemoveCarrierPrivilegesCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(pkg)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeCarrierPrivilegesCallback")
@@ -1732,7 +1733,7 @@ func (p *TelephonyRegistryProxy) AddCarrierConfigChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(pkg)
 	_data.WriteString16(featureId)
 
@@ -1761,7 +1762,7 @@ func (p *TelephonyRegistryProxy) RemoveCarrierConfigChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(pkg)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeCarrierConfigChangeListener")
@@ -2004,11 +2005,15 @@ func (p *TelephonyRegistryProxy) NotifyCarrierRoamingNtnAvailableServicesChanged
 func (p *TelephonyRegistryProxy) NotifyCarrierRoamingNtnSignalStrengthChanged(
 	ctx context.Context,
 	subId int32,
-	ntnSignalStrength interface{},
+	ntnSignalStrength satellite.NtnSignalStrength,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
 	_data.WriteInt32(subId)
+	_data.WriteInt32(1)
+	if _err := ntnSignalStrength.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "notifyCarrierRoamingNtnSignalStrengthChanged")
 	if _err != nil {
@@ -2036,7 +2041,7 @@ func (p *TelephonyRegistryProxy) AddSatelliteStateChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(pkg)
 	_data.WriteString16(featureId)
 
@@ -2065,7 +2070,7 @@ func (p *TelephonyRegistryProxy) RemoveSatelliteStateChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelephonyRegistry)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(pkg)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelephonyRegistry, "removeSatelliteStateChangeListener")
@@ -3610,7 +3615,18 @@ func (s *TelephonyRegistryStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_ntnSignalStrength interface{}
+		var _arg_ntnSignalStrength satellite.NtnSignalStrength
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_ntnSignalStrength.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.NotifyCarrierRoamingNtnSignalStrengthChanged(ctx, _arg_subId, _arg_ntnSignalStrength)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3744,4 +3760,651 @@ func (s *TelephonyRegistryStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITelephonyRegistryServer is the server-side interface that user implementations
+// provide to NewTelephonyRegistryStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITelephonyRegistryServer interface {
+	AddOnSubscriptionsChangedListener(ctx context.Context, pkg string, featureId string, callback IOnSubscriptionsChangedListener) error
+	AddOnOpportunisticSubscriptionsChangedListener(ctx context.Context, pkg string, featureId string, callback IOnSubscriptionsChangedListener) error
+	RemoveOnSubscriptionsChangedListener(ctx context.Context, pkg string, callback IOnSubscriptionsChangedListener) error
+	ListenWithEventList(ctx context.Context, renounceFineLocationAccess bool, renounceCoarseLocationAccess bool, subId int32, pkg string, featureId string, callback IPhoneStateListener, events []int32, notifyNow bool) error
+	NotifyCallStateForAllSubs(ctx context.Context, state int32, incomingNumber string) error
+	NotifyCallState(ctx context.Context, phoneId int32, subId int32, state int32, incomingNumber string) error
+	NotifyServiceStateForPhoneId(ctx context.Context, phoneId int32, subId int32, state androidTelephony.ServiceState) error
+	NotifySignalStrengthForPhoneId(ctx context.Context, phoneId int32, subId int32, signalStrength network.SignalStrength) error
+	NotifyMessageWaitingChangedForPhoneId(ctx context.Context, phoneId int32, subId int32, mwi bool) error
+	NotifyCallForwardingChanged(ctx context.Context, cfi bool) error
+	NotifyCallForwardingChangedForSubscriber(ctx context.Context, subId int32, cfi bool) error
+	NotifyDataActivityForSubscriber(ctx context.Context, subId int32, state int32) error
+	NotifyDataActivityForSubscriberWithSlot(ctx context.Context, phoneId int32, subId int32, state int32) error
+	NotifyDataConnectionForSubscriber(ctx context.Context, phoneId int32, subId int32, preciseState androidTelephony.PreciseDataConnectionState) error
+	NotifyCellLocationForSubscriber(ctx context.Context, subId int32, cellLocation network.CellIdentity) error
+	NotifyCellInfo(ctx context.Context, cellInfo []network.CellInfo) error
+	NotifyPreciseCallState(ctx context.Context, phoneId int32, subId int32, callStates []int32, imsCallIds []string, imsCallServiceTypes []int32, imsCallTypes []int32) error
+	NotifyDisconnectCause(ctx context.Context, phoneId int32, subId int32, disconnectCause int32, preciseDisconnectCause int32) error
+	NotifyCellInfoForSubscriber(ctx context.Context, subId int32, cellInfo []network.CellInfo) error
+	NotifySrvccStateChanged(ctx context.Context, subId int32, lteState int32) error
+	NotifySimActivationStateChangedForPhoneId(ctx context.Context, phoneId int32, subId int32, activationState int32, activationType int32) error
+	NotifyOemHookRawEventForSubscriber(ctx context.Context, phoneId int32, subId int32, rawData []byte) error
+	NotifySubscriptionInfoChanged(ctx context.Context) error
+	NotifyOpportunisticSubscriptionInfoChanged(ctx context.Context) error
+	NotifyCarrierNetworkChange(ctx context.Context, active bool) error
+	NotifyCarrierNetworkChangeWithSubId(ctx context.Context, subId int32, active bool) error
+	NotifyUserMobileDataStateChangedForPhoneId(ctx context.Context, phoneId int32, subId int32, state bool) error
+	NotifyDisplayInfoChanged(ctx context.Context, slotIndex int32, subId int32, telephonyDisplayInfo androidTelephony.TelephonyDisplayInfo) error
+	NotifyPhoneCapabilityChanged(ctx context.Context, capability config.PhoneCapability) error
+	NotifyActiveDataSubIdChanged(ctx context.Context, activeDataSubId int32) error
+	NotifyRadioPowerStateChanged(ctx context.Context, phoneId int32, subId int32, state int32) error
+	NotifyEmergencyNumberList(ctx context.Context, phoneId int32, subId int32) error
+	NotifyOutgoingEmergencyCall(ctx context.Context, phoneId int32, subId int32, emergencyNumber voice.EmergencyNumber) error
+	NotifyOutgoingEmergencySms(ctx context.Context, phoneId int32, subId int32, emergencyNumber voice.EmergencyNumber) error
+	NotifyCallQualityChanged(ctx context.Context, callQuality media.CallQuality, phoneId int32, subId int32, callNetworkType int32) error
+	NotifyMediaQualityStatusChanged(ctx context.Context, phoneId int32, subId int32, status media.MediaQualityStatus) error
+	NotifyImsDisconnectCause(ctx context.Context, subId int32, imsReasonInfo ims.ImsReasonInfo) error
+	NotifyRegistrationFailed(ctx context.Context, slotIndex int32, subId int32, cellIdentity network.CellIdentity, chosenPlmn string, domain int32, causeCode int32, additionalCauseCode int32) error
+	NotifyBarringInfoChanged(ctx context.Context, slotIndex int32, subId int32, barringInfo network.BarringInfo) error
+	NotifyPhysicalChannelConfigForSubscriber(ctx context.Context, phoneId int32, subId int32, configs []network.PhysicalChannelConfig) error
+	NotifyDataEnabled(ctx context.Context, phoneId int32, subId int32, enabled bool, reason int32) error
+	NotifyAllowedNetworkTypesChanged(ctx context.Context, phoneId int32, subId int32, reason int32, allowedNetworkType int64) error
+	NotifyLinkCapacityEstimateChanged(ctx context.Context, phoneId int32, subId int32, linkCapacityEstimateList []network.LinkCapacityEstimate) error
+	NotifySimultaneousCellularCallingSubscriptionsChanged(ctx context.Context, subIds []int32) error
+	AddCarrierPrivilegesCallback(ctx context.Context, phoneId int32, callback ICarrierPrivilegesCallback, pkg string, featureId string) error
+	RemoveCarrierPrivilegesCallback(ctx context.Context, callback ICarrierPrivilegesCallback, pkg string) error
+	NotifyCarrierPrivilegesChanged(ctx context.Context, phoneId int32, privilegedPackageNames []string, privilegedUids []int32) error
+	NotifyCarrierServiceChanged(ctx context.Context, phoneId int32, packageName string, uid int32) error
+	AddCarrierConfigChangeListener(ctx context.Context, listener ICarrierConfigChangeListener, pkg string, featureId string) error
+	RemoveCarrierConfigChangeListener(ctx context.Context, listener ICarrierConfigChangeListener, pkg string) error
+	NotifyCarrierConfigChanged(ctx context.Context, phoneId int32, subId int32, carrierId int32, specificCarrierId int32) error
+	NotifyCallbackModeStarted(ctx context.Context, phoneId int32, subId int32, type_ int32, durationMillis int64) error
+	NotifyCallbackModeRestarted(ctx context.Context, phoneId int32, subId int32, type_ int32, durationMillis int64) error
+	NotifyCallbackModeStopped(ctx context.Context, phoneId int32, subId int32, type_ int32, reason int32) error
+	NotifyCarrierRoamingNtnModeChanged(ctx context.Context, subId int32, active bool) error
+	NotifyCarrierRoamingNtnEligibleStateChanged(ctx context.Context, subId int32, eligible bool) error
+	NotifyCarrierRoamingNtnAvailableServicesChanged(ctx context.Context, subId int32, availableServices []int32) error
+	NotifyCarrierRoamingNtnSignalStrengthChanged(ctx context.Context, subId int32, ntnSignalStrength satellite.NtnSignalStrength) error
+	AddSatelliteStateChangeListener(ctx context.Context, listener ISatelliteStateChangeListener, pkg string, featureId string) error
+	RemoveSatelliteStateChangeListener(ctx context.Context, listener ISatelliteStateChangeListener, pkg string) error
+	NotifySatelliteStateChanged(ctx context.Context, isEnabled bool) error
+	NotifySecurityAlgorithmsChanged(ctx context.Context, phoneId int32, subId int32, update network.SecurityAlgorithmUpdate) error
+	NotifyCellularIdentifierDisclosedChanged(ctx context.Context, phoneId int32, subId int32, disclosure network.CellularIdentifierDisclosure) error
+}
+
+type telephonyRegistryStubWrapper struct {
+	impl       ITelephonyRegistryServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *telephonyRegistryStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *telephonyRegistryStubWrapper) AddOnSubscriptionsChangedListener(
+	ctx context.Context,
+	pkg string,
+	featureId string,
+	callback IOnSubscriptionsChangedListener,
+) error {
+	return w.impl.AddOnSubscriptionsChangedListener(ctx, pkg, featureId, callback)
+}
+
+func (w *telephonyRegistryStubWrapper) AddOnOpportunisticSubscriptionsChangedListener(
+	ctx context.Context,
+	pkg string,
+	featureId string,
+	callback IOnSubscriptionsChangedListener,
+) error {
+	return w.impl.AddOnOpportunisticSubscriptionsChangedListener(ctx, pkg, featureId, callback)
+}
+
+func (w *telephonyRegistryStubWrapper) RemoveOnSubscriptionsChangedListener(
+	ctx context.Context,
+	pkg string,
+	callback IOnSubscriptionsChangedListener,
+) error {
+	return w.impl.RemoveOnSubscriptionsChangedListener(ctx, pkg, callback)
+}
+
+func (w *telephonyRegistryStubWrapper) ListenWithEventList(
+	ctx context.Context,
+	renounceFineLocationAccess bool,
+	renounceCoarseLocationAccess bool,
+	subId int32,
+	pkg string,
+	featureId string,
+	callback IPhoneStateListener,
+	events []int32,
+	notifyNow bool,
+) error {
+	return w.impl.ListenWithEventList(ctx, renounceFineLocationAccess, renounceCoarseLocationAccess, subId, pkg, featureId, callback, events, notifyNow)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCallStateForAllSubs(
+	ctx context.Context,
+	state int32,
+	incomingNumber string,
+) error {
+	return w.impl.NotifyCallStateForAllSubs(ctx, state, incomingNumber)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCallState(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	state int32,
+	incomingNumber string,
+) error {
+	return w.impl.NotifyCallState(ctx, phoneId, subId, state, incomingNumber)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyServiceStateForPhoneId(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	state androidTelephony.ServiceState,
+) error {
+	return w.impl.NotifyServiceStateForPhoneId(ctx, phoneId, subId, state)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifySignalStrengthForPhoneId(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	signalStrength network.SignalStrength,
+) error {
+	return w.impl.NotifySignalStrengthForPhoneId(ctx, phoneId, subId, signalStrength)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyMessageWaitingChangedForPhoneId(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	mwi bool,
+) error {
+	return w.impl.NotifyMessageWaitingChangedForPhoneId(ctx, phoneId, subId, mwi)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCallForwardingChanged(
+	ctx context.Context,
+	cfi bool,
+) error {
+	return w.impl.NotifyCallForwardingChanged(ctx, cfi)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCallForwardingChangedForSubscriber(
+	ctx context.Context,
+	subId int32,
+	cfi bool,
+) error {
+	return w.impl.NotifyCallForwardingChangedForSubscriber(ctx, subId, cfi)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyDataActivityForSubscriber(
+	ctx context.Context,
+	subId int32,
+	state int32,
+) error {
+	return w.impl.NotifyDataActivityForSubscriber(ctx, subId, state)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyDataActivityForSubscriberWithSlot(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	state int32,
+) error {
+	return w.impl.NotifyDataActivityForSubscriberWithSlot(ctx, phoneId, subId, state)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyDataConnectionForSubscriber(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	preciseState androidTelephony.PreciseDataConnectionState,
+) error {
+	return w.impl.NotifyDataConnectionForSubscriber(ctx, phoneId, subId, preciseState)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCellLocationForSubscriber(
+	ctx context.Context,
+	subId int32,
+	cellLocation network.CellIdentity,
+) error {
+	return w.impl.NotifyCellLocationForSubscriber(ctx, subId, cellLocation)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCellInfo(
+	ctx context.Context,
+	cellInfo []network.CellInfo,
+) error {
+	return w.impl.NotifyCellInfo(ctx, cellInfo)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyPreciseCallState(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	callStates []int32,
+	imsCallIds []string,
+	imsCallServiceTypes []int32,
+	imsCallTypes []int32,
+) error {
+	return w.impl.NotifyPreciseCallState(ctx, phoneId, subId, callStates, imsCallIds, imsCallServiceTypes, imsCallTypes)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyDisconnectCause(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	disconnectCause int32,
+	preciseDisconnectCause int32,
+) error {
+	return w.impl.NotifyDisconnectCause(ctx, phoneId, subId, disconnectCause, preciseDisconnectCause)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCellInfoForSubscriber(
+	ctx context.Context,
+	subId int32,
+	cellInfo []network.CellInfo,
+) error {
+	return w.impl.NotifyCellInfoForSubscriber(ctx, subId, cellInfo)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifySrvccStateChanged(
+	ctx context.Context,
+	subId int32,
+	lteState int32,
+) error {
+	return w.impl.NotifySrvccStateChanged(ctx, subId, lteState)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifySimActivationStateChangedForPhoneId(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	activationState int32,
+	activationType int32,
+) error {
+	return w.impl.NotifySimActivationStateChangedForPhoneId(ctx, phoneId, subId, activationState, activationType)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyOemHookRawEventForSubscriber(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	rawData []byte,
+) error {
+	return w.impl.NotifyOemHookRawEventForSubscriber(ctx, phoneId, subId, rawData)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifySubscriptionInfoChanged(
+	ctx context.Context,
+) error {
+	return w.impl.NotifySubscriptionInfoChanged(ctx)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyOpportunisticSubscriptionInfoChanged(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyOpportunisticSubscriptionInfoChanged(ctx)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCarrierNetworkChange(
+	ctx context.Context,
+	active bool,
+) error {
+	return w.impl.NotifyCarrierNetworkChange(ctx, active)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCarrierNetworkChangeWithSubId(
+	ctx context.Context,
+	subId int32,
+	active bool,
+) error {
+	return w.impl.NotifyCarrierNetworkChangeWithSubId(ctx, subId, active)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyUserMobileDataStateChangedForPhoneId(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	state bool,
+) error {
+	return w.impl.NotifyUserMobileDataStateChangedForPhoneId(ctx, phoneId, subId, state)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyDisplayInfoChanged(
+	ctx context.Context,
+	slotIndex int32,
+	subId int32,
+	telephonyDisplayInfo androidTelephony.TelephonyDisplayInfo,
+) error {
+	return w.impl.NotifyDisplayInfoChanged(ctx, slotIndex, subId, telephonyDisplayInfo)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyPhoneCapabilityChanged(
+	ctx context.Context,
+	capability config.PhoneCapability,
+) error {
+	return w.impl.NotifyPhoneCapabilityChanged(ctx, capability)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyActiveDataSubIdChanged(
+	ctx context.Context,
+	activeDataSubId int32,
+) error {
+	return w.impl.NotifyActiveDataSubIdChanged(ctx, activeDataSubId)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyRadioPowerStateChanged(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	state int32,
+) error {
+	return w.impl.NotifyRadioPowerStateChanged(ctx, phoneId, subId, state)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyEmergencyNumberList(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+) error {
+	return w.impl.NotifyEmergencyNumberList(ctx, phoneId, subId)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyOutgoingEmergencyCall(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	emergencyNumber voice.EmergencyNumber,
+) error {
+	return w.impl.NotifyOutgoingEmergencyCall(ctx, phoneId, subId, emergencyNumber)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyOutgoingEmergencySms(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	emergencyNumber voice.EmergencyNumber,
+) error {
+	return w.impl.NotifyOutgoingEmergencySms(ctx, phoneId, subId, emergencyNumber)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCallQualityChanged(
+	ctx context.Context,
+	callQuality media.CallQuality,
+	phoneId int32,
+	subId int32,
+	callNetworkType int32,
+) error {
+	return w.impl.NotifyCallQualityChanged(ctx, callQuality, phoneId, subId, callNetworkType)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyMediaQualityStatusChanged(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	status media.MediaQualityStatus,
+) error {
+	return w.impl.NotifyMediaQualityStatusChanged(ctx, phoneId, subId, status)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyImsDisconnectCause(
+	ctx context.Context,
+	subId int32,
+	imsReasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.NotifyImsDisconnectCause(ctx, subId, imsReasonInfo)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyRegistrationFailed(
+	ctx context.Context,
+	slotIndex int32,
+	subId int32,
+	cellIdentity network.CellIdentity,
+	chosenPlmn string,
+	domain int32,
+	causeCode int32,
+	additionalCauseCode int32,
+) error {
+	return w.impl.NotifyRegistrationFailed(ctx, slotIndex, subId, cellIdentity, chosenPlmn, domain, causeCode, additionalCauseCode)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyBarringInfoChanged(
+	ctx context.Context,
+	slotIndex int32,
+	subId int32,
+	barringInfo network.BarringInfo,
+) error {
+	return w.impl.NotifyBarringInfoChanged(ctx, slotIndex, subId, barringInfo)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyPhysicalChannelConfigForSubscriber(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	configs []network.PhysicalChannelConfig,
+) error {
+	return w.impl.NotifyPhysicalChannelConfigForSubscriber(ctx, phoneId, subId, configs)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyDataEnabled(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	enabled bool,
+	reason int32,
+) error {
+	return w.impl.NotifyDataEnabled(ctx, phoneId, subId, enabled, reason)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyAllowedNetworkTypesChanged(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	reason int32,
+	allowedNetworkType int64,
+) error {
+	return w.impl.NotifyAllowedNetworkTypesChanged(ctx, phoneId, subId, reason, allowedNetworkType)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyLinkCapacityEstimateChanged(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	linkCapacityEstimateList []network.LinkCapacityEstimate,
+) error {
+	return w.impl.NotifyLinkCapacityEstimateChanged(ctx, phoneId, subId, linkCapacityEstimateList)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifySimultaneousCellularCallingSubscriptionsChanged(
+	ctx context.Context,
+	subIds []int32,
+) error {
+	return w.impl.NotifySimultaneousCellularCallingSubscriptionsChanged(ctx, subIds)
+}
+
+func (w *telephonyRegistryStubWrapper) AddCarrierPrivilegesCallback(
+	ctx context.Context,
+	phoneId int32,
+	callback ICarrierPrivilegesCallback,
+	pkg string,
+	featureId string,
+) error {
+	return w.impl.AddCarrierPrivilegesCallback(ctx, phoneId, callback, pkg, featureId)
+}
+
+func (w *telephonyRegistryStubWrapper) RemoveCarrierPrivilegesCallback(
+	ctx context.Context,
+	callback ICarrierPrivilegesCallback,
+	pkg string,
+) error {
+	return w.impl.RemoveCarrierPrivilegesCallback(ctx, callback, pkg)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCarrierPrivilegesChanged(
+	ctx context.Context,
+	phoneId int32,
+	privilegedPackageNames []string,
+	privilegedUids []int32,
+) error {
+	return w.impl.NotifyCarrierPrivilegesChanged(ctx, phoneId, privilegedPackageNames, privilegedUids)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCarrierServiceChanged(
+	ctx context.Context,
+	phoneId int32,
+	packageName string,
+	uid int32,
+) error {
+	return w.impl.NotifyCarrierServiceChanged(ctx, phoneId, packageName, uid)
+}
+
+func (w *telephonyRegistryStubWrapper) AddCarrierConfigChangeListener(
+	ctx context.Context,
+	listener ICarrierConfigChangeListener,
+	pkg string,
+	featureId string,
+) error {
+	return w.impl.AddCarrierConfigChangeListener(ctx, listener, pkg, featureId)
+}
+
+func (w *telephonyRegistryStubWrapper) RemoveCarrierConfigChangeListener(
+	ctx context.Context,
+	listener ICarrierConfigChangeListener,
+	pkg string,
+) error {
+	return w.impl.RemoveCarrierConfigChangeListener(ctx, listener, pkg)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCarrierConfigChanged(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	carrierId int32,
+	specificCarrierId int32,
+) error {
+	return w.impl.NotifyCarrierConfigChanged(ctx, phoneId, subId, carrierId, specificCarrierId)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCallbackModeStarted(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	type_ int32,
+	durationMillis int64,
+) error {
+	return w.impl.NotifyCallbackModeStarted(ctx, phoneId, subId, type_, durationMillis)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCallbackModeRestarted(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	type_ int32,
+	durationMillis int64,
+) error {
+	return w.impl.NotifyCallbackModeRestarted(ctx, phoneId, subId, type_, durationMillis)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCallbackModeStopped(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	type_ int32,
+	reason int32,
+) error {
+	return w.impl.NotifyCallbackModeStopped(ctx, phoneId, subId, type_, reason)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCarrierRoamingNtnModeChanged(
+	ctx context.Context,
+	subId int32,
+	active bool,
+) error {
+	return w.impl.NotifyCarrierRoamingNtnModeChanged(ctx, subId, active)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCarrierRoamingNtnEligibleStateChanged(
+	ctx context.Context,
+	subId int32,
+	eligible bool,
+) error {
+	return w.impl.NotifyCarrierRoamingNtnEligibleStateChanged(ctx, subId, eligible)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCarrierRoamingNtnAvailableServicesChanged(
+	ctx context.Context,
+	subId int32,
+	availableServices []int32,
+) error {
+	return w.impl.NotifyCarrierRoamingNtnAvailableServicesChanged(ctx, subId, availableServices)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCarrierRoamingNtnSignalStrengthChanged(
+	ctx context.Context,
+	subId int32,
+	ntnSignalStrength satellite.NtnSignalStrength,
+) error {
+	return w.impl.NotifyCarrierRoamingNtnSignalStrengthChanged(ctx, subId, ntnSignalStrength)
+}
+
+func (w *telephonyRegistryStubWrapper) AddSatelliteStateChangeListener(
+	ctx context.Context,
+	listener ISatelliteStateChangeListener,
+	pkg string,
+	featureId string,
+) error {
+	return w.impl.AddSatelliteStateChangeListener(ctx, listener, pkg, featureId)
+}
+
+func (w *telephonyRegistryStubWrapper) RemoveSatelliteStateChangeListener(
+	ctx context.Context,
+	listener ISatelliteStateChangeListener,
+	pkg string,
+) error {
+	return w.impl.RemoveSatelliteStateChangeListener(ctx, listener, pkg)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifySatelliteStateChanged(
+	ctx context.Context,
+	isEnabled bool,
+) error {
+	return w.impl.NotifySatelliteStateChanged(ctx, isEnabled)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifySecurityAlgorithmsChanged(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	update network.SecurityAlgorithmUpdate,
+) error {
+	return w.impl.NotifySecurityAlgorithmsChanged(ctx, phoneId, subId, update)
+}
+
+func (w *telephonyRegistryStubWrapper) NotifyCellularIdentifierDisclosedChanged(
+	ctx context.Context,
+	phoneId int32,
+	subId int32,
+	disclosure network.CellularIdentifierDisclosure,
+) error {
+	return w.impl.NotifyCellularIdentifierDisclosedChanged(ctx, phoneId, subId, disclosure)
+}
+
+var _ ITelephonyRegistry = (*telephonyRegistryStubWrapper)(nil)
+
+// NewTelephonyRegistryStub creates a server-side ITelephonyRegistry wrapping the given
+// server implementation. The returned value satisfies ITelephonyRegistry
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTelephonyRegistryStub(
+	impl ITelephonyRegistryServer,
+) ITelephonyRegistry {
+	wrapper := &telephonyRegistryStubWrapper{impl: impl}
+	stub := &TelephonyRegistryStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -82,3 +82,42 @@ func (s *SatelliteSupportedStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteSupportedStateCallbackServer is the server-side interface that user implementations
+// provide to NewSatelliteSupportedStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteSupportedStateCallbackServer interface {
+	OnSatelliteSupportedStateChanged(ctx context.Context, supported bool) error
+}
+
+type satelliteSupportedStateCallbackStubWrapper struct {
+	impl       ISatelliteSupportedStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteSupportedStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteSupportedStateCallbackStubWrapper) OnSatelliteSupportedStateChanged(
+	ctx context.Context,
+	supported bool,
+) error {
+	return w.impl.OnSatelliteSupportedStateChanged(ctx, supported)
+}
+
+var _ ISatelliteSupportedStateCallback = (*satelliteSupportedStateCallbackStubWrapper)(nil)
+
+// NewSatelliteSupportedStateCallbackStub creates a server-side ISatelliteSupportedStateCallback wrapping the given
+// server implementation. The returned value satisfies ISatelliteSupportedStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteSupportedStateCallbackStub(
+	impl ISatelliteSupportedStateCallbackServer,
+) ISatelliteSupportedStateCallback {
+	wrapper := &satelliteSupportedStateCallbackStubWrapper{impl: impl}
+	stub := &SatelliteSupportedStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -226,3 +226,75 @@ func (s *ProcessObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProcessObserverServer is the server-side interface that user implementations
+// provide to NewProcessObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProcessObserverServer interface {
+	OnProcessStarted(ctx context.Context, pid int32, processUid int32, packageUid int32, packageName string, processName string) error
+	OnForegroundActivitiesChanged(ctx context.Context, pid int32, uid int32, foregroundActivities bool) error
+	OnForegroundServicesChanged(ctx context.Context, pid int32, uid int32, serviceTypes int32) error
+	OnProcessDied(ctx context.Context, pid int32, uid int32) error
+}
+
+type processObserverStubWrapper struct {
+	impl       IProcessObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *processObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *processObserverStubWrapper) OnProcessStarted(
+	ctx context.Context,
+	pid int32,
+	processUid int32,
+	packageUid int32,
+	packageName string,
+	processName string,
+) error {
+	return w.impl.OnProcessStarted(ctx, pid, processUid, packageUid, packageName, processName)
+}
+
+func (w *processObserverStubWrapper) OnForegroundActivitiesChanged(
+	ctx context.Context,
+	pid int32,
+	uid int32,
+	foregroundActivities bool,
+) error {
+	return w.impl.OnForegroundActivitiesChanged(ctx, pid, uid, foregroundActivities)
+}
+
+func (w *processObserverStubWrapper) OnForegroundServicesChanged(
+	ctx context.Context,
+	pid int32,
+	uid int32,
+	serviceTypes int32,
+) error {
+	return w.impl.OnForegroundServicesChanged(ctx, pid, uid, serviceTypes)
+}
+
+func (w *processObserverStubWrapper) OnProcessDied(
+	ctx context.Context,
+	pid int32,
+	uid int32,
+) error {
+	return w.impl.OnProcessDied(ctx, pid, uid)
+}
+
+var _ IProcessObserver = (*processObserverStubWrapper)(nil)
+
+// NewProcessObserverStub creates a server-side IProcessObserver wrapping the given
+// server implementation. The returned value satisfies IProcessObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProcessObserverStub(
+	impl IProcessObserverServer,
+) IProcessObserver {
+	wrapper := &processObserverStubWrapper{impl: impl}
+	stub := &ProcessObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

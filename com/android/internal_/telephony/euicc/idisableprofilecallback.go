@@ -82,3 +82,42 @@ func (s *DisableProfileCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDisableProfileCallbackServer is the server-side interface that user implementations
+// provide to NewDisableProfileCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisableProfileCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32) error
+}
+
+type disableProfileCallbackStubWrapper struct {
+	impl       IDisableProfileCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *disableProfileCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *disableProfileCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+) error {
+	return w.impl.OnComplete(ctx, resultCode)
+}
+
+var _ IDisableProfileCallback = (*disableProfileCallbackStubWrapper)(nil)
+
+// NewDisableProfileCallbackStub creates a server-side IDisableProfileCallback wrapping the given
+// server implementation. The returned value satisfies IDisableProfileCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisableProfileCallbackStub(
+	impl IDisableProfileCallbackServer,
+) IDisableProfileCallback {
+	wrapper := &disableProfileCallbackStubWrapper{impl: impl}
+	stub := &DisableProfileCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

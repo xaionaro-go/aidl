@@ -247,7 +247,7 @@ func (p *BinderRpcTestProxy) PingMe(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "pingMe")
 	if _err != nil {
@@ -278,7 +278,7 @@ func (p *BinderRpcTestProxy) RepeatBinder(
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "repeatBinder")
 	if _err != nil {
@@ -309,7 +309,7 @@ func (p *BinderRpcTestProxy) HoldBinder(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "holdBinder")
 	if _err != nil {
@@ -414,7 +414,7 @@ func (p *BinderRpcTestProxy) NestMe(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
-	_data.WriteStrongBinder(binder_.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(calls)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcTest, "nestMe")
@@ -643,7 +643,7 @@ func (p *BinderRpcTestProxy) DoCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteBool(isOneway)
 	_data.WriteBool(delayed)
 	_data.WriteString16(value)
@@ -675,7 +675,7 @@ func (p *BinderRpcTestProxy) DoCallbackAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcTest)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteBool(isOneway)
 	_data.WriteBool(delayed)
 	_data.WriteString16(value)
@@ -1385,4 +1385,270 @@ func (s *BinderRpcTestStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBinderRpcTestServer is the server-side interface that user implementations
+// provide to NewBinderRpcTestStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderRpcTestServer interface {
+	SendString(ctx context.Context, str string) error
+	DoubleString(ctx context.Context, str string) (string, error)
+	GetClientPort(ctx context.Context) (int32, error)
+	CountBinders(ctx context.Context) ([]int32, error)
+	GetNullBinder(ctx context.Context) (binder.IBinder, error)
+	PingMe(ctx context.Context, binder_ binder.IBinder) (int32, error)
+	RepeatBinder(ctx context.Context, binder_ binder.IBinder) (binder.IBinder, error)
+	HoldBinder(ctx context.Context, binder_ binder.IBinder) error
+	GetHeldBinder(ctx context.Context) (binder.IBinder, error)
+	RepeatBytes(ctx context.Context, bytes []byte) ([]byte, error)
+	NestMe(ctx context.Context, binder_ IBinderRpcTest, calls int32) error
+	AlwaysGiveMeTheSameBinder(ctx context.Context) (binder.IBinder, error)
+	OpenSession(ctx context.Context, name string) (IBinderRpcSession, error)
+	GetNumOpenSessions(ctx context.Context) (int32, error)
+	Lock(ctx context.Context) error
+	UnlockInMsAsync(ctx context.Context, ms int32) error
+	LockUnlock(ctx context.Context) error
+	SleepMs(ctx context.Context, ms int32) error
+	SleepMsAsync(ctx context.Context, ms int32) error
+	DoCallback(ctx context.Context, callback IBinderRpcCallback, isOneway bool, delayed bool, value string) error
+	DoCallbackAsync(ctx context.Context, callback IBinderRpcCallback, isOneway bool, delayed bool, value string) error
+	Die(ctx context.Context, cleanup bool) error
+	ScheduleShutdown(ctx context.Context) error
+	UseKernelBinderCallingId(ctx context.Context) error
+	EchoAsFile(ctx context.Context, content string) (int32, error)
+	ConcatFiles(ctx context.Context, files []int32) (int32, error)
+	BlockingSendFdOneway(ctx context.Context, fd int32) error
+	BlockingRecvFd(ctx context.Context) (int32, error)
+	BlockingSendIntOneway(ctx context.Context, n int32) error
+	BlockingRecvInt(ctx context.Context) (int32, error)
+}
+
+type binderRpcTestStubWrapper struct {
+	impl       IBinderRpcTestServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderRpcTestStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderRpcTestStubWrapper) SendString(
+	ctx context.Context,
+	str string,
+) error {
+	return w.impl.SendString(ctx, str)
+}
+
+func (w *binderRpcTestStubWrapper) DoubleString(
+	ctx context.Context,
+	str string,
+) (string, error) {
+	return w.impl.DoubleString(ctx, str)
+}
+
+func (w *binderRpcTestStubWrapper) GetClientPort(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetClientPort(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) CountBinders(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.CountBinders(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) GetNullBinder(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.GetNullBinder(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) PingMe(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) (int32, error) {
+	return w.impl.PingMe(ctx, binder_)
+}
+
+func (w *binderRpcTestStubWrapper) RepeatBinder(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) (binder.IBinder, error) {
+	return w.impl.RepeatBinder(ctx, binder_)
+}
+
+func (w *binderRpcTestStubWrapper) HoldBinder(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) error {
+	return w.impl.HoldBinder(ctx, binder_)
+}
+
+func (w *binderRpcTestStubWrapper) GetHeldBinder(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.GetHeldBinder(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) RepeatBytes(
+	ctx context.Context,
+	bytes []byte,
+) ([]byte, error) {
+	return w.impl.RepeatBytes(ctx, bytes)
+}
+
+func (w *binderRpcTestStubWrapper) NestMe(
+	ctx context.Context,
+	binder_ IBinderRpcTest,
+	calls int32,
+) error {
+	return w.impl.NestMe(ctx, binder_, calls)
+}
+
+func (w *binderRpcTestStubWrapper) AlwaysGiveMeTheSameBinder(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.AlwaysGiveMeTheSameBinder(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) OpenSession(
+	ctx context.Context,
+	name string,
+) (IBinderRpcSession, error) {
+	return w.impl.OpenSession(ctx, name)
+}
+
+func (w *binderRpcTestStubWrapper) GetNumOpenSessions(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNumOpenSessions(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) Lock(
+	ctx context.Context,
+) error {
+	return w.impl.Lock(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) UnlockInMsAsync(
+	ctx context.Context,
+	ms int32,
+) error {
+	return w.impl.UnlockInMsAsync(ctx, ms)
+}
+
+func (w *binderRpcTestStubWrapper) LockUnlock(
+	ctx context.Context,
+) error {
+	return w.impl.LockUnlock(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) SleepMs(
+	ctx context.Context,
+	ms int32,
+) error {
+	return w.impl.SleepMs(ctx, ms)
+}
+
+func (w *binderRpcTestStubWrapper) SleepMsAsync(
+	ctx context.Context,
+	ms int32,
+) error {
+	return w.impl.SleepMsAsync(ctx, ms)
+}
+
+func (w *binderRpcTestStubWrapper) DoCallback(
+	ctx context.Context,
+	callback IBinderRpcCallback,
+	isOneway bool,
+	delayed bool,
+	value string,
+) error {
+	return w.impl.DoCallback(ctx, callback, isOneway, delayed, value)
+}
+
+func (w *binderRpcTestStubWrapper) DoCallbackAsync(
+	ctx context.Context,
+	callback IBinderRpcCallback,
+	isOneway bool,
+	delayed bool,
+	value string,
+) error {
+	return w.impl.DoCallbackAsync(ctx, callback, isOneway, delayed, value)
+}
+
+func (w *binderRpcTestStubWrapper) Die(
+	ctx context.Context,
+	cleanup bool,
+) error {
+	return w.impl.Die(ctx, cleanup)
+}
+
+func (w *binderRpcTestStubWrapper) ScheduleShutdown(
+	ctx context.Context,
+) error {
+	return w.impl.ScheduleShutdown(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) UseKernelBinderCallingId(
+	ctx context.Context,
+) error {
+	return w.impl.UseKernelBinderCallingId(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) EchoAsFile(
+	ctx context.Context,
+	content string,
+) (int32, error) {
+	return w.impl.EchoAsFile(ctx, content)
+}
+
+func (w *binderRpcTestStubWrapper) ConcatFiles(
+	ctx context.Context,
+	files []int32,
+) (int32, error) {
+	return w.impl.ConcatFiles(ctx, files)
+}
+
+func (w *binderRpcTestStubWrapper) BlockingSendFdOneway(
+	ctx context.Context,
+	fd int32,
+) error {
+	return w.impl.BlockingSendFdOneway(ctx, fd)
+}
+
+func (w *binderRpcTestStubWrapper) BlockingRecvFd(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.BlockingRecvFd(ctx)
+}
+
+func (w *binderRpcTestStubWrapper) BlockingSendIntOneway(
+	ctx context.Context,
+	n int32,
+) error {
+	return w.impl.BlockingSendIntOneway(ctx, n)
+}
+
+func (w *binderRpcTestStubWrapper) BlockingRecvInt(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.BlockingRecvInt(ctx)
+}
+
+var _ IBinderRpcTest = (*binderRpcTestStubWrapper)(nil)
+
+// NewBinderRpcTestStub creates a server-side IBinderRpcTest wrapping the given
+// server implementation. The returned value satisfies IBinderRpcTest
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderRpcTestStub(
+	impl IBinderRpcTestServer,
+) IBinderRpcTest {
+	wrapper := &binderRpcTestStubWrapper{impl: impl}
+	stub := &BinderRpcTestStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

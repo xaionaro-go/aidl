@@ -249,7 +249,7 @@ func (p *NetworkPolicyManagerProxy) RegisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "registerListener")
 	if _err != nil {
@@ -275,7 +275,7 @@ func (p *NetworkPolicyManagerProxy) UnregisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkPolicyManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkPolicyManager, "unregisterListener")
 	if _err != nil {
@@ -1377,4 +1377,250 @@ func (s *NetworkPolicyManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// INetworkPolicyManagerServer is the server-side interface that user implementations
+// provide to NewNetworkPolicyManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkPolicyManagerServer interface {
+	SetUidPolicy(ctx context.Context, uid int32, policy int32) error
+	AddUidPolicy(ctx context.Context, uid int32, policy int32) error
+	RemoveUidPolicy(ctx context.Context, uid int32, policy int32) error
+	GetUidPolicy(ctx context.Context, uid int32) (int32, error)
+	GetUidsWithPolicy(ctx context.Context, policy int32) ([]int32, error)
+	RegisterListener(ctx context.Context, listener INetworkPolicyListener) error
+	UnregisterListener(ctx context.Context, listener INetworkPolicyListener) error
+	SetNetworkPolicies(ctx context.Context, policies []NetworkPolicy) error
+	GetNetworkPolicies(ctx context.Context) ([]NetworkPolicy, error)
+	SnoozeLimit(ctx context.Context, template interface{}) error
+	SetRestrictBackground(ctx context.Context, restrictBackground bool) error
+	GetRestrictBackground(ctx context.Context) (bool, error)
+	GetRestrictBackgroundByCaller(ctx context.Context) (int32, error)
+	GetRestrictBackgroundStatus(ctx context.Context, uid int32) (int32, error)
+	SetDeviceIdleMode(ctx context.Context, enabled bool) error
+	SetWifiMeteredOverride(ctx context.Context, networkId string, meteredOverride int32) error
+	GetMultipathPreference(ctx context.Context, network interface{}) (int32, error)
+	GetSubscriptionPlan(ctx context.Context, template interface{}) (telephony.SubscriptionPlan, error)
+	NotifyStatsProviderWarningOrLimitReached(ctx context.Context) error
+	GetSubscriptionPlans(ctx context.Context, subId int32) ([]telephony.SubscriptionPlan, error)
+	SetSubscriptionPlans(ctx context.Context, subId int32, plans []telephony.SubscriptionPlan, expirationDurationMillis int64) error
+	GetSubscriptionPlansOwner(ctx context.Context, subId int32) (string, error)
+	SetSubscriptionOverride(ctx context.Context, subId int32, overrideMask int32, overrideValue int32, networkTypes []int32, expirationDurationMillis int64) error
+	FactoryReset(ctx context.Context, subscriber string) error
+	IsUidNetworkingBlocked(ctx context.Context, uid int32, meteredNetwork bool) (bool, error)
+	IsUidRestrictedOnMeteredNetworks(ctx context.Context, uid int32) (bool, error)
+}
+
+type networkPolicyManagerStubWrapper struct {
+	impl       INetworkPolicyManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkPolicyManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkPolicyManagerStubWrapper) SetUidPolicy(
+	ctx context.Context,
+	uid int32,
+	policy int32,
+) error {
+	return w.impl.SetUidPolicy(ctx, uid, policy)
+}
+
+func (w *networkPolicyManagerStubWrapper) AddUidPolicy(
+	ctx context.Context,
+	uid int32,
+	policy int32,
+) error {
+	return w.impl.AddUidPolicy(ctx, uid, policy)
+}
+
+func (w *networkPolicyManagerStubWrapper) RemoveUidPolicy(
+	ctx context.Context,
+	uid int32,
+	policy int32,
+) error {
+	return w.impl.RemoveUidPolicy(ctx, uid, policy)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetUidPolicy(
+	ctx context.Context,
+	uid int32,
+) (int32, error) {
+	return w.impl.GetUidPolicy(ctx, uid)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetUidsWithPolicy(
+	ctx context.Context,
+	policy int32,
+) ([]int32, error) {
+	return w.impl.GetUidsWithPolicy(ctx, policy)
+}
+
+func (w *networkPolicyManagerStubWrapper) RegisterListener(
+	ctx context.Context,
+	listener INetworkPolicyListener,
+) error {
+	return w.impl.RegisterListener(ctx, listener)
+}
+
+func (w *networkPolicyManagerStubWrapper) UnregisterListener(
+	ctx context.Context,
+	listener INetworkPolicyListener,
+) error {
+	return w.impl.UnregisterListener(ctx, listener)
+}
+
+func (w *networkPolicyManagerStubWrapper) SetNetworkPolicies(
+	ctx context.Context,
+	policies []NetworkPolicy,
+) error {
+	return w.impl.SetNetworkPolicies(ctx, policies)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetNetworkPolicies(
+	ctx context.Context,
+) ([]NetworkPolicy, error) {
+	return w.impl.GetNetworkPolicies(ctx)
+}
+
+func (w *networkPolicyManagerStubWrapper) SnoozeLimit(
+	ctx context.Context,
+	template interface{},
+) error {
+	return w.impl.SnoozeLimit(ctx, template)
+}
+
+func (w *networkPolicyManagerStubWrapper) SetRestrictBackground(
+	ctx context.Context,
+	restrictBackground bool,
+) error {
+	return w.impl.SetRestrictBackground(ctx, restrictBackground)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetRestrictBackground(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetRestrictBackground(ctx)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetRestrictBackgroundByCaller(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetRestrictBackgroundByCaller(ctx)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetRestrictBackgroundStatus(
+	ctx context.Context,
+	uid int32,
+) (int32, error) {
+	return w.impl.GetRestrictBackgroundStatus(ctx, uid)
+}
+
+func (w *networkPolicyManagerStubWrapper) SetDeviceIdleMode(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetDeviceIdleMode(ctx, enabled)
+}
+
+func (w *networkPolicyManagerStubWrapper) SetWifiMeteredOverride(
+	ctx context.Context,
+	networkId string,
+	meteredOverride int32,
+) error {
+	return w.impl.SetWifiMeteredOverride(ctx, networkId, meteredOverride)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetMultipathPreference(
+	ctx context.Context,
+	network interface{},
+) (int32, error) {
+	return w.impl.GetMultipathPreference(ctx, network)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetSubscriptionPlan(
+	ctx context.Context,
+	template interface{},
+) (telephony.SubscriptionPlan, error) {
+	return w.impl.GetSubscriptionPlan(ctx, template)
+}
+
+func (w *networkPolicyManagerStubWrapper) NotifyStatsProviderWarningOrLimitReached(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyStatsProviderWarningOrLimitReached(ctx)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetSubscriptionPlans(
+	ctx context.Context,
+	subId int32,
+) ([]telephony.SubscriptionPlan, error) {
+	return w.impl.GetSubscriptionPlans(ctx, subId)
+}
+
+func (w *networkPolicyManagerStubWrapper) SetSubscriptionPlans(
+	ctx context.Context,
+	subId int32,
+	plans []telephony.SubscriptionPlan,
+	expirationDurationMillis int64,
+) error {
+	return w.impl.SetSubscriptionPlans(ctx, subId, plans, expirationDurationMillis)
+}
+
+func (w *networkPolicyManagerStubWrapper) GetSubscriptionPlansOwner(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetSubscriptionPlansOwner(ctx, subId)
+}
+
+func (w *networkPolicyManagerStubWrapper) SetSubscriptionOverride(
+	ctx context.Context,
+	subId int32,
+	overrideMask int32,
+	overrideValue int32,
+	networkTypes []int32,
+	expirationDurationMillis int64,
+) error {
+	return w.impl.SetSubscriptionOverride(ctx, subId, overrideMask, overrideValue, networkTypes, expirationDurationMillis)
+}
+
+func (w *networkPolicyManagerStubWrapper) FactoryReset(
+	ctx context.Context,
+	subscriber string,
+) error {
+	return w.impl.FactoryReset(ctx, subscriber)
+}
+
+func (w *networkPolicyManagerStubWrapper) IsUidNetworkingBlocked(
+	ctx context.Context,
+	uid int32,
+	meteredNetwork bool,
+) (bool, error) {
+	return w.impl.IsUidNetworkingBlocked(ctx, uid, meteredNetwork)
+}
+
+func (w *networkPolicyManagerStubWrapper) IsUidRestrictedOnMeteredNetworks(
+	ctx context.Context,
+	uid int32,
+) (bool, error) {
+	return w.impl.IsUidRestrictedOnMeteredNetworks(ctx, uid)
+}
+
+var _ INetworkPolicyManager = (*networkPolicyManagerStubWrapper)(nil)
+
+// NewNetworkPolicyManagerStub creates a server-side INetworkPolicyManager wrapping the given
+// server implementation. The returned value satisfies INetworkPolicyManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkPolicyManagerStub(
+	impl INetworkPolicyManagerServer,
+) INetworkPolicyManager {
+	wrapper := &networkPolicyManagerStubWrapper{impl: impl}
+	stub := &NetworkPolicyManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

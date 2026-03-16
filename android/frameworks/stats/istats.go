@@ -93,3 +93,42 @@ func (s *StatsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStatsServer is the server-side interface that user implementations
+// provide to NewStatsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStatsServer interface {
+	ReportVendorAtom(ctx context.Context, vendorAtom VendorAtom) error
+}
+
+type statsStubWrapper struct {
+	impl       IStatsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *statsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *statsStubWrapper) ReportVendorAtom(
+	ctx context.Context,
+	vendorAtom VendorAtom,
+) error {
+	return w.impl.ReportVendorAtom(ctx, vendorAtom)
+}
+
+var _ IStats = (*statsStubWrapper)(nil)
+
+// NewStatsStub creates a server-side IStats wrapping the given
+// server implementation. The returned value satisfies IStats
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStatsStub(
+	impl IStatsServer,
+) IStats {
+	wrapper := &statsStubWrapper{impl: impl}
+	stub := &StatsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

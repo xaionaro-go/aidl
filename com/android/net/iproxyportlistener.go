@@ -82,3 +82,42 @@ func (s *ProxyPortListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProxyPortListenerServer is the server-side interface that user implementations
+// provide to NewProxyPortListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProxyPortListenerServer interface {
+	SetProxyPort(ctx context.Context, port int32) error
+}
+
+type proxyPortListenerStubWrapper struct {
+	impl       IProxyPortListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *proxyPortListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *proxyPortListenerStubWrapper) SetProxyPort(
+	ctx context.Context,
+	port int32,
+) error {
+	return w.impl.SetProxyPort(ctx, port)
+}
+
+var _ IProxyPortListener = (*proxyPortListenerStubWrapper)(nil)
+
+// NewProxyPortListenerStub creates a server-side IProxyPortListener wrapping the given
+// server implementation. The returned value satisfies IProxyPortListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProxyPortListenerStub(
+	impl IProxyPortListenerServer,
+) IProxyPortListener {
+	wrapper := &proxyPortListenerStubWrapper{impl: impl}
+	stub := &ProxyPortListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

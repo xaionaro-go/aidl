@@ -123,3 +123,50 @@ func (s *GnssMeasurementsListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssMeasurementsListenerServer is the server-side interface that user implementations
+// provide to NewGnssMeasurementsListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssMeasurementsListenerServer interface {
+	OnGnssMeasurementsReceived(ctx context.Context, event GnssMeasurementsEvent) error
+	OnStatusChanged(ctx context.Context, status int32) error
+}
+
+type gnssMeasurementsListenerStubWrapper struct {
+	impl       IGnssMeasurementsListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssMeasurementsListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssMeasurementsListenerStubWrapper) OnGnssMeasurementsReceived(
+	ctx context.Context,
+	event GnssMeasurementsEvent,
+) error {
+	return w.impl.OnGnssMeasurementsReceived(ctx, event)
+}
+
+func (w *gnssMeasurementsListenerStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnStatusChanged(ctx, status)
+}
+
+var _ IGnssMeasurementsListener = (*gnssMeasurementsListenerStubWrapper)(nil)
+
+// NewGnssMeasurementsListenerStub creates a server-side IGnssMeasurementsListener wrapping the given
+// server implementation. The returned value satisfies IGnssMeasurementsListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssMeasurementsListenerStub(
+	impl IGnssMeasurementsListenerServer,
+) IGnssMeasurementsListener {
+	wrapper := &gnssMeasurementsListenerStubWrapper{impl: impl}
+	stub := &GnssMeasurementsListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -45,7 +45,7 @@ func (p *UpdateLockProxy) AcquireUpdateLock(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUpdateLock)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(tag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUpdateLock, "acquireUpdateLock")
@@ -72,7 +72,7 @@ func (p *UpdateLockProxy) ReleaseUpdateLock(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUpdateLock)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUpdateLock, "releaseUpdateLock")
 	if _err != nil {
@@ -143,4 +143,52 @@ func (s *UpdateLockStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUpdateLockServer is the server-side interface that user implementations
+// provide to NewUpdateLockStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUpdateLockServer interface {
+	AcquireUpdateLock(ctx context.Context, token binder.IBinder, tag string) error
+	ReleaseUpdateLock(ctx context.Context, token binder.IBinder) error
+}
+
+type updateLockStubWrapper struct {
+	impl       IUpdateLockServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *updateLockStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *updateLockStubWrapper) AcquireUpdateLock(
+	ctx context.Context,
+	token binder.IBinder,
+	tag string,
+) error {
+	return w.impl.AcquireUpdateLock(ctx, token, tag)
+}
+
+func (w *updateLockStubWrapper) ReleaseUpdateLock(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ReleaseUpdateLock(ctx, token)
+}
+
+var _ IUpdateLock = (*updateLockStubWrapper)(nil)
+
+// NewUpdateLockStub creates a server-side IUpdateLock wrapping the given
+// server implementation. The returned value satisfies IUpdateLock
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUpdateLockStub(
+	impl IUpdateLockServer,
+) IUpdateLock {
+	wrapper := &updateLockStubWrapper{impl: impl}
+	stub := &UpdateLockStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

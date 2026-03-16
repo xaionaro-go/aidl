@@ -100,3 +100,43 @@ func (s *GetRulesAuthTableCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetRulesAuthTableCallbackServer is the server-side interface that user implementations
+// provide to NewGetRulesAuthTableCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetRulesAuthTableCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, rat telephonyEuicc.EuiccRulesAuthTable) error
+}
+
+type getRulesAuthTableCallbackStubWrapper struct {
+	impl       IGetRulesAuthTableCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getRulesAuthTableCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getRulesAuthTableCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	rat telephonyEuicc.EuiccRulesAuthTable,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, rat)
+}
+
+var _ IGetRulesAuthTableCallback = (*getRulesAuthTableCallbackStubWrapper)(nil)
+
+// NewGetRulesAuthTableCallbackStub creates a server-side IGetRulesAuthTableCallback wrapping the given
+// server implementation. The returned value satisfies IGetRulesAuthTableCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetRulesAuthTableCallbackStub(
+	impl IGetRulesAuthTableCallbackServer,
+) IGetRulesAuthTableCallback {
+	wrapper := &getRulesAuthTableCallbackStubWrapper{impl: impl}
+	stub := &GetRulesAuthTableCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -49,7 +49,7 @@ func (p *GeocodeProviderProxy) ForwardGeocode(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGeocodeProvider, "forwardGeocode")
 	if _err != nil {
@@ -71,7 +71,7 @@ func (p *GeocodeProviderProxy) ReverseGeocode(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGeocodeProvider, "reverseGeocode")
 	if _err != nil {
@@ -143,4 +143,53 @@ func (s *GeocodeProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGeocodeProviderServer is the server-side interface that user implementations
+// provide to NewGeocodeProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGeocodeProviderServer interface {
+	ForwardGeocode(ctx context.Context, request ForwardGeocodeRequest, callback IGeocodeCallback) error
+	ReverseGeocode(ctx context.Context, request ReverseGeocodeRequest, callback IGeocodeCallback) error
+}
+
+type geocodeProviderStubWrapper struct {
+	impl       IGeocodeProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *geocodeProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *geocodeProviderStubWrapper) ForwardGeocode(
+	ctx context.Context,
+	request ForwardGeocodeRequest,
+	callback IGeocodeCallback,
+) error {
+	return w.impl.ForwardGeocode(ctx, request, callback)
+}
+
+func (w *geocodeProviderStubWrapper) ReverseGeocode(
+	ctx context.Context,
+	request ReverseGeocodeRequest,
+	callback IGeocodeCallback,
+) error {
+	return w.impl.ReverseGeocode(ctx, request, callback)
+}
+
+var _ IGeocodeProvider = (*geocodeProviderStubWrapper)(nil)
+
+// NewGeocodeProviderStub creates a server-side IGeocodeProvider wrapping the given
+// server implementation. The returned value satisfies IGeocodeProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGeocodeProviderStub(
+	impl IGeocodeProviderServer,
+) IGeocodeProvider {
+	wrapper := &geocodeProviderStubWrapper{impl: impl}
+	stub := &GeocodeProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

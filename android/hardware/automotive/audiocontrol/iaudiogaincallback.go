@@ -102,3 +102,43 @@ func (s *AudioGainCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioGainCallbackServer is the server-side interface that user implementations
+// provide to NewAudioGainCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioGainCallbackServer interface {
+	OnAudioDeviceGainsChanged(ctx context.Context, reasons []Reasons, gains []AudioGainConfigInfo) error
+}
+
+type audioGainCallbackStubWrapper struct {
+	impl       IAudioGainCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioGainCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioGainCallbackStubWrapper) OnAudioDeviceGainsChanged(
+	ctx context.Context,
+	reasons []Reasons,
+	gains []AudioGainConfigInfo,
+) error {
+	return w.impl.OnAudioDeviceGainsChanged(ctx, reasons, gains)
+}
+
+var _ IAudioGainCallback = (*audioGainCallbackStubWrapper)(nil)
+
+// NewAudioGainCallbackStub creates a server-side IAudioGainCallback wrapping the given
+// server implementation. The returned value satisfies IAudioGainCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioGainCallbackStub(
+	impl IAudioGainCallbackServer,
+) IAudioGainCallback {
+	wrapper := &audioGainCallbackStubWrapper{impl: impl}
+	stub := &AudioGainCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

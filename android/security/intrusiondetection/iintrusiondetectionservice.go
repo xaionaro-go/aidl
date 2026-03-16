@@ -48,7 +48,7 @@ func (p *IntrusionDetectionServiceProxy) AddStateCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "addStateCallback")
 	if _err != nil {
@@ -74,7 +74,7 @@ func (p *IntrusionDetectionServiceProxy) RemoveStateCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "removeStateCallback")
 	if _err != nil {
@@ -100,7 +100,7 @@ func (p *IntrusionDetectionServiceProxy) Enable(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "enable")
 	if _err != nil {
@@ -126,7 +126,7 @@ func (p *IntrusionDetectionServiceProxy) Disable(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIntrusionDetectionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIntrusionDetectionService, "disable")
 	if _err != nil {
@@ -223,4 +223,67 @@ func (s *IntrusionDetectionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IIntrusionDetectionServiceServer is the server-side interface that user implementations
+// provide to NewIntrusionDetectionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIntrusionDetectionServiceServer interface {
+	AddStateCallback(ctx context.Context, callback IIntrusionDetectionServiceStateCallback) error
+	RemoveStateCallback(ctx context.Context, callback IIntrusionDetectionServiceStateCallback) error
+	Enable(ctx context.Context, callback IIntrusionDetectionServiceCommandCallback) error
+	Disable(ctx context.Context, callback IIntrusionDetectionServiceCommandCallback) error
+}
+
+type intrusionDetectionServiceStubWrapper struct {
+	impl       IIntrusionDetectionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *intrusionDetectionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *intrusionDetectionServiceStubWrapper) AddStateCallback(
+	ctx context.Context,
+	callback IIntrusionDetectionServiceStateCallback,
+) error {
+	return w.impl.AddStateCallback(ctx, callback)
+}
+
+func (w *intrusionDetectionServiceStubWrapper) RemoveStateCallback(
+	ctx context.Context,
+	callback IIntrusionDetectionServiceStateCallback,
+) error {
+	return w.impl.RemoveStateCallback(ctx, callback)
+}
+
+func (w *intrusionDetectionServiceStubWrapper) Enable(
+	ctx context.Context,
+	callback IIntrusionDetectionServiceCommandCallback,
+) error {
+	return w.impl.Enable(ctx, callback)
+}
+
+func (w *intrusionDetectionServiceStubWrapper) Disable(
+	ctx context.Context,
+	callback IIntrusionDetectionServiceCommandCallback,
+) error {
+	return w.impl.Disable(ctx, callback)
+}
+
+var _ IIntrusionDetectionService = (*intrusionDetectionServiceStubWrapper)(nil)
+
+// NewIntrusionDetectionServiceStub creates a server-side IIntrusionDetectionService wrapping the given
+// server implementation. The returned value satisfies IIntrusionDetectionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIntrusionDetectionServiceStub(
+	impl IIntrusionDetectionServiceServer,
+) IIntrusionDetectionService {
+	wrapper := &intrusionDetectionServiceStubWrapper{impl: impl}
+	stub := &IntrusionDetectionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

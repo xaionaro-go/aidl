@@ -90,3 +90,41 @@ func (s *TestServiceConnectorServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITestServiceConnectorServiceServer is the server-side interface that user implementations
+// provide to NewTestServiceConnectorServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITestServiceConnectorServiceServer interface {
+	CrashProcess(ctx context.Context) error
+}
+
+type testServiceConnectorServiceStubWrapper struct {
+	impl       ITestServiceConnectorServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *testServiceConnectorServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *testServiceConnectorServiceStubWrapper) CrashProcess(
+	ctx context.Context,
+) error {
+	return w.impl.CrashProcess(ctx)
+}
+
+var _ ITestServiceConnectorService = (*testServiceConnectorServiceStubWrapper)(nil)
+
+// NewTestServiceConnectorServiceStub creates a server-side ITestServiceConnectorService wrapping the given
+// server implementation. The returned value satisfies ITestServiceConnectorService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTestServiceConnectorServiceStub(
+	impl ITestServiceConnectorServiceServer,
+) ITestServiceConnectorService {
+	wrapper := &testServiceConnectorServiceStubWrapper{impl: impl}
+	stub := &TestServiceConnectorServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

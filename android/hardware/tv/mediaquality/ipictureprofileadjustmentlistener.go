@@ -211,3 +211,68 @@ func (s *PictureProfileAdjustmentListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPictureProfileAdjustmentListenerServer is the server-side interface that user implementations
+// provide to NewPictureProfileAdjustmentListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPictureProfileAdjustmentListenerServer interface {
+	OnPictureProfileAdjusted(ctx context.Context, pictureProfile PictureProfile) error
+	OnParamCapabilityChanged(ctx context.Context, pictureProfileId int64, caps []ParamCapability) error
+	OnVendorParamCapabilityChanged(ctx context.Context, pictureProfileId int64, caps []VendorParamCapability) error
+	OnRequestPictureParameters(ctx context.Context, pictureProfileId int64) error
+}
+
+type pictureProfileAdjustmentListenerStubWrapper struct {
+	impl       IPictureProfileAdjustmentListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pictureProfileAdjustmentListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pictureProfileAdjustmentListenerStubWrapper) OnPictureProfileAdjusted(
+	ctx context.Context,
+	pictureProfile PictureProfile,
+) error {
+	return w.impl.OnPictureProfileAdjusted(ctx, pictureProfile)
+}
+
+func (w *pictureProfileAdjustmentListenerStubWrapper) OnParamCapabilityChanged(
+	ctx context.Context,
+	pictureProfileId int64,
+	caps []ParamCapability,
+) error {
+	return w.impl.OnParamCapabilityChanged(ctx, pictureProfileId, caps)
+}
+
+func (w *pictureProfileAdjustmentListenerStubWrapper) OnVendorParamCapabilityChanged(
+	ctx context.Context,
+	pictureProfileId int64,
+	caps []VendorParamCapability,
+) error {
+	return w.impl.OnVendorParamCapabilityChanged(ctx, pictureProfileId, caps)
+}
+
+func (w *pictureProfileAdjustmentListenerStubWrapper) OnRequestPictureParameters(
+	ctx context.Context,
+	pictureProfileId int64,
+) error {
+	return w.impl.OnRequestPictureParameters(ctx, pictureProfileId)
+}
+
+var _ IPictureProfileAdjustmentListener = (*pictureProfileAdjustmentListenerStubWrapper)(nil)
+
+// NewPictureProfileAdjustmentListenerStub creates a server-side IPictureProfileAdjustmentListener wrapping the given
+// server implementation. The returned value satisfies IPictureProfileAdjustmentListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPictureProfileAdjustmentListenerStub(
+	impl IPictureProfileAdjustmentListenerServer,
+) IPictureProfileAdjustmentListener {
+	wrapper := &pictureProfileAdjustmentListenerStubWrapper{impl: impl}
+	stub := &PictureProfileAdjustmentListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

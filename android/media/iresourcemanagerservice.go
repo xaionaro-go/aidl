@@ -116,7 +116,7 @@ func (p *ResourceManagerServiceProxy) AddResource(
 	if _err := clientInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	if resources == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -337,7 +337,7 @@ func (p *ResourceManagerServiceProxy) OverrideProcessInfo(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIResourceManagerService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(pid)
 	_data.WriteInt32(procState)
 	_data.WriteInt32(oomScore)
@@ -932,4 +932,164 @@ func (s *ResourceManagerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IResourceManagerServiceServer is the server-side interface that user implementations
+// provide to NewResourceManagerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResourceManagerServiceServer interface {
+	Config(ctx context.Context, policies []MediaResourcePolicyParcel) error
+	AddResource(ctx context.Context, clientInfo ClientInfoParcel, client IResourceManagerClient, resources []MediaResourceParcel) error
+	UpdateResource(ctx context.Context, clientInfo ClientInfoParcel, resources []MediaResourceParcel) error
+	RemoveResource(ctx context.Context, clientInfo ClientInfoParcel, resources []MediaResourceParcel) error
+	RemoveClient(ctx context.Context, clientInfo ClientInfoParcel) error
+	ReclaimResource(ctx context.Context, clientInfo ClientInfoParcel, resources []MediaResourceParcel) (bool, error)
+	OverridePid(ctx context.Context, originalPid int32, newPid int32) error
+	OverrideProcessInfo(ctx context.Context, client IResourceManagerClient, pid int32, procState int32, oomScore int32) error
+	MarkClientForPendingRemoval(ctx context.Context, clientInfo ClientInfoParcel) error
+	ReclaimResourcesFromClientsPendingRemoval(ctx context.Context, pid int32) error
+	NotifyClientCreated(ctx context.Context, clientInfo ClientInfoParcel) error
+	NotifyClientStarted(ctx context.Context, clientConfig ClientConfigParcel) error
+	NotifyClientStopped(ctx context.Context, clientConfig ClientConfigParcel) error
+	NotifyClientConfigChanged(ctx context.Context, clientConfig ClientConfigParcel) error
+	GetMediaResourceUsageReport(ctx context.Context, resources []MediaResourceParcel) error
+}
+
+type resourceManagerServiceStubWrapper struct {
+	impl       IResourceManagerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resourceManagerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resourceManagerServiceStubWrapper) Config(
+	ctx context.Context,
+	policies []MediaResourcePolicyParcel,
+) error {
+	return w.impl.Config(ctx, policies)
+}
+
+func (w *resourceManagerServiceStubWrapper) AddResource(
+	ctx context.Context,
+	clientInfo ClientInfoParcel,
+	client IResourceManagerClient,
+	resources []MediaResourceParcel,
+) error {
+	return w.impl.AddResource(ctx, clientInfo, client, resources)
+}
+
+func (w *resourceManagerServiceStubWrapper) UpdateResource(
+	ctx context.Context,
+	clientInfo ClientInfoParcel,
+	resources []MediaResourceParcel,
+) error {
+	return w.impl.UpdateResource(ctx, clientInfo, resources)
+}
+
+func (w *resourceManagerServiceStubWrapper) RemoveResource(
+	ctx context.Context,
+	clientInfo ClientInfoParcel,
+	resources []MediaResourceParcel,
+) error {
+	return w.impl.RemoveResource(ctx, clientInfo, resources)
+}
+
+func (w *resourceManagerServiceStubWrapper) RemoveClient(
+	ctx context.Context,
+	clientInfo ClientInfoParcel,
+) error {
+	return w.impl.RemoveClient(ctx, clientInfo)
+}
+
+func (w *resourceManagerServiceStubWrapper) ReclaimResource(
+	ctx context.Context,
+	clientInfo ClientInfoParcel,
+	resources []MediaResourceParcel,
+) (bool, error) {
+	return w.impl.ReclaimResource(ctx, clientInfo, resources)
+}
+
+func (w *resourceManagerServiceStubWrapper) OverridePid(
+	ctx context.Context,
+	originalPid int32,
+	newPid int32,
+) error {
+	return w.impl.OverridePid(ctx, originalPid, newPid)
+}
+
+func (w *resourceManagerServiceStubWrapper) OverrideProcessInfo(
+	ctx context.Context,
+	client IResourceManagerClient,
+	pid int32,
+	procState int32,
+	oomScore int32,
+) error {
+	return w.impl.OverrideProcessInfo(ctx, client, pid, procState, oomScore)
+}
+
+func (w *resourceManagerServiceStubWrapper) MarkClientForPendingRemoval(
+	ctx context.Context,
+	clientInfo ClientInfoParcel,
+) error {
+	return w.impl.MarkClientForPendingRemoval(ctx, clientInfo)
+}
+
+func (w *resourceManagerServiceStubWrapper) ReclaimResourcesFromClientsPendingRemoval(
+	ctx context.Context,
+	pid int32,
+) error {
+	return w.impl.ReclaimResourcesFromClientsPendingRemoval(ctx, pid)
+}
+
+func (w *resourceManagerServiceStubWrapper) NotifyClientCreated(
+	ctx context.Context,
+	clientInfo ClientInfoParcel,
+) error {
+	return w.impl.NotifyClientCreated(ctx, clientInfo)
+}
+
+func (w *resourceManagerServiceStubWrapper) NotifyClientStarted(
+	ctx context.Context,
+	clientConfig ClientConfigParcel,
+) error {
+	return w.impl.NotifyClientStarted(ctx, clientConfig)
+}
+
+func (w *resourceManagerServiceStubWrapper) NotifyClientStopped(
+	ctx context.Context,
+	clientConfig ClientConfigParcel,
+) error {
+	return w.impl.NotifyClientStopped(ctx, clientConfig)
+}
+
+func (w *resourceManagerServiceStubWrapper) NotifyClientConfigChanged(
+	ctx context.Context,
+	clientConfig ClientConfigParcel,
+) error {
+	return w.impl.NotifyClientConfigChanged(ctx, clientConfig)
+}
+
+func (w *resourceManagerServiceStubWrapper) GetMediaResourceUsageReport(
+	ctx context.Context,
+	resources []MediaResourceParcel,
+) error {
+	return w.impl.GetMediaResourceUsageReport(ctx, resources)
+}
+
+var _ IResourceManagerService = (*resourceManagerServiceStubWrapper)(nil)
+
+// NewResourceManagerServiceStub creates a server-side IResourceManagerService wrapping the given
+// server implementation. The returned value satisfies IResourceManagerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResourceManagerServiceStub(
+	impl IResourceManagerServiceServer,
+) IResourceManagerService {
+	wrapper := &resourceManagerServiceStubWrapper{impl: impl}
+	stub := &ResourceManagerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -118,3 +118,49 @@ func (s *TextClassifierCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITextClassifierCallbackServer is the server-side interface that user implementations
+// provide to NewTextClassifierCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITextClassifierCallbackServer interface {
+	OnSuccess(ctx context.Context, result os.Bundle) error
+	OnFailure(ctx context.Context) error
+}
+
+type textClassifierCallbackStubWrapper struct {
+	impl       ITextClassifierCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *textClassifierCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *textClassifierCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result os.Bundle,
+) error {
+	return w.impl.OnSuccess(ctx, result)
+}
+
+func (w *textClassifierCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+) error {
+	return w.impl.OnFailure(ctx)
+}
+
+var _ ITextClassifierCallback = (*textClassifierCallbackStubWrapper)(nil)
+
+// NewTextClassifierCallbackStub creates a server-side ITextClassifierCallback wrapping the given
+// server implementation. The returned value satisfies ITextClassifierCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTextClassifierCallbackStub(
+	impl ITextClassifierCallbackServer,
+) ITextClassifierCallback {
+	wrapper := &textClassifierCallbackStubWrapper{impl: impl}
+	stub := &TextClassifierCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -142,3 +142,51 @@ func (s *ProcessingUpdateStatusCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProcessingUpdateStatusCallbackServer is the server-side interface that user implementations
+// provide to NewProcessingUpdateStatusCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProcessingUpdateStatusCallbackServer interface {
+	OnSuccess(ctx context.Context, statusParams interface{}) error
+	OnFailure(ctx context.Context, errorCode int32, errorMessage string) error
+}
+
+type processingUpdateStatusCallbackStubWrapper struct {
+	impl       IProcessingUpdateStatusCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *processingUpdateStatusCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *processingUpdateStatusCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	statusParams interface{},
+) error {
+	return w.impl.OnSuccess(ctx, statusParams)
+}
+
+func (w *processingUpdateStatusCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	errorCode int32,
+	errorMessage string,
+) error {
+	return w.impl.OnFailure(ctx, errorCode, errorMessage)
+}
+
+var _ IProcessingUpdateStatusCallback = (*processingUpdateStatusCallbackStubWrapper)(nil)
+
+// NewProcessingUpdateStatusCallbackStub creates a server-side IProcessingUpdateStatusCallback wrapping the given
+// server implementation. The returned value satisfies IProcessingUpdateStatusCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProcessingUpdateStatusCallbackStub(
+	impl IProcessingUpdateStatusCallbackServer,
+) IProcessingUpdateStatusCallback {
+	wrapper := &processingUpdateStatusCallbackStubWrapper{impl: impl}
+	stub := &ProcessingUpdateStatusCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

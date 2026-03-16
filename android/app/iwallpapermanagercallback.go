@@ -128,3 +128,50 @@ func (s *WallpaperManagerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWallpaperManagerCallbackServer is the server-side interface that user implementations
+// provide to NewWallpaperManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWallpaperManagerCallbackServer interface {
+	OnWallpaperChanged(ctx context.Context) error
+	OnWallpaperColorsChanged(ctx context.Context, colors WallpaperColors, which int32) error
+}
+
+type wallpaperManagerCallbackStubWrapper struct {
+	impl       IWallpaperManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wallpaperManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wallpaperManagerCallbackStubWrapper) OnWallpaperChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnWallpaperChanged(ctx)
+}
+
+func (w *wallpaperManagerCallbackStubWrapper) OnWallpaperColorsChanged(
+	ctx context.Context,
+	colors WallpaperColors,
+	which int32,
+) error {
+	return w.impl.OnWallpaperColorsChanged(ctx, colors, which)
+}
+
+var _ IWallpaperManagerCallback = (*wallpaperManagerCallbackStubWrapper)(nil)
+
+// NewWallpaperManagerCallbackStub creates a server-side IWallpaperManagerCallback wrapping the given
+// server implementation. The returned value satisfies IWallpaperManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWallpaperManagerCallbackStub(
+	impl IWallpaperManagerCallbackServer,
+) IWallpaperManagerCallback {
+	wrapper := &wallpaperManagerCallbackStubWrapper{impl: impl}
+	stub := &WallpaperManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

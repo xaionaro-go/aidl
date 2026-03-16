@@ -159,3 +159,49 @@ func (s *ConnectionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IConnectionServer is the server-side interface that user implementations
+// provide to NewConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConnectionServer interface {
+	Fetch(ctx context.Context, fetchInfos []bufferpool2IConnection.FetchInfo) ([]bufferpool2IConnection.FetchResult, error)
+	Sync(ctx context.Context) error
+}
+
+type connectionStubWrapper struct {
+	impl       IConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *connectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *connectionStubWrapper) Fetch(
+	ctx context.Context,
+	fetchInfos []bufferpool2IConnection.FetchInfo,
+) ([]bufferpool2IConnection.FetchResult, error) {
+	return w.impl.Fetch(ctx, fetchInfos)
+}
+
+func (w *connectionStubWrapper) Sync(
+	ctx context.Context,
+) error {
+	return w.impl.Sync(ctx)
+}
+
+var _ IConnection = (*connectionStubWrapper)(nil)
+
+// NewConnectionStub creates a server-side IConnection wrapping the given
+// server implementation. The returned value satisfies IConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConnectionStub(
+	impl IConnectionServer,
+) IConnection {
+	wrapper := &connectionStubWrapper{impl: impl}
+	stub := &ConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

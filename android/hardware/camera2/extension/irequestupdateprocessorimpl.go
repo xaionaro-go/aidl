@@ -257,3 +257,68 @@ func (s *RequestUpdateProcessorImplStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRequestUpdateProcessorImplServer is the server-side interface that user implementations
+// provide to NewRequestUpdateProcessorImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRequestUpdateProcessorImplServer interface {
+	OnOutputSurface(ctx context.Context, surface interface{}, imageFormat int32) error
+	OnResolutionUpdate(ctx context.Context, size Size) error
+	OnImageFormatUpdate(ctx context.Context, imageFormat int32) error
+	Process(ctx context.Context, result interface{}, sequenceId int32) (CaptureStageImpl, error)
+}
+
+type requestUpdateProcessorImplStubWrapper struct {
+	impl       IRequestUpdateProcessorImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *requestUpdateProcessorImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *requestUpdateProcessorImplStubWrapper) OnOutputSurface(
+	ctx context.Context,
+	surface interface{},
+	imageFormat int32,
+) error {
+	return w.impl.OnOutputSurface(ctx, surface, imageFormat)
+}
+
+func (w *requestUpdateProcessorImplStubWrapper) OnResolutionUpdate(
+	ctx context.Context,
+	size Size,
+) error {
+	return w.impl.OnResolutionUpdate(ctx, size)
+}
+
+func (w *requestUpdateProcessorImplStubWrapper) OnImageFormatUpdate(
+	ctx context.Context,
+	imageFormat int32,
+) error {
+	return w.impl.OnImageFormatUpdate(ctx, imageFormat)
+}
+
+func (w *requestUpdateProcessorImplStubWrapper) Process(
+	ctx context.Context,
+	result interface{},
+	sequenceId int32,
+) (CaptureStageImpl, error) {
+	return w.impl.Process(ctx, result, sequenceId)
+}
+
+var _ IRequestUpdateProcessorImpl = (*requestUpdateProcessorImplStubWrapper)(nil)
+
+// NewRequestUpdateProcessorImplStub creates a server-side IRequestUpdateProcessorImpl wrapping the given
+// server implementation. The returned value satisfies IRequestUpdateProcessorImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRequestUpdateProcessorImplStub(
+	impl IRequestUpdateProcessorImplServer,
+) IRequestUpdateProcessorImpl {
+	wrapper := &requestUpdateProcessorImplStubWrapper{impl: impl}
+	stub := &RequestUpdateProcessorImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

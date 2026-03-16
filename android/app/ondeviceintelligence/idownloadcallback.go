@@ -176,3 +176,68 @@ func (s *DownloadCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDownloadCallbackServer is the server-side interface that user implementations
+// provide to NewDownloadCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDownloadCallbackServer interface {
+	OnDownloadStarted(ctx context.Context, bytesToDownload int64) error
+	OnDownloadProgress(ctx context.Context, bytesDownloaded int64) error
+	OnDownloadFailed(ctx context.Context, failureStatus int32, errorMessage string, errorParams interface{}) error
+	OnDownloadCompleted(ctx context.Context, downloadParams interface{}) error
+}
+
+type downloadCallbackStubWrapper struct {
+	impl       IDownloadCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *downloadCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *downloadCallbackStubWrapper) OnDownloadStarted(
+	ctx context.Context,
+	bytesToDownload int64,
+) error {
+	return w.impl.OnDownloadStarted(ctx, bytesToDownload)
+}
+
+func (w *downloadCallbackStubWrapper) OnDownloadProgress(
+	ctx context.Context,
+	bytesDownloaded int64,
+) error {
+	return w.impl.OnDownloadProgress(ctx, bytesDownloaded)
+}
+
+func (w *downloadCallbackStubWrapper) OnDownloadFailed(
+	ctx context.Context,
+	failureStatus int32,
+	errorMessage string,
+	errorParams interface{},
+) error {
+	return w.impl.OnDownloadFailed(ctx, failureStatus, errorMessage, errorParams)
+}
+
+func (w *downloadCallbackStubWrapper) OnDownloadCompleted(
+	ctx context.Context,
+	downloadParams interface{},
+) error {
+	return w.impl.OnDownloadCompleted(ctx, downloadParams)
+}
+
+var _ IDownloadCallback = (*downloadCallbackStubWrapper)(nil)
+
+// NewDownloadCallbackStub creates a server-side IDownloadCallback wrapping the given
+// server implementation. The returned value satisfies IDownloadCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDownloadCallbackStub(
+	impl IDownloadCallbackServer,
+) IDownloadCallback {
+	wrapper := &downloadCallbackStubWrapper{impl: impl}
+	stub := &DownloadCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

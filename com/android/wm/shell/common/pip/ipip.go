@@ -181,7 +181,7 @@ func (p *PipProxy) SetPipAnimationListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPip)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPip, "setPipAnimationListener")
 	if _err != nil {
@@ -499,4 +499,110 @@ func (s *PipStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPipServer is the server-side interface that user implementations
+// provide to NewPipStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPipServer interface {
+	StartSwipePipToHome(ctx context.Context, componentName content.ComponentName, activityInfo pm.ActivityInfo, pictureInPictureParams app.PictureInPictureParams, launcherRotation int32, hotseatKeepClearArea graphics.Rect) (graphics.Rect, error)
+	StopSwipePipToHome(ctx context.Context, taskId int32, componentName content.ComponentName, destinationBounds graphics.Rect, overlay view.SurfaceControl, appBounds graphics.Rect, sourceRectHint graphics.Rect) error
+	AbortSwipePipToHome(ctx context.Context, taskId int32, componentName content.ComponentName) error
+	SetPipAnimationListener(ctx context.Context, listener IPipAnimationListener) error
+	SetShelfHeight(ctx context.Context, visible bool, shelfHeight int32) error
+	SetPipAnimationTypeToAlpha(ctx context.Context) error
+	SetLauncherKeepClearAreaHeight(ctx context.Context, visible bool, height int32) error
+	SetLauncherAppIconSize(ctx context.Context, iconSizePx int32) error
+}
+
+type pipStubWrapper struct {
+	impl       IPipServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pipStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pipStubWrapper) StartSwipePipToHome(
+	ctx context.Context,
+	componentName content.ComponentName,
+	activityInfo pm.ActivityInfo,
+	pictureInPictureParams app.PictureInPictureParams,
+	launcherRotation int32,
+	hotseatKeepClearArea graphics.Rect,
+) (graphics.Rect, error) {
+	return w.impl.StartSwipePipToHome(ctx, componentName, activityInfo, pictureInPictureParams, launcherRotation, hotseatKeepClearArea)
+}
+
+func (w *pipStubWrapper) StopSwipePipToHome(
+	ctx context.Context,
+	taskId int32,
+	componentName content.ComponentName,
+	destinationBounds graphics.Rect,
+	overlay view.SurfaceControl,
+	appBounds graphics.Rect,
+	sourceRectHint graphics.Rect,
+) error {
+	return w.impl.StopSwipePipToHome(ctx, taskId, componentName, destinationBounds, overlay, appBounds, sourceRectHint)
+}
+
+func (w *pipStubWrapper) AbortSwipePipToHome(
+	ctx context.Context,
+	taskId int32,
+	componentName content.ComponentName,
+) error {
+	return w.impl.AbortSwipePipToHome(ctx, taskId, componentName)
+}
+
+func (w *pipStubWrapper) SetPipAnimationListener(
+	ctx context.Context,
+	listener IPipAnimationListener,
+) error {
+	return w.impl.SetPipAnimationListener(ctx, listener)
+}
+
+func (w *pipStubWrapper) SetShelfHeight(
+	ctx context.Context,
+	visible bool,
+	shelfHeight int32,
+) error {
+	return w.impl.SetShelfHeight(ctx, visible, shelfHeight)
+}
+
+func (w *pipStubWrapper) SetPipAnimationTypeToAlpha(
+	ctx context.Context,
+) error {
+	return w.impl.SetPipAnimationTypeToAlpha(ctx)
+}
+
+func (w *pipStubWrapper) SetLauncherKeepClearAreaHeight(
+	ctx context.Context,
+	visible bool,
+	height int32,
+) error {
+	return w.impl.SetLauncherKeepClearAreaHeight(ctx, visible, height)
+}
+
+func (w *pipStubWrapper) SetLauncherAppIconSize(
+	ctx context.Context,
+	iconSizePx int32,
+) error {
+	return w.impl.SetLauncherAppIconSize(ctx, iconSizePx)
+}
+
+var _ IPip = (*pipStubWrapper)(nil)
+
+// NewPipStub creates a server-side IPip wrapping the given
+// server implementation. The returned value satisfies IPip
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPipStub(
+	impl IPipServer,
+) IPip {
+	wrapper := &pipStubWrapper{impl: impl}
+	stub := &PipStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

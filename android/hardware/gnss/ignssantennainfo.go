@@ -44,7 +44,7 @@ func (p *GnssAntennaInfoProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssAntennaInfo)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGnssAntennaInfo, "setCallback")
 	if _err != nil {
@@ -132,4 +132,50 @@ func (s *GnssAntennaInfoStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssAntennaInfoServer is the server-side interface that user implementations
+// provide to NewGnssAntennaInfoStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssAntennaInfoServer interface {
+	SetCallback(ctx context.Context, callback IGnssAntennaInfoCallback) error
+	Close(ctx context.Context) error
+}
+
+type gnssAntennaInfoStubWrapper struct {
+	impl       IGnssAntennaInfoServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssAntennaInfoStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssAntennaInfoStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IGnssAntennaInfoCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *gnssAntennaInfoStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ IGnssAntennaInfo = (*gnssAntennaInfoStubWrapper)(nil)
+
+// NewGnssAntennaInfoStub creates a server-side IGnssAntennaInfo wrapping the given
+// server implementation. The returned value satisfies IGnssAntennaInfo
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssAntennaInfoStub(
+	impl IGnssAntennaInfoServer,
+) IGnssAntennaInfo {
+	wrapper := &gnssAntennaInfoStubWrapper{impl: impl}
+	stub := &GnssAntennaInfoStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

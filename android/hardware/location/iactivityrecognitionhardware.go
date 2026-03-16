@@ -125,7 +125,7 @@ func (p *ActivityRecognitionHardwareProxy) RegisterSink(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityRecognitionHardware)
-	_data.WriteStrongBinder(sink.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, sink.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityRecognitionHardware, "registerSink")
 	if _err != nil {
@@ -156,7 +156,7 @@ func (p *ActivityRecognitionHardwareProxy) UnregisterSink(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityRecognitionHardware)
-	_data.WriteStrongBinder(sink.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, sink.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityRecognitionHardware, "unregisterSink")
 	if _err != nil {
@@ -416,4 +416,92 @@ func (s *ActivityRecognitionHardwareStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IActivityRecognitionHardwareServer is the server-side interface that user implementations
+// provide to NewActivityRecognitionHardwareStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IActivityRecognitionHardwareServer interface {
+	GetSupportedActivities(ctx context.Context) ([]string, error)
+	IsActivitySupported(ctx context.Context, activityType string) (bool, error)
+	RegisterSink(ctx context.Context, sink IActivityRecognitionHardwareSink) (bool, error)
+	UnregisterSink(ctx context.Context, sink IActivityRecognitionHardwareSink) (bool, error)
+	EnableActivityEvent(ctx context.Context, activityType string, eventType int32, reportLatencyNs int64) (bool, error)
+	DisableActivityEvent(ctx context.Context, activityType string, eventType int32) (bool, error)
+	Flush(ctx context.Context) (bool, error)
+}
+
+type activityRecognitionHardwareStubWrapper struct {
+	impl       IActivityRecognitionHardwareServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *activityRecognitionHardwareStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *activityRecognitionHardwareStubWrapper) GetSupportedActivities(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetSupportedActivities(ctx)
+}
+
+func (w *activityRecognitionHardwareStubWrapper) IsActivitySupported(
+	ctx context.Context,
+	activityType string,
+) (bool, error) {
+	return w.impl.IsActivitySupported(ctx, activityType)
+}
+
+func (w *activityRecognitionHardwareStubWrapper) RegisterSink(
+	ctx context.Context,
+	sink IActivityRecognitionHardwareSink,
+) (bool, error) {
+	return w.impl.RegisterSink(ctx, sink)
+}
+
+func (w *activityRecognitionHardwareStubWrapper) UnregisterSink(
+	ctx context.Context,
+	sink IActivityRecognitionHardwareSink,
+) (bool, error) {
+	return w.impl.UnregisterSink(ctx, sink)
+}
+
+func (w *activityRecognitionHardwareStubWrapper) EnableActivityEvent(
+	ctx context.Context,
+	activityType string,
+	eventType int32,
+	reportLatencyNs int64,
+) (bool, error) {
+	return w.impl.EnableActivityEvent(ctx, activityType, eventType, reportLatencyNs)
+}
+
+func (w *activityRecognitionHardwareStubWrapper) DisableActivityEvent(
+	ctx context.Context,
+	activityType string,
+	eventType int32,
+) (bool, error) {
+	return w.impl.DisableActivityEvent(ctx, activityType, eventType)
+}
+
+func (w *activityRecognitionHardwareStubWrapper) Flush(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.Flush(ctx)
+}
+
+var _ IActivityRecognitionHardware = (*activityRecognitionHardwareStubWrapper)(nil)
+
+// NewActivityRecognitionHardwareStub creates a server-side IActivityRecognitionHardware wrapping the given
+// server implementation. The returned value satisfies IActivityRecognitionHardware
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewActivityRecognitionHardwareStub(
+	impl IActivityRecognitionHardwareServer,
+) IActivityRecognitionHardware {
+	wrapper := &activityRecognitionHardwareStubWrapper{impl: impl}
+	stub := &ActivityRecognitionHardwareStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

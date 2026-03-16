@@ -209,3 +209,59 @@ func (s *DumpstateDeviceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDumpstateDeviceServer is the server-side interface that user implementations
+// provide to NewDumpstateDeviceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDumpstateDeviceServer interface {
+	DumpstateBoard(ctx context.Context, fd []int32, mode dumpstateIDumpstateDevice.DumpstateMode, timeoutMillis int64) error
+	GetVerboseLoggingEnabled(ctx context.Context) (bool, error)
+	SetVerboseLoggingEnabled(ctx context.Context, enable bool) error
+}
+
+type dumpstateDeviceStubWrapper struct {
+	impl       IDumpstateDeviceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dumpstateDeviceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dumpstateDeviceStubWrapper) DumpstateBoard(
+	ctx context.Context,
+	fd []int32,
+	mode dumpstateIDumpstateDevice.DumpstateMode,
+	timeoutMillis int64,
+) error {
+	return w.impl.DumpstateBoard(ctx, fd, mode, timeoutMillis)
+}
+
+func (w *dumpstateDeviceStubWrapper) GetVerboseLoggingEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetVerboseLoggingEnabled(ctx)
+}
+
+func (w *dumpstateDeviceStubWrapper) SetVerboseLoggingEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetVerboseLoggingEnabled(ctx, enable)
+}
+
+var _ IDumpstateDevice = (*dumpstateDeviceStubWrapper)(nil)
+
+// NewDumpstateDeviceStub creates a server-side IDumpstateDevice wrapping the given
+// server implementation. The returned value satisfies IDumpstateDevice
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDumpstateDeviceStub(
+	impl IDumpstateDeviceServer,
+) IDumpstateDevice {
+	wrapper := &dumpstateDeviceStubWrapper{impl: impl}
+	stub := &DumpstateDeviceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

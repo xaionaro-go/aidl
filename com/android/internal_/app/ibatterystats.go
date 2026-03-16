@@ -4799,3 +4799,887 @@ func (s *BatteryStatsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBatteryStatsServer is the server-side interface that user implementations
+// provide to NewBatteryStatsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBatteryStatsServer interface {
+	NoteStartSensor(ctx context.Context, uid int32, sensor int32) error
+	NoteStopSensor(ctx context.Context, uid int32, sensor int32) error
+	NoteStartVideo(ctx context.Context, uid int32) error
+	NoteStopVideo(ctx context.Context, uid int32) error
+	NoteStartAudio(ctx context.Context, uid int32) error
+	NoteStopAudio(ctx context.Context, uid int32) error
+	NoteResetVideo(ctx context.Context) error
+	NoteResetAudio(ctx context.Context) error
+	NoteFlashlightOn(ctx context.Context, uid int32) error
+	NoteFlashlightOff(ctx context.Context, uid int32) error
+	NoteStartCamera(ctx context.Context, uid int32) error
+	NoteStopCamera(ctx context.Context, uid int32) error
+	NoteResetCamera(ctx context.Context) error
+	NoteResetFlashlight(ctx context.Context) error
+	NoteWakeupSensorEvent(ctx context.Context, elapsedNanos int64, uid int32, handle int32) error
+	GetBatteryUsageStats(ctx context.Context, queries []interface{}) ([]interface{}, error)
+	IsCharging(ctx context.Context) (bool, error)
+	ComputeBatteryTimeRemaining(ctx context.Context) (int64, error)
+	ComputeChargeTimeRemaining(ctx context.Context) (int64, error)
+	ComputeBatteryScreenOffRealtimeMs(ctx context.Context) (int64, error)
+	GetScreenOffDischargeMah(ctx context.Context) (int64, error)
+	NoteEvent(ctx context.Context, code int32, name string, uid int32) error
+	NoteSyncStart(ctx context.Context, name string, uid int32) error
+	NoteSyncFinish(ctx context.Context, name string, uid int32) error
+	NoteJobStart(ctx context.Context, name string, uid int32) error
+	NoteJobFinish(ctx context.Context, name string, uid int32, stopReason int32) error
+	NoteStartWakelock(ctx context.Context, uid int32, pid int32, name string, historyName string, type_ int32, unimportantForLogging bool) error
+	NoteStopWakelock(ctx context.Context, uid int32, pid int32, name string, historyName string, type_ int32) error
+	NoteStartWakelockFromSource(ctx context.Context, ws interface{}, pid int32, name string, historyName string, type_ int32, unimportantForLogging bool) error
+	NoteChangeWakelockFromSource(ctx context.Context, ws interface{}, pid int32, name string, histyoryName string, type_ int32, newWs interface{}, newPid int32, newName string, newHistoryName string, newType int32, newUnimportantForLogging bool) error
+	NoteStopWakelockFromSource(ctx context.Context, ws interface{}, pid int32, name string, historyName string, type_ int32) error
+	NoteLongPartialWakelockStart(ctx context.Context, name string, historyName string, uid int32) error
+	NoteLongPartialWakelockStartFromSource(ctx context.Context, name string, historyName string, workSource interface{}) error
+	NoteLongPartialWakelockFinish(ctx context.Context, name string, historyName string, uid int32) error
+	NoteLongPartialWakelockFinishFromSource(ctx context.Context, name string, historyName string, workSource interface{}) error
+	NoteVibratorOn(ctx context.Context, uid int32, durationMillis int64) error
+	NoteVibratorOff(ctx context.Context, uid int32) error
+	NoteGpsChanged(ctx context.Context, oldSource interface{}, newSource interface{}) error
+	NoteGpsSignalQuality(ctx context.Context, signalLevel int32) error
+	NoteScreenState(ctx context.Context, displayId int32, state int32, reason int32) error
+	NoteScreenBrightness(ctx context.Context, displayId int32, brightness int32) error
+	NoteUserActivity(ctx context.Context, uid int32, event int32) error
+	NoteWakeUp(ctx context.Context, reason string, reasonUid int32) error
+	NoteInteractive(ctx context.Context, interactive bool) error
+	NoteConnectivityChanged(ctx context.Context, type_ int32, extra string) error
+	NoteMobileRadioPowerState(ctx context.Context, powerState int32, timestampNs int64, uid int32) error
+	NotePhoneOn(ctx context.Context) error
+	NotePhoneOff(ctx context.Context) error
+	NotePhoneSignalStrength(ctx context.Context, signalStrength network.SignalStrength) error
+	NotePhoneDataConnectionState(ctx context.Context, dataType int32, hasData bool, serviceType int32, nrState int32, nrFrequency int32) error
+	NotePhoneState(ctx context.Context, phoneState int32) error
+	NoteWifiOn(ctx context.Context) error
+	NoteWifiOff(ctx context.Context) error
+	NoteWifiRunning(ctx context.Context, ws interface{}) error
+	NoteWifiRunningChanged(ctx context.Context, oldWs interface{}, newWs interface{}) error
+	NoteWifiStopped(ctx context.Context, ws interface{}) error
+	NoteWifiState(ctx context.Context, wifiState int32, accessPoint string) error
+	NoteWifiSupplicantStateChanged(ctx context.Context, supplState int32, failedAuth bool) error
+	NoteWifiRssiChanged(ctx context.Context, newRssi int32) error
+	NoteFullWifiLockAcquired(ctx context.Context, uid int32) error
+	NoteFullWifiLockReleased(ctx context.Context, uid int32) error
+	NoteWifiScanStarted(ctx context.Context, uid int32) error
+	NoteWifiScanStopped(ctx context.Context, uid int32) error
+	NoteWifiMulticastEnabled(ctx context.Context, uid int32) error
+	NoteWifiMulticastDisabled(ctx context.Context, uid int32) error
+	NoteFullWifiLockAcquiredFromSource(ctx context.Context, ws interface{}) error
+	NoteFullWifiLockReleasedFromSource(ctx context.Context, ws interface{}) error
+	NoteWifiScanStartedFromSource(ctx context.Context, ws interface{}) error
+	NoteWifiScanStoppedFromSource(ctx context.Context, ws interface{}) error
+	NoteWifiBatchedScanStartedFromSource(ctx context.Context, ws interface{}, csph int32) error
+	NoteWifiBatchedScanStoppedFromSource(ctx context.Context, ws interface{}) error
+	NoteWifiRadioPowerState(ctx context.Context, powerState int32, timestampNs int64, uid int32) error
+	NoteNetworkInterfaceForTransports(ctx context.Context, iface string, transportTypes []int32) error
+	NoteNetworkStatsEnabled(ctx context.Context) error
+	NoteDeviceIdleMode(ctx context.Context, mode int32, activeReason string, activeUid int32) error
+	SetBatteryState(ctx context.Context, status int32, health int32, plugType int32, level int32, temp int32, volt int32, chargeUAh int32, chargeFullUAh int32, chargeTimeToFullSeconds int64) error
+	GetAwakeTimeBattery(ctx context.Context) (int64, error)
+	GetAwakeTimePlugged(ctx context.Context) (int64, error)
+	NoteBleScanStarted(ctx context.Context, ws interface{}, isUnoptimized bool) error
+	NoteBleScanStopped(ctx context.Context, ws interface{}, isUnoptimized bool) error
+	NoteBleScanReset(ctx context.Context) error
+	NoteBleScanResults(ctx context.Context, ws interface{}, numNewResults int32) error
+	GetCellularBatteryStats(ctx context.Context) (connectivity.CellularBatteryStats, error)
+	GetWifiBatteryStats(ctx context.Context) (connectivity.WifiBatteryStats, error)
+	GetGpsBatteryStats(ctx context.Context) (connectivity.GpsBatteryStats, error)
+	GetWakeLockStats(ctx context.Context) (interface{}, error)
+	GetBluetoothBatteryStats(ctx context.Context) (interface{}, error)
+	TakeUidSnapshot(ctx context.Context, uid int32) (osHealth.HealthStatsParceler, error)
+	TakeUidSnapshots(ctx context.Context, uid []int32) ([]osHealth.HealthStatsParceler, error)
+	TakeUidSnapshotsAsync(ctx context.Context, uid []int32, result interface{}) error
+	NoteBluetoothControllerActivity(ctx context.Context, info bluetooth.BluetoothActivityEnergyInfo) error
+	NoteModemControllerActivity(ctx context.Context, info telephony.ModemActivityInfo) error
+	NoteWifiControllerActivity(ctx context.Context, info connectivity.WifiActivityEnergyInfo) error
+	SetChargingStateUpdateDelayMillis(ctx context.Context, delay int32) (bool, error)
+	SetChargerAcOnline(ctx context.Context, online bool, forceUpdate bool) error
+	SetBatteryLevel(ctx context.Context, level int32, forceUpdate bool) error
+	UnplugBattery(ctx context.Context, forceUpdate bool) error
+	ResetBattery(ctx context.Context, forceUpdate bool) error
+	SuspendBatteryInput(ctx context.Context) error
+}
+
+type batteryStatsStubWrapper struct {
+	impl       IBatteryStatsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *batteryStatsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *batteryStatsStubWrapper) NoteStartSensor(
+	ctx context.Context,
+	uid int32,
+	sensor int32,
+) error {
+	return w.impl.NoteStartSensor(ctx, uid, sensor)
+}
+
+func (w *batteryStatsStubWrapper) NoteStopSensor(
+	ctx context.Context,
+	uid int32,
+	sensor int32,
+) error {
+	return w.impl.NoteStopSensor(ctx, uid, sensor)
+}
+
+func (w *batteryStatsStubWrapper) NoteStartVideo(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteStartVideo(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteStopVideo(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteStopVideo(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteStartAudio(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteStartAudio(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteStopAudio(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteStopAudio(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteResetVideo(
+	ctx context.Context,
+) error {
+	return w.impl.NoteResetVideo(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteResetAudio(
+	ctx context.Context,
+) error {
+	return w.impl.NoteResetAudio(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteFlashlightOn(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteFlashlightOn(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteFlashlightOff(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteFlashlightOff(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteStartCamera(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteStartCamera(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteStopCamera(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteStopCamera(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteResetCamera(
+	ctx context.Context,
+) error {
+	return w.impl.NoteResetCamera(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteResetFlashlight(
+	ctx context.Context,
+) error {
+	return w.impl.NoteResetFlashlight(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteWakeupSensorEvent(
+	ctx context.Context,
+	elapsedNanos int64,
+	uid int32,
+	handle int32,
+) error {
+	return w.impl.NoteWakeupSensorEvent(ctx, elapsedNanos, uid, handle)
+}
+
+func (w *batteryStatsStubWrapper) GetBatteryUsageStats(
+	ctx context.Context,
+	queries []interface{},
+) ([]interface{}, error) {
+	return w.impl.GetBatteryUsageStats(ctx, queries)
+}
+
+func (w *batteryStatsStubWrapper) IsCharging(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCharging(ctx)
+}
+
+func (w *batteryStatsStubWrapper) ComputeBatteryTimeRemaining(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.ComputeBatteryTimeRemaining(ctx)
+}
+
+func (w *batteryStatsStubWrapper) ComputeChargeTimeRemaining(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.ComputeChargeTimeRemaining(ctx)
+}
+
+func (w *batteryStatsStubWrapper) ComputeBatteryScreenOffRealtimeMs(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.ComputeBatteryScreenOffRealtimeMs(ctx)
+}
+
+func (w *batteryStatsStubWrapper) GetScreenOffDischargeMah(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetScreenOffDischargeMah(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteEvent(
+	ctx context.Context,
+	code int32,
+	name string,
+	uid int32,
+) error {
+	return w.impl.NoteEvent(ctx, code, name, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteSyncStart(
+	ctx context.Context,
+	name string,
+	uid int32,
+) error {
+	return w.impl.NoteSyncStart(ctx, name, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteSyncFinish(
+	ctx context.Context,
+	name string,
+	uid int32,
+) error {
+	return w.impl.NoteSyncFinish(ctx, name, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteJobStart(
+	ctx context.Context,
+	name string,
+	uid int32,
+) error {
+	return w.impl.NoteJobStart(ctx, name, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteJobFinish(
+	ctx context.Context,
+	name string,
+	uid int32,
+	stopReason int32,
+) error {
+	return w.impl.NoteJobFinish(ctx, name, uid, stopReason)
+}
+
+func (w *batteryStatsStubWrapper) NoteStartWakelock(
+	ctx context.Context,
+	uid int32,
+	pid int32,
+	name string,
+	historyName string,
+	type_ int32,
+	unimportantForLogging bool,
+) error {
+	return w.impl.NoteStartWakelock(ctx, uid, pid, name, historyName, type_, unimportantForLogging)
+}
+
+func (w *batteryStatsStubWrapper) NoteStopWakelock(
+	ctx context.Context,
+	uid int32,
+	pid int32,
+	name string,
+	historyName string,
+	type_ int32,
+) error {
+	return w.impl.NoteStopWakelock(ctx, uid, pid, name, historyName, type_)
+}
+
+func (w *batteryStatsStubWrapper) NoteStartWakelockFromSource(
+	ctx context.Context,
+	ws interface{},
+	pid int32,
+	name string,
+	historyName string,
+	type_ int32,
+	unimportantForLogging bool,
+) error {
+	return w.impl.NoteStartWakelockFromSource(ctx, ws, pid, name, historyName, type_, unimportantForLogging)
+}
+
+func (w *batteryStatsStubWrapper) NoteChangeWakelockFromSource(
+	ctx context.Context,
+	ws interface{},
+	pid int32,
+	name string,
+	histyoryName string,
+	type_ int32,
+	newWs interface{},
+	newPid int32,
+	newName string,
+	newHistoryName string,
+	newType int32,
+	newUnimportantForLogging bool,
+) error {
+	return w.impl.NoteChangeWakelockFromSource(ctx, ws, pid, name, histyoryName, type_, newWs, newPid, newName, newHistoryName, newType, newUnimportantForLogging)
+}
+
+func (w *batteryStatsStubWrapper) NoteStopWakelockFromSource(
+	ctx context.Context,
+	ws interface{},
+	pid int32,
+	name string,
+	historyName string,
+	type_ int32,
+) error {
+	return w.impl.NoteStopWakelockFromSource(ctx, ws, pid, name, historyName, type_)
+}
+
+func (w *batteryStatsStubWrapper) NoteLongPartialWakelockStart(
+	ctx context.Context,
+	name string,
+	historyName string,
+	uid int32,
+) error {
+	return w.impl.NoteLongPartialWakelockStart(ctx, name, historyName, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteLongPartialWakelockStartFromSource(
+	ctx context.Context,
+	name string,
+	historyName string,
+	workSource interface{},
+) error {
+	return w.impl.NoteLongPartialWakelockStartFromSource(ctx, name, historyName, workSource)
+}
+
+func (w *batteryStatsStubWrapper) NoteLongPartialWakelockFinish(
+	ctx context.Context,
+	name string,
+	historyName string,
+	uid int32,
+) error {
+	return w.impl.NoteLongPartialWakelockFinish(ctx, name, historyName, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteLongPartialWakelockFinishFromSource(
+	ctx context.Context,
+	name string,
+	historyName string,
+	workSource interface{},
+) error {
+	return w.impl.NoteLongPartialWakelockFinishFromSource(ctx, name, historyName, workSource)
+}
+
+func (w *batteryStatsStubWrapper) NoteVibratorOn(
+	ctx context.Context,
+	uid int32,
+	durationMillis int64,
+) error {
+	return w.impl.NoteVibratorOn(ctx, uid, durationMillis)
+}
+
+func (w *batteryStatsStubWrapper) NoteVibratorOff(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteVibratorOff(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteGpsChanged(
+	ctx context.Context,
+	oldSource interface{},
+	newSource interface{},
+) error {
+	return w.impl.NoteGpsChanged(ctx, oldSource, newSource)
+}
+
+func (w *batteryStatsStubWrapper) NoteGpsSignalQuality(
+	ctx context.Context,
+	signalLevel int32,
+) error {
+	return w.impl.NoteGpsSignalQuality(ctx, signalLevel)
+}
+
+func (w *batteryStatsStubWrapper) NoteScreenState(
+	ctx context.Context,
+	displayId int32,
+	state int32,
+	reason int32,
+) error {
+	return w.impl.NoteScreenState(ctx, displayId, state, reason)
+}
+
+func (w *batteryStatsStubWrapper) NoteScreenBrightness(
+	ctx context.Context,
+	displayId int32,
+	brightness int32,
+) error {
+	return w.impl.NoteScreenBrightness(ctx, displayId, brightness)
+}
+
+func (w *batteryStatsStubWrapper) NoteUserActivity(
+	ctx context.Context,
+	uid int32,
+	event int32,
+) error {
+	return w.impl.NoteUserActivity(ctx, uid, event)
+}
+
+func (w *batteryStatsStubWrapper) NoteWakeUp(
+	ctx context.Context,
+	reason string,
+	reasonUid int32,
+) error {
+	return w.impl.NoteWakeUp(ctx, reason, reasonUid)
+}
+
+func (w *batteryStatsStubWrapper) NoteInteractive(
+	ctx context.Context,
+	interactive bool,
+) error {
+	return w.impl.NoteInteractive(ctx, interactive)
+}
+
+func (w *batteryStatsStubWrapper) NoteConnectivityChanged(
+	ctx context.Context,
+	type_ int32,
+	extra string,
+) error {
+	return w.impl.NoteConnectivityChanged(ctx, type_, extra)
+}
+
+func (w *batteryStatsStubWrapper) NoteMobileRadioPowerState(
+	ctx context.Context,
+	powerState int32,
+	timestampNs int64,
+	uid int32,
+) error {
+	return w.impl.NoteMobileRadioPowerState(ctx, powerState, timestampNs, uid)
+}
+
+func (w *batteryStatsStubWrapper) NotePhoneOn(
+	ctx context.Context,
+) error {
+	return w.impl.NotePhoneOn(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NotePhoneOff(
+	ctx context.Context,
+) error {
+	return w.impl.NotePhoneOff(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NotePhoneSignalStrength(
+	ctx context.Context,
+	signalStrength network.SignalStrength,
+) error {
+	return w.impl.NotePhoneSignalStrength(ctx, signalStrength)
+}
+
+func (w *batteryStatsStubWrapper) NotePhoneDataConnectionState(
+	ctx context.Context,
+	dataType int32,
+	hasData bool,
+	serviceType int32,
+	nrState int32,
+	nrFrequency int32,
+) error {
+	return w.impl.NotePhoneDataConnectionState(ctx, dataType, hasData, serviceType, nrState, nrFrequency)
+}
+
+func (w *batteryStatsStubWrapper) NotePhoneState(
+	ctx context.Context,
+	phoneState int32,
+) error {
+	return w.impl.NotePhoneState(ctx, phoneState)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiOn(
+	ctx context.Context,
+) error {
+	return w.impl.NoteWifiOn(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiOff(
+	ctx context.Context,
+) error {
+	return w.impl.NoteWifiOff(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiRunning(
+	ctx context.Context,
+	ws interface{},
+) error {
+	return w.impl.NoteWifiRunning(ctx, ws)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiRunningChanged(
+	ctx context.Context,
+	oldWs interface{},
+	newWs interface{},
+) error {
+	return w.impl.NoteWifiRunningChanged(ctx, oldWs, newWs)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiStopped(
+	ctx context.Context,
+	ws interface{},
+) error {
+	return w.impl.NoteWifiStopped(ctx, ws)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiState(
+	ctx context.Context,
+	wifiState int32,
+	accessPoint string,
+) error {
+	return w.impl.NoteWifiState(ctx, wifiState, accessPoint)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiSupplicantStateChanged(
+	ctx context.Context,
+	supplState int32,
+	failedAuth bool,
+) error {
+	return w.impl.NoteWifiSupplicantStateChanged(ctx, supplState, failedAuth)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiRssiChanged(
+	ctx context.Context,
+	newRssi int32,
+) error {
+	return w.impl.NoteWifiRssiChanged(ctx, newRssi)
+}
+
+func (w *batteryStatsStubWrapper) NoteFullWifiLockAcquired(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteFullWifiLockAcquired(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteFullWifiLockReleased(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteFullWifiLockReleased(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiScanStarted(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteWifiScanStarted(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiScanStopped(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteWifiScanStopped(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiMulticastEnabled(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteWifiMulticastEnabled(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiMulticastDisabled(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.NoteWifiMulticastDisabled(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteFullWifiLockAcquiredFromSource(
+	ctx context.Context,
+	ws interface{},
+) error {
+	return w.impl.NoteFullWifiLockAcquiredFromSource(ctx, ws)
+}
+
+func (w *batteryStatsStubWrapper) NoteFullWifiLockReleasedFromSource(
+	ctx context.Context,
+	ws interface{},
+) error {
+	return w.impl.NoteFullWifiLockReleasedFromSource(ctx, ws)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiScanStartedFromSource(
+	ctx context.Context,
+	ws interface{},
+) error {
+	return w.impl.NoteWifiScanStartedFromSource(ctx, ws)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiScanStoppedFromSource(
+	ctx context.Context,
+	ws interface{},
+) error {
+	return w.impl.NoteWifiScanStoppedFromSource(ctx, ws)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiBatchedScanStartedFromSource(
+	ctx context.Context,
+	ws interface{},
+	csph int32,
+) error {
+	return w.impl.NoteWifiBatchedScanStartedFromSource(ctx, ws, csph)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiBatchedScanStoppedFromSource(
+	ctx context.Context,
+	ws interface{},
+) error {
+	return w.impl.NoteWifiBatchedScanStoppedFromSource(ctx, ws)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiRadioPowerState(
+	ctx context.Context,
+	powerState int32,
+	timestampNs int64,
+	uid int32,
+) error {
+	return w.impl.NoteWifiRadioPowerState(ctx, powerState, timestampNs, uid)
+}
+
+func (w *batteryStatsStubWrapper) NoteNetworkInterfaceForTransports(
+	ctx context.Context,
+	iface string,
+	transportTypes []int32,
+) error {
+	return w.impl.NoteNetworkInterfaceForTransports(ctx, iface, transportTypes)
+}
+
+func (w *batteryStatsStubWrapper) NoteNetworkStatsEnabled(
+	ctx context.Context,
+) error {
+	return w.impl.NoteNetworkStatsEnabled(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteDeviceIdleMode(
+	ctx context.Context,
+	mode int32,
+	activeReason string,
+	activeUid int32,
+) error {
+	return w.impl.NoteDeviceIdleMode(ctx, mode, activeReason, activeUid)
+}
+
+func (w *batteryStatsStubWrapper) SetBatteryState(
+	ctx context.Context,
+	status int32,
+	health int32,
+	plugType int32,
+	level int32,
+	temp int32,
+	volt int32,
+	chargeUAh int32,
+	chargeFullUAh int32,
+	chargeTimeToFullSeconds int64,
+) error {
+	return w.impl.SetBatteryState(ctx, status, health, plugType, level, temp, volt, chargeUAh, chargeFullUAh, chargeTimeToFullSeconds)
+}
+
+func (w *batteryStatsStubWrapper) GetAwakeTimeBattery(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetAwakeTimeBattery(ctx)
+}
+
+func (w *batteryStatsStubWrapper) GetAwakeTimePlugged(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetAwakeTimePlugged(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteBleScanStarted(
+	ctx context.Context,
+	ws interface{},
+	isUnoptimized bool,
+) error {
+	return w.impl.NoteBleScanStarted(ctx, ws, isUnoptimized)
+}
+
+func (w *batteryStatsStubWrapper) NoteBleScanStopped(
+	ctx context.Context,
+	ws interface{},
+	isUnoptimized bool,
+) error {
+	return w.impl.NoteBleScanStopped(ctx, ws, isUnoptimized)
+}
+
+func (w *batteryStatsStubWrapper) NoteBleScanReset(
+	ctx context.Context,
+) error {
+	return w.impl.NoteBleScanReset(ctx)
+}
+
+func (w *batteryStatsStubWrapper) NoteBleScanResults(
+	ctx context.Context,
+	ws interface{},
+	numNewResults int32,
+) error {
+	return w.impl.NoteBleScanResults(ctx, ws, numNewResults)
+}
+
+func (w *batteryStatsStubWrapper) GetCellularBatteryStats(
+	ctx context.Context,
+) (connectivity.CellularBatteryStats, error) {
+	return w.impl.GetCellularBatteryStats(ctx)
+}
+
+func (w *batteryStatsStubWrapper) GetWifiBatteryStats(
+	ctx context.Context,
+) (connectivity.WifiBatteryStats, error) {
+	return w.impl.GetWifiBatteryStats(ctx)
+}
+
+func (w *batteryStatsStubWrapper) GetGpsBatteryStats(
+	ctx context.Context,
+) (connectivity.GpsBatteryStats, error) {
+	return w.impl.GetGpsBatteryStats(ctx)
+}
+
+func (w *batteryStatsStubWrapper) GetWakeLockStats(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetWakeLockStats(ctx)
+}
+
+func (w *batteryStatsStubWrapper) GetBluetoothBatteryStats(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetBluetoothBatteryStats(ctx)
+}
+
+func (w *batteryStatsStubWrapper) TakeUidSnapshot(
+	ctx context.Context,
+	uid int32,
+) (osHealth.HealthStatsParceler, error) {
+	return w.impl.TakeUidSnapshot(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) TakeUidSnapshots(
+	ctx context.Context,
+	uid []int32,
+) ([]osHealth.HealthStatsParceler, error) {
+	return w.impl.TakeUidSnapshots(ctx, uid)
+}
+
+func (w *batteryStatsStubWrapper) TakeUidSnapshotsAsync(
+	ctx context.Context,
+	uid []int32,
+	result interface{},
+) error {
+	return w.impl.TakeUidSnapshotsAsync(ctx, uid, result)
+}
+
+func (w *batteryStatsStubWrapper) NoteBluetoothControllerActivity(
+	ctx context.Context,
+	info bluetooth.BluetoothActivityEnergyInfo,
+) error {
+	return w.impl.NoteBluetoothControllerActivity(ctx, info)
+}
+
+func (w *batteryStatsStubWrapper) NoteModemControllerActivity(
+	ctx context.Context,
+	info telephony.ModemActivityInfo,
+) error {
+	return w.impl.NoteModemControllerActivity(ctx, info)
+}
+
+func (w *batteryStatsStubWrapper) NoteWifiControllerActivity(
+	ctx context.Context,
+	info connectivity.WifiActivityEnergyInfo,
+) error {
+	return w.impl.NoteWifiControllerActivity(ctx, info)
+}
+
+func (w *batteryStatsStubWrapper) SetChargingStateUpdateDelayMillis(
+	ctx context.Context,
+	delay int32,
+) (bool, error) {
+	return w.impl.SetChargingStateUpdateDelayMillis(ctx, delay)
+}
+
+func (w *batteryStatsStubWrapper) SetChargerAcOnline(
+	ctx context.Context,
+	online bool,
+	forceUpdate bool,
+) error {
+	return w.impl.SetChargerAcOnline(ctx, online, forceUpdate)
+}
+
+func (w *batteryStatsStubWrapper) SetBatteryLevel(
+	ctx context.Context,
+	level int32,
+	forceUpdate bool,
+) error {
+	return w.impl.SetBatteryLevel(ctx, level, forceUpdate)
+}
+
+func (w *batteryStatsStubWrapper) UnplugBattery(
+	ctx context.Context,
+	forceUpdate bool,
+) error {
+	return w.impl.UnplugBattery(ctx, forceUpdate)
+}
+
+func (w *batteryStatsStubWrapper) ResetBattery(
+	ctx context.Context,
+	forceUpdate bool,
+) error {
+	return w.impl.ResetBattery(ctx, forceUpdate)
+}
+
+func (w *batteryStatsStubWrapper) SuspendBatteryInput(
+	ctx context.Context,
+) error {
+	return w.impl.SuspendBatteryInput(ctx)
+}
+
+var _ IBatteryStats = (*batteryStatsStubWrapper)(nil)
+
+// NewBatteryStatsStub creates a server-side IBatteryStats wrapping the given
+// server implementation. The returned value satisfies IBatteryStats
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBatteryStatsStub(
+	impl IBatteryStatsServer,
+) IBatteryStats {
+	wrapper := &batteryStatsStubWrapper{impl: impl}
+	stub := &BatteryStatsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

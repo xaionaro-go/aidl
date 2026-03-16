@@ -128,3 +128,48 @@ func (s *InputContentUriTokenStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputContentUriTokenServer is the server-side interface that user implementations
+// provide to NewInputContentUriTokenStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputContentUriTokenServer interface {
+	Take(ctx context.Context) error
+	Release(ctx context.Context) error
+}
+
+type inputContentUriTokenStubWrapper struct {
+	impl       IInputContentUriTokenServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputContentUriTokenStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputContentUriTokenStubWrapper) Take(
+	ctx context.Context,
+) error {
+	return w.impl.Take(ctx)
+}
+
+func (w *inputContentUriTokenStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+var _ IInputContentUriToken = (*inputContentUriTokenStubWrapper)(nil)
+
+// NewInputContentUriTokenStub creates a server-side IInputContentUriToken wrapping the given
+// server implementation. The returned value satisfies IInputContentUriToken
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputContentUriTokenStub(
+	impl IInputContentUriTokenServer,
+) IInputContentUriToken {
+	wrapper := &inputContentUriTokenStubWrapper{impl: impl}
+	stub := &InputContentUriTokenStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

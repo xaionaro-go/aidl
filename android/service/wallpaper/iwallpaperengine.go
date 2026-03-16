@@ -719,3 +719,179 @@ func (s *WallpaperEngineStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWallpaperEngineServer is the server-side interface that user implementations
+// provide to NewWallpaperEngineStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWallpaperEngineServer interface {
+	SetDesiredSize(ctx context.Context, width int32, height int32) error
+	SetDisplayPadding(ctx context.Context, padding graphics.Rect) error
+	SetVisibility(ctx context.Context, visible bool) error
+	OnScreenTurningOn(ctx context.Context) error
+	OnScreenTurnedOn(ctx context.Context) error
+	SetInAmbientMode(ctx context.Context, inAmbientDisplay bool, animationDuration int64) error
+	DispatchPointer(ctx context.Context, event common.MotionEvent) error
+	DispatchWallpaperCommand(ctx context.Context, action string, x int32, y int32, z int32, extras os.Bundle) error
+	RequestWallpaperColors(ctx context.Context) error
+	Destroy(ctx context.Context) error
+	SetZoomOut(ctx context.Context, scale float32) error
+	ResizePreview(ctx context.Context, positionInWindow graphics.Rect) error
+	RemoveLocalColorsAreas(ctx context.Context, regions []graphics.RectF) error
+	AddLocalColorsAreas(ctx context.Context, regions []graphics.RectF) error
+	MirrorSurfaceControl(ctx context.Context) (view.SurfaceControl, error)
+	ApplyDimming(ctx context.Context, dimAmount float32) error
+	SetWallpaperFlags(ctx context.Context, which int32) error
+	OnApplyWallpaper(ctx context.Context, which int32) (appWallpaper.WallpaperDescription, error)
+}
+
+type wallpaperEngineStubWrapper struct {
+	impl       IWallpaperEngineServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wallpaperEngineStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wallpaperEngineStubWrapper) SetDesiredSize(
+	ctx context.Context,
+	width int32,
+	height int32,
+) error {
+	return w.impl.SetDesiredSize(ctx, width, height)
+}
+
+func (w *wallpaperEngineStubWrapper) SetDisplayPadding(
+	ctx context.Context,
+	padding graphics.Rect,
+) error {
+	return w.impl.SetDisplayPadding(ctx, padding)
+}
+
+func (w *wallpaperEngineStubWrapper) SetVisibility(
+	ctx context.Context,
+	visible bool,
+) error {
+	return w.impl.SetVisibility(ctx, visible)
+}
+
+func (w *wallpaperEngineStubWrapper) OnScreenTurningOn(
+	ctx context.Context,
+) error {
+	return w.impl.OnScreenTurningOn(ctx)
+}
+
+func (w *wallpaperEngineStubWrapper) OnScreenTurnedOn(
+	ctx context.Context,
+) error {
+	return w.impl.OnScreenTurnedOn(ctx)
+}
+
+func (w *wallpaperEngineStubWrapper) SetInAmbientMode(
+	ctx context.Context,
+	inAmbientDisplay bool,
+	animationDuration int64,
+) error {
+	return w.impl.SetInAmbientMode(ctx, inAmbientDisplay, animationDuration)
+}
+
+func (w *wallpaperEngineStubWrapper) DispatchPointer(
+	ctx context.Context,
+	event common.MotionEvent,
+) error {
+	return w.impl.DispatchPointer(ctx, event)
+}
+
+func (w *wallpaperEngineStubWrapper) DispatchWallpaperCommand(
+	ctx context.Context,
+	action string,
+	x int32,
+	y int32,
+	z int32,
+	extras os.Bundle,
+) error {
+	return w.impl.DispatchWallpaperCommand(ctx, action, x, y, z, extras)
+}
+
+func (w *wallpaperEngineStubWrapper) RequestWallpaperColors(
+	ctx context.Context,
+) error {
+	return w.impl.RequestWallpaperColors(ctx)
+}
+
+func (w *wallpaperEngineStubWrapper) Destroy(
+	ctx context.Context,
+) error {
+	return w.impl.Destroy(ctx)
+}
+
+func (w *wallpaperEngineStubWrapper) SetZoomOut(
+	ctx context.Context,
+	scale float32,
+) error {
+	return w.impl.SetZoomOut(ctx, scale)
+}
+
+func (w *wallpaperEngineStubWrapper) ResizePreview(
+	ctx context.Context,
+	positionInWindow graphics.Rect,
+) error {
+	return w.impl.ResizePreview(ctx, positionInWindow)
+}
+
+func (w *wallpaperEngineStubWrapper) RemoveLocalColorsAreas(
+	ctx context.Context,
+	regions []graphics.RectF,
+) error {
+	return w.impl.RemoveLocalColorsAreas(ctx, regions)
+}
+
+func (w *wallpaperEngineStubWrapper) AddLocalColorsAreas(
+	ctx context.Context,
+	regions []graphics.RectF,
+) error {
+	return w.impl.AddLocalColorsAreas(ctx, regions)
+}
+
+func (w *wallpaperEngineStubWrapper) MirrorSurfaceControl(
+	ctx context.Context,
+) (view.SurfaceControl, error) {
+	return w.impl.MirrorSurfaceControl(ctx)
+}
+
+func (w *wallpaperEngineStubWrapper) ApplyDimming(
+	ctx context.Context,
+	dimAmount float32,
+) error {
+	return w.impl.ApplyDimming(ctx, dimAmount)
+}
+
+func (w *wallpaperEngineStubWrapper) SetWallpaperFlags(
+	ctx context.Context,
+	which int32,
+) error {
+	return w.impl.SetWallpaperFlags(ctx, which)
+}
+
+func (w *wallpaperEngineStubWrapper) OnApplyWallpaper(
+	ctx context.Context,
+	which int32,
+) (appWallpaper.WallpaperDescription, error) {
+	return w.impl.OnApplyWallpaper(ctx, which)
+}
+
+var _ IWallpaperEngine = (*wallpaperEngineStubWrapper)(nil)
+
+// NewWallpaperEngineStub creates a server-side IWallpaperEngine wrapping the given
+// server implementation. The returned value satisfies IWallpaperEngine
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWallpaperEngineStub(
+	impl IWallpaperEngineServer,
+) IWallpaperEngine {
+	wrapper := &wallpaperEngineStubWrapper{impl: impl}
+	stub := &WallpaperEngineStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

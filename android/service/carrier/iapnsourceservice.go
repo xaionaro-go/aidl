@@ -113,3 +113,42 @@ func (s *ApnSourceServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IApnSourceServiceServer is the server-side interface that user implementations
+// provide to NewApnSourceServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IApnSourceServiceServer interface {
+	GetApns(ctx context.Context, subId int32) ([]content.ContentValues, error)
+}
+
+type apnSourceServiceStubWrapper struct {
+	impl       IApnSourceServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *apnSourceServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *apnSourceServiceStubWrapper) GetApns(
+	ctx context.Context,
+	subId int32,
+) ([]content.ContentValues, error) {
+	return w.impl.GetApns(ctx, subId)
+}
+
+var _ IApnSourceService = (*apnSourceServiceStubWrapper)(nil)
+
+// NewApnSourceServiceStub creates a server-side IApnSourceService wrapping the given
+// server implementation. The returned value satisfies IApnSourceService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewApnSourceServiceStub(
+	impl IApnSourceServiceServer,
+) IApnSourceService {
+	wrapper := &apnSourceServiceStubWrapper{impl: impl}
+	stub := &ApnSourceServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

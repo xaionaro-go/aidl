@@ -285,3 +285,86 @@ func (s *DisplayWindowListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDisplayWindowListenerServer is the server-side interface that user implementations
+// provide to NewDisplayWindowListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayWindowListenerServer interface {
+	OnDisplayAdded(ctx context.Context, displayId int32) error
+	OnDisplayConfigurationChanged(ctx context.Context, displayId int32, newConfig res.Configuration) error
+	OnDisplayRemoved(ctx context.Context, displayId int32) error
+	OnFixedRotationStarted(ctx context.Context, displayId int32, newRotation int32) error
+	OnFixedRotationFinished(ctx context.Context, displayId int32) error
+	OnKeepClearAreasChanged(ctx context.Context, displayId int32, restricted []graphics.Rect, unrestricted []graphics.Rect) error
+}
+
+type displayWindowListenerStubWrapper struct {
+	impl       IDisplayWindowListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayWindowListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayWindowListenerStubWrapper) OnDisplayAdded(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnDisplayAdded(ctx, displayId)
+}
+
+func (w *displayWindowListenerStubWrapper) OnDisplayConfigurationChanged(
+	ctx context.Context,
+	displayId int32,
+	newConfig res.Configuration,
+) error {
+	return w.impl.OnDisplayConfigurationChanged(ctx, displayId, newConfig)
+}
+
+func (w *displayWindowListenerStubWrapper) OnDisplayRemoved(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnDisplayRemoved(ctx, displayId)
+}
+
+func (w *displayWindowListenerStubWrapper) OnFixedRotationStarted(
+	ctx context.Context,
+	displayId int32,
+	newRotation int32,
+) error {
+	return w.impl.OnFixedRotationStarted(ctx, displayId, newRotation)
+}
+
+func (w *displayWindowListenerStubWrapper) OnFixedRotationFinished(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnFixedRotationFinished(ctx, displayId)
+}
+
+func (w *displayWindowListenerStubWrapper) OnKeepClearAreasChanged(
+	ctx context.Context,
+	displayId int32,
+	restricted []graphics.Rect,
+	unrestricted []graphics.Rect,
+) error {
+	return w.impl.OnKeepClearAreasChanged(ctx, displayId, restricted, unrestricted)
+}
+
+var _ IDisplayWindowListener = (*displayWindowListenerStubWrapper)(nil)
+
+// NewDisplayWindowListenerStub creates a server-side IDisplayWindowListener wrapping the given
+// server implementation. The returned value satisfies IDisplayWindowListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayWindowListenerStub(
+	impl IDisplayWindowListenerServer,
+) IDisplayWindowListener {
+	wrapper := &displayWindowListenerStubWrapper{impl: impl}
+	stub := &DisplayWindowListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

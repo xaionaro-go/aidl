@@ -116,3 +116,42 @@ func (s *BluetoothMidiServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothMidiServiceServer is the server-side interface that user implementations
+// provide to NewBluetoothMidiServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothMidiServiceServer interface {
+	AddBluetoothDevice(ctx context.Context, bluetoothDevice bluetooth.BluetoothDevice) (binder.IBinder, error)
+}
+
+type bluetoothMidiServiceStubWrapper struct {
+	impl       IBluetoothMidiServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothMidiServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothMidiServiceStubWrapper) AddBluetoothDevice(
+	ctx context.Context,
+	bluetoothDevice bluetooth.BluetoothDevice,
+) (binder.IBinder, error) {
+	return w.impl.AddBluetoothDevice(ctx, bluetoothDevice)
+}
+
+var _ IBluetoothMidiService = (*bluetoothMidiServiceStubWrapper)(nil)
+
+// NewBluetoothMidiServiceStub creates a server-side IBluetoothMidiService wrapping the given
+// server implementation. The returned value satisfies IBluetoothMidiService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothMidiServiceStub(
+	impl IBluetoothMidiServiceServer,
+) IBluetoothMidiService {
+	wrapper := &bluetoothMidiServiceStubWrapper{impl: impl}
+	stub := &BluetoothMidiServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

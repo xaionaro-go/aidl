@@ -136,3 +136,57 @@ func (s *GameSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGameSessionServer is the server-side interface that user implementations
+// provide to NewGameSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGameSessionServer interface {
+	OnDestroyed(ctx context.Context) error
+	OnTransientSystemBarVisibilityFromRevealGestureChanged(ctx context.Context, visibleDueToGesture bool) error
+	OnTaskFocusChanged(ctx context.Context, focused bool) error
+}
+
+type gameSessionStubWrapper struct {
+	impl       IGameSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gameSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gameSessionStubWrapper) OnDestroyed(
+	ctx context.Context,
+) error {
+	return w.impl.OnDestroyed(ctx)
+}
+
+func (w *gameSessionStubWrapper) OnTransientSystemBarVisibilityFromRevealGestureChanged(
+	ctx context.Context,
+	visibleDueToGesture bool,
+) error {
+	return w.impl.OnTransientSystemBarVisibilityFromRevealGestureChanged(ctx, visibleDueToGesture)
+}
+
+func (w *gameSessionStubWrapper) OnTaskFocusChanged(
+	ctx context.Context,
+	focused bool,
+) error {
+	return w.impl.OnTaskFocusChanged(ctx, focused)
+}
+
+var _ IGameSession = (*gameSessionStubWrapper)(nil)
+
+// NewGameSessionStub creates a server-side IGameSession wrapping the given
+// server implementation. The returned value satisfies IGameSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGameSessionStub(
+	impl IGameSessionServer,
+) IGameSession {
+	wrapper := &gameSessionStubWrapper{impl: impl}
+	stub := &GameSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

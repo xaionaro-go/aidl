@@ -441,3 +441,98 @@ func (s *RequestCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRequestCallbackServer is the server-side interface that user implementations
+// provide to NewRequestCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRequestCallbackServer interface {
+	OnCaptureStarted(ctx context.Context, requestId int32, frameNumber int64, timestamp int64) error
+	OnCaptureProgressed(ctx context.Context, requestId int32, partialResult ParcelCaptureResult) error
+	OnCaptureCompleted(ctx context.Context, requestId int32, totalCaptureResult ParcelTotalCaptureResult) error
+	OnCaptureFailed(ctx context.Context, requestId int32, captureFailure CaptureFailure) error
+	OnCaptureBufferLost(ctx context.Context, requestId int32, frameNumber int64, outputStreamId int32) error
+	OnCaptureSequenceCompleted(ctx context.Context, sequenceId int32, frameNumber int64) error
+	OnCaptureSequenceAborted(ctx context.Context, sequenceId int32) error
+}
+
+type requestCallbackStubWrapper struct {
+	impl       IRequestCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *requestCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *requestCallbackStubWrapper) OnCaptureStarted(
+	ctx context.Context,
+	requestId int32,
+	frameNumber int64,
+	timestamp int64,
+) error {
+	return w.impl.OnCaptureStarted(ctx, requestId, frameNumber, timestamp)
+}
+
+func (w *requestCallbackStubWrapper) OnCaptureProgressed(
+	ctx context.Context,
+	requestId int32,
+	partialResult ParcelCaptureResult,
+) error {
+	return w.impl.OnCaptureProgressed(ctx, requestId, partialResult)
+}
+
+func (w *requestCallbackStubWrapper) OnCaptureCompleted(
+	ctx context.Context,
+	requestId int32,
+	totalCaptureResult ParcelTotalCaptureResult,
+) error {
+	return w.impl.OnCaptureCompleted(ctx, requestId, totalCaptureResult)
+}
+
+func (w *requestCallbackStubWrapper) OnCaptureFailed(
+	ctx context.Context,
+	requestId int32,
+	captureFailure CaptureFailure,
+) error {
+	return w.impl.OnCaptureFailed(ctx, requestId, captureFailure)
+}
+
+func (w *requestCallbackStubWrapper) OnCaptureBufferLost(
+	ctx context.Context,
+	requestId int32,
+	frameNumber int64,
+	outputStreamId int32,
+) error {
+	return w.impl.OnCaptureBufferLost(ctx, requestId, frameNumber, outputStreamId)
+}
+
+func (w *requestCallbackStubWrapper) OnCaptureSequenceCompleted(
+	ctx context.Context,
+	sequenceId int32,
+	frameNumber int64,
+) error {
+	return w.impl.OnCaptureSequenceCompleted(ctx, sequenceId, frameNumber)
+}
+
+func (w *requestCallbackStubWrapper) OnCaptureSequenceAborted(
+	ctx context.Context,
+	sequenceId int32,
+) error {
+	return w.impl.OnCaptureSequenceAborted(ctx, sequenceId)
+}
+
+var _ IRequestCallback = (*requestCallbackStubWrapper)(nil)
+
+// NewRequestCallbackStub creates a server-side IRequestCallback wrapping the given
+// server implementation. The returned value satisfies IRequestCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRequestCallbackStub(
+	impl IRequestCallbackServer,
+) IRequestCallback {
+	wrapper := &requestCallbackStubWrapper{impl: impl}
+	stub := &RequestCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

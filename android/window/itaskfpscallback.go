@@ -82,3 +82,42 @@ func (s *TaskFpsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITaskFpsCallbackServer is the server-side interface that user implementations
+// provide to NewTaskFpsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITaskFpsCallbackServer interface {
+	OnFpsReported(ctx context.Context, fps float32) error
+}
+
+type taskFpsCallbackStubWrapper struct {
+	impl       ITaskFpsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *taskFpsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *taskFpsCallbackStubWrapper) OnFpsReported(
+	ctx context.Context,
+	fps float32,
+) error {
+	return w.impl.OnFpsReported(ctx, fps)
+}
+
+var _ ITaskFpsCallback = (*taskFpsCallbackStubWrapper)(nil)
+
+// NewTaskFpsCallbackStub creates a server-side ITaskFpsCallback wrapping the given
+// server implementation. The returned value satisfies ITaskFpsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTaskFpsCallbackStub(
+	impl ITaskFpsCallbackServer,
+) ITaskFpsCallback {
+	wrapper := &taskFpsCallbackStubWrapper{impl: impl}
+	stub := &TaskFpsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

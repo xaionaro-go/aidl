@@ -169,8 +169,8 @@ func (p *RadioConfigProxy) SetResponseFunctions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRadioConfig)
-	_data.WriteStrongBinder(radioConfigResponse.AsBinder().Handle())
-	_data.WriteStrongBinder(radioConfigIndication.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, radioConfigResponse.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, radioConfigIndication.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioConfig, "setResponseFunctions")
 	if _err != nil {
@@ -423,4 +423,128 @@ func (s *RadioConfigStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRadioConfigServer is the server-side interface that user implementations
+// provide to NewRadioConfigStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioConfigServer interface {
+	GetHalDeviceCapabilities(ctx context.Context, serial int32) error
+	GetNumOfLiveModems(ctx context.Context, serial int32) error
+	GetPhoneCapability(ctx context.Context, serial int32) error
+	GetSimSlotsStatus(ctx context.Context, serial int32) error
+	SetNumOfLiveModems(ctx context.Context, serial int32, numOfLiveModems byte) error
+	SetPreferredDataModem(ctx context.Context, serial int32, modemId byte) error
+	SetResponseFunctions(ctx context.Context, radioConfigResponse IRadioConfigResponse, radioConfigIndication IRadioConfigIndication) error
+	SetSimSlotsMapping(ctx context.Context, serial int32, slotMap []SlotPortMapping) error
+	GetSimultaneousCallingSupport(ctx context.Context, serial int32) error
+	GetSimTypeInfo(ctx context.Context, serial int32) error
+	SetSimType(ctx context.Context, serial int32, simTypes []SimType) error
+}
+
+type radioConfigStubWrapper struct {
+	impl       IRadioConfigServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioConfigStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioConfigStubWrapper) GetHalDeviceCapabilities(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetHalDeviceCapabilities(ctx, serial)
+}
+
+func (w *radioConfigStubWrapper) GetNumOfLiveModems(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetNumOfLiveModems(ctx, serial)
+}
+
+func (w *radioConfigStubWrapper) GetPhoneCapability(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetPhoneCapability(ctx, serial)
+}
+
+func (w *radioConfigStubWrapper) GetSimSlotsStatus(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetSimSlotsStatus(ctx, serial)
+}
+
+func (w *radioConfigStubWrapper) SetNumOfLiveModems(
+	ctx context.Context,
+	serial int32,
+	numOfLiveModems byte,
+) error {
+	return w.impl.SetNumOfLiveModems(ctx, serial, numOfLiveModems)
+}
+
+func (w *radioConfigStubWrapper) SetPreferredDataModem(
+	ctx context.Context,
+	serial int32,
+	modemId byte,
+) error {
+	return w.impl.SetPreferredDataModem(ctx, serial, modemId)
+}
+
+func (w *radioConfigStubWrapper) SetResponseFunctions(
+	ctx context.Context,
+	radioConfigResponse IRadioConfigResponse,
+	radioConfigIndication IRadioConfigIndication,
+) error {
+	return w.impl.SetResponseFunctions(ctx, radioConfigResponse, radioConfigIndication)
+}
+
+func (w *radioConfigStubWrapper) SetSimSlotsMapping(
+	ctx context.Context,
+	serial int32,
+	slotMap []SlotPortMapping,
+) error {
+	return w.impl.SetSimSlotsMapping(ctx, serial, slotMap)
+}
+
+func (w *radioConfigStubWrapper) GetSimultaneousCallingSupport(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetSimultaneousCallingSupport(ctx, serial)
+}
+
+func (w *radioConfigStubWrapper) GetSimTypeInfo(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetSimTypeInfo(ctx, serial)
+}
+
+func (w *radioConfigStubWrapper) SetSimType(
+	ctx context.Context,
+	serial int32,
+	simTypes []SimType,
+) error {
+	return w.impl.SetSimType(ctx, serial, simTypes)
+}
+
+var _ IRadioConfig = (*radioConfigStubWrapper)(nil)
+
+// NewRadioConfigStub creates a server-side IRadioConfig wrapping the given
+// server implementation. The returned value satisfies IRadioConfig
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioConfigStub(
+	impl IRadioConfigServer,
+) IRadioConfig {
+	wrapper := &radioConfigStubWrapper{impl: impl}
+	stub := &RadioConfigStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

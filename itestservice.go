@@ -126,7 +126,7 @@ func (p *TestServiceProxy) SetService(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITestService)
-	_data.WriteStrongBinder(service.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, service.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITestService, "setService")
 	if _err != nil {
@@ -227,4 +227,67 @@ func (s *TestServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITestServiceServer is the server-side interface that user implementations
+// provide to NewTestServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITestServiceServer interface {
+	SetIntData(ctx context.Context, input int32) error
+	SetCharData(ctx context.Context, input uint16) error
+	SetBooleanData(ctx context.Context, input bool) error
+	SetService(ctx context.Context, service ITestService) error
+}
+
+type testServiceStubWrapper struct {
+	impl       ITestServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *testServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *testServiceStubWrapper) SetIntData(
+	ctx context.Context,
+	input int32,
+) error {
+	return w.impl.SetIntData(ctx, input)
+}
+
+func (w *testServiceStubWrapper) SetCharData(
+	ctx context.Context,
+	input uint16,
+) error {
+	return w.impl.SetCharData(ctx, input)
+}
+
+func (w *testServiceStubWrapper) SetBooleanData(
+	ctx context.Context,
+	input bool,
+) error {
+	return w.impl.SetBooleanData(ctx, input)
+}
+
+func (w *testServiceStubWrapper) SetService(
+	ctx context.Context,
+	service ITestService,
+) error {
+	return w.impl.SetService(ctx, service)
+}
+
+var _ ITestService = (*testServiceStubWrapper)(nil)
+
+// NewTestServiceStub creates a server-side ITestService wrapping the given
+// server implementation. The returned value satisfies ITestService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTestServiceStub(
+	impl ITestServiceServer,
+) ITestService {
+	wrapper := &testServiceStubWrapper{impl: impl}
+	stub := &TestServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

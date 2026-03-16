@@ -10,6 +10,7 @@ import (
 	voice "github.com/xaionaro-go/binder/android/hardware/radio/voice"
 	androidTelephony "github.com/xaionaro-go/binder/android/telephony"
 	ims "github.com/xaionaro-go/binder/android/telephony/ims"
+	satellite "github.com/xaionaro-go/binder/android/telephony/satellite"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -114,7 +115,7 @@ type IPhoneStateListener interface {
 	OnCarrierRoamingNtnModeChanged(ctx context.Context, active bool) error
 	OnCarrierRoamingNtnEligibleStateChanged(ctx context.Context, eligible bool) error
 	OnCarrierRoamingNtnAvailableServicesChanged(ctx context.Context, availableServices []int32) error
-	OnCarrierRoamingNtnSignalStrengthChanged(ctx context.Context, ntnSignalStrength interface{}) error
+	OnCarrierRoamingNtnSignalStrengthChanged(ctx context.Context, ntnSignalStrength satellite.NtnSignalStrength) error
 	OnSecurityAlgorithmsChanged(ctx context.Context, update network.SecurityAlgorithmUpdate) error
 	OnCellularIdentifierDisclosedChanged(ctx context.Context, disclosure network.CellularIdentifierDisclosure) error
 }
@@ -1024,10 +1025,14 @@ func (p *PhoneStateListenerProxy) OnCarrierRoamingNtnAvailableServicesChanged(
 
 func (p *PhoneStateListenerProxy) OnCarrierRoamingNtnSignalStrengthChanged(
 	ctx context.Context,
-	ntnSignalStrength interface{},
+	ntnSignalStrength satellite.NtnSignalStrength,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneStateListener)
+	_data.WriteInt32(1)
+	if _err := ntnSignalStrength.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneStateListener, "onCarrierRoamingNtnSignalStrengthChanged")
 	if _err != nil {
@@ -1752,7 +1757,18 @@ func (s *PhoneStateListenerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_ntnSignalStrength interface{}
+		var _arg_ntnSignalStrength satellite.NtnSignalStrength
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_ntnSignalStrength.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.OnCarrierRoamingNtnSignalStrengthChanged(ctx, _arg_ntnSignalStrength)
 		_ = _err
 		return nil, nil
@@ -1797,4 +1813,428 @@ func (s *PhoneStateListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPhoneStateListenerServer is the server-side interface that user implementations
+// provide to NewPhoneStateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPhoneStateListenerServer interface {
+	OnServiceStateChanged(ctx context.Context, serviceState androidTelephony.ServiceState) error
+	OnSignalStrengthChanged(ctx context.Context, asu int32) error
+	OnMessageWaitingIndicatorChanged(ctx context.Context, mwi bool) error
+	OnCallForwardingIndicatorChanged(ctx context.Context, cfi bool) error
+	OnCellLocationChanged(ctx context.Context, location network.CellIdentity) error
+	OnLegacyCallStateChanged(ctx context.Context, state int32, incomingNumber string) error
+	OnCallStateChanged(ctx context.Context, state int32) error
+	OnDataConnectionStateChanged(ctx context.Context, state int32, networkType int32) error
+	OnDataActivity(ctx context.Context, direction int32) error
+	OnSignalStrengthsChanged(ctx context.Context, signalStrength network.SignalStrength) error
+	OnCellInfoChanged(ctx context.Context, cellInfo []network.CellInfo) error
+	OnPreciseCallStateChanged(ctx context.Context, callState androidTelephony.PreciseCallState) error
+	OnPreciseDataConnectionStateChanged(ctx context.Context, dataConnectionState androidTelephony.PreciseDataConnectionState) error
+	OnDataConnectionRealTimeInfoChanged(ctx context.Context, dcRtInfo androidTelephony.DataConnectionRealTimeInfo) error
+	OnSrvccStateChanged(ctx context.Context, state int32) error
+	OnVoiceActivationStateChanged(ctx context.Context, activationState int32) error
+	OnDataActivationStateChanged(ctx context.Context, activationState int32) error
+	OnOemHookRawEvent(ctx context.Context, rawData []byte) error
+	OnCarrierNetworkChange(ctx context.Context, active bool) error
+	OnUserMobileDataStateChanged(ctx context.Context, enabled bool) error
+	OnDisplayInfoChanged(ctx context.Context, telephonyDisplayInfo androidTelephony.TelephonyDisplayInfo) error
+	OnPhoneCapabilityChanged(ctx context.Context, capability config.PhoneCapability) error
+	OnActiveDataSubIdChanged(ctx context.Context, subId int32) error
+	OnRadioPowerStateChanged(ctx context.Context, state int32) error
+	OnCallStatesChanged(ctx context.Context, callStateList []ImsCall.CallState) error
+	OnEmergencyNumberListChanged(ctx context.Context, emergencyNumberList map[interface{}]interface{}) error
+	OnOutgoingEmergencyCall(ctx context.Context, placedEmergencyNumber voice.EmergencyNumber, subscriptionId int32) error
+	OnOutgoingEmergencySms(ctx context.Context, sentEmergencyNumber voice.EmergencyNumber, subscriptionId int32) error
+	OnCallDisconnectCauseChanged(ctx context.Context, disconnectCause int32, preciseDisconnectCause int32) error
+	OnImsCallDisconnectCauseChanged(ctx context.Context, imsReasonInfo ims.ImsReasonInfo) error
+	OnRegistrationFailed(ctx context.Context, cellIdentity network.CellIdentity, chosenPlmn string, domain int32, causeCode int32, additionalCauseCode int32) error
+	OnBarringInfoChanged(ctx context.Context, barringInfo network.BarringInfo) error
+	OnPhysicalChannelConfigChanged(ctx context.Context, configs []network.PhysicalChannelConfig) error
+	OnDataEnabledChanged(ctx context.Context, enabled bool, reason int32) error
+	OnAllowedNetworkTypesChanged(ctx context.Context, reason int32, allowedNetworkType int64) error
+	OnLinkCapacityEstimateChanged(ctx context.Context, linkCapacityEstimateList []network.LinkCapacityEstimate) error
+	OnMediaQualityStatusChanged(ctx context.Context, mediaQualityStatus media.MediaQualityStatus) error
+	OnCallbackModeStarted(ctx context.Context, type_ int32, durationMillis int64, subId int32) error
+	OnCallbackModeRestarted(ctx context.Context, type_ int32, durationMillis int64, subId int32) error
+	OnCallbackModeStopped(ctx context.Context, type_ int32, reason int32, subId int32) error
+	OnSimultaneousCallingStateChanged(ctx context.Context, subIds []int32) error
+	OnCarrierRoamingNtnModeChanged(ctx context.Context, active bool) error
+	OnCarrierRoamingNtnEligibleStateChanged(ctx context.Context, eligible bool) error
+	OnCarrierRoamingNtnAvailableServicesChanged(ctx context.Context, availableServices []int32) error
+	OnCarrierRoamingNtnSignalStrengthChanged(ctx context.Context, ntnSignalStrength satellite.NtnSignalStrength) error
+	OnSecurityAlgorithmsChanged(ctx context.Context, update network.SecurityAlgorithmUpdate) error
+	OnCellularIdentifierDisclosedChanged(ctx context.Context, disclosure network.CellularIdentifierDisclosure) error
+}
+
+type phoneStateListenerStubWrapper struct {
+	impl       IPhoneStateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *phoneStateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *phoneStateListenerStubWrapper) OnServiceStateChanged(
+	ctx context.Context,
+	serviceState androidTelephony.ServiceState,
+) error {
+	return w.impl.OnServiceStateChanged(ctx, serviceState)
+}
+
+func (w *phoneStateListenerStubWrapper) OnSignalStrengthChanged(
+	ctx context.Context,
+	asu int32,
+) error {
+	return w.impl.OnSignalStrengthChanged(ctx, asu)
+}
+
+func (w *phoneStateListenerStubWrapper) OnMessageWaitingIndicatorChanged(
+	ctx context.Context,
+	mwi bool,
+) error {
+	return w.impl.OnMessageWaitingIndicatorChanged(ctx, mwi)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCallForwardingIndicatorChanged(
+	ctx context.Context,
+	cfi bool,
+) error {
+	return w.impl.OnCallForwardingIndicatorChanged(ctx, cfi)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCellLocationChanged(
+	ctx context.Context,
+	location network.CellIdentity,
+) error {
+	return w.impl.OnCellLocationChanged(ctx, location)
+}
+
+func (w *phoneStateListenerStubWrapper) OnLegacyCallStateChanged(
+	ctx context.Context,
+	state int32,
+	incomingNumber string,
+) error {
+	return w.impl.OnLegacyCallStateChanged(ctx, state, incomingNumber)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCallStateChanged(
+	ctx context.Context,
+	state int32,
+) error {
+	return w.impl.OnCallStateChanged(ctx, state)
+}
+
+func (w *phoneStateListenerStubWrapper) OnDataConnectionStateChanged(
+	ctx context.Context,
+	state int32,
+	networkType int32,
+) error {
+	return w.impl.OnDataConnectionStateChanged(ctx, state, networkType)
+}
+
+func (w *phoneStateListenerStubWrapper) OnDataActivity(
+	ctx context.Context,
+	direction int32,
+) error {
+	return w.impl.OnDataActivity(ctx, direction)
+}
+
+func (w *phoneStateListenerStubWrapper) OnSignalStrengthsChanged(
+	ctx context.Context,
+	signalStrength network.SignalStrength,
+) error {
+	return w.impl.OnSignalStrengthsChanged(ctx, signalStrength)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCellInfoChanged(
+	ctx context.Context,
+	cellInfo []network.CellInfo,
+) error {
+	return w.impl.OnCellInfoChanged(ctx, cellInfo)
+}
+
+func (w *phoneStateListenerStubWrapper) OnPreciseCallStateChanged(
+	ctx context.Context,
+	callState androidTelephony.PreciseCallState,
+) error {
+	return w.impl.OnPreciseCallStateChanged(ctx, callState)
+}
+
+func (w *phoneStateListenerStubWrapper) OnPreciseDataConnectionStateChanged(
+	ctx context.Context,
+	dataConnectionState androidTelephony.PreciseDataConnectionState,
+) error {
+	return w.impl.OnPreciseDataConnectionStateChanged(ctx, dataConnectionState)
+}
+
+func (w *phoneStateListenerStubWrapper) OnDataConnectionRealTimeInfoChanged(
+	ctx context.Context,
+	dcRtInfo androidTelephony.DataConnectionRealTimeInfo,
+) error {
+	return w.impl.OnDataConnectionRealTimeInfoChanged(ctx, dcRtInfo)
+}
+
+func (w *phoneStateListenerStubWrapper) OnSrvccStateChanged(
+	ctx context.Context,
+	state int32,
+) error {
+	return w.impl.OnSrvccStateChanged(ctx, state)
+}
+
+func (w *phoneStateListenerStubWrapper) OnVoiceActivationStateChanged(
+	ctx context.Context,
+	activationState int32,
+) error {
+	return w.impl.OnVoiceActivationStateChanged(ctx, activationState)
+}
+
+func (w *phoneStateListenerStubWrapper) OnDataActivationStateChanged(
+	ctx context.Context,
+	activationState int32,
+) error {
+	return w.impl.OnDataActivationStateChanged(ctx, activationState)
+}
+
+func (w *phoneStateListenerStubWrapper) OnOemHookRawEvent(
+	ctx context.Context,
+	rawData []byte,
+) error {
+	return w.impl.OnOemHookRawEvent(ctx, rawData)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCarrierNetworkChange(
+	ctx context.Context,
+	active bool,
+) error {
+	return w.impl.OnCarrierNetworkChange(ctx, active)
+}
+
+func (w *phoneStateListenerStubWrapper) OnUserMobileDataStateChanged(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.OnUserMobileDataStateChanged(ctx, enabled)
+}
+
+func (w *phoneStateListenerStubWrapper) OnDisplayInfoChanged(
+	ctx context.Context,
+	telephonyDisplayInfo androidTelephony.TelephonyDisplayInfo,
+) error {
+	return w.impl.OnDisplayInfoChanged(ctx, telephonyDisplayInfo)
+}
+
+func (w *phoneStateListenerStubWrapper) OnPhoneCapabilityChanged(
+	ctx context.Context,
+	capability config.PhoneCapability,
+) error {
+	return w.impl.OnPhoneCapabilityChanged(ctx, capability)
+}
+
+func (w *phoneStateListenerStubWrapper) OnActiveDataSubIdChanged(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.OnActiveDataSubIdChanged(ctx, subId)
+}
+
+func (w *phoneStateListenerStubWrapper) OnRadioPowerStateChanged(
+	ctx context.Context,
+	state int32,
+) error {
+	return w.impl.OnRadioPowerStateChanged(ctx, state)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCallStatesChanged(
+	ctx context.Context,
+	callStateList []ImsCall.CallState,
+) error {
+	return w.impl.OnCallStatesChanged(ctx, callStateList)
+}
+
+func (w *phoneStateListenerStubWrapper) OnEmergencyNumberListChanged(
+	ctx context.Context,
+	emergencyNumberList map[interface{}]interface{},
+) error {
+	return w.impl.OnEmergencyNumberListChanged(ctx, emergencyNumberList)
+}
+
+func (w *phoneStateListenerStubWrapper) OnOutgoingEmergencyCall(
+	ctx context.Context,
+	placedEmergencyNumber voice.EmergencyNumber,
+	subscriptionId int32,
+) error {
+	return w.impl.OnOutgoingEmergencyCall(ctx, placedEmergencyNumber, subscriptionId)
+}
+
+func (w *phoneStateListenerStubWrapper) OnOutgoingEmergencySms(
+	ctx context.Context,
+	sentEmergencyNumber voice.EmergencyNumber,
+	subscriptionId int32,
+) error {
+	return w.impl.OnOutgoingEmergencySms(ctx, sentEmergencyNumber, subscriptionId)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCallDisconnectCauseChanged(
+	ctx context.Context,
+	disconnectCause int32,
+	preciseDisconnectCause int32,
+) error {
+	return w.impl.OnCallDisconnectCauseChanged(ctx, disconnectCause, preciseDisconnectCause)
+}
+
+func (w *phoneStateListenerStubWrapper) OnImsCallDisconnectCauseChanged(
+	ctx context.Context,
+	imsReasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.OnImsCallDisconnectCauseChanged(ctx, imsReasonInfo)
+}
+
+func (w *phoneStateListenerStubWrapper) OnRegistrationFailed(
+	ctx context.Context,
+	cellIdentity network.CellIdentity,
+	chosenPlmn string,
+	domain int32,
+	causeCode int32,
+	additionalCauseCode int32,
+) error {
+	return w.impl.OnRegistrationFailed(ctx, cellIdentity, chosenPlmn, domain, causeCode, additionalCauseCode)
+}
+
+func (w *phoneStateListenerStubWrapper) OnBarringInfoChanged(
+	ctx context.Context,
+	barringInfo network.BarringInfo,
+) error {
+	return w.impl.OnBarringInfoChanged(ctx, barringInfo)
+}
+
+func (w *phoneStateListenerStubWrapper) OnPhysicalChannelConfigChanged(
+	ctx context.Context,
+	configs []network.PhysicalChannelConfig,
+) error {
+	return w.impl.OnPhysicalChannelConfigChanged(ctx, configs)
+}
+
+func (w *phoneStateListenerStubWrapper) OnDataEnabledChanged(
+	ctx context.Context,
+	enabled bool,
+	reason int32,
+) error {
+	return w.impl.OnDataEnabledChanged(ctx, enabled, reason)
+}
+
+func (w *phoneStateListenerStubWrapper) OnAllowedNetworkTypesChanged(
+	ctx context.Context,
+	reason int32,
+	allowedNetworkType int64,
+) error {
+	return w.impl.OnAllowedNetworkTypesChanged(ctx, reason, allowedNetworkType)
+}
+
+func (w *phoneStateListenerStubWrapper) OnLinkCapacityEstimateChanged(
+	ctx context.Context,
+	linkCapacityEstimateList []network.LinkCapacityEstimate,
+) error {
+	return w.impl.OnLinkCapacityEstimateChanged(ctx, linkCapacityEstimateList)
+}
+
+func (w *phoneStateListenerStubWrapper) OnMediaQualityStatusChanged(
+	ctx context.Context,
+	mediaQualityStatus media.MediaQualityStatus,
+) error {
+	return w.impl.OnMediaQualityStatusChanged(ctx, mediaQualityStatus)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCallbackModeStarted(
+	ctx context.Context,
+	type_ int32,
+	durationMillis int64,
+	subId int32,
+) error {
+	return w.impl.OnCallbackModeStarted(ctx, type_, durationMillis, subId)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCallbackModeRestarted(
+	ctx context.Context,
+	type_ int32,
+	durationMillis int64,
+	subId int32,
+) error {
+	return w.impl.OnCallbackModeRestarted(ctx, type_, durationMillis, subId)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCallbackModeStopped(
+	ctx context.Context,
+	type_ int32,
+	reason int32,
+	subId int32,
+) error {
+	return w.impl.OnCallbackModeStopped(ctx, type_, reason, subId)
+}
+
+func (w *phoneStateListenerStubWrapper) OnSimultaneousCallingStateChanged(
+	ctx context.Context,
+	subIds []int32,
+) error {
+	return w.impl.OnSimultaneousCallingStateChanged(ctx, subIds)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCarrierRoamingNtnModeChanged(
+	ctx context.Context,
+	active bool,
+) error {
+	return w.impl.OnCarrierRoamingNtnModeChanged(ctx, active)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCarrierRoamingNtnEligibleStateChanged(
+	ctx context.Context,
+	eligible bool,
+) error {
+	return w.impl.OnCarrierRoamingNtnEligibleStateChanged(ctx, eligible)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCarrierRoamingNtnAvailableServicesChanged(
+	ctx context.Context,
+	availableServices []int32,
+) error {
+	return w.impl.OnCarrierRoamingNtnAvailableServicesChanged(ctx, availableServices)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCarrierRoamingNtnSignalStrengthChanged(
+	ctx context.Context,
+	ntnSignalStrength satellite.NtnSignalStrength,
+) error {
+	return w.impl.OnCarrierRoamingNtnSignalStrengthChanged(ctx, ntnSignalStrength)
+}
+
+func (w *phoneStateListenerStubWrapper) OnSecurityAlgorithmsChanged(
+	ctx context.Context,
+	update network.SecurityAlgorithmUpdate,
+) error {
+	return w.impl.OnSecurityAlgorithmsChanged(ctx, update)
+}
+
+func (w *phoneStateListenerStubWrapper) OnCellularIdentifierDisclosedChanged(
+	ctx context.Context,
+	disclosure network.CellularIdentifierDisclosure,
+) error {
+	return w.impl.OnCellularIdentifierDisclosedChanged(ctx, disclosure)
+}
+
+var _ IPhoneStateListener = (*phoneStateListenerStubWrapper)(nil)
+
+// NewPhoneStateListenerStub creates a server-side IPhoneStateListener wrapping the given
+// server implementation. The returned value satisfies IPhoneStateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPhoneStateListenerStub(
+	impl IPhoneStateListenerServer,
+) IPhoneStateListener {
+	wrapper := &phoneStateListenerStubWrapper{impl: impl}
+	stub := &PhoneStateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

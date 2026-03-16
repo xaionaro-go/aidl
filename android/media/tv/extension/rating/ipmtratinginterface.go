@@ -79,7 +79,7 @@ func (p *PmtRatingInterfaceProxy) AddPmtRatingListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPmtRatingInterface)
 	_data.WriteString16(clientToken)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPmtRatingInterface, "addPmtRatingListener")
 	if _err != nil {
@@ -105,7 +105,7 @@ func (p *PmtRatingInterfaceProxy) RemovePmtRatingListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPmtRatingInterface)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPmtRatingInterface, "removePmtRatingListener")
 	if _err != nil {
@@ -193,4 +193,60 @@ func (s *PmtRatingInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPmtRatingInterfaceServer is the server-side interface that user implementations
+// provide to NewPmtRatingInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPmtRatingInterfaceServer interface {
+	GetPmtRating(ctx context.Context, sessionToken string) (string, error)
+	AddPmtRatingListener(ctx context.Context, clientToken string, listener IPmtRatingListener) error
+	RemovePmtRatingListener(ctx context.Context, listener IPmtRatingListener) error
+}
+
+type pmtRatingInterfaceStubWrapper struct {
+	impl       IPmtRatingInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pmtRatingInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pmtRatingInterfaceStubWrapper) GetPmtRating(
+	ctx context.Context,
+	sessionToken string,
+) (string, error) {
+	return w.impl.GetPmtRating(ctx, sessionToken)
+}
+
+func (w *pmtRatingInterfaceStubWrapper) AddPmtRatingListener(
+	ctx context.Context,
+	clientToken string,
+	listener IPmtRatingListener,
+) error {
+	return w.impl.AddPmtRatingListener(ctx, clientToken, listener)
+}
+
+func (w *pmtRatingInterfaceStubWrapper) RemovePmtRatingListener(
+	ctx context.Context,
+	listener IPmtRatingListener,
+) error {
+	return w.impl.RemovePmtRatingListener(ctx, listener)
+}
+
+var _ IPmtRatingInterface = (*pmtRatingInterfaceStubWrapper)(nil)
+
+// NewPmtRatingInterfaceStub creates a server-side IPmtRatingInterface wrapping the given
+// server implementation. The returned value satisfies IPmtRatingInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPmtRatingInterfaceStub(
+	impl IPmtRatingInterfaceServer,
+) IPmtRatingInterface {
+	wrapper := &pmtRatingInterfaceStubWrapper{impl: impl}
+	stub := &PmtRatingInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

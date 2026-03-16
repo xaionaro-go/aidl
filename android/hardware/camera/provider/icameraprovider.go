@@ -63,7 +63,7 @@ func (p *CameraProviderProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraProvider)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraProvider, "setCallback")
 	if _err != nil {
@@ -420,4 +420,88 @@ func (s *CameraProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICameraProviderServer is the server-side interface that user implementations
+// provide to NewCameraProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraProviderServer interface {
+	SetCallback(ctx context.Context, callback ICameraProviderCallback) error
+	GetVendorTags(ctx context.Context) ([]common.VendorTagSection, error)
+	GetCameraIdList(ctx context.Context) ([]string, error)
+	GetCameraDeviceInterface(ctx context.Context, cameraDeviceName string) (device.ICameraDevice, error)
+	NotifyDeviceStateChange(ctx context.Context, deviceState int64) error
+	GetConcurrentCameraIds(ctx context.Context) ([]ConcurrentCameraIdCombination, error)
+	IsConcurrentStreamCombinationSupported(ctx context.Context, configs []CameraIdAndStreamCombination) (bool, error)
+}
+
+type cameraProviderStubWrapper struct {
+	impl       ICameraProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraProviderStubWrapper) SetCallback(
+	ctx context.Context,
+	callback ICameraProviderCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *cameraProviderStubWrapper) GetVendorTags(
+	ctx context.Context,
+) ([]common.VendorTagSection, error) {
+	return w.impl.GetVendorTags(ctx)
+}
+
+func (w *cameraProviderStubWrapper) GetCameraIdList(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetCameraIdList(ctx)
+}
+
+func (w *cameraProviderStubWrapper) GetCameraDeviceInterface(
+	ctx context.Context,
+	cameraDeviceName string,
+) (device.ICameraDevice, error) {
+	return w.impl.GetCameraDeviceInterface(ctx, cameraDeviceName)
+}
+
+func (w *cameraProviderStubWrapper) NotifyDeviceStateChange(
+	ctx context.Context,
+	deviceState int64,
+) error {
+	return w.impl.NotifyDeviceStateChange(ctx, deviceState)
+}
+
+func (w *cameraProviderStubWrapper) GetConcurrentCameraIds(
+	ctx context.Context,
+) ([]ConcurrentCameraIdCombination, error) {
+	return w.impl.GetConcurrentCameraIds(ctx)
+}
+
+func (w *cameraProviderStubWrapper) IsConcurrentStreamCombinationSupported(
+	ctx context.Context,
+	configs []CameraIdAndStreamCombination,
+) (bool, error) {
+	return w.impl.IsConcurrentStreamCombinationSupported(ctx, configs)
+}
+
+var _ ICameraProvider = (*cameraProviderStubWrapper)(nil)
+
+// NewCameraProviderStub creates a server-side ICameraProvider wrapping the given
+// server implementation. The returned value satisfies ICameraProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraProviderStub(
+	impl ICameraProviderServer,
+) ICameraProvider {
+	wrapper := &cameraProviderStubWrapper{impl: impl}
+	stub := &CameraProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

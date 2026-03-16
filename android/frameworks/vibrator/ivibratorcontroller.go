@@ -46,7 +46,7 @@ func (p *VibratorControllerProxy) RequestVibrationParams(
 	_data.WriteInterfaceToken(DescriptorIVibratorController)
 	_data.WriteInt32(typesMask)
 	_data.WriteInt64(deadlineElapsedRealtimeMillis)
-	_data.WriteStrongBinder(requestToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, requestToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorController, "requestVibrationParams")
 	if _err != nil {
@@ -92,4 +92,45 @@ func (s *VibratorControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVibratorControllerServer is the server-side interface that user implementations
+// provide to NewVibratorControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVibratorControllerServer interface {
+	RequestVibrationParams(ctx context.Context, typesMask int32, deadlineElapsedRealtimeMillis int64, requestToken binder.IBinder) error
+}
+
+type vibratorControllerStubWrapper struct {
+	impl       IVibratorControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vibratorControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vibratorControllerStubWrapper) RequestVibrationParams(
+	ctx context.Context,
+	typesMask int32,
+	deadlineElapsedRealtimeMillis int64,
+	requestToken binder.IBinder,
+) error {
+	return w.impl.RequestVibrationParams(ctx, typesMask, deadlineElapsedRealtimeMillis, requestToken)
+}
+
+var _ IVibratorController = (*vibratorControllerStubWrapper)(nil)
+
+// NewVibratorControllerStub creates a server-side IVibratorController wrapping the given
+// server implementation. The returned value satisfies IVibratorController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVibratorControllerStub(
+	impl IVibratorControllerServer,
+) IVibratorController {
+	wrapper := &vibratorControllerStubWrapper{impl: impl}
+	stub := &VibratorControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

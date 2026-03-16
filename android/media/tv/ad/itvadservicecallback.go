@@ -49,3 +49,34 @@ func (s *TvAdServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITvAdServiceCallbackServer is the server-side interface that user implementations
+// provide to NewTvAdServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvAdServiceCallbackServer interface {
+}
+
+type tvAdServiceCallbackStubWrapper struct {
+	impl       ITvAdServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvAdServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ ITvAdServiceCallback = (*tvAdServiceCallbackStubWrapper)(nil)
+
+// NewTvAdServiceCallbackStub creates a server-side ITvAdServiceCallback wrapping the given
+// server implementation. The returned value satisfies ITvAdServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvAdServiceCallbackStub(
+	impl ITvAdServiceCallbackServer,
+) ITvAdServiceCallback {
+	wrapper := &tvAdServiceCallbackStubWrapper{impl: impl}
+	stub := &TvAdServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

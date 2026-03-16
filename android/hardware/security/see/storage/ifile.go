@@ -189,7 +189,7 @@ func (p *FileProxy) Rename(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFile)
-	_data.WriteString(destPath)
+	_data.WriteString16(destPath)
 	_data.WriteInt32(int32(destCreateMode))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFile, "rename")
@@ -299,7 +299,7 @@ func (s *FileStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_destPath, _err := _data.ReadString()
+		_arg_destPath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -319,4 +319,77 @@ func (s *FileStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFileServer is the server-side interface that user implementations
+// provide to NewFileStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFileServer interface {
+	Read(ctx context.Context, size int64, offset int64) ([]byte, error)
+	Write(ctx context.Context, offset int64, buffer []byte) (int64, error)
+	GetSize(ctx context.Context) (int64, error)
+	SetSize(ctx context.Context, newSize int64) error
+	Rename(ctx context.Context, destPath string, destCreateMode CreationMode) error
+}
+
+type fileStubWrapper struct {
+	impl       IFileServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fileStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fileStubWrapper) Read(
+	ctx context.Context,
+	size int64,
+	offset int64,
+) ([]byte, error) {
+	return w.impl.Read(ctx, size, offset)
+}
+
+func (w *fileStubWrapper) Write(
+	ctx context.Context,
+	offset int64,
+	buffer []byte,
+) (int64, error) {
+	return w.impl.Write(ctx, offset, buffer)
+}
+
+func (w *fileStubWrapper) GetSize(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetSize(ctx)
+}
+
+func (w *fileStubWrapper) SetSize(
+	ctx context.Context,
+	newSize int64,
+) error {
+	return w.impl.SetSize(ctx, newSize)
+}
+
+func (w *fileStubWrapper) Rename(
+	ctx context.Context,
+	destPath string,
+	destCreateMode CreationMode,
+) error {
+	return w.impl.Rename(ctx, destPath, destCreateMode)
+}
+
+var _ IFile = (*fileStubWrapper)(nil)
+
+// NewFileStub creates a server-side IFile wrapping the given
+// server implementation. The returned value satisfies IFile
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFileStub(
+	impl IFileServer,
+) IFile {
+	wrapper := &fileStubWrapper{impl: impl}
+	stub := &FileStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

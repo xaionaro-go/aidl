@@ -44,7 +44,7 @@ func (p *TvRemoteProviderProxy) SetRemoteServiceInputSink(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteProvider)
-	_data.WriteStrongBinder(tvServiceInput.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tvServiceInput.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteProvider, "setRemoteServiceInputSink")
 	if _err != nil {
@@ -61,7 +61,7 @@ func (p *TvRemoteProviderProxy) OnInputBridgeConnected(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvRemoteProvider)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvRemoteProvider, "onInputBridgeConnected")
 	if _err != nil {
@@ -109,4 +109,51 @@ func (s *TvRemoteProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvRemoteProviderServer is the server-side interface that user implementations
+// provide to NewTvRemoteProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvRemoteProviderServer interface {
+	SetRemoteServiceInputSink(ctx context.Context, tvServiceInput ITvRemoteServiceInput) error
+	OnInputBridgeConnected(ctx context.Context, token binder.IBinder) error
+}
+
+type tvRemoteProviderStubWrapper struct {
+	impl       ITvRemoteProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvRemoteProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvRemoteProviderStubWrapper) SetRemoteServiceInputSink(
+	ctx context.Context,
+	tvServiceInput ITvRemoteServiceInput,
+) error {
+	return w.impl.SetRemoteServiceInputSink(ctx, tvServiceInput)
+}
+
+func (w *tvRemoteProviderStubWrapper) OnInputBridgeConnected(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.OnInputBridgeConnected(ctx, token)
+}
+
+var _ ITvRemoteProvider = (*tvRemoteProviderStubWrapper)(nil)
+
+// NewTvRemoteProviderStub creates a server-side ITvRemoteProvider wrapping the given
+// server implementation. The returned value satisfies ITvRemoteProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvRemoteProviderStub(
+	impl ITvRemoteProviderServer,
+) ITvRemoteProvider {
+	wrapper := &tvRemoteProviderStubWrapper{impl: impl}
+	stub := &TvRemoteProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

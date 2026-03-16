@@ -42,7 +42,7 @@ func (p *RecommendationServiceProxy) RegisterCallbacks(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecommendationService)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecommendationService, "registerCallbacks")
 	if _err != nil {
@@ -80,4 +80,43 @@ func (s *RecommendationServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRecommendationServiceServer is the server-side interface that user implementations
+// provide to NewRecommendationServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecommendationServiceServer interface {
+	RegisterCallbacks(ctx context.Context, callbacks IRecommendationServiceCallbacks) error
+}
+
+type recommendationServiceStubWrapper struct {
+	impl       IRecommendationServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recommendationServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recommendationServiceStubWrapper) RegisterCallbacks(
+	ctx context.Context,
+	callbacks IRecommendationServiceCallbacks,
+) error {
+	return w.impl.RegisterCallbacks(ctx, callbacks)
+}
+
+var _ IRecommendationService = (*recommendationServiceStubWrapper)(nil)
+
+// NewRecommendationServiceStub creates a server-side IRecommendationService wrapping the given
+// server implementation. The returned value satisfies IRecommendationService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecommendationServiceStub(
+	impl IRecommendationServiceServer,
+) IRecommendationService {
+	wrapper := &recommendationServiceStubWrapper{impl: impl}
+	stub := &RecommendationServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

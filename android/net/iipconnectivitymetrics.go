@@ -149,7 +149,7 @@ func (p *IpConnectivityMetricsProxy) AddNetdEventCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIpConnectivityMetrics)
 	_data.WriteInt32(callerType)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIpConnectivityMetrics, "addNetdEventCallback")
 	if _err != nil {
@@ -329,4 +329,84 @@ func (s *IpConnectivityMetricsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IIpConnectivityMetricsServer is the server-side interface that user implementations
+// provide to NewIpConnectivityMetricsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIpConnectivityMetricsServer interface {
+	LogEvent(ctx context.Context, event ConnectivityMetricsEvent) (int32, error)
+	LogDefaultNetworkValidity(ctx context.Context, valid bool) error
+	LogDefaultNetworkEvent(ctx context.Context, defaultNetwork interface{}, score int32, validated bool, lp interface{}, nc interface{}, previousDefaultNetwork interface{}, previousScore int32, previousLp interface{}, previousNc interface{}) error
+	AddNetdEventCallback(ctx context.Context, callerType int32, callback INetdEventCallback) (bool, error)
+	RemoveNetdEventCallback(ctx context.Context, callerType int32) (bool, error)
+}
+
+type ipConnectivityMetricsStubWrapper struct {
+	impl       IIpConnectivityMetricsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ipConnectivityMetricsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ipConnectivityMetricsStubWrapper) LogEvent(
+	ctx context.Context,
+	event ConnectivityMetricsEvent,
+) (int32, error) {
+	return w.impl.LogEvent(ctx, event)
+}
+
+func (w *ipConnectivityMetricsStubWrapper) LogDefaultNetworkValidity(
+	ctx context.Context,
+	valid bool,
+) error {
+	return w.impl.LogDefaultNetworkValidity(ctx, valid)
+}
+
+func (w *ipConnectivityMetricsStubWrapper) LogDefaultNetworkEvent(
+	ctx context.Context,
+	defaultNetwork interface{},
+	score int32,
+	validated bool,
+	lp interface{},
+	nc interface{},
+	previousDefaultNetwork interface{},
+	previousScore int32,
+	previousLp interface{},
+	previousNc interface{},
+) error {
+	return w.impl.LogDefaultNetworkEvent(ctx, defaultNetwork, score, validated, lp, nc, previousDefaultNetwork, previousScore, previousLp, previousNc)
+}
+
+func (w *ipConnectivityMetricsStubWrapper) AddNetdEventCallback(
+	ctx context.Context,
+	callerType int32,
+	callback INetdEventCallback,
+) (bool, error) {
+	return w.impl.AddNetdEventCallback(ctx, callerType, callback)
+}
+
+func (w *ipConnectivityMetricsStubWrapper) RemoveNetdEventCallback(
+	ctx context.Context,
+	callerType int32,
+) (bool, error) {
+	return w.impl.RemoveNetdEventCallback(ctx, callerType)
+}
+
+var _ IIpConnectivityMetrics = (*ipConnectivityMetricsStubWrapper)(nil)
+
+// NewIpConnectivityMetricsStub creates a server-side IIpConnectivityMetrics wrapping the given
+// server implementation. The returned value satisfies IIpConnectivityMetrics
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIpConnectivityMetricsStub(
+	impl IIpConnectivityMetricsServer,
+) IIpConnectivityMetrics {
+	wrapper := &ipConnectivityMetricsStubWrapper{impl: impl}
+	stub := &IpConnectivityMetricsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

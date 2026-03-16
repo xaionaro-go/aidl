@@ -226,3 +226,81 @@ func (s *AudioInputCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioInputCallbackServer is the server-side interface that user implementations
+// provide to NewAudioInputCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioInputCallbackServer interface {
+	OnDescriptionChanged(ctx context.Context, description string) error
+	OnStatusChanged(ctx context.Context, status int32) error
+	OnStateChanged(ctx context.Context, gainSetting int32, mute int32, gainMode int32) error
+	OnSetGainSettingFailed(ctx context.Context) error
+	OnSetGainModeFailed(ctx context.Context) error
+	OnSetMuteFailed(ctx context.Context) error
+}
+
+type audioInputCallbackStubWrapper struct {
+	impl       IAudioInputCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioInputCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioInputCallbackStubWrapper) OnDescriptionChanged(
+	ctx context.Context,
+	description string,
+) error {
+	return w.impl.OnDescriptionChanged(ctx, description)
+}
+
+func (w *audioInputCallbackStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnStatusChanged(ctx, status)
+}
+
+func (w *audioInputCallbackStubWrapper) OnStateChanged(
+	ctx context.Context,
+	gainSetting int32,
+	mute int32,
+	gainMode int32,
+) error {
+	return w.impl.OnStateChanged(ctx, gainSetting, mute, gainMode)
+}
+
+func (w *audioInputCallbackStubWrapper) OnSetGainSettingFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnSetGainSettingFailed(ctx)
+}
+
+func (w *audioInputCallbackStubWrapper) OnSetGainModeFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnSetGainModeFailed(ctx)
+}
+
+func (w *audioInputCallbackStubWrapper) OnSetMuteFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnSetMuteFailed(ctx)
+}
+
+var _ IAudioInputCallback = (*audioInputCallbackStubWrapper)(nil)
+
+// NewAudioInputCallbackStub creates a server-side IAudioInputCallback wrapping the given
+// server implementation. The returned value satisfies IAudioInputCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioInputCallbackStub(
+	impl IAudioInputCallbackServer,
+) IAudioInputCallback {
+	wrapper := &audioInputCallbackStubWrapper{impl: impl}
+	stub := &AudioInputCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -44,7 +44,7 @@ func (p *NearbyMediaDevicesProviderProxy) RegisterNearbyDevicesCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINearbyMediaDevicesProvider)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINearbyMediaDevicesProvider, "registerNearbyDevicesCallback")
 	if _err != nil {
@@ -61,7 +61,7 @@ func (p *NearbyMediaDevicesProviderProxy) UnregisterNearbyDevicesCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINearbyMediaDevicesProvider)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINearbyMediaDevicesProvider, "unregisterNearbyDevicesCallback")
 	if _err != nil {
@@ -109,4 +109,51 @@ func (s *NearbyMediaDevicesProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// INearbyMediaDevicesProviderServer is the server-side interface that user implementations
+// provide to NewNearbyMediaDevicesProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INearbyMediaDevicesProviderServer interface {
+	RegisterNearbyDevicesCallback(ctx context.Context, callback INearbyMediaDevicesUpdateCallback) error
+	UnregisterNearbyDevicesCallback(ctx context.Context, callback INearbyMediaDevicesUpdateCallback) error
+}
+
+type nearbyMediaDevicesProviderStubWrapper struct {
+	impl       INearbyMediaDevicesProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *nearbyMediaDevicesProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *nearbyMediaDevicesProviderStubWrapper) RegisterNearbyDevicesCallback(
+	ctx context.Context,
+	callback INearbyMediaDevicesUpdateCallback,
+) error {
+	return w.impl.RegisterNearbyDevicesCallback(ctx, callback)
+}
+
+func (w *nearbyMediaDevicesProviderStubWrapper) UnregisterNearbyDevicesCallback(
+	ctx context.Context,
+	callback INearbyMediaDevicesUpdateCallback,
+) error {
+	return w.impl.UnregisterNearbyDevicesCallback(ctx, callback)
+}
+
+var _ INearbyMediaDevicesProvider = (*nearbyMediaDevicesProviderStubWrapper)(nil)
+
+// NewNearbyMediaDevicesProviderStub creates a server-side INearbyMediaDevicesProvider wrapping the given
+// server implementation. The returned value satisfies INearbyMediaDevicesProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNearbyMediaDevicesProviderStub(
+	impl INearbyMediaDevicesProviderServer,
+) INearbyMediaDevicesProvider {
+	wrapper := &nearbyMediaDevicesProviderStubWrapper{impl: impl}
+	stub := &NearbyMediaDevicesProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

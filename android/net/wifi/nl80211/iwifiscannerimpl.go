@@ -236,7 +236,7 @@ func (p *WifiScannerImplProxy) SubscribeScanEvents(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiScannerImpl)
-	_data.WriteStrongBinder(handler.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, handler.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWifiScannerImpl, "subscribeScanEvents")
 	if _err != nil {
@@ -268,7 +268,7 @@ func (p *WifiScannerImplProxy) SubscribePnoScanEvents(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiScannerImpl)
-	_data.WriteStrongBinder(handler.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, handler.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWifiScannerImpl, "subscribePnoScanEvents")
 	if _err != nil {
@@ -536,4 +536,124 @@ func (s *WifiScannerImplStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWifiScannerImplServer is the server-side interface that user implementations
+// provide to NewWifiScannerImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiScannerImplServer interface {
+	GetScanResults(ctx context.Context) ([]interface{}, error)
+	GetPnoScanResults(ctx context.Context) ([]interface{}, error)
+	GetMaxSsidsPerScan(ctx context.Context) (int32, error)
+	Scan(ctx context.Context, scanSettings interface{}) (bool, error)
+	ScanRequest(ctx context.Context, scanSettings interface{}) (int32, error)
+	SubscribeScanEvents(ctx context.Context, handler IScanEvent) error
+	UnsubscribeScanEvents(ctx context.Context) error
+	SubscribePnoScanEvents(ctx context.Context, handler IPnoScanEvent) error
+	UnsubscribePnoScanEvents(ctx context.Context) error
+	StartPnoScan(ctx context.Context, pnoSettings interface{}) (bool, error)
+	StopPnoScan(ctx context.Context) (bool, error)
+	AbortScan(ctx context.Context) error
+}
+
+type wifiScannerImplStubWrapper struct {
+	impl       IWifiScannerImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiScannerImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiScannerImplStubWrapper) GetScanResults(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetScanResults(ctx)
+}
+
+func (w *wifiScannerImplStubWrapper) GetPnoScanResults(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetPnoScanResults(ctx)
+}
+
+func (w *wifiScannerImplStubWrapper) GetMaxSsidsPerScan(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMaxSsidsPerScan(ctx)
+}
+
+func (w *wifiScannerImplStubWrapper) Scan(
+	ctx context.Context,
+	scanSettings interface{},
+) (bool, error) {
+	return w.impl.Scan(ctx, scanSettings)
+}
+
+func (w *wifiScannerImplStubWrapper) ScanRequest(
+	ctx context.Context,
+	scanSettings interface{},
+) (int32, error) {
+	return w.impl.ScanRequest(ctx, scanSettings)
+}
+
+func (w *wifiScannerImplStubWrapper) SubscribeScanEvents(
+	ctx context.Context,
+	handler IScanEvent,
+) error {
+	return w.impl.SubscribeScanEvents(ctx, handler)
+}
+
+func (w *wifiScannerImplStubWrapper) UnsubscribeScanEvents(
+	ctx context.Context,
+) error {
+	return w.impl.UnsubscribeScanEvents(ctx)
+}
+
+func (w *wifiScannerImplStubWrapper) SubscribePnoScanEvents(
+	ctx context.Context,
+	handler IPnoScanEvent,
+) error {
+	return w.impl.SubscribePnoScanEvents(ctx, handler)
+}
+
+func (w *wifiScannerImplStubWrapper) UnsubscribePnoScanEvents(
+	ctx context.Context,
+) error {
+	return w.impl.UnsubscribePnoScanEvents(ctx)
+}
+
+func (w *wifiScannerImplStubWrapper) StartPnoScan(
+	ctx context.Context,
+	pnoSettings interface{},
+) (bool, error) {
+	return w.impl.StartPnoScan(ctx, pnoSettings)
+}
+
+func (w *wifiScannerImplStubWrapper) StopPnoScan(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.StopPnoScan(ctx)
+}
+
+func (w *wifiScannerImplStubWrapper) AbortScan(
+	ctx context.Context,
+) error {
+	return w.impl.AbortScan(ctx)
+}
+
+var _ IWifiScannerImpl = (*wifiScannerImplStubWrapper)(nil)
+
+// NewWifiScannerImplStub creates a server-side IWifiScannerImpl wrapping the given
+// server implementation. The returned value satisfies IWifiScannerImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiScannerImplStub(
+	impl IWifiScannerImplServer,
+) IWifiScannerImpl {
+	wrapper := &wifiScannerImplStubWrapper{impl: impl}
+	stub := &WifiScannerImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

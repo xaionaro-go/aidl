@@ -46,7 +46,7 @@ func (p *SurfaceSyncGroupProxy) OnAddedToSyncGroup(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceSyncGroup)
-	_data.WriteStrongBinder(parentSyncGroupToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, parentSyncGroupToken, p.remote.Transport())
 	_data.WriteBool(parentSyncGroupMerge)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceSyncGroup, "onAddedToSyncGroup")
@@ -79,7 +79,7 @@ func (p *SurfaceSyncGroupProxy) AddToSync(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceSyncGroup)
-	_data.WriteStrongBinder(surfaceSyncGroup.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, surfaceSyncGroup.AsBinder(), p.remote.Transport())
 	_data.WriteBool(parentSyncGroupMerge)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceSyncGroup, "addToSync")
@@ -161,4 +161,53 @@ func (s *SurfaceSyncGroupStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISurfaceSyncGroupServer is the server-side interface that user implementations
+// provide to NewSurfaceSyncGroupStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISurfaceSyncGroupServer interface {
+	OnAddedToSyncGroup(ctx context.Context, parentSyncGroupToken binder.IBinder, parentSyncGroupMerge bool) (bool, error)
+	AddToSync(ctx context.Context, surfaceSyncGroup ISurfaceSyncGroup, parentSyncGroupMerge bool) (bool, error)
+}
+
+type surfaceSyncGroupStubWrapper struct {
+	impl       ISurfaceSyncGroupServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *surfaceSyncGroupStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *surfaceSyncGroupStubWrapper) OnAddedToSyncGroup(
+	ctx context.Context,
+	parentSyncGroupToken binder.IBinder,
+	parentSyncGroupMerge bool,
+) (bool, error) {
+	return w.impl.OnAddedToSyncGroup(ctx, parentSyncGroupToken, parentSyncGroupMerge)
+}
+
+func (w *surfaceSyncGroupStubWrapper) AddToSync(
+	ctx context.Context,
+	surfaceSyncGroup ISurfaceSyncGroup,
+	parentSyncGroupMerge bool,
+) (bool, error) {
+	return w.impl.AddToSync(ctx, surfaceSyncGroup, parentSyncGroupMerge)
+}
+
+var _ ISurfaceSyncGroup = (*surfaceSyncGroupStubWrapper)(nil)
+
+// NewSurfaceSyncGroupStub creates a server-side ISurfaceSyncGroup wrapping the given
+// server implementation. The returned value satisfies ISurfaceSyncGroup
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSurfaceSyncGroupStub(
+	impl ISurfaceSyncGroupServer,
+) ISurfaceSyncGroup {
+	wrapper := &surfaceSyncGroupStubWrapper{impl: impl}
+	stub := &SurfaceSyncGroupStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

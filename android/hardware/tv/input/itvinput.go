@@ -171,7 +171,7 @@ func (p *TvInputProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInput)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInput, "setCallback")
 	if _err != nil {
@@ -507,4 +507,110 @@ func (s *TvInputStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvInputServer is the server-side interface that user implementations
+// provide to NewTvInputStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInputServer interface {
+	CloseStream(ctx context.Context, deviceId int32, streamId int32) error
+	GetStreamConfigurations(ctx context.Context, deviceId int32) ([]TvStreamConfig, error)
+	OpenStream(ctx context.Context, deviceId int32, streamId int32) (common.NativeHandle, error)
+	SetCallback(ctx context.Context, callback ITvInputCallback) error
+	SetTvMessageEnabled(ctx context.Context, deviceId int32, streamId int32, type_ TvMessageEventType, enabled bool) error
+	GetTvMessageQueueDesc(ctx context.Context, queue fmq.MQDescriptor, deviceId int32, streamId int32) error
+	SetPictureProfileId(ctx context.Context, deviceId int32, streamId int32, profileId int64) error
+	SetSoundProfileId(ctx context.Context, deviceId int32, streamId int32, profileId int64) error
+}
+
+type tvInputStubWrapper struct {
+	impl       ITvInputServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInputStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInputStubWrapper) CloseStream(
+	ctx context.Context,
+	deviceId int32,
+	streamId int32,
+) error {
+	return w.impl.CloseStream(ctx, deviceId, streamId)
+}
+
+func (w *tvInputStubWrapper) GetStreamConfigurations(
+	ctx context.Context,
+	deviceId int32,
+) ([]TvStreamConfig, error) {
+	return w.impl.GetStreamConfigurations(ctx, deviceId)
+}
+
+func (w *tvInputStubWrapper) OpenStream(
+	ctx context.Context,
+	deviceId int32,
+	streamId int32,
+) (common.NativeHandle, error) {
+	return w.impl.OpenStream(ctx, deviceId, streamId)
+}
+
+func (w *tvInputStubWrapper) SetCallback(
+	ctx context.Context,
+	callback ITvInputCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *tvInputStubWrapper) SetTvMessageEnabled(
+	ctx context.Context,
+	deviceId int32,
+	streamId int32,
+	type_ TvMessageEventType,
+	enabled bool,
+) error {
+	return w.impl.SetTvMessageEnabled(ctx, deviceId, streamId, type_, enabled)
+}
+
+func (w *tvInputStubWrapper) GetTvMessageQueueDesc(
+	ctx context.Context,
+	queue fmq.MQDescriptor,
+	deviceId int32,
+	streamId int32,
+) error {
+	return w.impl.GetTvMessageQueueDesc(ctx, queue, deviceId, streamId)
+}
+
+func (w *tvInputStubWrapper) SetPictureProfileId(
+	ctx context.Context,
+	deviceId int32,
+	streamId int32,
+	profileId int64,
+) error {
+	return w.impl.SetPictureProfileId(ctx, deviceId, streamId, profileId)
+}
+
+func (w *tvInputStubWrapper) SetSoundProfileId(
+	ctx context.Context,
+	deviceId int32,
+	streamId int32,
+	profileId int64,
+) error {
+	return w.impl.SetSoundProfileId(ctx, deviceId, streamId, profileId)
+}
+
+var _ ITvInput = (*tvInputStubWrapper)(nil)
+
+// NewTvInputStub creates a server-side ITvInput wrapping the given
+// server implementation. The returned value satisfies ITvInput
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInputStub(
+	impl ITvInputServer,
+) ITvInput {
+	wrapper := &tvInputStubWrapper{impl: impl}
+	stub := &TvInputStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

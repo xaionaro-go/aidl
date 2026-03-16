@@ -50,7 +50,7 @@ func (p *KeyGestureHandlerProxy) HandleKeyGesture(
 	if _err := event.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(focusedToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, focusedToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIKeyGestureHandler, "handleKeyGesture")
 	if _err != nil {
@@ -167,4 +167,52 @@ func (s *KeyGestureHandlerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IKeyGestureHandlerServer is the server-side interface that user implementations
+// provide to NewKeyGestureHandlerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyGestureHandlerServer interface {
+	HandleKeyGesture(ctx context.Context, event AidlKeyGestureEvent, focusedToken binder.IBinder) (bool, error)
+	IsKeyGestureSupported(ctx context.Context, gestureType int32) (bool, error)
+}
+
+type keyGestureHandlerStubWrapper struct {
+	impl       IKeyGestureHandlerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyGestureHandlerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyGestureHandlerStubWrapper) HandleKeyGesture(
+	ctx context.Context,
+	event AidlKeyGestureEvent,
+	focusedToken binder.IBinder,
+) (bool, error) {
+	return w.impl.HandleKeyGesture(ctx, event, focusedToken)
+}
+
+func (w *keyGestureHandlerStubWrapper) IsKeyGestureSupported(
+	ctx context.Context,
+	gestureType int32,
+) (bool, error) {
+	return w.impl.IsKeyGestureSupported(ctx, gestureType)
+}
+
+var _ IKeyGestureHandler = (*keyGestureHandlerStubWrapper)(nil)
+
+// NewKeyGestureHandlerStub creates a server-side IKeyGestureHandler wrapping the given
+// server implementation. The returned value satisfies IKeyGestureHandler
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyGestureHandlerStub(
+	impl IKeyGestureHandlerServer,
+) IKeyGestureHandler {
+	wrapper := &keyGestureHandlerStubWrapper{impl: impl}
+	stub := &KeyGestureHandlerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

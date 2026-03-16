@@ -94,3 +94,43 @@ func (s *LoadBoundProfilePackageCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILoadBoundProfilePackageCallbackServer is the server-side interface that user implementations
+// provide to NewLoadBoundProfilePackageCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILoadBoundProfilePackageCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, response []byte) error
+}
+
+type loadBoundProfilePackageCallbackStubWrapper struct {
+	impl       ILoadBoundProfilePackageCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *loadBoundProfilePackageCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *loadBoundProfilePackageCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	response []byte,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, response)
+}
+
+var _ ILoadBoundProfilePackageCallback = (*loadBoundProfilePackageCallbackStubWrapper)(nil)
+
+// NewLoadBoundProfilePackageCallbackStub creates a server-side ILoadBoundProfilePackageCallback wrapping the given
+// server implementation. The returned value satisfies ILoadBoundProfilePackageCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLoadBoundProfilePackageCallbackStub(
+	impl ILoadBoundProfilePackageCallbackServer,
+) ILoadBoundProfilePackageCallback {
+	wrapper := &loadBoundProfilePackageCallbackStubWrapper{impl: impl}
+	stub := &LoadBoundProfilePackageCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

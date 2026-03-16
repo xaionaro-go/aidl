@@ -174,3 +174,50 @@ func (s *AuthenticationPolicyServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAuthenticationPolicyServiceServer is the server-side interface that user implementations
+// provide to NewAuthenticationPolicyServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAuthenticationPolicyServiceServer interface {
+	EnableSecureLockDevice(ctx context.Context, params EnableSecureLockDeviceParams) (int32, error)
+	DisableSecureLockDevice(ctx context.Context, params DisableSecureLockDeviceParams) (int32, error)
+}
+
+type authenticationPolicyServiceStubWrapper struct {
+	impl       IAuthenticationPolicyServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *authenticationPolicyServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *authenticationPolicyServiceStubWrapper) EnableSecureLockDevice(
+	ctx context.Context,
+	params EnableSecureLockDeviceParams,
+) (int32, error) {
+	return w.impl.EnableSecureLockDevice(ctx, params)
+}
+
+func (w *authenticationPolicyServiceStubWrapper) DisableSecureLockDevice(
+	ctx context.Context,
+	params DisableSecureLockDeviceParams,
+) (int32, error) {
+	return w.impl.DisableSecureLockDevice(ctx, params)
+}
+
+var _ IAuthenticationPolicyService = (*authenticationPolicyServiceStubWrapper)(nil)
+
+// NewAuthenticationPolicyServiceStub creates a server-side IAuthenticationPolicyService wrapping the given
+// server implementation. The returned value satisfies IAuthenticationPolicyService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAuthenticationPolicyServiceStub(
+	impl IAuthenticationPolicyServiceServer,
+) IAuthenticationPolicyService {
+	wrapper := &authenticationPolicyServiceStubWrapper{impl: impl}
+	stub := &AuthenticationPolicyServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

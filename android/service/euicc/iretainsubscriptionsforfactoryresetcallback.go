@@ -82,3 +82,42 @@ func (s *RetainSubscriptionsForFactoryResetCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRetainSubscriptionsForFactoryResetCallbackServer is the server-side interface that user implementations
+// provide to NewRetainSubscriptionsForFactoryResetCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRetainSubscriptionsForFactoryResetCallbackServer interface {
+	OnComplete(ctx context.Context, result int32) error
+}
+
+type retainSubscriptionsForFactoryResetCallbackStubWrapper struct {
+	impl       IRetainSubscriptionsForFactoryResetCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *retainSubscriptionsForFactoryResetCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *retainSubscriptionsForFactoryResetCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IRetainSubscriptionsForFactoryResetCallback = (*retainSubscriptionsForFactoryResetCallbackStubWrapper)(nil)
+
+// NewRetainSubscriptionsForFactoryResetCallbackStub creates a server-side IRetainSubscriptionsForFactoryResetCallback wrapping the given
+// server implementation. The returned value satisfies IRetainSubscriptionsForFactoryResetCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRetainSubscriptionsForFactoryResetCallbackStub(
+	impl IRetainSubscriptionsForFactoryResetCallbackServer,
+) IRetainSubscriptionsForFactoryResetCallback {
+	wrapper := &retainSubscriptionsForFactoryResetCallbackStubWrapper{impl: impl}
+	stub := &RetainSubscriptionsForFactoryResetCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

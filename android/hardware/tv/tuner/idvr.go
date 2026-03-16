@@ -116,7 +116,7 @@ func (p *DvrProxy) AttachFilter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDvr)
-	_data.WriteStrongBinder(filter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, filter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "attachFilter")
 	if _err != nil {
@@ -142,7 +142,7 @@ func (p *DvrProxy) DetachFilter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDvr)
-	_data.WriteStrongBinder(filter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, filter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDvr, "detachFilter")
 	if _err != nil {
@@ -432,4 +432,103 @@ func (s *DvrStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDvrServer is the server-side interface that user implementations
+// provide to NewDvrStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDvrServer interface {
+	GetQueueDesc(ctx context.Context, queue fmq.MQDescriptor) error
+	Configure(ctx context.Context, settings DvrSettings) error
+	AttachFilter(ctx context.Context, filter IFilter) error
+	DetachFilter(ctx context.Context, filter IFilter) error
+	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
+	Flush(ctx context.Context) error
+	Close(ctx context.Context) error
+	SetStatusCheckIntervalHint(ctx context.Context, milliseconds int64) error
+}
+
+type dvrStubWrapper struct {
+	impl       IDvrServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dvrStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dvrStubWrapper) GetQueueDesc(
+	ctx context.Context,
+	queue fmq.MQDescriptor,
+) error {
+	return w.impl.GetQueueDesc(ctx, queue)
+}
+
+func (w *dvrStubWrapper) Configure(
+	ctx context.Context,
+	settings DvrSettings,
+) error {
+	return w.impl.Configure(ctx, settings)
+}
+
+func (w *dvrStubWrapper) AttachFilter(
+	ctx context.Context,
+	filter IFilter,
+) error {
+	return w.impl.AttachFilter(ctx, filter)
+}
+
+func (w *dvrStubWrapper) DetachFilter(
+	ctx context.Context,
+	filter IFilter,
+) error {
+	return w.impl.DetachFilter(ctx, filter)
+}
+
+func (w *dvrStubWrapper) Start(
+	ctx context.Context,
+) error {
+	return w.impl.Start(ctx)
+}
+
+func (w *dvrStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *dvrStubWrapper) Flush(
+	ctx context.Context,
+) error {
+	return w.impl.Flush(ctx)
+}
+
+func (w *dvrStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *dvrStubWrapper) SetStatusCheckIntervalHint(
+	ctx context.Context,
+	milliseconds int64,
+) error {
+	return w.impl.SetStatusCheckIntervalHint(ctx, milliseconds)
+}
+
+var _ IDvr = (*dvrStubWrapper)(nil)
+
+// NewDvrStub creates a server-side IDvr wrapping the given
+// server implementation. The returned value satisfies IDvr
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDvrStub(
+	impl IDvrServer,
+) IDvr {
+	wrapper := &dvrStubWrapper{impl: impl}
+	stub := &DvrStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

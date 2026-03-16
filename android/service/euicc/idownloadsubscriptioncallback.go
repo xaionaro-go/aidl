@@ -93,3 +93,42 @@ func (s *DownloadSubscriptionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDownloadSubscriptionCallbackServer is the server-side interface that user implementations
+// provide to NewDownloadSubscriptionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDownloadSubscriptionCallbackServer interface {
+	OnComplete(ctx context.Context, result DownloadSubscriptionResult) error
+}
+
+type downloadSubscriptionCallbackStubWrapper struct {
+	impl       IDownloadSubscriptionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *downloadSubscriptionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *downloadSubscriptionCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result DownloadSubscriptionResult,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IDownloadSubscriptionCallback = (*downloadSubscriptionCallbackStubWrapper)(nil)
+
+// NewDownloadSubscriptionCallbackStub creates a server-side IDownloadSubscriptionCallback wrapping the given
+// server implementation. The returned value satisfies IDownloadSubscriptionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDownloadSubscriptionCallbackStub(
+	impl IDownloadSubscriptionCallbackServer,
+) IDownloadSubscriptionCallback {
+	wrapper := &downloadSubscriptionCallbackStubWrapper{impl: impl}
+	stub := &DownloadSubscriptionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

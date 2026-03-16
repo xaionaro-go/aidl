@@ -112,3 +112,50 @@ func (s *ClearCredentialStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IClearCredentialStateCallbackServer is the server-side interface that user implementations
+// provide to NewClearCredentialStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IClearCredentialStateCallbackServer interface {
+	OnSuccess(ctx context.Context) error
+	OnError(ctx context.Context, errorType string, message string) error
+}
+
+type clearCredentialStateCallbackStubWrapper struct {
+	impl       IClearCredentialStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *clearCredentialStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *clearCredentialStateCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+) error {
+	return w.impl.OnSuccess(ctx)
+}
+
+func (w *clearCredentialStateCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorType string,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorType, message)
+}
+
+var _ IClearCredentialStateCallback = (*clearCredentialStateCallbackStubWrapper)(nil)
+
+// NewClearCredentialStateCallbackStub creates a server-side IClearCredentialStateCallback wrapping the given
+// server implementation. The returned value satisfies IClearCredentialStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewClearCredentialStateCallbackStub(
+	impl IClearCredentialStateCallbackServer,
+) IClearCredentialStateCallback {
+	wrapper := &clearCredentialStateCallbackStubWrapper{impl: impl}
+	stub := &ClearCredentialStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

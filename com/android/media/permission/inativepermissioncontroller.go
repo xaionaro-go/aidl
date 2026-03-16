@@ -216,3 +216,59 @@ func (s *NativePermissionControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INativePermissionControllerServer is the server-side interface that user implementations
+// provide to NewNativePermissionControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INativePermissionControllerServer interface {
+	PopulatePackagesForUids(ctx context.Context, initialPackageStates []UidPackageState) error
+	UpdatePackagesForUid(ctx context.Context, newPackageState UidPackageState) error
+	PopulatePermissionState(ctx context.Context, perm PermissionEnum, uids []int32) error
+}
+
+type nativePermissionControllerStubWrapper struct {
+	impl       INativePermissionControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *nativePermissionControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *nativePermissionControllerStubWrapper) PopulatePackagesForUids(
+	ctx context.Context,
+	initialPackageStates []UidPackageState,
+) error {
+	return w.impl.PopulatePackagesForUids(ctx, initialPackageStates)
+}
+
+func (w *nativePermissionControllerStubWrapper) UpdatePackagesForUid(
+	ctx context.Context,
+	newPackageState UidPackageState,
+) error {
+	return w.impl.UpdatePackagesForUid(ctx, newPackageState)
+}
+
+func (w *nativePermissionControllerStubWrapper) PopulatePermissionState(
+	ctx context.Context,
+	perm PermissionEnum,
+	uids []int32,
+) error {
+	return w.impl.PopulatePermissionState(ctx, perm, uids)
+}
+
+var _ INativePermissionController = (*nativePermissionControllerStubWrapper)(nil)
+
+// NewNativePermissionControllerStub creates a server-side INativePermissionController wrapping the given
+// server implementation. The returned value satisfies INativePermissionController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNativePermissionControllerStub(
+	impl INativePermissionControllerServer,
+) INativePermissionController {
+	wrapper := &nativePermissionControllerStubWrapper{impl: impl}
+	stub := &NativePermissionControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

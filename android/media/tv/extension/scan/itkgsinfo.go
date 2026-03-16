@@ -76,7 +76,7 @@ func (p *TkgsInfoProxy) SetTkgsInfoListener(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITkgsInfo)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITkgsInfo, "setTkgsInfoListener")
 	if _err != nil {
@@ -150,4 +150,51 @@ func (s *TkgsInfoStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITkgsInfoServer is the server-side interface that user implementations
+// provide to NewTkgsInfoStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITkgsInfoServer interface {
+	SetPrefServiceList(ctx context.Context, prefServiceList string) (int32, error)
+	SetTkgsInfoListener(ctx context.Context, listener ITkgsInfoListener) (int32, error)
+}
+
+type tkgsInfoStubWrapper struct {
+	impl       ITkgsInfoServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tkgsInfoStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tkgsInfoStubWrapper) SetPrefServiceList(
+	ctx context.Context,
+	prefServiceList string,
+) (int32, error) {
+	return w.impl.SetPrefServiceList(ctx, prefServiceList)
+}
+
+func (w *tkgsInfoStubWrapper) SetTkgsInfoListener(
+	ctx context.Context,
+	listener ITkgsInfoListener,
+) (int32, error) {
+	return w.impl.SetTkgsInfoListener(ctx, listener)
+}
+
+var _ ITkgsInfo = (*tkgsInfoStubWrapper)(nil)
+
+// NewTkgsInfoStub creates a server-side ITkgsInfo wrapping the given
+// server implementation. The returned value satisfies ITkgsInfo
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTkgsInfoStub(
+	impl ITkgsInfoServer,
+) ITkgsInfo {
+	wrapper := &tkgsInfoStubWrapper{impl: impl}
+	stub := &TkgsInfoStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -1335,7 +1335,7 @@ func (p *DrmPluginProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDrmPlugin)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDrmPlugin, "setListener")
 	if _err != nil {
@@ -2482,4 +2482,365 @@ func (s *DrmPluginStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDrmPluginServer is the server-side interface that user implementations
+// provide to NewDrmPluginStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDrmPluginServer interface {
+	CloseSession(ctx context.Context, sessionId []byte) error
+	Decrypt(ctx context.Context, sessionId []byte, keyId []byte, input []byte, iv []byte) ([]byte, error)
+	Encrypt(ctx context.Context, sessionId []byte, keyId []byte, input []byte, iv []byte) ([]byte, error)
+	GetHdcpLevels(ctx context.Context) (HdcpLevels, error)
+	GetKeyRequest(ctx context.Context, scope []byte, initData []byte, mimeType string, keyType KeyType, optionalParameters []KeyValue) (KeyRequest, error)
+	GetLogMessages(ctx context.Context) ([]LogMessage, error)
+	GetMetrics(ctx context.Context) ([]DrmMetricGroup, error)
+	GetNumberOfSessions(ctx context.Context) (NumberOfSessions, error)
+	GetOfflineLicenseKeySetIds(ctx context.Context) ([]KeySetId, error)
+	GetOfflineLicenseState(ctx context.Context, keySetId KeySetId) (OfflineLicenseState, error)
+	GetPropertyByteArray(ctx context.Context, propertyName string) ([]byte, error)
+	GetPropertyString(ctx context.Context, propertyName string) (string, error)
+	GetProvisionRequest(ctx context.Context, certificateType string, certificateAuthority string) (ProvisionRequest, error)
+	GetSecureStop(ctx context.Context, secureStopId SecureStopId) (SecureStop, error)
+	GetSecureStopIds(ctx context.Context) ([]SecureStopId, error)
+	GetSecureStops(ctx context.Context) ([]SecureStop, error)
+	GetSecurityLevel(ctx context.Context, sessionId []byte) (SecurityLevel, error)
+	OpenSession(ctx context.Context, securityLevel SecurityLevel) ([]byte, error)
+	ProvideKeyResponse(ctx context.Context, scope []byte, response []byte) (KeySetId, error)
+	ProvideProvisionResponse(ctx context.Context, response []byte) (ProvideProvisionResponseResult, error)
+	QueryKeyStatus(ctx context.Context, sessionId []byte) ([]KeyValue, error)
+	ReleaseAllSecureStops(ctx context.Context) error
+	ReleaseSecureStop(ctx context.Context, secureStopId SecureStopId) error
+	ReleaseSecureStops(ctx context.Context, ssRelease OpaqueData) error
+	RemoveAllSecureStops(ctx context.Context) error
+	RemoveKeys(ctx context.Context, sessionId []byte) error
+	RemoveOfflineLicense(ctx context.Context, keySetId KeySetId) error
+	RemoveSecureStop(ctx context.Context, secureStopId SecureStopId) error
+	RequiresSecureDecoder(ctx context.Context, mime string, level SecurityLevel) (bool, error)
+	RestoreKeys(ctx context.Context, sessionId []byte, keySetId KeySetId) error
+	SetCipherAlgorithm(ctx context.Context, sessionId []byte, algorithm string) error
+	SetListener(ctx context.Context, listener IDrmPluginListener) error
+	SetMacAlgorithm(ctx context.Context, sessionId []byte, algorithm string) error
+	SetPlaybackId(ctx context.Context, sessionId []byte, playbackId string) error
+	SetPropertyByteArray(ctx context.Context, propertyName string, value []byte) error
+	SetPropertyString(ctx context.Context, propertyName string, value string) error
+	Sign(ctx context.Context, sessionId []byte, keyId []byte, message []byte) ([]byte, error)
+	SignRSA(ctx context.Context, sessionId []byte, algorithm string, message []byte, wrappedkey []byte) ([]byte, error)
+	Verify(ctx context.Context, sessionId []byte, keyId []byte, message []byte, signature []byte) (bool, error)
+}
+
+type drmPluginStubWrapper struct {
+	impl       IDrmPluginServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *drmPluginStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *drmPluginStubWrapper) CloseSession(
+	ctx context.Context,
+	sessionId []byte,
+) error {
+	return w.impl.CloseSession(ctx, sessionId)
+}
+
+func (w *drmPluginStubWrapper) Decrypt(
+	ctx context.Context,
+	sessionId []byte,
+	keyId []byte,
+	input []byte,
+	iv []byte,
+) ([]byte, error) {
+	return w.impl.Decrypt(ctx, sessionId, keyId, input, iv)
+}
+
+func (w *drmPluginStubWrapper) Encrypt(
+	ctx context.Context,
+	sessionId []byte,
+	keyId []byte,
+	input []byte,
+	iv []byte,
+) ([]byte, error) {
+	return w.impl.Encrypt(ctx, sessionId, keyId, input, iv)
+}
+
+func (w *drmPluginStubWrapper) GetHdcpLevels(
+	ctx context.Context,
+) (HdcpLevels, error) {
+	return w.impl.GetHdcpLevels(ctx)
+}
+
+func (w *drmPluginStubWrapper) GetKeyRequest(
+	ctx context.Context,
+	scope []byte,
+	initData []byte,
+	mimeType string,
+	keyType KeyType,
+	optionalParameters []KeyValue,
+) (KeyRequest, error) {
+	return w.impl.GetKeyRequest(ctx, scope, initData, mimeType, keyType, optionalParameters)
+}
+
+func (w *drmPluginStubWrapper) GetLogMessages(
+	ctx context.Context,
+) ([]LogMessage, error) {
+	return w.impl.GetLogMessages(ctx)
+}
+
+func (w *drmPluginStubWrapper) GetMetrics(
+	ctx context.Context,
+) ([]DrmMetricGroup, error) {
+	return w.impl.GetMetrics(ctx)
+}
+
+func (w *drmPluginStubWrapper) GetNumberOfSessions(
+	ctx context.Context,
+) (NumberOfSessions, error) {
+	return w.impl.GetNumberOfSessions(ctx)
+}
+
+func (w *drmPluginStubWrapper) GetOfflineLicenseKeySetIds(
+	ctx context.Context,
+) ([]KeySetId, error) {
+	return w.impl.GetOfflineLicenseKeySetIds(ctx)
+}
+
+func (w *drmPluginStubWrapper) GetOfflineLicenseState(
+	ctx context.Context,
+	keySetId KeySetId,
+) (OfflineLicenseState, error) {
+	return w.impl.GetOfflineLicenseState(ctx, keySetId)
+}
+
+func (w *drmPluginStubWrapper) GetPropertyByteArray(
+	ctx context.Context,
+	propertyName string,
+) ([]byte, error) {
+	return w.impl.GetPropertyByteArray(ctx, propertyName)
+}
+
+func (w *drmPluginStubWrapper) GetPropertyString(
+	ctx context.Context,
+	propertyName string,
+) (string, error) {
+	return w.impl.GetPropertyString(ctx, propertyName)
+}
+
+func (w *drmPluginStubWrapper) GetProvisionRequest(
+	ctx context.Context,
+	certificateType string,
+	certificateAuthority string,
+) (ProvisionRequest, error) {
+	return w.impl.GetProvisionRequest(ctx, certificateType, certificateAuthority)
+}
+
+func (w *drmPluginStubWrapper) GetSecureStop(
+	ctx context.Context,
+	secureStopId SecureStopId,
+) (SecureStop, error) {
+	return w.impl.GetSecureStop(ctx, secureStopId)
+}
+
+func (w *drmPluginStubWrapper) GetSecureStopIds(
+	ctx context.Context,
+) ([]SecureStopId, error) {
+	return w.impl.GetSecureStopIds(ctx)
+}
+
+func (w *drmPluginStubWrapper) GetSecureStops(
+	ctx context.Context,
+) ([]SecureStop, error) {
+	return w.impl.GetSecureStops(ctx)
+}
+
+func (w *drmPluginStubWrapper) GetSecurityLevel(
+	ctx context.Context,
+	sessionId []byte,
+) (SecurityLevel, error) {
+	return w.impl.GetSecurityLevel(ctx, sessionId)
+}
+
+func (w *drmPluginStubWrapper) OpenSession(
+	ctx context.Context,
+	securityLevel SecurityLevel,
+) ([]byte, error) {
+	return w.impl.OpenSession(ctx, securityLevel)
+}
+
+func (w *drmPluginStubWrapper) ProvideKeyResponse(
+	ctx context.Context,
+	scope []byte,
+	response []byte,
+) (KeySetId, error) {
+	return w.impl.ProvideKeyResponse(ctx, scope, response)
+}
+
+func (w *drmPluginStubWrapper) ProvideProvisionResponse(
+	ctx context.Context,
+	response []byte,
+) (ProvideProvisionResponseResult, error) {
+	return w.impl.ProvideProvisionResponse(ctx, response)
+}
+
+func (w *drmPluginStubWrapper) QueryKeyStatus(
+	ctx context.Context,
+	sessionId []byte,
+) ([]KeyValue, error) {
+	return w.impl.QueryKeyStatus(ctx, sessionId)
+}
+
+func (w *drmPluginStubWrapper) ReleaseAllSecureStops(
+	ctx context.Context,
+) error {
+	return w.impl.ReleaseAllSecureStops(ctx)
+}
+
+func (w *drmPluginStubWrapper) ReleaseSecureStop(
+	ctx context.Context,
+	secureStopId SecureStopId,
+) error {
+	return w.impl.ReleaseSecureStop(ctx, secureStopId)
+}
+
+func (w *drmPluginStubWrapper) ReleaseSecureStops(
+	ctx context.Context,
+	ssRelease OpaqueData,
+) error {
+	return w.impl.ReleaseSecureStops(ctx, ssRelease)
+}
+
+func (w *drmPluginStubWrapper) RemoveAllSecureStops(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveAllSecureStops(ctx)
+}
+
+func (w *drmPluginStubWrapper) RemoveKeys(
+	ctx context.Context,
+	sessionId []byte,
+) error {
+	return w.impl.RemoveKeys(ctx, sessionId)
+}
+
+func (w *drmPluginStubWrapper) RemoveOfflineLicense(
+	ctx context.Context,
+	keySetId KeySetId,
+) error {
+	return w.impl.RemoveOfflineLicense(ctx, keySetId)
+}
+
+func (w *drmPluginStubWrapper) RemoveSecureStop(
+	ctx context.Context,
+	secureStopId SecureStopId,
+) error {
+	return w.impl.RemoveSecureStop(ctx, secureStopId)
+}
+
+func (w *drmPluginStubWrapper) RequiresSecureDecoder(
+	ctx context.Context,
+	mime string,
+	level SecurityLevel,
+) (bool, error) {
+	return w.impl.RequiresSecureDecoder(ctx, mime, level)
+}
+
+func (w *drmPluginStubWrapper) RestoreKeys(
+	ctx context.Context,
+	sessionId []byte,
+	keySetId KeySetId,
+) error {
+	return w.impl.RestoreKeys(ctx, sessionId, keySetId)
+}
+
+func (w *drmPluginStubWrapper) SetCipherAlgorithm(
+	ctx context.Context,
+	sessionId []byte,
+	algorithm string,
+) error {
+	return w.impl.SetCipherAlgorithm(ctx, sessionId, algorithm)
+}
+
+func (w *drmPluginStubWrapper) SetListener(
+	ctx context.Context,
+	listener IDrmPluginListener,
+) error {
+	return w.impl.SetListener(ctx, listener)
+}
+
+func (w *drmPluginStubWrapper) SetMacAlgorithm(
+	ctx context.Context,
+	sessionId []byte,
+	algorithm string,
+) error {
+	return w.impl.SetMacAlgorithm(ctx, sessionId, algorithm)
+}
+
+func (w *drmPluginStubWrapper) SetPlaybackId(
+	ctx context.Context,
+	sessionId []byte,
+	playbackId string,
+) error {
+	return w.impl.SetPlaybackId(ctx, sessionId, playbackId)
+}
+
+func (w *drmPluginStubWrapper) SetPropertyByteArray(
+	ctx context.Context,
+	propertyName string,
+	value []byte,
+) error {
+	return w.impl.SetPropertyByteArray(ctx, propertyName, value)
+}
+
+func (w *drmPluginStubWrapper) SetPropertyString(
+	ctx context.Context,
+	propertyName string,
+	value string,
+) error {
+	return w.impl.SetPropertyString(ctx, propertyName, value)
+}
+
+func (w *drmPluginStubWrapper) Sign(
+	ctx context.Context,
+	sessionId []byte,
+	keyId []byte,
+	message []byte,
+) ([]byte, error) {
+	return w.impl.Sign(ctx, sessionId, keyId, message)
+}
+
+func (w *drmPluginStubWrapper) SignRSA(
+	ctx context.Context,
+	sessionId []byte,
+	algorithm string,
+	message []byte,
+	wrappedkey []byte,
+) ([]byte, error) {
+	return w.impl.SignRSA(ctx, sessionId, algorithm, message, wrappedkey)
+}
+
+func (w *drmPluginStubWrapper) Verify(
+	ctx context.Context,
+	sessionId []byte,
+	keyId []byte,
+	message []byte,
+	signature []byte,
+) (bool, error) {
+	return w.impl.Verify(ctx, sessionId, keyId, message, signature)
+}
+
+var _ IDrmPlugin = (*drmPluginStubWrapper)(nil)
+
+// NewDrmPluginStub creates a server-side IDrmPlugin wrapping the given
+// server implementation. The returned value satisfies IDrmPlugin
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDrmPluginStub(
+	impl IDrmPluginServer,
+) IDrmPlugin {
+	wrapper := &drmPluginStubWrapper{impl: impl}
+	stub := &DrmPluginStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

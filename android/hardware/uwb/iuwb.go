@@ -159,3 +159,49 @@ func (s *UwbStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUwbServer is the server-side interface that user implementations
+// provide to NewUwbStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUwbServer interface {
+	GetChips(ctx context.Context) ([]string, error)
+	GetChip(ctx context.Context, name string) (IUwbChip, error)
+}
+
+type uwbStubWrapper struct {
+	impl       IUwbServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *uwbStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *uwbStubWrapper) GetChips(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetChips(ctx)
+}
+
+func (w *uwbStubWrapper) GetChip(
+	ctx context.Context,
+	name string,
+) (IUwbChip, error) {
+	return w.impl.GetChip(ctx, name)
+}
+
+var _ IUwb = (*uwbStubWrapper)(nil)
+
+// NewUwbStub creates a server-side IUwb wrapping the given
+// server implementation. The returned value satisfies IUwb
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUwbStub(
+	impl IUwbServer,
+) IUwb {
+	wrapper := &uwbStubWrapper{impl: impl}
+	stub := &UwbStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

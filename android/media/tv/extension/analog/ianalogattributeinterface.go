@@ -201,3 +201,56 @@ func (s *AnalogAttributeInterfaceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAnalogAttributeInterfaceServer is the server-side interface that user implementations
+// provide to NewAnalogAttributeInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAnalogAttributeInterfaceServer interface {
+	GetVersion(ctx context.Context) (int32, error)
+	SetColorSystemCapability(ctx context.Context, list []string) error
+	GetColorSystemCapability(ctx context.Context) ([]string, error)
+}
+
+type analogAttributeInterfaceStubWrapper struct {
+	impl       IAnalogAttributeInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *analogAttributeInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *analogAttributeInterfaceStubWrapper) GetVersion(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetVersion(ctx)
+}
+
+func (w *analogAttributeInterfaceStubWrapper) SetColorSystemCapability(
+	ctx context.Context,
+	list []string,
+) error {
+	return w.impl.SetColorSystemCapability(ctx, list)
+}
+
+func (w *analogAttributeInterfaceStubWrapper) GetColorSystemCapability(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetColorSystemCapability(ctx)
+}
+
+var _ IAnalogAttributeInterface = (*analogAttributeInterfaceStubWrapper)(nil)
+
+// NewAnalogAttributeInterfaceStub creates a server-side IAnalogAttributeInterface wrapping the given
+// server implementation. The returned value satisfies IAnalogAttributeInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAnalogAttributeInterfaceStub(
+	impl IAnalogAttributeInterfaceServer,
+) IAnalogAttributeInterface {
+	wrapper := &analogAttributeInterfaceStubWrapper{impl: impl}
+	stub := &AnalogAttributeInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

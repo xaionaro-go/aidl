@@ -1064,7 +1064,7 @@ func (p *UsageStatsManagerProxy) ReportUsageStart(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
-	_data.WriteStrongBinder(activity.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activity, p.remote.Transport())
 	_data.WriteString16(token)
 	_data.WriteString16(_identity.PackageName)
 
@@ -1095,7 +1095,7 @@ func (p *UsageStatsManagerProxy) ReportPastUsageStart(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
-	_data.WriteStrongBinder(activity.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activity, p.remote.Transport())
 	_data.WriteString16(token)
 	_data.WriteInt64(timeAgoMs)
 	_data.WriteString16(_identity.PackageName)
@@ -1126,7 +1126,7 @@ func (p *UsageStatsManagerProxy) ReportUsageStop(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsageStatsManager)
-	_data.WriteStrongBinder(activity.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activity, p.remote.Transport())
 	_data.WriteString16(token)
 	_data.WriteString16(_identity.PackageName)
 
@@ -2441,4 +2441,377 @@ func (s *UsageStatsManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUsageStatsManagerServer is the server-side interface that user implementations
+// provide to NewUsageStatsManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUsageStatsManagerServer interface {
+	QueryUsageStats(ctx context.Context, bucketType int32, beginTime int64, endTime int64) (pm.ParceledListSlice, error)
+	QueryConfigurationStats(ctx context.Context, bucketType int32, beginTime int64, endTime int64) (pm.ParceledListSlice, error)
+	QueryEventStats(ctx context.Context, bucketType int32, beginTime int64, endTime int64) (pm.ParceledListSlice, error)
+	QueryEvents(ctx context.Context, beginTime int64, endTime int64) (UsageEvents, error)
+	QueryEventsForPackage(ctx context.Context, beginTime int64, endTime int64) (UsageEvents, error)
+	QueryEventsForUser(ctx context.Context, beginTime int64, endTime int64) (UsageEvents, error)
+	QueryEventsForPackageForUser(ctx context.Context, beginTime int64, endTime int64, pkg string) (UsageEvents, error)
+	QueryEventsWithFilter(ctx context.Context, query UsageEventsQuery) (UsageEvents, error)
+	SetAppInactive(ctx context.Context, packageName string, inactive bool) error
+	IsAppStandbyEnabled(ctx context.Context) (bool, error)
+	IsAppInactive(ctx context.Context, packageName string) (bool, error)
+	OnCarrierPrivilegedAppsChanged(ctx context.Context) error
+	ReportChooserSelection(ctx context.Context, packageName string, contentType string, annotations []string, action string) error
+	GetAppStandbyBucket(ctx context.Context, packageName string) (int32, error)
+	SetAppStandbyBucket(ctx context.Context, packageName string, bucket int32) error
+	GetAppStandbyBuckets(ctx context.Context) (pm.ParceledListSlice, error)
+	SetAppStandbyBuckets(ctx context.Context, appBuckets pm.ParceledListSlice) error
+	GetAppMinStandbyBucket(ctx context.Context, packageName string) (int32, error)
+	SetEstimatedLaunchTime(ctx context.Context, packageName string, estimatedLaunchTime int64) error
+	SetEstimatedLaunchTimes(ctx context.Context, appLaunchTimes pm.ParceledListSlice) error
+	RegisterAppUsageObserver(ctx context.Context, observerId int32, packages []string, timeLimitMs int64, callback app.PendingIntent) error
+	UnregisterAppUsageObserver(ctx context.Context, observerId int32) error
+	RegisterUsageSessionObserver(ctx context.Context, sessionObserverId int32, observed []string, timeLimitMs int64, sessionThresholdTimeMs int64, limitReachedCallbackIntent app.PendingIntent, sessionEndCallbackIntent app.PendingIntent) error
+	UnregisterUsageSessionObserver(ctx context.Context, sessionObserverId int32) error
+	RegisterAppUsageLimitObserver(ctx context.Context, observerId int32, packages []string, timeLimitMs int64, timeUsedMs int64, callback app.PendingIntent) error
+	UnregisterAppUsageLimitObserver(ctx context.Context, observerId int32) error
+	ReportUsageStart(ctx context.Context, activity binder.IBinder, token string) error
+	ReportPastUsageStart(ctx context.Context, activity binder.IBinder, token string, timeAgoMs int64) error
+	ReportUsageStop(ctx context.Context, activity binder.IBinder, token string) error
+	ReportUserInteraction(ctx context.Context, packageName string) error
+	ReportUserInteractionWithBundle(ctx context.Context, packageName string, eventExtras interface{}) error
+	GetUsageSource(ctx context.Context) (int32, error)
+	ForceUsageSourceSettingRead(ctx context.Context) error
+	GetLastTimeAnyComponentUsed(ctx context.Context, packageName string) (int64, error)
+	QueryBroadcastResponseStats(ctx context.Context, packageName string, id int64) (BroadcastResponseStatsList, error)
+	ClearBroadcastResponseStats(ctx context.Context, packageName string, id int64) error
+	ClearBroadcastEvents(ctx context.Context) error
+	IsPackageExemptedFromBroadcastResponseStats(ctx context.Context, packageName string) (bool, error)
+	GetAppStandbyConstant(ctx context.Context, key string) (string, error)
+}
+
+type usageStatsManagerStubWrapper struct {
+	impl       IUsageStatsManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *usageStatsManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *usageStatsManagerStubWrapper) QueryUsageStats(
+	ctx context.Context,
+	bucketType int32,
+	beginTime int64,
+	endTime int64,
+) (pm.ParceledListSlice, error) {
+	return w.impl.QueryUsageStats(ctx, bucketType, beginTime, endTime)
+}
+
+func (w *usageStatsManagerStubWrapper) QueryConfigurationStats(
+	ctx context.Context,
+	bucketType int32,
+	beginTime int64,
+	endTime int64,
+) (pm.ParceledListSlice, error) {
+	return w.impl.QueryConfigurationStats(ctx, bucketType, beginTime, endTime)
+}
+
+func (w *usageStatsManagerStubWrapper) QueryEventStats(
+	ctx context.Context,
+	bucketType int32,
+	beginTime int64,
+	endTime int64,
+) (pm.ParceledListSlice, error) {
+	return w.impl.QueryEventStats(ctx, bucketType, beginTime, endTime)
+}
+
+func (w *usageStatsManagerStubWrapper) QueryEvents(
+	ctx context.Context,
+	beginTime int64,
+	endTime int64,
+) (UsageEvents, error) {
+	return w.impl.QueryEvents(ctx, beginTime, endTime)
+}
+
+func (w *usageStatsManagerStubWrapper) QueryEventsForPackage(
+	ctx context.Context,
+	beginTime int64,
+	endTime int64,
+) (UsageEvents, error) {
+	return w.impl.QueryEventsForPackage(ctx, beginTime, endTime)
+}
+
+func (w *usageStatsManagerStubWrapper) QueryEventsForUser(
+	ctx context.Context,
+	beginTime int64,
+	endTime int64,
+) (UsageEvents, error) {
+	return w.impl.QueryEventsForUser(ctx, beginTime, endTime)
+}
+
+func (w *usageStatsManagerStubWrapper) QueryEventsForPackageForUser(
+	ctx context.Context,
+	beginTime int64,
+	endTime int64,
+	pkg string,
+) (UsageEvents, error) {
+	return w.impl.QueryEventsForPackageForUser(ctx, beginTime, endTime, pkg)
+}
+
+func (w *usageStatsManagerStubWrapper) QueryEventsWithFilter(
+	ctx context.Context,
+	query UsageEventsQuery,
+) (UsageEvents, error) {
+	return w.impl.QueryEventsWithFilter(ctx, query)
+}
+
+func (w *usageStatsManagerStubWrapper) SetAppInactive(
+	ctx context.Context,
+	packageName string,
+	inactive bool,
+) error {
+	return w.impl.SetAppInactive(ctx, packageName, inactive)
+}
+
+func (w *usageStatsManagerStubWrapper) IsAppStandbyEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAppStandbyEnabled(ctx)
+}
+
+func (w *usageStatsManagerStubWrapper) IsAppInactive(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsAppInactive(ctx, packageName)
+}
+
+func (w *usageStatsManagerStubWrapper) OnCarrierPrivilegedAppsChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnCarrierPrivilegedAppsChanged(ctx)
+}
+
+func (w *usageStatsManagerStubWrapper) ReportChooserSelection(
+	ctx context.Context,
+	packageName string,
+	contentType string,
+	annotations []string,
+	action string,
+) error {
+	return w.impl.ReportChooserSelection(ctx, packageName, contentType, annotations, action)
+}
+
+func (w *usageStatsManagerStubWrapper) GetAppStandbyBucket(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetAppStandbyBucket(ctx, packageName)
+}
+
+func (w *usageStatsManagerStubWrapper) SetAppStandbyBucket(
+	ctx context.Context,
+	packageName string,
+	bucket int32,
+) error {
+	return w.impl.SetAppStandbyBucket(ctx, packageName, bucket)
+}
+
+func (w *usageStatsManagerStubWrapper) GetAppStandbyBuckets(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetAppStandbyBuckets(ctx)
+}
+
+func (w *usageStatsManagerStubWrapper) SetAppStandbyBuckets(
+	ctx context.Context,
+	appBuckets pm.ParceledListSlice,
+) error {
+	return w.impl.SetAppStandbyBuckets(ctx, appBuckets)
+}
+
+func (w *usageStatsManagerStubWrapper) GetAppMinStandbyBucket(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetAppMinStandbyBucket(ctx, packageName)
+}
+
+func (w *usageStatsManagerStubWrapper) SetEstimatedLaunchTime(
+	ctx context.Context,
+	packageName string,
+	estimatedLaunchTime int64,
+) error {
+	return w.impl.SetEstimatedLaunchTime(ctx, packageName, estimatedLaunchTime)
+}
+
+func (w *usageStatsManagerStubWrapper) SetEstimatedLaunchTimes(
+	ctx context.Context,
+	appLaunchTimes pm.ParceledListSlice,
+) error {
+	return w.impl.SetEstimatedLaunchTimes(ctx, appLaunchTimes)
+}
+
+func (w *usageStatsManagerStubWrapper) RegisterAppUsageObserver(
+	ctx context.Context,
+	observerId int32,
+	packages []string,
+	timeLimitMs int64,
+	callback app.PendingIntent,
+) error {
+	return w.impl.RegisterAppUsageObserver(ctx, observerId, packages, timeLimitMs, callback)
+}
+
+func (w *usageStatsManagerStubWrapper) UnregisterAppUsageObserver(
+	ctx context.Context,
+	observerId int32,
+) error {
+	return w.impl.UnregisterAppUsageObserver(ctx, observerId)
+}
+
+func (w *usageStatsManagerStubWrapper) RegisterUsageSessionObserver(
+	ctx context.Context,
+	sessionObserverId int32,
+	observed []string,
+	timeLimitMs int64,
+	sessionThresholdTimeMs int64,
+	limitReachedCallbackIntent app.PendingIntent,
+	sessionEndCallbackIntent app.PendingIntent,
+) error {
+	return w.impl.RegisterUsageSessionObserver(ctx, sessionObserverId, observed, timeLimitMs, sessionThresholdTimeMs, limitReachedCallbackIntent, sessionEndCallbackIntent)
+}
+
+func (w *usageStatsManagerStubWrapper) UnregisterUsageSessionObserver(
+	ctx context.Context,
+	sessionObserverId int32,
+) error {
+	return w.impl.UnregisterUsageSessionObserver(ctx, sessionObserverId)
+}
+
+func (w *usageStatsManagerStubWrapper) RegisterAppUsageLimitObserver(
+	ctx context.Context,
+	observerId int32,
+	packages []string,
+	timeLimitMs int64,
+	timeUsedMs int64,
+	callback app.PendingIntent,
+) error {
+	return w.impl.RegisterAppUsageLimitObserver(ctx, observerId, packages, timeLimitMs, timeUsedMs, callback)
+}
+
+func (w *usageStatsManagerStubWrapper) UnregisterAppUsageLimitObserver(
+	ctx context.Context,
+	observerId int32,
+) error {
+	return w.impl.UnregisterAppUsageLimitObserver(ctx, observerId)
+}
+
+func (w *usageStatsManagerStubWrapper) ReportUsageStart(
+	ctx context.Context,
+	activity binder.IBinder,
+	token string,
+) error {
+	return w.impl.ReportUsageStart(ctx, activity, token)
+}
+
+func (w *usageStatsManagerStubWrapper) ReportPastUsageStart(
+	ctx context.Context,
+	activity binder.IBinder,
+	token string,
+	timeAgoMs int64,
+) error {
+	return w.impl.ReportPastUsageStart(ctx, activity, token, timeAgoMs)
+}
+
+func (w *usageStatsManagerStubWrapper) ReportUsageStop(
+	ctx context.Context,
+	activity binder.IBinder,
+	token string,
+) error {
+	return w.impl.ReportUsageStop(ctx, activity, token)
+}
+
+func (w *usageStatsManagerStubWrapper) ReportUserInteraction(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ReportUserInteraction(ctx, packageName)
+}
+
+func (w *usageStatsManagerStubWrapper) ReportUserInteractionWithBundle(
+	ctx context.Context,
+	packageName string,
+	eventExtras interface{},
+) error {
+	return w.impl.ReportUserInteractionWithBundle(ctx, packageName, eventExtras)
+}
+
+func (w *usageStatsManagerStubWrapper) GetUsageSource(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUsageSource(ctx)
+}
+
+func (w *usageStatsManagerStubWrapper) ForceUsageSourceSettingRead(
+	ctx context.Context,
+) error {
+	return w.impl.ForceUsageSourceSettingRead(ctx)
+}
+
+func (w *usageStatsManagerStubWrapper) GetLastTimeAnyComponentUsed(
+	ctx context.Context,
+	packageName string,
+) (int64, error) {
+	return w.impl.GetLastTimeAnyComponentUsed(ctx, packageName)
+}
+
+func (w *usageStatsManagerStubWrapper) QueryBroadcastResponseStats(
+	ctx context.Context,
+	packageName string,
+	id int64,
+) (BroadcastResponseStatsList, error) {
+	return w.impl.QueryBroadcastResponseStats(ctx, packageName, id)
+}
+
+func (w *usageStatsManagerStubWrapper) ClearBroadcastResponseStats(
+	ctx context.Context,
+	packageName string,
+	id int64,
+) error {
+	return w.impl.ClearBroadcastResponseStats(ctx, packageName, id)
+}
+
+func (w *usageStatsManagerStubWrapper) ClearBroadcastEvents(
+	ctx context.Context,
+) error {
+	return w.impl.ClearBroadcastEvents(ctx)
+}
+
+func (w *usageStatsManagerStubWrapper) IsPackageExemptedFromBroadcastResponseStats(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsPackageExemptedFromBroadcastResponseStats(ctx, packageName)
+}
+
+func (w *usageStatsManagerStubWrapper) GetAppStandbyConstant(
+	ctx context.Context,
+	key string,
+) (string, error) {
+	return w.impl.GetAppStandbyConstant(ctx, key)
+}
+
+var _ IUsageStatsManager = (*usageStatsManagerStubWrapper)(nil)
+
+// NewUsageStatsManagerStub creates a server-side IUsageStatsManager wrapping the given
+// server implementation. The returned value satisfies IUsageStatsManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUsageStatsManagerStub(
+	impl IUsageStatsManagerServer,
+) IUsageStatsManager {
+	wrapper := &usageStatsManagerStubWrapper{impl: impl}
+	stub := &UsageStatsManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

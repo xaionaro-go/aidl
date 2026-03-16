@@ -93,3 +93,42 @@ func (s *GetDownloadableSubscriptionMetadataCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetDownloadableSubscriptionMetadataCallbackServer is the server-side interface that user implementations
+// provide to NewGetDownloadableSubscriptionMetadataCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetDownloadableSubscriptionMetadataCallbackServer interface {
+	OnComplete(ctx context.Context, result GetDownloadableSubscriptionMetadataResult) error
+}
+
+type getDownloadableSubscriptionMetadataCallbackStubWrapper struct {
+	impl       IGetDownloadableSubscriptionMetadataCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getDownloadableSubscriptionMetadataCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getDownloadableSubscriptionMetadataCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result GetDownloadableSubscriptionMetadataResult,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IGetDownloadableSubscriptionMetadataCallback = (*getDownloadableSubscriptionMetadataCallbackStubWrapper)(nil)
+
+// NewGetDownloadableSubscriptionMetadataCallbackStub creates a server-side IGetDownloadableSubscriptionMetadataCallback wrapping the given
+// server implementation. The returned value satisfies IGetDownloadableSubscriptionMetadataCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetDownloadableSubscriptionMetadataCallbackStub(
+	impl IGetDownloadableSubscriptionMetadataCallbackServer,
+) IGetDownloadableSubscriptionMetadataCallback {
+	wrapper := &getDownloadableSubscriptionMetadataCallbackStubWrapper{impl: impl}
+	stub := &GetDownloadableSubscriptionMetadataCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

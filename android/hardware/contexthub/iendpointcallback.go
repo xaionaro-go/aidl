@@ -464,3 +464,97 @@ func (s *EndpointCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEndpointCallbackServer is the server-side interface that user implementations
+// provide to NewEndpointCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEndpointCallbackServer interface {
+	OnEndpointStarted(ctx context.Context, endpointInfos []EndpointInfo) error
+	OnEndpointStopped(ctx context.Context, endpointIds []EndpointId, reason Reason) error
+	OnMessageReceived(ctx context.Context, sessionId int32, msg Message) error
+	OnMessageDeliveryStatusReceived(ctx context.Context, sessionId int32, msgStatus MessageDeliveryStatus) error
+	OnEndpointSessionOpenRequest(ctx context.Context, sessionId int32, destination EndpointId, initiator EndpointId, serviceDescriptor string) error
+	OnCloseEndpointSession(ctx context.Context, sessionId int32, reason Reason) error
+	OnEndpointSessionOpenComplete(ctx context.Context, sessionId int32) error
+}
+
+type endpointCallbackStubWrapper struct {
+	impl       IEndpointCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *endpointCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *endpointCallbackStubWrapper) OnEndpointStarted(
+	ctx context.Context,
+	endpointInfos []EndpointInfo,
+) error {
+	return w.impl.OnEndpointStarted(ctx, endpointInfos)
+}
+
+func (w *endpointCallbackStubWrapper) OnEndpointStopped(
+	ctx context.Context,
+	endpointIds []EndpointId,
+	reason Reason,
+) error {
+	return w.impl.OnEndpointStopped(ctx, endpointIds, reason)
+}
+
+func (w *endpointCallbackStubWrapper) OnMessageReceived(
+	ctx context.Context,
+	sessionId int32,
+	msg Message,
+) error {
+	return w.impl.OnMessageReceived(ctx, sessionId, msg)
+}
+
+func (w *endpointCallbackStubWrapper) OnMessageDeliveryStatusReceived(
+	ctx context.Context,
+	sessionId int32,
+	msgStatus MessageDeliveryStatus,
+) error {
+	return w.impl.OnMessageDeliveryStatusReceived(ctx, sessionId, msgStatus)
+}
+
+func (w *endpointCallbackStubWrapper) OnEndpointSessionOpenRequest(
+	ctx context.Context,
+	sessionId int32,
+	destination EndpointId,
+	initiator EndpointId,
+	serviceDescriptor string,
+) error {
+	return w.impl.OnEndpointSessionOpenRequest(ctx, sessionId, destination, initiator, serviceDescriptor)
+}
+
+func (w *endpointCallbackStubWrapper) OnCloseEndpointSession(
+	ctx context.Context,
+	sessionId int32,
+	reason Reason,
+) error {
+	return w.impl.OnCloseEndpointSession(ctx, sessionId, reason)
+}
+
+func (w *endpointCallbackStubWrapper) OnEndpointSessionOpenComplete(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnEndpointSessionOpenComplete(ctx, sessionId)
+}
+
+var _ IEndpointCallback = (*endpointCallbackStubWrapper)(nil)
+
+// NewEndpointCallbackStub creates a server-side IEndpointCallback wrapping the given
+// server implementation. The returned value satisfies IEndpointCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEndpointCallbackStub(
+	impl IEndpointCallbackServer,
+) IEndpointCallback {
+	wrapper := &endpointCallbackStubWrapper{impl: impl}
+	stub := &EndpointCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

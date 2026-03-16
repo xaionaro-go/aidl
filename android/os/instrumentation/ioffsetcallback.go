@@ -96,3 +96,42 @@ func (s *OffsetCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOffsetCallbackServer is the server-side interface that user implementations
+// provide to NewOffsetCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOffsetCallbackServer interface {
+	OnResult(ctx context.Context, offsets *ExecutableMethodFileOffsets) error
+}
+
+type offsetCallbackStubWrapper struct {
+	impl       IOffsetCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *offsetCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *offsetCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	offsets *ExecutableMethodFileOffsets,
+) error {
+	return w.impl.OnResult(ctx, offsets)
+}
+
+var _ IOffsetCallback = (*offsetCallbackStubWrapper)(nil)
+
+// NewOffsetCallbackStub creates a server-side IOffsetCallback wrapping the given
+// server implementation. The returned value satisfies IOffsetCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOffsetCallbackStub(
+	impl IOffsetCallbackServer,
+) IOffsetCallback {
+	wrapper := &offsetCallbackStubWrapper{impl: impl}
+	stub := &OffsetCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

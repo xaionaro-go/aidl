@@ -76,7 +76,7 @@ func (p *SurfaceComposerClientProxy) CreateSurface(
 	_data.WriteInterfaceToken(DescriptorISurfaceComposerClient)
 	_data.WriteString16(name)
 	_data.WriteInt32(flags)
-	_data.WriteStrongBinder(parent.Handle())
+	binder.WriteBinderToParcel(ctx, _data, parent, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "createSurface")
 	if _err != nil {
@@ -111,7 +111,7 @@ func (p *SurfaceComposerClientProxy) ClearLayerFrameStats(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposerClient)
-	_data.WriteStrongBinder(handle.Handle())
+	binder.WriteBinderToParcel(ctx, _data, handle, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "clearLayerFrameStats")
 	if _err != nil {
@@ -138,7 +138,7 @@ func (p *SurfaceComposerClientProxy) GetLayerFrameStats(
 	var _result FrameStats
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposerClient)
-	_data.WriteStrongBinder(handle.Handle())
+	binder.WriteBinderToParcel(ctx, _data, handle, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "getLayerFrameStats")
 	if _err != nil {
@@ -174,7 +174,7 @@ func (p *SurfaceComposerClientProxy) MirrorSurface(
 	var _result CreateSurfaceResult
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposerClient)
-	_data.WriteStrongBinder(mirrorFromHandle.Handle())
+	binder.WriteBinderToParcel(ctx, _data, mirrorFromHandle, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposerClient, "mirrorSurface")
 	if _err != nil {
@@ -407,4 +407,85 @@ func (s *SurfaceComposerClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISurfaceComposerClientServer is the server-side interface that user implementations
+// provide to NewSurfaceComposerClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISurfaceComposerClientServer interface {
+	CreateSurface(ctx context.Context, name string, flags int32, parent binder.IBinder, metadata interface{}) (CreateSurfaceResult, error)
+	ClearLayerFrameStats(ctx context.Context, handle binder.IBinder) error
+	GetLayerFrameStats(ctx context.Context, handle binder.IBinder) (FrameStats, error)
+	MirrorSurface(ctx context.Context, mirrorFromHandle binder.IBinder) (CreateSurfaceResult, error)
+	MirrorDisplay(ctx context.Context, displayId int64) (CreateSurfaceResult, error)
+	GetSchedulingPolicy(ctx context.Context) (SchedulingPolicy, error)
+}
+
+type surfaceComposerClientStubWrapper struct {
+	impl       ISurfaceComposerClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *surfaceComposerClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *surfaceComposerClientStubWrapper) CreateSurface(
+	ctx context.Context,
+	name string,
+	flags int32,
+	parent binder.IBinder,
+	metadata interface{},
+) (CreateSurfaceResult, error) {
+	return w.impl.CreateSurface(ctx, name, flags, parent, metadata)
+}
+
+func (w *surfaceComposerClientStubWrapper) ClearLayerFrameStats(
+	ctx context.Context,
+	handle binder.IBinder,
+) error {
+	return w.impl.ClearLayerFrameStats(ctx, handle)
+}
+
+func (w *surfaceComposerClientStubWrapper) GetLayerFrameStats(
+	ctx context.Context,
+	handle binder.IBinder,
+) (FrameStats, error) {
+	return w.impl.GetLayerFrameStats(ctx, handle)
+}
+
+func (w *surfaceComposerClientStubWrapper) MirrorSurface(
+	ctx context.Context,
+	mirrorFromHandle binder.IBinder,
+) (CreateSurfaceResult, error) {
+	return w.impl.MirrorSurface(ctx, mirrorFromHandle)
+}
+
+func (w *surfaceComposerClientStubWrapper) MirrorDisplay(
+	ctx context.Context,
+	displayId int64,
+) (CreateSurfaceResult, error) {
+	return w.impl.MirrorDisplay(ctx, displayId)
+}
+
+func (w *surfaceComposerClientStubWrapper) GetSchedulingPolicy(
+	ctx context.Context,
+) (SchedulingPolicy, error) {
+	return w.impl.GetSchedulingPolicy(ctx)
+}
+
+var _ ISurfaceComposerClient = (*surfaceComposerClientStubWrapper)(nil)
+
+// NewSurfaceComposerClientStub creates a server-side ISurfaceComposerClient wrapping the given
+// server implementation. The returned value satisfies ISurfaceComposerClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSurfaceComposerClientStub(
+	impl ISurfaceComposerClientServer,
+) ISurfaceComposerClient {
+	wrapper := &surfaceComposerClientStubWrapper{impl: impl}
+	stub := &SurfaceComposerClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

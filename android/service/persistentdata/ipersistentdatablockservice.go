@@ -665,3 +665,129 @@ func (s *PersistentDataBlockServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPersistentDataBlockServiceServer is the server-side interface that user implementations
+// provide to NewPersistentDataBlockServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPersistentDataBlockServiceServer interface {
+	Write(ctx context.Context, data []byte) (int32, error)
+	Read(ctx context.Context) ([]byte, error)
+	Wipe(ctx context.Context) error
+	GetDataBlockSize(ctx context.Context) (int32, error)
+	GetMaximumDataBlockSize(ctx context.Context) (int64, error)
+	SetOemUnlockEnabled(ctx context.Context, enabled bool) error
+	GetOemUnlockEnabled(ctx context.Context) (bool, error)
+	GetFlashLockState(ctx context.Context) (int32, error)
+	HasFrpCredentialHandle(ctx context.Context) (bool, error)
+	GetPersistentDataPackageName(ctx context.Context) (string, error)
+	IsFactoryResetProtectionActive(ctx context.Context) (bool, error)
+	DeactivateFactoryResetProtection(ctx context.Context, secret []byte) (bool, error)
+	SetFactoryResetProtectionSecret(ctx context.Context, secret []byte) (bool, error)
+}
+
+type persistentDataBlockServiceStubWrapper struct {
+	impl       IPersistentDataBlockServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *persistentDataBlockServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *persistentDataBlockServiceStubWrapper) Write(
+	ctx context.Context,
+	data []byte,
+) (int32, error) {
+	return w.impl.Write(ctx, data)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) Read(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.Read(ctx)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) Wipe(
+	ctx context.Context,
+) error {
+	return w.impl.Wipe(ctx)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) GetDataBlockSize(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDataBlockSize(ctx)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) GetMaximumDataBlockSize(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetMaximumDataBlockSize(ctx)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) SetOemUnlockEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetOemUnlockEnabled(ctx, enabled)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) GetOemUnlockEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetOemUnlockEnabled(ctx)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) GetFlashLockState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetFlashLockState(ctx)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) HasFrpCredentialHandle(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasFrpCredentialHandle(ctx)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) GetPersistentDataPackageName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetPersistentDataPackageName(ctx)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) IsFactoryResetProtectionActive(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsFactoryResetProtectionActive(ctx)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) DeactivateFactoryResetProtection(
+	ctx context.Context,
+	secret []byte,
+) (bool, error) {
+	return w.impl.DeactivateFactoryResetProtection(ctx, secret)
+}
+
+func (w *persistentDataBlockServiceStubWrapper) SetFactoryResetProtectionSecret(
+	ctx context.Context,
+	secret []byte,
+) (bool, error) {
+	return w.impl.SetFactoryResetProtectionSecret(ctx, secret)
+}
+
+var _ IPersistentDataBlockService = (*persistentDataBlockServiceStubWrapper)(nil)
+
+// NewPersistentDataBlockServiceStub creates a server-side IPersistentDataBlockService wrapping the given
+// server implementation. The returned value satisfies IPersistentDataBlockService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPersistentDataBlockServiceStub(
+	impl IPersistentDataBlockServiceServer,
+) IPersistentDataBlockService {
+	wrapper := &persistentDataBlockServiceStubWrapper{impl: impl}
+	stub := &PersistentDataBlockServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

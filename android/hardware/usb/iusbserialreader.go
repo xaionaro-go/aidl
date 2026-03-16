@@ -102,3 +102,42 @@ func (s *UsbSerialReaderStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUsbSerialReaderServer is the server-side interface that user implementations
+// provide to NewUsbSerialReaderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUsbSerialReaderServer interface {
+	GetSerial(ctx context.Context, packageName string) (string, error)
+}
+
+type usbSerialReaderStubWrapper struct {
+	impl       IUsbSerialReaderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *usbSerialReaderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *usbSerialReaderStubWrapper) GetSerial(
+	ctx context.Context,
+	packageName string,
+) (string, error) {
+	return w.impl.GetSerial(ctx, packageName)
+}
+
+var _ IUsbSerialReader = (*usbSerialReaderStubWrapper)(nil)
+
+// NewUsbSerialReaderStub creates a server-side IUsbSerialReader wrapping the given
+// server implementation. The returned value satisfies IUsbSerialReader
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUsbSerialReaderStub(
+	impl IUsbSerialReaderServer,
+) IUsbSerialReader {
+	wrapper := &usbSerialReaderStubWrapper{impl: impl}
+	stub := &UsbSerialReaderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

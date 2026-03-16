@@ -227,3 +227,61 @@ func (s *ScanBackgroundServiceUpdateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScanBackgroundServiceUpdateListenerServer is the server-side interface that user implementations
+// provide to NewScanBackgroundServiceUpdateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScanBackgroundServiceUpdateListenerServer interface {
+	OnChannelListUpdate(ctx context.Context, sessionToken string, updateInfos []os.Bundle) error
+	OnNetworkListUpdate(ctx context.Context, sessionToken string, updateInfos []os.Bundle) error
+	OnTransportStreamingListUpdate(ctx context.Context, sessionToken string, updateInfos []os.Bundle) error
+}
+
+type scanBackgroundServiceUpdateListenerStubWrapper struct {
+	impl       IScanBackgroundServiceUpdateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scanBackgroundServiceUpdateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scanBackgroundServiceUpdateListenerStubWrapper) OnChannelListUpdate(
+	ctx context.Context,
+	sessionToken string,
+	updateInfos []os.Bundle,
+) error {
+	return w.impl.OnChannelListUpdate(ctx, sessionToken, updateInfos)
+}
+
+func (w *scanBackgroundServiceUpdateListenerStubWrapper) OnNetworkListUpdate(
+	ctx context.Context,
+	sessionToken string,
+	updateInfos []os.Bundle,
+) error {
+	return w.impl.OnNetworkListUpdate(ctx, sessionToken, updateInfos)
+}
+
+func (w *scanBackgroundServiceUpdateListenerStubWrapper) OnTransportStreamingListUpdate(
+	ctx context.Context,
+	sessionToken string,
+	updateInfos []os.Bundle,
+) error {
+	return w.impl.OnTransportStreamingListUpdate(ctx, sessionToken, updateInfos)
+}
+
+var _ IScanBackgroundServiceUpdateListener = (*scanBackgroundServiceUpdateListenerStubWrapper)(nil)
+
+// NewScanBackgroundServiceUpdateListenerStub creates a server-side IScanBackgroundServiceUpdateListener wrapping the given
+// server implementation. The returned value satisfies IScanBackgroundServiceUpdateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScanBackgroundServiceUpdateListenerStub(
+	impl IScanBackgroundServiceUpdateListenerServer,
+) IScanBackgroundServiceUpdateListener {
+	wrapper := &scanBackgroundServiceUpdateListenerStubWrapper{impl: impl}
+	stub := &ScanBackgroundServiceUpdateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

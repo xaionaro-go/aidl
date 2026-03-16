@@ -68,7 +68,7 @@ func (p *EvsEnumeratorProxy) CloseCamera(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEvsEnumerator)
-	_data.WriteStrongBinder(carCamera.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, carCamera.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEvsEnumerator, "closeCamera")
 	if _err != nil {
@@ -94,7 +94,7 @@ func (p *EvsEnumeratorProxy) CloseDisplay(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEvsEnumerator)
-	_data.WriteStrongBinder(display.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, display.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEvsEnumerator, "closeDisplay")
 	if _err != nil {
@@ -120,7 +120,7 @@ func (p *EvsEnumeratorProxy) CloseUltrasonicsArray(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEvsEnumerator)
-	_data.WriteStrongBinder(evsUltrasonicsArray.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, evsUltrasonicsArray.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEvsEnumerator, "closeUltrasonicsArray")
 	if _err != nil {
@@ -464,7 +464,7 @@ func (p *EvsEnumeratorProxy) RegisterStatusCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEvsEnumerator)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEvsEnumerator, "registerStatusCallback")
 	if _err != nil {
@@ -770,4 +770,143 @@ func (s *EvsEnumeratorStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IEvsEnumeratorServer is the server-side interface that user implementations
+// provide to NewEvsEnumeratorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEvsEnumeratorServer interface {
+	CloseCamera(ctx context.Context, carCamera IEvsCamera) error
+	CloseDisplay(ctx context.Context, display IEvsDisplay) error
+	CloseUltrasonicsArray(ctx context.Context, evsUltrasonicsArray IEvsUltrasonicsArray) error
+	GetCameraList(ctx context.Context) ([]CameraDesc, error)
+	GetDisplayIdList(ctx context.Context) ([]byte, error)
+	GetDisplayState(ctx context.Context) (DisplayState, error)
+	GetStreamList(ctx context.Context, description CameraDesc) ([]Stream, error)
+	GetUltrasonicsArrayList(ctx context.Context) ([]UltrasonicsArrayDesc, error)
+	IsHardware(ctx context.Context) (bool, error)
+	OpenCamera(ctx context.Context, cameraId string, streamCfg Stream) (IEvsCamera, error)
+	OpenDisplay(ctx context.Context, id int32) (IEvsDisplay, error)
+	OpenUltrasonicsArray(ctx context.Context, ultrasonicsArrayId string) (IEvsUltrasonicsArray, error)
+	RegisterStatusCallback(ctx context.Context, callback IEvsEnumeratorStatusCallback) error
+	GetDisplayStateById(ctx context.Context, id int32) (DisplayState, error)
+}
+
+type evsEnumeratorStubWrapper struct {
+	impl       IEvsEnumeratorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *evsEnumeratorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *evsEnumeratorStubWrapper) CloseCamera(
+	ctx context.Context,
+	carCamera IEvsCamera,
+) error {
+	return w.impl.CloseCamera(ctx, carCamera)
+}
+
+func (w *evsEnumeratorStubWrapper) CloseDisplay(
+	ctx context.Context,
+	display IEvsDisplay,
+) error {
+	return w.impl.CloseDisplay(ctx, display)
+}
+
+func (w *evsEnumeratorStubWrapper) CloseUltrasonicsArray(
+	ctx context.Context,
+	evsUltrasonicsArray IEvsUltrasonicsArray,
+) error {
+	return w.impl.CloseUltrasonicsArray(ctx, evsUltrasonicsArray)
+}
+
+func (w *evsEnumeratorStubWrapper) GetCameraList(
+	ctx context.Context,
+) ([]CameraDesc, error) {
+	return w.impl.GetCameraList(ctx)
+}
+
+func (w *evsEnumeratorStubWrapper) GetDisplayIdList(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetDisplayIdList(ctx)
+}
+
+func (w *evsEnumeratorStubWrapper) GetDisplayState(
+	ctx context.Context,
+) (DisplayState, error) {
+	return w.impl.GetDisplayState(ctx)
+}
+
+func (w *evsEnumeratorStubWrapper) GetStreamList(
+	ctx context.Context,
+	description CameraDesc,
+) ([]Stream, error) {
+	return w.impl.GetStreamList(ctx, description)
+}
+
+func (w *evsEnumeratorStubWrapper) GetUltrasonicsArrayList(
+	ctx context.Context,
+) ([]UltrasonicsArrayDesc, error) {
+	return w.impl.GetUltrasonicsArrayList(ctx)
+}
+
+func (w *evsEnumeratorStubWrapper) IsHardware(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHardware(ctx)
+}
+
+func (w *evsEnumeratorStubWrapper) OpenCamera(
+	ctx context.Context,
+	cameraId string,
+	streamCfg Stream,
+) (IEvsCamera, error) {
+	return w.impl.OpenCamera(ctx, cameraId, streamCfg)
+}
+
+func (w *evsEnumeratorStubWrapper) OpenDisplay(
+	ctx context.Context,
+	id int32,
+) (IEvsDisplay, error) {
+	return w.impl.OpenDisplay(ctx, id)
+}
+
+func (w *evsEnumeratorStubWrapper) OpenUltrasonicsArray(
+	ctx context.Context,
+	ultrasonicsArrayId string,
+) (IEvsUltrasonicsArray, error) {
+	return w.impl.OpenUltrasonicsArray(ctx, ultrasonicsArrayId)
+}
+
+func (w *evsEnumeratorStubWrapper) RegisterStatusCallback(
+	ctx context.Context,
+	callback IEvsEnumeratorStatusCallback,
+) error {
+	return w.impl.RegisterStatusCallback(ctx, callback)
+}
+
+func (w *evsEnumeratorStubWrapper) GetDisplayStateById(
+	ctx context.Context,
+	id int32,
+) (DisplayState, error) {
+	return w.impl.GetDisplayStateById(ctx, id)
+}
+
+var _ IEvsEnumerator = (*evsEnumeratorStubWrapper)(nil)
+
+// NewEvsEnumeratorStub creates a server-side IEvsEnumerator wrapping the given
+// server implementation. The returned value satisfies IEvsEnumerator
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEvsEnumeratorStub(
+	impl IEvsEnumeratorServer,
+) IEvsEnumerator {
+	wrapper := &evsEnumeratorStubWrapper{impl: impl}
+	stub := &EvsEnumeratorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

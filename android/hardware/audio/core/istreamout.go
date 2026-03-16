@@ -757,3 +757,141 @@ func (s *StreamOutStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStreamOutServer is the server-side interface that user implementations
+// provide to NewStreamOutStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStreamOutServer interface {
+	GetStreamCommon(ctx context.Context) (IStreamCommon, error)
+	UpdateMetadata(ctx context.Context, sourceMetadata common.SourceMetadata) error
+	UpdateOffloadMetadata(ctx context.Context, offloadMetadata common.AudioOffloadMetadata) error
+	GetHwVolume(ctx context.Context) ([]float32, error)
+	SetHwVolume(ctx context.Context, channelVolumes []float32) error
+	GetAudioDescriptionMixLevel(ctx context.Context) (float32, error)
+	SetAudioDescriptionMixLevel(ctx context.Context, leveldB float32) error
+	GetDualMonoMode(ctx context.Context) (audioCommon.AudioDualMonoMode, error)
+	SetDualMonoMode(ctx context.Context, mode audioCommon.AudioDualMonoMode) error
+	GetRecommendedLatencyModes(ctx context.Context) ([]audioCommon.AudioLatencyMode, error)
+	SetLatencyMode(ctx context.Context, mode audioCommon.AudioLatencyMode) error
+	GetPlaybackRateParameters(ctx context.Context) (audioCommon.AudioPlaybackRate, error)
+	SetPlaybackRateParameters(ctx context.Context, playbackRate audioCommon.AudioPlaybackRate) error
+	SelectPresentation(ctx context.Context, presentationId int32, programId int32) error
+}
+
+type streamOutStubWrapper struct {
+	impl       IStreamOutServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *streamOutStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *streamOutStubWrapper) GetStreamCommon(
+	ctx context.Context,
+) (IStreamCommon, error) {
+	return w.impl.GetStreamCommon(ctx)
+}
+
+func (w *streamOutStubWrapper) UpdateMetadata(
+	ctx context.Context,
+	sourceMetadata common.SourceMetadata,
+) error {
+	return w.impl.UpdateMetadata(ctx, sourceMetadata)
+}
+
+func (w *streamOutStubWrapper) UpdateOffloadMetadata(
+	ctx context.Context,
+	offloadMetadata common.AudioOffloadMetadata,
+) error {
+	return w.impl.UpdateOffloadMetadata(ctx, offloadMetadata)
+}
+
+func (w *streamOutStubWrapper) GetHwVolume(
+	ctx context.Context,
+) ([]float32, error) {
+	return w.impl.GetHwVolume(ctx)
+}
+
+func (w *streamOutStubWrapper) SetHwVolume(
+	ctx context.Context,
+	channelVolumes []float32,
+) error {
+	return w.impl.SetHwVolume(ctx, channelVolumes)
+}
+
+func (w *streamOutStubWrapper) GetAudioDescriptionMixLevel(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetAudioDescriptionMixLevel(ctx)
+}
+
+func (w *streamOutStubWrapper) SetAudioDescriptionMixLevel(
+	ctx context.Context,
+	leveldB float32,
+) error {
+	return w.impl.SetAudioDescriptionMixLevel(ctx, leveldB)
+}
+
+func (w *streamOutStubWrapper) GetDualMonoMode(
+	ctx context.Context,
+) (audioCommon.AudioDualMonoMode, error) {
+	return w.impl.GetDualMonoMode(ctx)
+}
+
+func (w *streamOutStubWrapper) SetDualMonoMode(
+	ctx context.Context,
+	mode audioCommon.AudioDualMonoMode,
+) error {
+	return w.impl.SetDualMonoMode(ctx, mode)
+}
+
+func (w *streamOutStubWrapper) GetRecommendedLatencyModes(
+	ctx context.Context,
+) ([]audioCommon.AudioLatencyMode, error) {
+	return w.impl.GetRecommendedLatencyModes(ctx)
+}
+
+func (w *streamOutStubWrapper) SetLatencyMode(
+	ctx context.Context,
+	mode audioCommon.AudioLatencyMode,
+) error {
+	return w.impl.SetLatencyMode(ctx, mode)
+}
+
+func (w *streamOutStubWrapper) GetPlaybackRateParameters(
+	ctx context.Context,
+) (audioCommon.AudioPlaybackRate, error) {
+	return w.impl.GetPlaybackRateParameters(ctx)
+}
+
+func (w *streamOutStubWrapper) SetPlaybackRateParameters(
+	ctx context.Context,
+	playbackRate audioCommon.AudioPlaybackRate,
+) error {
+	return w.impl.SetPlaybackRateParameters(ctx, playbackRate)
+}
+
+func (w *streamOutStubWrapper) SelectPresentation(
+	ctx context.Context,
+	presentationId int32,
+	programId int32,
+) error {
+	return w.impl.SelectPresentation(ctx, presentationId, programId)
+}
+
+var _ IStreamOut = (*streamOutStubWrapper)(nil)
+
+// NewStreamOutStub creates a server-side IStreamOut wrapping the given
+// server implementation. The returned value satisfies IStreamOut
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStreamOutStub(
+	impl IStreamOutServer,
+) IStreamOut {
+	wrapper := &streamOutStubWrapper{impl: impl}
+	stub := &StreamOutStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -69,7 +69,7 @@ func (p *TunerFrontendProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerFrontend)
-	_data.WriteStrongBinder(tunerFrontendCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tunerFrontendCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerFrontend, "setCallback")
 	if _err != nil {
@@ -203,7 +203,7 @@ func (p *TunerFrontendProxy) SetLnb(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerFrontend)
-	_data.WriteStrongBinder(lnb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, lnb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerFrontend, "setLnb")
 	if _err != nil {
@@ -729,4 +729,143 @@ func (s *TunerFrontendStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITunerFrontendServer is the server-side interface that user implementations
+// provide to NewTunerFrontendStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerFrontendServer interface {
+	SetCallback(ctx context.Context, tunerFrontendCallback ITunerFrontendCallback) error
+	Tune(ctx context.Context, settings tvTuner.FrontendSettings) error
+	StopTune(ctx context.Context) error
+	Scan(ctx context.Context, settings tvTuner.FrontendSettings, frontendScanType tvTuner.FrontendScanType) error
+	StopScan(ctx context.Context) error
+	SetLnb(ctx context.Context, lnb ITunerLnb) error
+	LinkCiCamToFrontend(ctx context.Context, ciCamId int32) (int32, error)
+	UnlinkCiCamToFrontend(ctx context.Context, ciCamId int32) error
+	Close(ctx context.Context) error
+	GetStatus(ctx context.Context, statusTypes []tvTuner.FrontendStatusType) ([]tvTuner.FrontendStatus, error)
+	GetFrontendId(ctx context.Context) (int32, error)
+	GetHardwareInfo(ctx context.Context) (string, error)
+	RemoveOutputPid(ctx context.Context, pid int32) error
+	GetFrontendStatusReadiness(ctx context.Context, statusTypes []tvTuner.FrontendStatusType) ([]tvTuner.FrontendStatusReadiness, error)
+}
+
+type tunerFrontendStubWrapper struct {
+	impl       ITunerFrontendServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerFrontendStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerFrontendStubWrapper) SetCallback(
+	ctx context.Context,
+	tunerFrontendCallback ITunerFrontendCallback,
+) error {
+	return w.impl.SetCallback(ctx, tunerFrontendCallback)
+}
+
+func (w *tunerFrontendStubWrapper) Tune(
+	ctx context.Context,
+	settings tvTuner.FrontendSettings,
+) error {
+	return w.impl.Tune(ctx, settings)
+}
+
+func (w *tunerFrontendStubWrapper) StopTune(
+	ctx context.Context,
+) error {
+	return w.impl.StopTune(ctx)
+}
+
+func (w *tunerFrontendStubWrapper) Scan(
+	ctx context.Context,
+	settings tvTuner.FrontendSettings,
+	frontendScanType tvTuner.FrontendScanType,
+) error {
+	return w.impl.Scan(ctx, settings, frontendScanType)
+}
+
+func (w *tunerFrontendStubWrapper) StopScan(
+	ctx context.Context,
+) error {
+	return w.impl.StopScan(ctx)
+}
+
+func (w *tunerFrontendStubWrapper) SetLnb(
+	ctx context.Context,
+	lnb ITunerLnb,
+) error {
+	return w.impl.SetLnb(ctx, lnb)
+}
+
+func (w *tunerFrontendStubWrapper) LinkCiCamToFrontend(
+	ctx context.Context,
+	ciCamId int32,
+) (int32, error) {
+	return w.impl.LinkCiCamToFrontend(ctx, ciCamId)
+}
+
+func (w *tunerFrontendStubWrapper) UnlinkCiCamToFrontend(
+	ctx context.Context,
+	ciCamId int32,
+) error {
+	return w.impl.UnlinkCiCamToFrontend(ctx, ciCamId)
+}
+
+func (w *tunerFrontendStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *tunerFrontendStubWrapper) GetStatus(
+	ctx context.Context,
+	statusTypes []tvTuner.FrontendStatusType,
+) ([]tvTuner.FrontendStatus, error) {
+	return w.impl.GetStatus(ctx, statusTypes)
+}
+
+func (w *tunerFrontendStubWrapper) GetFrontendId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetFrontendId(ctx)
+}
+
+func (w *tunerFrontendStubWrapper) GetHardwareInfo(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetHardwareInfo(ctx)
+}
+
+func (w *tunerFrontendStubWrapper) RemoveOutputPid(
+	ctx context.Context,
+	pid int32,
+) error {
+	return w.impl.RemoveOutputPid(ctx, pid)
+}
+
+func (w *tunerFrontendStubWrapper) GetFrontendStatusReadiness(
+	ctx context.Context,
+	statusTypes []tvTuner.FrontendStatusType,
+) ([]tvTuner.FrontendStatusReadiness, error) {
+	return w.impl.GetFrontendStatusReadiness(ctx, statusTypes)
+}
+
+var _ ITunerFrontend = (*tunerFrontendStubWrapper)(nil)
+
+// NewTunerFrontendStub creates a server-side ITunerFrontend wrapping the given
+// server implementation. The returned value satisfies ITunerFrontend
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerFrontendStub(
+	impl ITunerFrontendServer,
+) ITunerFrontend {
+	wrapper := &tunerFrontendStubWrapper{impl: impl}
+	stub := &TunerFrontendStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

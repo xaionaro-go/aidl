@@ -3,7 +3,6 @@ package media
 import (
 	"context"
 	"fmt"
-	common "github.com/xaionaro-go/binder/android/media/audio/common"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -20,7 +19,7 @@ const (
 type IAudioFlingerClient interface {
 	AsBinder() binder.IBinder
 	IoConfigChanged(ctx context.Context, event AudioIoConfigEvent, ioDesc AudioIoDescriptor) error
-	OnSupportedLatencyModesChanged(ctx context.Context, output int32, latencyModes []common.AudioLatencyMode) error
+	OnSupportedLatencyModesChanged(ctx context.Context, output int32, latencyModes []interface{}) error
 }
 
 type AudioFlingerClientProxy struct {
@@ -64,7 +63,7 @@ func (p *AudioFlingerClientProxy) IoConfigChanged(
 func (p *AudioFlingerClientProxy) OnSupportedLatencyModesChanged(
 	ctx context.Context,
 	output int32,
-	latencyModes []common.AudioLatencyMode,
+	latencyModes []interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerClient)
@@ -73,9 +72,6 @@ func (p *AudioFlingerClientProxy) OnSupportedLatencyModesChanged(
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(latencyModes)))
-		for _, _item := range latencyModes {
-			_data.WritePaddedByte(byte(_item))
-		}
 	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioFlingerClient, "onSupportedLatencyModesChanged")
@@ -134,7 +130,7 @@ func (s *AudioFlingerClientStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_latencyModes []common.AudioLatencyMode
+		var _arg_latencyModes []interface{}
 		_ = _arg_latencyModes
 		_err = s.Impl.OnSupportedLatencyModesChanged(ctx, _arg_output, _arg_latencyModes)
 		_ = _err
@@ -142,4 +138,53 @@ func (s *AudioFlingerClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAudioFlingerClientServer is the server-side interface that user implementations
+// provide to NewAudioFlingerClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioFlingerClientServer interface {
+	IoConfigChanged(ctx context.Context, event AudioIoConfigEvent, ioDesc AudioIoDescriptor) error
+	OnSupportedLatencyModesChanged(ctx context.Context, output int32, latencyModes []interface{}) error
+}
+
+type audioFlingerClientStubWrapper struct {
+	impl       IAudioFlingerClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioFlingerClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioFlingerClientStubWrapper) IoConfigChanged(
+	ctx context.Context,
+	event AudioIoConfigEvent,
+	ioDesc AudioIoDescriptor,
+) error {
+	return w.impl.IoConfigChanged(ctx, event, ioDesc)
+}
+
+func (w *audioFlingerClientStubWrapper) OnSupportedLatencyModesChanged(
+	ctx context.Context,
+	output int32,
+	latencyModes []interface{},
+) error {
+	return w.impl.OnSupportedLatencyModesChanged(ctx, output, latencyModes)
+}
+
+var _ IAudioFlingerClient = (*audioFlingerClientStubWrapper)(nil)
+
+// NewAudioFlingerClientStub creates a server-side IAudioFlingerClient wrapping the given
+// server implementation. The returned value satisfies IAudioFlingerClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioFlingerClientStub(
+	impl IAudioFlingerClientServer,
+) IAudioFlingerClient {
+	wrapper := &audioFlingerClientStubWrapper{impl: impl}
+	stub := &AudioFlingerClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

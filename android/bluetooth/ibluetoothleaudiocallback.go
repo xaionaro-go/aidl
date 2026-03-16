@@ -295,3 +295,87 @@ func (s *BluetoothLeAudioCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothLeAudioCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothLeAudioCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothLeAudioCallbackServer interface {
+	OnCodecConfigChanged(ctx context.Context, groupId int32, status BluetoothLeAudioCodecStatus) error
+	OnGroupNodeAdded(ctx context.Context, device BluetoothDevice, groupId int32) error
+	OnGroupNodeRemoved(ctx context.Context, device BluetoothDevice, groupId int32) error
+	OnGroupStatusChanged(ctx context.Context, groupId int32, groupStatus int32) error
+	OnGroupStreamStatusChanged(ctx context.Context, groupId int32, groupStreamStatus int32) error
+	OnBroadcastToUnicastFallbackGroupChanged(ctx context.Context, groupId int32) error
+}
+
+type bluetoothLeAudioCallbackStubWrapper struct {
+	impl       IBluetoothLeAudioCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothLeAudioCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothLeAudioCallbackStubWrapper) OnCodecConfigChanged(
+	ctx context.Context,
+	groupId int32,
+	status BluetoothLeAudioCodecStatus,
+) error {
+	return w.impl.OnCodecConfigChanged(ctx, groupId, status)
+}
+
+func (w *bluetoothLeAudioCallbackStubWrapper) OnGroupNodeAdded(
+	ctx context.Context,
+	device BluetoothDevice,
+	groupId int32,
+) error {
+	return w.impl.OnGroupNodeAdded(ctx, device, groupId)
+}
+
+func (w *bluetoothLeAudioCallbackStubWrapper) OnGroupNodeRemoved(
+	ctx context.Context,
+	device BluetoothDevice,
+	groupId int32,
+) error {
+	return w.impl.OnGroupNodeRemoved(ctx, device, groupId)
+}
+
+func (w *bluetoothLeAudioCallbackStubWrapper) OnGroupStatusChanged(
+	ctx context.Context,
+	groupId int32,
+	groupStatus int32,
+) error {
+	return w.impl.OnGroupStatusChanged(ctx, groupId, groupStatus)
+}
+
+func (w *bluetoothLeAudioCallbackStubWrapper) OnGroupStreamStatusChanged(
+	ctx context.Context,
+	groupId int32,
+	groupStreamStatus int32,
+) error {
+	return w.impl.OnGroupStreamStatusChanged(ctx, groupId, groupStreamStatus)
+}
+
+func (w *bluetoothLeAudioCallbackStubWrapper) OnBroadcastToUnicastFallbackGroupChanged(
+	ctx context.Context,
+	groupId int32,
+) error {
+	return w.impl.OnBroadcastToUnicastFallbackGroupChanged(ctx, groupId)
+}
+
+var _ IBluetoothLeAudioCallback = (*bluetoothLeAudioCallbackStubWrapper)(nil)
+
+// NewBluetoothLeAudioCallbackStub creates a server-side IBluetoothLeAudioCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothLeAudioCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothLeAudioCallbackStub(
+	impl IBluetoothLeAudioCallbackServer,
+) IBluetoothLeAudioCallback {
+	wrapper := &bluetoothLeAudioCallbackStubWrapper{impl: impl}
+	stub := &BluetoothLeAudioCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -112,3 +112,49 @@ func (s *BrailleDisplayConnectionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBrailleDisplayConnectionServer is the server-side interface that user implementations
+// provide to NewBrailleDisplayConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBrailleDisplayConnectionServer interface {
+	Disconnect(ctx context.Context) error
+	Write(ctx context.Context, output []byte) error
+}
+
+type brailleDisplayConnectionStubWrapper struct {
+	impl       IBrailleDisplayConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *brailleDisplayConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *brailleDisplayConnectionStubWrapper) Disconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnect(ctx)
+}
+
+func (w *brailleDisplayConnectionStubWrapper) Write(
+	ctx context.Context,
+	output []byte,
+) error {
+	return w.impl.Write(ctx, output)
+}
+
+var _ IBrailleDisplayConnection = (*brailleDisplayConnectionStubWrapper)(nil)
+
+// NewBrailleDisplayConnectionStub creates a server-side IBrailleDisplayConnection wrapping the given
+// server implementation. The returned value satisfies IBrailleDisplayConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBrailleDisplayConnectionStub(
+	impl IBrailleDisplayConnectionServer,
+) IBrailleDisplayConnection {
+	wrapper := &brailleDisplayConnectionStubWrapper{impl: impl}
+	stub := &BrailleDisplayConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

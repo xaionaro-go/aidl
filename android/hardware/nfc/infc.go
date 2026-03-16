@@ -62,7 +62,7 @@ func (p *NfcProxy) Open(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINfc)
-	_data.WriteStrongBinder(clientCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINfc, "open")
 	if _err != nil {
@@ -532,4 +532,116 @@ func (s *NfcStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// INfcServer is the server-side interface that user implementations
+// provide to NewNfcStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INfcServer interface {
+	Open(ctx context.Context, clientCallback INfcClientCallback) error
+	Close(ctx context.Context, type_ NfcCloseType) error
+	CoreInitialized(ctx context.Context) error
+	FactoryReset(ctx context.Context) error
+	GetConfig(ctx context.Context) (NfcConfig, error)
+	PowerCycle(ctx context.Context) error
+	PreDiscover(ctx context.Context) error
+	Write(ctx context.Context, data []byte) (int32, error)
+	SetEnableVerboseLogging(ctx context.Context, enable bool) error
+	IsVerboseLoggingEnabled(ctx context.Context) (bool, error)
+	ControlGranted(ctx context.Context) (NfcStatus, error)
+}
+
+type nfcStubWrapper struct {
+	impl       INfcServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *nfcStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *nfcStubWrapper) Open(
+	ctx context.Context,
+	clientCallback INfcClientCallback,
+) error {
+	return w.impl.Open(ctx, clientCallback)
+}
+
+func (w *nfcStubWrapper) Close(
+	ctx context.Context,
+	type_ NfcCloseType,
+) error {
+	return w.impl.Close(ctx, type_)
+}
+
+func (w *nfcStubWrapper) CoreInitialized(
+	ctx context.Context,
+) error {
+	return w.impl.CoreInitialized(ctx)
+}
+
+func (w *nfcStubWrapper) FactoryReset(
+	ctx context.Context,
+) error {
+	return w.impl.FactoryReset(ctx)
+}
+
+func (w *nfcStubWrapper) GetConfig(
+	ctx context.Context,
+) (NfcConfig, error) {
+	return w.impl.GetConfig(ctx)
+}
+
+func (w *nfcStubWrapper) PowerCycle(
+	ctx context.Context,
+) error {
+	return w.impl.PowerCycle(ctx)
+}
+
+func (w *nfcStubWrapper) PreDiscover(
+	ctx context.Context,
+) error {
+	return w.impl.PreDiscover(ctx)
+}
+
+func (w *nfcStubWrapper) Write(
+	ctx context.Context,
+	data []byte,
+) (int32, error) {
+	return w.impl.Write(ctx, data)
+}
+
+func (w *nfcStubWrapper) SetEnableVerboseLogging(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetEnableVerboseLogging(ctx, enable)
+}
+
+func (w *nfcStubWrapper) IsVerboseLoggingEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsVerboseLoggingEnabled(ctx)
+}
+
+func (w *nfcStubWrapper) ControlGranted(
+	ctx context.Context,
+) (NfcStatus, error) {
+	return w.impl.ControlGranted(ctx)
+}
+
+var _ INfc = (*nfcStubWrapper)(nil)
+
+// NewNfcStub creates a server-side INfc wrapping the given
+// server implementation. The returned value satisfies INfc
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNfcStub(
+	impl INfcServer,
+) INfc {
+	wrapper := &nfcStubWrapper{impl: impl}
+	stub := &NfcStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

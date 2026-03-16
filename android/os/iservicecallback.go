@@ -44,7 +44,7 @@ func (p *ServiceCallbackProxy) OnRegistration(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceCallback)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceCallback, "onRegistration")
 	if _err != nil {
@@ -86,4 +86,44 @@ func (s *ServiceCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IServiceCallbackServer is the server-side interface that user implementations
+// provide to NewServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceCallbackServer interface {
+	OnRegistration(ctx context.Context, name string, binder_ binder.IBinder) error
+}
+
+type serviceCallbackStubWrapper struct {
+	impl       IServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceCallbackStubWrapper) OnRegistration(
+	ctx context.Context,
+	name string,
+	binder_ binder.IBinder,
+) error {
+	return w.impl.OnRegistration(ctx, name, binder_)
+}
+
+var _ IServiceCallback = (*serviceCallbackStubWrapper)(nil)
+
+// NewServiceCallbackStub creates a server-side IServiceCallback wrapping the given
+// server implementation. The returned value satisfies IServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceCallbackStub(
+	impl IServiceCallbackServer,
+) IServiceCallback {
+	wrapper := &serviceCallbackStubWrapper{impl: impl}
+	stub := &ServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

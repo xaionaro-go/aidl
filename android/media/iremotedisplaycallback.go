@@ -93,3 +93,42 @@ func (s *RemoteDisplayCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoteDisplayCallbackServer is the server-side interface that user implementations
+// provide to NewRemoteDisplayCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteDisplayCallbackServer interface {
+	OnStateChanged(ctx context.Context, state RemoteDisplayState) error
+}
+
+type remoteDisplayCallbackStubWrapper struct {
+	impl       IRemoteDisplayCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteDisplayCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteDisplayCallbackStubWrapper) OnStateChanged(
+	ctx context.Context,
+	state RemoteDisplayState,
+) error {
+	return w.impl.OnStateChanged(ctx, state)
+}
+
+var _ IRemoteDisplayCallback = (*remoteDisplayCallbackStubWrapper)(nil)
+
+// NewRemoteDisplayCallbackStub creates a server-side IRemoteDisplayCallback wrapping the given
+// server implementation. The returned value satisfies IRemoteDisplayCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteDisplayCallbackStub(
+	impl IRemoteDisplayCallbackServer,
+) IRemoteDisplayCallback {
+	wrapper := &remoteDisplayCallbackStubWrapper{impl: impl}
+	stub := &RemoteDisplayCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

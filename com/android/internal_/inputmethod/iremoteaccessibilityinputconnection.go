@@ -3,7 +3,6 @@ package inputmethod
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	viewInputmethod "github.com/xaionaro-go/binder/android/view/inputmethod"
 	"github.com/xaionaro-go/binder/binder"
 	infra "github.com/xaionaro-go/binder/com/android/internal_/infra"
@@ -32,7 +31,7 @@ type IRemoteAccessibilityInputConnection interface {
 	SetSelection(ctx context.Context, header InputConnectionCommandHeader, start int32, end int32) error
 	GetSurroundingText(ctx context.Context, header InputConnectionCommandHeader, beforeLength int32, afterLength int32, flags int32, future infra.AndroidFuture) error
 	DeleteSurroundingText(ctx context.Context, header InputConnectionCommandHeader, beforeLength int32, afterLength int32) error
-	SendKeyEvent(ctx context.Context, header InputConnectionCommandHeader, event view.KeyEvent) error
+	SendKeyEvent(ctx context.Context, header InputConnectionCommandHeader, event interface{}) error
 	PerformEditorAction(ctx context.Context, header InputConnectionCommandHeader, actionCode int32) error
 	PerformContextMenuAction(ctx context.Context, header InputConnectionCommandHeader, id int32) error
 	GetCursorCapsMode(ctx context.Context, header InputConnectionCommandHeader, reqModes int32, future infra.AndroidFuture) error
@@ -165,16 +164,12 @@ func (p *RemoteAccessibilityInputConnectionProxy) DeleteSurroundingText(
 func (p *RemoteAccessibilityInputConnectionProxy) SendKeyEvent(
 	ctx context.Context,
 	header InputConnectionCommandHeader,
-	event view.KeyEvent,
+	event interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteAccessibilityInputConnection)
 	_data.WriteInt32(1)
 	if _err := header.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := event.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 
@@ -443,18 +438,7 @@ func (s *RemoteAccessibilityInputConnectionStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_event view.KeyEvent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_event.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_event interface{}
 		_err := s.Impl.SendKeyEvent(ctx, _arg_header, _arg_event)
 		_ = _err
 		return nil, nil
@@ -565,4 +549,124 @@ func (s *RemoteAccessibilityInputConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRemoteAccessibilityInputConnectionServer is the server-side interface that user implementations
+// provide to NewRemoteAccessibilityInputConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteAccessibilityInputConnectionServer interface {
+	CommitText(ctx context.Context, header InputConnectionCommandHeader, text interface{}, newCursorPosition int32, textAttribute viewInputmethod.TextAttribute) error
+	SetSelection(ctx context.Context, header InputConnectionCommandHeader, start int32, end int32) error
+	GetSurroundingText(ctx context.Context, header InputConnectionCommandHeader, beforeLength int32, afterLength int32, flags int32, future infra.AndroidFuture) error
+	DeleteSurroundingText(ctx context.Context, header InputConnectionCommandHeader, beforeLength int32, afterLength int32) error
+	SendKeyEvent(ctx context.Context, header InputConnectionCommandHeader, event interface{}) error
+	PerformEditorAction(ctx context.Context, header InputConnectionCommandHeader, actionCode int32) error
+	PerformContextMenuAction(ctx context.Context, header InputConnectionCommandHeader, id int32) error
+	GetCursorCapsMode(ctx context.Context, header InputConnectionCommandHeader, reqModes int32, future infra.AndroidFuture) error
+	ClearMetaKeyStates(ctx context.Context, header InputConnectionCommandHeader, states int32) error
+}
+
+type remoteAccessibilityInputConnectionStubWrapper struct {
+	impl       IRemoteAccessibilityInputConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) CommitText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	text interface{},
+	newCursorPosition int32,
+	textAttribute viewInputmethod.TextAttribute,
+) error {
+	return w.impl.CommitText(ctx, header, text, newCursorPosition, textAttribute)
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) SetSelection(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	start int32,
+	end int32,
+) error {
+	return w.impl.SetSelection(ctx, header, start, end)
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) GetSurroundingText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	beforeLength int32,
+	afterLength int32,
+	flags int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.GetSurroundingText(ctx, header, beforeLength, afterLength, flags, future)
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) DeleteSurroundingText(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	beforeLength int32,
+	afterLength int32,
+) error {
+	return w.impl.DeleteSurroundingText(ctx, header, beforeLength, afterLength)
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) SendKeyEvent(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	event interface{},
+) error {
+	return w.impl.SendKeyEvent(ctx, header, event)
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) PerformEditorAction(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	actionCode int32,
+) error {
+	return w.impl.PerformEditorAction(ctx, header, actionCode)
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) PerformContextMenuAction(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	id int32,
+) error {
+	return w.impl.PerformContextMenuAction(ctx, header, id)
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) GetCursorCapsMode(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	reqModes int32,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.GetCursorCapsMode(ctx, header, reqModes, future)
+}
+
+func (w *remoteAccessibilityInputConnectionStubWrapper) ClearMetaKeyStates(
+	ctx context.Context,
+	header InputConnectionCommandHeader,
+	states int32,
+) error {
+	return w.impl.ClearMetaKeyStates(ctx, header, states)
+}
+
+var _ IRemoteAccessibilityInputConnection = (*remoteAccessibilityInputConnectionStubWrapper)(nil)
+
+// NewRemoteAccessibilityInputConnectionStub creates a server-side IRemoteAccessibilityInputConnection wrapping the given
+// server implementation. The returned value satisfies IRemoteAccessibilityInputConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteAccessibilityInputConnectionStub(
+	impl IRemoteAccessibilityInputConnectionServer,
+) IRemoteAccessibilityInputConnection {
+	wrapper := &remoteAccessibilityInputConnectionStubWrapper{impl: impl}
+	stub := &RemoteAccessibilityInputConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

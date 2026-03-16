@@ -153,7 +153,7 @@ func (p *RemoteAccessProxy) SetRemoteTaskCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteAccess)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAccess, "setRemoteTaskCallback")
 	if _err != nil {
@@ -684,4 +684,135 @@ func (s *RemoteAccessStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRemoteAccessServer is the server-side interface that user implementations
+// provide to NewRemoteAccessStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteAccessServer interface {
+	GetVehicleId(ctx context.Context) (string, error)
+	GetWakeupServiceName(ctx context.Context) (string, error)
+	GetProcessorId(ctx context.Context) (string, error)
+	SetRemoteTaskCallback(ctx context.Context, callback IRemoteTaskCallback) error
+	ClearRemoteTaskCallback(ctx context.Context) error
+	NotifyApStateChange(ctx context.Context, state ApState) error
+	IsTaskScheduleSupported(ctx context.Context) (bool, error)
+	GetSupportedTaskTypesForScheduling(ctx context.Context) ([]TaskType, error)
+	ScheduleTask(ctx context.Context, scheduleInfo ScheduleInfo) error
+	UnscheduleTask(ctx context.Context, clientId string, scheduleId string) error
+	UnscheduleAllTasks(ctx context.Context, clientId string) error
+	IsTaskScheduled(ctx context.Context, clientId string, scheduleId string) (bool, error)
+	GetAllPendingScheduledTasks(ctx context.Context, clientId string) ([]ScheduleInfo, error)
+}
+
+type remoteAccessStubWrapper struct {
+	impl       IRemoteAccessServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteAccessStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteAccessStubWrapper) GetVehicleId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetVehicleId(ctx)
+}
+
+func (w *remoteAccessStubWrapper) GetWakeupServiceName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetWakeupServiceName(ctx)
+}
+
+func (w *remoteAccessStubWrapper) GetProcessorId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetProcessorId(ctx)
+}
+
+func (w *remoteAccessStubWrapper) SetRemoteTaskCallback(
+	ctx context.Context,
+	callback IRemoteTaskCallback,
+) error {
+	return w.impl.SetRemoteTaskCallback(ctx, callback)
+}
+
+func (w *remoteAccessStubWrapper) ClearRemoteTaskCallback(
+	ctx context.Context,
+) error {
+	return w.impl.ClearRemoteTaskCallback(ctx)
+}
+
+func (w *remoteAccessStubWrapper) NotifyApStateChange(
+	ctx context.Context,
+	state ApState,
+) error {
+	return w.impl.NotifyApStateChange(ctx, state)
+}
+
+func (w *remoteAccessStubWrapper) IsTaskScheduleSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsTaskScheduleSupported(ctx)
+}
+
+func (w *remoteAccessStubWrapper) GetSupportedTaskTypesForScheduling(
+	ctx context.Context,
+) ([]TaskType, error) {
+	return w.impl.GetSupportedTaskTypesForScheduling(ctx)
+}
+
+func (w *remoteAccessStubWrapper) ScheduleTask(
+	ctx context.Context,
+	scheduleInfo ScheduleInfo,
+) error {
+	return w.impl.ScheduleTask(ctx, scheduleInfo)
+}
+
+func (w *remoteAccessStubWrapper) UnscheduleTask(
+	ctx context.Context,
+	clientId string,
+	scheduleId string,
+) error {
+	return w.impl.UnscheduleTask(ctx, clientId, scheduleId)
+}
+
+func (w *remoteAccessStubWrapper) UnscheduleAllTasks(
+	ctx context.Context,
+	clientId string,
+) error {
+	return w.impl.UnscheduleAllTasks(ctx, clientId)
+}
+
+func (w *remoteAccessStubWrapper) IsTaskScheduled(
+	ctx context.Context,
+	clientId string,
+	scheduleId string,
+) (bool, error) {
+	return w.impl.IsTaskScheduled(ctx, clientId, scheduleId)
+}
+
+func (w *remoteAccessStubWrapper) GetAllPendingScheduledTasks(
+	ctx context.Context,
+	clientId string,
+) ([]ScheduleInfo, error) {
+	return w.impl.GetAllPendingScheduledTasks(ctx, clientId)
+}
+
+var _ IRemoteAccess = (*remoteAccessStubWrapper)(nil)
+
+// NewRemoteAccessStub creates a server-side IRemoteAccess wrapping the given
+// server implementation. The returned value satisfies IRemoteAccess
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteAccessStub(
+	impl IRemoteAccessServer,
+) IRemoteAccess {
+	wrapper := &remoteAccessStubWrapper{impl: impl}
+	stub := &RemoteAccessStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

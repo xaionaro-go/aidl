@@ -82,3 +82,42 @@ func (s *KeyguardLockedStateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyguardLockedStateListenerServer is the server-side interface that user implementations
+// provide to NewKeyguardLockedStateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyguardLockedStateListenerServer interface {
+	OnKeyguardLockedStateChanged(ctx context.Context, isKeyguardLocked bool) error
+}
+
+type keyguardLockedStateListenerStubWrapper struct {
+	impl       IKeyguardLockedStateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyguardLockedStateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyguardLockedStateListenerStubWrapper) OnKeyguardLockedStateChanged(
+	ctx context.Context,
+	isKeyguardLocked bool,
+) error {
+	return w.impl.OnKeyguardLockedStateChanged(ctx, isKeyguardLocked)
+}
+
+var _ IKeyguardLockedStateListener = (*keyguardLockedStateListenerStubWrapper)(nil)
+
+// NewKeyguardLockedStateListenerStub creates a server-side IKeyguardLockedStateListener wrapping the given
+// server implementation. The returned value satisfies IKeyguardLockedStateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyguardLockedStateListenerStub(
+	impl IKeyguardLockedStateListenerServer,
+) IKeyguardLockedStateListener {
+	wrapper := &keyguardLockedStateListenerStubWrapper{impl: impl}
+	stub := &KeyguardLockedStateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

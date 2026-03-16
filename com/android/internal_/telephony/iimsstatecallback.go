@@ -106,3 +106,49 @@ func (s *ImsStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsStateCallbackServer is the server-side interface that user implementations
+// provide to NewImsStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsStateCallbackServer interface {
+	OnUnavailable(ctx context.Context, reason int32) error
+	OnAvailable(ctx context.Context) error
+}
+
+type imsStateCallbackStubWrapper struct {
+	impl       IImsStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsStateCallbackStubWrapper) OnUnavailable(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnUnavailable(ctx, reason)
+}
+
+func (w *imsStateCallbackStubWrapper) OnAvailable(
+	ctx context.Context,
+) error {
+	return w.impl.OnAvailable(ctx)
+}
+
+var _ IImsStateCallback = (*imsStateCallbackStubWrapper)(nil)
+
+// NewImsStateCallbackStub creates a server-side IImsStateCallback wrapping the given
+// server implementation. The returned value satisfies IImsStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsStateCallbackStub(
+	impl IImsStateCallbackServer,
+) IImsStateCallback {
+	wrapper := &imsStateCallbackStubWrapper{impl: impl}
+	stub := &ImsStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -296,7 +296,7 @@ func (p *WifiRttControllerProxy) RegisterEventCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiRttController)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWifiRttController, "registerEventCallback")
 	if _err != nil {
@@ -610,4 +610,119 @@ func (s *WifiRttControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWifiRttControllerServer is the server-side interface that user implementations
+// provide to NewWifiRttControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiRttControllerServer interface {
+	DisableResponder(ctx context.Context, cmdId int32) error
+	EnableResponder(ctx context.Context, cmdId int32, channelHint WifiChannelInfo, maxDurationInSeconds int32, info RttResponder) error
+	GetBoundIface(ctx context.Context) (IWifiStaIface, error)
+	GetCapabilities(ctx context.Context) (RttCapabilities, error)
+	GetResponderInfo(ctx context.Context) (RttResponder, error)
+	RangeCancel(ctx context.Context, cmdId int32, addrs []MacAddress) error
+	RangeRequest(ctx context.Context, cmdId int32, rttConfigs []RttConfig) error
+	RegisterEventCallback(ctx context.Context, callback IWifiRttControllerEventCallback) error
+	SetLci(ctx context.Context, cmdId int32, lci RttLciInformation) error
+	SetLcr(ctx context.Context, cmdId int32, lcr RttLcrInformation) error
+}
+
+type wifiRttControllerStubWrapper struct {
+	impl       IWifiRttControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiRttControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiRttControllerStubWrapper) DisableResponder(
+	ctx context.Context,
+	cmdId int32,
+) error {
+	return w.impl.DisableResponder(ctx, cmdId)
+}
+
+func (w *wifiRttControllerStubWrapper) EnableResponder(
+	ctx context.Context,
+	cmdId int32,
+	channelHint WifiChannelInfo,
+	maxDurationInSeconds int32,
+	info RttResponder,
+) error {
+	return w.impl.EnableResponder(ctx, cmdId, channelHint, maxDurationInSeconds, info)
+}
+
+func (w *wifiRttControllerStubWrapper) GetBoundIface(
+	ctx context.Context,
+) (IWifiStaIface, error) {
+	return w.impl.GetBoundIface(ctx)
+}
+
+func (w *wifiRttControllerStubWrapper) GetCapabilities(
+	ctx context.Context,
+) (RttCapabilities, error) {
+	return w.impl.GetCapabilities(ctx)
+}
+
+func (w *wifiRttControllerStubWrapper) GetResponderInfo(
+	ctx context.Context,
+) (RttResponder, error) {
+	return w.impl.GetResponderInfo(ctx)
+}
+
+func (w *wifiRttControllerStubWrapper) RangeCancel(
+	ctx context.Context,
+	cmdId int32,
+	addrs []MacAddress,
+) error {
+	return w.impl.RangeCancel(ctx, cmdId, addrs)
+}
+
+func (w *wifiRttControllerStubWrapper) RangeRequest(
+	ctx context.Context,
+	cmdId int32,
+	rttConfigs []RttConfig,
+) error {
+	return w.impl.RangeRequest(ctx, cmdId, rttConfigs)
+}
+
+func (w *wifiRttControllerStubWrapper) RegisterEventCallback(
+	ctx context.Context,
+	callback IWifiRttControllerEventCallback,
+) error {
+	return w.impl.RegisterEventCallback(ctx, callback)
+}
+
+func (w *wifiRttControllerStubWrapper) SetLci(
+	ctx context.Context,
+	cmdId int32,
+	lci RttLciInformation,
+) error {
+	return w.impl.SetLci(ctx, cmdId, lci)
+}
+
+func (w *wifiRttControllerStubWrapper) SetLcr(
+	ctx context.Context,
+	cmdId int32,
+	lcr RttLcrInformation,
+) error {
+	return w.impl.SetLcr(ctx, cmdId, lcr)
+}
+
+var _ IWifiRttController = (*wifiRttControllerStubWrapper)(nil)
+
+// NewWifiRttControllerStub creates a server-side IWifiRttController wrapping the given
+// server implementation. The returned value satisfies IWifiRttController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiRttControllerStub(
+	impl IWifiRttControllerServer,
+) IWifiRttController {
+	wrapper := &wifiRttControllerStubWrapper{impl: impl}
+	stub := &WifiRttControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

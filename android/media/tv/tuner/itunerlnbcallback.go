@@ -148,3 +148,50 @@ func (s *TunerLnbCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITunerLnbCallbackServer is the server-side interface that user implementations
+// provide to NewTunerLnbCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerLnbCallbackServer interface {
+	OnEvent(ctx context.Context, lnbEventType tvTuner.LnbEventType) error
+	OnDiseqcMessage(ctx context.Context, diseqcMessage []byte) error
+}
+
+type tunerLnbCallbackStubWrapper struct {
+	impl       ITunerLnbCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerLnbCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerLnbCallbackStubWrapper) OnEvent(
+	ctx context.Context,
+	lnbEventType tvTuner.LnbEventType,
+) error {
+	return w.impl.OnEvent(ctx, lnbEventType)
+}
+
+func (w *tunerLnbCallbackStubWrapper) OnDiseqcMessage(
+	ctx context.Context,
+	diseqcMessage []byte,
+) error {
+	return w.impl.OnDiseqcMessage(ctx, diseqcMessage)
+}
+
+var _ ITunerLnbCallback = (*tunerLnbCallbackStubWrapper)(nil)
+
+// NewTunerLnbCallbackStub creates a server-side ITunerLnbCallback wrapping the given
+// server implementation. The returned value satisfies ITunerLnbCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerLnbCallbackStub(
+	impl ITunerLnbCallbackServer,
+) ITunerLnbCallback {
+	wrapper := &tunerLnbCallbackStubWrapper{impl: impl}
+	stub := &TunerLnbCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

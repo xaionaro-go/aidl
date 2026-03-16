@@ -109,3 +109,50 @@ func (s *NativeSpatializerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INativeSpatializerCallbackServer is the server-side interface that user implementations
+// provide to NewNativeSpatializerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INativeSpatializerCallbackServer interface {
+	OnLevelChanged(ctx context.Context, level Spatialization.Level) error
+	OnOutputChanged(ctx context.Context, output int32) error
+}
+
+type nativeSpatializerCallbackStubWrapper struct {
+	impl       INativeSpatializerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *nativeSpatializerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *nativeSpatializerCallbackStubWrapper) OnLevelChanged(
+	ctx context.Context,
+	level Spatialization.Level,
+) error {
+	return w.impl.OnLevelChanged(ctx, level)
+}
+
+func (w *nativeSpatializerCallbackStubWrapper) OnOutputChanged(
+	ctx context.Context,
+	output int32,
+) error {
+	return w.impl.OnOutputChanged(ctx, output)
+}
+
+var _ INativeSpatializerCallback = (*nativeSpatializerCallbackStubWrapper)(nil)
+
+// NewNativeSpatializerCallbackStub creates a server-side INativeSpatializerCallback wrapping the given
+// server implementation. The returned value satisfies INativeSpatializerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNativeSpatializerCallbackStub(
+	impl INativeSpatializerCallbackServer,
+) INativeSpatializerCallback {
+	wrapper := &nativeSpatializerCallbackStubWrapper{impl: impl}
+	stub := &NativeSpatializerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

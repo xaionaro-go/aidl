@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	common "github.com/xaionaro-go/binder/android/hardware/input/common"
-	view "github.com/xaionaro-go/binder/android/view"
 	viewInputmethod "github.com/xaionaro-go/binder/android/view/inputmethod"
 	"github.com/xaionaro-go/binder/binder"
 	inputmethodIInputMethod "github.com/xaionaro-go/binder/com/android/internal_/inputmethod/IInputMethod"
@@ -46,14 +45,14 @@ type IInputMethod interface {
 	UnbindInput(ctx context.Context) error
 	StartInput(ctx context.Context, params inputmethodIInputMethod.StartInputParams) error
 	OnNavButtonFlagsChanged(ctx context.Context, navButtonFlags int32) error
-	CreateSession(ctx context.Context, channel view.InputChannel, callback IInputMethodSessionCallback) error
+	CreateSession(ctx context.Context, channel interface{}, callback IInputMethodSessionCallback) error
 	SetSessionEnabled(ctx context.Context, session IInputMethodSession, enabled bool) error
 	ShowSoftInput(ctx context.Context, showInputToken binder.IBinder, statsToken viewInputmethod.ImeTrackerToken, flags int32, resultReceiver interface{}) error
 	HideSoftInput(ctx context.Context, hideInputToken binder.IBinder, statsToken viewInputmethod.ImeTrackerToken, flags int32, resultReceiver interface{}) error
 	UpdateEditorToolType(ctx context.Context, toolType int32) error
 	ChangeInputMethodSubtype(ctx context.Context, subtype viewInputmethod.InputMethodSubtype) error
 	CanStartStylusHandwriting(ctx context.Context, requestId int32, connectionlessCallback IConnectionlessHandwritingCallback, cursorAnchorInfo viewInputmethod.CursorAnchorInfo, isConnectionlessForDelegation bool) error
-	StartStylusHandwriting(ctx context.Context, requestId int32, channel view.InputChannel, events []common.MotionEvent) error
+	StartStylusHandwriting(ctx context.Context, requestId int32, channel interface{}, events []common.MotionEvent) error
 	CommitHandwritingDelegationTextIfAvailable(ctx context.Context) error
 	DiscardHandwritingDelegationText(ctx context.Context) error
 	InitInkWindow(ctx context.Context) error
@@ -109,7 +108,7 @@ func (p *InputMethodProxy) OnCreateInlineSuggestionsRequest(
 	if _err := requestInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "onCreateInlineSuggestionsRequest")
 	if _err != nil {
@@ -194,16 +193,12 @@ func (p *InputMethodProxy) OnNavButtonFlagsChanged(
 
 func (p *InputMethodProxy) CreateSession(
 	ctx context.Context,
-	channel view.InputChannel,
+	channel interface{},
 	callback IInputMethodSessionCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
-	_data.WriteInt32(1)
-	if _err := channel.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "createSession")
 	if _err != nil {
@@ -221,7 +216,7 @@ func (p *InputMethodProxy) SetSessionEnabled(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteBool(enabled)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputMethod, "setSessionEnabled")
@@ -242,7 +237,7 @@ func (p *InputMethodProxy) ShowSoftInput(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
-	_data.WriteStrongBinder(showInputToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, showInputToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := statsToken.MarshalParcel(_data); _err != nil {
 		return _err
@@ -267,7 +262,7 @@ func (p *InputMethodProxy) HideSoftInput(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
-	_data.WriteStrongBinder(hideInputToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, hideInputToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := statsToken.MarshalParcel(_data); _err != nil {
 		return _err
@@ -330,7 +325,7 @@ func (p *InputMethodProxy) CanStartStylusHandwriting(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 	_data.WriteInt32(requestId)
-	_data.WriteStrongBinder(connectionlessCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connectionlessCallback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := cursorAnchorInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -349,16 +344,12 @@ func (p *InputMethodProxy) CanStartStylusHandwriting(
 func (p *InputMethodProxy) StartStylusHandwriting(
 	ctx context.Context,
 	requestId int32,
-	channel view.InputChannel,
+	channel interface{},
 	events []common.MotionEvent,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputMethod)
 	_data.WriteInt32(requestId)
-	_data.WriteInt32(1)
-	if _err := channel.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	if events == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -586,18 +577,7 @@ func (s *InputMethodStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_channel view.InputChannel
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_channel.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_channel interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_callback IInputMethodSessionCallback
 		_ = _arg_callback
@@ -740,18 +720,7 @@ func (s *InputMethodStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_channel view.InputChannel
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_channel.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_channel interface{}
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_events []common.MotionEvent
 		_ = _arg_events
@@ -807,4 +776,203 @@ func (s *InputMethodStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputMethodServer is the server-side interface that user implementations
+// provide to NewInputMethodStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputMethodServer interface {
+	InitializeInternal(ctx context.Context, params inputmethodIInputMethod.InitParams) error
+	OnCreateInlineSuggestionsRequest(ctx context.Context, requestInfo InlineSuggestionsRequestInfo, cb IInlineSuggestionsRequestCallback) error
+	BindInput(ctx context.Context, binding viewInputmethod.InputBinding) error
+	UnbindInput(ctx context.Context) error
+	StartInput(ctx context.Context, params inputmethodIInputMethod.StartInputParams) error
+	OnNavButtonFlagsChanged(ctx context.Context, navButtonFlags int32) error
+	CreateSession(ctx context.Context, channel interface{}, callback IInputMethodSessionCallback) error
+	SetSessionEnabled(ctx context.Context, session IInputMethodSession, enabled bool) error
+	ShowSoftInput(ctx context.Context, showInputToken binder.IBinder, statsToken viewInputmethod.ImeTrackerToken, flags int32, resultReceiver interface{}) error
+	HideSoftInput(ctx context.Context, hideInputToken binder.IBinder, statsToken viewInputmethod.ImeTrackerToken, flags int32, resultReceiver interface{}) error
+	UpdateEditorToolType(ctx context.Context, toolType int32) error
+	ChangeInputMethodSubtype(ctx context.Context, subtype viewInputmethod.InputMethodSubtype) error
+	CanStartStylusHandwriting(ctx context.Context, requestId int32, connectionlessCallback IConnectionlessHandwritingCallback, cursorAnchorInfo viewInputmethod.CursorAnchorInfo, isConnectionlessForDelegation bool) error
+	StartStylusHandwriting(ctx context.Context, requestId int32, channel interface{}, events []common.MotionEvent) error
+	CommitHandwritingDelegationTextIfAvailable(ctx context.Context) error
+	DiscardHandwritingDelegationText(ctx context.Context) error
+	InitInkWindow(ctx context.Context) error
+	FinishStylusHandwriting(ctx context.Context) error
+	RemoveStylusHandwritingWindow(ctx context.Context) error
+	SetStylusWindowIdleTimeoutForTest(ctx context.Context, timeout int64) error
+}
+
+type inputMethodStubWrapper struct {
+	impl       IInputMethodServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputMethodStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputMethodStubWrapper) InitializeInternal(
+	ctx context.Context,
+	params inputmethodIInputMethod.InitParams,
+) error {
+	return w.impl.InitializeInternal(ctx, params)
+}
+
+func (w *inputMethodStubWrapper) OnCreateInlineSuggestionsRequest(
+	ctx context.Context,
+	requestInfo InlineSuggestionsRequestInfo,
+	cb IInlineSuggestionsRequestCallback,
+) error {
+	return w.impl.OnCreateInlineSuggestionsRequest(ctx, requestInfo, cb)
+}
+
+func (w *inputMethodStubWrapper) BindInput(
+	ctx context.Context,
+	binding viewInputmethod.InputBinding,
+) error {
+	return w.impl.BindInput(ctx, binding)
+}
+
+func (w *inputMethodStubWrapper) UnbindInput(
+	ctx context.Context,
+) error {
+	return w.impl.UnbindInput(ctx)
+}
+
+func (w *inputMethodStubWrapper) StartInput(
+	ctx context.Context,
+	params inputmethodIInputMethod.StartInputParams,
+) error {
+	return w.impl.StartInput(ctx, params)
+}
+
+func (w *inputMethodStubWrapper) OnNavButtonFlagsChanged(
+	ctx context.Context,
+	navButtonFlags int32,
+) error {
+	return w.impl.OnNavButtonFlagsChanged(ctx, navButtonFlags)
+}
+
+func (w *inputMethodStubWrapper) CreateSession(
+	ctx context.Context,
+	channel interface{},
+	callback IInputMethodSessionCallback,
+) error {
+	return w.impl.CreateSession(ctx, channel, callback)
+}
+
+func (w *inputMethodStubWrapper) SetSessionEnabled(
+	ctx context.Context,
+	session IInputMethodSession,
+	enabled bool,
+) error {
+	return w.impl.SetSessionEnabled(ctx, session, enabled)
+}
+
+func (w *inputMethodStubWrapper) ShowSoftInput(
+	ctx context.Context,
+	showInputToken binder.IBinder,
+	statsToken viewInputmethod.ImeTrackerToken,
+	flags int32,
+	resultReceiver interface{},
+) error {
+	return w.impl.ShowSoftInput(ctx, showInputToken, statsToken, flags, resultReceiver)
+}
+
+func (w *inputMethodStubWrapper) HideSoftInput(
+	ctx context.Context,
+	hideInputToken binder.IBinder,
+	statsToken viewInputmethod.ImeTrackerToken,
+	flags int32,
+	resultReceiver interface{},
+) error {
+	return w.impl.HideSoftInput(ctx, hideInputToken, statsToken, flags, resultReceiver)
+}
+
+func (w *inputMethodStubWrapper) UpdateEditorToolType(
+	ctx context.Context,
+	toolType int32,
+) error {
+	return w.impl.UpdateEditorToolType(ctx, toolType)
+}
+
+func (w *inputMethodStubWrapper) ChangeInputMethodSubtype(
+	ctx context.Context,
+	subtype viewInputmethod.InputMethodSubtype,
+) error {
+	return w.impl.ChangeInputMethodSubtype(ctx, subtype)
+}
+
+func (w *inputMethodStubWrapper) CanStartStylusHandwriting(
+	ctx context.Context,
+	requestId int32,
+	connectionlessCallback IConnectionlessHandwritingCallback,
+	cursorAnchorInfo viewInputmethod.CursorAnchorInfo,
+	isConnectionlessForDelegation bool,
+) error {
+	return w.impl.CanStartStylusHandwriting(ctx, requestId, connectionlessCallback, cursorAnchorInfo, isConnectionlessForDelegation)
+}
+
+func (w *inputMethodStubWrapper) StartStylusHandwriting(
+	ctx context.Context,
+	requestId int32,
+	channel interface{},
+	events []common.MotionEvent,
+) error {
+	return w.impl.StartStylusHandwriting(ctx, requestId, channel, events)
+}
+
+func (w *inputMethodStubWrapper) CommitHandwritingDelegationTextIfAvailable(
+	ctx context.Context,
+) error {
+	return w.impl.CommitHandwritingDelegationTextIfAvailable(ctx)
+}
+
+func (w *inputMethodStubWrapper) DiscardHandwritingDelegationText(
+	ctx context.Context,
+) error {
+	return w.impl.DiscardHandwritingDelegationText(ctx)
+}
+
+func (w *inputMethodStubWrapper) InitInkWindow(
+	ctx context.Context,
+) error {
+	return w.impl.InitInkWindow(ctx)
+}
+
+func (w *inputMethodStubWrapper) FinishStylusHandwriting(
+	ctx context.Context,
+) error {
+	return w.impl.FinishStylusHandwriting(ctx)
+}
+
+func (w *inputMethodStubWrapper) RemoveStylusHandwritingWindow(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveStylusHandwritingWindow(ctx)
+}
+
+func (w *inputMethodStubWrapper) SetStylusWindowIdleTimeoutForTest(
+	ctx context.Context,
+	timeout int64,
+) error {
+	return w.impl.SetStylusWindowIdleTimeoutForTest(ctx, timeout)
+}
+
+var _ IInputMethod = (*inputMethodStubWrapper)(nil)
+
+// NewInputMethodStub creates a server-side IInputMethod wrapping the given
+// server implementation. The returned value satisfies IInputMethod
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputMethodStub(
+	impl IInputMethodServer,
+) IInputMethod {
+	wrapper := &inputMethodStubWrapper{impl: impl}
+	stub := &InputMethodStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

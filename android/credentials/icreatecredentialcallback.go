@@ -155,3 +155,59 @@ func (s *CreateCredentialCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICreateCredentialCallbackServer is the server-side interface that user implementations
+// provide to NewCreateCredentialCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICreateCredentialCallbackServer interface {
+	OnPendingIntent(ctx context.Context, pendingIntent interface{}) error
+	OnResponse(ctx context.Context, response CreateCredentialResponse) error
+	OnError(ctx context.Context, errorType string, message string) error
+}
+
+type createCredentialCallbackStubWrapper struct {
+	impl       ICreateCredentialCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *createCredentialCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *createCredentialCallbackStubWrapper) OnPendingIntent(
+	ctx context.Context,
+	pendingIntent interface{},
+) error {
+	return w.impl.OnPendingIntent(ctx, pendingIntent)
+}
+
+func (w *createCredentialCallbackStubWrapper) OnResponse(
+	ctx context.Context,
+	response CreateCredentialResponse,
+) error {
+	return w.impl.OnResponse(ctx, response)
+}
+
+func (w *createCredentialCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorType string,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorType, message)
+}
+
+var _ ICreateCredentialCallback = (*createCredentialCallbackStubWrapper)(nil)
+
+// NewCreateCredentialCallbackStub creates a server-side ICreateCredentialCallback wrapping the given
+// server implementation. The returned value satisfies ICreateCredentialCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCreateCredentialCallbackStub(
+	impl ICreateCredentialCallbackServer,
+) ICreateCredentialCallback {
+	wrapper := &createCredentialCallbackStubWrapper{impl: impl}
+	stub := &CreateCredentialCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

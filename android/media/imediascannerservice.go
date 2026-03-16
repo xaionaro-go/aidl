@@ -48,7 +48,7 @@ func (p *MediaScannerServiceProxy) RequestScanFile(
 	_data.WriteInterfaceToken(DescriptorIMediaScannerService)
 	_data.WriteString16(path)
 	_data.WriteString16(mimeType)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaScannerService, "requestScanFile")
 	if _err != nil {
@@ -156,4 +156,54 @@ func (s *MediaScannerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaScannerServiceServer is the server-side interface that user implementations
+// provide to NewMediaScannerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaScannerServiceServer interface {
+	RequestScanFile(ctx context.Context, path string, mimeType string, listener IMediaScannerListener) error
+	ScanFile(ctx context.Context, path string, mimeType string) error
+}
+
+type mediaScannerServiceStubWrapper struct {
+	impl       IMediaScannerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaScannerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaScannerServiceStubWrapper) RequestScanFile(
+	ctx context.Context,
+	path string,
+	mimeType string,
+	listener IMediaScannerListener,
+) error {
+	return w.impl.RequestScanFile(ctx, path, mimeType, listener)
+}
+
+func (w *mediaScannerServiceStubWrapper) ScanFile(
+	ctx context.Context,
+	path string,
+	mimeType string,
+) error {
+	return w.impl.ScanFile(ctx, path, mimeType)
+}
+
+var _ IMediaScannerService = (*mediaScannerServiceStubWrapper)(nil)
+
+// NewMediaScannerServiceStub creates a server-side IMediaScannerService wrapping the given
+// server implementation. The returned value satisfies IMediaScannerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaScannerServiceStub(
+	impl IMediaScannerServiceServer,
+) IMediaScannerService {
+	wrapper := &mediaScannerServiceStubWrapper{impl: impl}
+	stub := &MediaScannerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

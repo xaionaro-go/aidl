@@ -51,7 +51,7 @@ func (p *ApInterfaceProxy) RegisterCallback(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIApInterface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIApInterface, "registerCallback")
 	if _err != nil {
@@ -150,4 +150,50 @@ func (s *ApInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IApInterfaceServer is the server-side interface that user implementations
+// provide to NewApInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IApInterfaceServer interface {
+	RegisterCallback(ctx context.Context, callback IApInterfaceEventCallback) (bool, error)
+	GetInterfaceName(ctx context.Context) (string, error)
+}
+
+type apInterfaceStubWrapper struct {
+	impl       IApInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *apInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *apInterfaceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IApInterfaceEventCallback,
+) (bool, error) {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *apInterfaceStubWrapper) GetInterfaceName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetInterfaceName(ctx)
+}
+
+var _ IApInterface = (*apInterfaceStubWrapper)(nil)
+
+// NewApInterfaceStub creates a server-side IApInterface wrapping the given
+// server implementation. The returned value satisfies IApInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewApInterfaceStub(
+	impl IApInterfaceServer,
+) IApInterface {
+	wrapper := &apInterfaceStubWrapper{impl: impl}
+	stub := &ApInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

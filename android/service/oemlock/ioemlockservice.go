@@ -372,3 +372,86 @@ func (s *OemLockServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOemLockServiceServer is the server-side interface that user implementations
+// provide to NewOemLockServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOemLockServiceServer interface {
+	GetLockName(ctx context.Context) (string, error)
+	SetOemUnlockAllowedByCarrier(ctx context.Context, allowed bool, signature []byte) error
+	IsOemUnlockAllowedByCarrier(ctx context.Context) (bool, error)
+	SetOemUnlockAllowedByUser(ctx context.Context, allowed bool) error
+	IsOemUnlockAllowedByUser(ctx context.Context) (bool, error)
+	IsOemUnlockAllowed(ctx context.Context) (bool, error)
+	IsDeviceOemUnlocked(ctx context.Context) (bool, error)
+}
+
+type oemLockServiceStubWrapper struct {
+	impl       IOemLockServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *oemLockServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *oemLockServiceStubWrapper) GetLockName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetLockName(ctx)
+}
+
+func (w *oemLockServiceStubWrapper) SetOemUnlockAllowedByCarrier(
+	ctx context.Context,
+	allowed bool,
+	signature []byte,
+) error {
+	return w.impl.SetOemUnlockAllowedByCarrier(ctx, allowed, signature)
+}
+
+func (w *oemLockServiceStubWrapper) IsOemUnlockAllowedByCarrier(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsOemUnlockAllowedByCarrier(ctx)
+}
+
+func (w *oemLockServiceStubWrapper) SetOemUnlockAllowedByUser(
+	ctx context.Context,
+	allowed bool,
+) error {
+	return w.impl.SetOemUnlockAllowedByUser(ctx, allowed)
+}
+
+func (w *oemLockServiceStubWrapper) IsOemUnlockAllowedByUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsOemUnlockAllowedByUser(ctx)
+}
+
+func (w *oemLockServiceStubWrapper) IsOemUnlockAllowed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsOemUnlockAllowed(ctx)
+}
+
+func (w *oemLockServiceStubWrapper) IsDeviceOemUnlocked(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDeviceOemUnlocked(ctx)
+}
+
+var _ IOemLockService = (*oemLockServiceStubWrapper)(nil)
+
+// NewOemLockServiceStub creates a server-side IOemLockService wrapping the given
+// server implementation. The returned value satisfies IOemLockService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOemLockServiceStub(
+	impl IOemLockServiceServer,
+) IOemLockService {
+	wrapper := &oemLockServiceStubWrapper{impl: impl}
+	stub := &OemLockServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

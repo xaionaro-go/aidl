@@ -45,7 +45,7 @@ func (p *SuspendControlServiceProxy) RegisterCallback(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISuspendControlService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISuspendControlService, "registerCallback")
 	if _err != nil {
@@ -77,7 +77,7 @@ func (p *SuspendControlServiceProxy) RegisterWakelockCallback(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISuspendControlService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(name)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISuspendControlService, "registerWakelockCallback")
@@ -155,4 +155,52 @@ func (s *SuspendControlServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISuspendControlServiceServer is the server-side interface that user implementations
+// provide to NewSuspendControlServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISuspendControlServiceServer interface {
+	RegisterCallback(ctx context.Context, callback ISuspendCallback) (bool, error)
+	RegisterWakelockCallback(ctx context.Context, callback IWakelockCallback, name string) (bool, error)
+}
+
+type suspendControlServiceStubWrapper struct {
+	impl       ISuspendControlServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *suspendControlServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *suspendControlServiceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ISuspendCallback,
+) (bool, error) {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *suspendControlServiceStubWrapper) RegisterWakelockCallback(
+	ctx context.Context,
+	callback IWakelockCallback,
+	name string,
+) (bool, error) {
+	return w.impl.RegisterWakelockCallback(ctx, callback, name)
+}
+
+var _ ISuspendControlService = (*suspendControlServiceStubWrapper)(nil)
+
+// NewSuspendControlServiceStub creates a server-side ISuspendControlService wrapping the given
+// server implementation. The returned value satisfies ISuspendControlService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSuspendControlServiceStub(
+	impl ISuspendControlServiceServer,
+) ISuspendControlService {
+	wrapper := &suspendControlServiceStubWrapper{impl: impl}
+	stub := &SuspendControlServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

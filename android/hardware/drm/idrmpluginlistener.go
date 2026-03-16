@@ -241,3 +241,71 @@ func (s *DrmPluginListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDrmPluginListenerServer is the server-side interface that user implementations
+// provide to NewDrmPluginListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDrmPluginListenerServer interface {
+	OnEvent(ctx context.Context, eventType EventType, sessionId []byte, data []byte) error
+	OnExpirationUpdate(ctx context.Context, sessionId []byte, expiryTimeInMS int64) error
+	OnKeysChange(ctx context.Context, sessionId []byte, keyStatusList []KeyStatus, hasNewUsableKey bool) error
+	OnSessionLostState(ctx context.Context, sessionId []byte) error
+}
+
+type drmPluginListenerStubWrapper struct {
+	impl       IDrmPluginListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *drmPluginListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *drmPluginListenerStubWrapper) OnEvent(
+	ctx context.Context,
+	eventType EventType,
+	sessionId []byte,
+	data []byte,
+) error {
+	return w.impl.OnEvent(ctx, eventType, sessionId, data)
+}
+
+func (w *drmPluginListenerStubWrapper) OnExpirationUpdate(
+	ctx context.Context,
+	sessionId []byte,
+	expiryTimeInMS int64,
+) error {
+	return w.impl.OnExpirationUpdate(ctx, sessionId, expiryTimeInMS)
+}
+
+func (w *drmPluginListenerStubWrapper) OnKeysChange(
+	ctx context.Context,
+	sessionId []byte,
+	keyStatusList []KeyStatus,
+	hasNewUsableKey bool,
+) error {
+	return w.impl.OnKeysChange(ctx, sessionId, keyStatusList, hasNewUsableKey)
+}
+
+func (w *drmPluginListenerStubWrapper) OnSessionLostState(
+	ctx context.Context,
+	sessionId []byte,
+) error {
+	return w.impl.OnSessionLostState(ctx, sessionId)
+}
+
+var _ IDrmPluginListener = (*drmPluginListenerStubWrapper)(nil)
+
+// NewDrmPluginListenerStub creates a server-side IDrmPluginListener wrapping the given
+// server implementation. The returned value satisfies IDrmPluginListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDrmPluginListenerStub(
+	impl IDrmPluginListenerServer,
+) IDrmPluginListener {
+	wrapper := &drmPluginListenerStubWrapper{impl: impl}
+	stub := &DrmPluginListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

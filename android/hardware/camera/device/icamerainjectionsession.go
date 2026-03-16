@@ -170,3 +170,50 @@ func (s *CameraInjectionSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraInjectionSessionServer is the server-side interface that user implementations
+// provide to NewCameraInjectionSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraInjectionSessionServer interface {
+	ConfigureInjectionStreams(ctx context.Context, requestedConfiguration StreamConfiguration, characteristics CameraMetadata) error
+	GetCameraDeviceSession(ctx context.Context) (ICameraDeviceSession, error)
+}
+
+type cameraInjectionSessionStubWrapper struct {
+	impl       ICameraInjectionSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraInjectionSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraInjectionSessionStubWrapper) ConfigureInjectionStreams(
+	ctx context.Context,
+	requestedConfiguration StreamConfiguration,
+	characteristics CameraMetadata,
+) error {
+	return w.impl.ConfigureInjectionStreams(ctx, requestedConfiguration, characteristics)
+}
+
+func (w *cameraInjectionSessionStubWrapper) GetCameraDeviceSession(
+	ctx context.Context,
+) (ICameraDeviceSession, error) {
+	return w.impl.GetCameraDeviceSession(ctx)
+}
+
+var _ ICameraInjectionSession = (*cameraInjectionSessionStubWrapper)(nil)
+
+// NewCameraInjectionSessionStub creates a server-side ICameraInjectionSession wrapping the given
+// server implementation. The returned value satisfies ICameraInjectionSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraInjectionSessionStub(
+	impl ICameraInjectionSessionServer,
+) ICameraInjectionSession {
+	wrapper := &cameraInjectionSessionStubWrapper{impl: impl}
+	stub := &CameraInjectionSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

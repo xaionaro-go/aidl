@@ -3,6 +3,7 @@ package view
 import (
 	"context"
 	"fmt"
+	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -17,7 +18,7 @@ const (
 
 type IDisplayChangeWindowController interface {
 	AsBinder() binder.IBinder
-	OnDisplayChange(ctx context.Context, displayId int32, fromRotation int32, toRotation int32, newDisplayAreaInfo interface{}, callback IDisplayChangeWindowCallback) error
+	OnDisplayChange(ctx context.Context, displayId int32, fromRotation int32, toRotation int32, newDisplayAreaInfo window.DisplayAreaInfo, callback IDisplayChangeWindowCallback) error
 }
 
 type DisplayChangeWindowControllerProxy struct {
@@ -41,7 +42,7 @@ func (p *DisplayChangeWindowControllerProxy) OnDisplayChange(
 	displayId int32,
 	fromRotation int32,
 	toRotation int32,
-	newDisplayAreaInfo interface{},
+	newDisplayAreaInfo window.DisplayAreaInfo,
 	callback IDisplayChangeWindowCallback,
 ) error {
 	_data := parcel.New()
@@ -49,7 +50,11 @@ func (p *DisplayChangeWindowControllerProxy) OnDisplayChange(
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(fromRotation)
 	_data.WriteInt32(toRotation)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	_data.WriteInt32(1)
+	if _err := newDisplayAreaInfo.MarshalParcel(_data); _err != nil {
+		return _err
+	}
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDisplayChangeWindowController, "onDisplayChange")
 	if _err != nil {
@@ -90,7 +95,18 @@ func (s *DisplayChangeWindowControllerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_newDisplayAreaInfo interface{}
+		var _arg_newDisplayAreaInfo window.DisplayAreaInfo
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_newDisplayAreaInfo.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_callback IDisplayChangeWindowCallback
 		_ = _arg_callback
@@ -100,4 +116,47 @@ func (s *DisplayChangeWindowControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDisplayChangeWindowControllerServer is the server-side interface that user implementations
+// provide to NewDisplayChangeWindowControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayChangeWindowControllerServer interface {
+	OnDisplayChange(ctx context.Context, displayId int32, fromRotation int32, toRotation int32, newDisplayAreaInfo window.DisplayAreaInfo, callback IDisplayChangeWindowCallback) error
+}
+
+type displayChangeWindowControllerStubWrapper struct {
+	impl       IDisplayChangeWindowControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayChangeWindowControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayChangeWindowControllerStubWrapper) OnDisplayChange(
+	ctx context.Context,
+	displayId int32,
+	fromRotation int32,
+	toRotation int32,
+	newDisplayAreaInfo window.DisplayAreaInfo,
+	callback IDisplayChangeWindowCallback,
+) error {
+	return w.impl.OnDisplayChange(ctx, displayId, fromRotation, toRotation, newDisplayAreaInfo, callback)
+}
+
+var _ IDisplayChangeWindowController = (*displayChangeWindowControllerStubWrapper)(nil)
+
+// NewDisplayChangeWindowControllerStub creates a server-side IDisplayChangeWindowController wrapping the given
+// server implementation. The returned value satisfies IDisplayChangeWindowController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayChangeWindowControllerStub(
+	impl IDisplayChangeWindowControllerServer,
+) IDisplayChangeWindowController {
+	wrapper := &displayChangeWindowControllerStubWrapper{impl: impl}
+	stub := &DisplayChangeWindowControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

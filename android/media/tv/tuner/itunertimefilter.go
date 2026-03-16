@@ -260,3 +260,70 @@ func (s *TunerTimeFilterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITunerTimeFilterServer is the server-side interface that user implementations
+// provide to NewTunerTimeFilterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerTimeFilterServer interface {
+	SetTimeStamp(ctx context.Context, timeStamp int64) error
+	ClearTimeStamp(ctx context.Context) error
+	GetSourceTime(ctx context.Context) (int64, error)
+	GetTimeStamp(ctx context.Context) (int64, error)
+	Close(ctx context.Context) error
+}
+
+type tunerTimeFilterStubWrapper struct {
+	impl       ITunerTimeFilterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerTimeFilterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerTimeFilterStubWrapper) SetTimeStamp(
+	ctx context.Context,
+	timeStamp int64,
+) error {
+	return w.impl.SetTimeStamp(ctx, timeStamp)
+}
+
+func (w *tunerTimeFilterStubWrapper) ClearTimeStamp(
+	ctx context.Context,
+) error {
+	return w.impl.ClearTimeStamp(ctx)
+}
+
+func (w *tunerTimeFilterStubWrapper) GetSourceTime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetSourceTime(ctx)
+}
+
+func (w *tunerTimeFilterStubWrapper) GetTimeStamp(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetTimeStamp(ctx)
+}
+
+func (w *tunerTimeFilterStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ ITunerTimeFilter = (*tunerTimeFilterStubWrapper)(nil)
+
+// NewTunerTimeFilterStub creates a server-side ITunerTimeFilter wrapping the given
+// server implementation. The returned value satisfies ITunerTimeFilter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerTimeFilterStub(
+	impl ITunerTimeFilterServer,
+) ITunerTimeFilter {
+	wrapper := &tunerTimeFilterStubWrapper{impl: impl}
+	stub := &TunerTimeFilterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

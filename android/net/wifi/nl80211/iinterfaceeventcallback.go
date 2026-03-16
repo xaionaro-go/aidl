@@ -48,7 +48,7 @@ func (p *InterfaceEventCallbackProxy) OnClientInterfaceReady(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInterfaceEventCallback)
-	_data.WriteStrongBinder(network_interface.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, network_interface.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInterfaceEventCallback, "OnClientInterfaceReady")
 	if _err != nil {
@@ -65,7 +65,7 @@ func (p *InterfaceEventCallbackProxy) OnApInterfaceReady(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInterfaceEventCallback)
-	_data.WriteStrongBinder(network_interface.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, network_interface.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInterfaceEventCallback, "OnApInterfaceReady")
 	if _err != nil {
@@ -82,7 +82,7 @@ func (p *InterfaceEventCallbackProxy) OnClientTorndownEvent(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInterfaceEventCallback)
-	_data.WriteStrongBinder(network_interface.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, network_interface.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInterfaceEventCallback, "OnClientTorndownEvent")
 	if _err != nil {
@@ -99,7 +99,7 @@ func (p *InterfaceEventCallbackProxy) OnApTorndownEvent(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInterfaceEventCallback)
-	_data.WriteStrongBinder(network_interface.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, network_interface.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInterfaceEventCallback, "OnApTorndownEvent")
 	if _err != nil {
@@ -167,4 +167,67 @@ func (s *InterfaceEventCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInterfaceEventCallbackServer is the server-side interface that user implementations
+// provide to NewInterfaceEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInterfaceEventCallbackServer interface {
+	OnClientInterfaceReady(ctx context.Context, network_interface IClientInterface) error
+	OnApInterfaceReady(ctx context.Context, network_interface IApInterface) error
+	OnClientTorndownEvent(ctx context.Context, network_interface IClientInterface) error
+	OnApTorndownEvent(ctx context.Context, network_interface IApInterface) error
+}
+
+type interfaceEventCallbackStubWrapper struct {
+	impl       IInterfaceEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *interfaceEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *interfaceEventCallbackStubWrapper) OnClientInterfaceReady(
+	ctx context.Context,
+	network_interface IClientInterface,
+) error {
+	return w.impl.OnClientInterfaceReady(ctx, network_interface)
+}
+
+func (w *interfaceEventCallbackStubWrapper) OnApInterfaceReady(
+	ctx context.Context,
+	network_interface IApInterface,
+) error {
+	return w.impl.OnApInterfaceReady(ctx, network_interface)
+}
+
+func (w *interfaceEventCallbackStubWrapper) OnClientTorndownEvent(
+	ctx context.Context,
+	network_interface IClientInterface,
+) error {
+	return w.impl.OnClientTorndownEvent(ctx, network_interface)
+}
+
+func (w *interfaceEventCallbackStubWrapper) OnApTorndownEvent(
+	ctx context.Context,
+	network_interface IApInterface,
+) error {
+	return w.impl.OnApTorndownEvent(ctx, network_interface)
+}
+
+var _ IInterfaceEventCallback = (*interfaceEventCallbackStubWrapper)(nil)
+
+// NewInterfaceEventCallbackStub creates a server-side IInterfaceEventCallback wrapping the given
+// server implementation. The returned value satisfies IInterfaceEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInterfaceEventCallbackStub(
+	impl IInterfaceEventCallbackServer,
+) IInterfaceEventCallback {
+	wrapper := &interfaceEventCallbackStubWrapper{impl: impl}
+	stub := &InterfaceEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

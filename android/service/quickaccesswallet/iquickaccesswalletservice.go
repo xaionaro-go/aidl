@@ -59,7 +59,7 @@ func (p *QuickAccessWalletServiceProxy) OnWalletCardsRequested(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQuickAccessWalletService, "onWalletCardsRequested")
 	if _err != nil {
@@ -116,7 +116,7 @@ func (p *QuickAccessWalletServiceProxy) RegisterWalletServiceEventListener(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQuickAccessWalletService, "registerWalletServiceEventListener")
 	if _err != nil {
@@ -153,7 +153,7 @@ func (p *QuickAccessWalletServiceProxy) OnTargetActivityIntentRequested(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQuickAccessWalletService)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQuickAccessWalletService, "onTargetActivityIntentRequested")
 	if _err != nil {
@@ -170,7 +170,7 @@ func (p *QuickAccessWalletServiceProxy) OnGestureTargetActivityIntentRequested(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQuickAccessWalletService)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQuickAccessWalletService, "onGestureTargetActivityIntentRequested")
 	if _err != nil {
@@ -307,4 +307,92 @@ func (s *QuickAccessWalletServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IQuickAccessWalletServiceServer is the server-side interface that user implementations
+// provide to NewQuickAccessWalletServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IQuickAccessWalletServiceServer interface {
+	OnWalletCardsRequested(ctx context.Context, request GetWalletCardsRequest, callback IQuickAccessWalletServiceCallbacks) error
+	OnWalletCardSelected(ctx context.Context, request SelectWalletCardRequest) error
+	OnWalletDismissed(ctx context.Context) error
+	RegisterWalletServiceEventListener(ctx context.Context, request WalletServiceEventListenerRequest, callback IQuickAccessWalletServiceCallbacks) error
+	UnregisterWalletServiceEventListener(ctx context.Context, request WalletServiceEventListenerRequest) error
+	OnTargetActivityIntentRequested(ctx context.Context, callbacks IQuickAccessWalletServiceCallbacks) error
+	OnGestureTargetActivityIntentRequested(ctx context.Context, callbacks IQuickAccessWalletServiceCallbacks) error
+}
+
+type quickAccessWalletServiceStubWrapper struct {
+	impl       IQuickAccessWalletServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *quickAccessWalletServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *quickAccessWalletServiceStubWrapper) OnWalletCardsRequested(
+	ctx context.Context,
+	request GetWalletCardsRequest,
+	callback IQuickAccessWalletServiceCallbacks,
+) error {
+	return w.impl.OnWalletCardsRequested(ctx, request, callback)
+}
+
+func (w *quickAccessWalletServiceStubWrapper) OnWalletCardSelected(
+	ctx context.Context,
+	request SelectWalletCardRequest,
+) error {
+	return w.impl.OnWalletCardSelected(ctx, request)
+}
+
+func (w *quickAccessWalletServiceStubWrapper) OnWalletDismissed(
+	ctx context.Context,
+) error {
+	return w.impl.OnWalletDismissed(ctx)
+}
+
+func (w *quickAccessWalletServiceStubWrapper) RegisterWalletServiceEventListener(
+	ctx context.Context,
+	request WalletServiceEventListenerRequest,
+	callback IQuickAccessWalletServiceCallbacks,
+) error {
+	return w.impl.RegisterWalletServiceEventListener(ctx, request, callback)
+}
+
+func (w *quickAccessWalletServiceStubWrapper) UnregisterWalletServiceEventListener(
+	ctx context.Context,
+	request WalletServiceEventListenerRequest,
+) error {
+	return w.impl.UnregisterWalletServiceEventListener(ctx, request)
+}
+
+func (w *quickAccessWalletServiceStubWrapper) OnTargetActivityIntentRequested(
+	ctx context.Context,
+	callbacks IQuickAccessWalletServiceCallbacks,
+) error {
+	return w.impl.OnTargetActivityIntentRequested(ctx, callbacks)
+}
+
+func (w *quickAccessWalletServiceStubWrapper) OnGestureTargetActivityIntentRequested(
+	ctx context.Context,
+	callbacks IQuickAccessWalletServiceCallbacks,
+) error {
+	return w.impl.OnGestureTargetActivityIntentRequested(ctx, callbacks)
+}
+
+var _ IQuickAccessWalletService = (*quickAccessWalletServiceStubWrapper)(nil)
+
+// NewQuickAccessWalletServiceStub creates a server-side IQuickAccessWalletService wrapping the given
+// server implementation. The returned value satisfies IQuickAccessWalletService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewQuickAccessWalletServiceStub(
+	impl IQuickAccessWalletServiceServer,
+) IQuickAccessWalletService {
+	wrapper := &quickAccessWalletServiceStubWrapper{impl: impl}
+	stub := &QuickAccessWalletServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

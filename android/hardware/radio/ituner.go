@@ -1049,3 +1049,189 @@ func (s *TunerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITunerServer is the server-side interface that user implementations
+// provide to NewTunerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerServer interface {
+	Close(ctx context.Context) error
+	IsClosed(ctx context.Context) (bool, error)
+	SetConfiguration(ctx context.Context, config RadioManagerBandConfig) error
+	GetConfiguration(ctx context.Context) (RadioManagerBandConfig, error)
+	SetMuted(ctx context.Context, mute bool) error
+	IsMuted(ctx context.Context) (bool, error)
+	Step(ctx context.Context, directionDown bool, skipSubChannel bool) error
+	Seek(ctx context.Context, directionDown bool, skipSubChannel bool) error
+	Tune(ctx context.Context, selector ProgramSelector) error
+	Cancel(ctx context.Context) error
+	CancelAnnouncement(ctx context.Context) error
+	GetImage(ctx context.Context, id int32) (graphics.Bitmap, error)
+	StartBackgroundScan(ctx context.Context) (bool, error)
+	StartProgramListUpdates(ctx context.Context, filter ProgramListFilter) error
+	StopProgramListUpdates(ctx context.Context) error
+	IsConfigFlagSupported(ctx context.Context, flag int32) (bool, error)
+	IsConfigFlagSet(ctx context.Context, flag int32) (bool, error)
+	SetConfigFlag(ctx context.Context, flag int32, value bool) error
+	SetParameters(ctx context.Context, parameters map[string]string) (map[string]string, error)
+	GetParameters(ctx context.Context, keys []string) (map[string]string, error)
+}
+
+type tunerStubWrapper struct {
+	impl       ITunerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *tunerStubWrapper) IsClosed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsClosed(ctx)
+}
+
+func (w *tunerStubWrapper) SetConfiguration(
+	ctx context.Context,
+	config RadioManagerBandConfig,
+) error {
+	return w.impl.SetConfiguration(ctx, config)
+}
+
+func (w *tunerStubWrapper) GetConfiguration(
+	ctx context.Context,
+) (RadioManagerBandConfig, error) {
+	return w.impl.GetConfiguration(ctx)
+}
+
+func (w *tunerStubWrapper) SetMuted(
+	ctx context.Context,
+	mute bool,
+) error {
+	return w.impl.SetMuted(ctx, mute)
+}
+
+func (w *tunerStubWrapper) IsMuted(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsMuted(ctx)
+}
+
+func (w *tunerStubWrapper) Step(
+	ctx context.Context,
+	directionDown bool,
+	skipSubChannel bool,
+) error {
+	return w.impl.Step(ctx, directionDown, skipSubChannel)
+}
+
+func (w *tunerStubWrapper) Seek(
+	ctx context.Context,
+	directionDown bool,
+	skipSubChannel bool,
+) error {
+	return w.impl.Seek(ctx, directionDown, skipSubChannel)
+}
+
+func (w *tunerStubWrapper) Tune(
+	ctx context.Context,
+	selector ProgramSelector,
+) error {
+	return w.impl.Tune(ctx, selector)
+}
+
+func (w *tunerStubWrapper) Cancel(
+	ctx context.Context,
+) error {
+	return w.impl.Cancel(ctx)
+}
+
+func (w *tunerStubWrapper) CancelAnnouncement(
+	ctx context.Context,
+) error {
+	return w.impl.CancelAnnouncement(ctx)
+}
+
+func (w *tunerStubWrapper) GetImage(
+	ctx context.Context,
+	id int32,
+) (graphics.Bitmap, error) {
+	return w.impl.GetImage(ctx, id)
+}
+
+func (w *tunerStubWrapper) StartBackgroundScan(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.StartBackgroundScan(ctx)
+}
+
+func (w *tunerStubWrapper) StartProgramListUpdates(
+	ctx context.Context,
+	filter ProgramListFilter,
+) error {
+	return w.impl.StartProgramListUpdates(ctx, filter)
+}
+
+func (w *tunerStubWrapper) StopProgramListUpdates(
+	ctx context.Context,
+) error {
+	return w.impl.StopProgramListUpdates(ctx)
+}
+
+func (w *tunerStubWrapper) IsConfigFlagSupported(
+	ctx context.Context,
+	flag int32,
+) (bool, error) {
+	return w.impl.IsConfigFlagSupported(ctx, flag)
+}
+
+func (w *tunerStubWrapper) IsConfigFlagSet(
+	ctx context.Context,
+	flag int32,
+) (bool, error) {
+	return w.impl.IsConfigFlagSet(ctx, flag)
+}
+
+func (w *tunerStubWrapper) SetConfigFlag(
+	ctx context.Context,
+	flag int32,
+	value bool,
+) error {
+	return w.impl.SetConfigFlag(ctx, flag, value)
+}
+
+func (w *tunerStubWrapper) SetParameters(
+	ctx context.Context,
+	parameters map[string]string,
+) (map[string]string, error) {
+	return w.impl.SetParameters(ctx, parameters)
+}
+
+func (w *tunerStubWrapper) GetParameters(
+	ctx context.Context,
+	keys []string,
+) (map[string]string, error) {
+	return w.impl.GetParameters(ctx, keys)
+}
+
+var _ ITuner = (*tunerStubWrapper)(nil)
+
+// NewTunerStub creates a server-side ITuner wrapping the given
+// server implementation. The returned value satisfies ITuner
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerStub(
+	impl ITunerServer,
+) ITuner {
+	wrapper := &tunerStubWrapper{impl: impl}
+	stub := &TunerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

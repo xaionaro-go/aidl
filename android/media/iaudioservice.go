@@ -4,11 +4,9 @@ import (
 	"context"
 	"fmt"
 	bluetooth "github.com/xaionaro-go/binder/android/bluetooth"
-	content "github.com/xaionaro-go/binder/android/content"
 	audiopolicy "github.com/xaionaro-go/binder/android/media/audiopolicy"
 	mediaProjection "github.com/xaionaro-go/binder/android/media/projection"
 	net "github.com/xaionaro-go/binder/android/net"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -313,7 +311,7 @@ type IAudioService interface {
 	SetStreamVolumeWithAttribution(ctx context.Context, streamType int32, index int32, flags int32) error
 	SetDeviceVolume(ctx context.Context, vi VolumeInfo, ada AudioDeviceAttributes) error
 	GetDeviceVolume(ctx context.Context, vi VolumeInfo, ada AudioDeviceAttributes) (VolumeInfo, error)
-	HandleVolumeKey(ctx context.Context, event view.KeyEvent, isOnTv bool, caller string) error
+	HandleVolumeKey(ctx context.Context, event interface{}, isOnTv bool, caller string) error
 	IsStreamMute(ctx context.Context, streamType int32) (bool, error)
 	ForceRemoteSubmixFullVolume(ctx context.Context, startForcing bool, cb binder.IBinder) error
 	IsMasterMute(ctx context.Context) (bool, error)
@@ -364,7 +362,7 @@ type IAudioService interface {
 	IsSurroundFormatEnabled(ctx context.Context, audioFormat int32) (bool, error)
 	SetEncodedSurroundMode(ctx context.Context, mode int32) (bool, error)
 	GetEncodedSurroundMode(ctx context.Context, targetSdkVersion int32) (int32, error)
-	SetSpeakerphoneOn(ctx context.Context, cb binder.IBinder, on bool, attributionSource content.AttributionSource) error
+	SetSpeakerphoneOn(ctx context.Context, cb binder.IBinder, on bool, attributionSource interface{}) error
 	IsSpeakerphoneOn(ctx context.Context) (bool, error)
 	SetBluetoothScoOn(ctx context.Context, on bool) error
 	SetA2dpSuspended(ctx context.Context, on bool) error
@@ -376,9 +374,9 @@ type IAudioService interface {
 	AbandonAudioFocus(ctx context.Context, fd IAudioFocusDispatcher, clientId string, aa AudioAttributes, callingPackageName string) (int32, error)
 	UnregisterAudioFocusClient(ctx context.Context, clientId string) error
 	GetCurrentAudioFocus(ctx context.Context) (int32, error)
-	StartBluetoothSco(ctx context.Context, cb binder.IBinder, targetSdkVersion int32, attributionSource content.AttributionSource) error
-	StartBluetoothScoVirtualCall(ctx context.Context, cb binder.IBinder, attributionSource content.AttributionSource) error
-	StopBluetoothSco(ctx context.Context, cb binder.IBinder, attributionSource content.AttributionSource) error
+	StartBluetoothSco(ctx context.Context, cb binder.IBinder, targetSdkVersion int32, attributionSource interface{}) error
+	StartBluetoothScoVirtualCall(ctx context.Context, cb binder.IBinder, attributionSource interface{}) error
+	StopBluetoothSco(ctx context.Context, cb binder.IBinder, attributionSource interface{}) error
 	ForceVolumeControlStream(ctx context.Context, streamType int32, cb binder.IBinder) error
 	SetRingtonePlayer(ctx context.Context, player IRingtonePlayer) error
 	GetRingtonePlayer(ctx context.Context) (IRingtonePlayer, error)
@@ -417,7 +415,7 @@ type IAudioService interface {
 	IsBluetoothAudioDeviceCategoryFixed(ctx context.Context, address string) (bool, error)
 	SetHdmiSystemAudioSupported(ctx context.Context, on bool) (int32, error)
 	IsHdmiSystemAudioSupported(ctx context.Context) (bool, error)
-	RegisterAudioPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb audiopolicy.IAudioPolicyCallback, hasFocusListener bool, isFocusPolicy bool, isTestFocusPolicy bool, isVolumeController bool, projection mediaProjection.IMediaProjection, attributionSource content.AttributionSource) (string, error)
+	RegisterAudioPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb audiopolicy.IAudioPolicyCallback, hasFocusListener bool, isFocusPolicy bool, isTestFocusPolicy bool, isVolumeController bool, projection mediaProjection.IMediaProjection, attributionSource interface{}) (string, error)
 	UnregisterAudioPolicyAsync(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback) error
 	GetRegisteredPolicyMixes(ctx context.Context) ([]AudioMix, error)
 	UnregisterAudioPolicy(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback) error
@@ -482,7 +480,7 @@ type IAudioService interface {
 	IsMusicActive(ctx context.Context, remotely bool) (bool, error)
 	GetDeviceMaskForStream(ctx context.Context, streamType int32) (int32, error)
 	GetAvailableCommunicationDeviceIds(ctx context.Context) ([]int32, error)
-	SetCommunicationDevice(ctx context.Context, cb binder.IBinder, portId int32, attributionSource content.AttributionSource) (bool, error)
+	SetCommunicationDevice(ctx context.Context, cb binder.IBinder, portId int32, attributionSource interface{}) (bool, error)
 	GetCommunicationDevice(ctx context.Context) (int32, error)
 	RegisterCommunicationDeviceDispatcher(ctx context.Context, dispatcher ICommunicationDeviceDispatcher) error
 	UnregisterCommunicationDeviceDispatcher(ctx context.Context, dispatcher ICommunicationDeviceDispatcher) error
@@ -698,7 +696,7 @@ func (p *AudioServiceProxy) TrackRecorder(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(recorder.Handle())
+	binder.WriteBinderToParcel(ctx, _data, recorder, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "trackRecorder")
 	if _err != nil {
@@ -1035,17 +1033,13 @@ func (p *AudioServiceProxy) GetDeviceVolume(
 
 func (p *AudioServiceProxy) HandleVolumeKey(
 	ctx context.Context,
-	event view.KeyEvent,
+	event interface{},
 	isOnTv bool,
 	caller string,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteInt32(1)
-	if _err := event.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteBool(isOnTv)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(caller)
@@ -1098,7 +1092,7 @@ func (p *AudioServiceProxy) ForceRemoteSubmixFullVolume(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteBool(startForcing)
-	_data.WriteStrongBinder(cb.Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "forceRemoteSubmixFullVolume")
 	if _err != nil {
@@ -2208,7 +2202,7 @@ func (p *AudioServiceProxy) SetMode(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(mode)
-	_data.WriteStrongBinder(cb.Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setMode")
@@ -2563,16 +2557,12 @@ func (p *AudioServiceProxy) SetSpeakerphoneOn(
 	ctx context.Context,
 	cb binder.IBinder,
 	on bool,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 	_data.WriteBool(on)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setSpeakerphoneOn")
 	if _err != nil {
@@ -2804,13 +2794,13 @@ func (p *AudioServiceProxy) RequestAudioFocus(
 		return _result, _err
 	}
 	_data.WriteInt32(focusReqType)
-	_data.WriteStrongBinder(cb.Handle())
-	_data.WriteStrongBinder(fd.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, fd.AsBinder(), p.remote.Transport())
 	_data.WriteString16(clientId)
 	_data.WriteString16(callingPackageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(flags)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sdk)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "requestAudioFocus")
@@ -2845,7 +2835,7 @@ func (p *AudioServiceProxy) AbandonAudioFocus(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(fd.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, fd.AsBinder(), p.remote.Transport())
 	_data.WriteString16(clientId)
 	_data.WriteInt32(1)
 	if _err := aa.MarshalParcel(_data); _err != nil {
@@ -2934,16 +2924,12 @@ func (p *AudioServiceProxy) StartBluetoothSco(
 	ctx context.Context,
 	cb binder.IBinder,
 	targetSdkVersion int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 	_data.WriteInt32(targetSdkVersion)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "startBluetoothSco")
 	if _err != nil {
@@ -2966,15 +2952,11 @@ func (p *AudioServiceProxy) StartBluetoothSco(
 func (p *AudioServiceProxy) StartBluetoothScoVirtualCall(
 	ctx context.Context,
 	cb binder.IBinder,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.Handle())
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "startBluetoothScoVirtualCall")
 	if _err != nil {
@@ -2997,15 +2979,11 @@ func (p *AudioServiceProxy) StartBluetoothScoVirtualCall(
 func (p *AudioServiceProxy) StopBluetoothSco(
 	ctx context.Context,
 	cb binder.IBinder,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.Handle())
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "stopBluetoothSco")
 	if _err != nil {
@@ -3033,7 +3011,7 @@ func (p *AudioServiceProxy) ForceVolumeControlStream(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(streamType)
-	_data.WriteStrongBinder(cb.Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "forceVolumeControlStream")
 	if _err != nil {
@@ -3059,7 +3037,7 @@ func (p *AudioServiceProxy) SetRingtonePlayer(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(player.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, player.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setRingtonePlayer")
 	if _err != nil {
@@ -3240,7 +3218,7 @@ func (p *AudioServiceProxy) RegisterStreamAliasingDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(isad.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, isad.AsBinder(), p.remote.Transport())
 	_data.WriteBool(register)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerStreamAliasingDispatcher")
@@ -3327,7 +3305,7 @@ func (p *AudioServiceProxy) StartWatchingRoutes(
 	var _result AudioRoutesInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "startWatchingRoutes")
 	if _err != nil {
@@ -3391,7 +3369,7 @@ func (p *AudioServiceProxy) SetVolumeController(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(controller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, controller.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setVolumeController")
 	if _err != nil {
@@ -3448,7 +3426,7 @@ func (p *AudioServiceProxy) NotifyVolumeControllerVisible(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(controller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, controller.AsBinder(), p.remote.Transport())
 	_data.WriteBool(visible)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "notifyVolumeControllerVisible")
@@ -4070,7 +4048,7 @@ func (p *AudioServiceProxy) RegisterAudioPolicy(
 	isTestFocusPolicy bool,
 	isVolumeController bool,
 	projection mediaProjection.IMediaProjection,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (string, error) {
 	var _result string
 	_data := parcel.New()
@@ -4079,16 +4057,12 @@ func (p *AudioServiceProxy) RegisterAudioPolicy(
 	if _err := policyConfig.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 	_data.WriteBool(hasFocusListener)
 	_data.WriteBool(isFocusPolicy)
 	_data.WriteBool(isTestFocusPolicy)
 	_data.WriteBool(isVolumeController)
-	_data.WriteStrongBinder(projection.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, projection.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerAudioPolicy")
 	if _err != nil {
@@ -4118,7 +4092,7 @@ func (p *AudioServiceProxy) UnregisterAudioPolicyAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterAudioPolicyAsync")
 	if _err != nil {
@@ -4173,7 +4147,7 @@ func (p *AudioServiceProxy) UnregisterAudioPolicy(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterAudioPolicy")
 	if _err != nil {
@@ -4205,7 +4179,7 @@ func (p *AudioServiceProxy) AddMixForPolicy(
 	if _err := policyConfig.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "addMixForPolicy")
 	if _err != nil {
@@ -4241,7 +4215,7 @@ func (p *AudioServiceProxy) RemoveMixForPolicy(
 	if _err := policyConfig.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "removeMixForPolicy")
 	if _err != nil {
@@ -4294,7 +4268,7 @@ func (p *AudioServiceProxy) UpdateMixingRulesForPolicy(
 			}
 		}
 	}
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "updateMixingRulesForPolicy")
 	if _err != nil {
@@ -4327,7 +4301,7 @@ func (p *AudioServiceProxy) SetFocusPropertiesForPolicy(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteInt32(duckingBehavior)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setFocusPropertiesForPolicy")
 	if _err != nil {
@@ -4449,7 +4423,7 @@ func (p *AudioServiceProxy) RegisterRecordingCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(rcdb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, rcdb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerRecordingCallback")
 	if _err != nil {
@@ -4475,7 +4449,7 @@ func (p *AudioServiceProxy) UnregisterRecordingCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(rcdb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, rcdb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterRecordingCallback")
 	if _err != nil {
@@ -4530,7 +4504,7 @@ func (p *AudioServiceProxy) RegisterPlaybackCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(pcdb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcdb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerPlaybackCallback")
 	if _err != nil {
@@ -4556,7 +4530,7 @@ func (p *AudioServiceProxy) UnregisterPlaybackCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(pcdb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcdb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterPlaybackCallback")
 	if _err != nil {
@@ -4655,7 +4629,7 @@ func (p *AudioServiceProxy) DispatchFocusChange(
 		return _result, _err
 	}
 	_data.WriteInt32(focusChange)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "dispatchFocusChange")
 	if _err != nil {
@@ -4695,7 +4669,7 @@ func (p *AudioServiceProxy) DispatchFocusChangeWithFade(
 		return _result, _err
 	}
 	_data.WriteInt32(focusChange)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 	if otherActiveAfis == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -4804,7 +4778,7 @@ func (p *AudioServiceProxy) SetFocusRequestResultFromExtPolicy(
 		return _err
 	}
 	_data.WriteInt32(requestResult)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setFocusRequestResultFromExtPolicy")
 	if _err != nil {
@@ -4821,7 +4795,7 @@ func (p *AudioServiceProxy) RegisterAudioServerStateDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(asd.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, asd.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerAudioServerStateDispatcher")
 	if _err != nil {
@@ -4847,7 +4821,7 @@ func (p *AudioServiceProxy) UnregisterAudioServerStateDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(asd.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, asd.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterAudioServerStateDispatcher")
 	if _err != nil {
@@ -4897,7 +4871,7 @@ func (p *AudioServiceProxy) SetUidDeviceAffinity(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(uid)
 	if deviceTypes == nil {
 		_data.WriteInt32(-1)
@@ -4946,7 +4920,7 @@ func (p *AudioServiceProxy) RemoveUidDeviceAffinity(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(uid)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "removeUidDeviceAffinity")
@@ -4981,7 +4955,7 @@ func (p *AudioServiceProxy) SetUserIdDeviceAffinity(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	if deviceTypes == nil {
 		_data.WriteInt32(-1)
@@ -5030,7 +5004,7 @@ func (p *AudioServiceProxy) RemoveUserIdDeviceAffinity(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(pcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, pcb.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "removeUserIdDeviceAffinity")
@@ -5440,7 +5414,7 @@ func (p *AudioServiceProxy) AddOnDevicesForAttributesChangedListener(
 	if _err := attributes.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "addOnDevicesForAttributesChangedListener")
 	if _err != nil {
@@ -5466,7 +5440,7 @@ func (p *AudioServiceProxy) RemoveOnDevicesForAttributesChangedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "removeOnDevicesForAttributesChangedListener")
 	if _err != nil {
@@ -5543,7 +5517,7 @@ func (p *AudioServiceProxy) RegisterStrategyPreferredDevicesDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerStrategyPreferredDevicesDispatcher")
 	if _err != nil {
@@ -5569,7 +5543,7 @@ func (p *AudioServiceProxy) UnregisterStrategyPreferredDevicesDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterStrategyPreferredDevicesDispatcher")
 	if _err != nil {
@@ -5586,7 +5560,7 @@ func (p *AudioServiceProxy) RegisterStrategyNonDefaultDevicesDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerStrategyNonDefaultDevicesDispatcher")
 	if _err != nil {
@@ -5612,7 +5586,7 @@ func (p *AudioServiceProxy) UnregisterStrategyNonDefaultDevicesDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterStrategyNonDefaultDevicesDispatcher")
 	if _err != nil {
@@ -5843,7 +5817,7 @@ func (p *AudioServiceProxy) RegisterCapturePresetDevicesRoleDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerCapturePresetDevicesRoleDispatcher")
 	if _err != nil {
@@ -5869,7 +5843,7 @@ func (p *AudioServiceProxy) UnregisterCapturePresetDevicesRoleDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterCapturePresetDevicesRoleDispatcher")
 	if _err != nil {
@@ -6115,17 +6089,13 @@ func (p *AudioServiceProxy) SetCommunicationDevice(
 	ctx context.Context,
 	cb binder.IBinder,
 	portId int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 	_data.WriteInt32(portId)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "setCommunicationDevice")
 	if _err != nil {
@@ -6184,7 +6154,7 @@ func (p *AudioServiceProxy) RegisterCommunicationDeviceDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerCommunicationDeviceDispatcher")
 	if _err != nil {
@@ -6210,7 +6180,7 @@ func (p *AudioServiceProxy) UnregisterCommunicationDeviceDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterCommunicationDeviceDispatcher")
 	if _err != nil {
@@ -6437,8 +6407,8 @@ func (p *AudioServiceProxy) RequestAudioFocusForTest(
 		return _result, _err
 	}
 	_data.WriteInt32(focusReqType)
-	_data.WriteStrongBinder(cb.Handle())
-	_data.WriteStrongBinder(fd.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, fd.AsBinder(), p.remote.Transport())
 	_data.WriteString16(clientId)
 	_data.WriteString16(callingPackageName)
 	_data.WriteInt32(flags)
@@ -6477,7 +6447,7 @@ func (p *AudioServiceProxy) AbandonAudioFocusForTest(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(fd.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, fd.AsBinder(), p.remote.Transport())
 	_data.WriteString16(clientId)
 	_data.WriteInt32(1)
 	if _err := aa.MarshalParcel(_data); _err != nil {
@@ -6642,7 +6612,7 @@ func (p *AudioServiceProxy) EnterAudioFocusFreezeForTest(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 	if uids == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -6681,7 +6651,7 @@ func (p *AudioServiceProxy) ExitAudioFocusFreezeForTest(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "exitAudioFocusFreezeForTest")
 	if _err != nil {
@@ -6711,7 +6681,7 @@ func (p *AudioServiceProxy) RegisterModeDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerModeDispatcher")
 	if _err != nil {
@@ -6737,7 +6707,7 @@ func (p *AudioServiceProxy) UnregisterModeDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterModeDispatcher")
 	if _err != nil {
@@ -7004,7 +6974,7 @@ func (p *AudioServiceProxy) RegisterSpatializerHeadTrackerAvailableCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteBool(register)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerSpatializerHeadTrackerAvailableCallback")
@@ -7131,7 +7101,7 @@ func (p *AudioServiceProxy) RegisterSpatializerCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerSpatializerCallback")
 	if _err != nil {
@@ -7157,7 +7127,7 @@ func (p *AudioServiceProxy) UnregisterSpatializerCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterSpatializerCallback")
 	if _err != nil {
@@ -7183,7 +7153,7 @@ func (p *AudioServiceProxy) RegisterSpatializerHeadTrackingCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerSpatializerHeadTrackingCallback")
 	if _err != nil {
@@ -7209,7 +7179,7 @@ func (p *AudioServiceProxy) UnregisterSpatializerHeadTrackingCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterSpatializerHeadTrackingCallback")
 	if _err != nil {
@@ -7235,7 +7205,7 @@ func (p *AudioServiceProxy) RegisterHeadToSoundstagePoseCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerHeadToSoundstagePoseCallback")
 	if _err != nil {
@@ -7261,7 +7231,7 @@ func (p *AudioServiceProxy) UnregisterHeadToSoundstagePoseCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterHeadToSoundstagePoseCallback")
 	if _err != nil {
@@ -7657,7 +7627,7 @@ func (p *AudioServiceProxy) RegisterSpatializerOutputCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerSpatializerOutputCallback")
 	if _err != nil {
@@ -7683,7 +7653,7 @@ func (p *AudioServiceProxy) UnregisterSpatializerOutputCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterSpatializerOutputCallback")
 	if _err != nil {
@@ -7887,7 +7857,7 @@ func (p *AudioServiceProxy) RegisterMuteAwaitConnectionDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteBool(register)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerMuteAwaitConnectionDispatcher")
@@ -7947,7 +7917,7 @@ func (p *AudioServiceProxy) RegisterDeviceVolumeBehaviorDispatcher(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteBool(register)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerDeviceVolumeBehaviorDispatcher")
 	if _err != nil {
@@ -8016,7 +7986,7 @@ func (p *AudioServiceProxy) SendFocusLossAndUpdate(
 	if _err := focusLoser.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(apcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, apcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "sendFocusLossAndUpdate")
 	if _err != nil {
@@ -8039,7 +8009,7 @@ func (p *AudioServiceProxy) SendFocusLoss(
 	if _err := focusLoser.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(apcb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, apcb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "sendFocusLoss")
 	if _err != nil {
@@ -8253,7 +8223,7 @@ func (p *AudioServiceProxy) RegisterDeviceVolumeDispatcherForAbsoluteVolume(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
 	_data.WriteBool(register)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteInt32(1)
 	if _err := device.MarshalParcel(_data); _err != nil {
@@ -8407,7 +8377,7 @@ func (p *AudioServiceProxy) RegisterPreferredMixerAttributesDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerPreferredMixerAttributesDispatcher")
 	if _err != nil {
@@ -8433,7 +8403,7 @@ func (p *AudioServiceProxy) UnregisterPreferredMixerAttributesDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterPreferredMixerAttributesDispatcher")
 	if _err != nil {
@@ -8534,7 +8504,7 @@ func (p *AudioServiceProxy) RegisterLoudnessCodecUpdatesDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "registerLoudnessCodecUpdatesDispatcher")
 	if _err != nil {
@@ -8560,7 +8530,7 @@ func (p *AudioServiceProxy) UnregisterLoudnessCodecUpdatesDispatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioService)
-	_data.WriteStrongBinder(dispatcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, dispatcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioService, "unregisterLoudnessCodecUpdatesDispatcher")
 	if _err != nil {
@@ -9233,18 +9203,7 @@ func (s *AudioServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_event view.KeyEvent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_event.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_event interface{}
 		_arg_isOnTv, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -10126,18 +10085,7 @@ func (s *AudioServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_err = s.Impl.SetSpeakerphoneOn(ctx, _arg_cb, _arg_on, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -10382,18 +10330,7 @@ func (s *AudioServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_err = s.Impl.StartBluetoothSco(ctx, _arg_cb, _arg_targetSdkVersion, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -10409,18 +10346,7 @@ func (s *AudioServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_cb binder.IBinder
 		_ = _arg_cb
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_err := s.Impl.StartBluetoothScoVirtualCall(ctx, _arg_cb, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -10436,18 +10362,7 @@ func (s *AudioServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_cb binder.IBinder
 		_ = _arg_cb
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_err := s.Impl.StopBluetoothSco(ctx, _arg_cb, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -11078,18 +10993,7 @@ func (s *AudioServiceStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_projection mediaProjection.IMediaProjection
 		_ = _arg_projection
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.RegisterAudioPolicy(ctx, _arg_policyConfig, _arg_pcb, _arg_hasFocusListener, _arg_isFocusPolicy, _arg_isTestFocusPolicy, _arg_isVolumeController, _arg_projection, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -12390,18 +12294,7 @@ func (s *AudioServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.SetCommunicationDevice(ctx, _arg_cb, _arg_portId, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -14073,4 +13966,2320 @@ func (s *AudioServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAudioServiceServer is the server-side interface that user implementations
+// provide to NewAudioServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioServiceServer interface {
+	TrackPlayer(ctx context.Context, pic PlayerBasePlayerIdCard) (int32, error)
+	PlayerAttributes(ctx context.Context, piid int32, attr AudioAttributes) error
+	PlayerEvent(ctx context.Context, piid int32, event int32, eventId []int32) error
+	ReleasePlayer(ctx context.Context, piid int32) error
+	TrackRecorder(ctx context.Context, recorder binder.IBinder) (int32, error)
+	RecorderEvent(ctx context.Context, riid int32, event int32) error
+	ReleaseRecorder(ctx context.Context, riid int32) error
+	PlayerSessionId(ctx context.Context, piid int32, sessionId int32) error
+	PortEvent(ctx context.Context, portId int32, event int32, extras *interface{}) error
+	PermissionUpdateBarrier(ctx context.Context) error
+	AdjustStreamVolume(ctx context.Context, streamType int32, direction int32, flags int32) error
+	AdjustStreamVolumeWithAttribution(ctx context.Context, streamType int32, direction int32, flags int32) error
+	SetStreamVolume(ctx context.Context, streamType int32, index int32, flags int32) error
+	SetStreamVolumeWithAttribution(ctx context.Context, streamType int32, index int32, flags int32) error
+	SetDeviceVolume(ctx context.Context, vi VolumeInfo, ada AudioDeviceAttributes) error
+	GetDeviceVolume(ctx context.Context, vi VolumeInfo, ada AudioDeviceAttributes) (VolumeInfo, error)
+	HandleVolumeKey(ctx context.Context, event interface{}, isOnTv bool, caller string) error
+	IsStreamMute(ctx context.Context, streamType int32) (bool, error)
+	ForceRemoteSubmixFullVolume(ctx context.Context, startForcing bool, cb binder.IBinder) error
+	IsMasterMute(ctx context.Context) (bool, error)
+	SetMasterMute(ctx context.Context, mute bool, flags int32) error
+	GetStreamVolume(ctx context.Context, streamType int32) (int32, error)
+	GetStreamMinVolume(ctx context.Context, streamType int32) (int32, error)
+	GetStreamMaxVolume(ctx context.Context, streamType int32) (int32, error)
+	GetAudioVolumeGroups(ctx context.Context) ([]AudioVolumeGroup, error)
+	SetVolumeGroupVolumeIndex(ctx context.Context, groupId int32, index int32, flags int32) error
+	GetVolumeGroupVolumeIndex(ctx context.Context, groupId int32) (int32, error)
+	GetVolumeGroupMaxVolumeIndex(ctx context.Context, groupId int32) (int32, error)
+	GetVolumeGroupMinVolumeIndex(ctx context.Context, groupId int32) (int32, error)
+	GetLastAudibleVolumeForVolumeGroup(ctx context.Context, groupId int32) (int32, error)
+	IsVolumeGroupMuted(ctx context.Context, groupId int32) (bool, error)
+	AdjustVolumeGroupVolume(ctx context.Context, groupId int32, direction int32, flags int32) error
+	GetLastAudibleStreamVolume(ctx context.Context, streamType int32) (int32, error)
+	SetSupportedSystemUsages(ctx context.Context, systemUsages []int32) error
+	GetSupportedSystemUsages(ctx context.Context) ([]int32, error)
+	GetAudioProductStrategies(ctx context.Context) ([]AudioProductStrategy, error)
+	IsMicrophoneMuted(ctx context.Context) (bool, error)
+	IsUltrasoundSupported(ctx context.Context) (bool, error)
+	IsHotwordStreamSupported(ctx context.Context, lookbackAudio bool) (bool, error)
+	SetMicrophoneMute(ctx context.Context, on bool) error
+	SetInputGainIndex(ctx context.Context, ada AudioDeviceAttributes, index int32) error
+	GetInputGainIndex(ctx context.Context, ada AudioDeviceAttributes) (int32, error)
+	GetMaxInputGainIndex(ctx context.Context) (int32, error)
+	GetMinInputGainIndex(ctx context.Context) (int32, error)
+	IsInputGainFixed(ctx context.Context, ada AudioDeviceAttributes) (bool, error)
+	SetMicrophoneMuteFromSwitch(ctx context.Context, on bool) error
+	SetRingerModeExternal(ctx context.Context, ringerMode int32, caller string) error
+	SetRingerModeInternal(ctx context.Context, ringerMode int32, caller string) error
+	GetRingerModeExternal(ctx context.Context) (int32, error)
+	GetRingerModeInternal(ctx context.Context) (int32, error)
+	IsValidRingerMode(ctx context.Context, ringerMode int32) (bool, error)
+	SetVibrateSetting(ctx context.Context, vibrateType int32, vibrateSetting int32) error
+	GetVibrateSetting(ctx context.Context, vibrateType int32) (int32, error)
+	ShouldVibrate(ctx context.Context, vibrateType int32) (bool, error)
+	SetMode(ctx context.Context, mode int32, cb binder.IBinder) error
+	GetMode(ctx context.Context) (int32, error)
+	PlaySoundEffect(ctx context.Context, effectType int32) error
+	PlaySoundEffectVolume(ctx context.Context, effectType int32, volume float32) error
+	LoadSoundEffects(ctx context.Context) (bool, error)
+	UnloadSoundEffects(ctx context.Context) error
+	ReloadAudioSettings(ctx context.Context) error
+	GetSurroundFormats(ctx context.Context) (map[interface{}]interface{}, error)
+	GetReportedSurroundFormats(ctx context.Context) ([]interface{}, error)
+	SetSurroundFormatEnabled(ctx context.Context, audioFormat int32, enabled bool) (bool, error)
+	IsSurroundFormatEnabled(ctx context.Context, audioFormat int32) (bool, error)
+	SetEncodedSurroundMode(ctx context.Context, mode int32) (bool, error)
+	GetEncodedSurroundMode(ctx context.Context, targetSdkVersion int32) (int32, error)
+	SetSpeakerphoneOn(ctx context.Context, cb binder.IBinder, on bool, attributionSource interface{}) error
+	IsSpeakerphoneOn(ctx context.Context) (bool, error)
+	SetBluetoothScoOn(ctx context.Context, on bool) error
+	SetA2dpSuspended(ctx context.Context, on bool) error
+	SetLeAudioSuspended(ctx context.Context, enable bool) error
+	IsBluetoothScoOn(ctx context.Context) (bool, error)
+	SetBluetoothA2dpOn(ctx context.Context, on bool) error
+	IsBluetoothA2dpOn(ctx context.Context) (bool, error)
+	RequestAudioFocus(ctx context.Context, aa AudioAttributes, focusReqType int32, cb binder.IBinder, fd IAudioFocusDispatcher, clientId string, callingPackageName string, flags int32, pcb audiopolicy.IAudioPolicyCallback, sdk int32) (int32, error)
+	AbandonAudioFocus(ctx context.Context, fd IAudioFocusDispatcher, clientId string, aa AudioAttributes, callingPackageName string) (int32, error)
+	UnregisterAudioFocusClient(ctx context.Context, clientId string) error
+	GetCurrentAudioFocus(ctx context.Context) (int32, error)
+	StartBluetoothSco(ctx context.Context, cb binder.IBinder, targetSdkVersion int32, attributionSource interface{}) error
+	StartBluetoothScoVirtualCall(ctx context.Context, cb binder.IBinder, attributionSource interface{}) error
+	StopBluetoothSco(ctx context.Context, cb binder.IBinder, attributionSource interface{}) error
+	ForceVolumeControlStream(ctx context.Context, streamType int32, cb binder.IBinder) error
+	SetRingtonePlayer(ctx context.Context, player IRingtonePlayer) error
+	GetRingtonePlayer(ctx context.Context) (IRingtonePlayer, error)
+	GetUiSoundsStreamType(ctx context.Context) (int32, error)
+	GetIndependentStreamTypes(ctx context.Context) ([]interface{}, error)
+	GetStreamTypeAlias(ctx context.Context, streamType int32) (int32, error)
+	IsVolumeControlUsingVolumeGroups(ctx context.Context) (bool, error)
+	RegisterStreamAliasingDispatcher(ctx context.Context, isad IStreamAliasingDispatcher, register bool) error
+	SetNotifAliasRingForTest(ctx context.Context, alias bool) error
+	SetWiredDeviceConnectionState(ctx context.Context, aa AudioDeviceAttributes, state int32, caller string) error
+	StartWatchingRoutes(ctx context.Context, observer IAudioRoutesObserver) (AudioRoutesInfo, error)
+	IsCameraSoundForced(ctx context.Context) (bool, error)
+	SetVolumeController(ctx context.Context, controller IVolumeController) error
+	GetVolumeController(ctx context.Context) (IVolumeController, error)
+	NotifyVolumeControllerVisible(ctx context.Context, controller IVolumeController, visible bool) error
+	SetVolumeControllerLongPressTimeoutEnabled(ctx context.Context, enable bool) error
+	IsStreamAffectedByRingerMode(ctx context.Context, streamType int32) (bool, error)
+	IsStreamAffectedByMute(ctx context.Context, streamType int32) (bool, error)
+	IsStreamMutableByUi(ctx context.Context, streamType int32) (bool, error)
+	DisableSafeMediaVolume(ctx context.Context) error
+	LowerVolumeToRs1(ctx context.Context) error
+	GetOutputRs2UpperBound(ctx context.Context) (float32, error)
+	SetOutputRs2UpperBound(ctx context.Context, rs2Value float32) error
+	GetCsd(ctx context.Context) (float32, error)
+	SetCsd(ctx context.Context, csd float32) error
+	ForceUseFrameworkMel(ctx context.Context, useFrameworkMel bool) error
+	ForceComputeCsdOnAllDevices(ctx context.Context, computeCsdOnAllDevices bool) error
+	IsCsdEnabled(ctx context.Context) (bool, error)
+	IsCsdAsAFeatureAvailable(ctx context.Context) (bool, error)
+	IsCsdAsAFeatureEnabled(ctx context.Context) (bool, error)
+	SetCsdAsAFeatureEnabled(ctx context.Context, csdToggleValue bool) error
+	SetBluetoothAudioDeviceCategory_legacy(ctx context.Context, address string, isBle bool, deviceCategory int32) error
+	GetBluetoothAudioDeviceCategory_legacy(ctx context.Context, address string, isBle bool) (int32, error)
+	SetBluetoothAudioDeviceCategory(ctx context.Context, address string, deviceCategory int32) (bool, error)
+	GetBluetoothAudioDeviceCategory(ctx context.Context, address string) (int32, error)
+	IsBluetoothAudioDeviceCategoryFixed(ctx context.Context, address string) (bool, error)
+	SetHdmiSystemAudioSupported(ctx context.Context, on bool) (int32, error)
+	IsHdmiSystemAudioSupported(ctx context.Context) (bool, error)
+	RegisterAudioPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb audiopolicy.IAudioPolicyCallback, hasFocusListener bool, isFocusPolicy bool, isTestFocusPolicy bool, isVolumeController bool, projection mediaProjection.IMediaProjection, attributionSource interface{}) (string, error)
+	UnregisterAudioPolicyAsync(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback) error
+	GetRegisteredPolicyMixes(ctx context.Context) ([]AudioMix, error)
+	UnregisterAudioPolicy(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback) error
+	AddMixForPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb audiopolicy.IAudioPolicyCallback) (int32, error)
+	RemoveMixForPolicy(ctx context.Context, policyConfig AudioPolicyConfig, pcb audiopolicy.IAudioPolicyCallback) (int32, error)
+	UpdateMixingRulesForPolicy(ctx context.Context, mixesToUpdate []AudioMix, updatedMixingRules []audiopolicy.AudioMixingRule, pcb audiopolicy.IAudioPolicyCallback) (int32, error)
+	SetFocusPropertiesForPolicy(ctx context.Context, duckingBehavior int32, pcb audiopolicy.IAudioPolicyCallback) (int32, error)
+	SetVolumePolicy(ctx context.Context, policy VolumePolicy) error
+	GetVolumePolicy(ctx context.Context) (VolumePolicy, error)
+	HasRegisteredDynamicPolicy(ctx context.Context) (bool, error)
+	RegisterRecordingCallback(ctx context.Context, rcdb IRecordingConfigDispatcher) error
+	UnregisterRecordingCallback(ctx context.Context, rcdb IRecordingConfigDispatcher) error
+	GetActiveRecordingConfigurations(ctx context.Context) ([]AudioRecordingConfiguration, error)
+	RegisterPlaybackCallback(ctx context.Context, pcdb IPlaybackConfigDispatcher) error
+	UnregisterPlaybackCallback(ctx context.Context, pcdb IPlaybackConfigDispatcher) error
+	GetActivePlaybackConfigurations(ctx context.Context) ([]AudioPlaybackConfiguration, error)
+	GetFocusRampTimeMs(ctx context.Context, focusGain int32, attr AudioAttributes) (int32, error)
+	DispatchFocusChange(ctx context.Context, afi AudioFocusInfo, focusChange int32, pcb audiopolicy.IAudioPolicyCallback) (int32, error)
+	DispatchFocusChangeWithFade(ctx context.Context, afi AudioFocusInfo, focusChange int32, pcb audiopolicy.IAudioPolicyCallback, otherActiveAfis []AudioFocusInfo, transientFadeMgrConfig FadeManagerConfiguration) (int32, error)
+	PlayerHasOpPlayAudio(ctx context.Context, piid int32, hasOpPlayAudio bool) error
+	HandleBluetoothActiveDeviceChanged(ctx context.Context, newDevice bluetooth.BluetoothDevice, previousDevice bluetooth.BluetoothDevice, info BluetoothProfileConnectionInfo) error
+	SetFocusRequestResultFromExtPolicy(ctx context.Context, afi AudioFocusInfo, requestResult int32, pcb audiopolicy.IAudioPolicyCallback) error
+	RegisterAudioServerStateDispatcher(ctx context.Context, asd IAudioServerStateDispatcher) error
+	UnregisterAudioServerStateDispatcher(ctx context.Context, asd IAudioServerStateDispatcher) error
+	IsAudioServerRunning(ctx context.Context) (bool, error)
+	SetUidDeviceAffinity(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback, uid int32, deviceTypes []int32, deviceAddresses []string) (int32, error)
+	RemoveUidDeviceAffinity(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback, uid int32) (int32, error)
+	SetUserIdDeviceAffinity(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback, deviceTypes []int32, deviceAddresses []string) (int32, error)
+	RemoveUserIdDeviceAffinity(ctx context.Context, pcb audiopolicy.IAudioPolicyCallback) (int32, error)
+	HasHapticChannels(ctx context.Context, uri net.Uri) (bool, error)
+	IsCallScreeningModeSupported(ctx context.Context) (bool, error)
+	SetPreferredDevicesForStrategy(ctx context.Context, strategy int32, devices []AudioDeviceAttributes) (int32, error)
+	RemovePreferredDevicesForStrategy(ctx context.Context, strategy int32) (int32, error)
+	GetPreferredDevicesForStrategy(ctx context.Context, strategy int32) ([]AudioDeviceAttributes, error)
+	SetDeviceAsNonDefaultForStrategy(ctx context.Context, strategy int32, device AudioDeviceAttributes) (int32, error)
+	RemoveDeviceAsNonDefaultForStrategy(ctx context.Context, strategy int32, device AudioDeviceAttributes) (int32, error)
+	GetNonDefaultDevicesForStrategy(ctx context.Context, strategy int32) ([]AudioDeviceAttributes, error)
+	GetDevicesForAttributes(ctx context.Context, attributes AudioAttributes) ([]AudioDeviceAttributes, error)
+	GetDevicesForAttributesUnprotected(ctx context.Context, attributes AudioAttributes) ([]AudioDeviceAttributes, error)
+	AddOnDevicesForAttributesChangedListener(ctx context.Context, attributes AudioAttributes, callback IDevicesForAttributesCallback) error
+	RemoveOnDevicesForAttributesChangedListener(ctx context.Context, callback IDevicesForAttributesCallback) error
+	SetAllowedCapturePolicy(ctx context.Context, capturePolicy int32) (int32, error)
+	GetAllowedCapturePolicy(ctx context.Context) (int32, error)
+	RegisterStrategyPreferredDevicesDispatcher(ctx context.Context, dispatcher IStrategyPreferredDevicesDispatcher) error
+	UnregisterStrategyPreferredDevicesDispatcher(ctx context.Context, dispatcher IStrategyPreferredDevicesDispatcher) error
+	RegisterStrategyNonDefaultDevicesDispatcher(ctx context.Context, dispatcher IStrategyNonDefaultDevicesDispatcher) error
+	UnregisterStrategyNonDefaultDevicesDispatcher(ctx context.Context, dispatcher IStrategyNonDefaultDevicesDispatcher) error
+	SetRttEnabled(ctx context.Context, rttEnabled bool) error
+	SetDeviceVolumeBehavior(ctx context.Context, device AudioDeviceAttributes, deviceVolumeBehavior int32, pkgName string) error
+	GetDeviceVolumeBehavior(ctx context.Context, device AudioDeviceAttributes) (int32, error)
+	SetMultiAudioFocusEnabled(ctx context.Context, enabled bool) error
+	SetPreferredDevicesForCapturePreset(ctx context.Context, capturePreset int32, devices []AudioDeviceAttributes) (int32, error)
+	ClearPreferredDevicesForCapturePreset(ctx context.Context, capturePreset int32) (int32, error)
+	GetPreferredDevicesForCapturePreset(ctx context.Context, capturePreset int32) ([]AudioDeviceAttributes, error)
+	RegisterCapturePresetDevicesRoleDispatcher(ctx context.Context, dispatcher ICapturePresetDevicesRoleDispatcher) error
+	UnregisterCapturePresetDevicesRoleDispatcher(ctx context.Context, dispatcher ICapturePresetDevicesRoleDispatcher) error
+	AdjustStreamVolumeForUid(ctx context.Context, streamType int32, direction int32, flags int32, packageName string, uid int32, pid int32, userHandle interface{}, targetSdkVersion int32) error
+	AdjustSuggestedStreamVolumeForUid(ctx context.Context, streamType int32, direction int32, flags int32, packageName string, uid int32, pid int32, userHandle interface{}, targetSdkVersion int32) error
+	SetStreamVolumeForUid(ctx context.Context, streamType int32, direction int32, flags int32, packageName string, uid int32, pid int32, userHandle interface{}, targetSdkVersion int32) error
+	AdjustVolume(ctx context.Context, direction int32, flags int32) error
+	AdjustSuggestedStreamVolume(ctx context.Context, direction int32, suggestedStreamType int32, flags int32) error
+	IsMusicActive(ctx context.Context, remotely bool) (bool, error)
+	GetDeviceMaskForStream(ctx context.Context, streamType int32) (int32, error)
+	GetAvailableCommunicationDeviceIds(ctx context.Context) ([]int32, error)
+	SetCommunicationDevice(ctx context.Context, cb binder.IBinder, portId int32, attributionSource interface{}) (bool, error)
+	GetCommunicationDevice(ctx context.Context) (int32, error)
+	RegisterCommunicationDeviceDispatcher(ctx context.Context, dispatcher ICommunicationDeviceDispatcher) error
+	UnregisterCommunicationDeviceDispatcher(ctx context.Context, dispatcher ICommunicationDeviceDispatcher) error
+	AreNavigationRepeatSoundEffectsEnabled(ctx context.Context) (bool, error)
+	SetNavigationRepeatSoundEffectsEnabled(ctx context.Context, enabled bool) error
+	IsHomeSoundEffectEnabled(ctx context.Context) (bool, error)
+	SetHomeSoundEffectEnabled(ctx context.Context, enabled bool) error
+	SetAdditionalOutputDeviceDelay(ctx context.Context, device AudioDeviceAttributes, delayMillis int64) (bool, error)
+	GetAdditionalOutputDeviceDelay(ctx context.Context, device AudioDeviceAttributes) (int64, error)
+	GetMaxAdditionalOutputDeviceDelay(ctx context.Context, device AudioDeviceAttributes) (int64, error)
+	RequestAudioFocusForTest(ctx context.Context, aa AudioAttributes, focusReqType int32, cb binder.IBinder, fd IAudioFocusDispatcher, clientId string, callingPackageName string, flags int32, uid int32, sdk int32) (int32, error)
+	AbandonAudioFocusForTest(ctx context.Context, fd IAudioFocusDispatcher, clientId string, aa AudioAttributes, callingPackageName string) (int32, error)
+	GetFadeOutDurationOnFocusLossMillis(ctx context.Context, aa AudioAttributes) (int64, error)
+	GetFocusDuckedUidsForTest(ctx context.Context) ([]interface{}, error)
+	GetFocusFadeOutDurationForTest(ctx context.Context) (int64, error)
+	GetFocusUnmuteDelayAfterFadeOutForTest(ctx context.Context) (int64, error)
+	EnterAudioFocusFreezeForTest(ctx context.Context, cb binder.IBinder, uids []int32) (bool, error)
+	ExitAudioFocusFreezeForTest(ctx context.Context, cb binder.IBinder) (bool, error)
+	RegisterModeDispatcher(ctx context.Context, dispatcher IAudioModeDispatcher) error
+	UnregisterModeDispatcher(ctx context.Context, dispatcher IAudioModeDispatcher) error
+	GetSpatializerImmersiveAudioLevel(ctx context.Context) (int32, error)
+	IsSpatializerEnabled(ctx context.Context) (bool, error)
+	IsSpatializerAvailable(ctx context.Context) (bool, error)
+	IsSpatializerAvailableForDevice(ctx context.Context, device AudioDeviceAttributes) (bool, error)
+	HasHeadTracker(ctx context.Context, device AudioDeviceAttributes) (bool, error)
+	SetHeadTrackerEnabled(ctx context.Context, enabled bool, device AudioDeviceAttributes) error
+	IsHeadTrackerEnabled(ctx context.Context, device AudioDeviceAttributes) (bool, error)
+	IsHeadTrackerAvailable(ctx context.Context) (bool, error)
+	RegisterSpatializerHeadTrackerAvailableCallback(ctx context.Context, cb ISpatializerHeadTrackerAvailableCallback, register bool) error
+	SetSpatializerEnabled(ctx context.Context, enabled bool) error
+	CanBeSpatialized(ctx context.Context, aa AudioAttributes, af AudioFormat) (bool, error)
+	GetSpatializedChannelMasks(ctx context.Context) ([]interface{}, error)
+	RegisterSpatializerCallback(ctx context.Context, cb ISpatializerCallback) error
+	UnregisterSpatializerCallback(ctx context.Context, cb ISpatializerCallback) error
+	RegisterSpatializerHeadTrackingCallback(ctx context.Context, cb ISpatializerHeadTrackingModeCallback) error
+	UnregisterSpatializerHeadTrackingCallback(ctx context.Context, cb ISpatializerHeadTrackingModeCallback) error
+	RegisterHeadToSoundstagePoseCallback(ctx context.Context, cb ISpatializerHeadToSoundStagePoseCallback) error
+	UnregisterHeadToSoundstagePoseCallback(ctx context.Context, cb ISpatializerHeadToSoundStagePoseCallback) error
+	GetSpatializerCompatibleAudioDevices(ctx context.Context) ([]AudioDeviceAttributes, error)
+	AddSpatializerCompatibleAudioDevice(ctx context.Context, ada AudioDeviceAttributes) error
+	RemoveSpatializerCompatibleAudioDevice(ctx context.Context, ada AudioDeviceAttributes) error
+	SetDesiredHeadTrackingMode(ctx context.Context, mode int32) error
+	GetDesiredHeadTrackingMode(ctx context.Context) (int32, error)
+	GetSupportedHeadTrackingModes(ctx context.Context) ([]int32, error)
+	GetActualHeadTrackingMode(ctx context.Context) (int32, error)
+	SetSpatializerGlobalTransform(ctx context.Context, transform []float32) error
+	RecenterHeadTracker(ctx context.Context) error
+	SetSpatializerParameter(ctx context.Context, key int32, value []byte) error
+	GetSpatializerParameter(ctx context.Context, key int32, value []byte) error
+	GetSpatializerOutput(ctx context.Context) (int32, error)
+	RegisterSpatializerOutputCallback(ctx context.Context, cb ISpatializerOutputCallback) error
+	UnregisterSpatializerOutputCallback(ctx context.Context, cb ISpatializerOutputCallback) error
+	IsVolumeFixed(ctx context.Context) (bool, error)
+	GetDefaultVolumeInfo(ctx context.Context) (VolumeInfo, error)
+	IsPstnCallAudioInterceptable(ctx context.Context) (bool, error)
+	MuteAwaitConnection(ctx context.Context, usagesToMute []int32, dev AudioDeviceAttributes, timeOutMs int64) error
+	CancelMuteAwaitConnection(ctx context.Context, dev AudioDeviceAttributes) error
+	GetMutingExpectedDevice(ctx context.Context) (AudioDeviceAttributes, error)
+	RegisterMuteAwaitConnectionDispatcher(ctx context.Context, cb IMuteAwaitConnectionCallback, register bool) error
+	SetTestDeviceConnectionState(ctx context.Context, device AudioDeviceAttributes, connected bool) error
+	RegisterDeviceVolumeBehaviorDispatcher(ctx context.Context, register bool, dispatcher IDeviceVolumeBehaviorDispatcher) error
+	GetFocusStack(ctx context.Context) ([]AudioFocusInfo, error)
+	SendFocusLossAndUpdate(ctx context.Context, focusLoser AudioFocusInfo, apcb audiopolicy.IAudioPolicyCallback) error
+	SendFocusLoss(ctx context.Context, focusLoser AudioFocusInfo, apcb audiopolicy.IAudioPolicyCallback) (bool, error)
+	AddAssistantServicesUids(ctx context.Context, assistantUID []int32) error
+	RemoveAssistantServicesUids(ctx context.Context, assistantUID []int32) error
+	SetActiveAssistantServiceUids(ctx context.Context, activeUids []int32) error
+	GetAssistantServicesUids(ctx context.Context) ([]int32, error)
+	GetActiveAssistantServiceUids(ctx context.Context) ([]int32, error)
+	RegisterDeviceVolumeDispatcherForAbsoluteVolume(ctx context.Context, register bool, cb IAudioDeviceVolumeDispatcher, packageName string, device AudioDeviceAttributes, volumes []VolumeInfo, handlesvolumeAdjustment bool, volumeBehavior int32) error
+	GetHalVersion(ctx context.Context) (AudioHalVersionInfo, error)
+	SetPreferredMixerAttributes(ctx context.Context, aa AudioAttributes, portId int32, mixerAttributes AudioMixerAttributes) (int32, error)
+	ClearPreferredMixerAttributes(ctx context.Context, aa AudioAttributes, portId int32) (int32, error)
+	RegisterPreferredMixerAttributesDispatcher(ctx context.Context, dispatcher IPreferredMixerAttributesDispatcher) error
+	UnregisterPreferredMixerAttributesDispatcher(ctx context.Context, dispatcher IPreferredMixerAttributesDispatcher) error
+	SupportsBluetoothVariableLatency(ctx context.Context) (bool, error)
+	SetBluetoothVariableLatencyEnabled(ctx context.Context, enabled bool) error
+	IsBluetoothVariableLatencyEnabled(ctx context.Context) (bool, error)
+	RegisterLoudnessCodecUpdatesDispatcher(ctx context.Context, dispatcher ILoudnessCodecUpdatesDispatcher) error
+	UnregisterLoudnessCodecUpdatesDispatcher(ctx context.Context, dispatcher ILoudnessCodecUpdatesDispatcher) error
+	StartLoudnessCodecUpdates(ctx context.Context, sessionId int32) error
+	StopLoudnessCodecUpdates(ctx context.Context, sessionId int32) error
+	AddLoudnessCodecInfo(ctx context.Context, sessionId int32, mediaCodecHash int32, codecInfo LoudnessCodecInfo) error
+	RemoveLoudnessCodecInfo(ctx context.Context, sessionId int32, codecInfo LoudnessCodecInfo) error
+	GetLoudnessParams(ctx context.Context, codecInfo LoudnessCodecInfo) (interface{}, error)
+	SetFadeManagerConfigurationForFocusLoss(ctx context.Context, fmcForFocusLoss FadeManagerConfiguration) (int32, error)
+	ClearFadeManagerConfigurationForFocusLoss(ctx context.Context) (int32, error)
+	GetFadeManagerConfigurationForFocusLoss(ctx context.Context) (FadeManagerConfiguration, error)
+	ShouldNotificationSoundPlay(ctx context.Context, aa AudioAttributes) (bool, error)
+}
+
+type audioServiceStubWrapper struct {
+	impl       IAudioServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioServiceStubWrapper) TrackPlayer(
+	ctx context.Context,
+	pic PlayerBasePlayerIdCard,
+) (int32, error) {
+	return w.impl.TrackPlayer(ctx, pic)
+}
+
+func (w *audioServiceStubWrapper) PlayerAttributes(
+	ctx context.Context,
+	piid int32,
+	attr AudioAttributes,
+) error {
+	return w.impl.PlayerAttributes(ctx, piid, attr)
+}
+
+func (w *audioServiceStubWrapper) PlayerEvent(
+	ctx context.Context,
+	piid int32,
+	event int32,
+	eventId []int32,
+) error {
+	return w.impl.PlayerEvent(ctx, piid, event, eventId)
+}
+
+func (w *audioServiceStubWrapper) ReleasePlayer(
+	ctx context.Context,
+	piid int32,
+) error {
+	return w.impl.ReleasePlayer(ctx, piid)
+}
+
+func (w *audioServiceStubWrapper) TrackRecorder(
+	ctx context.Context,
+	recorder binder.IBinder,
+) (int32, error) {
+	return w.impl.TrackRecorder(ctx, recorder)
+}
+
+func (w *audioServiceStubWrapper) RecorderEvent(
+	ctx context.Context,
+	riid int32,
+	event int32,
+) error {
+	return w.impl.RecorderEvent(ctx, riid, event)
+}
+
+func (w *audioServiceStubWrapper) ReleaseRecorder(
+	ctx context.Context,
+	riid int32,
+) error {
+	return w.impl.ReleaseRecorder(ctx, riid)
+}
+
+func (w *audioServiceStubWrapper) PlayerSessionId(
+	ctx context.Context,
+	piid int32,
+	sessionId int32,
+) error {
+	return w.impl.PlayerSessionId(ctx, piid, sessionId)
+}
+
+func (w *audioServiceStubWrapper) PortEvent(
+	ctx context.Context,
+	portId int32,
+	event int32,
+	extras *interface{},
+) error {
+	return w.impl.PortEvent(ctx, portId, event, extras)
+}
+
+func (w *audioServiceStubWrapper) PermissionUpdateBarrier(
+	ctx context.Context,
+) error {
+	return w.impl.PermissionUpdateBarrier(ctx)
+}
+
+func (w *audioServiceStubWrapper) AdjustStreamVolume(
+	ctx context.Context,
+	streamType int32,
+	direction int32,
+	flags int32,
+) error {
+	return w.impl.AdjustStreamVolume(ctx, streamType, direction, flags)
+}
+
+func (w *audioServiceStubWrapper) AdjustStreamVolumeWithAttribution(
+	ctx context.Context,
+	streamType int32,
+	direction int32,
+	flags int32,
+) error {
+	return w.impl.AdjustStreamVolumeWithAttribution(ctx, streamType, direction, flags)
+}
+
+func (w *audioServiceStubWrapper) SetStreamVolume(
+	ctx context.Context,
+	streamType int32,
+	index int32,
+	flags int32,
+) error {
+	return w.impl.SetStreamVolume(ctx, streamType, index, flags)
+}
+
+func (w *audioServiceStubWrapper) SetStreamVolumeWithAttribution(
+	ctx context.Context,
+	streamType int32,
+	index int32,
+	flags int32,
+) error {
+	return w.impl.SetStreamVolumeWithAttribution(ctx, streamType, index, flags)
+}
+
+func (w *audioServiceStubWrapper) SetDeviceVolume(
+	ctx context.Context,
+	vi VolumeInfo,
+	ada AudioDeviceAttributes,
+) error {
+	return w.impl.SetDeviceVolume(ctx, vi, ada)
+}
+
+func (w *audioServiceStubWrapper) GetDeviceVolume(
+	ctx context.Context,
+	vi VolumeInfo,
+	ada AudioDeviceAttributes,
+) (VolumeInfo, error) {
+	return w.impl.GetDeviceVolume(ctx, vi, ada)
+}
+
+func (w *audioServiceStubWrapper) HandleVolumeKey(
+	ctx context.Context,
+	event interface{},
+	isOnTv bool,
+	caller string,
+) error {
+	return w.impl.HandleVolumeKey(ctx, event, isOnTv, caller)
+}
+
+func (w *audioServiceStubWrapper) IsStreamMute(
+	ctx context.Context,
+	streamType int32,
+) (bool, error) {
+	return w.impl.IsStreamMute(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) ForceRemoteSubmixFullVolume(
+	ctx context.Context,
+	startForcing bool,
+	cb binder.IBinder,
+) error {
+	return w.impl.ForceRemoteSubmixFullVolume(ctx, startForcing, cb)
+}
+
+func (w *audioServiceStubWrapper) IsMasterMute(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsMasterMute(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetMasterMute(
+	ctx context.Context,
+	mute bool,
+	flags int32,
+) error {
+	return w.impl.SetMasterMute(ctx, mute, flags)
+}
+
+func (w *audioServiceStubWrapper) GetStreamVolume(
+	ctx context.Context,
+	streamType int32,
+) (int32, error) {
+	return w.impl.GetStreamVolume(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) GetStreamMinVolume(
+	ctx context.Context,
+	streamType int32,
+) (int32, error) {
+	return w.impl.GetStreamMinVolume(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) GetStreamMaxVolume(
+	ctx context.Context,
+	streamType int32,
+) (int32, error) {
+	return w.impl.GetStreamMaxVolume(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) GetAudioVolumeGroups(
+	ctx context.Context,
+) ([]AudioVolumeGroup, error) {
+	return w.impl.GetAudioVolumeGroups(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetVolumeGroupVolumeIndex(
+	ctx context.Context,
+	groupId int32,
+	index int32,
+	flags int32,
+) error {
+	return w.impl.SetVolumeGroupVolumeIndex(ctx, groupId, index, flags)
+}
+
+func (w *audioServiceStubWrapper) GetVolumeGroupVolumeIndex(
+	ctx context.Context,
+	groupId int32,
+) (int32, error) {
+	return w.impl.GetVolumeGroupVolumeIndex(ctx, groupId)
+}
+
+func (w *audioServiceStubWrapper) GetVolumeGroupMaxVolumeIndex(
+	ctx context.Context,
+	groupId int32,
+) (int32, error) {
+	return w.impl.GetVolumeGroupMaxVolumeIndex(ctx, groupId)
+}
+
+func (w *audioServiceStubWrapper) GetVolumeGroupMinVolumeIndex(
+	ctx context.Context,
+	groupId int32,
+) (int32, error) {
+	return w.impl.GetVolumeGroupMinVolumeIndex(ctx, groupId)
+}
+
+func (w *audioServiceStubWrapper) GetLastAudibleVolumeForVolumeGroup(
+	ctx context.Context,
+	groupId int32,
+) (int32, error) {
+	return w.impl.GetLastAudibleVolumeForVolumeGroup(ctx, groupId)
+}
+
+func (w *audioServiceStubWrapper) IsVolumeGroupMuted(
+	ctx context.Context,
+	groupId int32,
+) (bool, error) {
+	return w.impl.IsVolumeGroupMuted(ctx, groupId)
+}
+
+func (w *audioServiceStubWrapper) AdjustVolumeGroupVolume(
+	ctx context.Context,
+	groupId int32,
+	direction int32,
+	flags int32,
+) error {
+	return w.impl.AdjustVolumeGroupVolume(ctx, groupId, direction, flags)
+}
+
+func (w *audioServiceStubWrapper) GetLastAudibleStreamVolume(
+	ctx context.Context,
+	streamType int32,
+) (int32, error) {
+	return w.impl.GetLastAudibleStreamVolume(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) SetSupportedSystemUsages(
+	ctx context.Context,
+	systemUsages []int32,
+) error {
+	return w.impl.SetSupportedSystemUsages(ctx, systemUsages)
+}
+
+func (w *audioServiceStubWrapper) GetSupportedSystemUsages(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetSupportedSystemUsages(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetAudioProductStrategies(
+	ctx context.Context,
+) ([]AudioProductStrategy, error) {
+	return w.impl.GetAudioProductStrategies(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsMicrophoneMuted(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsMicrophoneMuted(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsUltrasoundSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUltrasoundSupported(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsHotwordStreamSupported(
+	ctx context.Context,
+	lookbackAudio bool,
+) (bool, error) {
+	return w.impl.IsHotwordStreamSupported(ctx, lookbackAudio)
+}
+
+func (w *audioServiceStubWrapper) SetMicrophoneMute(
+	ctx context.Context,
+	on bool,
+) error {
+	return w.impl.SetMicrophoneMute(ctx, on)
+}
+
+func (w *audioServiceStubWrapper) SetInputGainIndex(
+	ctx context.Context,
+	ada AudioDeviceAttributes,
+	index int32,
+) error {
+	return w.impl.SetInputGainIndex(ctx, ada, index)
+}
+
+func (w *audioServiceStubWrapper) GetInputGainIndex(
+	ctx context.Context,
+	ada AudioDeviceAttributes,
+) (int32, error) {
+	return w.impl.GetInputGainIndex(ctx, ada)
+}
+
+func (w *audioServiceStubWrapper) GetMaxInputGainIndex(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMaxInputGainIndex(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetMinInputGainIndex(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMinInputGainIndex(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsInputGainFixed(
+	ctx context.Context,
+	ada AudioDeviceAttributes,
+) (bool, error) {
+	return w.impl.IsInputGainFixed(ctx, ada)
+}
+
+func (w *audioServiceStubWrapper) SetMicrophoneMuteFromSwitch(
+	ctx context.Context,
+	on bool,
+) error {
+	return w.impl.SetMicrophoneMuteFromSwitch(ctx, on)
+}
+
+func (w *audioServiceStubWrapper) SetRingerModeExternal(
+	ctx context.Context,
+	ringerMode int32,
+	caller string,
+) error {
+	return w.impl.SetRingerModeExternal(ctx, ringerMode, caller)
+}
+
+func (w *audioServiceStubWrapper) SetRingerModeInternal(
+	ctx context.Context,
+	ringerMode int32,
+	caller string,
+) error {
+	return w.impl.SetRingerModeInternal(ctx, ringerMode, caller)
+}
+
+func (w *audioServiceStubWrapper) GetRingerModeExternal(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetRingerModeExternal(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetRingerModeInternal(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetRingerModeInternal(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsValidRingerMode(
+	ctx context.Context,
+	ringerMode int32,
+) (bool, error) {
+	return w.impl.IsValidRingerMode(ctx, ringerMode)
+}
+
+func (w *audioServiceStubWrapper) SetVibrateSetting(
+	ctx context.Context,
+	vibrateType int32,
+	vibrateSetting int32,
+) error {
+	return w.impl.SetVibrateSetting(ctx, vibrateType, vibrateSetting)
+}
+
+func (w *audioServiceStubWrapper) GetVibrateSetting(
+	ctx context.Context,
+	vibrateType int32,
+) (int32, error) {
+	return w.impl.GetVibrateSetting(ctx, vibrateType)
+}
+
+func (w *audioServiceStubWrapper) ShouldVibrate(
+	ctx context.Context,
+	vibrateType int32,
+) (bool, error) {
+	return w.impl.ShouldVibrate(ctx, vibrateType)
+}
+
+func (w *audioServiceStubWrapper) SetMode(
+	ctx context.Context,
+	mode int32,
+	cb binder.IBinder,
+) error {
+	return w.impl.SetMode(ctx, mode, cb)
+}
+
+func (w *audioServiceStubWrapper) GetMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMode(ctx)
+}
+
+func (w *audioServiceStubWrapper) PlaySoundEffect(
+	ctx context.Context,
+	effectType int32,
+) error {
+	return w.impl.PlaySoundEffect(ctx, effectType)
+}
+
+func (w *audioServiceStubWrapper) PlaySoundEffectVolume(
+	ctx context.Context,
+	effectType int32,
+	volume float32,
+) error {
+	return w.impl.PlaySoundEffectVolume(ctx, effectType, volume)
+}
+
+func (w *audioServiceStubWrapper) LoadSoundEffects(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.LoadSoundEffects(ctx)
+}
+
+func (w *audioServiceStubWrapper) UnloadSoundEffects(
+	ctx context.Context,
+) error {
+	return w.impl.UnloadSoundEffects(ctx)
+}
+
+func (w *audioServiceStubWrapper) ReloadAudioSettings(
+	ctx context.Context,
+) error {
+	return w.impl.ReloadAudioSettings(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetSurroundFormats(
+	ctx context.Context,
+) (map[interface{}]interface{}, error) {
+	return w.impl.GetSurroundFormats(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetReportedSurroundFormats(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetReportedSurroundFormats(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetSurroundFormatEnabled(
+	ctx context.Context,
+	audioFormat int32,
+	enabled bool,
+) (bool, error) {
+	return w.impl.SetSurroundFormatEnabled(ctx, audioFormat, enabled)
+}
+
+func (w *audioServiceStubWrapper) IsSurroundFormatEnabled(
+	ctx context.Context,
+	audioFormat int32,
+) (bool, error) {
+	return w.impl.IsSurroundFormatEnabled(ctx, audioFormat)
+}
+
+func (w *audioServiceStubWrapper) SetEncodedSurroundMode(
+	ctx context.Context,
+	mode int32,
+) (bool, error) {
+	return w.impl.SetEncodedSurroundMode(ctx, mode)
+}
+
+func (w *audioServiceStubWrapper) GetEncodedSurroundMode(
+	ctx context.Context,
+	targetSdkVersion int32,
+) (int32, error) {
+	return w.impl.GetEncodedSurroundMode(ctx, targetSdkVersion)
+}
+
+func (w *audioServiceStubWrapper) SetSpeakerphoneOn(
+	ctx context.Context,
+	cb binder.IBinder,
+	on bool,
+	attributionSource interface{},
+) error {
+	return w.impl.SetSpeakerphoneOn(ctx, cb, on, attributionSource)
+}
+
+func (w *audioServiceStubWrapper) IsSpeakerphoneOn(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSpeakerphoneOn(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetBluetoothScoOn(
+	ctx context.Context,
+	on bool,
+) error {
+	return w.impl.SetBluetoothScoOn(ctx, on)
+}
+
+func (w *audioServiceStubWrapper) SetA2dpSuspended(
+	ctx context.Context,
+	on bool,
+) error {
+	return w.impl.SetA2dpSuspended(ctx, on)
+}
+
+func (w *audioServiceStubWrapper) SetLeAudioSuspended(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetLeAudioSuspended(ctx, enable)
+}
+
+func (w *audioServiceStubWrapper) IsBluetoothScoOn(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBluetoothScoOn(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetBluetoothA2dpOn(
+	ctx context.Context,
+	on bool,
+) error {
+	return w.impl.SetBluetoothA2dpOn(ctx, on)
+}
+
+func (w *audioServiceStubWrapper) IsBluetoothA2dpOn(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBluetoothA2dpOn(ctx)
+}
+
+func (w *audioServiceStubWrapper) RequestAudioFocus(
+	ctx context.Context,
+	aa AudioAttributes,
+	focusReqType int32,
+	cb binder.IBinder,
+	fd IAudioFocusDispatcher,
+	clientId string,
+	callingPackageName string,
+	flags int32,
+	pcb audiopolicy.IAudioPolicyCallback,
+	sdk int32,
+) (int32, error) {
+	return w.impl.RequestAudioFocus(ctx, aa, focusReqType, cb, fd, clientId, callingPackageName, flags, pcb, sdk)
+}
+
+func (w *audioServiceStubWrapper) AbandonAudioFocus(
+	ctx context.Context,
+	fd IAudioFocusDispatcher,
+	clientId string,
+	aa AudioAttributes,
+	callingPackageName string,
+) (int32, error) {
+	return w.impl.AbandonAudioFocus(ctx, fd, clientId, aa, callingPackageName)
+}
+
+func (w *audioServiceStubWrapper) UnregisterAudioFocusClient(
+	ctx context.Context,
+	clientId string,
+) error {
+	return w.impl.UnregisterAudioFocusClient(ctx, clientId)
+}
+
+func (w *audioServiceStubWrapper) GetCurrentAudioFocus(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentAudioFocus(ctx)
+}
+
+func (w *audioServiceStubWrapper) StartBluetoothSco(
+	ctx context.Context,
+	cb binder.IBinder,
+	targetSdkVersion int32,
+	attributionSource interface{},
+) error {
+	return w.impl.StartBluetoothSco(ctx, cb, targetSdkVersion, attributionSource)
+}
+
+func (w *audioServiceStubWrapper) StartBluetoothScoVirtualCall(
+	ctx context.Context,
+	cb binder.IBinder,
+	attributionSource interface{},
+) error {
+	return w.impl.StartBluetoothScoVirtualCall(ctx, cb, attributionSource)
+}
+
+func (w *audioServiceStubWrapper) StopBluetoothSco(
+	ctx context.Context,
+	cb binder.IBinder,
+	attributionSource interface{},
+) error {
+	return w.impl.StopBluetoothSco(ctx, cb, attributionSource)
+}
+
+func (w *audioServiceStubWrapper) ForceVolumeControlStream(
+	ctx context.Context,
+	streamType int32,
+	cb binder.IBinder,
+) error {
+	return w.impl.ForceVolumeControlStream(ctx, streamType, cb)
+}
+
+func (w *audioServiceStubWrapper) SetRingtonePlayer(
+	ctx context.Context,
+	player IRingtonePlayer,
+) error {
+	return w.impl.SetRingtonePlayer(ctx, player)
+}
+
+func (w *audioServiceStubWrapper) GetRingtonePlayer(
+	ctx context.Context,
+) (IRingtonePlayer, error) {
+	return w.impl.GetRingtonePlayer(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetUiSoundsStreamType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUiSoundsStreamType(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetIndependentStreamTypes(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetIndependentStreamTypes(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetStreamTypeAlias(
+	ctx context.Context,
+	streamType int32,
+) (int32, error) {
+	return w.impl.GetStreamTypeAlias(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) IsVolumeControlUsingVolumeGroups(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsVolumeControlUsingVolumeGroups(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterStreamAliasingDispatcher(
+	ctx context.Context,
+	isad IStreamAliasingDispatcher,
+	register bool,
+) error {
+	return w.impl.RegisterStreamAliasingDispatcher(ctx, isad, register)
+}
+
+func (w *audioServiceStubWrapper) SetNotifAliasRingForTest(
+	ctx context.Context,
+	alias bool,
+) error {
+	return w.impl.SetNotifAliasRingForTest(ctx, alias)
+}
+
+func (w *audioServiceStubWrapper) SetWiredDeviceConnectionState(
+	ctx context.Context,
+	aa AudioDeviceAttributes,
+	state int32,
+	caller string,
+) error {
+	return w.impl.SetWiredDeviceConnectionState(ctx, aa, state, caller)
+}
+
+func (w *audioServiceStubWrapper) StartWatchingRoutes(
+	ctx context.Context,
+	observer IAudioRoutesObserver,
+) (AudioRoutesInfo, error) {
+	return w.impl.StartWatchingRoutes(ctx, observer)
+}
+
+func (w *audioServiceStubWrapper) IsCameraSoundForced(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCameraSoundForced(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetVolumeController(
+	ctx context.Context,
+	controller IVolumeController,
+) error {
+	return w.impl.SetVolumeController(ctx, controller)
+}
+
+func (w *audioServiceStubWrapper) GetVolumeController(
+	ctx context.Context,
+) (IVolumeController, error) {
+	return w.impl.GetVolumeController(ctx)
+}
+
+func (w *audioServiceStubWrapper) NotifyVolumeControllerVisible(
+	ctx context.Context,
+	controller IVolumeController,
+	visible bool,
+) error {
+	return w.impl.NotifyVolumeControllerVisible(ctx, controller, visible)
+}
+
+func (w *audioServiceStubWrapper) SetVolumeControllerLongPressTimeoutEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetVolumeControllerLongPressTimeoutEnabled(ctx, enable)
+}
+
+func (w *audioServiceStubWrapper) IsStreamAffectedByRingerMode(
+	ctx context.Context,
+	streamType int32,
+) (bool, error) {
+	return w.impl.IsStreamAffectedByRingerMode(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) IsStreamAffectedByMute(
+	ctx context.Context,
+	streamType int32,
+) (bool, error) {
+	return w.impl.IsStreamAffectedByMute(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) IsStreamMutableByUi(
+	ctx context.Context,
+	streamType int32,
+) (bool, error) {
+	return w.impl.IsStreamMutableByUi(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) DisableSafeMediaVolume(
+	ctx context.Context,
+) error {
+	return w.impl.DisableSafeMediaVolume(ctx)
+}
+
+func (w *audioServiceStubWrapper) LowerVolumeToRs1(
+	ctx context.Context,
+) error {
+	return w.impl.LowerVolumeToRs1(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetOutputRs2UpperBound(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetOutputRs2UpperBound(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetOutputRs2UpperBound(
+	ctx context.Context,
+	rs2Value float32,
+) error {
+	return w.impl.SetOutputRs2UpperBound(ctx, rs2Value)
+}
+
+func (w *audioServiceStubWrapper) GetCsd(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetCsd(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetCsd(
+	ctx context.Context,
+	csd float32,
+) error {
+	return w.impl.SetCsd(ctx, csd)
+}
+
+func (w *audioServiceStubWrapper) ForceUseFrameworkMel(
+	ctx context.Context,
+	useFrameworkMel bool,
+) error {
+	return w.impl.ForceUseFrameworkMel(ctx, useFrameworkMel)
+}
+
+func (w *audioServiceStubWrapper) ForceComputeCsdOnAllDevices(
+	ctx context.Context,
+	computeCsdOnAllDevices bool,
+) error {
+	return w.impl.ForceComputeCsdOnAllDevices(ctx, computeCsdOnAllDevices)
+}
+
+func (w *audioServiceStubWrapper) IsCsdEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCsdEnabled(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsCsdAsAFeatureAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCsdAsAFeatureAvailable(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsCsdAsAFeatureEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCsdAsAFeatureEnabled(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetCsdAsAFeatureEnabled(
+	ctx context.Context,
+	csdToggleValue bool,
+) error {
+	return w.impl.SetCsdAsAFeatureEnabled(ctx, csdToggleValue)
+}
+
+func (w *audioServiceStubWrapper) SetBluetoothAudioDeviceCategory_legacy(
+	ctx context.Context,
+	address string,
+	isBle bool,
+	deviceCategory int32,
+) error {
+	return w.impl.SetBluetoothAudioDeviceCategory_legacy(ctx, address, isBle, deviceCategory)
+}
+
+func (w *audioServiceStubWrapper) GetBluetoothAudioDeviceCategory_legacy(
+	ctx context.Context,
+	address string,
+	isBle bool,
+) (int32, error) {
+	return w.impl.GetBluetoothAudioDeviceCategory_legacy(ctx, address, isBle)
+}
+
+func (w *audioServiceStubWrapper) SetBluetoothAudioDeviceCategory(
+	ctx context.Context,
+	address string,
+	deviceCategory int32,
+) (bool, error) {
+	return w.impl.SetBluetoothAudioDeviceCategory(ctx, address, deviceCategory)
+}
+
+func (w *audioServiceStubWrapper) GetBluetoothAudioDeviceCategory(
+	ctx context.Context,
+	address string,
+) (int32, error) {
+	return w.impl.GetBluetoothAudioDeviceCategory(ctx, address)
+}
+
+func (w *audioServiceStubWrapper) IsBluetoothAudioDeviceCategoryFixed(
+	ctx context.Context,
+	address string,
+) (bool, error) {
+	return w.impl.IsBluetoothAudioDeviceCategoryFixed(ctx, address)
+}
+
+func (w *audioServiceStubWrapper) SetHdmiSystemAudioSupported(
+	ctx context.Context,
+	on bool,
+) (int32, error) {
+	return w.impl.SetHdmiSystemAudioSupported(ctx, on)
+}
+
+func (w *audioServiceStubWrapper) IsHdmiSystemAudioSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHdmiSystemAudioSupported(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterAudioPolicy(
+	ctx context.Context,
+	policyConfig AudioPolicyConfig,
+	pcb audiopolicy.IAudioPolicyCallback,
+	hasFocusListener bool,
+	isFocusPolicy bool,
+	isTestFocusPolicy bool,
+	isVolumeController bool,
+	projection mediaProjection.IMediaProjection,
+	attributionSource interface{},
+) (string, error) {
+	return w.impl.RegisterAudioPolicy(ctx, policyConfig, pcb, hasFocusListener, isFocusPolicy, isTestFocusPolicy, isVolumeController, projection, attributionSource)
+}
+
+func (w *audioServiceStubWrapper) UnregisterAudioPolicyAsync(
+	ctx context.Context,
+	pcb audiopolicy.IAudioPolicyCallback,
+) error {
+	return w.impl.UnregisterAudioPolicyAsync(ctx, pcb)
+}
+
+func (w *audioServiceStubWrapper) GetRegisteredPolicyMixes(
+	ctx context.Context,
+) ([]AudioMix, error) {
+	return w.impl.GetRegisteredPolicyMixes(ctx)
+}
+
+func (w *audioServiceStubWrapper) UnregisterAudioPolicy(
+	ctx context.Context,
+	pcb audiopolicy.IAudioPolicyCallback,
+) error {
+	return w.impl.UnregisterAudioPolicy(ctx, pcb)
+}
+
+func (w *audioServiceStubWrapper) AddMixForPolicy(
+	ctx context.Context,
+	policyConfig AudioPolicyConfig,
+	pcb audiopolicy.IAudioPolicyCallback,
+) (int32, error) {
+	return w.impl.AddMixForPolicy(ctx, policyConfig, pcb)
+}
+
+func (w *audioServiceStubWrapper) RemoveMixForPolicy(
+	ctx context.Context,
+	policyConfig AudioPolicyConfig,
+	pcb audiopolicy.IAudioPolicyCallback,
+) (int32, error) {
+	return w.impl.RemoveMixForPolicy(ctx, policyConfig, pcb)
+}
+
+func (w *audioServiceStubWrapper) UpdateMixingRulesForPolicy(
+	ctx context.Context,
+	mixesToUpdate []AudioMix,
+	updatedMixingRules []audiopolicy.AudioMixingRule,
+	pcb audiopolicy.IAudioPolicyCallback,
+) (int32, error) {
+	return w.impl.UpdateMixingRulesForPolicy(ctx, mixesToUpdate, updatedMixingRules, pcb)
+}
+
+func (w *audioServiceStubWrapper) SetFocusPropertiesForPolicy(
+	ctx context.Context,
+	duckingBehavior int32,
+	pcb audiopolicy.IAudioPolicyCallback,
+) (int32, error) {
+	return w.impl.SetFocusPropertiesForPolicy(ctx, duckingBehavior, pcb)
+}
+
+func (w *audioServiceStubWrapper) SetVolumePolicy(
+	ctx context.Context,
+	policy VolumePolicy,
+) error {
+	return w.impl.SetVolumePolicy(ctx, policy)
+}
+
+func (w *audioServiceStubWrapper) GetVolumePolicy(
+	ctx context.Context,
+) (VolumePolicy, error) {
+	return w.impl.GetVolumePolicy(ctx)
+}
+
+func (w *audioServiceStubWrapper) HasRegisteredDynamicPolicy(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasRegisteredDynamicPolicy(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterRecordingCallback(
+	ctx context.Context,
+	rcdb IRecordingConfigDispatcher,
+) error {
+	return w.impl.RegisterRecordingCallback(ctx, rcdb)
+}
+
+func (w *audioServiceStubWrapper) UnregisterRecordingCallback(
+	ctx context.Context,
+	rcdb IRecordingConfigDispatcher,
+) error {
+	return w.impl.UnregisterRecordingCallback(ctx, rcdb)
+}
+
+func (w *audioServiceStubWrapper) GetActiveRecordingConfigurations(
+	ctx context.Context,
+) ([]AudioRecordingConfiguration, error) {
+	return w.impl.GetActiveRecordingConfigurations(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterPlaybackCallback(
+	ctx context.Context,
+	pcdb IPlaybackConfigDispatcher,
+) error {
+	return w.impl.RegisterPlaybackCallback(ctx, pcdb)
+}
+
+func (w *audioServiceStubWrapper) UnregisterPlaybackCallback(
+	ctx context.Context,
+	pcdb IPlaybackConfigDispatcher,
+) error {
+	return w.impl.UnregisterPlaybackCallback(ctx, pcdb)
+}
+
+func (w *audioServiceStubWrapper) GetActivePlaybackConfigurations(
+	ctx context.Context,
+) ([]AudioPlaybackConfiguration, error) {
+	return w.impl.GetActivePlaybackConfigurations(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetFocusRampTimeMs(
+	ctx context.Context,
+	focusGain int32,
+	attr AudioAttributes,
+) (int32, error) {
+	return w.impl.GetFocusRampTimeMs(ctx, focusGain, attr)
+}
+
+func (w *audioServiceStubWrapper) DispatchFocusChange(
+	ctx context.Context,
+	afi AudioFocusInfo,
+	focusChange int32,
+	pcb audiopolicy.IAudioPolicyCallback,
+) (int32, error) {
+	return w.impl.DispatchFocusChange(ctx, afi, focusChange, pcb)
+}
+
+func (w *audioServiceStubWrapper) DispatchFocusChangeWithFade(
+	ctx context.Context,
+	afi AudioFocusInfo,
+	focusChange int32,
+	pcb audiopolicy.IAudioPolicyCallback,
+	otherActiveAfis []AudioFocusInfo,
+	transientFadeMgrConfig FadeManagerConfiguration,
+) (int32, error) {
+	return w.impl.DispatchFocusChangeWithFade(ctx, afi, focusChange, pcb, otherActiveAfis, transientFadeMgrConfig)
+}
+
+func (w *audioServiceStubWrapper) PlayerHasOpPlayAudio(
+	ctx context.Context,
+	piid int32,
+	hasOpPlayAudio bool,
+) error {
+	return w.impl.PlayerHasOpPlayAudio(ctx, piid, hasOpPlayAudio)
+}
+
+func (w *audioServiceStubWrapper) HandleBluetoothActiveDeviceChanged(
+	ctx context.Context,
+	newDevice bluetooth.BluetoothDevice,
+	previousDevice bluetooth.BluetoothDevice,
+	info BluetoothProfileConnectionInfo,
+) error {
+	return w.impl.HandleBluetoothActiveDeviceChanged(ctx, newDevice, previousDevice, info)
+}
+
+func (w *audioServiceStubWrapper) SetFocusRequestResultFromExtPolicy(
+	ctx context.Context,
+	afi AudioFocusInfo,
+	requestResult int32,
+	pcb audiopolicy.IAudioPolicyCallback,
+) error {
+	return w.impl.SetFocusRequestResultFromExtPolicy(ctx, afi, requestResult, pcb)
+}
+
+func (w *audioServiceStubWrapper) RegisterAudioServerStateDispatcher(
+	ctx context.Context,
+	asd IAudioServerStateDispatcher,
+) error {
+	return w.impl.RegisterAudioServerStateDispatcher(ctx, asd)
+}
+
+func (w *audioServiceStubWrapper) UnregisterAudioServerStateDispatcher(
+	ctx context.Context,
+	asd IAudioServerStateDispatcher,
+) error {
+	return w.impl.UnregisterAudioServerStateDispatcher(ctx, asd)
+}
+
+func (w *audioServiceStubWrapper) IsAudioServerRunning(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAudioServerRunning(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetUidDeviceAffinity(
+	ctx context.Context,
+	pcb audiopolicy.IAudioPolicyCallback,
+	uid int32,
+	deviceTypes []int32,
+	deviceAddresses []string,
+) (int32, error) {
+	return w.impl.SetUidDeviceAffinity(ctx, pcb, uid, deviceTypes, deviceAddresses)
+}
+
+func (w *audioServiceStubWrapper) RemoveUidDeviceAffinity(
+	ctx context.Context,
+	pcb audiopolicy.IAudioPolicyCallback,
+	uid int32,
+) (int32, error) {
+	return w.impl.RemoveUidDeviceAffinity(ctx, pcb, uid)
+}
+
+func (w *audioServiceStubWrapper) SetUserIdDeviceAffinity(
+	ctx context.Context,
+	pcb audiopolicy.IAudioPolicyCallback,
+	deviceTypes []int32,
+	deviceAddresses []string,
+) (int32, error) {
+	return w.impl.SetUserIdDeviceAffinity(ctx, pcb, deviceTypes, deviceAddresses)
+}
+
+func (w *audioServiceStubWrapper) RemoveUserIdDeviceAffinity(
+	ctx context.Context,
+	pcb audiopolicy.IAudioPolicyCallback,
+) (int32, error) {
+	return w.impl.RemoveUserIdDeviceAffinity(ctx, pcb)
+}
+
+func (w *audioServiceStubWrapper) HasHapticChannels(
+	ctx context.Context,
+	uri net.Uri,
+) (bool, error) {
+	return w.impl.HasHapticChannels(ctx, uri)
+}
+
+func (w *audioServiceStubWrapper) IsCallScreeningModeSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCallScreeningModeSupported(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetPreferredDevicesForStrategy(
+	ctx context.Context,
+	strategy int32,
+	devices []AudioDeviceAttributes,
+) (int32, error) {
+	return w.impl.SetPreferredDevicesForStrategy(ctx, strategy, devices)
+}
+
+func (w *audioServiceStubWrapper) RemovePreferredDevicesForStrategy(
+	ctx context.Context,
+	strategy int32,
+) (int32, error) {
+	return w.impl.RemovePreferredDevicesForStrategy(ctx, strategy)
+}
+
+func (w *audioServiceStubWrapper) GetPreferredDevicesForStrategy(
+	ctx context.Context,
+	strategy int32,
+) ([]AudioDeviceAttributes, error) {
+	return w.impl.GetPreferredDevicesForStrategy(ctx, strategy)
+}
+
+func (w *audioServiceStubWrapper) SetDeviceAsNonDefaultForStrategy(
+	ctx context.Context,
+	strategy int32,
+	device AudioDeviceAttributes,
+) (int32, error) {
+	return w.impl.SetDeviceAsNonDefaultForStrategy(ctx, strategy, device)
+}
+
+func (w *audioServiceStubWrapper) RemoveDeviceAsNonDefaultForStrategy(
+	ctx context.Context,
+	strategy int32,
+	device AudioDeviceAttributes,
+) (int32, error) {
+	return w.impl.RemoveDeviceAsNonDefaultForStrategy(ctx, strategy, device)
+}
+
+func (w *audioServiceStubWrapper) GetNonDefaultDevicesForStrategy(
+	ctx context.Context,
+	strategy int32,
+) ([]AudioDeviceAttributes, error) {
+	return w.impl.GetNonDefaultDevicesForStrategy(ctx, strategy)
+}
+
+func (w *audioServiceStubWrapper) GetDevicesForAttributes(
+	ctx context.Context,
+	attributes AudioAttributes,
+) ([]AudioDeviceAttributes, error) {
+	return w.impl.GetDevicesForAttributes(ctx, attributes)
+}
+
+func (w *audioServiceStubWrapper) GetDevicesForAttributesUnprotected(
+	ctx context.Context,
+	attributes AudioAttributes,
+) ([]AudioDeviceAttributes, error) {
+	return w.impl.GetDevicesForAttributesUnprotected(ctx, attributes)
+}
+
+func (w *audioServiceStubWrapper) AddOnDevicesForAttributesChangedListener(
+	ctx context.Context,
+	attributes AudioAttributes,
+	callback IDevicesForAttributesCallback,
+) error {
+	return w.impl.AddOnDevicesForAttributesChangedListener(ctx, attributes, callback)
+}
+
+func (w *audioServiceStubWrapper) RemoveOnDevicesForAttributesChangedListener(
+	ctx context.Context,
+	callback IDevicesForAttributesCallback,
+) error {
+	return w.impl.RemoveOnDevicesForAttributesChangedListener(ctx, callback)
+}
+
+func (w *audioServiceStubWrapper) SetAllowedCapturePolicy(
+	ctx context.Context,
+	capturePolicy int32,
+) (int32, error) {
+	return w.impl.SetAllowedCapturePolicy(ctx, capturePolicy)
+}
+
+func (w *audioServiceStubWrapper) GetAllowedCapturePolicy(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAllowedCapturePolicy(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterStrategyPreferredDevicesDispatcher(
+	ctx context.Context,
+	dispatcher IStrategyPreferredDevicesDispatcher,
+) error {
+	return w.impl.RegisterStrategyPreferredDevicesDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) UnregisterStrategyPreferredDevicesDispatcher(
+	ctx context.Context,
+	dispatcher IStrategyPreferredDevicesDispatcher,
+) error {
+	return w.impl.UnregisterStrategyPreferredDevicesDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) RegisterStrategyNonDefaultDevicesDispatcher(
+	ctx context.Context,
+	dispatcher IStrategyNonDefaultDevicesDispatcher,
+) error {
+	return w.impl.RegisterStrategyNonDefaultDevicesDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) UnregisterStrategyNonDefaultDevicesDispatcher(
+	ctx context.Context,
+	dispatcher IStrategyNonDefaultDevicesDispatcher,
+) error {
+	return w.impl.UnregisterStrategyNonDefaultDevicesDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) SetRttEnabled(
+	ctx context.Context,
+	rttEnabled bool,
+) error {
+	return w.impl.SetRttEnabled(ctx, rttEnabled)
+}
+
+func (w *audioServiceStubWrapper) SetDeviceVolumeBehavior(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+	deviceVolumeBehavior int32,
+	pkgName string,
+) error {
+	return w.impl.SetDeviceVolumeBehavior(ctx, device, deviceVolumeBehavior, pkgName)
+}
+
+func (w *audioServiceStubWrapper) GetDeviceVolumeBehavior(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+) (int32, error) {
+	return w.impl.GetDeviceVolumeBehavior(ctx, device)
+}
+
+func (w *audioServiceStubWrapper) SetMultiAudioFocusEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetMultiAudioFocusEnabled(ctx, enabled)
+}
+
+func (w *audioServiceStubWrapper) SetPreferredDevicesForCapturePreset(
+	ctx context.Context,
+	capturePreset int32,
+	devices []AudioDeviceAttributes,
+) (int32, error) {
+	return w.impl.SetPreferredDevicesForCapturePreset(ctx, capturePreset, devices)
+}
+
+func (w *audioServiceStubWrapper) ClearPreferredDevicesForCapturePreset(
+	ctx context.Context,
+	capturePreset int32,
+) (int32, error) {
+	return w.impl.ClearPreferredDevicesForCapturePreset(ctx, capturePreset)
+}
+
+func (w *audioServiceStubWrapper) GetPreferredDevicesForCapturePreset(
+	ctx context.Context,
+	capturePreset int32,
+) ([]AudioDeviceAttributes, error) {
+	return w.impl.GetPreferredDevicesForCapturePreset(ctx, capturePreset)
+}
+
+func (w *audioServiceStubWrapper) RegisterCapturePresetDevicesRoleDispatcher(
+	ctx context.Context,
+	dispatcher ICapturePresetDevicesRoleDispatcher,
+) error {
+	return w.impl.RegisterCapturePresetDevicesRoleDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) UnregisterCapturePresetDevicesRoleDispatcher(
+	ctx context.Context,
+	dispatcher ICapturePresetDevicesRoleDispatcher,
+) error {
+	return w.impl.UnregisterCapturePresetDevicesRoleDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) AdjustStreamVolumeForUid(
+	ctx context.Context,
+	streamType int32,
+	direction int32,
+	flags int32,
+	packageName string,
+	uid int32,
+	pid int32,
+	userHandle interface{},
+	targetSdkVersion int32,
+) error {
+	return w.impl.AdjustStreamVolumeForUid(ctx, streamType, direction, flags, packageName, uid, pid, userHandle, targetSdkVersion)
+}
+
+func (w *audioServiceStubWrapper) AdjustSuggestedStreamVolumeForUid(
+	ctx context.Context,
+	streamType int32,
+	direction int32,
+	flags int32,
+	packageName string,
+	uid int32,
+	pid int32,
+	userHandle interface{},
+	targetSdkVersion int32,
+) error {
+	return w.impl.AdjustSuggestedStreamVolumeForUid(ctx, streamType, direction, flags, packageName, uid, pid, userHandle, targetSdkVersion)
+}
+
+func (w *audioServiceStubWrapper) SetStreamVolumeForUid(
+	ctx context.Context,
+	streamType int32,
+	direction int32,
+	flags int32,
+	packageName string,
+	uid int32,
+	pid int32,
+	userHandle interface{},
+	targetSdkVersion int32,
+) error {
+	return w.impl.SetStreamVolumeForUid(ctx, streamType, direction, flags, packageName, uid, pid, userHandle, targetSdkVersion)
+}
+
+func (w *audioServiceStubWrapper) AdjustVolume(
+	ctx context.Context,
+	direction int32,
+	flags int32,
+) error {
+	return w.impl.AdjustVolume(ctx, direction, flags)
+}
+
+func (w *audioServiceStubWrapper) AdjustSuggestedStreamVolume(
+	ctx context.Context,
+	direction int32,
+	suggestedStreamType int32,
+	flags int32,
+) error {
+	return w.impl.AdjustSuggestedStreamVolume(ctx, direction, suggestedStreamType, flags)
+}
+
+func (w *audioServiceStubWrapper) IsMusicActive(
+	ctx context.Context,
+	remotely bool,
+) (bool, error) {
+	return w.impl.IsMusicActive(ctx, remotely)
+}
+
+func (w *audioServiceStubWrapper) GetDeviceMaskForStream(
+	ctx context.Context,
+	streamType int32,
+) (int32, error) {
+	return w.impl.GetDeviceMaskForStream(ctx, streamType)
+}
+
+func (w *audioServiceStubWrapper) GetAvailableCommunicationDeviceIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAvailableCommunicationDeviceIds(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetCommunicationDevice(
+	ctx context.Context,
+	cb binder.IBinder,
+	portId int32,
+	attributionSource interface{},
+) (bool, error) {
+	return w.impl.SetCommunicationDevice(ctx, cb, portId, attributionSource)
+}
+
+func (w *audioServiceStubWrapper) GetCommunicationDevice(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCommunicationDevice(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterCommunicationDeviceDispatcher(
+	ctx context.Context,
+	dispatcher ICommunicationDeviceDispatcher,
+) error {
+	return w.impl.RegisterCommunicationDeviceDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) UnregisterCommunicationDeviceDispatcher(
+	ctx context.Context,
+	dispatcher ICommunicationDeviceDispatcher,
+) error {
+	return w.impl.UnregisterCommunicationDeviceDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) AreNavigationRepeatSoundEffectsEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.AreNavigationRepeatSoundEffectsEnabled(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetNavigationRepeatSoundEffectsEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetNavigationRepeatSoundEffectsEnabled(ctx, enabled)
+}
+
+func (w *audioServiceStubWrapper) IsHomeSoundEffectEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHomeSoundEffectEnabled(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetHomeSoundEffectEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetHomeSoundEffectEnabled(ctx, enabled)
+}
+
+func (w *audioServiceStubWrapper) SetAdditionalOutputDeviceDelay(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+	delayMillis int64,
+) (bool, error) {
+	return w.impl.SetAdditionalOutputDeviceDelay(ctx, device, delayMillis)
+}
+
+func (w *audioServiceStubWrapper) GetAdditionalOutputDeviceDelay(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+) (int64, error) {
+	return w.impl.GetAdditionalOutputDeviceDelay(ctx, device)
+}
+
+func (w *audioServiceStubWrapper) GetMaxAdditionalOutputDeviceDelay(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+) (int64, error) {
+	return w.impl.GetMaxAdditionalOutputDeviceDelay(ctx, device)
+}
+
+func (w *audioServiceStubWrapper) RequestAudioFocusForTest(
+	ctx context.Context,
+	aa AudioAttributes,
+	focusReqType int32,
+	cb binder.IBinder,
+	fd IAudioFocusDispatcher,
+	clientId string,
+	callingPackageName string,
+	flags int32,
+	uid int32,
+	sdk int32,
+) (int32, error) {
+	return w.impl.RequestAudioFocusForTest(ctx, aa, focusReqType, cb, fd, clientId, callingPackageName, flags, uid, sdk)
+}
+
+func (w *audioServiceStubWrapper) AbandonAudioFocusForTest(
+	ctx context.Context,
+	fd IAudioFocusDispatcher,
+	clientId string,
+	aa AudioAttributes,
+	callingPackageName string,
+) (int32, error) {
+	return w.impl.AbandonAudioFocusForTest(ctx, fd, clientId, aa, callingPackageName)
+}
+
+func (w *audioServiceStubWrapper) GetFadeOutDurationOnFocusLossMillis(
+	ctx context.Context,
+	aa AudioAttributes,
+) (int64, error) {
+	return w.impl.GetFadeOutDurationOnFocusLossMillis(ctx, aa)
+}
+
+func (w *audioServiceStubWrapper) GetFocusDuckedUidsForTest(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetFocusDuckedUidsForTest(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetFocusFadeOutDurationForTest(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetFocusFadeOutDurationForTest(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetFocusUnmuteDelayAfterFadeOutForTest(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetFocusUnmuteDelayAfterFadeOutForTest(ctx)
+}
+
+func (w *audioServiceStubWrapper) EnterAudioFocusFreezeForTest(
+	ctx context.Context,
+	cb binder.IBinder,
+	uids []int32,
+) (bool, error) {
+	return w.impl.EnterAudioFocusFreezeForTest(ctx, cb, uids)
+}
+
+func (w *audioServiceStubWrapper) ExitAudioFocusFreezeForTest(
+	ctx context.Context,
+	cb binder.IBinder,
+) (bool, error) {
+	return w.impl.ExitAudioFocusFreezeForTest(ctx, cb)
+}
+
+func (w *audioServiceStubWrapper) RegisterModeDispatcher(
+	ctx context.Context,
+	dispatcher IAudioModeDispatcher,
+) error {
+	return w.impl.RegisterModeDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) UnregisterModeDispatcher(
+	ctx context.Context,
+	dispatcher IAudioModeDispatcher,
+) error {
+	return w.impl.UnregisterModeDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) GetSpatializerImmersiveAudioLevel(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetSpatializerImmersiveAudioLevel(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsSpatializerEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSpatializerEnabled(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsSpatializerAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSpatializerAvailable(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsSpatializerAvailableForDevice(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+) (bool, error) {
+	return w.impl.IsSpatializerAvailableForDevice(ctx, device)
+}
+
+func (w *audioServiceStubWrapper) HasHeadTracker(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+) (bool, error) {
+	return w.impl.HasHeadTracker(ctx, device)
+}
+
+func (w *audioServiceStubWrapper) SetHeadTrackerEnabled(
+	ctx context.Context,
+	enabled bool,
+	device AudioDeviceAttributes,
+) error {
+	return w.impl.SetHeadTrackerEnabled(ctx, enabled, device)
+}
+
+func (w *audioServiceStubWrapper) IsHeadTrackerEnabled(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+) (bool, error) {
+	return w.impl.IsHeadTrackerEnabled(ctx, device)
+}
+
+func (w *audioServiceStubWrapper) IsHeadTrackerAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHeadTrackerAvailable(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterSpatializerHeadTrackerAvailableCallback(
+	ctx context.Context,
+	cb ISpatializerHeadTrackerAvailableCallback,
+	register bool,
+) error {
+	return w.impl.RegisterSpatializerHeadTrackerAvailableCallback(ctx, cb, register)
+}
+
+func (w *audioServiceStubWrapper) SetSpatializerEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetSpatializerEnabled(ctx, enabled)
+}
+
+func (w *audioServiceStubWrapper) CanBeSpatialized(
+	ctx context.Context,
+	aa AudioAttributes,
+	af AudioFormat,
+) (bool, error) {
+	return w.impl.CanBeSpatialized(ctx, aa, af)
+}
+
+func (w *audioServiceStubWrapper) GetSpatializedChannelMasks(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetSpatializedChannelMasks(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterSpatializerCallback(
+	ctx context.Context,
+	cb ISpatializerCallback,
+) error {
+	return w.impl.RegisterSpatializerCallback(ctx, cb)
+}
+
+func (w *audioServiceStubWrapper) UnregisterSpatializerCallback(
+	ctx context.Context,
+	cb ISpatializerCallback,
+) error {
+	return w.impl.UnregisterSpatializerCallback(ctx, cb)
+}
+
+func (w *audioServiceStubWrapper) RegisterSpatializerHeadTrackingCallback(
+	ctx context.Context,
+	cb ISpatializerHeadTrackingModeCallback,
+) error {
+	return w.impl.RegisterSpatializerHeadTrackingCallback(ctx, cb)
+}
+
+func (w *audioServiceStubWrapper) UnregisterSpatializerHeadTrackingCallback(
+	ctx context.Context,
+	cb ISpatializerHeadTrackingModeCallback,
+) error {
+	return w.impl.UnregisterSpatializerHeadTrackingCallback(ctx, cb)
+}
+
+func (w *audioServiceStubWrapper) RegisterHeadToSoundstagePoseCallback(
+	ctx context.Context,
+	cb ISpatializerHeadToSoundStagePoseCallback,
+) error {
+	return w.impl.RegisterHeadToSoundstagePoseCallback(ctx, cb)
+}
+
+func (w *audioServiceStubWrapper) UnregisterHeadToSoundstagePoseCallback(
+	ctx context.Context,
+	cb ISpatializerHeadToSoundStagePoseCallback,
+) error {
+	return w.impl.UnregisterHeadToSoundstagePoseCallback(ctx, cb)
+}
+
+func (w *audioServiceStubWrapper) GetSpatializerCompatibleAudioDevices(
+	ctx context.Context,
+) ([]AudioDeviceAttributes, error) {
+	return w.impl.GetSpatializerCompatibleAudioDevices(ctx)
+}
+
+func (w *audioServiceStubWrapper) AddSpatializerCompatibleAudioDevice(
+	ctx context.Context,
+	ada AudioDeviceAttributes,
+) error {
+	return w.impl.AddSpatializerCompatibleAudioDevice(ctx, ada)
+}
+
+func (w *audioServiceStubWrapper) RemoveSpatializerCompatibleAudioDevice(
+	ctx context.Context,
+	ada AudioDeviceAttributes,
+) error {
+	return w.impl.RemoveSpatializerCompatibleAudioDevice(ctx, ada)
+}
+
+func (w *audioServiceStubWrapper) SetDesiredHeadTrackingMode(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.SetDesiredHeadTrackingMode(ctx, mode)
+}
+
+func (w *audioServiceStubWrapper) GetDesiredHeadTrackingMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDesiredHeadTrackingMode(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetSupportedHeadTrackingModes(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetSupportedHeadTrackingModes(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetActualHeadTrackingMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetActualHeadTrackingMode(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetSpatializerGlobalTransform(
+	ctx context.Context,
+	transform []float32,
+) error {
+	return w.impl.SetSpatializerGlobalTransform(ctx, transform)
+}
+
+func (w *audioServiceStubWrapper) RecenterHeadTracker(
+	ctx context.Context,
+) error {
+	return w.impl.RecenterHeadTracker(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetSpatializerParameter(
+	ctx context.Context,
+	key int32,
+	value []byte,
+) error {
+	return w.impl.SetSpatializerParameter(ctx, key, value)
+}
+
+func (w *audioServiceStubWrapper) GetSpatializerParameter(
+	ctx context.Context,
+	key int32,
+	value []byte,
+) error {
+	return w.impl.GetSpatializerParameter(ctx, key, value)
+}
+
+func (w *audioServiceStubWrapper) GetSpatializerOutput(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetSpatializerOutput(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterSpatializerOutputCallback(
+	ctx context.Context,
+	cb ISpatializerOutputCallback,
+) error {
+	return w.impl.RegisterSpatializerOutputCallback(ctx, cb)
+}
+
+func (w *audioServiceStubWrapper) UnregisterSpatializerOutputCallback(
+	ctx context.Context,
+	cb ISpatializerOutputCallback,
+) error {
+	return w.impl.UnregisterSpatializerOutputCallback(ctx, cb)
+}
+
+func (w *audioServiceStubWrapper) IsVolumeFixed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsVolumeFixed(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetDefaultVolumeInfo(
+	ctx context.Context,
+) (VolumeInfo, error) {
+	return w.impl.GetDefaultVolumeInfo(ctx)
+}
+
+func (w *audioServiceStubWrapper) IsPstnCallAudioInterceptable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsPstnCallAudioInterceptable(ctx)
+}
+
+func (w *audioServiceStubWrapper) MuteAwaitConnection(
+	ctx context.Context,
+	usagesToMute []int32,
+	dev AudioDeviceAttributes,
+	timeOutMs int64,
+) error {
+	return w.impl.MuteAwaitConnection(ctx, usagesToMute, dev, timeOutMs)
+}
+
+func (w *audioServiceStubWrapper) CancelMuteAwaitConnection(
+	ctx context.Context,
+	dev AudioDeviceAttributes,
+) error {
+	return w.impl.CancelMuteAwaitConnection(ctx, dev)
+}
+
+func (w *audioServiceStubWrapper) GetMutingExpectedDevice(
+	ctx context.Context,
+) (AudioDeviceAttributes, error) {
+	return w.impl.GetMutingExpectedDevice(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterMuteAwaitConnectionDispatcher(
+	ctx context.Context,
+	cb IMuteAwaitConnectionCallback,
+	register bool,
+) error {
+	return w.impl.RegisterMuteAwaitConnectionDispatcher(ctx, cb, register)
+}
+
+func (w *audioServiceStubWrapper) SetTestDeviceConnectionState(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+	connected bool,
+) error {
+	return w.impl.SetTestDeviceConnectionState(ctx, device, connected)
+}
+
+func (w *audioServiceStubWrapper) RegisterDeviceVolumeBehaviorDispatcher(
+	ctx context.Context,
+	register bool,
+	dispatcher IDeviceVolumeBehaviorDispatcher,
+) error {
+	return w.impl.RegisterDeviceVolumeBehaviorDispatcher(ctx, register, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) GetFocusStack(
+	ctx context.Context,
+) ([]AudioFocusInfo, error) {
+	return w.impl.GetFocusStack(ctx)
+}
+
+func (w *audioServiceStubWrapper) SendFocusLossAndUpdate(
+	ctx context.Context,
+	focusLoser AudioFocusInfo,
+	apcb audiopolicy.IAudioPolicyCallback,
+) error {
+	return w.impl.SendFocusLossAndUpdate(ctx, focusLoser, apcb)
+}
+
+func (w *audioServiceStubWrapper) SendFocusLoss(
+	ctx context.Context,
+	focusLoser AudioFocusInfo,
+	apcb audiopolicy.IAudioPolicyCallback,
+) (bool, error) {
+	return w.impl.SendFocusLoss(ctx, focusLoser, apcb)
+}
+
+func (w *audioServiceStubWrapper) AddAssistantServicesUids(
+	ctx context.Context,
+	assistantUID []int32,
+) error {
+	return w.impl.AddAssistantServicesUids(ctx, assistantUID)
+}
+
+func (w *audioServiceStubWrapper) RemoveAssistantServicesUids(
+	ctx context.Context,
+	assistantUID []int32,
+) error {
+	return w.impl.RemoveAssistantServicesUids(ctx, assistantUID)
+}
+
+func (w *audioServiceStubWrapper) SetActiveAssistantServiceUids(
+	ctx context.Context,
+	activeUids []int32,
+) error {
+	return w.impl.SetActiveAssistantServiceUids(ctx, activeUids)
+}
+
+func (w *audioServiceStubWrapper) GetAssistantServicesUids(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAssistantServicesUids(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetActiveAssistantServiceUids(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetActiveAssistantServiceUids(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterDeviceVolumeDispatcherForAbsoluteVolume(
+	ctx context.Context,
+	register bool,
+	cb IAudioDeviceVolumeDispatcher,
+	packageName string,
+	device AudioDeviceAttributes,
+	volumes []VolumeInfo,
+	handlesvolumeAdjustment bool,
+	volumeBehavior int32,
+) error {
+	return w.impl.RegisterDeviceVolumeDispatcherForAbsoluteVolume(ctx, register, cb, packageName, device, volumes, handlesvolumeAdjustment, volumeBehavior)
+}
+
+func (w *audioServiceStubWrapper) GetHalVersion(
+	ctx context.Context,
+) (AudioHalVersionInfo, error) {
+	return w.impl.GetHalVersion(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetPreferredMixerAttributes(
+	ctx context.Context,
+	aa AudioAttributes,
+	portId int32,
+	mixerAttributes AudioMixerAttributes,
+) (int32, error) {
+	return w.impl.SetPreferredMixerAttributes(ctx, aa, portId, mixerAttributes)
+}
+
+func (w *audioServiceStubWrapper) ClearPreferredMixerAttributes(
+	ctx context.Context,
+	aa AudioAttributes,
+	portId int32,
+) (int32, error) {
+	return w.impl.ClearPreferredMixerAttributes(ctx, aa, portId)
+}
+
+func (w *audioServiceStubWrapper) RegisterPreferredMixerAttributesDispatcher(
+	ctx context.Context,
+	dispatcher IPreferredMixerAttributesDispatcher,
+) error {
+	return w.impl.RegisterPreferredMixerAttributesDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) UnregisterPreferredMixerAttributesDispatcher(
+	ctx context.Context,
+	dispatcher IPreferredMixerAttributesDispatcher,
+) error {
+	return w.impl.UnregisterPreferredMixerAttributesDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) SupportsBluetoothVariableLatency(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.SupportsBluetoothVariableLatency(ctx)
+}
+
+func (w *audioServiceStubWrapper) SetBluetoothVariableLatencyEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetBluetoothVariableLatencyEnabled(ctx, enabled)
+}
+
+func (w *audioServiceStubWrapper) IsBluetoothVariableLatencyEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBluetoothVariableLatencyEnabled(ctx)
+}
+
+func (w *audioServiceStubWrapper) RegisterLoudnessCodecUpdatesDispatcher(
+	ctx context.Context,
+	dispatcher ILoudnessCodecUpdatesDispatcher,
+) error {
+	return w.impl.RegisterLoudnessCodecUpdatesDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) UnregisterLoudnessCodecUpdatesDispatcher(
+	ctx context.Context,
+	dispatcher ILoudnessCodecUpdatesDispatcher,
+) error {
+	return w.impl.UnregisterLoudnessCodecUpdatesDispatcher(ctx, dispatcher)
+}
+
+func (w *audioServiceStubWrapper) StartLoudnessCodecUpdates(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.StartLoudnessCodecUpdates(ctx, sessionId)
+}
+
+func (w *audioServiceStubWrapper) StopLoudnessCodecUpdates(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.StopLoudnessCodecUpdates(ctx, sessionId)
+}
+
+func (w *audioServiceStubWrapper) AddLoudnessCodecInfo(
+	ctx context.Context,
+	sessionId int32,
+	mediaCodecHash int32,
+	codecInfo LoudnessCodecInfo,
+) error {
+	return w.impl.AddLoudnessCodecInfo(ctx, sessionId, mediaCodecHash, codecInfo)
+}
+
+func (w *audioServiceStubWrapper) RemoveLoudnessCodecInfo(
+	ctx context.Context,
+	sessionId int32,
+	codecInfo LoudnessCodecInfo,
+) error {
+	return w.impl.RemoveLoudnessCodecInfo(ctx, sessionId, codecInfo)
+}
+
+func (w *audioServiceStubWrapper) GetLoudnessParams(
+	ctx context.Context,
+	codecInfo LoudnessCodecInfo,
+) (interface{}, error) {
+	return w.impl.GetLoudnessParams(ctx, codecInfo)
+}
+
+func (w *audioServiceStubWrapper) SetFadeManagerConfigurationForFocusLoss(
+	ctx context.Context,
+	fmcForFocusLoss FadeManagerConfiguration,
+) (int32, error) {
+	return w.impl.SetFadeManagerConfigurationForFocusLoss(ctx, fmcForFocusLoss)
+}
+
+func (w *audioServiceStubWrapper) ClearFadeManagerConfigurationForFocusLoss(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.ClearFadeManagerConfigurationForFocusLoss(ctx)
+}
+
+func (w *audioServiceStubWrapper) GetFadeManagerConfigurationForFocusLoss(
+	ctx context.Context,
+) (FadeManagerConfiguration, error) {
+	return w.impl.GetFadeManagerConfigurationForFocusLoss(ctx)
+}
+
+func (w *audioServiceStubWrapper) ShouldNotificationSoundPlay(
+	ctx context.Context,
+	aa AudioAttributes,
+) (bool, error) {
+	return w.impl.ShouldNotificationSoundPlay(ctx, aa)
+}
+
+var _ IAudioService = (*audioServiceStubWrapper)(nil)
+
+// NewAudioServiceStub creates a server-side IAudioService wrapping the given
+// server implementation. The returned value satisfies IAudioService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioServiceStub(
+	impl IAudioServiceServer,
+) IAudioService {
+	wrapper := &audioServiceStubWrapper{impl: impl}
+	stub := &AudioServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

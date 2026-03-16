@@ -49,7 +49,7 @@ func (p *CallRedirectionServiceProxy) PlaceCall(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICallRedirectionService)
-	_data.WriteStrongBinder(adapter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, adapter.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := handle.MarshalParcel(_data); _err != nil {
 		return _err
@@ -146,4 +146,53 @@ func (s *CallRedirectionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICallRedirectionServiceServer is the server-side interface that user implementations
+// provide to NewCallRedirectionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallRedirectionServiceServer interface {
+	PlaceCall(ctx context.Context, adapter ICallRedirectionAdapter, handle net.Uri, initialPhoneAccount androidTelecom.PhoneAccountHandle, allowInteractiveResponse bool) error
+	NotifyTimeout(ctx context.Context) error
+}
+
+type callRedirectionServiceStubWrapper struct {
+	impl       ICallRedirectionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callRedirectionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callRedirectionServiceStubWrapper) PlaceCall(
+	ctx context.Context,
+	adapter ICallRedirectionAdapter,
+	handle net.Uri,
+	initialPhoneAccount androidTelecom.PhoneAccountHandle,
+	allowInteractiveResponse bool,
+) error {
+	return w.impl.PlaceCall(ctx, adapter, handle, initialPhoneAccount, allowInteractiveResponse)
+}
+
+func (w *callRedirectionServiceStubWrapper) NotifyTimeout(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyTimeout(ctx)
+}
+
+var _ ICallRedirectionService = (*callRedirectionServiceStubWrapper)(nil)
+
+// NewCallRedirectionServiceStub creates a server-side ICallRedirectionService wrapping the given
+// server implementation. The returned value satisfies ICallRedirectionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallRedirectionServiceStub(
+	impl ICallRedirectionServiceServer,
+) ICallRedirectionService {
+	wrapper := &callRedirectionServiceStubWrapper{impl: impl}
+	stub := &CallRedirectionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

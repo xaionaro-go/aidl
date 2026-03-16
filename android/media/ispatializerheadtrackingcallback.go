@@ -115,3 +115,50 @@ func (s *SpatializerHeadTrackingCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISpatializerHeadTrackingCallbackServer is the server-side interface that user implementations
+// provide to NewSpatializerHeadTrackingCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpatializerHeadTrackingCallbackServer interface {
+	OnHeadTrackingModeChanged(ctx context.Context, mode HeadTracking.Mode) error
+	OnHeadToSoundStagePoseUpdated(ctx context.Context, headToStage []float32) error
+}
+
+type spatializerHeadTrackingCallbackStubWrapper struct {
+	impl       ISpatializerHeadTrackingCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spatializerHeadTrackingCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spatializerHeadTrackingCallbackStubWrapper) OnHeadTrackingModeChanged(
+	ctx context.Context,
+	mode HeadTracking.Mode,
+) error {
+	return w.impl.OnHeadTrackingModeChanged(ctx, mode)
+}
+
+func (w *spatializerHeadTrackingCallbackStubWrapper) OnHeadToSoundStagePoseUpdated(
+	ctx context.Context,
+	headToStage []float32,
+) error {
+	return w.impl.OnHeadToSoundStagePoseUpdated(ctx, headToStage)
+}
+
+var _ ISpatializerHeadTrackingCallback = (*spatializerHeadTrackingCallbackStubWrapper)(nil)
+
+// NewSpatializerHeadTrackingCallbackStub creates a server-side ISpatializerHeadTrackingCallback wrapping the given
+// server implementation. The returned value satisfies ISpatializerHeadTrackingCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpatializerHeadTrackingCallbackStub(
+	impl ISpatializerHeadTrackingCallbackServer,
+) ISpatializerHeadTrackingCallback {
+	wrapper := &spatializerHeadTrackingCallbackStubWrapper{impl: impl}
+	stub := &SpatializerHeadTrackingCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

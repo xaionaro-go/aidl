@@ -67,7 +67,7 @@ func (p *SessionProcessorImplProxy) InitSession(
 	var _result CameraSessionConfig
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(cameraId)
 	if charsMap == nil {
 		_data.WriteInt32(-1)
@@ -120,7 +120,7 @@ func (p *SessionProcessorImplProxy) DeInitSession(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "deInitSession")
 	if _err != nil {
@@ -147,7 +147,7 @@ func (p *SessionProcessorImplProxy) OnCaptureSessionStart(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
-	_data.WriteStrongBinder(requestProcessor.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, requestProcessor.AsBinder(), p.remote.Transport())
 	_data.WriteString16(statsKey)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "onCaptureSessionStart")
@@ -199,7 +199,7 @@ func (p *SessionProcessorImplProxy) StartRepeating(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "startRepeating")
 	if _err != nil {
@@ -255,7 +255,7 @@ func (p *SessionProcessorImplProxy) StartCapture(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionProcessorImpl)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteBool(isPostviewRequested)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "startCapture")
@@ -321,7 +321,7 @@ func (p *SessionProcessorImplProxy) StartTrigger(
 	if _err := captureRequest.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionProcessorImpl, "startTrigger")
 	if _err != nil {
@@ -620,4 +620,120 @@ func (s *SessionProcessorImplStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISessionProcessorImplServer is the server-side interface that user implementations
+// provide to NewSessionProcessorImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISessionProcessorImplServer interface {
+	InitSession(ctx context.Context, token binder.IBinder, cameraId string, charsMap map[string]interface{}, previewSurface OutputSurface, imageCaptureSurface OutputSurface, postviewSurface OutputSurface) (CameraSessionConfig, error)
+	DeInitSession(ctx context.Context, token binder.IBinder) error
+	OnCaptureSessionStart(ctx context.Context, requestProcessor IRequestProcessorImpl, statsKey string) error
+	OnCaptureSessionEnd(ctx context.Context) error
+	StartRepeating(ctx context.Context, callback ICaptureCallback) (int32, error)
+	StopRepeating(ctx context.Context) error
+	StartCapture(ctx context.Context, callback ICaptureCallback, isPostviewRequested bool) (int32, error)
+	SetParameters(ctx context.Context, captureRequest device.CaptureRequest) error
+	StartTrigger(ctx context.Context, captureRequest device.CaptureRequest, callback ICaptureCallback) (int32, error)
+	GetRealtimeCaptureLatency(ctx context.Context) (LatencyPair, error)
+}
+
+type sessionProcessorImplStubWrapper struct {
+	impl       ISessionProcessorImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sessionProcessorImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sessionProcessorImplStubWrapper) InitSession(
+	ctx context.Context,
+	token binder.IBinder,
+	cameraId string,
+	charsMap map[string]interface{},
+	previewSurface OutputSurface,
+	imageCaptureSurface OutputSurface,
+	postviewSurface OutputSurface,
+) (CameraSessionConfig, error) {
+	return w.impl.InitSession(ctx, token, cameraId, charsMap, previewSurface, imageCaptureSurface, postviewSurface)
+}
+
+func (w *sessionProcessorImplStubWrapper) DeInitSession(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.DeInitSession(ctx, token)
+}
+
+func (w *sessionProcessorImplStubWrapper) OnCaptureSessionStart(
+	ctx context.Context,
+	requestProcessor IRequestProcessorImpl,
+	statsKey string,
+) error {
+	return w.impl.OnCaptureSessionStart(ctx, requestProcessor, statsKey)
+}
+
+func (w *sessionProcessorImplStubWrapper) OnCaptureSessionEnd(
+	ctx context.Context,
+) error {
+	return w.impl.OnCaptureSessionEnd(ctx)
+}
+
+func (w *sessionProcessorImplStubWrapper) StartRepeating(
+	ctx context.Context,
+	callback ICaptureCallback,
+) (int32, error) {
+	return w.impl.StartRepeating(ctx, callback)
+}
+
+func (w *sessionProcessorImplStubWrapper) StopRepeating(
+	ctx context.Context,
+) error {
+	return w.impl.StopRepeating(ctx)
+}
+
+func (w *sessionProcessorImplStubWrapper) StartCapture(
+	ctx context.Context,
+	callback ICaptureCallback,
+	isPostviewRequested bool,
+) (int32, error) {
+	return w.impl.StartCapture(ctx, callback, isPostviewRequested)
+}
+
+func (w *sessionProcessorImplStubWrapper) SetParameters(
+	ctx context.Context,
+	captureRequest device.CaptureRequest,
+) error {
+	return w.impl.SetParameters(ctx, captureRequest)
+}
+
+func (w *sessionProcessorImplStubWrapper) StartTrigger(
+	ctx context.Context,
+	captureRequest device.CaptureRequest,
+	callback ICaptureCallback,
+) (int32, error) {
+	return w.impl.StartTrigger(ctx, captureRequest, callback)
+}
+
+func (w *sessionProcessorImplStubWrapper) GetRealtimeCaptureLatency(
+	ctx context.Context,
+) (LatencyPair, error) {
+	return w.impl.GetRealtimeCaptureLatency(ctx)
+}
+
+var _ ISessionProcessorImpl = (*sessionProcessorImplStubWrapper)(nil)
+
+// NewSessionProcessorImplStub creates a server-side ISessionProcessorImpl wrapping the given
+// server implementation. The returned value satisfies ISessionProcessorImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSessionProcessorImplStub(
+	impl ISessionProcessorImplServer,
+) ISessionProcessorImpl {
+	wrapper := &sessionProcessorImplStubWrapper{impl: impl}
+	stub := &SessionProcessorImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

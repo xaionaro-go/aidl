@@ -110,3 +110,48 @@ func (s *TestSessionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITestSessionCallbackServer is the server-side interface that user implementations
+// provide to NewTestSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITestSessionCallbackServer interface {
+	OnCleanupStarted(ctx context.Context) error
+	OnCleanupFinished(ctx context.Context) error
+}
+
+type testSessionCallbackStubWrapper struct {
+	impl       ITestSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *testSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *testSessionCallbackStubWrapper) OnCleanupStarted(
+	ctx context.Context,
+) error {
+	return w.impl.OnCleanupStarted(ctx)
+}
+
+func (w *testSessionCallbackStubWrapper) OnCleanupFinished(
+	ctx context.Context,
+) error {
+	return w.impl.OnCleanupFinished(ctx)
+}
+
+var _ ITestSessionCallback = (*testSessionCallbackStubWrapper)(nil)
+
+// NewTestSessionCallbackStub creates a server-side ITestSessionCallback wrapping the given
+// server implementation. The returned value satisfies ITestSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTestSessionCallbackStub(
+	impl ITestSessionCallbackServer,
+) ITestSessionCallback {
+	wrapper := &testSessionCallbackStubWrapper{impl: impl}
+	stub := &TestSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

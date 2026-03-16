@@ -292,8 +292,8 @@ func (p *RadioDataProxy) SetResponseFunctions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRadioData)
-	_data.WriteStrongBinder(radioDataResponse.AsBinder().Handle())
-	_data.WriteStrongBinder(radioDataIndication.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, radioDataResponse.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, radioDataIndication.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioData, "setResponseFunctions")
 	if _err != nil {
@@ -732,4 +732,184 @@ func (s *RadioDataStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRadioDataServer is the server-side interface that user implementations
+// provide to NewRadioDataStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioDataServer interface {
+	AllocatePduSessionId(ctx context.Context, serial int32) error
+	CancelHandover(ctx context.Context, serial int32, callId int32) error
+	DeactivateDataCall(ctx context.Context, serial int32, cid int32, reason DataRequestReason) error
+	GetDataCallList(ctx context.Context, serial int32) error
+	GetSlicingConfig(ctx context.Context, serial int32) error
+	ReleasePduSessionId(ctx context.Context, serial int32, id int32) error
+	ResponseAcknowledgement(ctx context.Context) error
+	SetDataAllowed(ctx context.Context, serial int32, allow bool) error
+	SetDataProfile(ctx context.Context, serial int32, profiles []DataProfileInfo) error
+	SetDataThrottling(ctx context.Context, serial int32, dataThrottlingAction DataThrottlingAction, completionDurationMillis int64) error
+	SetInitialAttachApn(ctx context.Context, serial int32, dataProfileInfo *DataProfileInfo) error
+	SetResponseFunctions(ctx context.Context, radioDataResponse IRadioDataResponse, radioDataIndication IRadioDataIndication) error
+	SetupDataCall(ctx context.Context, serial int32, accessNetwork radio.AccessNetwork, dataProfileInfo DataProfileInfo, roamingAllowed bool, reason DataRequestReason, addresses []LinkAddress, dnses []string, pduSessionId int32, sliceInfo *SliceInfo, matchAllRuleAllowed bool) error
+	StartHandover(ctx context.Context, serial int32, callId int32) error
+	StartKeepalive(ctx context.Context, serial int32, keepalive KeepaliveRequest) error
+	StopKeepalive(ctx context.Context, serial int32, sessionHandle int32) error
+}
+
+type radioDataStubWrapper struct {
+	impl       IRadioDataServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioDataStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioDataStubWrapper) AllocatePduSessionId(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.AllocatePduSessionId(ctx, serial)
+}
+
+func (w *radioDataStubWrapper) CancelHandover(
+	ctx context.Context,
+	serial int32,
+	callId int32,
+) error {
+	return w.impl.CancelHandover(ctx, serial, callId)
+}
+
+func (w *radioDataStubWrapper) DeactivateDataCall(
+	ctx context.Context,
+	serial int32,
+	cid int32,
+	reason DataRequestReason,
+) error {
+	return w.impl.DeactivateDataCall(ctx, serial, cid, reason)
+}
+
+func (w *radioDataStubWrapper) GetDataCallList(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetDataCallList(ctx, serial)
+}
+
+func (w *radioDataStubWrapper) GetSlicingConfig(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetSlicingConfig(ctx, serial)
+}
+
+func (w *radioDataStubWrapper) ReleasePduSessionId(
+	ctx context.Context,
+	serial int32,
+	id int32,
+) error {
+	return w.impl.ReleasePduSessionId(ctx, serial, id)
+}
+
+func (w *radioDataStubWrapper) ResponseAcknowledgement(
+	ctx context.Context,
+) error {
+	return w.impl.ResponseAcknowledgement(ctx)
+}
+
+func (w *radioDataStubWrapper) SetDataAllowed(
+	ctx context.Context,
+	serial int32,
+	allow bool,
+) error {
+	return w.impl.SetDataAllowed(ctx, serial, allow)
+}
+
+func (w *radioDataStubWrapper) SetDataProfile(
+	ctx context.Context,
+	serial int32,
+	profiles []DataProfileInfo,
+) error {
+	return w.impl.SetDataProfile(ctx, serial, profiles)
+}
+
+func (w *radioDataStubWrapper) SetDataThrottling(
+	ctx context.Context,
+	serial int32,
+	dataThrottlingAction DataThrottlingAction,
+	completionDurationMillis int64,
+) error {
+	return w.impl.SetDataThrottling(ctx, serial, dataThrottlingAction, completionDurationMillis)
+}
+
+func (w *radioDataStubWrapper) SetInitialAttachApn(
+	ctx context.Context,
+	serial int32,
+	dataProfileInfo *DataProfileInfo,
+) error {
+	return w.impl.SetInitialAttachApn(ctx, serial, dataProfileInfo)
+}
+
+func (w *radioDataStubWrapper) SetResponseFunctions(
+	ctx context.Context,
+	radioDataResponse IRadioDataResponse,
+	radioDataIndication IRadioDataIndication,
+) error {
+	return w.impl.SetResponseFunctions(ctx, radioDataResponse, radioDataIndication)
+}
+
+func (w *radioDataStubWrapper) SetupDataCall(
+	ctx context.Context,
+	serial int32,
+	accessNetwork radio.AccessNetwork,
+	dataProfileInfo DataProfileInfo,
+	roamingAllowed bool,
+	reason DataRequestReason,
+	addresses []LinkAddress,
+	dnses []string,
+	pduSessionId int32,
+	sliceInfo *SliceInfo,
+	matchAllRuleAllowed bool,
+) error {
+	return w.impl.SetupDataCall(ctx, serial, accessNetwork, dataProfileInfo, roamingAllowed, reason, addresses, dnses, pduSessionId, sliceInfo, matchAllRuleAllowed)
+}
+
+func (w *radioDataStubWrapper) StartHandover(
+	ctx context.Context,
+	serial int32,
+	callId int32,
+) error {
+	return w.impl.StartHandover(ctx, serial, callId)
+}
+
+func (w *radioDataStubWrapper) StartKeepalive(
+	ctx context.Context,
+	serial int32,
+	keepalive KeepaliveRequest,
+) error {
+	return w.impl.StartKeepalive(ctx, serial, keepalive)
+}
+
+func (w *radioDataStubWrapper) StopKeepalive(
+	ctx context.Context,
+	serial int32,
+	sessionHandle int32,
+) error {
+	return w.impl.StopKeepalive(ctx, serial, sessionHandle)
+}
+
+var _ IRadioData = (*radioDataStubWrapper)(nil)
+
+// NewRadioDataStub creates a server-side IRadioData wrapping the given
+// server implementation. The returned value satisfies IRadioData
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioDataStub(
+	impl IRadioDataServer,
+) IRadioData {
+	wrapper := &radioDataStubWrapper{impl: impl}
+	stub := &RadioDataStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -96,3 +96,41 @@ func (s *ClientTokenStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IClientTokenServer is the server-side interface that user implementations
+// provide to NewClientTokenStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IClientTokenServer interface {
+	GenerateClientToken(ctx context.Context) (string, error)
+}
+
+type clientTokenStubWrapper struct {
+	impl       IClientTokenServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *clientTokenStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *clientTokenStubWrapper) GenerateClientToken(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GenerateClientToken(ctx)
+}
+
+var _ IClientToken = (*clientTokenStubWrapper)(nil)
+
+// NewClientTokenStub creates a server-side IClientToken wrapping the given
+// server implementation. The returned value satisfies IClientToken
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewClientTokenStub(
+	impl IClientTokenServer,
+) IClientToken {
+	wrapper := &clientTokenStubWrapper{impl: impl}
+	stub := &ClientTokenStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

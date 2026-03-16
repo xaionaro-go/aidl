@@ -121,7 +121,7 @@ func (p *ConfirmationUIProxy) PromptUserConfirmation(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConfirmationUI)
-	_data.WriteStrongBinder(resultCB.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCB.AsBinder(), p.remote.Transport())
 	if promptText == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -138,7 +138,7 @@ func (p *ConfirmationUIProxy) PromptUserConfirmation(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteString(locale)
+	_data.WriteString16(locale)
 	if uiOptions == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -229,7 +229,7 @@ func (s *ConfirmationUIStub) OnTransaction(
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_extraData []byte
 		_ = _arg_extraData
-		_arg_locale, _err := _data.ReadString()
+		_arg_locale, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -247,4 +247,62 @@ func (s *ConfirmationUIStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IConfirmationUIServer is the server-side interface that user implementations
+// provide to NewConfirmationUIStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConfirmationUIServer interface {
+	Abort(ctx context.Context) error
+	DeliverSecureInputEvent(ctx context.Context, secureInputToken keymaster.HardwareAuthToken) error
+	PromptUserConfirmation(ctx context.Context, resultCB IConfirmationResultCallback, promptText []byte, extraData []byte, locale string, uiOptions []UIOption) error
+}
+
+type confirmationUIStubWrapper struct {
+	impl       IConfirmationUIServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *confirmationUIStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *confirmationUIStubWrapper) Abort(
+	ctx context.Context,
+) error {
+	return w.impl.Abort(ctx)
+}
+
+func (w *confirmationUIStubWrapper) DeliverSecureInputEvent(
+	ctx context.Context,
+	secureInputToken keymaster.HardwareAuthToken,
+) error {
+	return w.impl.DeliverSecureInputEvent(ctx, secureInputToken)
+}
+
+func (w *confirmationUIStubWrapper) PromptUserConfirmation(
+	ctx context.Context,
+	resultCB IConfirmationResultCallback,
+	promptText []byte,
+	extraData []byte,
+	locale string,
+	uiOptions []UIOption,
+) error {
+	return w.impl.PromptUserConfirmation(ctx, resultCB, promptText, extraData, locale, uiOptions)
+}
+
+var _ IConfirmationUI = (*confirmationUIStubWrapper)(nil)
+
+// NewConfirmationUIStub creates a server-side IConfirmationUI wrapping the given
+// server implementation. The returned value satisfies IConfirmationUI
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConfirmationUIStub(
+	impl IConfirmationUIServer,
+) IConfirmationUI {
+	wrapper := &confirmationUIStubWrapper{impl: impl}
+	stub := &ConfirmationUIStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

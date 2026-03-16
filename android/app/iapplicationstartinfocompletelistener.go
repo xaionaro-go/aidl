@@ -107,3 +107,42 @@ func (s *ApplicationStartInfoCompleteListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IApplicationStartInfoCompleteListenerServer is the server-side interface that user implementations
+// provide to NewApplicationStartInfoCompleteListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IApplicationStartInfoCompleteListenerServer interface {
+	OnApplicationStartInfoComplete(ctx context.Context, applicationStartInfo ApplicationStartInfo) error
+}
+
+type applicationStartInfoCompleteListenerStubWrapper struct {
+	impl       IApplicationStartInfoCompleteListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *applicationStartInfoCompleteListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *applicationStartInfoCompleteListenerStubWrapper) OnApplicationStartInfoComplete(
+	ctx context.Context,
+	applicationStartInfo ApplicationStartInfo,
+) error {
+	return w.impl.OnApplicationStartInfoComplete(ctx, applicationStartInfo)
+}
+
+var _ IApplicationStartInfoCompleteListener = (*applicationStartInfoCompleteListenerStubWrapper)(nil)
+
+// NewApplicationStartInfoCompleteListenerStub creates a server-side IApplicationStartInfoCompleteListener wrapping the given
+// server implementation. The returned value satisfies IApplicationStartInfoCompleteListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewApplicationStartInfoCompleteListenerStub(
+	impl IApplicationStartInfoCompleteListenerServer,
+) IApplicationStartInfoCompleteListener {
+	wrapper := &applicationStartInfoCompleteListenerStubWrapper{impl: impl}
+	stub := &ApplicationStartInfoCompleteListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

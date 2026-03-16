@@ -88,3 +88,43 @@ func (s *VbiRatingListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVbiRatingListenerServer is the server-side interface that user implementations
+// provide to NewVbiRatingListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVbiRatingListenerServer interface {
+	OnVbiRatingChanged(ctx context.Context, sessionToken string, newTvContentRating string) error
+}
+
+type vbiRatingListenerStubWrapper struct {
+	impl       IVbiRatingListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vbiRatingListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vbiRatingListenerStubWrapper) OnVbiRatingChanged(
+	ctx context.Context,
+	sessionToken string,
+	newTvContentRating string,
+) error {
+	return w.impl.OnVbiRatingChanged(ctx, sessionToken, newTvContentRating)
+}
+
+var _ IVbiRatingListener = (*vbiRatingListenerStubWrapper)(nil)
+
+// NewVbiRatingListenerStub creates a server-side IVbiRatingListener wrapping the given
+// server implementation. The returned value satisfies IVbiRatingListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVbiRatingListenerStub(
+	impl IVbiRatingListenerServer,
+) IVbiRatingListener {
+	wrapper := &vbiRatingListenerStubWrapper{impl: impl}
+	stub := &VbiRatingListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

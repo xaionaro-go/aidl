@@ -187,3 +187,50 @@ func (s *BenchmarkStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBenchmarkServer is the server-side interface that user implementations
+// provide to NewBenchmarkStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBenchmarkServer interface {
+	SendVec(ctx context.Context, data []byte) ([]byte, error)
+	SendBinderVec(ctx context.Context, data []binder.IBinder) ([]binder.IBinder, error)
+}
+
+type benchmarkStubWrapper struct {
+	impl       IBenchmarkServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *benchmarkStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *benchmarkStubWrapper) SendVec(
+	ctx context.Context,
+	data []byte,
+) ([]byte, error) {
+	return w.impl.SendVec(ctx, data)
+}
+
+func (w *benchmarkStubWrapper) SendBinderVec(
+	ctx context.Context,
+	data []binder.IBinder,
+) ([]binder.IBinder, error) {
+	return w.impl.SendBinderVec(ctx, data)
+}
+
+var _ IBenchmark = (*benchmarkStubWrapper)(nil)
+
+// NewBenchmarkStub creates a server-side IBenchmark wrapping the given
+// server implementation. The returned value satisfies IBenchmark
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBenchmarkStub(
+	impl IBenchmarkServer,
+) IBenchmark {
+	wrapper := &benchmarkStubWrapper{impl: impl}
+	stub := &BenchmarkStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

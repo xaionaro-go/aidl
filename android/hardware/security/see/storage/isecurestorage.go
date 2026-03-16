@@ -124,3 +124,42 @@ func (s *SecureStorageStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISecureStorageServer is the server-side interface that user implementations
+// provide to NewSecureStorageStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecureStorageServer interface {
+	StartSession(ctx context.Context, filesystem Filesystem) (IStorageSession, error)
+}
+
+type secureStorageStubWrapper struct {
+	impl       ISecureStorageServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secureStorageStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *secureStorageStubWrapper) StartSession(
+	ctx context.Context,
+	filesystem Filesystem,
+) (IStorageSession, error) {
+	return w.impl.StartSession(ctx, filesystem)
+}
+
+var _ ISecureStorage = (*secureStorageStubWrapper)(nil)
+
+// NewSecureStorageStub creates a server-side ISecureStorage wrapping the given
+// server implementation. The returned value satisfies ISecureStorage
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecureStorageStub(
+	impl ISecureStorageServer,
+) ISecureStorage {
+	wrapper := &secureStorageStubWrapper{impl: impl}
+	stub := &SecureStorageStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

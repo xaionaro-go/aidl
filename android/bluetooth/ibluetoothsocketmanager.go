@@ -3,7 +3,6 @@ package bluetooth
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -29,8 +28,8 @@ type IBluetoothSocketManager interface {
 	CreateSocketChannel(ctx context.Context, type_ int32, serviceName string, uuid *interface{}, port int32, flag int32) (int32, error)
 	CreateSocketChannelWithOffload(ctx context.Context, type_ int32, serviceName string, uuid *interface{}, port int32, flag int32, dataPath int32, socketName string, hubId int64, endpointId int64, maximumPacketSize int32) (int32, error)
 	RequestMaximumTxDataLength(ctx context.Context, device BluetoothDevice) error
-	GetL2capLocalChannelId(ctx context.Context, connectionUuid interface{}, attributionSource content.AttributionSource) (int32, error)
-	GetL2capRemoteChannelId(ctx context.Context, connectionUuid interface{}, attributionSource content.AttributionSource) (int32, error)
+	GetL2capLocalChannelId(ctx context.Context, connectionUuid interface{}, attributionSource interface{}) (int32, error)
+	GetL2capRemoteChannelId(ctx context.Context, connectionUuid interface{}, attributionSource interface{}) (int32, error)
 }
 
 type BluetoothSocketManagerProxy struct {
@@ -259,15 +258,11 @@ func (p *BluetoothSocketManagerProxy) RequestMaximumTxDataLength(
 func (p *BluetoothSocketManagerProxy) GetL2capLocalChannelId(
 	ctx context.Context,
 	connectionUuid interface{},
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothSocketManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothSocketManager, "getL2capLocalChannelId")
 	if _err != nil {
@@ -294,15 +289,11 @@ func (p *BluetoothSocketManagerProxy) GetL2capLocalChannelId(
 func (p *BluetoothSocketManagerProxy) GetL2capRemoteChannelId(
 	ctx context.Context,
 	connectionUuid interface{},
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothSocketManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothSocketManager, "getL2capRemoteChannelId")
 	if _err != nil {
@@ -545,18 +536,7 @@ func (s *BluetoothSocketManagerStub) OnTransaction(
 			return nil, _err
 		}
 		var _arg_connectionUuid interface{}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetL2capLocalChannelId(ctx, _arg_connectionUuid, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -571,18 +551,7 @@ func (s *BluetoothSocketManagerStub) OnTransaction(
 			return nil, _err
 		}
 		var _arg_connectionUuid interface{}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_result, _err := s.Impl.GetL2capRemoteChannelId(ctx, _arg_connectionUuid, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
@@ -595,4 +564,119 @@ func (s *BluetoothSocketManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothSocketManagerServer is the server-side interface that user implementations
+// provide to NewBluetoothSocketManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothSocketManagerServer interface {
+	ConnectSocket(ctx context.Context, device BluetoothDevice, type_ int32, uuid *interface{}, port int32, flag int32) (int32, error)
+	ConnectSocketWithOffload(ctx context.Context, device BluetoothDevice, type_ int32, uuid *interface{}, port int32, flag int32, dataPath int32, socketName string, hubId int64, endpointId int64, maximumPacketSize int32) (int32, error)
+	CreateSocketChannel(ctx context.Context, type_ int32, serviceName string, uuid *interface{}, port int32, flag int32) (int32, error)
+	CreateSocketChannelWithOffload(ctx context.Context, type_ int32, serviceName string, uuid *interface{}, port int32, flag int32, dataPath int32, socketName string, hubId int64, endpointId int64, maximumPacketSize int32) (int32, error)
+	RequestMaximumTxDataLength(ctx context.Context, device BluetoothDevice) error
+	GetL2capLocalChannelId(ctx context.Context, connectionUuid interface{}, attributionSource interface{}) (int32, error)
+	GetL2capRemoteChannelId(ctx context.Context, connectionUuid interface{}, attributionSource interface{}) (int32, error)
+}
+
+type bluetoothSocketManagerStubWrapper struct {
+	impl       IBluetoothSocketManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothSocketManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothSocketManagerStubWrapper) ConnectSocket(
+	ctx context.Context,
+	device BluetoothDevice,
+	type_ int32,
+	uuid *interface{},
+	port int32,
+	flag int32,
+) (int32, error) {
+	return w.impl.ConnectSocket(ctx, device, type_, uuid, port, flag)
+}
+
+func (w *bluetoothSocketManagerStubWrapper) ConnectSocketWithOffload(
+	ctx context.Context,
+	device BluetoothDevice,
+	type_ int32,
+	uuid *interface{},
+	port int32,
+	flag int32,
+	dataPath int32,
+	socketName string,
+	hubId int64,
+	endpointId int64,
+	maximumPacketSize int32,
+) (int32, error) {
+	return w.impl.ConnectSocketWithOffload(ctx, device, type_, uuid, port, flag, dataPath, socketName, hubId, endpointId, maximumPacketSize)
+}
+
+func (w *bluetoothSocketManagerStubWrapper) CreateSocketChannel(
+	ctx context.Context,
+	type_ int32,
+	serviceName string,
+	uuid *interface{},
+	port int32,
+	flag int32,
+) (int32, error) {
+	return w.impl.CreateSocketChannel(ctx, type_, serviceName, uuid, port, flag)
+}
+
+func (w *bluetoothSocketManagerStubWrapper) CreateSocketChannelWithOffload(
+	ctx context.Context,
+	type_ int32,
+	serviceName string,
+	uuid *interface{},
+	port int32,
+	flag int32,
+	dataPath int32,
+	socketName string,
+	hubId int64,
+	endpointId int64,
+	maximumPacketSize int32,
+) (int32, error) {
+	return w.impl.CreateSocketChannelWithOffload(ctx, type_, serviceName, uuid, port, flag, dataPath, socketName, hubId, endpointId, maximumPacketSize)
+}
+
+func (w *bluetoothSocketManagerStubWrapper) RequestMaximumTxDataLength(
+	ctx context.Context,
+	device BluetoothDevice,
+) error {
+	return w.impl.RequestMaximumTxDataLength(ctx, device)
+}
+
+func (w *bluetoothSocketManagerStubWrapper) GetL2capLocalChannelId(
+	ctx context.Context,
+	connectionUuid interface{},
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.GetL2capLocalChannelId(ctx, connectionUuid, attributionSource)
+}
+
+func (w *bluetoothSocketManagerStubWrapper) GetL2capRemoteChannelId(
+	ctx context.Context,
+	connectionUuid interface{},
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.GetL2capRemoteChannelId(ctx, connectionUuid, attributionSource)
+}
+
+var _ IBluetoothSocketManager = (*bluetoothSocketManagerStubWrapper)(nil)
+
+// NewBluetoothSocketManagerStub creates a server-side IBluetoothSocketManager wrapping the given
+// server implementation. The returned value satisfies IBluetoothSocketManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothSocketManagerStub(
+	impl IBluetoothSocketManagerServer,
+) IBluetoothSocketManager {
+	wrapper := &bluetoothSocketManagerStubWrapper{impl: impl}
+	stub := &BluetoothSocketManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

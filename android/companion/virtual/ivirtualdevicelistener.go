@@ -112,3 +112,50 @@ func (s *VirtualDeviceListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVirtualDeviceListenerServer is the server-side interface that user implementations
+// provide to NewVirtualDeviceListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualDeviceListenerServer interface {
+	OnVirtualDeviceCreated(ctx context.Context, deviceId int32) error
+	OnVirtualDeviceClosed(ctx context.Context, deviceId int32) error
+}
+
+type virtualDeviceListenerStubWrapper struct {
+	impl       IVirtualDeviceListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualDeviceListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualDeviceListenerStubWrapper) OnVirtualDeviceCreated(
+	ctx context.Context,
+	deviceId int32,
+) error {
+	return w.impl.OnVirtualDeviceCreated(ctx, deviceId)
+}
+
+func (w *virtualDeviceListenerStubWrapper) OnVirtualDeviceClosed(
+	ctx context.Context,
+	deviceId int32,
+) error {
+	return w.impl.OnVirtualDeviceClosed(ctx, deviceId)
+}
+
+var _ IVirtualDeviceListener = (*virtualDeviceListenerStubWrapper)(nil)
+
+// NewVirtualDeviceListenerStub creates a server-side IVirtualDeviceListener wrapping the given
+// server implementation. The returned value satisfies IVirtualDeviceListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualDeviceListenerStub(
+	impl IVirtualDeviceListenerServer,
+) IVirtualDeviceListener {
+	wrapper := &virtualDeviceListenerStubWrapper{impl: impl}
+	stub := &VirtualDeviceListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

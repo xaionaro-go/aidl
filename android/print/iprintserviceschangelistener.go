@@ -76,3 +76,41 @@ func (s *PrintServicesChangeListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPrintServicesChangeListenerServer is the server-side interface that user implementations
+// provide to NewPrintServicesChangeListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrintServicesChangeListenerServer interface {
+	OnPrintServicesChanged(ctx context.Context) error
+}
+
+type printServicesChangeListenerStubWrapper struct {
+	impl       IPrintServicesChangeListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *printServicesChangeListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *printServicesChangeListenerStubWrapper) OnPrintServicesChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnPrintServicesChanged(ctx)
+}
+
+var _ IPrintServicesChangeListener = (*printServicesChangeListenerStubWrapper)(nil)
+
+// NewPrintServicesChangeListenerStub creates a server-side IPrintServicesChangeListener wrapping the given
+// server implementation. The returned value satisfies IPrintServicesChangeListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrintServicesChangeListenerStub(
+	impl IPrintServicesChangeListenerServer,
+) IPrintServicesChangeListener {
+	wrapper := &printServicesChangeListenerStubWrapper{impl: impl}
+	stub := &PrintServicesChangeListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

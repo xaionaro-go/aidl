@@ -57,7 +57,7 @@ func (p *CameraExtensionsProxyServiceProxy) RegisterClient(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "registerClient")
 	if _err != nil {
@@ -87,7 +87,7 @@ func (p *CameraExtensionsProxyServiceProxy) UnregisterClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "unregisterClient")
 	if _err != nil {
@@ -142,7 +142,7 @@ func (p *CameraExtensionsProxyServiceProxy) InitializeSession(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraExtensionsProxyService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraExtensionsProxyService, "initializeSession")
 	if _err != nil {
@@ -424,4 +424,97 @@ func (s *CameraExtensionsProxyServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICameraExtensionsProxyServiceServer is the server-side interface that user implementations
+// provide to NewCameraExtensionsProxyServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraExtensionsProxyServiceServer interface {
+	RegisterClient(ctx context.Context, token binder.IBinder) (bool, error)
+	UnregisterClient(ctx context.Context, token binder.IBinder) error
+	AdvancedExtensionsSupported(ctx context.Context) (bool, error)
+	InitializeSession(ctx context.Context, cb IInitializeSessionCallback) error
+	ReleaseSession(ctx context.Context) error
+	InitializePreviewExtension(ctx context.Context, extensionType int32) (IPreviewExtenderImpl, error)
+	InitializeImageExtension(ctx context.Context, extensionType int32) (IImageCaptureExtenderImpl, error)
+	InitializeAdvancedExtension(ctx context.Context, extensionType int32) (IAdvancedExtenderImpl, error)
+}
+
+type cameraExtensionsProxyServiceStubWrapper struct {
+	impl       ICameraExtensionsProxyServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraExtensionsProxyServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraExtensionsProxyServiceStubWrapper) RegisterClient(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.RegisterClient(ctx, token)
+}
+
+func (w *cameraExtensionsProxyServiceStubWrapper) UnregisterClient(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.UnregisterClient(ctx, token)
+}
+
+func (w *cameraExtensionsProxyServiceStubWrapper) AdvancedExtensionsSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.AdvancedExtensionsSupported(ctx)
+}
+
+func (w *cameraExtensionsProxyServiceStubWrapper) InitializeSession(
+	ctx context.Context,
+	cb IInitializeSessionCallback,
+) error {
+	return w.impl.InitializeSession(ctx, cb)
+}
+
+func (w *cameraExtensionsProxyServiceStubWrapper) ReleaseSession(
+	ctx context.Context,
+) error {
+	return w.impl.ReleaseSession(ctx)
+}
+
+func (w *cameraExtensionsProxyServiceStubWrapper) InitializePreviewExtension(
+	ctx context.Context,
+	extensionType int32,
+) (IPreviewExtenderImpl, error) {
+	return w.impl.InitializePreviewExtension(ctx, extensionType)
+}
+
+func (w *cameraExtensionsProxyServiceStubWrapper) InitializeImageExtension(
+	ctx context.Context,
+	extensionType int32,
+) (IImageCaptureExtenderImpl, error) {
+	return w.impl.InitializeImageExtension(ctx, extensionType)
+}
+
+func (w *cameraExtensionsProxyServiceStubWrapper) InitializeAdvancedExtension(
+	ctx context.Context,
+	extensionType int32,
+) (IAdvancedExtenderImpl, error) {
+	return w.impl.InitializeAdvancedExtension(ctx, extensionType)
+}
+
+var _ ICameraExtensionsProxyService = (*cameraExtensionsProxyServiceStubWrapper)(nil)
+
+// NewCameraExtensionsProxyServiceStub creates a server-side ICameraExtensionsProxyService wrapping the given
+// server implementation. The returned value satisfies ICameraExtensionsProxyService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraExtensionsProxyServiceStub(
+	impl ICameraExtensionsProxyServiceServer,
+) ICameraExtensionsProxyService {
+	wrapper := &cameraExtensionsProxyServiceStubWrapper{impl: impl}
+	stub := &CameraExtensionsProxyServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

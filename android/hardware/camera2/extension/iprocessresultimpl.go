@@ -142,3 +142,51 @@ func (s *ProcessResultImplStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProcessResultImplServer is the server-side interface that user implementations
+// provide to NewProcessResultImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProcessResultImplServer interface {
+	OnCaptureCompleted(ctx context.Context, shutterTimestamp int64, results interface{}) error
+	OnCaptureProcessProgressed(ctx context.Context, progress int32) error
+}
+
+type processResultImplStubWrapper struct {
+	impl       IProcessResultImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *processResultImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *processResultImplStubWrapper) OnCaptureCompleted(
+	ctx context.Context,
+	shutterTimestamp int64,
+	results interface{},
+) error {
+	return w.impl.OnCaptureCompleted(ctx, shutterTimestamp, results)
+}
+
+func (w *processResultImplStubWrapper) OnCaptureProcessProgressed(
+	ctx context.Context,
+	progress int32,
+) error {
+	return w.impl.OnCaptureProcessProgressed(ctx, progress)
+}
+
+var _ IProcessResultImpl = (*processResultImplStubWrapper)(nil)
+
+// NewProcessResultImplStub creates a server-side IProcessResultImpl wrapping the given
+// server implementation. The returned value satisfies IProcessResultImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProcessResultImplStub(
+	impl IProcessResultImplServer,
+) IProcessResultImpl {
+	wrapper := &processResultImplStubWrapper{impl: impl}
+	stub := &ProcessResultImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

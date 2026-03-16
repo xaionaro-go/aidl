@@ -296,3 +296,86 @@ func (s *LauncherUnlockAnimationControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILauncherUnlockAnimationControllerServer is the server-side interface that user implementations
+// provide to NewLauncherUnlockAnimationControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILauncherUnlockAnimationControllerServer interface {
+	PrepareForUnlock(ctx context.Context, animateSmartspace bool, lockscreenSmartspaceBounds graphics.Rect, selectedPage int32) error
+	SetUnlockAmount(ctx context.Context, amount float32, forceIfAnimating bool) error
+	PlayUnlockAnimation(ctx context.Context, unlocked bool, duration int64, startDelay int64) error
+	SetSmartspaceSelectedPage(ctx context.Context, selectedPage int32) error
+	SetSmartspaceVisibility(ctx context.Context, visibility int32) error
+	DispatchSmartspaceStateToSysui(ctx context.Context) error
+}
+
+type launcherUnlockAnimationControllerStubWrapper struct {
+	impl       ILauncherUnlockAnimationControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *launcherUnlockAnimationControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *launcherUnlockAnimationControllerStubWrapper) PrepareForUnlock(
+	ctx context.Context,
+	animateSmartspace bool,
+	lockscreenSmartspaceBounds graphics.Rect,
+	selectedPage int32,
+) error {
+	return w.impl.PrepareForUnlock(ctx, animateSmartspace, lockscreenSmartspaceBounds, selectedPage)
+}
+
+func (w *launcherUnlockAnimationControllerStubWrapper) SetUnlockAmount(
+	ctx context.Context,
+	amount float32,
+	forceIfAnimating bool,
+) error {
+	return w.impl.SetUnlockAmount(ctx, amount, forceIfAnimating)
+}
+
+func (w *launcherUnlockAnimationControllerStubWrapper) PlayUnlockAnimation(
+	ctx context.Context,
+	unlocked bool,
+	duration int64,
+	startDelay int64,
+) error {
+	return w.impl.PlayUnlockAnimation(ctx, unlocked, duration, startDelay)
+}
+
+func (w *launcherUnlockAnimationControllerStubWrapper) SetSmartspaceSelectedPage(
+	ctx context.Context,
+	selectedPage int32,
+) error {
+	return w.impl.SetSmartspaceSelectedPage(ctx, selectedPage)
+}
+
+func (w *launcherUnlockAnimationControllerStubWrapper) SetSmartspaceVisibility(
+	ctx context.Context,
+	visibility int32,
+) error {
+	return w.impl.SetSmartspaceVisibility(ctx, visibility)
+}
+
+func (w *launcherUnlockAnimationControllerStubWrapper) DispatchSmartspaceStateToSysui(
+	ctx context.Context,
+) error {
+	return w.impl.DispatchSmartspaceStateToSysui(ctx)
+}
+
+var _ ILauncherUnlockAnimationController = (*launcherUnlockAnimationControllerStubWrapper)(nil)
+
+// NewLauncherUnlockAnimationControllerStub creates a server-side ILauncherUnlockAnimationController wrapping the given
+// server implementation. The returned value satisfies ILauncherUnlockAnimationController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLauncherUnlockAnimationControllerStub(
+	impl ILauncherUnlockAnimationControllerServer,
+) ILauncherUnlockAnimationController {
+	wrapper := &launcherUnlockAnimationControllerStubWrapper{impl: impl}
+	stub := &LauncherUnlockAnimationControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -46,7 +46,7 @@ func (p *SysuiUnlockAnimationControllerProxy) SetLauncherUnlockController(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISysuiUnlockAnimationController)
 	_data.WriteString16(activityClass)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISysuiUnlockAnimationController, "setLauncherUnlockController")
 	if _err != nil {
@@ -127,4 +127,52 @@ func (s *SysuiUnlockAnimationControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISysuiUnlockAnimationControllerServer is the server-side interface that user implementations
+// provide to NewSysuiUnlockAnimationControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISysuiUnlockAnimationControllerServer interface {
+	SetLauncherUnlockController(ctx context.Context, activityClass string, callback ILauncherUnlockAnimationController) error
+	OnLauncherSmartspaceStateUpdated(ctx context.Context, state SmartspaceState) error
+}
+
+type sysuiUnlockAnimationControllerStubWrapper struct {
+	impl       ISysuiUnlockAnimationControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sysuiUnlockAnimationControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sysuiUnlockAnimationControllerStubWrapper) SetLauncherUnlockController(
+	ctx context.Context,
+	activityClass string,
+	callback ILauncherUnlockAnimationController,
+) error {
+	return w.impl.SetLauncherUnlockController(ctx, activityClass, callback)
+}
+
+func (w *sysuiUnlockAnimationControllerStubWrapper) OnLauncherSmartspaceStateUpdated(
+	ctx context.Context,
+	state SmartspaceState,
+) error {
+	return w.impl.OnLauncherSmartspaceStateUpdated(ctx, state)
+}
+
+var _ ISysuiUnlockAnimationController = (*sysuiUnlockAnimationControllerStubWrapper)(nil)
+
+// NewSysuiUnlockAnimationControllerStub creates a server-side ISysuiUnlockAnimationController wrapping the given
+// server implementation. The returned value satisfies ISysuiUnlockAnimationController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSysuiUnlockAnimationControllerStub(
+	impl ISysuiUnlockAnimationControllerServer,
+) ISysuiUnlockAnimationController {
+	wrapper := &sysuiUnlockAnimationControllerStubWrapper{impl: impl}
+	stub := &SysuiUnlockAnimationControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

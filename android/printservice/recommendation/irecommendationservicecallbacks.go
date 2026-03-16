@@ -90,3 +90,42 @@ func (s *RecommendationServiceCallbacksStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRecommendationServiceCallbacksServer is the server-side interface that user implementations
+// provide to NewRecommendationServiceCallbacksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecommendationServiceCallbacksServer interface {
+	OnRecommendationsUpdated(ctx context.Context, recommendations []RecommendationInfo) error
+}
+
+type recommendationServiceCallbacksStubWrapper struct {
+	impl       IRecommendationServiceCallbacksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recommendationServiceCallbacksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recommendationServiceCallbacksStubWrapper) OnRecommendationsUpdated(
+	ctx context.Context,
+	recommendations []RecommendationInfo,
+) error {
+	return w.impl.OnRecommendationsUpdated(ctx, recommendations)
+}
+
+var _ IRecommendationServiceCallbacks = (*recommendationServiceCallbacksStubWrapper)(nil)
+
+// NewRecommendationServiceCallbacksStub creates a server-side IRecommendationServiceCallbacks wrapping the given
+// server implementation. The returned value satisfies IRecommendationServiceCallbacks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecommendationServiceCallbacksStub(
+	impl IRecommendationServiceCallbacksServer,
+) IRecommendationServiceCallbacks {
+	wrapper := &recommendationServiceCallbacksStubWrapper{impl: impl}
+	stub := &RecommendationServiceCallbacksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

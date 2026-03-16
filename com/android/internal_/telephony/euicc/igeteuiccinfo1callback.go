@@ -94,3 +94,43 @@ func (s *GetEuiccInfo1CallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetEuiccInfo1CallbackServer is the server-side interface that user implementations
+// provide to NewGetEuiccInfo1CallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetEuiccInfo1CallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, info []byte) error
+}
+
+type getEuiccInfo1CallbackStubWrapper struct {
+	impl       IGetEuiccInfo1CallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getEuiccInfo1CallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getEuiccInfo1CallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	info []byte,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, info)
+}
+
+var _ IGetEuiccInfo1Callback = (*getEuiccInfo1CallbackStubWrapper)(nil)
+
+// NewGetEuiccInfo1CallbackStub creates a server-side IGetEuiccInfo1Callback wrapping the given
+// server implementation. The returned value satisfies IGetEuiccInfo1Callback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetEuiccInfo1CallbackStub(
+	impl IGetEuiccInfo1CallbackServer,
+) IGetEuiccInfo1Callback {
+	wrapper := &getEuiccInfo1CallbackStubWrapper{impl: impl}
+	stub := &GetEuiccInfo1CallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

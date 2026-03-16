@@ -93,3 +93,42 @@ func (s *PictureProfileChangedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPictureProfileChangedListenerServer is the server-side interface that user implementations
+// provide to NewPictureProfileChangedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPictureProfileChangedListenerServer interface {
+	OnPictureProfileChanged(ctx context.Context, pictureProfile PictureProfile) error
+}
+
+type pictureProfileChangedListenerStubWrapper struct {
+	impl       IPictureProfileChangedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pictureProfileChangedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pictureProfileChangedListenerStubWrapper) OnPictureProfileChanged(
+	ctx context.Context,
+	pictureProfile PictureProfile,
+) error {
+	return w.impl.OnPictureProfileChanged(ctx, pictureProfile)
+}
+
+var _ IPictureProfileChangedListener = (*pictureProfileChangedListenerStubWrapper)(nil)
+
+// NewPictureProfileChangedListenerStub creates a server-side IPictureProfileChangedListener wrapping the given
+// server implementation. The returned value satisfies IPictureProfileChangedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPictureProfileChangedListenerStub(
+	impl IPictureProfileChangedListenerServer,
+) IPictureProfileChangedListener {
+	wrapper := &pictureProfileChangedListenerStubWrapper{impl: impl}
+	stub := &PictureProfileChangedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

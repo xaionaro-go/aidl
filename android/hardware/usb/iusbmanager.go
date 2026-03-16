@@ -3,7 +3,6 @@ package usb
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -104,7 +103,7 @@ type IUsbManager interface {
 	SetPortRoles(ctx context.Context, portId string, powerRole int32, dataRole int32) error
 	EnableLimitPowerTransfer(ctx context.Context, portId string, limit bool, operationId int32, callback IUsbOperationInternal) error
 	EnableContaminantDetection(ctx context.Context, portId string, enable bool) error
-	SetUsbDeviceConnectionHandler(ctx context.Context, usbDeviceConnectionHandler content.ComponentName) error
+	SetUsbDeviceConnectionHandler(ctx context.Context, usbDeviceConnectionHandler interface{}) error
 	RegisterForDisplayPortEvents(ctx context.Context, listener IDisplayPortAltModeInfoListener) (bool, error)
 	UnregisterForDisplayPortEvents(ctx context.Context, listener IDisplayPortAltModeInfoListener) error
 }
@@ -1141,7 +1140,7 @@ func (p *UsbManagerProxy) ResetUsbPort(
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
 	_data.WriteString16(portId)
 	_data.WriteInt32(operationId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "resetUsbPort")
 	if _err != nil {
@@ -1174,7 +1173,7 @@ func (p *UsbManagerProxy) EnableUsbData(
 	_data.WriteString16(portId)
 	_data.WriteBool(enable)
 	_data.WriteInt32(operationId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "enableUsbData")
 	if _err != nil {
@@ -1208,7 +1207,7 @@ func (p *UsbManagerProxy) EnableUsbDataWhileDocked(
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
 	_data.WriteString16(portId)
 	_data.WriteInt32(operationId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "enableUsbDataWhileDocked")
 	if _err != nil {
@@ -1435,7 +1434,7 @@ func (p *UsbManagerProxy) EnableLimitPowerTransfer(
 	_data.WriteString16(portId)
 	_data.WriteBool(limit)
 	_data.WriteInt32(operationId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "enableLimitPowerTransfer")
 	if _err != nil {
@@ -1485,14 +1484,10 @@ func (p *UsbManagerProxy) EnableContaminantDetection(
 
 func (p *UsbManagerProxy) SetUsbDeviceConnectionHandler(
 	ctx context.Context,
-	usbDeviceConnectionHandler content.ComponentName,
+	usbDeviceConnectionHandler interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
-	_data.WriteInt32(1)
-	if _err := usbDeviceConnectionHandler.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "setUsbDeviceConnectionHandler")
 	if _err != nil {
@@ -1519,7 +1514,7 @@ func (p *UsbManagerProxy) RegisterForDisplayPortEvents(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "registerForDisplayPortEvents")
 	if _err != nil {
@@ -1549,7 +1544,7 @@ func (p *UsbManagerProxy) UnregisterForDisplayPortEvents(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbManager, "unregisterForDisplayPortEvents")
 	if _err != nil {
@@ -2546,18 +2541,7 @@ func (s *UsbManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_usbDeviceConnectionHandler content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_usbDeviceConnectionHandler.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_usbDeviceConnectionHandler interface{}
 		_err := s.Impl.SetUsbDeviceConnectionHandler(ctx, _arg_usbDeviceConnectionHandler)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2600,4 +2584,432 @@ func (s *UsbManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUsbManagerServer is the server-side interface that user implementations
+// provide to NewUsbManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUsbManagerServer interface {
+	GetDeviceList(ctx context.Context, devices interface{}) error
+	OpenDevice(ctx context.Context, deviceName string, packageName string) (int32, error)
+	GetCurrentAccessory(ctx context.Context) (UsbAccessory, error)
+	OpenAccessory(ctx context.Context, accessory UsbAccessory) (int32, error)
+	SetDevicePackage(ctx context.Context, device UsbDevice, packageName string) error
+	SetAccessoryPackage(ctx context.Context, accessory UsbAccessory, packageName string) error
+	AddDevicePackagesToPreferenceDenied(ctx context.Context, device UsbDevice, packageNames []string, user interface{}) error
+	AddAccessoryPackagesToPreferenceDenied(ctx context.Context, accessory UsbAccessory, packageNames []string, user interface{}) error
+	RemoveDevicePackagesFromPreferenceDenied(ctx context.Context, device UsbDevice, packageNames []string, user interface{}) error
+	RemoveAccessoryPackagesFromPreferenceDenied(ctx context.Context, device UsbAccessory, packageNames []string, user interface{}) error
+	SetDevicePersistentPermission(ctx context.Context, device UsbDevice, uid int32, user interface{}, shouldBeGranted bool) error
+	SetAccessoryPersistentPermission(ctx context.Context, accessory UsbAccessory, uid int32, user interface{}, shouldBeGranted bool) error
+	HasDevicePermission(ctx context.Context, device UsbDevice, packageName string) (bool, error)
+	HasDevicePermissionWithIdentity(ctx context.Context, device UsbDevice, packageName string, pid int32, uid int32) (bool, error)
+	HasAccessoryPermission(ctx context.Context, accessory UsbAccessory) (bool, error)
+	HasAccessoryPermissionWithIdentity(ctx context.Context, accessory UsbAccessory, pid int32, uid int32) (bool, error)
+	RequestDevicePermission(ctx context.Context, device UsbDevice, packageName string, pi interface{}) error
+	RequestAccessoryPermission(ctx context.Context, accessory UsbAccessory, packageName string, pi interface{}) error
+	GrantDevicePermission(ctx context.Context, device UsbDevice, uid int32) error
+	GrantAccessoryPermission(ctx context.Context, accessory UsbAccessory, uid int32) error
+	HasDefaults(ctx context.Context, packageName string) (bool, error)
+	ClearDefaults(ctx context.Context, packageName string) error
+	IsFunctionEnabled(ctx context.Context, function string) (bool, error)
+	SetCurrentFunctions(ctx context.Context, functions int64, operationId int32) error
+	SetCurrentFunction(ctx context.Context, function string, usbDataUnlocked bool, operationId int32) error
+	GetCurrentFunctions(ctx context.Context) (int64, error)
+	GetCurrentUsbSpeed(ctx context.Context) (int32, error)
+	GetGadgetHalVersion(ctx context.Context) (int32, error)
+	SetScreenUnlockedFunctions(ctx context.Context, functions int64) error
+	GetScreenUnlockedFunctions(ctx context.Context) (int64, error)
+	ResetUsbGadget(ctx context.Context) error
+	ResetUsbPort(ctx context.Context, portId string, operationId int32, callback IUsbOperationInternal) error
+	EnableUsbData(ctx context.Context, portId string, enable bool, operationId int32, callback IUsbOperationInternal) (bool, error)
+	EnableUsbDataWhileDocked(ctx context.Context, portId string, operationId int32, callback IUsbOperationInternal) error
+	GetUsbHalVersion(ctx context.Context) (int32, error)
+	GetControlFd(ctx context.Context, function int64) (int32, error)
+	GetPorts(ctx context.Context) ([]ParcelableUsbPort, error)
+	GetPortStatus(ctx context.Context, portId string) (UsbPortStatus, error)
+	IsModeChangeSupported(ctx context.Context, portId string) (bool, error)
+	SetPortRoles(ctx context.Context, portId string, powerRole int32, dataRole int32) error
+	EnableLimitPowerTransfer(ctx context.Context, portId string, limit bool, operationId int32, callback IUsbOperationInternal) error
+	EnableContaminantDetection(ctx context.Context, portId string, enable bool) error
+	SetUsbDeviceConnectionHandler(ctx context.Context, usbDeviceConnectionHandler interface{}) error
+	RegisterForDisplayPortEvents(ctx context.Context, listener IDisplayPortAltModeInfoListener) (bool, error)
+	UnregisterForDisplayPortEvents(ctx context.Context, listener IDisplayPortAltModeInfoListener) error
+}
+
+type usbManagerStubWrapper struct {
+	impl       IUsbManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *usbManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *usbManagerStubWrapper) GetDeviceList(
+	ctx context.Context,
+	devices interface{},
+) error {
+	return w.impl.GetDeviceList(ctx, devices)
+}
+
+func (w *usbManagerStubWrapper) OpenDevice(
+	ctx context.Context,
+	deviceName string,
+	packageName string,
+) (int32, error) {
+	return w.impl.OpenDevice(ctx, deviceName, packageName)
+}
+
+func (w *usbManagerStubWrapper) GetCurrentAccessory(
+	ctx context.Context,
+) (UsbAccessory, error) {
+	return w.impl.GetCurrentAccessory(ctx)
+}
+
+func (w *usbManagerStubWrapper) OpenAccessory(
+	ctx context.Context,
+	accessory UsbAccessory,
+) (int32, error) {
+	return w.impl.OpenAccessory(ctx, accessory)
+}
+
+func (w *usbManagerStubWrapper) SetDevicePackage(
+	ctx context.Context,
+	device UsbDevice,
+	packageName string,
+) error {
+	return w.impl.SetDevicePackage(ctx, device, packageName)
+}
+
+func (w *usbManagerStubWrapper) SetAccessoryPackage(
+	ctx context.Context,
+	accessory UsbAccessory,
+	packageName string,
+) error {
+	return w.impl.SetAccessoryPackage(ctx, accessory, packageName)
+}
+
+func (w *usbManagerStubWrapper) AddDevicePackagesToPreferenceDenied(
+	ctx context.Context,
+	device UsbDevice,
+	packageNames []string,
+	user interface{},
+) error {
+	return w.impl.AddDevicePackagesToPreferenceDenied(ctx, device, packageNames, user)
+}
+
+func (w *usbManagerStubWrapper) AddAccessoryPackagesToPreferenceDenied(
+	ctx context.Context,
+	accessory UsbAccessory,
+	packageNames []string,
+	user interface{},
+) error {
+	return w.impl.AddAccessoryPackagesToPreferenceDenied(ctx, accessory, packageNames, user)
+}
+
+func (w *usbManagerStubWrapper) RemoveDevicePackagesFromPreferenceDenied(
+	ctx context.Context,
+	device UsbDevice,
+	packageNames []string,
+	user interface{},
+) error {
+	return w.impl.RemoveDevicePackagesFromPreferenceDenied(ctx, device, packageNames, user)
+}
+
+func (w *usbManagerStubWrapper) RemoveAccessoryPackagesFromPreferenceDenied(
+	ctx context.Context,
+	device UsbAccessory,
+	packageNames []string,
+	user interface{},
+) error {
+	return w.impl.RemoveAccessoryPackagesFromPreferenceDenied(ctx, device, packageNames, user)
+}
+
+func (w *usbManagerStubWrapper) SetDevicePersistentPermission(
+	ctx context.Context,
+	device UsbDevice,
+	uid int32,
+	user interface{},
+	shouldBeGranted bool,
+) error {
+	return w.impl.SetDevicePersistentPermission(ctx, device, uid, user, shouldBeGranted)
+}
+
+func (w *usbManagerStubWrapper) SetAccessoryPersistentPermission(
+	ctx context.Context,
+	accessory UsbAccessory,
+	uid int32,
+	user interface{},
+	shouldBeGranted bool,
+) error {
+	return w.impl.SetAccessoryPersistentPermission(ctx, accessory, uid, user, shouldBeGranted)
+}
+
+func (w *usbManagerStubWrapper) HasDevicePermission(
+	ctx context.Context,
+	device UsbDevice,
+	packageName string,
+) (bool, error) {
+	return w.impl.HasDevicePermission(ctx, device, packageName)
+}
+
+func (w *usbManagerStubWrapper) HasDevicePermissionWithIdentity(
+	ctx context.Context,
+	device UsbDevice,
+	packageName string,
+	pid int32,
+	uid int32,
+) (bool, error) {
+	return w.impl.HasDevicePermissionWithIdentity(ctx, device, packageName, pid, uid)
+}
+
+func (w *usbManagerStubWrapper) HasAccessoryPermission(
+	ctx context.Context,
+	accessory UsbAccessory,
+) (bool, error) {
+	return w.impl.HasAccessoryPermission(ctx, accessory)
+}
+
+func (w *usbManagerStubWrapper) HasAccessoryPermissionWithIdentity(
+	ctx context.Context,
+	accessory UsbAccessory,
+	pid int32,
+	uid int32,
+) (bool, error) {
+	return w.impl.HasAccessoryPermissionWithIdentity(ctx, accessory, pid, uid)
+}
+
+func (w *usbManagerStubWrapper) RequestDevicePermission(
+	ctx context.Context,
+	device UsbDevice,
+	packageName string,
+	pi interface{},
+) error {
+	return w.impl.RequestDevicePermission(ctx, device, packageName, pi)
+}
+
+func (w *usbManagerStubWrapper) RequestAccessoryPermission(
+	ctx context.Context,
+	accessory UsbAccessory,
+	packageName string,
+	pi interface{},
+) error {
+	return w.impl.RequestAccessoryPermission(ctx, accessory, packageName, pi)
+}
+
+func (w *usbManagerStubWrapper) GrantDevicePermission(
+	ctx context.Context,
+	device UsbDevice,
+	uid int32,
+) error {
+	return w.impl.GrantDevicePermission(ctx, device, uid)
+}
+
+func (w *usbManagerStubWrapper) GrantAccessoryPermission(
+	ctx context.Context,
+	accessory UsbAccessory,
+	uid int32,
+) error {
+	return w.impl.GrantAccessoryPermission(ctx, accessory, uid)
+}
+
+func (w *usbManagerStubWrapper) HasDefaults(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.HasDefaults(ctx, packageName)
+}
+
+func (w *usbManagerStubWrapper) ClearDefaults(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ClearDefaults(ctx, packageName)
+}
+
+func (w *usbManagerStubWrapper) IsFunctionEnabled(
+	ctx context.Context,
+	function string,
+) (bool, error) {
+	return w.impl.IsFunctionEnabled(ctx, function)
+}
+
+func (w *usbManagerStubWrapper) SetCurrentFunctions(
+	ctx context.Context,
+	functions int64,
+	operationId int32,
+) error {
+	return w.impl.SetCurrentFunctions(ctx, functions, operationId)
+}
+
+func (w *usbManagerStubWrapper) SetCurrentFunction(
+	ctx context.Context,
+	function string,
+	usbDataUnlocked bool,
+	operationId int32,
+) error {
+	return w.impl.SetCurrentFunction(ctx, function, usbDataUnlocked, operationId)
+}
+
+func (w *usbManagerStubWrapper) GetCurrentFunctions(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetCurrentFunctions(ctx)
+}
+
+func (w *usbManagerStubWrapper) GetCurrentUsbSpeed(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentUsbSpeed(ctx)
+}
+
+func (w *usbManagerStubWrapper) GetGadgetHalVersion(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetGadgetHalVersion(ctx)
+}
+
+func (w *usbManagerStubWrapper) SetScreenUnlockedFunctions(
+	ctx context.Context,
+	functions int64,
+) error {
+	return w.impl.SetScreenUnlockedFunctions(ctx, functions)
+}
+
+func (w *usbManagerStubWrapper) GetScreenUnlockedFunctions(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetScreenUnlockedFunctions(ctx)
+}
+
+func (w *usbManagerStubWrapper) ResetUsbGadget(
+	ctx context.Context,
+) error {
+	return w.impl.ResetUsbGadget(ctx)
+}
+
+func (w *usbManagerStubWrapper) ResetUsbPort(
+	ctx context.Context,
+	portId string,
+	operationId int32,
+	callback IUsbOperationInternal,
+) error {
+	return w.impl.ResetUsbPort(ctx, portId, operationId, callback)
+}
+
+func (w *usbManagerStubWrapper) EnableUsbData(
+	ctx context.Context,
+	portId string,
+	enable bool,
+	operationId int32,
+	callback IUsbOperationInternal,
+) (bool, error) {
+	return w.impl.EnableUsbData(ctx, portId, enable, operationId, callback)
+}
+
+func (w *usbManagerStubWrapper) EnableUsbDataWhileDocked(
+	ctx context.Context,
+	portId string,
+	operationId int32,
+	callback IUsbOperationInternal,
+) error {
+	return w.impl.EnableUsbDataWhileDocked(ctx, portId, operationId, callback)
+}
+
+func (w *usbManagerStubWrapper) GetUsbHalVersion(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUsbHalVersion(ctx)
+}
+
+func (w *usbManagerStubWrapper) GetControlFd(
+	ctx context.Context,
+	function int64,
+) (int32, error) {
+	return w.impl.GetControlFd(ctx, function)
+}
+
+func (w *usbManagerStubWrapper) GetPorts(
+	ctx context.Context,
+) ([]ParcelableUsbPort, error) {
+	return w.impl.GetPorts(ctx)
+}
+
+func (w *usbManagerStubWrapper) GetPortStatus(
+	ctx context.Context,
+	portId string,
+) (UsbPortStatus, error) {
+	return w.impl.GetPortStatus(ctx, portId)
+}
+
+func (w *usbManagerStubWrapper) IsModeChangeSupported(
+	ctx context.Context,
+	portId string,
+) (bool, error) {
+	return w.impl.IsModeChangeSupported(ctx, portId)
+}
+
+func (w *usbManagerStubWrapper) SetPortRoles(
+	ctx context.Context,
+	portId string,
+	powerRole int32,
+	dataRole int32,
+) error {
+	return w.impl.SetPortRoles(ctx, portId, powerRole, dataRole)
+}
+
+func (w *usbManagerStubWrapper) EnableLimitPowerTransfer(
+	ctx context.Context,
+	portId string,
+	limit bool,
+	operationId int32,
+	callback IUsbOperationInternal,
+) error {
+	return w.impl.EnableLimitPowerTransfer(ctx, portId, limit, operationId, callback)
+}
+
+func (w *usbManagerStubWrapper) EnableContaminantDetection(
+	ctx context.Context,
+	portId string,
+	enable bool,
+) error {
+	return w.impl.EnableContaminantDetection(ctx, portId, enable)
+}
+
+func (w *usbManagerStubWrapper) SetUsbDeviceConnectionHandler(
+	ctx context.Context,
+	usbDeviceConnectionHandler interface{},
+) error {
+	return w.impl.SetUsbDeviceConnectionHandler(ctx, usbDeviceConnectionHandler)
+}
+
+func (w *usbManagerStubWrapper) RegisterForDisplayPortEvents(
+	ctx context.Context,
+	listener IDisplayPortAltModeInfoListener,
+) (bool, error) {
+	return w.impl.RegisterForDisplayPortEvents(ctx, listener)
+}
+
+func (w *usbManagerStubWrapper) UnregisterForDisplayPortEvents(
+	ctx context.Context,
+	listener IDisplayPortAltModeInfoListener,
+) error {
+	return w.impl.UnregisterForDisplayPortEvents(ctx, listener)
+}
+
+var _ IUsbManager = (*usbManagerStubWrapper)(nil)
+
+// NewUsbManagerStub creates a server-side IUsbManager wrapping the given
+// server implementation. The returned value satisfies IUsbManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUsbManagerStub(
+	impl IUsbManagerServer,
+) IUsbManager {
+	wrapper := &usbManagerStubWrapper{impl: impl}
+	stub := &UsbManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

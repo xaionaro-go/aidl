@@ -94,3 +94,44 @@ func (s *StartingWindowListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStartingWindowListenerServer is the server-side interface that user implementations
+// provide to NewStartingWindowListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStartingWindowListenerServer interface {
+	OnTaskLaunching(ctx context.Context, taskId int32, supportedType int32, splashScreenBackgroundColor int32) error
+}
+
+type startingWindowListenerStubWrapper struct {
+	impl       IStartingWindowListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *startingWindowListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *startingWindowListenerStubWrapper) OnTaskLaunching(
+	ctx context.Context,
+	taskId int32,
+	supportedType int32,
+	splashScreenBackgroundColor int32,
+) error {
+	return w.impl.OnTaskLaunching(ctx, taskId, supportedType, splashScreenBackgroundColor)
+}
+
+var _ IStartingWindowListener = (*startingWindowListenerStubWrapper)(nil)
+
+// NewStartingWindowListenerStub creates a server-side IStartingWindowListener wrapping the given
+// server implementation. The returned value satisfies IStartingWindowListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStartingWindowListenerStub(
+	impl IStartingWindowListenerServer,
+) IStartingWindowListener {
+	wrapper := &startingWindowListenerStubWrapper{impl: impl}
+	stub := &StartingWindowListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

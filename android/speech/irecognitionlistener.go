@@ -382,3 +382,128 @@ func (s *RecognitionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRecognitionListenerServer is the server-side interface that user implementations
+// provide to NewRecognitionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecognitionListenerServer interface {
+	OnReadyForSpeech(ctx context.Context, params interface{}) error
+	OnBeginningOfSpeech(ctx context.Context) error
+	OnRmsChanged(ctx context.Context, rmsdB float32) error
+	OnBufferReceived(ctx context.Context, buffer []byte) error
+	OnEndOfSpeech(ctx context.Context) error
+	OnError(ctx context.Context, error_ int32) error
+	OnResults(ctx context.Context, results interface{}) error
+	OnPartialResults(ctx context.Context, results interface{}) error
+	OnSegmentResults(ctx context.Context, results interface{}) error
+	OnEndOfSegmentedSession(ctx context.Context) error
+	OnLanguageDetection(ctx context.Context, results interface{}) error
+	OnEvent(ctx context.Context, eventType int32, params interface{}) error
+}
+
+type recognitionListenerStubWrapper struct {
+	impl       IRecognitionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recognitionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recognitionListenerStubWrapper) OnReadyForSpeech(
+	ctx context.Context,
+	params interface{},
+) error {
+	return w.impl.OnReadyForSpeech(ctx, params)
+}
+
+func (w *recognitionListenerStubWrapper) OnBeginningOfSpeech(
+	ctx context.Context,
+) error {
+	return w.impl.OnBeginningOfSpeech(ctx)
+}
+
+func (w *recognitionListenerStubWrapper) OnRmsChanged(
+	ctx context.Context,
+	rmsdB float32,
+) error {
+	return w.impl.OnRmsChanged(ctx, rmsdB)
+}
+
+func (w *recognitionListenerStubWrapper) OnBufferReceived(
+	ctx context.Context,
+	buffer []byte,
+) error {
+	return w.impl.OnBufferReceived(ctx, buffer)
+}
+
+func (w *recognitionListenerStubWrapper) OnEndOfSpeech(
+	ctx context.Context,
+) error {
+	return w.impl.OnEndOfSpeech(ctx)
+}
+
+func (w *recognitionListenerStubWrapper) OnError(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.OnError(ctx, error_)
+}
+
+func (w *recognitionListenerStubWrapper) OnResults(
+	ctx context.Context,
+	results interface{},
+) error {
+	return w.impl.OnResults(ctx, results)
+}
+
+func (w *recognitionListenerStubWrapper) OnPartialResults(
+	ctx context.Context,
+	results interface{},
+) error {
+	return w.impl.OnPartialResults(ctx, results)
+}
+
+func (w *recognitionListenerStubWrapper) OnSegmentResults(
+	ctx context.Context,
+	results interface{},
+) error {
+	return w.impl.OnSegmentResults(ctx, results)
+}
+
+func (w *recognitionListenerStubWrapper) OnEndOfSegmentedSession(
+	ctx context.Context,
+) error {
+	return w.impl.OnEndOfSegmentedSession(ctx)
+}
+
+func (w *recognitionListenerStubWrapper) OnLanguageDetection(
+	ctx context.Context,
+	results interface{},
+) error {
+	return w.impl.OnLanguageDetection(ctx, results)
+}
+
+func (w *recognitionListenerStubWrapper) OnEvent(
+	ctx context.Context,
+	eventType int32,
+	params interface{},
+) error {
+	return w.impl.OnEvent(ctx, eventType, params)
+}
+
+var _ IRecognitionListener = (*recognitionListenerStubWrapper)(nil)
+
+// NewRecognitionListenerStub creates a server-side IRecognitionListener wrapping the given
+// server implementation. The returned value satisfies IRecognitionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecognitionListenerStub(
+	impl IRecognitionListenerServer,
+) IRecognitionListener {
+	wrapper := &recognitionListenerStubWrapper{impl: impl}
+	stub := &RecognitionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -101,7 +101,7 @@ func (p *FeatureFlagsProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFeatureFlags)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFeatureFlags, "registerCallback")
 	if _err != nil {
@@ -127,7 +127,7 @@ func (p *FeatureFlagsProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFeatureFlags)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFeatureFlags, "unregisterCallback")
 	if _err != nil {
@@ -383,4 +383,83 @@ func (s *FeatureFlagsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFeatureFlagsServer is the server-side interface that user implementations
+// provide to NewFeatureFlagsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFeatureFlagsServer interface {
+	SyncFlags(ctx context.Context, flagList []SyncableFlag) ([]SyncableFlag, error)
+	RegisterCallback(ctx context.Context, callback IFeatureFlagsCallback) error
+	UnregisterCallback(ctx context.Context, callback IFeatureFlagsCallback) error
+	QueryFlags(ctx context.Context, flagList []SyncableFlag) ([]SyncableFlag, error)
+	OverrideFlag(ctx context.Context, flag SyncableFlag) error
+	ResetFlag(ctx context.Context, flag SyncableFlag) error
+}
+
+type featureFlagsStubWrapper struct {
+	impl       IFeatureFlagsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *featureFlagsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *featureFlagsStubWrapper) SyncFlags(
+	ctx context.Context,
+	flagList []SyncableFlag,
+) ([]SyncableFlag, error) {
+	return w.impl.SyncFlags(ctx, flagList)
+}
+
+func (w *featureFlagsStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IFeatureFlagsCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *featureFlagsStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback IFeatureFlagsCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+func (w *featureFlagsStubWrapper) QueryFlags(
+	ctx context.Context,
+	flagList []SyncableFlag,
+) ([]SyncableFlag, error) {
+	return w.impl.QueryFlags(ctx, flagList)
+}
+
+func (w *featureFlagsStubWrapper) OverrideFlag(
+	ctx context.Context,
+	flag SyncableFlag,
+) error {
+	return w.impl.OverrideFlag(ctx, flag)
+}
+
+func (w *featureFlagsStubWrapper) ResetFlag(
+	ctx context.Context,
+	flag SyncableFlag,
+) error {
+	return w.impl.ResetFlag(ctx, flag)
+}
+
+var _ IFeatureFlags = (*featureFlagsStubWrapper)(nil)
+
+// NewFeatureFlagsStub creates a server-side IFeatureFlags wrapping the given
+// server implementation. The returned value satisfies IFeatureFlags
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFeatureFlagsStub(
+	impl IFeatureFlagsServer,
+) IFeatureFlags {
+	wrapper := &featureFlagsStubWrapper{impl: impl}
+	stub := &FeatureFlagsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

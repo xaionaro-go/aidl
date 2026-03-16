@@ -44,7 +44,7 @@ func (p *RemoteProvisioningProxy) GetRegistration(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRemoteProvisioning)
 	_data.WriteString16(irpcName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteProvisioning, "getRegistration")
 	if _err != nil {
@@ -86,4 +86,44 @@ func (s *RemoteProvisioningStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRemoteProvisioningServer is the server-side interface that user implementations
+// provide to NewRemoteProvisioningStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteProvisioningServer interface {
+	GetRegistration(ctx context.Context, irpcName string, callback IGetRegistrationCallback) error
+}
+
+type remoteProvisioningStubWrapper struct {
+	impl       IRemoteProvisioningServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteProvisioningStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteProvisioningStubWrapper) GetRegistration(
+	ctx context.Context,
+	irpcName string,
+	callback IGetRegistrationCallback,
+) error {
+	return w.impl.GetRegistration(ctx, irpcName, callback)
+}
+
+var _ IRemoteProvisioning = (*remoteProvisioningStubWrapper)(nil)
+
+// NewRemoteProvisioningStub creates a server-side IRemoteProvisioning wrapping the given
+// server implementation. The returned value satisfies IRemoteProvisioning
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteProvisioningStub(
+	impl IRemoteProvisioningServer,
+) IRemoteProvisioning {
+	wrapper := &remoteProvisioningStubWrapper{impl: impl}
+	stub := &RemoteProvisioningStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

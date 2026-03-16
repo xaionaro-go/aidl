@@ -3,8 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -53,14 +51,14 @@ type ITaskStackListener interface {
 	OnActivityDismissingDockedTask(ctx context.Context) error
 	OnActivityLaunchOnSecondaryDisplayFailed(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo, requestedDisplayId int32) error
 	OnActivityLaunchOnSecondaryDisplayRerouted(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo, requestedDisplayId int32) error
-	OnTaskCreated(ctx context.Context, taskId int32, componentName content.ComponentName) error
+	OnTaskCreated(ctx context.Context, taskId int32, componentName interface{}) error
 	OnTaskRemoved(ctx context.Context, taskId int32) error
 	OnTaskMovedToFront(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
 	OnTaskDescriptionChanged(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
 	OnActivityRequestedOrientationChanged(ctx context.Context, taskId int32, requestedOrientation int32) error
 	OnTaskRemovalStarted(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
 	OnTaskProfileLocked(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
-	OnTaskSnapshotChanged(ctx context.Context, taskId int32, snapshot view.WindowManagerTaskSnapshot) error
+	OnTaskSnapshotChanged(ctx context.Context, taskId int32, snapshot interface{}) error
 	OnTaskSnapshotInvalidated(ctx context.Context, taskId int32) error
 	OnBackPressedOnTaskRoot(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
 	OnTaskDisplayChanged(ctx context.Context, taskId int32, newDisplayId int32) error
@@ -257,15 +255,11 @@ func (p *TaskStackListenerProxy) OnActivityLaunchOnSecondaryDisplayRerouted(
 func (p *TaskStackListenerProxy) OnTaskCreated(
 	ctx context.Context,
 	taskId int32,
-	componentName content.ComponentName,
+	componentName interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskStackListener)
 	_data.WriteInt32(taskId)
-	_data.WriteInt32(1)
-	if _err := componentName.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskStackListener, "onTaskCreated")
 	if _err != nil {
@@ -397,15 +391,11 @@ func (p *TaskStackListenerProxy) OnTaskProfileLocked(
 func (p *TaskStackListenerProxy) OnTaskSnapshotChanged(
 	ctx context.Context,
 	taskId int32,
-	snapshot view.WindowManagerTaskSnapshot,
+	snapshot interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskStackListener)
 	_data.WriteInt32(taskId)
-	_data.WriteInt32(1)
-	if _err := snapshot.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskStackListener, "onTaskSnapshotChanged")
 	if _err != nil {
@@ -774,18 +764,7 @@ func (s *TaskStackListenerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_componentName interface{}
 		_err = s.Impl.OnTaskCreated(ctx, _arg_taskId, _arg_componentName)
 		_ = _err
 		return nil, nil
@@ -902,18 +881,7 @@ func (s *TaskStackListenerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_snapshot view.WindowManagerTaskSnapshot
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_snapshot.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_snapshot interface{}
 		_err = s.Impl.OnTaskSnapshotChanged(ctx, _arg_taskId, _arg_snapshot)
 		_ = _err
 		return nil, nil
@@ -1065,4 +1033,262 @@ func (s *TaskStackListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITaskStackListenerServer is the server-side interface that user implementations
+// provide to NewTaskStackListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITaskStackListenerServer interface {
+	OnTaskStackChanged(ctx context.Context) error
+	OnActivityPinned(ctx context.Context, packageName string, taskId int32, stackId int32) error
+	OnActivityUnpinned(ctx context.Context) error
+	OnActivityRestartAttempt(ctx context.Context, task ActivityManagerRunningTaskInfo, homeTaskVisible bool, clearedTask bool, wasVisible bool) error
+	OnActivityForcedResizable(ctx context.Context, packageName string, taskId int32, reason int32) error
+	OnActivityDismissingDockedTask(ctx context.Context) error
+	OnActivityLaunchOnSecondaryDisplayFailed(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo, requestedDisplayId int32) error
+	OnActivityLaunchOnSecondaryDisplayRerouted(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo, requestedDisplayId int32) error
+	OnTaskCreated(ctx context.Context, taskId int32, componentName interface{}) error
+	OnTaskRemoved(ctx context.Context, taskId int32) error
+	OnTaskMovedToFront(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
+	OnTaskDescriptionChanged(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
+	OnActivityRequestedOrientationChanged(ctx context.Context, taskId int32, requestedOrientation int32) error
+	OnTaskRemovalStarted(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
+	OnTaskProfileLocked(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
+	OnTaskSnapshotChanged(ctx context.Context, taskId int32, snapshot interface{}) error
+	OnTaskSnapshotInvalidated(ctx context.Context, taskId int32) error
+	OnBackPressedOnTaskRoot(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
+	OnTaskDisplayChanged(ctx context.Context, taskId int32, newDisplayId int32) error
+	OnRecentTaskListUpdated(ctx context.Context) error
+	OnRecentTaskListFrozenChanged(ctx context.Context, frozen bool) error
+	OnRecentTaskRemovedForAddTask(ctx context.Context, taskId int32) error
+	OnTaskFocusChanged(ctx context.Context, taskId int32, focused bool) error
+	OnTaskRequestedOrientationChanged(ctx context.Context, taskId int32, requestedOrientation int32) error
+	OnActivityRotation(ctx context.Context, displayId int32) error
+	OnTaskMovedToBack(ctx context.Context, taskInfo ActivityManagerRunningTaskInfo) error
+	OnLockTaskModeChanged(ctx context.Context, mode int32) error
+}
+
+type taskStackListenerStubWrapper struct {
+	impl       ITaskStackListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *taskStackListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskStackChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnTaskStackChanged(ctx)
+}
+
+func (w *taskStackListenerStubWrapper) OnActivityPinned(
+	ctx context.Context,
+	packageName string,
+	taskId int32,
+	stackId int32,
+) error {
+	return w.impl.OnActivityPinned(ctx, packageName, taskId, stackId)
+}
+
+func (w *taskStackListenerStubWrapper) OnActivityUnpinned(
+	ctx context.Context,
+) error {
+	return w.impl.OnActivityUnpinned(ctx)
+}
+
+func (w *taskStackListenerStubWrapper) OnActivityRestartAttempt(
+	ctx context.Context,
+	task ActivityManagerRunningTaskInfo,
+	homeTaskVisible bool,
+	clearedTask bool,
+	wasVisible bool,
+) error {
+	return w.impl.OnActivityRestartAttempt(ctx, task, homeTaskVisible, clearedTask, wasVisible)
+}
+
+func (w *taskStackListenerStubWrapper) OnActivityForcedResizable(
+	ctx context.Context,
+	packageName string,
+	taskId int32,
+	reason int32,
+) error {
+	return w.impl.OnActivityForcedResizable(ctx, packageName, taskId, reason)
+}
+
+func (w *taskStackListenerStubWrapper) OnActivityDismissingDockedTask(
+	ctx context.Context,
+) error {
+	return w.impl.OnActivityDismissingDockedTask(ctx)
+}
+
+func (w *taskStackListenerStubWrapper) OnActivityLaunchOnSecondaryDisplayFailed(
+	ctx context.Context,
+	taskInfo ActivityManagerRunningTaskInfo,
+	requestedDisplayId int32,
+) error {
+	return w.impl.OnActivityLaunchOnSecondaryDisplayFailed(ctx, taskInfo, requestedDisplayId)
+}
+
+func (w *taskStackListenerStubWrapper) OnActivityLaunchOnSecondaryDisplayRerouted(
+	ctx context.Context,
+	taskInfo ActivityManagerRunningTaskInfo,
+	requestedDisplayId int32,
+) error {
+	return w.impl.OnActivityLaunchOnSecondaryDisplayRerouted(ctx, taskInfo, requestedDisplayId)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskCreated(
+	ctx context.Context,
+	taskId int32,
+	componentName interface{},
+) error {
+	return w.impl.OnTaskCreated(ctx, taskId, componentName)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskRemoved(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.OnTaskRemoved(ctx, taskId)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskMovedToFront(
+	ctx context.Context,
+	taskInfo ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnTaskMovedToFront(ctx, taskInfo)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskDescriptionChanged(
+	ctx context.Context,
+	taskInfo ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnTaskDescriptionChanged(ctx, taskInfo)
+}
+
+func (w *taskStackListenerStubWrapper) OnActivityRequestedOrientationChanged(
+	ctx context.Context,
+	taskId int32,
+	requestedOrientation int32,
+) error {
+	return w.impl.OnActivityRequestedOrientationChanged(ctx, taskId, requestedOrientation)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskRemovalStarted(
+	ctx context.Context,
+	taskInfo ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnTaskRemovalStarted(ctx, taskInfo)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskProfileLocked(
+	ctx context.Context,
+	taskInfo ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnTaskProfileLocked(ctx, taskInfo)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskSnapshotChanged(
+	ctx context.Context,
+	taskId int32,
+	snapshot interface{},
+) error {
+	return w.impl.OnTaskSnapshotChanged(ctx, taskId, snapshot)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskSnapshotInvalidated(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.OnTaskSnapshotInvalidated(ctx, taskId)
+}
+
+func (w *taskStackListenerStubWrapper) OnBackPressedOnTaskRoot(
+	ctx context.Context,
+	taskInfo ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnBackPressedOnTaskRoot(ctx, taskInfo)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskDisplayChanged(
+	ctx context.Context,
+	taskId int32,
+	newDisplayId int32,
+) error {
+	return w.impl.OnTaskDisplayChanged(ctx, taskId, newDisplayId)
+}
+
+func (w *taskStackListenerStubWrapper) OnRecentTaskListUpdated(
+	ctx context.Context,
+) error {
+	return w.impl.OnRecentTaskListUpdated(ctx)
+}
+
+func (w *taskStackListenerStubWrapper) OnRecentTaskListFrozenChanged(
+	ctx context.Context,
+	frozen bool,
+) error {
+	return w.impl.OnRecentTaskListFrozenChanged(ctx, frozen)
+}
+
+func (w *taskStackListenerStubWrapper) OnRecentTaskRemovedForAddTask(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.OnRecentTaskRemovedForAddTask(ctx, taskId)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskFocusChanged(
+	ctx context.Context,
+	taskId int32,
+	focused bool,
+) error {
+	return w.impl.OnTaskFocusChanged(ctx, taskId, focused)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskRequestedOrientationChanged(
+	ctx context.Context,
+	taskId int32,
+	requestedOrientation int32,
+) error {
+	return w.impl.OnTaskRequestedOrientationChanged(ctx, taskId, requestedOrientation)
+}
+
+func (w *taskStackListenerStubWrapper) OnActivityRotation(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnActivityRotation(ctx, displayId)
+}
+
+func (w *taskStackListenerStubWrapper) OnTaskMovedToBack(
+	ctx context.Context,
+	taskInfo ActivityManagerRunningTaskInfo,
+) error {
+	return w.impl.OnTaskMovedToBack(ctx, taskInfo)
+}
+
+func (w *taskStackListenerStubWrapper) OnLockTaskModeChanged(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.OnLockTaskModeChanged(ctx, mode)
+}
+
+var _ ITaskStackListener = (*taskStackListenerStubWrapper)(nil)
+
+// NewTaskStackListenerStub creates a server-side ITaskStackListener wrapping the given
+// server implementation. The returned value satisfies ITaskStackListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTaskStackListenerStub(
+	impl ITaskStackListenerServer,
+) ITaskStackListener {
+	wrapper := &taskStackListenerStubWrapper{impl: impl}
+	stub := &TaskStackListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

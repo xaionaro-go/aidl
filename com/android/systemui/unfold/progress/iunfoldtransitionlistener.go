@@ -130,3 +130,56 @@ func (s *UnfoldTransitionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUnfoldTransitionListenerServer is the server-side interface that user implementations
+// provide to NewUnfoldTransitionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUnfoldTransitionListenerServer interface {
+	OnTransitionStarted(ctx context.Context) error
+	OnTransitionProgress(ctx context.Context, progress float32) error
+	OnTransitionFinished(ctx context.Context) error
+}
+
+type unfoldTransitionListenerStubWrapper struct {
+	impl       IUnfoldTransitionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *unfoldTransitionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *unfoldTransitionListenerStubWrapper) OnTransitionStarted(
+	ctx context.Context,
+) error {
+	return w.impl.OnTransitionStarted(ctx)
+}
+
+func (w *unfoldTransitionListenerStubWrapper) OnTransitionProgress(
+	ctx context.Context,
+	progress float32,
+) error {
+	return w.impl.OnTransitionProgress(ctx, progress)
+}
+
+func (w *unfoldTransitionListenerStubWrapper) OnTransitionFinished(
+	ctx context.Context,
+) error {
+	return w.impl.OnTransitionFinished(ctx)
+}
+
+var _ IUnfoldTransitionListener = (*unfoldTransitionListenerStubWrapper)(nil)
+
+// NewUnfoldTransitionListenerStub creates a server-side IUnfoldTransitionListener wrapping the given
+// server implementation. The returned value satisfies IUnfoldTransitionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUnfoldTransitionListenerStub(
+	impl IUnfoldTransitionListenerServer,
+) IUnfoldTransitionListener {
+	wrapper := &unfoldTransitionListenerStubWrapper{impl: impl}
+	stub := &UnfoldTransitionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

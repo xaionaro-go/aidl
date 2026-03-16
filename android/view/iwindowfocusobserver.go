@@ -44,7 +44,7 @@ func (p *WindowFocusObserverProxy) FocusGained(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowFocusObserver)
-	_data.WriteStrongBinder(inputToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, inputToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowFocusObserver, "focusGained")
 	if _err != nil {
@@ -61,7 +61,7 @@ func (p *WindowFocusObserverProxy) FocusLost(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowFocusObserver)
-	_data.WriteStrongBinder(inputToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, inputToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowFocusObserver, "focusLost")
 	if _err != nil {
@@ -109,4 +109,51 @@ func (s *WindowFocusObserverStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWindowFocusObserverServer is the server-side interface that user implementations
+// provide to NewWindowFocusObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowFocusObserverServer interface {
+	FocusGained(ctx context.Context, inputToken binder.IBinder) error
+	FocusLost(ctx context.Context, inputToken binder.IBinder) error
+}
+
+type windowFocusObserverStubWrapper struct {
+	impl       IWindowFocusObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowFocusObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *windowFocusObserverStubWrapper) FocusGained(
+	ctx context.Context,
+	inputToken binder.IBinder,
+) error {
+	return w.impl.FocusGained(ctx, inputToken)
+}
+
+func (w *windowFocusObserverStubWrapper) FocusLost(
+	ctx context.Context,
+	inputToken binder.IBinder,
+) error {
+	return w.impl.FocusLost(ctx, inputToken)
+}
+
+var _ IWindowFocusObserver = (*windowFocusObserverStubWrapper)(nil)
+
+// NewWindowFocusObserverStub creates a server-side IWindowFocusObserver wrapping the given
+// server implementation. The returned value satisfies IWindowFocusObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowFocusObserverStub(
+	impl IWindowFocusObserverServer,
+) IWindowFocusObserver {
+	wrapper := &windowFocusObserverStubWrapper{impl: impl}
+	stub := &WindowFocusObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -244,3 +244,76 @@ func (s *ImsSmsListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsSmsListenerServer is the server-side interface that user implementations
+// provide to NewImsSmsListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsSmsListenerServer interface {
+	OnSendSmsResult(ctx context.Context, token int32, messageRef int32, status int32, reason int32, networkErrorCode int32) error
+	OnSmsStatusReportReceived(ctx context.Context, token int32, format string, pdu []byte) error
+	OnSmsReceived(ctx context.Context, token int32, format string, pdu []byte) error
+	OnMemoryAvailableResult(ctx context.Context, token int32, status int32, networkErrorCode int32) error
+}
+
+type imsSmsListenerStubWrapper struct {
+	impl       IImsSmsListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsSmsListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsSmsListenerStubWrapper) OnSendSmsResult(
+	ctx context.Context,
+	token int32,
+	messageRef int32,
+	status int32,
+	reason int32,
+	networkErrorCode int32,
+) error {
+	return w.impl.OnSendSmsResult(ctx, token, messageRef, status, reason, networkErrorCode)
+}
+
+func (w *imsSmsListenerStubWrapper) OnSmsStatusReportReceived(
+	ctx context.Context,
+	token int32,
+	format string,
+	pdu []byte,
+) error {
+	return w.impl.OnSmsStatusReportReceived(ctx, token, format, pdu)
+}
+
+func (w *imsSmsListenerStubWrapper) OnSmsReceived(
+	ctx context.Context,
+	token int32,
+	format string,
+	pdu []byte,
+) error {
+	return w.impl.OnSmsReceived(ctx, token, format, pdu)
+}
+
+func (w *imsSmsListenerStubWrapper) OnMemoryAvailableResult(
+	ctx context.Context,
+	token int32,
+	status int32,
+	networkErrorCode int32,
+) error {
+	return w.impl.OnMemoryAvailableResult(ctx, token, status, networkErrorCode)
+}
+
+var _ IImsSmsListener = (*imsSmsListenerStubWrapper)(nil)
+
+// NewImsSmsListenerStub creates a server-side IImsSmsListener wrapping the given
+// server implementation. The returned value satisfies IImsSmsListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsSmsListenerStub(
+	impl IImsSmsListenerServer,
+) IImsSmsListener {
+	wrapper := &imsSmsListenerStubWrapper{impl: impl}
+	stub := &ImsSmsListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

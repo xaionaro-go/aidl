@@ -93,3 +93,42 @@ func (s *StagedApexObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStagedApexObserverServer is the server-side interface that user implementations
+// provide to NewStagedApexObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStagedApexObserverServer interface {
+	OnApexStaged(ctx context.Context, event ApexStagedEvent) error
+}
+
+type stagedApexObserverStubWrapper struct {
+	impl       IStagedApexObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *stagedApexObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *stagedApexObserverStubWrapper) OnApexStaged(
+	ctx context.Context,
+	event ApexStagedEvent,
+) error {
+	return w.impl.OnApexStaged(ctx, event)
+}
+
+var _ IStagedApexObserver = (*stagedApexObserverStubWrapper)(nil)
+
+// NewStagedApexObserverStub creates a server-side IStagedApexObserver wrapping the given
+// server implementation. The returned value satisfies IStagedApexObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStagedApexObserverStub(
+	impl IStagedApexObserverServer,
+) IStagedApexObserver {
+	wrapper := &stagedApexObserverStubWrapper{impl: impl}
+	stub := &StagedApexObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -529,7 +529,7 @@ func (p *SpatializerProxy) RegisterHeadTrackingCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISpatializer)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISpatializer, "registerHeadTrackingCallback")
 	if _err != nil {
@@ -1023,4 +1023,195 @@ func (s *SpatializerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISpatializerServer is the server-side interface that user implementations
+// provide to NewSpatializerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpatializerServer interface {
+	Release(ctx context.Context) error
+	GetSupportedLevels(ctx context.Context) ([]Spatialization.Level, error)
+	SetLevel(ctx context.Context, level Spatialization.Level) error
+	GetLevel(ctx context.Context) (Spatialization.Level, error)
+	IsHeadTrackingSupported(ctx context.Context) (bool, error)
+	GetSupportedHeadTrackingModes(ctx context.Context) ([]HeadTracking.Mode, error)
+	SetDesiredHeadTrackingMode(ctx context.Context, mode HeadTracking.Mode) error
+	GetActualHeadTrackingMode(ctx context.Context) (HeadTracking.Mode, error)
+	RecenterHeadTracker(ctx context.Context) error
+	SetGlobalTransform(ctx context.Context, screenToStage []float32) error
+	SetHeadSensor(ctx context.Context, sensorHandle int32) error
+	SetScreenSensor(ctx context.Context, sensorHandle int32) error
+	SetDisplayOrientation(ctx context.Context, physicalToLogicalAngle float32) error
+	SetHingeAngle(ctx context.Context, hingeAngle float32) error
+	SetFoldState(ctx context.Context, folded bool) error
+	GetSupportedModes(ctx context.Context) ([]Spatialization.Mode, error)
+	RegisterHeadTrackingCallback(ctx context.Context, callback ISpatializerHeadTrackingCallback) error
+	SetParameter(ctx context.Context, key int32, value []byte) error
+	GetParameter(ctx context.Context, key int32, value []byte) error
+	GetOutput(ctx context.Context) (int32, error)
+	GetSpatializedChannelMasks(ctx context.Context) ([]int32, error)
+}
+
+type spatializerStubWrapper struct {
+	impl       ISpatializerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spatializerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spatializerStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+func (w *spatializerStubWrapper) GetSupportedLevels(
+	ctx context.Context,
+) ([]Spatialization.Level, error) {
+	return w.impl.GetSupportedLevels(ctx)
+}
+
+func (w *spatializerStubWrapper) SetLevel(
+	ctx context.Context,
+	level Spatialization.Level,
+) error {
+	return w.impl.SetLevel(ctx, level)
+}
+
+func (w *spatializerStubWrapper) GetLevel(
+	ctx context.Context,
+) (Spatialization.Level, error) {
+	return w.impl.GetLevel(ctx)
+}
+
+func (w *spatializerStubWrapper) IsHeadTrackingSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHeadTrackingSupported(ctx)
+}
+
+func (w *spatializerStubWrapper) GetSupportedHeadTrackingModes(
+	ctx context.Context,
+) ([]HeadTracking.Mode, error) {
+	return w.impl.GetSupportedHeadTrackingModes(ctx)
+}
+
+func (w *spatializerStubWrapper) SetDesiredHeadTrackingMode(
+	ctx context.Context,
+	mode HeadTracking.Mode,
+) error {
+	return w.impl.SetDesiredHeadTrackingMode(ctx, mode)
+}
+
+func (w *spatializerStubWrapper) GetActualHeadTrackingMode(
+	ctx context.Context,
+) (HeadTracking.Mode, error) {
+	return w.impl.GetActualHeadTrackingMode(ctx)
+}
+
+func (w *spatializerStubWrapper) RecenterHeadTracker(
+	ctx context.Context,
+) error {
+	return w.impl.RecenterHeadTracker(ctx)
+}
+
+func (w *spatializerStubWrapper) SetGlobalTransform(
+	ctx context.Context,
+	screenToStage []float32,
+) error {
+	return w.impl.SetGlobalTransform(ctx, screenToStage)
+}
+
+func (w *spatializerStubWrapper) SetHeadSensor(
+	ctx context.Context,
+	sensorHandle int32,
+) error {
+	return w.impl.SetHeadSensor(ctx, sensorHandle)
+}
+
+func (w *spatializerStubWrapper) SetScreenSensor(
+	ctx context.Context,
+	sensorHandle int32,
+) error {
+	return w.impl.SetScreenSensor(ctx, sensorHandle)
+}
+
+func (w *spatializerStubWrapper) SetDisplayOrientation(
+	ctx context.Context,
+	physicalToLogicalAngle float32,
+) error {
+	return w.impl.SetDisplayOrientation(ctx, physicalToLogicalAngle)
+}
+
+func (w *spatializerStubWrapper) SetHingeAngle(
+	ctx context.Context,
+	hingeAngle float32,
+) error {
+	return w.impl.SetHingeAngle(ctx, hingeAngle)
+}
+
+func (w *spatializerStubWrapper) SetFoldState(
+	ctx context.Context,
+	folded bool,
+) error {
+	return w.impl.SetFoldState(ctx, folded)
+}
+
+func (w *spatializerStubWrapper) GetSupportedModes(
+	ctx context.Context,
+) ([]Spatialization.Mode, error) {
+	return w.impl.GetSupportedModes(ctx)
+}
+
+func (w *spatializerStubWrapper) RegisterHeadTrackingCallback(
+	ctx context.Context,
+	callback ISpatializerHeadTrackingCallback,
+) error {
+	return w.impl.RegisterHeadTrackingCallback(ctx, callback)
+}
+
+func (w *spatializerStubWrapper) SetParameter(
+	ctx context.Context,
+	key int32,
+	value []byte,
+) error {
+	return w.impl.SetParameter(ctx, key, value)
+}
+
+func (w *spatializerStubWrapper) GetParameter(
+	ctx context.Context,
+	key int32,
+	value []byte,
+) error {
+	return w.impl.GetParameter(ctx, key, value)
+}
+
+func (w *spatializerStubWrapper) GetOutput(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetOutput(ctx)
+}
+
+func (w *spatializerStubWrapper) GetSpatializedChannelMasks(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetSpatializedChannelMasks(ctx)
+}
+
+var _ ISpatializer = (*spatializerStubWrapper)(nil)
+
+// NewSpatializerStub creates a server-side ISpatializer wrapping the given
+// server implementation. The returned value satisfies ISpatializer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpatializerStub(
+	impl ISpatializerServer,
+) ISpatializer {
+	wrapper := &spatializerStubWrapper{impl: impl}
+	stub := &SpatializerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

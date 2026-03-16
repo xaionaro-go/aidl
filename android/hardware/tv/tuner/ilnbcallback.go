@@ -119,3 +119,50 @@ func (s *LnbCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILnbCallbackServer is the server-side interface that user implementations
+// provide to NewLnbCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILnbCallbackServer interface {
+	OnDiseqcMessage(ctx context.Context, diseqcMessage []byte) error
+	OnEvent(ctx context.Context, lnbEventType LnbEventType) error
+}
+
+type lnbCallbackStubWrapper struct {
+	impl       ILnbCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *lnbCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *lnbCallbackStubWrapper) OnDiseqcMessage(
+	ctx context.Context,
+	diseqcMessage []byte,
+) error {
+	return w.impl.OnDiseqcMessage(ctx, diseqcMessage)
+}
+
+func (w *lnbCallbackStubWrapper) OnEvent(
+	ctx context.Context,
+	lnbEventType LnbEventType,
+) error {
+	return w.impl.OnEvent(ctx, lnbEventType)
+}
+
+var _ ILnbCallback = (*lnbCallbackStubWrapper)(nil)
+
+// NewLnbCallbackStub creates a server-side ILnbCallback wrapping the given
+// server implementation. The returned value satisfies ILnbCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLnbCallbackStub(
+	impl ILnbCallbackServer,
+) ILnbCallback {
+	wrapper := &lnbCallbackStubWrapper{impl: impl}
+	stub := &LnbCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

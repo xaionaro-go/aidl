@@ -131,3 +131,52 @@ func (s *ApInterfaceEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IApInterfaceEventCallbackServer is the server-side interface that user implementations
+// provide to NewApInterfaceEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IApInterfaceEventCallbackServer interface {
+	OnConnectedClientsChanged(ctx context.Context, client interface{}, isConnected bool) error
+	OnSoftApChannelSwitched(ctx context.Context, frequency int32, bandwidth int32) error
+}
+
+type apInterfaceEventCallbackStubWrapper struct {
+	impl       IApInterfaceEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *apInterfaceEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *apInterfaceEventCallbackStubWrapper) OnConnectedClientsChanged(
+	ctx context.Context,
+	client interface{},
+	isConnected bool,
+) error {
+	return w.impl.OnConnectedClientsChanged(ctx, client, isConnected)
+}
+
+func (w *apInterfaceEventCallbackStubWrapper) OnSoftApChannelSwitched(
+	ctx context.Context,
+	frequency int32,
+	bandwidth int32,
+) error {
+	return w.impl.OnSoftApChannelSwitched(ctx, frequency, bandwidth)
+}
+
+var _ IApInterfaceEventCallback = (*apInterfaceEventCallbackStubWrapper)(nil)
+
+// NewApInterfaceEventCallbackStub creates a server-side IApInterfaceEventCallback wrapping the given
+// server implementation. The returned value satisfies IApInterfaceEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewApInterfaceEventCallbackStub(
+	impl IApInterfaceEventCallbackServer,
+) IApInterfaceEventCallback {
+	wrapper := &apInterfaceEventCallbackStubWrapper{impl: impl}
+	stub := &ApInterfaceEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

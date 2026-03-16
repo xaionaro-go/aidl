@@ -50,7 +50,7 @@ func (p *GnssGeofenceProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssGeofence)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGnssGeofence, "setCallback")
 	if _err != nil {
@@ -318,4 +318,83 @@ func (s *GnssGeofenceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssGeofenceServer is the server-side interface that user implementations
+// provide to NewGnssGeofenceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssGeofenceServer interface {
+	SetCallback(ctx context.Context, callback IGnssGeofenceCallback) error
+	AddGeofence(ctx context.Context, geofenceId int32, latitudeDegrees float64, longitudeDegrees float64, radiusMeters float64, lastTransition int32, monitorTransitions int32, notificationResponsivenessMs int32, unknownTimerMs int32) error
+	PauseGeofence(ctx context.Context, geofenceId int32) error
+	ResumeGeofence(ctx context.Context, geofenceId int32, monitorTransitions int32) error
+	RemoveGeofence(ctx context.Context, geofenceId int32) error
+}
+
+type gnssGeofenceStubWrapper struct {
+	impl       IGnssGeofenceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssGeofenceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssGeofenceStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IGnssGeofenceCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *gnssGeofenceStubWrapper) AddGeofence(
+	ctx context.Context,
+	geofenceId int32,
+	latitudeDegrees float64,
+	longitudeDegrees float64,
+	radiusMeters float64,
+	lastTransition int32,
+	monitorTransitions int32,
+	notificationResponsivenessMs int32,
+	unknownTimerMs int32,
+) error {
+	return w.impl.AddGeofence(ctx, geofenceId, latitudeDegrees, longitudeDegrees, radiusMeters, lastTransition, monitorTransitions, notificationResponsivenessMs, unknownTimerMs)
+}
+
+func (w *gnssGeofenceStubWrapper) PauseGeofence(
+	ctx context.Context,
+	geofenceId int32,
+) error {
+	return w.impl.PauseGeofence(ctx, geofenceId)
+}
+
+func (w *gnssGeofenceStubWrapper) ResumeGeofence(
+	ctx context.Context,
+	geofenceId int32,
+	monitorTransitions int32,
+) error {
+	return w.impl.ResumeGeofence(ctx, geofenceId, monitorTransitions)
+}
+
+func (w *gnssGeofenceStubWrapper) RemoveGeofence(
+	ctx context.Context,
+	geofenceId int32,
+) error {
+	return w.impl.RemoveGeofence(ctx, geofenceId)
+}
+
+var _ IGnssGeofence = (*gnssGeofenceStubWrapper)(nil)
+
+// NewGnssGeofenceStub creates a server-side IGnssGeofence wrapping the given
+// server implementation. The returned value satisfies IGnssGeofence
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssGeofenceStub(
+	impl IGnssGeofenceServer,
+) IGnssGeofence {
+	wrapper := &gnssGeofenceStubWrapper{impl: impl}
+	stub := &GnssGeofenceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

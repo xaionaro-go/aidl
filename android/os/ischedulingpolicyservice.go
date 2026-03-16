@@ -84,7 +84,7 @@ func (p *SchedulingPolicyServiceProxy) RequestCpusetBoost(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISchedulingPolicyService)
 	_data.WriteBool(enable)
-	_data.WriteStrongBinder(client.Handle())
+	binder.WriteBinderToParcel(ctx, _data, client, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISchedulingPolicyService, "requestCpusetBoost")
 	if _err != nil {
@@ -174,4 +174,55 @@ func (s *SchedulingPolicyServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISchedulingPolicyServiceServer is the server-side interface that user implementations
+// provide to NewSchedulingPolicyServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISchedulingPolicyServiceServer interface {
+	RequestPriority(ctx context.Context, pid int32, tid int32, prio int32, isForApp bool) (int32, error)
+	RequestCpusetBoost(ctx context.Context, enable bool, client binder.IBinder) (int32, error)
+}
+
+type schedulingPolicyServiceStubWrapper struct {
+	impl       ISchedulingPolicyServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *schedulingPolicyServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *schedulingPolicyServiceStubWrapper) RequestPriority(
+	ctx context.Context,
+	pid int32,
+	tid int32,
+	prio int32,
+	isForApp bool,
+) (int32, error) {
+	return w.impl.RequestPriority(ctx, pid, tid, prio, isForApp)
+}
+
+func (w *schedulingPolicyServiceStubWrapper) RequestCpusetBoost(
+	ctx context.Context,
+	enable bool,
+	client binder.IBinder,
+) (int32, error) {
+	return w.impl.RequestCpusetBoost(ctx, enable, client)
+}
+
+var _ ISchedulingPolicyService = (*schedulingPolicyServiceStubWrapper)(nil)
+
+// NewSchedulingPolicyServiceStub creates a server-side ISchedulingPolicyService wrapping the given
+// server implementation. The returned value satisfies ISchedulingPolicyService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSchedulingPolicyServiceStub(
+	impl ISchedulingPolicyServiceServer,
+) ISchedulingPolicyService {
+	wrapper := &schedulingPolicyServiceStubWrapper{impl: impl}
+	stub := &SchedulingPolicyServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

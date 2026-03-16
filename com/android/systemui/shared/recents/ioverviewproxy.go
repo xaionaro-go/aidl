@@ -832,3 +832,229 @@ func (s *OverviewProxyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOverviewProxyServer is the server-side interface that user implementations
+// provide to NewOverviewProxyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOverviewProxyServer interface {
+	OnActiveNavBarRegionChanges(ctx context.Context, activeRegion graphics.Region) error
+	OnInitialize(ctx context.Context, params os.Bundle) error
+	OnOverviewToggle(ctx context.Context) error
+	OnOverviewShown(ctx context.Context, triggeredFromAltTab bool) error
+	OnOverviewHidden(ctx context.Context, triggeredFromAltTab bool, triggeredFromHomeKey bool) error
+	OnAssistantAvailable(ctx context.Context, available bool, longPressHomeEnabled bool) error
+	OnAssistantVisibilityChanged(ctx context.Context, visibility float32) error
+	OnAssistantOverrideInvoked(ctx context.Context, invocationType int32) error
+	OnSystemUiStateChanged(ctx context.Context, stateFlags int64) error
+	OnRotationProposal(ctx context.Context, rotation int32, isValid bool) error
+	Disable(ctx context.Context, displayId int32, state1 int32, state2 int32, animate bool) error
+	OnSystemBarAttributesChanged(ctx context.Context, displayId int32, behavior int32) error
+	OnTransitionModeUpdated(ctx context.Context, barMode int32, checkBarModes bool) error
+	OnNavButtonsDarkIntensityChanged(ctx context.Context, darkIntensity float32) error
+	OnNavigationBarLumaSamplingEnabled(ctx context.Context, displayId int32, enable bool) error
+	EnterStageSplitFromRunningApp(ctx context.Context, leftOrTop bool) error
+	OnTaskbarToggled(ctx context.Context) error
+	UpdateWallpaperVisibility(ctx context.Context, displayId int32, visible bool) error
+	CheckNavBarModes(ctx context.Context, displayId int32) error
+	FinishBarAnimations(ctx context.Context, displayId int32) error
+	TouchAutoDim(ctx context.Context, displayid int32, reset bool) error
+	TransitionTo(ctx context.Context, displayId int32, barMode int32, animate bool) error
+	AppTransitionPending(ctx context.Context, pending bool) error
+}
+
+type overviewProxyStubWrapper struct {
+	impl       IOverviewProxyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *overviewProxyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *overviewProxyStubWrapper) OnActiveNavBarRegionChanges(
+	ctx context.Context,
+	activeRegion graphics.Region,
+) error {
+	return w.impl.OnActiveNavBarRegionChanges(ctx, activeRegion)
+}
+
+func (w *overviewProxyStubWrapper) OnInitialize(
+	ctx context.Context,
+	params os.Bundle,
+) error {
+	return w.impl.OnInitialize(ctx, params)
+}
+
+func (w *overviewProxyStubWrapper) OnOverviewToggle(
+	ctx context.Context,
+) error {
+	return w.impl.OnOverviewToggle(ctx)
+}
+
+func (w *overviewProxyStubWrapper) OnOverviewShown(
+	ctx context.Context,
+	triggeredFromAltTab bool,
+) error {
+	return w.impl.OnOverviewShown(ctx, triggeredFromAltTab)
+}
+
+func (w *overviewProxyStubWrapper) OnOverviewHidden(
+	ctx context.Context,
+	triggeredFromAltTab bool,
+	triggeredFromHomeKey bool,
+) error {
+	return w.impl.OnOverviewHidden(ctx, triggeredFromAltTab, triggeredFromHomeKey)
+}
+
+func (w *overviewProxyStubWrapper) OnAssistantAvailable(
+	ctx context.Context,
+	available bool,
+	longPressHomeEnabled bool,
+) error {
+	return w.impl.OnAssistantAvailable(ctx, available, longPressHomeEnabled)
+}
+
+func (w *overviewProxyStubWrapper) OnAssistantVisibilityChanged(
+	ctx context.Context,
+	visibility float32,
+) error {
+	return w.impl.OnAssistantVisibilityChanged(ctx, visibility)
+}
+
+func (w *overviewProxyStubWrapper) OnAssistantOverrideInvoked(
+	ctx context.Context,
+	invocationType int32,
+) error {
+	return w.impl.OnAssistantOverrideInvoked(ctx, invocationType)
+}
+
+func (w *overviewProxyStubWrapper) OnSystemUiStateChanged(
+	ctx context.Context,
+	stateFlags int64,
+) error {
+	return w.impl.OnSystemUiStateChanged(ctx, stateFlags)
+}
+
+func (w *overviewProxyStubWrapper) OnRotationProposal(
+	ctx context.Context,
+	rotation int32,
+	isValid bool,
+) error {
+	return w.impl.OnRotationProposal(ctx, rotation, isValid)
+}
+
+func (w *overviewProxyStubWrapper) Disable(
+	ctx context.Context,
+	displayId int32,
+	state1 int32,
+	state2 int32,
+	animate bool,
+) error {
+	return w.impl.Disable(ctx, displayId, state1, state2, animate)
+}
+
+func (w *overviewProxyStubWrapper) OnSystemBarAttributesChanged(
+	ctx context.Context,
+	displayId int32,
+	behavior int32,
+) error {
+	return w.impl.OnSystemBarAttributesChanged(ctx, displayId, behavior)
+}
+
+func (w *overviewProxyStubWrapper) OnTransitionModeUpdated(
+	ctx context.Context,
+	barMode int32,
+	checkBarModes bool,
+) error {
+	return w.impl.OnTransitionModeUpdated(ctx, barMode, checkBarModes)
+}
+
+func (w *overviewProxyStubWrapper) OnNavButtonsDarkIntensityChanged(
+	ctx context.Context,
+	darkIntensity float32,
+) error {
+	return w.impl.OnNavButtonsDarkIntensityChanged(ctx, darkIntensity)
+}
+
+func (w *overviewProxyStubWrapper) OnNavigationBarLumaSamplingEnabled(
+	ctx context.Context,
+	displayId int32,
+	enable bool,
+) error {
+	return w.impl.OnNavigationBarLumaSamplingEnabled(ctx, displayId, enable)
+}
+
+func (w *overviewProxyStubWrapper) EnterStageSplitFromRunningApp(
+	ctx context.Context,
+	leftOrTop bool,
+) error {
+	return w.impl.EnterStageSplitFromRunningApp(ctx, leftOrTop)
+}
+
+func (w *overviewProxyStubWrapper) OnTaskbarToggled(
+	ctx context.Context,
+) error {
+	return w.impl.OnTaskbarToggled(ctx)
+}
+
+func (w *overviewProxyStubWrapper) UpdateWallpaperVisibility(
+	ctx context.Context,
+	displayId int32,
+	visible bool,
+) error {
+	return w.impl.UpdateWallpaperVisibility(ctx, displayId, visible)
+}
+
+func (w *overviewProxyStubWrapper) CheckNavBarModes(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.CheckNavBarModes(ctx, displayId)
+}
+
+func (w *overviewProxyStubWrapper) FinishBarAnimations(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.FinishBarAnimations(ctx, displayId)
+}
+
+func (w *overviewProxyStubWrapper) TouchAutoDim(
+	ctx context.Context,
+	displayid int32,
+	reset bool,
+) error {
+	return w.impl.TouchAutoDim(ctx, displayid, reset)
+}
+
+func (w *overviewProxyStubWrapper) TransitionTo(
+	ctx context.Context,
+	displayId int32,
+	barMode int32,
+	animate bool,
+) error {
+	return w.impl.TransitionTo(ctx, displayId, barMode, animate)
+}
+
+func (w *overviewProxyStubWrapper) AppTransitionPending(
+	ctx context.Context,
+	pending bool,
+) error {
+	return w.impl.AppTransitionPending(ctx, pending)
+}
+
+var _ IOverviewProxy = (*overviewProxyStubWrapper)(nil)
+
+// NewOverviewProxyStub creates a server-side IOverviewProxy wrapping the given
+// server implementation. The returned value satisfies IOverviewProxy
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOverviewProxyStub(
+	impl IOverviewProxyServer,
+) IOverviewProxy {
+	wrapper := &overviewProxyStubWrapper{impl: impl}
+	stub := &OverviewProxyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -154,3 +154,58 @@ func (s *InlineContentCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInlineContentCallbackServer is the server-side interface that user implementations
+// provide to NewInlineContentCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInlineContentCallbackServer interface {
+	OnContent(ctx context.Context, content view.SurfaceControlViewHostSurfacePackage, width int32, height int32) error
+	OnClick(ctx context.Context) error
+	OnLongClick(ctx context.Context) error
+}
+
+type inlineContentCallbackStubWrapper struct {
+	impl       IInlineContentCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inlineContentCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inlineContentCallbackStubWrapper) OnContent(
+	ctx context.Context,
+	content view.SurfaceControlViewHostSurfacePackage,
+	width int32,
+	height int32,
+) error {
+	return w.impl.OnContent(ctx, content, width, height)
+}
+
+func (w *inlineContentCallbackStubWrapper) OnClick(
+	ctx context.Context,
+) error {
+	return w.impl.OnClick(ctx)
+}
+
+func (w *inlineContentCallbackStubWrapper) OnLongClick(
+	ctx context.Context,
+) error {
+	return w.impl.OnLongClick(ctx)
+}
+
+var _ IInlineContentCallback = (*inlineContentCallbackStubWrapper)(nil)
+
+// NewInlineContentCallbackStub creates a server-side IInlineContentCallback wrapping the given
+// server implementation. The returned value satisfies IInlineContentCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInlineContentCallbackStub(
+	impl IInlineContentCallbackServer,
+) IInlineContentCallback {
+	wrapper := &inlineContentCallbackStubWrapper{impl: impl}
+	stub := &InlineContentCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

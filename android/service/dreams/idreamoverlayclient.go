@@ -59,7 +59,7 @@ func (p *DreamOverlayClientProxy) StartDream(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(dreamComponent)
 	_data.WriteBool(isPreview)
 	_data.WriteBool(shouldShowComplications)
@@ -282,4 +282,75 @@ func (s *DreamOverlayClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDreamOverlayClientServer is the server-side interface that user implementations
+// provide to NewDreamOverlayClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDreamOverlayClientServer interface {
+	StartDream(ctx context.Context, params view.WindowManagerLayoutParams, callback IDreamOverlayCallback, dreamComponent string, isPreview bool, shouldShowComplications bool) error
+	WakeUp(ctx context.Context) error
+	EndDream(ctx context.Context) error
+	OnWakeRequested(ctx context.Context) error
+	ComeToFront(ctx context.Context) error
+}
+
+type dreamOverlayClientStubWrapper struct {
+	impl       IDreamOverlayClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dreamOverlayClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dreamOverlayClientStubWrapper) StartDream(
+	ctx context.Context,
+	params view.WindowManagerLayoutParams,
+	callback IDreamOverlayCallback,
+	dreamComponent string,
+	isPreview bool,
+	shouldShowComplications bool,
+) error {
+	return w.impl.StartDream(ctx, params, callback, dreamComponent, isPreview, shouldShowComplications)
+}
+
+func (w *dreamOverlayClientStubWrapper) WakeUp(
+	ctx context.Context,
+) error {
+	return w.impl.WakeUp(ctx)
+}
+
+func (w *dreamOverlayClientStubWrapper) EndDream(
+	ctx context.Context,
+) error {
+	return w.impl.EndDream(ctx)
+}
+
+func (w *dreamOverlayClientStubWrapper) OnWakeRequested(
+	ctx context.Context,
+) error {
+	return w.impl.OnWakeRequested(ctx)
+}
+
+func (w *dreamOverlayClientStubWrapper) ComeToFront(
+	ctx context.Context,
+) error {
+	return w.impl.ComeToFront(ctx)
+}
+
+var _ IDreamOverlayClient = (*dreamOverlayClientStubWrapper)(nil)
+
+// NewDreamOverlayClientStub creates a server-side IDreamOverlayClient wrapping the given
+// server implementation. The returned value satisfies IDreamOverlayClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDreamOverlayClientStub(
+	impl IDreamOverlayClientServer,
+) IDreamOverlayClient {
+	wrapper := &dreamOverlayClientStubWrapper{impl: impl}
+	stub := &DreamOverlayClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

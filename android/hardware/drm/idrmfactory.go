@@ -248,3 +248,59 @@ func (s *DrmFactoryStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDrmFactoryServer is the server-side interface that user implementations
+// provide to NewDrmFactoryStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDrmFactoryServer interface {
+	CreateDrmPlugin(ctx context.Context, uuid Uuid, appPackageName string) (IDrmPlugin, error)
+	CreateCryptoPlugin(ctx context.Context, uuid Uuid, initData []byte) (ICryptoPlugin, error)
+	GetSupportedCryptoSchemes(ctx context.Context) (CryptoSchemes, error)
+}
+
+type drmFactoryStubWrapper struct {
+	impl       IDrmFactoryServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *drmFactoryStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *drmFactoryStubWrapper) CreateDrmPlugin(
+	ctx context.Context,
+	uuid Uuid,
+	appPackageName string,
+) (IDrmPlugin, error) {
+	return w.impl.CreateDrmPlugin(ctx, uuid, appPackageName)
+}
+
+func (w *drmFactoryStubWrapper) CreateCryptoPlugin(
+	ctx context.Context,
+	uuid Uuid,
+	initData []byte,
+) (ICryptoPlugin, error) {
+	return w.impl.CreateCryptoPlugin(ctx, uuid, initData)
+}
+
+func (w *drmFactoryStubWrapper) GetSupportedCryptoSchemes(
+	ctx context.Context,
+) (CryptoSchemes, error) {
+	return w.impl.GetSupportedCryptoSchemes(ctx)
+}
+
+var _ IDrmFactory = (*drmFactoryStubWrapper)(nil)
+
+// NewDrmFactoryStub creates a server-side IDrmFactory wrapping the given
+// server implementation. The returned value satisfies IDrmFactory
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDrmFactoryStub(
+	impl IDrmFactoryServer,
+) IDrmFactory {
+	wrapper := &drmFactoryStubWrapper{impl: impl}
+	stub := &DrmFactoryStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

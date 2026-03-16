@@ -129,7 +129,7 @@ func (p *SecureElementProxy) Init(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISecureElement)
-	_data.WriteStrongBinder(clientCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISecureElement, "init")
 	if _err != nil {
@@ -493,4 +493,98 @@ func (s *SecureElementStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISecureElementServer is the server-side interface that user implementations
+// provide to NewSecureElementStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecureElementServer interface {
+	CloseChannel(ctx context.Context, channelNumber byte) error
+	GetAtr(ctx context.Context) ([]byte, error)
+	Init(ctx context.Context, clientCallback ISecureElementCallback) error
+	IsCardPresent(ctx context.Context) (bool, error)
+	OpenBasicChannel(ctx context.Context, aid []byte, p2 byte) ([]byte, error)
+	OpenLogicalChannel(ctx context.Context, aid []byte, p2 byte) (LogicalChannelResponse, error)
+	Reset(ctx context.Context) error
+	Transmit(ctx context.Context, data []byte) ([]byte, error)
+}
+
+type secureElementStubWrapper struct {
+	impl       ISecureElementServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secureElementStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *secureElementStubWrapper) CloseChannel(
+	ctx context.Context,
+	channelNumber byte,
+) error {
+	return w.impl.CloseChannel(ctx, channelNumber)
+}
+
+func (w *secureElementStubWrapper) GetAtr(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetAtr(ctx)
+}
+
+func (w *secureElementStubWrapper) Init(
+	ctx context.Context,
+	clientCallback ISecureElementCallback,
+) error {
+	return w.impl.Init(ctx, clientCallback)
+}
+
+func (w *secureElementStubWrapper) IsCardPresent(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCardPresent(ctx)
+}
+
+func (w *secureElementStubWrapper) OpenBasicChannel(
+	ctx context.Context,
+	aid []byte,
+	p2 byte,
+) ([]byte, error) {
+	return w.impl.OpenBasicChannel(ctx, aid, p2)
+}
+
+func (w *secureElementStubWrapper) OpenLogicalChannel(
+	ctx context.Context,
+	aid []byte,
+	p2 byte,
+) (LogicalChannelResponse, error) {
+	return w.impl.OpenLogicalChannel(ctx, aid, p2)
+}
+
+func (w *secureElementStubWrapper) Reset(
+	ctx context.Context,
+) error {
+	return w.impl.Reset(ctx)
+}
+
+func (w *secureElementStubWrapper) Transmit(
+	ctx context.Context,
+	data []byte,
+) ([]byte, error) {
+	return w.impl.Transmit(ctx, data)
+}
+
+var _ ISecureElement = (*secureElementStubWrapper)(nil)
+
+// NewSecureElementStub creates a server-side ISecureElement wrapping the given
+// server implementation. The returned value satisfies ISecureElement
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecureElementStub(
+	impl ISecureElementServer,
+) ISecureElement {
+	wrapper := &secureElementStubWrapper{impl: impl}
+	stub := &SecureElementStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

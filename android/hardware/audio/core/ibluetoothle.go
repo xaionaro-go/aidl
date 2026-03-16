@@ -236,3 +236,64 @@ func (s *BluetoothLeStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothLeServer is the server-side interface that user implementations
+// provide to NewBluetoothLeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothLeServer interface {
+	IsEnabled(ctx context.Context) (bool, error)
+	SetEnabled(ctx context.Context, enabled bool) error
+	SupportsOffloadReconfiguration(ctx context.Context) (bool, error)
+	ReconfigureOffload(ctx context.Context, parameters []VendorParameter) error
+}
+
+type bluetoothLeStubWrapper struct {
+	impl       IBluetoothLeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothLeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothLeStubWrapper) IsEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsEnabled(ctx)
+}
+
+func (w *bluetoothLeStubWrapper) SetEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetEnabled(ctx, enabled)
+}
+
+func (w *bluetoothLeStubWrapper) SupportsOffloadReconfiguration(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.SupportsOffloadReconfiguration(ctx)
+}
+
+func (w *bluetoothLeStubWrapper) ReconfigureOffload(
+	ctx context.Context,
+	parameters []VendorParameter,
+) error {
+	return w.impl.ReconfigureOffload(ctx, parameters)
+}
+
+var _ IBluetoothLe = (*bluetoothLeStubWrapper)(nil)
+
+// NewBluetoothLeStub creates a server-side IBluetoothLe wrapping the given
+// server implementation. The returned value satisfies IBluetoothLe
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothLeStub(
+	impl IBluetoothLeServer,
+) IBluetoothLe {
+	wrapper := &bluetoothLeStubWrapper{impl: impl}
+	stub := &BluetoothLeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

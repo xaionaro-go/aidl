@@ -124,3 +124,52 @@ func (s *LogAccessDialogCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILogAccessDialogCallbackServer is the server-side interface that user implementations
+// provide to NewLogAccessDialogCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILogAccessDialogCallbackServer interface {
+	ApproveAccessForClient(ctx context.Context, uid int32, packageName string) error
+	DeclineAccessForClient(ctx context.Context, uid int32, packageName string) error
+}
+
+type logAccessDialogCallbackStubWrapper struct {
+	impl       ILogAccessDialogCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *logAccessDialogCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *logAccessDialogCallbackStubWrapper) ApproveAccessForClient(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+) error {
+	return w.impl.ApproveAccessForClient(ctx, uid, packageName)
+}
+
+func (w *logAccessDialogCallbackStubWrapper) DeclineAccessForClient(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+) error {
+	return w.impl.DeclineAccessForClient(ctx, uid, packageName)
+}
+
+var _ ILogAccessDialogCallback = (*logAccessDialogCallbackStubWrapper)(nil)
+
+// NewLogAccessDialogCallbackStub creates a server-side ILogAccessDialogCallback wrapping the given
+// server implementation. The returned value satisfies ILogAccessDialogCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLogAccessDialogCallbackStub(
+	impl ILogAccessDialogCallbackServer,
+) ILogAccessDialogCallback {
+	wrapper := &logAccessDialogCallbackStubWrapper{impl: impl}
+	stub := &LogAccessDialogCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

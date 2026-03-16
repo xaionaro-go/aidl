@@ -555,3 +555,117 @@ func (s *BootControlStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBootControlServer is the server-side interface that user implementations
+// provide to NewBootControlStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBootControlServer interface {
+	GetActiveBootSlot(ctx context.Context) (int32, error)
+	GetCurrentSlot(ctx context.Context) (int32, error)
+	GetNumberSlots(ctx context.Context) (int32, error)
+	GetSnapshotMergeStatus(ctx context.Context) (MergeStatus, error)
+	GetSuffix(ctx context.Context, slot int32) (string, error)
+	IsSlotBootable(ctx context.Context, slot int32) (bool, error)
+	IsSlotMarkedSuccessful(ctx context.Context, slot int32) (bool, error)
+	MarkBootSuccessful(ctx context.Context) error
+	SetActiveBootSlot(ctx context.Context, slot int32) error
+	SetSlotAsUnbootable(ctx context.Context, slot int32) error
+	SetSnapshotMergeStatus(ctx context.Context, status MergeStatus) error
+}
+
+type bootControlStubWrapper struct {
+	impl       IBootControlServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bootControlStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bootControlStubWrapper) GetActiveBootSlot(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetActiveBootSlot(ctx)
+}
+
+func (w *bootControlStubWrapper) GetCurrentSlot(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentSlot(ctx)
+}
+
+func (w *bootControlStubWrapper) GetNumberSlots(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNumberSlots(ctx)
+}
+
+func (w *bootControlStubWrapper) GetSnapshotMergeStatus(
+	ctx context.Context,
+) (MergeStatus, error) {
+	return w.impl.GetSnapshotMergeStatus(ctx)
+}
+
+func (w *bootControlStubWrapper) GetSuffix(
+	ctx context.Context,
+	slot int32,
+) (string, error) {
+	return w.impl.GetSuffix(ctx, slot)
+}
+
+func (w *bootControlStubWrapper) IsSlotBootable(
+	ctx context.Context,
+	slot int32,
+) (bool, error) {
+	return w.impl.IsSlotBootable(ctx, slot)
+}
+
+func (w *bootControlStubWrapper) IsSlotMarkedSuccessful(
+	ctx context.Context,
+	slot int32,
+) (bool, error) {
+	return w.impl.IsSlotMarkedSuccessful(ctx, slot)
+}
+
+func (w *bootControlStubWrapper) MarkBootSuccessful(
+	ctx context.Context,
+) error {
+	return w.impl.MarkBootSuccessful(ctx)
+}
+
+func (w *bootControlStubWrapper) SetActiveBootSlot(
+	ctx context.Context,
+	slot int32,
+) error {
+	return w.impl.SetActiveBootSlot(ctx, slot)
+}
+
+func (w *bootControlStubWrapper) SetSlotAsUnbootable(
+	ctx context.Context,
+	slot int32,
+) error {
+	return w.impl.SetSlotAsUnbootable(ctx, slot)
+}
+
+func (w *bootControlStubWrapper) SetSnapshotMergeStatus(
+	ctx context.Context,
+	status MergeStatus,
+) error {
+	return w.impl.SetSnapshotMergeStatus(ctx, status)
+}
+
+var _ IBootControl = (*bootControlStubWrapper)(nil)
+
+// NewBootControlStub creates a server-side IBootControl wrapping the given
+// server implementation. The returned value satisfies IBootControl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBootControlStub(
+	impl IBootControlServer,
+) IBootControl {
+	wrapper := &bootControlStubWrapper{impl: impl}
+	stub := &BootControlStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

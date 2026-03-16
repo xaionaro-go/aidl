@@ -76,3 +76,41 @@ func (s *CheckCredentialProgressCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICheckCredentialProgressCallbackServer is the server-side interface that user implementations
+// provide to NewCheckCredentialProgressCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICheckCredentialProgressCallbackServer interface {
+	OnCredentialVerified(ctx context.Context) error
+}
+
+type checkCredentialProgressCallbackStubWrapper struct {
+	impl       ICheckCredentialProgressCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *checkCredentialProgressCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *checkCredentialProgressCallbackStubWrapper) OnCredentialVerified(
+	ctx context.Context,
+) error {
+	return w.impl.OnCredentialVerified(ctx)
+}
+
+var _ ICheckCredentialProgressCallback = (*checkCredentialProgressCallbackStubWrapper)(nil)
+
+// NewCheckCredentialProgressCallbackStub creates a server-side ICheckCredentialProgressCallback wrapping the given
+// server implementation. The returned value satisfies ICheckCredentialProgressCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCheckCredentialProgressCallbackStub(
+	impl ICheckCredentialProgressCallbackServer,
+) ICheckCredentialProgressCallback {
+	wrapper := &checkCredentialProgressCallbackStubWrapper{impl: impl}
+	stub := &CheckCredentialProgressCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

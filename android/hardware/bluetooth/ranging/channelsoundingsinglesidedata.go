@@ -164,7 +164,7 @@ func (s *ChannelSoundingSingleSideData) UnmarshalParcel(
 			if _err != nil {
 				return _err
 			}
-			s.PacketNadm[_i] = Nadm(_raw)
+			s.PacketNadm[_i] = *Nadm(_raw)
 		}
 	}
 

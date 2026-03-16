@@ -82,7 +82,7 @@ func (p *BinderRpcBenchmarkProxy) RepeatBinder(
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderRpcBenchmark)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderRpcBenchmark, "repeatBinder")
 	if _err != nil {
@@ -303,4 +303,73 @@ func (s *BinderRpcBenchmarkStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBinderRpcBenchmarkServer is the server-side interface that user implementations
+// provide to NewBinderRpcBenchmarkStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderRpcBenchmarkServer interface {
+	RepeatString(ctx context.Context, str string) (string, error)
+	RepeatBinder(ctx context.Context, binder_ binder.IBinder) (binder.IBinder, error)
+	RepeatBytes(ctx context.Context, bytes []byte) ([]byte, error)
+	GimmeBinder(ctx context.Context) (binder.IBinder, error)
+	WaitGimmesDestroyed(ctx context.Context) error
+}
+
+type binderRpcBenchmarkStubWrapper struct {
+	impl       IBinderRpcBenchmarkServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderRpcBenchmarkStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderRpcBenchmarkStubWrapper) RepeatString(
+	ctx context.Context,
+	str string,
+) (string, error) {
+	return w.impl.RepeatString(ctx, str)
+}
+
+func (w *binderRpcBenchmarkStubWrapper) RepeatBinder(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) (binder.IBinder, error) {
+	return w.impl.RepeatBinder(ctx, binder_)
+}
+
+func (w *binderRpcBenchmarkStubWrapper) RepeatBytes(
+	ctx context.Context,
+	bytes []byte,
+) ([]byte, error) {
+	return w.impl.RepeatBytes(ctx, bytes)
+}
+
+func (w *binderRpcBenchmarkStubWrapper) GimmeBinder(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.GimmeBinder(ctx)
+}
+
+func (w *binderRpcBenchmarkStubWrapper) WaitGimmesDestroyed(
+	ctx context.Context,
+) error {
+	return w.impl.WaitGimmesDestroyed(ctx)
+}
+
+var _ IBinderRpcBenchmark = (*binderRpcBenchmarkStubWrapper)(nil)
+
+// NewBinderRpcBenchmarkStub creates a server-side IBinderRpcBenchmark wrapping the given
+// server implementation. The returned value satisfies IBinderRpcBenchmark
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderRpcBenchmarkStub(
+	impl IBinderRpcBenchmarkServer,
+) IBinderRpcBenchmark {
+	wrapper := &binderRpcBenchmarkStubWrapper{impl: impl}
+	stub := &BinderRpcBenchmarkStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

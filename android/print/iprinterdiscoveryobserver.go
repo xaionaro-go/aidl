@@ -135,3 +135,50 @@ func (s *PrinterDiscoveryObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPrinterDiscoveryObserverServer is the server-side interface that user implementations
+// provide to NewPrinterDiscoveryObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrinterDiscoveryObserverServer interface {
+	OnPrintersAdded(ctx context.Context, printers pm.ParceledListSlice) error
+	OnPrintersRemoved(ctx context.Context, printerIds pm.ParceledListSlice) error
+}
+
+type printerDiscoveryObserverStubWrapper struct {
+	impl       IPrinterDiscoveryObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *printerDiscoveryObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *printerDiscoveryObserverStubWrapper) OnPrintersAdded(
+	ctx context.Context,
+	printers pm.ParceledListSlice,
+) error {
+	return w.impl.OnPrintersAdded(ctx, printers)
+}
+
+func (w *printerDiscoveryObserverStubWrapper) OnPrintersRemoved(
+	ctx context.Context,
+	printerIds pm.ParceledListSlice,
+) error {
+	return w.impl.OnPrintersRemoved(ctx, printerIds)
+}
+
+var _ IPrinterDiscoveryObserver = (*printerDiscoveryObserverStubWrapper)(nil)
+
+// NewPrinterDiscoveryObserverStub creates a server-side IPrinterDiscoveryObserver wrapping the given
+// server implementation. The returned value satisfies IPrinterDiscoveryObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrinterDiscoveryObserverStub(
+	impl IPrinterDiscoveryObserverServer,
+) IPrinterDiscoveryObserver {
+	wrapper := &printerDiscoveryObserverStubWrapper{impl: impl}
+	stub := &PrinterDiscoveryObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

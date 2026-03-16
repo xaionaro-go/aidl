@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	soundtrigger "github.com/xaionaro-go/binder/android/hardware/soundtrigger"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -41,7 +40,7 @@ type ISoundTriggerSession interface {
 	StopRecognition(ctx context.Context, soundModelId interface{}, callback soundtrigger.IRecognitionStatusCallback) (int32, error)
 	LoadGenericSoundModel(ctx context.Context, soundModel soundtrigger.SoundTriggerGenericSoundModel) (int32, error)
 	LoadKeyphraseSoundModel(ctx context.Context, soundModel soundtrigger.SoundTriggerKeyphraseSoundModel) (int32, error)
-	StartRecognitionForService(ctx context.Context, soundModelId interface{}, params interface{}, callbackIntent content.ComponentName, config soundtrigger.SoundTriggerRecognitionConfig) (int32, error)
+	StartRecognitionForService(ctx context.Context, soundModelId interface{}, params interface{}, callbackIntent interface{}, config soundtrigger.SoundTriggerRecognitionConfig) (int32, error)
 	StopRecognitionForService(ctx context.Context, soundModelId interface{}) (int32, error)
 	UnloadSoundModel(ctx context.Context, soundModelId interface{}) (int32, error)
 	IsRecognitionActive(ctx context.Context, parcelUuid interface{}) (bool, error)
@@ -171,7 +170,7 @@ func (p *SoundTriggerSessionProxy) StartRecognition(
 	if _err := soundModel.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := config.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -208,7 +207,7 @@ func (p *SoundTriggerSessionProxy) StopRecognition(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerSession)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerSession, "stopRecognition")
 	if _err != nil {
@@ -304,16 +303,12 @@ func (p *SoundTriggerSessionProxy) StartRecognitionForService(
 	ctx context.Context,
 	soundModelId interface{},
 	params interface{},
-	callbackIntent content.ComponentName,
+	callbackIntent interface{},
 	config soundtrigger.SoundTriggerRecognitionConfig,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerSession)
-	_data.WriteInt32(1)
-	if _err := callbackIntent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteInt32(1)
 	if _err := config.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -783,18 +778,7 @@ func (s *SoundTriggerSessionStub) OnTransaction(
 		}
 		var _arg_soundModelId interface{}
 		var _arg_params interface{}
-		var _arg_callbackIntent content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_callbackIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_callbackIntent interface{}
 		var _arg_config soundtrigger.SoundTriggerRecognitionConfig
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -955,4 +939,173 @@ func (s *SoundTriggerSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISoundTriggerSessionServer is the server-side interface that user implementations
+// provide to NewSoundTriggerSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerSessionServer interface {
+	GetSoundModel(ctx context.Context, soundModelId interface{}) (soundtrigger.SoundTriggerGenericSoundModel, error)
+	UpdateSoundModel(ctx context.Context, soundModel soundtrigger.SoundTriggerGenericSoundModel) error
+	DeleteSoundModel(ctx context.Context, soundModelId interface{}) error
+	StartRecognition(ctx context.Context, soundModel soundtrigger.SoundTriggerGenericSoundModel, callback soundtrigger.IRecognitionStatusCallback, config soundtrigger.SoundTriggerRecognitionConfig, runInBatterySaver bool) (int32, error)
+	StopRecognition(ctx context.Context, soundModelId interface{}, callback soundtrigger.IRecognitionStatusCallback) (int32, error)
+	LoadGenericSoundModel(ctx context.Context, soundModel soundtrigger.SoundTriggerGenericSoundModel) (int32, error)
+	LoadKeyphraseSoundModel(ctx context.Context, soundModel soundtrigger.SoundTriggerKeyphraseSoundModel) (int32, error)
+	StartRecognitionForService(ctx context.Context, soundModelId interface{}, params interface{}, callbackIntent interface{}, config soundtrigger.SoundTriggerRecognitionConfig) (int32, error)
+	StopRecognitionForService(ctx context.Context, soundModelId interface{}) (int32, error)
+	UnloadSoundModel(ctx context.Context, soundModelId interface{}) (int32, error)
+	IsRecognitionActive(ctx context.Context, parcelUuid interface{}) (bool, error)
+	GetModelState(ctx context.Context, soundModelId interface{}) (int32, error)
+	GetModuleProperties(ctx context.Context) (soundtrigger.SoundTriggerModuleProperties, error)
+	SetParameter(ctx context.Context, soundModelId interface{}, modelParam soundtrigger.ModelParams, value int32) (int32, error)
+	GetParameter(ctx context.Context, soundModelId interface{}, modelParam soundtrigger.ModelParams) (int32, error)
+	QueryParameter(ctx context.Context, soundModelId interface{}, modelParam soundtrigger.ModelParams) (soundtrigger.SoundTriggerModelParamRange, error)
+}
+
+type soundTriggerSessionStubWrapper struct {
+	impl       ISoundTriggerSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerSessionStubWrapper) GetSoundModel(
+	ctx context.Context,
+	soundModelId interface{},
+) (soundtrigger.SoundTriggerGenericSoundModel, error) {
+	return w.impl.GetSoundModel(ctx, soundModelId)
+}
+
+func (w *soundTriggerSessionStubWrapper) UpdateSoundModel(
+	ctx context.Context,
+	soundModel soundtrigger.SoundTriggerGenericSoundModel,
+) error {
+	return w.impl.UpdateSoundModel(ctx, soundModel)
+}
+
+func (w *soundTriggerSessionStubWrapper) DeleteSoundModel(
+	ctx context.Context,
+	soundModelId interface{},
+) error {
+	return w.impl.DeleteSoundModel(ctx, soundModelId)
+}
+
+func (w *soundTriggerSessionStubWrapper) StartRecognition(
+	ctx context.Context,
+	soundModel soundtrigger.SoundTriggerGenericSoundModel,
+	callback soundtrigger.IRecognitionStatusCallback,
+	config soundtrigger.SoundTriggerRecognitionConfig,
+	runInBatterySaver bool,
+) (int32, error) {
+	return w.impl.StartRecognition(ctx, soundModel, callback, config, runInBatterySaver)
+}
+
+func (w *soundTriggerSessionStubWrapper) StopRecognition(
+	ctx context.Context,
+	soundModelId interface{},
+	callback soundtrigger.IRecognitionStatusCallback,
+) (int32, error) {
+	return w.impl.StopRecognition(ctx, soundModelId, callback)
+}
+
+func (w *soundTriggerSessionStubWrapper) LoadGenericSoundModel(
+	ctx context.Context,
+	soundModel soundtrigger.SoundTriggerGenericSoundModel,
+) (int32, error) {
+	return w.impl.LoadGenericSoundModel(ctx, soundModel)
+}
+
+func (w *soundTriggerSessionStubWrapper) LoadKeyphraseSoundModel(
+	ctx context.Context,
+	soundModel soundtrigger.SoundTriggerKeyphraseSoundModel,
+) (int32, error) {
+	return w.impl.LoadKeyphraseSoundModel(ctx, soundModel)
+}
+
+func (w *soundTriggerSessionStubWrapper) StartRecognitionForService(
+	ctx context.Context,
+	soundModelId interface{},
+	params interface{},
+	callbackIntent interface{},
+	config soundtrigger.SoundTriggerRecognitionConfig,
+) (int32, error) {
+	return w.impl.StartRecognitionForService(ctx, soundModelId, params, callbackIntent, config)
+}
+
+func (w *soundTriggerSessionStubWrapper) StopRecognitionForService(
+	ctx context.Context,
+	soundModelId interface{},
+) (int32, error) {
+	return w.impl.StopRecognitionForService(ctx, soundModelId)
+}
+
+func (w *soundTriggerSessionStubWrapper) UnloadSoundModel(
+	ctx context.Context,
+	soundModelId interface{},
+) (int32, error) {
+	return w.impl.UnloadSoundModel(ctx, soundModelId)
+}
+
+func (w *soundTriggerSessionStubWrapper) IsRecognitionActive(
+	ctx context.Context,
+	parcelUuid interface{},
+) (bool, error) {
+	return w.impl.IsRecognitionActive(ctx, parcelUuid)
+}
+
+func (w *soundTriggerSessionStubWrapper) GetModelState(
+	ctx context.Context,
+	soundModelId interface{},
+) (int32, error) {
+	return w.impl.GetModelState(ctx, soundModelId)
+}
+
+func (w *soundTriggerSessionStubWrapper) GetModuleProperties(
+	ctx context.Context,
+) (soundtrigger.SoundTriggerModuleProperties, error) {
+	return w.impl.GetModuleProperties(ctx)
+}
+
+func (w *soundTriggerSessionStubWrapper) SetParameter(
+	ctx context.Context,
+	soundModelId interface{},
+	modelParam soundtrigger.ModelParams,
+	value int32,
+) (int32, error) {
+	return w.impl.SetParameter(ctx, soundModelId, modelParam, value)
+}
+
+func (w *soundTriggerSessionStubWrapper) GetParameter(
+	ctx context.Context,
+	soundModelId interface{},
+	modelParam soundtrigger.ModelParams,
+) (int32, error) {
+	return w.impl.GetParameter(ctx, soundModelId, modelParam)
+}
+
+func (w *soundTriggerSessionStubWrapper) QueryParameter(
+	ctx context.Context,
+	soundModelId interface{},
+	modelParam soundtrigger.ModelParams,
+) (soundtrigger.SoundTriggerModelParamRange, error) {
+	return w.impl.QueryParameter(ctx, soundModelId, modelParam)
+}
+
+var _ ISoundTriggerSession = (*soundTriggerSessionStubWrapper)(nil)
+
+// NewSoundTriggerSessionStub creates a server-side ISoundTriggerSession wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerSessionStub(
+	impl ISoundTriggerSessionServer,
+) ISoundTriggerSession {
+	wrapper := &soundTriggerSessionStubWrapper{impl: impl}
+	stub := &SoundTriggerSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

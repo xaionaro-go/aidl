@@ -49,7 +49,7 @@ func (p *ControlsProviderProxy) Load(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIControlsProvider)
-	_data.WriteStrongBinder(subscriber.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, subscriber.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIControlsProvider, "load")
 	if _err != nil {
@@ -66,7 +66,7 @@ func (p *ControlsProviderProxy) LoadSuggested(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIControlsProvider)
-	_data.WriteStrongBinder(subscriber.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, subscriber.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIControlsProvider, "loadSuggested")
 	if _err != nil {
@@ -92,7 +92,7 @@ func (p *ControlsProviderProxy) Subscribe(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteStrongBinder(subscriber.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, subscriber.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIControlsProvider, "subscribe")
 	if _err != nil {
@@ -116,7 +116,7 @@ func (p *ControlsProviderProxy) Action(
 	if _err := action.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIControlsProvider, "action")
 	if _err != nil {
@@ -203,4 +203,70 @@ func (s *ControlsProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IControlsProviderServer is the server-side interface that user implementations
+// provide to NewControlsProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IControlsProviderServer interface {
+	Load(ctx context.Context, subscriber IControlsSubscriber) error
+	LoadSuggested(ctx context.Context, subscriber IControlsSubscriber) error
+	Subscribe(ctx context.Context, controlIds []string, subscriber IControlsSubscriber) error
+	Action(ctx context.Context, controlId string, action actions.ControlActionWrapper, cb IControlsActionCallback) error
+}
+
+type controlsProviderStubWrapper struct {
+	impl       IControlsProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *controlsProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *controlsProviderStubWrapper) Load(
+	ctx context.Context,
+	subscriber IControlsSubscriber,
+) error {
+	return w.impl.Load(ctx, subscriber)
+}
+
+func (w *controlsProviderStubWrapper) LoadSuggested(
+	ctx context.Context,
+	subscriber IControlsSubscriber,
+) error {
+	return w.impl.LoadSuggested(ctx, subscriber)
+}
+
+func (w *controlsProviderStubWrapper) Subscribe(
+	ctx context.Context,
+	controlIds []string,
+	subscriber IControlsSubscriber,
+) error {
+	return w.impl.Subscribe(ctx, controlIds, subscriber)
+}
+
+func (w *controlsProviderStubWrapper) Action(
+	ctx context.Context,
+	controlId string,
+	action actions.ControlActionWrapper,
+	cb IControlsActionCallback,
+) error {
+	return w.impl.Action(ctx, controlId, action, cb)
+}
+
+var _ IControlsProvider = (*controlsProviderStubWrapper)(nil)
+
+// NewControlsProviderStub creates a server-side IControlsProvider wrapping the given
+// server implementation. The returned value satisfies IControlsProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewControlsProviderStub(
+	impl IControlsProviderServer,
+) IControlsProvider {
+	wrapper := &controlsProviderStubWrapper{impl: impl}
+	stub := &ControlsProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

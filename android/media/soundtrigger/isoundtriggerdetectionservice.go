@@ -53,7 +53,7 @@ func (p *SoundTriggerDetectionServiceProxy) SetClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerDetectionService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerDetectionService, "setClient")
 	if _err != nil {
@@ -230,4 +230,82 @@ func (s *SoundTriggerDetectionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISoundTriggerDetectionServiceServer is the server-side interface that user implementations
+// provide to NewSoundTriggerDetectionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerDetectionServiceServer interface {
+	SetClient(ctx context.Context, uuid interface{}, params interface{}, client ISoundTriggerDetectionServiceClient) error
+	RemoveClient(ctx context.Context, uuid interface{}) error
+	OnGenericRecognitionEvent(ctx context.Context, uuid interface{}, opId int32, event hardwareSoundtrigger.SoundTriggerGenericRecognitionEvent) error
+	OnError(ctx context.Context, uuid interface{}, opId int32, status int32) error
+	OnStopOperation(ctx context.Context, uuid interface{}, opId int32) error
+}
+
+type soundTriggerDetectionServiceStubWrapper struct {
+	impl       ISoundTriggerDetectionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerDetectionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerDetectionServiceStubWrapper) SetClient(
+	ctx context.Context,
+	uuid interface{},
+	params interface{},
+	client ISoundTriggerDetectionServiceClient,
+) error {
+	return w.impl.SetClient(ctx, uuid, params, client)
+}
+
+func (w *soundTriggerDetectionServiceStubWrapper) RemoveClient(
+	ctx context.Context,
+	uuid interface{},
+) error {
+	return w.impl.RemoveClient(ctx, uuid)
+}
+
+func (w *soundTriggerDetectionServiceStubWrapper) OnGenericRecognitionEvent(
+	ctx context.Context,
+	uuid interface{},
+	opId int32,
+	event hardwareSoundtrigger.SoundTriggerGenericRecognitionEvent,
+) error {
+	return w.impl.OnGenericRecognitionEvent(ctx, uuid, opId, event)
+}
+
+func (w *soundTriggerDetectionServiceStubWrapper) OnError(
+	ctx context.Context,
+	uuid interface{},
+	opId int32,
+	status int32,
+) error {
+	return w.impl.OnError(ctx, uuid, opId, status)
+}
+
+func (w *soundTriggerDetectionServiceStubWrapper) OnStopOperation(
+	ctx context.Context,
+	uuid interface{},
+	opId int32,
+) error {
+	return w.impl.OnStopOperation(ctx, uuid, opId)
+}
+
+var _ ISoundTriggerDetectionService = (*soundTriggerDetectionServiceStubWrapper)(nil)
+
+// NewSoundTriggerDetectionServiceStub creates a server-side ISoundTriggerDetectionService wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerDetectionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerDetectionServiceStub(
+	impl ISoundTriggerDetectionServiceServer,
+) ISoundTriggerDetectionService {
+	wrapper := &soundTriggerDetectionServiceStubWrapper{impl: impl}
+	stub := &SoundTriggerDetectionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

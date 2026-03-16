@@ -3,7 +3,6 @@ package pm
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	domain "github.com/xaionaro-go/binder/android/content/pm/verify/domain"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -63,7 +62,7 @@ type IPackageInstallerSession interface {
 	RequestChecksums(ctx context.Context, name string, optional int32, required int32, trustedInstallers []interface{}, onChecksumsReadyListener IOnChecksumsReadyListener) error
 	RemoveSplit(ctx context.Context, splitName string) error
 	Close(ctx context.Context) error
-	Commit(ctx context.Context, statusReceiver content.IntentSender, forTransferred bool) error
+	Commit(ctx context.Context, statusReceiver interface{}, forTransferred bool) error
 	Transfer(ctx context.Context, packageName string) error
 	Abandon(ctx context.Context) error
 	Seal(ctx context.Context) error
@@ -78,7 +77,7 @@ type IPackageInstallerSession interface {
 	GetParentSessionId(ctx context.Context) (int32, error)
 	IsStaged(ctx context.Context) (bool, error)
 	GetInstallFlags(ctx context.Context) (int32, error)
-	RequestUserPreapproval(ctx context.Context, details PackageInstallerPreapprovalDetails, statusReceiver content.IntentSender) error
+	RequestUserPreapproval(ctx context.Context, details PackageInstallerPreapprovalDetails, statusReceiver interface{}) error
 	IsApplicationEnabledSettingPersistent(ctx context.Context) (bool, error)
 	IsRequestUpdateOwnership(ctx context.Context) (bool, error)
 	GetAppMetadataFd(ctx context.Context) (int32, error)
@@ -383,7 +382,7 @@ func (p *PackageInstallerSessionProxy) RequestChecksums(
 	} else {
 		_data.WriteInt32(int32(len(trustedInstallers)))
 	}
-	_data.WriteStrongBinder(onChecksumsReadyListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, onChecksumsReadyListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstallerSession, "requestChecksums")
 	if _err != nil {
@@ -455,15 +454,11 @@ func (p *PackageInstallerSessionProxy) Close(
 
 func (p *PackageInstallerSessionProxy) Commit(
 	ctx context.Context,
-	statusReceiver content.IntentSender,
+	statusReceiver interface{},
 	forTransferred bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstallerSession)
-	_data.WriteInt32(1)
-	if _err := statusReceiver.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteBool(forTransferred)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPackageInstallerSession, "commit")
@@ -917,16 +912,12 @@ func (p *PackageInstallerSessionProxy) GetInstallFlags(
 func (p *PackageInstallerSessionProxy) RequestUserPreapproval(
 	ctx context.Context,
 	details PackageInstallerPreapprovalDetails,
-	statusReceiver content.IntentSender,
+	statusReceiver interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPackageInstallerSession)
 	_data.WriteInt32(1)
 	if _err := details.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := statusReceiver.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 
@@ -1381,18 +1372,7 @@ func (s *PackageInstallerSessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_statusReceiver content.IntentSender
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_statusReceiver.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_statusReceiver interface{}
 		_arg_forTransferred, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -1639,18 +1619,7 @@ func (s *PackageInstallerSessionStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_statusReceiver content.IntentSender
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_statusReceiver.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_statusReceiver interface{}
 		_err := s.Impl.RequestUserPreapproval(ctx, _arg_details, _arg_statusReceiver)
 		_reply := parcel.New()
 		if _err != nil {
@@ -1766,4 +1735,308 @@ func (s *PackageInstallerSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPackageInstallerSessionServer is the server-side interface that user implementations
+// provide to NewPackageInstallerSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageInstallerSessionServer interface {
+	SetClientProgress(ctx context.Context, progress float32) error
+	AddClientProgress(ctx context.Context, progress float32) error
+	GetNames(ctx context.Context) ([]string, error)
+	OpenWrite(ctx context.Context, name string, offsetBytes int64, lengthBytes int64) (int32, error)
+	OpenRead(ctx context.Context, name string) (int32, error)
+	Write(ctx context.Context, name string, offsetBytes int64, lengthBytes int64, fd int32) error
+	StageViaHardLink(ctx context.Context, target string) error
+	SetChecksums(ctx context.Context, name string, checksums []Checksum, signature []byte) error
+	RequestChecksums(ctx context.Context, name string, optional int32, required int32, trustedInstallers []interface{}, onChecksumsReadyListener IOnChecksumsReadyListener) error
+	RemoveSplit(ctx context.Context, splitName string) error
+	Close(ctx context.Context) error
+	Commit(ctx context.Context, statusReceiver interface{}, forTransferred bool) error
+	Transfer(ctx context.Context, packageName string) error
+	Abandon(ctx context.Context) error
+	Seal(ctx context.Context) error
+	FetchPackageNames(ctx context.Context) ([]string, error)
+	GetDataLoaderParams(ctx context.Context) (DataLoaderParamsParcel, error)
+	AddFile(ctx context.Context, location int32, name string, lengthBytes int64, metadata []byte, signature []byte) error
+	RemoveFile(ctx context.Context, location int32, name string) error
+	IsMultiPackage(ctx context.Context) (bool, error)
+	GetChildSessionIds(ctx context.Context) ([]int32, error)
+	AddChildSessionId(ctx context.Context, sessionId int32) error
+	RemoveChildSessionId(ctx context.Context, sessionId int32) error
+	GetParentSessionId(ctx context.Context) (int32, error)
+	IsStaged(ctx context.Context) (bool, error)
+	GetInstallFlags(ctx context.Context) (int32, error)
+	RequestUserPreapproval(ctx context.Context, details PackageInstallerPreapprovalDetails, statusReceiver interface{}) error
+	IsApplicationEnabledSettingPersistent(ctx context.Context) (bool, error)
+	IsRequestUpdateOwnership(ctx context.Context) (bool, error)
+	GetAppMetadataFd(ctx context.Context) (int32, error)
+	OpenWriteAppMetadata(ctx context.Context) (int32, error)
+	RemoveAppMetadata(ctx context.Context) error
+	SetPreVerifiedDomains(ctx context.Context, preVerifiedDomains domain.DomainSet) error
+	GetPreVerifiedDomains(ctx context.Context) (domain.DomainSet, error)
+}
+
+type packageInstallerSessionStubWrapper struct {
+	impl       IPackageInstallerSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageInstallerSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageInstallerSessionStubWrapper) SetClientProgress(
+	ctx context.Context,
+	progress float32,
+) error {
+	return w.impl.SetClientProgress(ctx, progress)
+}
+
+func (w *packageInstallerSessionStubWrapper) AddClientProgress(
+	ctx context.Context,
+	progress float32,
+) error {
+	return w.impl.AddClientProgress(ctx, progress)
+}
+
+func (w *packageInstallerSessionStubWrapper) GetNames(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetNames(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) OpenWrite(
+	ctx context.Context,
+	name string,
+	offsetBytes int64,
+	lengthBytes int64,
+) (int32, error) {
+	return w.impl.OpenWrite(ctx, name, offsetBytes, lengthBytes)
+}
+
+func (w *packageInstallerSessionStubWrapper) OpenRead(
+	ctx context.Context,
+	name string,
+) (int32, error) {
+	return w.impl.OpenRead(ctx, name)
+}
+
+func (w *packageInstallerSessionStubWrapper) Write(
+	ctx context.Context,
+	name string,
+	offsetBytes int64,
+	lengthBytes int64,
+	fd int32,
+) error {
+	return w.impl.Write(ctx, name, offsetBytes, lengthBytes, fd)
+}
+
+func (w *packageInstallerSessionStubWrapper) StageViaHardLink(
+	ctx context.Context,
+	target string,
+) error {
+	return w.impl.StageViaHardLink(ctx, target)
+}
+
+func (w *packageInstallerSessionStubWrapper) SetChecksums(
+	ctx context.Context,
+	name string,
+	checksums []Checksum,
+	signature []byte,
+) error {
+	return w.impl.SetChecksums(ctx, name, checksums, signature)
+}
+
+func (w *packageInstallerSessionStubWrapper) RequestChecksums(
+	ctx context.Context,
+	name string,
+	optional int32,
+	required int32,
+	trustedInstallers []interface{},
+	onChecksumsReadyListener IOnChecksumsReadyListener,
+) error {
+	return w.impl.RequestChecksums(ctx, name, optional, required, trustedInstallers, onChecksumsReadyListener)
+}
+
+func (w *packageInstallerSessionStubWrapper) RemoveSplit(
+	ctx context.Context,
+	splitName string,
+) error {
+	return w.impl.RemoveSplit(ctx, splitName)
+}
+
+func (w *packageInstallerSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) Commit(
+	ctx context.Context,
+	statusReceiver interface{},
+	forTransferred bool,
+) error {
+	return w.impl.Commit(ctx, statusReceiver, forTransferred)
+}
+
+func (w *packageInstallerSessionStubWrapper) Transfer(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Transfer(ctx, packageName)
+}
+
+func (w *packageInstallerSessionStubWrapper) Abandon(
+	ctx context.Context,
+) error {
+	return w.impl.Abandon(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) Seal(
+	ctx context.Context,
+) error {
+	return w.impl.Seal(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) FetchPackageNames(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.FetchPackageNames(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) GetDataLoaderParams(
+	ctx context.Context,
+) (DataLoaderParamsParcel, error) {
+	return w.impl.GetDataLoaderParams(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) AddFile(
+	ctx context.Context,
+	location int32,
+	name string,
+	lengthBytes int64,
+	metadata []byte,
+	signature []byte,
+) error {
+	return w.impl.AddFile(ctx, location, name, lengthBytes, metadata, signature)
+}
+
+func (w *packageInstallerSessionStubWrapper) RemoveFile(
+	ctx context.Context,
+	location int32,
+	name string,
+) error {
+	return w.impl.RemoveFile(ctx, location, name)
+}
+
+func (w *packageInstallerSessionStubWrapper) IsMultiPackage(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsMultiPackage(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) GetChildSessionIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetChildSessionIds(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) AddChildSessionId(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.AddChildSessionId(ctx, sessionId)
+}
+
+func (w *packageInstallerSessionStubWrapper) RemoveChildSessionId(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.RemoveChildSessionId(ctx, sessionId)
+}
+
+func (w *packageInstallerSessionStubWrapper) GetParentSessionId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetParentSessionId(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) IsStaged(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsStaged(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) GetInstallFlags(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetInstallFlags(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) RequestUserPreapproval(
+	ctx context.Context,
+	details PackageInstallerPreapprovalDetails,
+	statusReceiver interface{},
+) error {
+	return w.impl.RequestUserPreapproval(ctx, details, statusReceiver)
+}
+
+func (w *packageInstallerSessionStubWrapper) IsApplicationEnabledSettingPersistent(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsApplicationEnabledSettingPersistent(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) IsRequestUpdateOwnership(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsRequestUpdateOwnership(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) GetAppMetadataFd(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAppMetadataFd(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) OpenWriteAppMetadata(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.OpenWriteAppMetadata(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) RemoveAppMetadata(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveAppMetadata(ctx)
+}
+
+func (w *packageInstallerSessionStubWrapper) SetPreVerifiedDomains(
+	ctx context.Context,
+	preVerifiedDomains domain.DomainSet,
+) error {
+	return w.impl.SetPreVerifiedDomains(ctx, preVerifiedDomains)
+}
+
+func (w *packageInstallerSessionStubWrapper) GetPreVerifiedDomains(
+	ctx context.Context,
+) (domain.DomainSet, error) {
+	return w.impl.GetPreVerifiedDomains(ctx)
+}
+
+var _ IPackageInstallerSession = (*packageInstallerSessionStubWrapper)(nil)
+
+// NewPackageInstallerSessionStub creates a server-side IPackageInstallerSession wrapping the given
+// server implementation. The returned value satisfies IPackageInstallerSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageInstallerSessionStub(
+	impl IPackageInstallerSessionServer,
+) IPackageInstallerSession {
+	wrapper := &packageInstallerSessionStubWrapper{impl: impl}
+	stub := &PackageInstallerSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

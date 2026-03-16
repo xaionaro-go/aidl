@@ -112,3 +112,50 @@ func (s *NumberVerificationCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INumberVerificationCallbackServer is the server-side interface that user implementations
+// provide to NewNumberVerificationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INumberVerificationCallbackServer interface {
+	OnCallReceived(ctx context.Context, phoneNumber string) error
+	OnVerificationFailed(ctx context.Context, reason int32) error
+}
+
+type numberVerificationCallbackStubWrapper struct {
+	impl       INumberVerificationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *numberVerificationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *numberVerificationCallbackStubWrapper) OnCallReceived(
+	ctx context.Context,
+	phoneNumber string,
+) error {
+	return w.impl.OnCallReceived(ctx, phoneNumber)
+}
+
+func (w *numberVerificationCallbackStubWrapper) OnVerificationFailed(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnVerificationFailed(ctx, reason)
+}
+
+var _ INumberVerificationCallback = (*numberVerificationCallbackStubWrapper)(nil)
+
+// NewNumberVerificationCallbackStub creates a server-side INumberVerificationCallback wrapping the given
+// server implementation. The returned value satisfies INumberVerificationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNumberVerificationCallbackStub(
+	impl INumberVerificationCallbackServer,
+) INumberVerificationCallback {
+	wrapper := &numberVerificationCallbackStubWrapper{impl: impl}
+	stub := &NumberVerificationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

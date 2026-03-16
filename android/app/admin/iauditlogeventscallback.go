@@ -90,3 +90,42 @@ func (s *AuditLogEventsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAuditLogEventsCallbackServer is the server-side interface that user implementations
+// provide to NewAuditLogEventsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAuditLogEventsCallbackServer interface {
+	OnNewAuditLogEvents(ctx context.Context, events []SecurityLogSecurityEvent) error
+}
+
+type auditLogEventsCallbackStubWrapper struct {
+	impl       IAuditLogEventsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *auditLogEventsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *auditLogEventsCallbackStubWrapper) OnNewAuditLogEvents(
+	ctx context.Context,
+	events []SecurityLogSecurityEvent,
+) error {
+	return w.impl.OnNewAuditLogEvents(ctx, events)
+}
+
+var _ IAuditLogEventsCallback = (*auditLogEventsCallbackStubWrapper)(nil)
+
+// NewAuditLogEventsCallbackStub creates a server-side IAuditLogEventsCallback wrapping the given
+// server implementation. The returned value satisfies IAuditLogEventsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAuditLogEventsCallbackStub(
+	impl IAuditLogEventsCallbackServer,
+) IAuditLogEventsCallback {
+	wrapper := &auditLogEventsCallbackStubWrapper{impl: impl}
+	stub := &AuditLogEventsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

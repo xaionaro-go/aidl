@@ -49,3 +49,34 @@ func (s *CameraClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraClientServer is the server-side interface that user implementations
+// provide to NewCameraClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraClientServer interface {
+}
+
+type cameraClientStubWrapper struct {
+	impl       ICameraClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ ICameraClient = (*cameraClientStubWrapper)(nil)
+
+// NewCameraClientStub creates a server-side ICameraClient wrapping the given
+// server implementation. The returned value satisfies ICameraClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraClientStub(
+	impl ICameraClientServer,
+) ICameraClient {
+	wrapper := &cameraClientStubWrapper{impl: impl}
+	stub := &CameraClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

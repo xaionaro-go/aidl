@@ -216,3 +216,57 @@ func (s *SuggestionServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISuggestionServiceServer is the server-side interface that user implementations
+// provide to NewSuggestionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISuggestionServiceServer interface {
+	GetSuggestions(ctx context.Context) ([]Suggestion, error)
+	DismissSuggestion(ctx context.Context, suggestion Suggestion) error
+	LaunchSuggestion(ctx context.Context, suggestion Suggestion) error
+}
+
+type suggestionServiceStubWrapper struct {
+	impl       ISuggestionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *suggestionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *suggestionServiceStubWrapper) GetSuggestions(
+	ctx context.Context,
+) ([]Suggestion, error) {
+	return w.impl.GetSuggestions(ctx)
+}
+
+func (w *suggestionServiceStubWrapper) DismissSuggestion(
+	ctx context.Context,
+	suggestion Suggestion,
+) error {
+	return w.impl.DismissSuggestion(ctx, suggestion)
+}
+
+func (w *suggestionServiceStubWrapper) LaunchSuggestion(
+	ctx context.Context,
+	suggestion Suggestion,
+) error {
+	return w.impl.LaunchSuggestion(ctx, suggestion)
+}
+
+var _ ISuggestionService = (*suggestionServiceStubWrapper)(nil)
+
+// NewSuggestionServiceStub creates a server-side ISuggestionService wrapping the given
+// server implementation. The returned value satisfies ISuggestionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSuggestionServiceStub(
+	impl ISuggestionServiceServer,
+) ISuggestionService {
+	wrapper := &suggestionServiceStubWrapper{impl: impl}
+	stub := &SuggestionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -96,3 +96,42 @@ func (s *SomeServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISomeServiceServer is the server-side interface that user implementations
+// provide to NewSomeServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISomeServiceServer interface {
+	ReadDisk(ctx context.Context, times int32) error
+}
+
+type someServiceStubWrapper struct {
+	impl       ISomeServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *someServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *someServiceStubWrapper) ReadDisk(
+	ctx context.Context,
+	times int32,
+) error {
+	return w.impl.ReadDisk(ctx, times)
+}
+
+var _ ISomeService = (*someServiceStubWrapper)(nil)
+
+// NewSomeServiceStub creates a server-side ISomeService wrapping the given
+// server implementation. The returned value satisfies ISomeService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSomeServiceStub(
+	impl ISomeServiceServer,
+) ISomeService {
+	wrapper := &someServiceStubWrapper{impl: impl}
+	stub := &SomeServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

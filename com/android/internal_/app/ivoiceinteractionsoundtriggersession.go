@@ -96,7 +96,7 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) StartRecognition(
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSoundTriggerSession)
 	_data.WriteInt32(keyphraseId)
 	_data.WriteString16(bcp47Locale)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := recognitionConfig.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -134,7 +134,7 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) StopRecognition(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionSoundTriggerSession)
 	_data.WriteInt32(keyphraseId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractionSoundTriggerSession, "stopRecognition")
 	if _err != nil {
@@ -466,4 +466,98 @@ func (s *VoiceInteractionSoundTriggerSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVoiceInteractionSoundTriggerSessionServer is the server-side interface that user implementations
+// provide to NewVoiceInteractionSoundTriggerSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceInteractionSoundTriggerSessionServer interface {
+	GetDspModuleProperties(ctx context.Context) (soundtrigger.SoundTriggerModuleProperties, error)
+	StartRecognition(ctx context.Context, keyphraseId int32, bcp47Locale string, callback IHotwordRecognitionStatusCallback, recognitionConfig soundtrigger.SoundTriggerRecognitionConfig, runInBatterySaver bool) (int32, error)
+	StopRecognition(ctx context.Context, keyphraseId int32, callback IHotwordRecognitionStatusCallback) (int32, error)
+	SetParameter(ctx context.Context, keyphraseId int32, modelParam soundtrigger.ModelParams, value int32) (int32, error)
+	GetParameter(ctx context.Context, keyphraseId int32, modelParam soundtrigger.ModelParams) (int32, error)
+	QueryParameter(ctx context.Context, keyphraseId int32, modelParam soundtrigger.ModelParams) (soundtrigger.SoundTriggerModelParamRange, error)
+	Detach(ctx context.Context) error
+}
+
+type voiceInteractionSoundTriggerSessionStubWrapper struct {
+	impl       IVoiceInteractionSoundTriggerSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceInteractionSoundTriggerSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceInteractionSoundTriggerSessionStubWrapper) GetDspModuleProperties(
+	ctx context.Context,
+) (soundtrigger.SoundTriggerModuleProperties, error) {
+	return w.impl.GetDspModuleProperties(ctx)
+}
+
+func (w *voiceInteractionSoundTriggerSessionStubWrapper) StartRecognition(
+	ctx context.Context,
+	keyphraseId int32,
+	bcp47Locale string,
+	callback IHotwordRecognitionStatusCallback,
+	recognitionConfig soundtrigger.SoundTriggerRecognitionConfig,
+	runInBatterySaver bool,
+) (int32, error) {
+	return w.impl.StartRecognition(ctx, keyphraseId, bcp47Locale, callback, recognitionConfig, runInBatterySaver)
+}
+
+func (w *voiceInteractionSoundTriggerSessionStubWrapper) StopRecognition(
+	ctx context.Context,
+	keyphraseId int32,
+	callback IHotwordRecognitionStatusCallback,
+) (int32, error) {
+	return w.impl.StopRecognition(ctx, keyphraseId, callback)
+}
+
+func (w *voiceInteractionSoundTriggerSessionStubWrapper) SetParameter(
+	ctx context.Context,
+	keyphraseId int32,
+	modelParam soundtrigger.ModelParams,
+	value int32,
+) (int32, error) {
+	return w.impl.SetParameter(ctx, keyphraseId, modelParam, value)
+}
+
+func (w *voiceInteractionSoundTriggerSessionStubWrapper) GetParameter(
+	ctx context.Context,
+	keyphraseId int32,
+	modelParam soundtrigger.ModelParams,
+) (int32, error) {
+	return w.impl.GetParameter(ctx, keyphraseId, modelParam)
+}
+
+func (w *voiceInteractionSoundTriggerSessionStubWrapper) QueryParameter(
+	ctx context.Context,
+	keyphraseId int32,
+	modelParam soundtrigger.ModelParams,
+) (soundtrigger.SoundTriggerModelParamRange, error) {
+	return w.impl.QueryParameter(ctx, keyphraseId, modelParam)
+}
+
+func (w *voiceInteractionSoundTriggerSessionStubWrapper) Detach(
+	ctx context.Context,
+) error {
+	return w.impl.Detach(ctx)
+}
+
+var _ IVoiceInteractionSoundTriggerSession = (*voiceInteractionSoundTriggerSessionStubWrapper)(nil)
+
+// NewVoiceInteractionSoundTriggerSessionStub creates a server-side IVoiceInteractionSoundTriggerSession wrapping the given
+// server implementation. The returned value satisfies IVoiceInteractionSoundTriggerSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceInteractionSoundTriggerSessionStub(
+	impl IVoiceInteractionSoundTriggerSessionServer,
+) IVoiceInteractionSoundTriggerSession {
+	wrapper := &voiceInteractionSoundTriggerSessionStubWrapper{impl: impl}
+	stub := &VoiceInteractionSoundTriggerSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

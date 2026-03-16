@@ -47,7 +47,7 @@ func (p *BluetoothLmpEventProxy) RegisterForLmpEvents(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothLmpEvent)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WritePaddedByte(byte(addressType))
 	if address == nil {
 		_data.WriteInt32(-1)
@@ -182,4 +182,55 @@ func (s *BluetoothLmpEventStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothLmpEventServer is the server-side interface that user implementations
+// provide to NewBluetoothLmpEventStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothLmpEventServer interface {
+	RegisterForLmpEvents(ctx context.Context, callback IBluetoothLmpEventCallback, addressType AddressType, address []byte, lmpEventIds []LmpEventId) error
+	UnregisterLmpEvents(ctx context.Context, addressType AddressType, address []byte) error
+}
+
+type bluetoothLmpEventStubWrapper struct {
+	impl       IBluetoothLmpEventServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothLmpEventStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothLmpEventStubWrapper) RegisterForLmpEvents(
+	ctx context.Context,
+	callback IBluetoothLmpEventCallback,
+	addressType AddressType,
+	address []byte,
+	lmpEventIds []LmpEventId,
+) error {
+	return w.impl.RegisterForLmpEvents(ctx, callback, addressType, address, lmpEventIds)
+}
+
+func (w *bluetoothLmpEventStubWrapper) UnregisterLmpEvents(
+	ctx context.Context,
+	addressType AddressType,
+	address []byte,
+) error {
+	return w.impl.UnregisterLmpEvents(ctx, addressType, address)
+}
+
+var _ IBluetoothLmpEvent = (*bluetoothLmpEventStubWrapper)(nil)
+
+// NewBluetoothLmpEventStub creates a server-side IBluetoothLmpEvent wrapping the given
+// server implementation. The returned value satisfies IBluetoothLmpEvent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothLmpEventStub(
+	impl IBluetoothLmpEventServer,
+) IBluetoothLmpEvent {
+	wrapper := &bluetoothLmpEventStubWrapper{impl: impl}
+	stub := &BluetoothLmpEventStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

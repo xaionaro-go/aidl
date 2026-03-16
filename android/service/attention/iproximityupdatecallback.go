@@ -82,3 +82,42 @@ func (s *ProximityUpdateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProximityUpdateCallbackServer is the server-side interface that user implementations
+// provide to NewProximityUpdateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProximityUpdateCallbackServer interface {
+	OnProximityUpdate(ctx context.Context, distance float64) error
+}
+
+type proximityUpdateCallbackStubWrapper struct {
+	impl       IProximityUpdateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *proximityUpdateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *proximityUpdateCallbackStubWrapper) OnProximityUpdate(
+	ctx context.Context,
+	distance float64,
+) error {
+	return w.impl.OnProximityUpdate(ctx, distance)
+}
+
+var _ IProximityUpdateCallback = (*proximityUpdateCallbackStubWrapper)(nil)
+
+// NewProximityUpdateCallbackStub creates a server-side IProximityUpdateCallback wrapping the given
+// server implementation. The returned value satisfies IProximityUpdateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProximityUpdateCallbackStub(
+	impl IProximityUpdateCallbackServer,
+) IProximityUpdateCallback {
+	wrapper := &proximityUpdateCallbackStubWrapper{impl: impl}
+	stub := &ProximityUpdateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

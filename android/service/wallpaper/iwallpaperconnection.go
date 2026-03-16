@@ -53,7 +53,7 @@ func (p *WallpaperConnectionProxy) AttachEngine(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperConnection)
-	_data.WriteStrongBinder(engine.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, engine.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWallpaperConnection, "attachEngine")
@@ -80,7 +80,7 @@ func (p *WallpaperConnectionProxy) EngineShown(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperConnection)
-	_data.WriteStrongBinder(engine.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, engine.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWallpaperConnection, "engineShown")
 	if _err != nil {
@@ -334,4 +334,79 @@ func (s *WallpaperConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWallpaperConnectionServer is the server-side interface that user implementations
+// provide to NewWallpaperConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWallpaperConnectionServer interface {
+	AttachEngine(ctx context.Context, engine IWallpaperEngine, displayId int32) error
+	EngineShown(ctx context.Context, engine IWallpaperEngine) error
+	SetWallpaper(ctx context.Context, name string) (int32, error)
+	OnWallpaperColorsChanged(ctx context.Context, colors app.WallpaperColors, displayId int32) error
+	OnLocalWallpaperColorsChanged(ctx context.Context, area graphics.RectF, colors app.WallpaperColors, displayId int32) error
+}
+
+type wallpaperConnectionStubWrapper struct {
+	impl       IWallpaperConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wallpaperConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wallpaperConnectionStubWrapper) AttachEngine(
+	ctx context.Context,
+	engine IWallpaperEngine,
+	displayId int32,
+) error {
+	return w.impl.AttachEngine(ctx, engine, displayId)
+}
+
+func (w *wallpaperConnectionStubWrapper) EngineShown(
+	ctx context.Context,
+	engine IWallpaperEngine,
+) error {
+	return w.impl.EngineShown(ctx, engine)
+}
+
+func (w *wallpaperConnectionStubWrapper) SetWallpaper(
+	ctx context.Context,
+	name string,
+) (int32, error) {
+	return w.impl.SetWallpaper(ctx, name)
+}
+
+func (w *wallpaperConnectionStubWrapper) OnWallpaperColorsChanged(
+	ctx context.Context,
+	colors app.WallpaperColors,
+	displayId int32,
+) error {
+	return w.impl.OnWallpaperColorsChanged(ctx, colors, displayId)
+}
+
+func (w *wallpaperConnectionStubWrapper) OnLocalWallpaperColorsChanged(
+	ctx context.Context,
+	area graphics.RectF,
+	colors app.WallpaperColors,
+	displayId int32,
+) error {
+	return w.impl.OnLocalWallpaperColorsChanged(ctx, area, colors, displayId)
+}
+
+var _ IWallpaperConnection = (*wallpaperConnectionStubWrapper)(nil)
+
+// NewWallpaperConnectionStub creates a server-side IWallpaperConnection wrapping the given
+// server implementation. The returned value satisfies IWallpaperConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWallpaperConnectionStub(
+	impl IWallpaperConnectionServer,
+) IWallpaperConnection {
+	wrapper := &wallpaperConnectionStubWrapper{impl: impl}
+	stub := &WallpaperConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

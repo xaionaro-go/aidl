@@ -382,8 +382,8 @@ func (p *RadioModemProxy) SetResponseFunctions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRadioModem)
-	_data.WriteStrongBinder(radioModemResponse.AsBinder().Handle())
-	_data.WriteStrongBinder(radioModemIndication.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, radioModemResponse.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, radioModemIndication.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioModem, "setResponseFunctions")
 	if _err != nil {
@@ -686,4 +686,190 @@ func (s *RadioModemStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRadioModemServer is the server-side interface that user implementations
+// provide to NewRadioModemStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioModemServer interface {
+	EnableModem(ctx context.Context, serial int32, on bool) error
+	GetBasebandVersion(ctx context.Context, serial int32) error
+	GetDeviceIdentity(ctx context.Context, serial int32) error
+	GetHardwareConfig(ctx context.Context, serial int32) error
+	GetModemActivityInfo(ctx context.Context, serial int32) error
+	GetModemStackStatus(ctx context.Context, serial int32) error
+	GetRadioCapability(ctx context.Context, serial int32) error
+	NvReadItem(ctx context.Context, serial int32, itemId NvItem) error
+	NvResetConfig(ctx context.Context, serial int32, resetType ResetNvType) error
+	NvWriteCdmaPrl(ctx context.Context, serial int32, prl []byte) error
+	NvWriteItem(ctx context.Context, serial int32, item NvWriteItem) error
+	RequestShutdown(ctx context.Context, serial int32) error
+	ResponseAcknowledgement(ctx context.Context) error
+	SendDeviceState(ctx context.Context, serial int32, deviceStateType DeviceStateType, state bool) error
+	SetRadioCapability(ctx context.Context, serial int32, rc RadioCapability) error
+	SetRadioPower(ctx context.Context, serial int32, powerOn bool, forEmergencyCall bool, preferredForEmergencyCall bool) error
+	SetResponseFunctions(ctx context.Context, radioModemResponse IRadioModemResponse, radioModemIndication IRadioModemIndication) error
+	GetImei(ctx context.Context, serial int32) error
+}
+
+type radioModemStubWrapper struct {
+	impl       IRadioModemServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioModemStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioModemStubWrapper) EnableModem(
+	ctx context.Context,
+	serial int32,
+	on bool,
+) error {
+	return w.impl.EnableModem(ctx, serial, on)
+}
+
+func (w *radioModemStubWrapper) GetBasebandVersion(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetBasebandVersion(ctx, serial)
+}
+
+func (w *radioModemStubWrapper) GetDeviceIdentity(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetDeviceIdentity(ctx, serial)
+}
+
+func (w *radioModemStubWrapper) GetHardwareConfig(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetHardwareConfig(ctx, serial)
+}
+
+func (w *radioModemStubWrapper) GetModemActivityInfo(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetModemActivityInfo(ctx, serial)
+}
+
+func (w *radioModemStubWrapper) GetModemStackStatus(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetModemStackStatus(ctx, serial)
+}
+
+func (w *radioModemStubWrapper) GetRadioCapability(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetRadioCapability(ctx, serial)
+}
+
+func (w *radioModemStubWrapper) NvReadItem(
+	ctx context.Context,
+	serial int32,
+	itemId NvItem,
+) error {
+	return w.impl.NvReadItem(ctx, serial, itemId)
+}
+
+func (w *radioModemStubWrapper) NvResetConfig(
+	ctx context.Context,
+	serial int32,
+	resetType ResetNvType,
+) error {
+	return w.impl.NvResetConfig(ctx, serial, resetType)
+}
+
+func (w *radioModemStubWrapper) NvWriteCdmaPrl(
+	ctx context.Context,
+	serial int32,
+	prl []byte,
+) error {
+	return w.impl.NvWriteCdmaPrl(ctx, serial, prl)
+}
+
+func (w *radioModemStubWrapper) NvWriteItem(
+	ctx context.Context,
+	serial int32,
+	item NvWriteItem,
+) error {
+	return w.impl.NvWriteItem(ctx, serial, item)
+}
+
+func (w *radioModemStubWrapper) RequestShutdown(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.RequestShutdown(ctx, serial)
+}
+
+func (w *radioModemStubWrapper) ResponseAcknowledgement(
+	ctx context.Context,
+) error {
+	return w.impl.ResponseAcknowledgement(ctx)
+}
+
+func (w *radioModemStubWrapper) SendDeviceState(
+	ctx context.Context,
+	serial int32,
+	deviceStateType DeviceStateType,
+	state bool,
+) error {
+	return w.impl.SendDeviceState(ctx, serial, deviceStateType, state)
+}
+
+func (w *radioModemStubWrapper) SetRadioCapability(
+	ctx context.Context,
+	serial int32,
+	rc RadioCapability,
+) error {
+	return w.impl.SetRadioCapability(ctx, serial, rc)
+}
+
+func (w *radioModemStubWrapper) SetRadioPower(
+	ctx context.Context,
+	serial int32,
+	powerOn bool,
+	forEmergencyCall bool,
+	preferredForEmergencyCall bool,
+) error {
+	return w.impl.SetRadioPower(ctx, serial, powerOn, forEmergencyCall, preferredForEmergencyCall)
+}
+
+func (w *radioModemStubWrapper) SetResponseFunctions(
+	ctx context.Context,
+	radioModemResponse IRadioModemResponse,
+	radioModemIndication IRadioModemIndication,
+) error {
+	return w.impl.SetResponseFunctions(ctx, radioModemResponse, radioModemIndication)
+}
+
+func (w *radioModemStubWrapper) GetImei(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetImei(ctx, serial)
+}
+
+var _ IRadioModem = (*radioModemStubWrapper)(nil)
+
+// NewRadioModemStub creates a server-side IRadioModem wrapping the given
+// server implementation. The returned value satisfies IRadioModem
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioModemStub(
+	impl IRadioModemServer,
+) IRadioModem {
+	wrapper := &radioModemStubWrapper{impl: impl}
+	stub := &RadioModemStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

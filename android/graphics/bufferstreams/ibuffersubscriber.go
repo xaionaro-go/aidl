@@ -50,7 +50,7 @@ func (p *BufferSubscriberProxy) OnSubscribe(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBufferSubscriber)
-	_data.WriteStrongBinder(subscription.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, subscription.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBufferSubscriber, "onSubscribe")
 	if _err != nil {
@@ -210,4 +210,73 @@ func (s *BufferSubscriberStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBufferSubscriberServer is the server-side interface that user implementations
+// provide to NewBufferSubscriberStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBufferSubscriberServer interface {
+	OnSubscribe(ctx context.Context, subscription IBufferSubscription) error
+	OnBufferCacheUpdate(ctx context.Context, update BufferCacheUpdate) error
+	OnNext(ctx context.Context, frame Frame) error
+	OnError(ctx context.Context) error
+	OnComplete(ctx context.Context) error
+}
+
+type bufferSubscriberStubWrapper struct {
+	impl       IBufferSubscriberServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bufferSubscriberStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bufferSubscriberStubWrapper) OnSubscribe(
+	ctx context.Context,
+	subscription IBufferSubscription,
+) error {
+	return w.impl.OnSubscribe(ctx, subscription)
+}
+
+func (w *bufferSubscriberStubWrapper) OnBufferCacheUpdate(
+	ctx context.Context,
+	update BufferCacheUpdate,
+) error {
+	return w.impl.OnBufferCacheUpdate(ctx, update)
+}
+
+func (w *bufferSubscriberStubWrapper) OnNext(
+	ctx context.Context,
+	frame Frame,
+) error {
+	return w.impl.OnNext(ctx, frame)
+}
+
+func (w *bufferSubscriberStubWrapper) OnError(
+	ctx context.Context,
+) error {
+	return w.impl.OnError(ctx)
+}
+
+func (w *bufferSubscriberStubWrapper) OnComplete(
+	ctx context.Context,
+) error {
+	return w.impl.OnComplete(ctx)
+}
+
+var _ IBufferSubscriber = (*bufferSubscriberStubWrapper)(nil)
+
+// NewBufferSubscriberStub creates a server-side IBufferSubscriber wrapping the given
+// server implementation. The returned value satisfies IBufferSubscriber
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBufferSubscriberStub(
+	impl IBufferSubscriberServer,
+) IBufferSubscriber {
+	wrapper := &bufferSubscriberStubWrapper{impl: impl}
+	stub := &BufferSubscriberStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

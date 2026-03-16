@@ -1351,3 +1351,333 @@ func (s *InCallAdapterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInCallAdapterServer is the server-side interface that user implementations
+// provide to NewInCallAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInCallAdapterServer interface {
+	AnswerCall(ctx context.Context, callId string, videoState int32) error
+	DeflectCall(ctx context.Context, callId string, address net.Uri) error
+	RejectCall(ctx context.Context, callId string, rejectWithMessage bool, textMessage string) error
+	RejectCallWithReason(ctx context.Context, callId string, rejectReason int32) error
+	TransferCall(ctx context.Context, callId string, targetNumber net.Uri, isConfirmationRequired bool) error
+	ConsultativeTransfer(ctx context.Context, callId string, otherCallId string) error
+	DisconnectCall(ctx context.Context, callId string) error
+	HoldCall(ctx context.Context, callId string) error
+	UnholdCall(ctx context.Context, callId string) error
+	Mute(ctx context.Context, shouldMute bool) error
+	SetAudioRoute(ctx context.Context, route int32, bluetoothAddress string) error
+	RequestCallEndpointChange(ctx context.Context, endpoint androidTelecom.CallEndpoint, callback os.ResultReceiver) error
+	EnterBackgroundAudioProcessing(ctx context.Context, callId string) error
+	ExitBackgroundAudioProcessing(ctx context.Context, callId string, shouldRing bool) error
+	PlayDtmfTone(ctx context.Context, callId string, digit uint16) error
+	StopDtmfTone(ctx context.Context, callId string) error
+	PostDialContinue(ctx context.Context, callId string, proceed bool) error
+	PhoneAccountSelected(ctx context.Context, callId string, accountHandle androidTelecom.PhoneAccountHandle, setDefault bool) error
+	Conference(ctx context.Context, callId string, otherCallId string) error
+	SplitFromConference(ctx context.Context, callId string) error
+	MergeConference(ctx context.Context, callId string) error
+	SwapConference(ctx context.Context, callId string) error
+	AddConferenceParticipants(ctx context.Context, callId string, participants []net.Uri) error
+	TurnOnProximitySensor(ctx context.Context) error
+	TurnOffProximitySensor(ctx context.Context, screenOnImmediately bool) error
+	PullExternalCall(ctx context.Context, callId string) error
+	SendCallEvent(ctx context.Context, callId string, event string, targetSdkVer int32, extras os.Bundle) error
+	PutExtras(ctx context.Context, callId string, extras os.Bundle) error
+	RemoveExtras(ctx context.Context, callId string, keys []string) error
+	SendRttRequest(ctx context.Context, callId string) error
+	RespondToRttRequest(ctx context.Context, callId string, id int32, accept bool) error
+	StopRtt(ctx context.Context, callId string) error
+	SetRttMode(ctx context.Context, callId string, mode int32) error
+	HandoverTo(ctx context.Context, callId string, destAcct androidTelecom.PhoneAccountHandle, videoState int32, extras os.Bundle) error
+}
+
+type inCallAdapterStubWrapper struct {
+	impl       IInCallAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inCallAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inCallAdapterStubWrapper) AnswerCall(
+	ctx context.Context,
+	callId string,
+	videoState int32,
+) error {
+	return w.impl.AnswerCall(ctx, callId, videoState)
+}
+
+func (w *inCallAdapterStubWrapper) DeflectCall(
+	ctx context.Context,
+	callId string,
+	address net.Uri,
+) error {
+	return w.impl.DeflectCall(ctx, callId, address)
+}
+
+func (w *inCallAdapterStubWrapper) RejectCall(
+	ctx context.Context,
+	callId string,
+	rejectWithMessage bool,
+	textMessage string,
+) error {
+	return w.impl.RejectCall(ctx, callId, rejectWithMessage, textMessage)
+}
+
+func (w *inCallAdapterStubWrapper) RejectCallWithReason(
+	ctx context.Context,
+	callId string,
+	rejectReason int32,
+) error {
+	return w.impl.RejectCallWithReason(ctx, callId, rejectReason)
+}
+
+func (w *inCallAdapterStubWrapper) TransferCall(
+	ctx context.Context,
+	callId string,
+	targetNumber net.Uri,
+	isConfirmationRequired bool,
+) error {
+	return w.impl.TransferCall(ctx, callId, targetNumber, isConfirmationRequired)
+}
+
+func (w *inCallAdapterStubWrapper) ConsultativeTransfer(
+	ctx context.Context,
+	callId string,
+	otherCallId string,
+) error {
+	return w.impl.ConsultativeTransfer(ctx, callId, otherCallId)
+}
+
+func (w *inCallAdapterStubWrapper) DisconnectCall(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.DisconnectCall(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) HoldCall(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.HoldCall(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) UnholdCall(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.UnholdCall(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) Mute(
+	ctx context.Context,
+	shouldMute bool,
+) error {
+	return w.impl.Mute(ctx, shouldMute)
+}
+
+func (w *inCallAdapterStubWrapper) SetAudioRoute(
+	ctx context.Context,
+	route int32,
+	bluetoothAddress string,
+) error {
+	return w.impl.SetAudioRoute(ctx, route, bluetoothAddress)
+}
+
+func (w *inCallAdapterStubWrapper) RequestCallEndpointChange(
+	ctx context.Context,
+	endpoint androidTelecom.CallEndpoint,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.RequestCallEndpointChange(ctx, endpoint, callback)
+}
+
+func (w *inCallAdapterStubWrapper) EnterBackgroundAudioProcessing(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.EnterBackgroundAudioProcessing(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) ExitBackgroundAudioProcessing(
+	ctx context.Context,
+	callId string,
+	shouldRing bool,
+) error {
+	return w.impl.ExitBackgroundAudioProcessing(ctx, callId, shouldRing)
+}
+
+func (w *inCallAdapterStubWrapper) PlayDtmfTone(
+	ctx context.Context,
+	callId string,
+	digit uint16,
+) error {
+	return w.impl.PlayDtmfTone(ctx, callId, digit)
+}
+
+func (w *inCallAdapterStubWrapper) StopDtmfTone(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.StopDtmfTone(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) PostDialContinue(
+	ctx context.Context,
+	callId string,
+	proceed bool,
+) error {
+	return w.impl.PostDialContinue(ctx, callId, proceed)
+}
+
+func (w *inCallAdapterStubWrapper) PhoneAccountSelected(
+	ctx context.Context,
+	callId string,
+	accountHandle androidTelecom.PhoneAccountHandle,
+	setDefault bool,
+) error {
+	return w.impl.PhoneAccountSelected(ctx, callId, accountHandle, setDefault)
+}
+
+func (w *inCallAdapterStubWrapper) Conference(
+	ctx context.Context,
+	callId string,
+	otherCallId string,
+) error {
+	return w.impl.Conference(ctx, callId, otherCallId)
+}
+
+func (w *inCallAdapterStubWrapper) SplitFromConference(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.SplitFromConference(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) MergeConference(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.MergeConference(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) SwapConference(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.SwapConference(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) AddConferenceParticipants(
+	ctx context.Context,
+	callId string,
+	participants []net.Uri,
+) error {
+	return w.impl.AddConferenceParticipants(ctx, callId, participants)
+}
+
+func (w *inCallAdapterStubWrapper) TurnOnProximitySensor(
+	ctx context.Context,
+) error {
+	return w.impl.TurnOnProximitySensor(ctx)
+}
+
+func (w *inCallAdapterStubWrapper) TurnOffProximitySensor(
+	ctx context.Context,
+	screenOnImmediately bool,
+) error {
+	return w.impl.TurnOffProximitySensor(ctx, screenOnImmediately)
+}
+
+func (w *inCallAdapterStubWrapper) PullExternalCall(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.PullExternalCall(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) SendCallEvent(
+	ctx context.Context,
+	callId string,
+	event string,
+	targetSdkVer int32,
+	extras os.Bundle,
+) error {
+	return w.impl.SendCallEvent(ctx, callId, event, targetSdkVer, extras)
+}
+
+func (w *inCallAdapterStubWrapper) PutExtras(
+	ctx context.Context,
+	callId string,
+	extras os.Bundle,
+) error {
+	return w.impl.PutExtras(ctx, callId, extras)
+}
+
+func (w *inCallAdapterStubWrapper) RemoveExtras(
+	ctx context.Context,
+	callId string,
+	keys []string,
+) error {
+	return w.impl.RemoveExtras(ctx, callId, keys)
+}
+
+func (w *inCallAdapterStubWrapper) SendRttRequest(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.SendRttRequest(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) RespondToRttRequest(
+	ctx context.Context,
+	callId string,
+	id int32,
+	accept bool,
+) error {
+	return w.impl.RespondToRttRequest(ctx, callId, id, accept)
+}
+
+func (w *inCallAdapterStubWrapper) StopRtt(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.StopRtt(ctx, callId)
+}
+
+func (w *inCallAdapterStubWrapper) SetRttMode(
+	ctx context.Context,
+	callId string,
+	mode int32,
+) error {
+	return w.impl.SetRttMode(ctx, callId, mode)
+}
+
+func (w *inCallAdapterStubWrapper) HandoverTo(
+	ctx context.Context,
+	callId string,
+	destAcct androidTelecom.PhoneAccountHandle,
+	videoState int32,
+	extras os.Bundle,
+) error {
+	return w.impl.HandoverTo(ctx, callId, destAcct, videoState, extras)
+}
+
+var _ IInCallAdapter = (*inCallAdapterStubWrapper)(nil)
+
+// NewInCallAdapterStub creates a server-side IInCallAdapter wrapping the given
+// server implementation. The returned value satisfies IInCallAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInCallAdapterStub(
+	impl IInCallAdapterServer,
+) IInCallAdapter {
+	wrapper := &inCallAdapterStubWrapper{impl: impl}
+	stub := &InCallAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

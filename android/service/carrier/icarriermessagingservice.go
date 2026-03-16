@@ -64,7 +64,7 @@ func (p *CarrierMessagingServiceProxy) FilterSms(
 	_data.WriteString16(format)
 	_data.WriteInt32(destPort)
 	_data.WriteInt32(subId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "filterSms")
 	if _err != nil {
@@ -89,7 +89,7 @@ func (p *CarrierMessagingServiceProxy) SendTextSms(
 	_data.WriteInt32(subId)
 	_data.WriteString16(destAddress)
 	_data.WriteInt32(sendSmsFlag)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendTextSms")
 	if _err != nil {
@@ -123,7 +123,7 @@ func (p *CarrierMessagingServiceProxy) SendDataSms(
 	_data.WriteString16(destAddress)
 	_data.WriteInt32(destPort)
 	_data.WriteInt32(sendSmsFlag)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendDataSms")
 	if _err != nil {
@@ -155,7 +155,7 @@ func (p *CarrierMessagingServiceProxy) SendMultipartTextSms(
 	_data.WriteInt32(subId)
 	_data.WriteString16(destAddress)
 	_data.WriteInt32(sendSmsFlag)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendMultipartTextSms")
 	if _err != nil {
@@ -184,7 +184,7 @@ func (p *CarrierMessagingServiceProxy) SendMms(
 	if _err := location.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "sendMms")
 	if _err != nil {
@@ -213,7 +213,7 @@ func (p *CarrierMessagingServiceProxy) DownloadMms(
 	if _err := location.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarrierMessagingService, "downloadMms")
 	if _err != nil {
@@ -431,4 +431,106 @@ func (s *CarrierMessagingServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICarrierMessagingServiceServer is the server-side interface that user implementations
+// provide to NewCarrierMessagingServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarrierMessagingServiceServer interface {
+	FilterSms(ctx context.Context, pdu MessagePdu, format string, destPort int32, subId int32, callback ICarrierMessagingCallback) error
+	SendTextSms(ctx context.Context, text string, subId int32, destAddress string, sendSmsFlag int32, callback ICarrierMessagingCallback) error
+	SendDataSms(ctx context.Context, data []byte, subId int32, destAddress string, destPort int32, sendSmsFlag int32, callback ICarrierMessagingCallback) error
+	SendMultipartTextSms(ctx context.Context, parts []string, subId int32, destAddress string, sendSmsFlag int32, callback ICarrierMessagingCallback) error
+	SendMms(ctx context.Context, pduUri net.Uri, subId int32, location net.Uri, callback ICarrierMessagingCallback) error
+	DownloadMms(ctx context.Context, pduUri net.Uri, subId int32, location net.Uri, callback ICarrierMessagingCallback) error
+}
+
+type carrierMessagingServiceStubWrapper struct {
+	impl       ICarrierMessagingServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carrierMessagingServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carrierMessagingServiceStubWrapper) FilterSms(
+	ctx context.Context,
+	pdu MessagePdu,
+	format string,
+	destPort int32,
+	subId int32,
+	callback ICarrierMessagingCallback,
+) error {
+	return w.impl.FilterSms(ctx, pdu, format, destPort, subId, callback)
+}
+
+func (w *carrierMessagingServiceStubWrapper) SendTextSms(
+	ctx context.Context,
+	text string,
+	subId int32,
+	destAddress string,
+	sendSmsFlag int32,
+	callback ICarrierMessagingCallback,
+) error {
+	return w.impl.SendTextSms(ctx, text, subId, destAddress, sendSmsFlag, callback)
+}
+
+func (w *carrierMessagingServiceStubWrapper) SendDataSms(
+	ctx context.Context,
+	data []byte,
+	subId int32,
+	destAddress string,
+	destPort int32,
+	sendSmsFlag int32,
+	callback ICarrierMessagingCallback,
+) error {
+	return w.impl.SendDataSms(ctx, data, subId, destAddress, destPort, sendSmsFlag, callback)
+}
+
+func (w *carrierMessagingServiceStubWrapper) SendMultipartTextSms(
+	ctx context.Context,
+	parts []string,
+	subId int32,
+	destAddress string,
+	sendSmsFlag int32,
+	callback ICarrierMessagingCallback,
+) error {
+	return w.impl.SendMultipartTextSms(ctx, parts, subId, destAddress, sendSmsFlag, callback)
+}
+
+func (w *carrierMessagingServiceStubWrapper) SendMms(
+	ctx context.Context,
+	pduUri net.Uri,
+	subId int32,
+	location net.Uri,
+	callback ICarrierMessagingCallback,
+) error {
+	return w.impl.SendMms(ctx, pduUri, subId, location, callback)
+}
+
+func (w *carrierMessagingServiceStubWrapper) DownloadMms(
+	ctx context.Context,
+	pduUri net.Uri,
+	subId int32,
+	location net.Uri,
+	callback ICarrierMessagingCallback,
+) error {
+	return w.impl.DownloadMms(ctx, pduUri, subId, location, callback)
+}
+
+var _ ICarrierMessagingService = (*carrierMessagingServiceStubWrapper)(nil)
+
+// NewCarrierMessagingServiceStub creates a server-side ICarrierMessagingService wrapping the given
+// server implementation. The returned value satisfies ICarrierMessagingService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarrierMessagingServiceStub(
+	impl ICarrierMessagingServiceServer,
+) ICarrierMessagingService {
+	wrapper := &carrierMessagingServiceStubWrapper{impl: impl}
+	stub := &CarrierMessagingServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -905,3 +905,158 @@ func (s *TunerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITunerServer is the server-side interface that user implementations
+// provide to NewTunerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerServer interface {
+	GetFrontendIds(ctx context.Context) ([]int32, error)
+	OpenFrontendById(ctx context.Context, frontendId int32) (IFrontend, error)
+	OpenDemux(ctx context.Context, demuxId []int32) (IDemux, error)
+	GetDemuxCaps(ctx context.Context) (DemuxCapabilities, error)
+	OpenDescrambler(ctx context.Context) (IDescrambler, error)
+	GetFrontendInfo(ctx context.Context, frontendId int32) (FrontendInfo, error)
+	GetLnbIds(ctx context.Context) ([]int32, error)
+	OpenLnbById(ctx context.Context, lnbId int32) (ILnb, error)
+	OpenLnbByName(ctx context.Context, lnbName string, lnbId []int32) (ILnb, error)
+	SetLna(ctx context.Context, bEnable bool) error
+	SetMaxNumberOfFrontends(ctx context.Context, frontendType FrontendType, maxNumber int32) error
+	GetMaxNumberOfFrontends(ctx context.Context, frontendType FrontendType) (int32, error)
+	IsLnaSupported(ctx context.Context) (bool, error)
+	GetDemuxIds(ctx context.Context) ([]int32, error)
+	OpenDemuxById(ctx context.Context, demuxId int32) (IDemux, error)
+	GetDemuxInfo(ctx context.Context, demuxId int32) (DemuxInfo, error)
+}
+
+type tunerStubWrapper struct {
+	impl       ITunerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerStubWrapper) GetFrontendIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetFrontendIds(ctx)
+}
+
+func (w *tunerStubWrapper) OpenFrontendById(
+	ctx context.Context,
+	frontendId int32,
+) (IFrontend, error) {
+	return w.impl.OpenFrontendById(ctx, frontendId)
+}
+
+func (w *tunerStubWrapper) OpenDemux(
+	ctx context.Context,
+	demuxId []int32,
+) (IDemux, error) {
+	return w.impl.OpenDemux(ctx, demuxId)
+}
+
+func (w *tunerStubWrapper) GetDemuxCaps(
+	ctx context.Context,
+) (DemuxCapabilities, error) {
+	return w.impl.GetDemuxCaps(ctx)
+}
+
+func (w *tunerStubWrapper) OpenDescrambler(
+	ctx context.Context,
+) (IDescrambler, error) {
+	return w.impl.OpenDescrambler(ctx)
+}
+
+func (w *tunerStubWrapper) GetFrontendInfo(
+	ctx context.Context,
+	frontendId int32,
+) (FrontendInfo, error) {
+	return w.impl.GetFrontendInfo(ctx, frontendId)
+}
+
+func (w *tunerStubWrapper) GetLnbIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetLnbIds(ctx)
+}
+
+func (w *tunerStubWrapper) OpenLnbById(
+	ctx context.Context,
+	lnbId int32,
+) (ILnb, error) {
+	return w.impl.OpenLnbById(ctx, lnbId)
+}
+
+func (w *tunerStubWrapper) OpenLnbByName(
+	ctx context.Context,
+	lnbName string,
+	lnbId []int32,
+) (ILnb, error) {
+	return w.impl.OpenLnbByName(ctx, lnbName, lnbId)
+}
+
+func (w *tunerStubWrapper) SetLna(
+	ctx context.Context,
+	bEnable bool,
+) error {
+	return w.impl.SetLna(ctx, bEnable)
+}
+
+func (w *tunerStubWrapper) SetMaxNumberOfFrontends(
+	ctx context.Context,
+	frontendType FrontendType,
+	maxNumber int32,
+) error {
+	return w.impl.SetMaxNumberOfFrontends(ctx, frontendType, maxNumber)
+}
+
+func (w *tunerStubWrapper) GetMaxNumberOfFrontends(
+	ctx context.Context,
+	frontendType FrontendType,
+) (int32, error) {
+	return w.impl.GetMaxNumberOfFrontends(ctx, frontendType)
+}
+
+func (w *tunerStubWrapper) IsLnaSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLnaSupported(ctx)
+}
+
+func (w *tunerStubWrapper) GetDemuxIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetDemuxIds(ctx)
+}
+
+func (w *tunerStubWrapper) OpenDemuxById(
+	ctx context.Context,
+	demuxId int32,
+) (IDemux, error) {
+	return w.impl.OpenDemuxById(ctx, demuxId)
+}
+
+func (w *tunerStubWrapper) GetDemuxInfo(
+	ctx context.Context,
+	demuxId int32,
+) (DemuxInfo, error) {
+	return w.impl.GetDemuxInfo(ctx, demuxId)
+}
+
+var _ ITuner = (*tunerStubWrapper)(nil)
+
+// NewTunerStub creates a server-side ITuner wrapping the given
+// server implementation. The returned value satisfies ITuner
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerStub(
+	impl ITunerServer,
+) ITuner {
+	wrapper := &tunerStubWrapper{impl: impl}
+	stub := &TunerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	voice "github.com/xaionaro-go/binder/android/service/voice"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +19,7 @@ const (
 
 type IVisualQueryDetectionAttentionListener interface {
 	AsBinder() binder.IBinder
-	OnAttentionGained(ctx context.Context, attentionResult interface{}) error
+	OnAttentionGained(ctx context.Context, attentionResult voice.VisualQueryAttentionResult) error
 	OnAttentionLost(ctx context.Context, interactionIntention int32) error
 }
 
@@ -40,10 +41,14 @@ var _ IVisualQueryDetectionAttentionListener = (*VisualQueryDetectionAttentionLi
 
 func (p *VisualQueryDetectionAttentionListenerProxy) OnAttentionGained(
 	ctx context.Context,
-	attentionResult interface{},
+	attentionResult voice.VisualQueryAttentionResult,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVisualQueryDetectionAttentionListener)
+	_data.WriteInt32(1)
+	if _err := attentionResult.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVisualQueryDetectionAttentionListener, "onAttentionGained")
 	if _err != nil {
@@ -89,7 +94,18 @@ func (s *VisualQueryDetectionAttentionListenerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attentionResult interface{}
+		var _arg_attentionResult voice.VisualQueryAttentionResult
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attentionResult.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.OnAttentionGained(ctx, _arg_attentionResult)
 		_ = _err
 		return nil, nil
@@ -107,4 +123,51 @@ func (s *VisualQueryDetectionAttentionListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVisualQueryDetectionAttentionListenerServer is the server-side interface that user implementations
+// provide to NewVisualQueryDetectionAttentionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVisualQueryDetectionAttentionListenerServer interface {
+	OnAttentionGained(ctx context.Context, attentionResult voice.VisualQueryAttentionResult) error
+	OnAttentionLost(ctx context.Context, interactionIntention int32) error
+}
+
+type visualQueryDetectionAttentionListenerStubWrapper struct {
+	impl       IVisualQueryDetectionAttentionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *visualQueryDetectionAttentionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *visualQueryDetectionAttentionListenerStubWrapper) OnAttentionGained(
+	ctx context.Context,
+	attentionResult voice.VisualQueryAttentionResult,
+) error {
+	return w.impl.OnAttentionGained(ctx, attentionResult)
+}
+
+func (w *visualQueryDetectionAttentionListenerStubWrapper) OnAttentionLost(
+	ctx context.Context,
+	interactionIntention int32,
+) error {
+	return w.impl.OnAttentionLost(ctx, interactionIntention)
+}
+
+var _ IVisualQueryDetectionAttentionListener = (*visualQueryDetectionAttentionListenerStubWrapper)(nil)
+
+// NewVisualQueryDetectionAttentionListenerStub creates a server-side IVisualQueryDetectionAttentionListener wrapping the given
+// server implementation. The returned value satisfies IVisualQueryDetectionAttentionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVisualQueryDetectionAttentionListenerStub(
+	impl IVisualQueryDetectionAttentionListenerServer,
+) IVisualQueryDetectionAttentionListener {
+	wrapper := &visualQueryDetectionAttentionListenerStubWrapper{impl: impl}
+	stub := &VisualQueryDetectionAttentionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

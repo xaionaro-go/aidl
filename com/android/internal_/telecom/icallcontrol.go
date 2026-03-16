@@ -523,3 +523,119 @@ func (s *CallControlStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICallControlServer is the server-side interface that user implementations
+// provide to NewCallControlStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallControlServer interface {
+	SetActive(ctx context.Context, callId string, callback os.ResultReceiver) error
+	Answer(ctx context.Context, videoState int32, callId string, callback os.ResultReceiver) error
+	SetInactive(ctx context.Context, callId string, callback os.ResultReceiver) error
+	Disconnect(ctx context.Context, callId string, disconnectCause androidTelecom.DisconnectCause, callback os.ResultReceiver) error
+	StartCallStreaming(ctx context.Context, callId string, callback os.ResultReceiver) error
+	RequestCallEndpointChange(ctx context.Context, callEndpoint androidTelecom.CallEndpoint, callback os.ResultReceiver) error
+	SetMuteState(ctx context.Context, isMuted bool, callback os.ResultReceiver) error
+	SendEvent(ctx context.Context, callId string, event string, extras os.Bundle) error
+	RequestVideoState(ctx context.Context, videoState int32, callId string, callback os.ResultReceiver) error
+}
+
+type callControlStubWrapper struct {
+	impl       ICallControlServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callControlStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callControlStubWrapper) SetActive(
+	ctx context.Context,
+	callId string,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.SetActive(ctx, callId, callback)
+}
+
+func (w *callControlStubWrapper) Answer(
+	ctx context.Context,
+	videoState int32,
+	callId string,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.Answer(ctx, videoState, callId, callback)
+}
+
+func (w *callControlStubWrapper) SetInactive(
+	ctx context.Context,
+	callId string,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.SetInactive(ctx, callId, callback)
+}
+
+func (w *callControlStubWrapper) Disconnect(
+	ctx context.Context,
+	callId string,
+	disconnectCause androidTelecom.DisconnectCause,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.Disconnect(ctx, callId, disconnectCause, callback)
+}
+
+func (w *callControlStubWrapper) StartCallStreaming(
+	ctx context.Context,
+	callId string,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.StartCallStreaming(ctx, callId, callback)
+}
+
+func (w *callControlStubWrapper) RequestCallEndpointChange(
+	ctx context.Context,
+	callEndpoint androidTelecom.CallEndpoint,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.RequestCallEndpointChange(ctx, callEndpoint, callback)
+}
+
+func (w *callControlStubWrapper) SetMuteState(
+	ctx context.Context,
+	isMuted bool,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.SetMuteState(ctx, isMuted, callback)
+}
+
+func (w *callControlStubWrapper) SendEvent(
+	ctx context.Context,
+	callId string,
+	event string,
+	extras os.Bundle,
+) error {
+	return w.impl.SendEvent(ctx, callId, event, extras)
+}
+
+func (w *callControlStubWrapper) RequestVideoState(
+	ctx context.Context,
+	videoState int32,
+	callId string,
+	callback os.ResultReceiver,
+) error {
+	return w.impl.RequestVideoState(ctx, videoState, callId, callback)
+}
+
+var _ ICallControl = (*callControlStubWrapper)(nil)
+
+// NewCallControlStub creates a server-side ICallControl wrapping the given
+// server implementation. The returned value satisfies ICallControl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallControlStub(
+	impl ICallControlServer,
+) ICallControl {
+	wrapper := &callControlStubWrapper{impl: impl}
+	stub := &CallControlStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

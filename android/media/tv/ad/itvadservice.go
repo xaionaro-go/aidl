@@ -50,7 +50,7 @@ func (p *TvAdServiceProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdService, "registerCallback")
 	if _err != nil {
@@ -67,7 +67,7 @@ func (p *TvAdServiceProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdService, "unregisterCallback")
 	if _err != nil {
@@ -91,7 +91,7 @@ func (p *TvAdServiceProxy) CreateSession(
 	if _err := channel.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(serviceId)
 	_data.WriteString16(type_)
 
@@ -210,4 +210,70 @@ func (s *TvAdServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvAdServiceServer is the server-side interface that user implementations
+// provide to NewTvAdServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvAdServiceServer interface {
+	RegisterCallback(ctx context.Context, callback ITvAdServiceCallback) error
+	UnregisterCallback(ctx context.Context, callback ITvAdServiceCallback) error
+	CreateSession(ctx context.Context, channel view.InputChannel, callback ITvAdSessionCallback, serviceId string, type_ string) error
+	SendAppLinkCommand(ctx context.Context, command os.Bundle) error
+}
+
+type tvAdServiceStubWrapper struct {
+	impl       ITvAdServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvAdServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvAdServiceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ITvAdServiceCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *tvAdServiceStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback ITvAdServiceCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+func (w *tvAdServiceStubWrapper) CreateSession(
+	ctx context.Context,
+	channel view.InputChannel,
+	callback ITvAdSessionCallback,
+	serviceId string,
+	type_ string,
+) error {
+	return w.impl.CreateSession(ctx, channel, callback, serviceId, type_)
+}
+
+func (w *tvAdServiceStubWrapper) SendAppLinkCommand(
+	ctx context.Context,
+	command os.Bundle,
+) error {
+	return w.impl.SendAppLinkCommand(ctx, command)
+}
+
+var _ ITvAdService = (*tvAdServiceStubWrapper)(nil)
+
+// NewTvAdServiceStub creates a server-side ITvAdService wrapping the given
+// server implementation. The returned value satisfies ITvAdService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvAdServiceStub(
+	impl ITvAdServiceServer,
+) ITvAdService {
+	wrapper := &tvAdServiceStubWrapper{impl: impl}
+	stub := &TvAdServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

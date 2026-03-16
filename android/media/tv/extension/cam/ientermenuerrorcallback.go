@@ -76,3 +76,41 @@ func (s *EnterMenuErrorCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEnterMenuErrorCallbackServer is the server-side interface that user implementations
+// provide to NewEnterMenuErrorCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEnterMenuErrorCallbackServer interface {
+	OnAppInfoEnterMenuError(ctx context.Context) error
+}
+
+type enterMenuErrorCallbackStubWrapper struct {
+	impl       IEnterMenuErrorCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *enterMenuErrorCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *enterMenuErrorCallbackStubWrapper) OnAppInfoEnterMenuError(
+	ctx context.Context,
+) error {
+	return w.impl.OnAppInfoEnterMenuError(ctx)
+}
+
+var _ IEnterMenuErrorCallback = (*enterMenuErrorCallbackStubWrapper)(nil)
+
+// NewEnterMenuErrorCallbackStub creates a server-side IEnterMenuErrorCallback wrapping the given
+// server implementation. The returned value satisfies IEnterMenuErrorCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEnterMenuErrorCallbackStub(
+	impl IEnterMenuErrorCallbackServer,
+) IEnterMenuErrorCallback {
+	wrapper := &enterMenuErrorCallbackStubWrapper{impl: impl}
+	stub := &EnterMenuErrorCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

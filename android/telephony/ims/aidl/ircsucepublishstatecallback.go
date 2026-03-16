@@ -94,3 +94,42 @@ func (s *RcsUcePublishStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRcsUcePublishStateCallbackServer is the server-side interface that user implementations
+// provide to NewRcsUcePublishStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRcsUcePublishStateCallbackServer interface {
+	OnPublishUpdated(ctx context.Context, attributes ims.PublishAttributes) error
+}
+
+type rcsUcePublishStateCallbackStubWrapper struct {
+	impl       IRcsUcePublishStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *rcsUcePublishStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *rcsUcePublishStateCallbackStubWrapper) OnPublishUpdated(
+	ctx context.Context,
+	attributes ims.PublishAttributes,
+) error {
+	return w.impl.OnPublishUpdated(ctx, attributes)
+}
+
+var _ IRcsUcePublishStateCallback = (*rcsUcePublishStateCallbackStubWrapper)(nil)
+
+// NewRcsUcePublishStateCallbackStub creates a server-side IRcsUcePublishStateCallback wrapping the given
+// server implementation. The returned value satisfies IRcsUcePublishStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRcsUcePublishStateCallbackStub(
+	impl IRcsUcePublishStateCallbackServer,
+) IRcsUcePublishStateCallback {
+	wrapper := &rcsUcePublishStateCallbackStubWrapper{impl: impl}
+	stub := &RcsUcePublishStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

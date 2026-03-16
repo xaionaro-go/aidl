@@ -134,3 +134,50 @@ func (s *DspHotwordDetectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDspHotwordDetectionCallbackServer is the server-side interface that user implementations
+// provide to NewDspHotwordDetectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDspHotwordDetectionCallbackServer interface {
+	OnDetected(ctx context.Context, hotwordDetectedResult HotwordDetectedResult) error
+	OnRejected(ctx context.Context, result HotwordRejectedResult) error
+}
+
+type dspHotwordDetectionCallbackStubWrapper struct {
+	impl       IDspHotwordDetectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dspHotwordDetectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dspHotwordDetectionCallbackStubWrapper) OnDetected(
+	ctx context.Context,
+	hotwordDetectedResult HotwordDetectedResult,
+) error {
+	return w.impl.OnDetected(ctx, hotwordDetectedResult)
+}
+
+func (w *dspHotwordDetectionCallbackStubWrapper) OnRejected(
+	ctx context.Context,
+	result HotwordRejectedResult,
+) error {
+	return w.impl.OnRejected(ctx, result)
+}
+
+var _ IDspHotwordDetectionCallback = (*dspHotwordDetectionCallbackStubWrapper)(nil)
+
+// NewDspHotwordDetectionCallbackStub creates a server-side IDspHotwordDetectionCallback wrapping the given
+// server implementation. The returned value satisfies IDspHotwordDetectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDspHotwordDetectionCallbackStub(
+	impl IDspHotwordDetectionCallbackServer,
+) IDspHotwordDetectionCallback {
+	wrapper := &dspHotwordDetectionCallbackStubWrapper{impl: impl}
+	stub := &DspHotwordDetectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

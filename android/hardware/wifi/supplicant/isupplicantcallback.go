@@ -112,3 +112,50 @@ func (s *SupplicantCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISupplicantCallbackServer is the server-side interface that user implementations
+// provide to NewSupplicantCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupplicantCallbackServer interface {
+	OnInterfaceCreated(ctx context.Context, ifaceName string) error
+	OnInterfaceRemoved(ctx context.Context, ifaceName string) error
+}
+
+type supplicantCallbackStubWrapper struct {
+	impl       ISupplicantCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supplicantCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supplicantCallbackStubWrapper) OnInterfaceCreated(
+	ctx context.Context,
+	ifaceName string,
+) error {
+	return w.impl.OnInterfaceCreated(ctx, ifaceName)
+}
+
+func (w *supplicantCallbackStubWrapper) OnInterfaceRemoved(
+	ctx context.Context,
+	ifaceName string,
+) error {
+	return w.impl.OnInterfaceRemoved(ctx, ifaceName)
+}
+
+var _ ISupplicantCallback = (*supplicantCallbackStubWrapper)(nil)
+
+// NewSupplicantCallbackStub creates a server-side ISupplicantCallback wrapping the given
+// server implementation. The returned value satisfies ISupplicantCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupplicantCallbackStub(
+	impl ISupplicantCallbackServer,
+) ISupplicantCallback {
+	wrapper := &supplicantCallbackStubWrapper{impl: impl}
+	stub := &SupplicantCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

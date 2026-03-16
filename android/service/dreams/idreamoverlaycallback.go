@@ -106,3 +106,49 @@ func (s *DreamOverlayCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDreamOverlayCallbackServer is the server-side interface that user implementations
+// provide to NewDreamOverlayCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDreamOverlayCallbackServer interface {
+	OnExitRequested(ctx context.Context) error
+	OnRedirectWake(ctx context.Context, redirect bool) error
+}
+
+type dreamOverlayCallbackStubWrapper struct {
+	impl       IDreamOverlayCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dreamOverlayCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dreamOverlayCallbackStubWrapper) OnExitRequested(
+	ctx context.Context,
+) error {
+	return w.impl.OnExitRequested(ctx)
+}
+
+func (w *dreamOverlayCallbackStubWrapper) OnRedirectWake(
+	ctx context.Context,
+	redirect bool,
+) error {
+	return w.impl.OnRedirectWake(ctx, redirect)
+}
+
+var _ IDreamOverlayCallback = (*dreamOverlayCallbackStubWrapper)(nil)
+
+// NewDreamOverlayCallbackStub creates a server-side IDreamOverlayCallback wrapping the given
+// server implementation. The returned value satisfies IDreamOverlayCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDreamOverlayCallbackStub(
+	impl IDreamOverlayCallbackServer,
+) IDreamOverlayCallback {
+	wrapper := &dreamOverlayCallbackStubWrapper{impl: impl}
+	stub := &DreamOverlayCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

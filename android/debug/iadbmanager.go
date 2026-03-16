@@ -425,7 +425,7 @@ func (p *AdbManagerProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAdbManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAdbManager, "registerCallback")
 	if _err != nil {
@@ -451,7 +451,7 @@ func (p *AdbManagerProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAdbManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAdbManager, "unregisterCallback")
 	if _err != nil {
@@ -707,4 +707,149 @@ func (s *AdbManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAdbManagerServer is the server-side interface that user implementations
+// provide to NewAdbManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAdbManagerServer interface {
+	AllowDebugging(ctx context.Context, alwaysAllow bool, publicKey string) error
+	DenyDebugging(ctx context.Context) error
+	ClearDebuggingKeys(ctx context.Context) error
+	AllowWirelessDebugging(ctx context.Context, alwaysAllow bool, bssid string) error
+	DenyWirelessDebugging(ctx context.Context) error
+	GetPairedDevices(ctx context.Context) ([]FingerprintAndPairDevice, error)
+	UnpairDevice(ctx context.Context, fingerprint string) error
+	EnablePairingByPairingCode(ctx context.Context) error
+	EnablePairingByQrCode(ctx context.Context, serviceName string, password string) error
+	GetAdbWirelessPort(ctx context.Context) (int32, error)
+	DisablePairing(ctx context.Context) error
+	IsAdbWifiSupported(ctx context.Context) (bool, error)
+	IsAdbWifiQrSupported(ctx context.Context) (bool, error)
+	RegisterCallback(ctx context.Context, callback IAdbCallback) error
+	UnregisterCallback(ctx context.Context, callback IAdbCallback) error
+}
+
+type adbManagerStubWrapper struct {
+	impl       IAdbManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *adbManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *adbManagerStubWrapper) AllowDebugging(
+	ctx context.Context,
+	alwaysAllow bool,
+	publicKey string,
+) error {
+	return w.impl.AllowDebugging(ctx, alwaysAllow, publicKey)
+}
+
+func (w *adbManagerStubWrapper) DenyDebugging(
+	ctx context.Context,
+) error {
+	return w.impl.DenyDebugging(ctx)
+}
+
+func (w *adbManagerStubWrapper) ClearDebuggingKeys(
+	ctx context.Context,
+) error {
+	return w.impl.ClearDebuggingKeys(ctx)
+}
+
+func (w *adbManagerStubWrapper) AllowWirelessDebugging(
+	ctx context.Context,
+	alwaysAllow bool,
+	bssid string,
+) error {
+	return w.impl.AllowWirelessDebugging(ctx, alwaysAllow, bssid)
+}
+
+func (w *adbManagerStubWrapper) DenyWirelessDebugging(
+	ctx context.Context,
+) error {
+	return w.impl.DenyWirelessDebugging(ctx)
+}
+
+func (w *adbManagerStubWrapper) GetPairedDevices(
+	ctx context.Context,
+) ([]FingerprintAndPairDevice, error) {
+	return w.impl.GetPairedDevices(ctx)
+}
+
+func (w *adbManagerStubWrapper) UnpairDevice(
+	ctx context.Context,
+	fingerprint string,
+) error {
+	return w.impl.UnpairDevice(ctx, fingerprint)
+}
+
+func (w *adbManagerStubWrapper) EnablePairingByPairingCode(
+	ctx context.Context,
+) error {
+	return w.impl.EnablePairingByPairingCode(ctx)
+}
+
+func (w *adbManagerStubWrapper) EnablePairingByQrCode(
+	ctx context.Context,
+	serviceName string,
+	password string,
+) error {
+	return w.impl.EnablePairingByQrCode(ctx, serviceName, password)
+}
+
+func (w *adbManagerStubWrapper) GetAdbWirelessPort(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAdbWirelessPort(ctx)
+}
+
+func (w *adbManagerStubWrapper) DisablePairing(
+	ctx context.Context,
+) error {
+	return w.impl.DisablePairing(ctx)
+}
+
+func (w *adbManagerStubWrapper) IsAdbWifiSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAdbWifiSupported(ctx)
+}
+
+func (w *adbManagerStubWrapper) IsAdbWifiQrSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAdbWifiQrSupported(ctx)
+}
+
+func (w *adbManagerStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IAdbCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *adbManagerStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback IAdbCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+var _ IAdbManager = (*adbManagerStubWrapper)(nil)
+
+// NewAdbManagerStub creates a server-side IAdbManager wrapping the given
+// server implementation. The returned value satisfies IAdbManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAdbManagerStub(
+	impl IAdbManagerServer,
+) IAdbManager {
+	wrapper := &adbManagerStubWrapper{impl: impl}
+	stub := &AdbManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

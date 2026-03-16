@@ -99,3 +99,43 @@ func (s *PackageStatsObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPackageStatsObserverServer is the server-side interface that user implementations
+// provide to NewPackageStatsObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageStatsObserverServer interface {
+	OnGetStatsCompleted(ctx context.Context, pStats PackageStats, succeeded bool) error
+}
+
+type packageStatsObserverStubWrapper struct {
+	impl       IPackageStatsObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageStatsObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageStatsObserverStubWrapper) OnGetStatsCompleted(
+	ctx context.Context,
+	pStats PackageStats,
+	succeeded bool,
+) error {
+	return w.impl.OnGetStatsCompleted(ctx, pStats, succeeded)
+}
+
+var _ IPackageStatsObserver = (*packageStatsObserverStubWrapper)(nil)
+
+// NewPackageStatsObserverStub creates a server-side IPackageStatsObserver wrapping the given
+// server implementation. The returned value satisfies IPackageStatsObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageStatsObserverStub(
+	impl IPackageStatsObserverServer,
+) IPackageStatsObserver {
+	wrapper := &packageStatsObserverStubWrapper{impl: impl}
+	stub := &PackageStatsObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

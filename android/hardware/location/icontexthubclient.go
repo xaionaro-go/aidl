@@ -197,7 +197,7 @@ func (p *ContextHubClientProxy) SendReliableMessageToNanoApp(
 	if _err := message.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(transactionCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, transactionCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContextHubClient, "sendReliableMessageToNanoApp")
 	if _err != nil {
@@ -348,4 +348,82 @@ func (s *ContextHubClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContextHubClientServer is the server-side interface that user implementations
+// provide to NewContextHubClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContextHubClientServer interface {
+	SendMessageToNanoApp(ctx context.Context, message NanoAppMessage) (int32, error)
+	Close(ctx context.Context) error
+	GetId(ctx context.Context) (int32, error)
+	CallbackFinished(ctx context.Context) error
+	ReliableMessageCallbackFinished(ctx context.Context, messageSequenceNumber int32, errorCode byte) error
+	SendReliableMessageToNanoApp(ctx context.Context, message NanoAppMessage, transactionCallback IContextHubTransactionCallback) (int32, error)
+}
+
+type contextHubClientStubWrapper struct {
+	impl       IContextHubClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contextHubClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contextHubClientStubWrapper) SendMessageToNanoApp(
+	ctx context.Context,
+	message NanoAppMessage,
+) (int32, error) {
+	return w.impl.SendMessageToNanoApp(ctx, message)
+}
+
+func (w *contextHubClientStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *contextHubClientStubWrapper) GetId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetId(ctx)
+}
+
+func (w *contextHubClientStubWrapper) CallbackFinished(
+	ctx context.Context,
+) error {
+	return w.impl.CallbackFinished(ctx)
+}
+
+func (w *contextHubClientStubWrapper) ReliableMessageCallbackFinished(
+	ctx context.Context,
+	messageSequenceNumber int32,
+	errorCode byte,
+) error {
+	return w.impl.ReliableMessageCallbackFinished(ctx, messageSequenceNumber, errorCode)
+}
+
+func (w *contextHubClientStubWrapper) SendReliableMessageToNanoApp(
+	ctx context.Context,
+	message NanoAppMessage,
+	transactionCallback IContextHubTransactionCallback,
+) (int32, error) {
+	return w.impl.SendReliableMessageToNanoApp(ctx, message, transactionCallback)
+}
+
+var _ IContextHubClient = (*contextHubClientStubWrapper)(nil)
+
+// NewContextHubClientStub creates a server-side IContextHubClient wrapping the given
+// server implementation. The returned value satisfies IContextHubClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContextHubClientStub(
+	impl IContextHubClientServer,
+) IContextHubClient {
+	wrapper := &contextHubClientStubWrapper{impl: impl}
+	stub := &ContextHubClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

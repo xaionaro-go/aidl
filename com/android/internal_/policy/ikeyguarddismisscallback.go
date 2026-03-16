@@ -124,3 +124,55 @@ func (s *KeyguardDismissCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyguardDismissCallbackServer is the server-side interface that user implementations
+// provide to NewKeyguardDismissCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyguardDismissCallbackServer interface {
+	OnDismissError(ctx context.Context) error
+	OnDismissSucceeded(ctx context.Context) error
+	OnDismissCancelled(ctx context.Context) error
+}
+
+type keyguardDismissCallbackStubWrapper struct {
+	impl       IKeyguardDismissCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyguardDismissCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyguardDismissCallbackStubWrapper) OnDismissError(
+	ctx context.Context,
+) error {
+	return w.impl.OnDismissError(ctx)
+}
+
+func (w *keyguardDismissCallbackStubWrapper) OnDismissSucceeded(
+	ctx context.Context,
+) error {
+	return w.impl.OnDismissSucceeded(ctx)
+}
+
+func (w *keyguardDismissCallbackStubWrapper) OnDismissCancelled(
+	ctx context.Context,
+) error {
+	return w.impl.OnDismissCancelled(ctx)
+}
+
+var _ IKeyguardDismissCallback = (*keyguardDismissCallbackStubWrapper)(nil)
+
+// NewKeyguardDismissCallbackStub creates a server-side IKeyguardDismissCallback wrapping the given
+// server implementation. The returned value satisfies IKeyguardDismissCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyguardDismissCallbackStub(
+	impl IKeyguardDismissCallbackServer,
+) IKeyguardDismissCallback {
+	wrapper := &keyguardDismissCallbackStubWrapper{impl: impl}
+	stub := &KeyguardDismissCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

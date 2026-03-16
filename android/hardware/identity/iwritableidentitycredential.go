@@ -205,8 +205,8 @@ func (p *WritableIdentityCredentialProxy) BeginAddEntry(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteString(nameSpace)
-	_data.WriteString(name)
+	_data.WriteString16(nameSpace)
+	_data.WriteString16(name)
 	_data.WriteInt32(entrySize)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWritableIdentityCredential, "beginAddEntry")
@@ -499,11 +499,11 @@ func (s *WritableIdentityCredentialStub) OnTransaction(
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_accessControlProfileIds []int32
 		_ = _arg_accessControlProfileIds
-		_arg_nameSpace, _err := _data.ReadString()
+		_arg_nameSpace, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_name, _err := _data.ReadString()
+		_arg_name, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -587,4 +587,110 @@ func (s *WritableIdentityCredentialStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWritableIdentityCredentialServer is the server-side interface that user implementations
+// provide to NewWritableIdentityCredentialStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWritableIdentityCredentialServer interface {
+	GetAttestationCertificate(ctx context.Context, attestationApplicationId []byte, attestationChallenge []byte) ([]Certificate, error)
+	StartPersonalization(ctx context.Context, accessControlProfileCount int32, entryCounts []int32) error
+	AddAccessControlProfile(ctx context.Context, id int32, readerCertificate Certificate, userAuthenticationRequired bool, timeoutMillis int64, secureUserId int64) (SecureAccessControlProfile, error)
+	BeginAddEntry(ctx context.Context, accessControlProfileIds []int32, nameSpace string, name string, entrySize int32) error
+	AddEntryValue(ctx context.Context, content []byte) ([]byte, error)
+	FinishAddingEntries(ctx context.Context, credentialData []byte, proofOfProvisioningSignature []byte) error
+	SetExpectedProofOfProvisioningSize(ctx context.Context, expectedProofOfProvisioningSize int32) error
+	SetRemotelyProvisionedAttestationKey(ctx context.Context, attestationKeyBlob []byte, attestationCertificate []byte) error
+}
+
+type writableIdentityCredentialStubWrapper struct {
+	impl       IWritableIdentityCredentialServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *writableIdentityCredentialStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *writableIdentityCredentialStubWrapper) GetAttestationCertificate(
+	ctx context.Context,
+	attestationApplicationId []byte,
+	attestationChallenge []byte,
+) ([]Certificate, error) {
+	return w.impl.GetAttestationCertificate(ctx, attestationApplicationId, attestationChallenge)
+}
+
+func (w *writableIdentityCredentialStubWrapper) StartPersonalization(
+	ctx context.Context,
+	accessControlProfileCount int32,
+	entryCounts []int32,
+) error {
+	return w.impl.StartPersonalization(ctx, accessControlProfileCount, entryCounts)
+}
+
+func (w *writableIdentityCredentialStubWrapper) AddAccessControlProfile(
+	ctx context.Context,
+	id int32,
+	readerCertificate Certificate,
+	userAuthenticationRequired bool,
+	timeoutMillis int64,
+	secureUserId int64,
+) (SecureAccessControlProfile, error) {
+	return w.impl.AddAccessControlProfile(ctx, id, readerCertificate, userAuthenticationRequired, timeoutMillis, secureUserId)
+}
+
+func (w *writableIdentityCredentialStubWrapper) BeginAddEntry(
+	ctx context.Context,
+	accessControlProfileIds []int32,
+	nameSpace string,
+	name string,
+	entrySize int32,
+) error {
+	return w.impl.BeginAddEntry(ctx, accessControlProfileIds, nameSpace, name, entrySize)
+}
+
+func (w *writableIdentityCredentialStubWrapper) AddEntryValue(
+	ctx context.Context,
+	content []byte,
+) ([]byte, error) {
+	return w.impl.AddEntryValue(ctx, content)
+}
+
+func (w *writableIdentityCredentialStubWrapper) FinishAddingEntries(
+	ctx context.Context,
+	credentialData []byte,
+	proofOfProvisioningSignature []byte,
+) error {
+	return w.impl.FinishAddingEntries(ctx, credentialData, proofOfProvisioningSignature)
+}
+
+func (w *writableIdentityCredentialStubWrapper) SetExpectedProofOfProvisioningSize(
+	ctx context.Context,
+	expectedProofOfProvisioningSize int32,
+) error {
+	return w.impl.SetExpectedProofOfProvisioningSize(ctx, expectedProofOfProvisioningSize)
+}
+
+func (w *writableIdentityCredentialStubWrapper) SetRemotelyProvisionedAttestationKey(
+	ctx context.Context,
+	attestationKeyBlob []byte,
+	attestationCertificate []byte,
+) error {
+	return w.impl.SetRemotelyProvisionedAttestationKey(ctx, attestationKeyBlob, attestationCertificate)
+}
+
+var _ IWritableIdentityCredential = (*writableIdentityCredentialStubWrapper)(nil)
+
+// NewWritableIdentityCredentialStub creates a server-side IWritableIdentityCredential wrapping the given
+// server implementation. The returned value satisfies IWritableIdentityCredential
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWritableIdentityCredentialStub(
+	impl IWritableIdentityCredentialServer,
+) IWritableIdentityCredential {
+	wrapper := &writableIdentityCredentialStubWrapper{impl: impl}
+	stub := &WritableIdentityCredentialStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

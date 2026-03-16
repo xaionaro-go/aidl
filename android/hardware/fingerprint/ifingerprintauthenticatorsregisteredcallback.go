@@ -90,3 +90,42 @@ func (s *FingerprintAuthenticatorsRegisteredCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFingerprintAuthenticatorsRegisteredCallbackServer is the server-side interface that user implementations
+// provide to NewFingerprintAuthenticatorsRegisteredCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFingerprintAuthenticatorsRegisteredCallbackServer interface {
+	OnAllAuthenticatorsRegistered(ctx context.Context, sensors []FingerprintSensorPropertiesInternal) error
+}
+
+type fingerprintAuthenticatorsRegisteredCallbackStubWrapper struct {
+	impl       IFingerprintAuthenticatorsRegisteredCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fingerprintAuthenticatorsRegisteredCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fingerprintAuthenticatorsRegisteredCallbackStubWrapper) OnAllAuthenticatorsRegistered(
+	ctx context.Context,
+	sensors []FingerprintSensorPropertiesInternal,
+) error {
+	return w.impl.OnAllAuthenticatorsRegistered(ctx, sensors)
+}
+
+var _ IFingerprintAuthenticatorsRegisteredCallback = (*fingerprintAuthenticatorsRegisteredCallbackStubWrapper)(nil)
+
+// NewFingerprintAuthenticatorsRegisteredCallbackStub creates a server-side IFingerprintAuthenticatorsRegisteredCallback wrapping the given
+// server implementation. The returned value satisfies IFingerprintAuthenticatorsRegisteredCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFingerprintAuthenticatorsRegisteredCallbackStub(
+	impl IFingerprintAuthenticatorsRegisteredCallbackServer,
+) IFingerprintAuthenticatorsRegisteredCallback {
+	wrapper := &fingerprintAuthenticatorsRegisteredCallbackStubWrapper{impl: impl}
+	stub := &FingerprintAuthenticatorsRegisteredCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

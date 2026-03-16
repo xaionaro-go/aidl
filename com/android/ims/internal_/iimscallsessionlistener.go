@@ -121,7 +121,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionProgressing(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -143,7 +143,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionStarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -165,7 +165,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionStartFailed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := reasonInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -187,7 +187,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionTerminated(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := reasonInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -209,7 +209,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionHeld(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -231,7 +231,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionHoldFailed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := reasonInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -253,7 +253,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionHoldReceived(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -275,7 +275,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionResumed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -297,7 +297,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionResumeFailed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := reasonInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -319,7 +319,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionResumeReceived(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -342,8 +342,8 @@ func (p *ImsCallSessionListenerProxy) CallSessionMergeStarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
-	_data.WriteStrongBinder(newSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, newSession.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -364,7 +364,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionMergeComplete(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMergeComplete")
 	if _err != nil {
@@ -382,7 +382,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionMergeFailed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := reasonInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -404,7 +404,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionUpdated(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -426,7 +426,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionUpdateFailed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := reasonInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -448,7 +448,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionUpdateReceived(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -471,8 +471,8 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceExtended(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
-	_data.WriteStrongBinder(newSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, newSession.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -494,7 +494,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceExtendFailed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := reasonInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -517,8 +517,8 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceExtendReceived(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
-	_data.WriteStrongBinder(newSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, newSession.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -539,7 +539,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionInviteParticipantsRequestDelive
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionInviteParticipantsRequestDelivered")
 	if _err != nil {
@@ -557,7 +557,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionInviteParticipantsRequestFailed
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := reasonInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -578,7 +578,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionRemoveParticipantsRequestDelive
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionRemoveParticipantsRequestDelivered")
 	if _err != nil {
@@ -596,7 +596,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionRemoveParticipantsRequestFailed
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := reasonInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -618,7 +618,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceStateUpdated(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := state.MarshalParcel(_data); _err != nil {
 		return _err
@@ -641,7 +641,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionUssdMessageReceived(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(mode)
 	_data.WriteString16(ussdMessage)
 
@@ -663,7 +663,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionHandover(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(srcAccessTech)
 	_data.WriteInt32(targetAccessTech)
 	_data.WriteInt32(1)
@@ -689,7 +689,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionHandoverFailed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(srcAccessTech)
 	_data.WriteInt32(targetAccessTech)
 	_data.WriteInt32(1)
@@ -714,7 +714,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionMayHandover(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(srcAccessTech)
 	_data.WriteInt32(targetAccessTech)
 
@@ -734,7 +734,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionTtyModeReceived(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(mode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionTtyModeReceived")
@@ -753,7 +753,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionMultipartyStateChanged(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteBool(isMultiParty)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMultipartyStateChanged")
@@ -772,7 +772,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionSuppServiceReceived(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := suppSrvNotification.MarshalParcel(_data); _err != nil {
 		return _err
@@ -794,7 +794,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionRttModifyRequestReceived(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := callProfile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1730,4 +1730,386 @@ func (s *ImsCallSessionListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsCallSessionListenerServer is the server-side interface that user implementations
+// provide to NewImsCallSessionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsCallSessionListenerServer interface {
+	CallSessionProgressing(ctx context.Context, session IImsCallSession, profile ims.ImsStreamMediaProfile) error
+	CallSessionStarted(ctx context.Context, session IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionStartFailed(ctx context.Context, session IImsCallSession, reasonInfo ims.ImsReasonInfo) error
+	CallSessionTerminated(ctx context.Context, session IImsCallSession, reasonInfo ims.ImsReasonInfo) error
+	CallSessionHeld(ctx context.Context, session IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionHoldFailed(ctx context.Context, session IImsCallSession, reasonInfo ims.ImsReasonInfo) error
+	CallSessionHoldReceived(ctx context.Context, session IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionResumed(ctx context.Context, session IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionResumeFailed(ctx context.Context, session IImsCallSession, reasonInfo ims.ImsReasonInfo) error
+	CallSessionResumeReceived(ctx context.Context, session IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionMergeStarted(ctx context.Context, session IImsCallSession, newSession IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionMergeComplete(ctx context.Context, session IImsCallSession) error
+	CallSessionMergeFailed(ctx context.Context, session IImsCallSession, reasonInfo ims.ImsReasonInfo) error
+	CallSessionUpdated(ctx context.Context, session IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionUpdateFailed(ctx context.Context, session IImsCallSession, reasonInfo ims.ImsReasonInfo) error
+	CallSessionUpdateReceived(ctx context.Context, session IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionConferenceExtended(ctx context.Context, session IImsCallSession, newSession IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionConferenceExtendFailed(ctx context.Context, session IImsCallSession, reasonInfo ims.ImsReasonInfo) error
+	CallSessionConferenceExtendReceived(ctx context.Context, session IImsCallSession, newSession IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionInviteParticipantsRequestDelivered(ctx context.Context, session IImsCallSession) error
+	CallSessionInviteParticipantsRequestFailed(ctx context.Context, session IImsCallSession, reasonInfo ims.ImsReasonInfo) error
+	CallSessionRemoveParticipantsRequestDelivered(ctx context.Context, session IImsCallSession) error
+	CallSessionRemoveParticipantsRequestFailed(ctx context.Context, session IImsCallSession, reasonInfo ims.ImsReasonInfo) error
+	CallSessionConferenceStateUpdated(ctx context.Context, session IImsCallSession, state ims.ImsConferenceState) error
+	CallSessionUssdMessageReceived(ctx context.Context, session IImsCallSession, mode int32, ussdMessage string) error
+	CallSessionHandover(ctx context.Context, session IImsCallSession, srcAccessTech int32, targetAccessTech int32, reasonInfo ims.ImsReasonInfo) error
+	CallSessionHandoverFailed(ctx context.Context, session IImsCallSession, srcAccessTech int32, targetAccessTech int32, reasonInfo ims.ImsReasonInfo) error
+	CallSessionMayHandover(ctx context.Context, session IImsCallSession, srcAccessTech int32, targetAccessTech int32) error
+	CallSessionTtyModeReceived(ctx context.Context, session IImsCallSession, mode int32) error
+	CallSessionMultipartyStateChanged(ctx context.Context, session IImsCallSession, isMultiParty bool) error
+	CallSessionSuppServiceReceived(ctx context.Context, session IImsCallSession, suppSrvNotification ims.ImsSuppServiceNotification) error
+	CallSessionRttModifyRequestReceived(ctx context.Context, session IImsCallSession, callProfile ims.ImsCallProfile) error
+	CallSessionRttModifyResponseReceived(ctx context.Context, status int32) error
+	CallSessionRttMessageReceived(ctx context.Context, rttMessage string) error
+	CallSessionRttAudioIndicatorChanged(ctx context.Context, profile ims.ImsStreamMediaProfile) error
+	CallSessionTransferred(ctx context.Context) error
+	CallSessionTransferFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallQualityChanged(ctx context.Context, callQuality media.CallQuality) error
+	CallSessionSendAnbrQuery(ctx context.Context, mediaType int32, direction int32, bitsPerSecond int32) error
+}
+
+type imsCallSessionListenerStubWrapper struct {
+	impl       IImsCallSessionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsCallSessionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionProgressing(
+	ctx context.Context,
+	session IImsCallSession,
+	profile ims.ImsStreamMediaProfile,
+) error {
+	return w.impl.CallSessionProgressing(ctx, session, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionStarted(
+	ctx context.Context,
+	session IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionStarted(ctx, session, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionStartFailed(
+	ctx context.Context,
+	session IImsCallSession,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionStartFailed(ctx, session, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionTerminated(
+	ctx context.Context,
+	session IImsCallSession,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionTerminated(ctx, session, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHeld(
+	ctx context.Context,
+	session IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionHeld(ctx, session, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHoldFailed(
+	ctx context.Context,
+	session IImsCallSession,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionHoldFailed(ctx, session, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHoldReceived(
+	ctx context.Context,
+	session IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionHoldReceived(ctx, session, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionResumed(
+	ctx context.Context,
+	session IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionResumed(ctx, session, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionResumeFailed(
+	ctx context.Context,
+	session IImsCallSession,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionResumeFailed(ctx, session, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionResumeReceived(
+	ctx context.Context,
+	session IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionResumeReceived(ctx, session, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMergeStarted(
+	ctx context.Context,
+	session IImsCallSession,
+	newSession IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionMergeStarted(ctx, session, newSession, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMergeComplete(
+	ctx context.Context,
+	session IImsCallSession,
+) error {
+	return w.impl.CallSessionMergeComplete(ctx, session)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMergeFailed(
+	ctx context.Context,
+	session IImsCallSession,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionMergeFailed(ctx, session, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionUpdated(
+	ctx context.Context,
+	session IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionUpdated(ctx, session, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionUpdateFailed(
+	ctx context.Context,
+	session IImsCallSession,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionUpdateFailed(ctx, session, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionUpdateReceived(
+	ctx context.Context,
+	session IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionUpdateReceived(ctx, session, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionConferenceExtended(
+	ctx context.Context,
+	session IImsCallSession,
+	newSession IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionConferenceExtended(ctx, session, newSession, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionConferenceExtendFailed(
+	ctx context.Context,
+	session IImsCallSession,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionConferenceExtendFailed(ctx, session, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionConferenceExtendReceived(
+	ctx context.Context,
+	session IImsCallSession,
+	newSession IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionConferenceExtendReceived(ctx, session, newSession, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionInviteParticipantsRequestDelivered(
+	ctx context.Context,
+	session IImsCallSession,
+) error {
+	return w.impl.CallSessionInviteParticipantsRequestDelivered(ctx, session)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionInviteParticipantsRequestFailed(
+	ctx context.Context,
+	session IImsCallSession,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionInviteParticipantsRequestFailed(ctx, session, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRemoveParticipantsRequestDelivered(
+	ctx context.Context,
+	session IImsCallSession,
+) error {
+	return w.impl.CallSessionRemoveParticipantsRequestDelivered(ctx, session)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRemoveParticipantsRequestFailed(
+	ctx context.Context,
+	session IImsCallSession,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionRemoveParticipantsRequestFailed(ctx, session, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionConferenceStateUpdated(
+	ctx context.Context,
+	session IImsCallSession,
+	state ims.ImsConferenceState,
+) error {
+	return w.impl.CallSessionConferenceStateUpdated(ctx, session, state)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionUssdMessageReceived(
+	ctx context.Context,
+	session IImsCallSession,
+	mode int32,
+	ussdMessage string,
+) error {
+	return w.impl.CallSessionUssdMessageReceived(ctx, session, mode, ussdMessage)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHandover(
+	ctx context.Context,
+	session IImsCallSession,
+	srcAccessTech int32,
+	targetAccessTech int32,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionHandover(ctx, session, srcAccessTech, targetAccessTech, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHandoverFailed(
+	ctx context.Context,
+	session IImsCallSession,
+	srcAccessTech int32,
+	targetAccessTech int32,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionHandoverFailed(ctx, session, srcAccessTech, targetAccessTech, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMayHandover(
+	ctx context.Context,
+	session IImsCallSession,
+	srcAccessTech int32,
+	targetAccessTech int32,
+) error {
+	return w.impl.CallSessionMayHandover(ctx, session, srcAccessTech, targetAccessTech)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionTtyModeReceived(
+	ctx context.Context,
+	session IImsCallSession,
+	mode int32,
+) error {
+	return w.impl.CallSessionTtyModeReceived(ctx, session, mode)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMultipartyStateChanged(
+	ctx context.Context,
+	session IImsCallSession,
+	isMultiParty bool,
+) error {
+	return w.impl.CallSessionMultipartyStateChanged(ctx, session, isMultiParty)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionSuppServiceReceived(
+	ctx context.Context,
+	session IImsCallSession,
+	suppSrvNotification ims.ImsSuppServiceNotification,
+) error {
+	return w.impl.CallSessionSuppServiceReceived(ctx, session, suppSrvNotification)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRttModifyRequestReceived(
+	ctx context.Context,
+	session IImsCallSession,
+	callProfile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionRttModifyRequestReceived(ctx, session, callProfile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRttModifyResponseReceived(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.CallSessionRttModifyResponseReceived(ctx, status)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRttMessageReceived(
+	ctx context.Context,
+	rttMessage string,
+) error {
+	return w.impl.CallSessionRttMessageReceived(ctx, rttMessage)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRttAudioIndicatorChanged(
+	ctx context.Context,
+	profile ims.ImsStreamMediaProfile,
+) error {
+	return w.impl.CallSessionRttAudioIndicatorChanged(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionTransferred(
+	ctx context.Context,
+) error {
+	return w.impl.CallSessionTransferred(ctx)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionTransferFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionTransferFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallQualityChanged(
+	ctx context.Context,
+	callQuality media.CallQuality,
+) error {
+	return w.impl.CallQualityChanged(ctx, callQuality)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionSendAnbrQuery(
+	ctx context.Context,
+	mediaType int32,
+	direction int32,
+	bitsPerSecond int32,
+) error {
+	return w.impl.CallSessionSendAnbrQuery(ctx, mediaType, direction, bitsPerSecond)
+}
+
+var _ IImsCallSessionListener = (*imsCallSessionListenerStubWrapper)(nil)
+
+// NewImsCallSessionListenerStub creates a server-side IImsCallSessionListener wrapping the given
+// server implementation. The returned value satisfies IImsCallSessionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsCallSessionListenerStub(
+	impl IImsCallSessionListenerServer,
+) IImsCallSessionListener {
+	wrapper := &imsCallSessionListenerStubWrapper{impl: impl}
+	stub := &ImsCallSessionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

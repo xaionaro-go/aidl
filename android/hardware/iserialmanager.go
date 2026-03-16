@@ -157,3 +157,49 @@ func (s *SerialManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISerialManagerServer is the server-side interface that user implementations
+// provide to NewSerialManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISerialManagerServer interface {
+	GetSerialPorts(ctx context.Context) ([]string, error)
+	OpenSerialPort(ctx context.Context, name string) (int32, error)
+}
+
+type serialManagerStubWrapper struct {
+	impl       ISerialManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serialManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serialManagerStubWrapper) GetSerialPorts(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetSerialPorts(ctx)
+}
+
+func (w *serialManagerStubWrapper) OpenSerialPort(
+	ctx context.Context,
+	name string,
+) (int32, error) {
+	return w.impl.OpenSerialPort(ctx, name)
+}
+
+var _ ISerialManager = (*serialManagerStubWrapper)(nil)
+
+// NewSerialManagerStub creates a server-side ISerialManager wrapping the given
+// server implementation. The returned value satisfies ISerialManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSerialManagerStub(
+	impl ISerialManagerServer,
+) ISerialManager {
+	wrapper := &serialManagerStubWrapper{impl: impl}
+	stub := &SerialManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

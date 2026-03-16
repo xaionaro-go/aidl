@@ -298,7 +298,7 @@ func (p *WifiChipProxy) CreateRttController(
 	var _result IWifiRttController
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiChip)
-	_data.WriteStrongBinder(boundIface.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, boundIface.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWifiChip, "createRttController")
 	if _err != nil {
@@ -1061,7 +1061,7 @@ func (p *WifiChipProxy) RegisterEventCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiChip)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWifiChip, "registerEventCallback")
 	if _err != nil {
@@ -2622,4 +2622,435 @@ func (s *WifiChipStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWifiChipServer is the server-side interface that user implementations
+// provide to NewWifiChipStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiChipServer interface {
+	ConfigureChip(ctx context.Context, modeId int32) error
+	CreateApIface(ctx context.Context) (IWifiApIface, error)
+	CreateBridgedApIface(ctx context.Context) (IWifiApIface, error)
+	CreateNanIface(ctx context.Context) (IWifiNanIface, error)
+	CreateP2pIface(ctx context.Context) (IWifiP2pIface, error)
+	CreateRttController(ctx context.Context, boundIface IWifiStaIface) (IWifiRttController, error)
+	CreateStaIface(ctx context.Context) (IWifiStaIface, error)
+	EnableDebugErrorAlerts(ctx context.Context, enable bool) error
+	FlushRingBufferToFile(ctx context.Context) error
+	ForceDumpToDebugRingBuffer(ctx context.Context, ringName string) error
+	GetApIface(ctx context.Context, ifname string) (IWifiApIface, error)
+	GetApIfaceNames(ctx context.Context) ([]string, error)
+	GetAvailableModes(ctx context.Context) ([]wifiIWifiChip.ChipMode, error)
+	GetFeatureSet(ctx context.Context) (int32, error)
+	GetDebugHostWakeReasonStats(ctx context.Context) (WifiDebugHostWakeReasonStats, error)
+	GetDebugRingBuffersStatus(ctx context.Context) ([]WifiDebugRingBufferStatus, error)
+	GetId(ctx context.Context) (int32, error)
+	GetMode(ctx context.Context) (int32, error)
+	GetNanIface(ctx context.Context, ifname string) (IWifiNanIface, error)
+	GetNanIfaceNames(ctx context.Context) ([]string, error)
+	GetP2pIface(ctx context.Context, ifname string) (IWifiP2pIface, error)
+	GetP2pIfaceNames(ctx context.Context) ([]string, error)
+	GetStaIface(ctx context.Context, ifname string) (IWifiStaIface, error)
+	GetStaIfaceNames(ctx context.Context) ([]string, error)
+	GetSupportedRadioCombinations(ctx context.Context) ([]WifiRadioCombination, error)
+	GetWifiChipCapabilities(ctx context.Context) (WifiChipCapabilities, error)
+	GetUsableChannels(ctx context.Context, band WifiBand, ifaceModeMask int32, filterMask int32) ([]WifiUsableChannel, error)
+	SetAfcChannelAllowance(ctx context.Context, afcChannelAllowance AfcChannelAllowance) error
+	RegisterEventCallback(ctx context.Context, callback IWifiChipEventCallback) error
+	RemoveApIface(ctx context.Context, ifname string) error
+	RemoveIfaceInstanceFromBridgedApIface(ctx context.Context, brIfaceName string, ifaceInstanceName string) error
+	RemoveNanIface(ctx context.Context, ifname string) error
+	RemoveP2pIface(ctx context.Context, ifname string) error
+	RemoveStaIface(ctx context.Context, ifname string) error
+	RequestChipDebugInfo(ctx context.Context) (wifiIWifiChip.ChipDebugInfo, error)
+	RequestDriverDebugDump(ctx context.Context) ([]byte, error)
+	RequestFirmwareDebugDump(ctx context.Context) ([]byte, error)
+	ResetTxPowerScenario(ctx context.Context) error
+	SelectTxPowerScenario(ctx context.Context, scenario wifiIWifiChip.TxPowerScenario) error
+	SetCoexUnsafeChannels(ctx context.Context, unsafeChannels []wifiIWifiChip.CoexUnsafeChannel, restrictions int32) error
+	SetCountryCode(ctx context.Context, code []byte) error
+	SetLatencyMode(ctx context.Context, mode audio.LatencyMode) error
+	SetMultiStaPrimaryConnection(ctx context.Context, ifName string) error
+	SetMultiStaUseCase(ctx context.Context, useCase wifiIWifiChip.MultiStaUseCase) error
+	StartLoggingToDebugRingBuffer(ctx context.Context, ringName string, verboseLevel WifiDebugRingBufferVerboseLevel, maxIntervalInSec int32, minDataSizeInBytes int32) error
+	StopLoggingToDebugRingBuffer(ctx context.Context) error
+	TriggerSubsystemRestart(ctx context.Context) error
+	EnableStaChannelForPeerNetwork(ctx context.Context, channelCategoryEnableFlag int32) error
+	SetMloMode(ctx context.Context, mode wifiIWifiChip.ChipMloMode) error
+	CreateApOrBridgedApIface(ctx context.Context, iface IfaceConcurrencyType, vendorData []common.OuiKeyedData) (IWifiApIface, error)
+	SetVoipMode(ctx context.Context, mode wifiIWifiChip.VoipMode) error
+	CreateApOrBridgedApIfaceWithParams(ctx context.Context, params wifiIWifiChip.ApIfaceParams) (IWifiApIface, error)
+}
+
+type wifiChipStubWrapper struct {
+	impl       IWifiChipServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiChipStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiChipStubWrapper) ConfigureChip(
+	ctx context.Context,
+	modeId int32,
+) error {
+	return w.impl.ConfigureChip(ctx, modeId)
+}
+
+func (w *wifiChipStubWrapper) CreateApIface(
+	ctx context.Context,
+) (IWifiApIface, error) {
+	return w.impl.CreateApIface(ctx)
+}
+
+func (w *wifiChipStubWrapper) CreateBridgedApIface(
+	ctx context.Context,
+) (IWifiApIface, error) {
+	return w.impl.CreateBridgedApIface(ctx)
+}
+
+func (w *wifiChipStubWrapper) CreateNanIface(
+	ctx context.Context,
+) (IWifiNanIface, error) {
+	return w.impl.CreateNanIface(ctx)
+}
+
+func (w *wifiChipStubWrapper) CreateP2pIface(
+	ctx context.Context,
+) (IWifiP2pIface, error) {
+	return w.impl.CreateP2pIface(ctx)
+}
+
+func (w *wifiChipStubWrapper) CreateRttController(
+	ctx context.Context,
+	boundIface IWifiStaIface,
+) (IWifiRttController, error) {
+	return w.impl.CreateRttController(ctx, boundIface)
+}
+
+func (w *wifiChipStubWrapper) CreateStaIface(
+	ctx context.Context,
+) (IWifiStaIface, error) {
+	return w.impl.CreateStaIface(ctx)
+}
+
+func (w *wifiChipStubWrapper) EnableDebugErrorAlerts(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.EnableDebugErrorAlerts(ctx, enable)
+}
+
+func (w *wifiChipStubWrapper) FlushRingBufferToFile(
+	ctx context.Context,
+) error {
+	return w.impl.FlushRingBufferToFile(ctx)
+}
+
+func (w *wifiChipStubWrapper) ForceDumpToDebugRingBuffer(
+	ctx context.Context,
+	ringName string,
+) error {
+	return w.impl.ForceDumpToDebugRingBuffer(ctx, ringName)
+}
+
+func (w *wifiChipStubWrapper) GetApIface(
+	ctx context.Context,
+	ifname string,
+) (IWifiApIface, error) {
+	return w.impl.GetApIface(ctx, ifname)
+}
+
+func (w *wifiChipStubWrapper) GetApIfaceNames(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetApIfaceNames(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetAvailableModes(
+	ctx context.Context,
+) ([]wifiIWifiChip.ChipMode, error) {
+	return w.impl.GetAvailableModes(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetFeatureSet(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetFeatureSet(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetDebugHostWakeReasonStats(
+	ctx context.Context,
+) (WifiDebugHostWakeReasonStats, error) {
+	return w.impl.GetDebugHostWakeReasonStats(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetDebugRingBuffersStatus(
+	ctx context.Context,
+) ([]WifiDebugRingBufferStatus, error) {
+	return w.impl.GetDebugRingBuffersStatus(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetId(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMode(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetNanIface(
+	ctx context.Context,
+	ifname string,
+) (IWifiNanIface, error) {
+	return w.impl.GetNanIface(ctx, ifname)
+}
+
+func (w *wifiChipStubWrapper) GetNanIfaceNames(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetNanIfaceNames(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetP2pIface(
+	ctx context.Context,
+	ifname string,
+) (IWifiP2pIface, error) {
+	return w.impl.GetP2pIface(ctx, ifname)
+}
+
+func (w *wifiChipStubWrapper) GetP2pIfaceNames(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetP2pIfaceNames(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetStaIface(
+	ctx context.Context,
+	ifname string,
+) (IWifiStaIface, error) {
+	return w.impl.GetStaIface(ctx, ifname)
+}
+
+func (w *wifiChipStubWrapper) GetStaIfaceNames(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetStaIfaceNames(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetSupportedRadioCombinations(
+	ctx context.Context,
+) ([]WifiRadioCombination, error) {
+	return w.impl.GetSupportedRadioCombinations(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetWifiChipCapabilities(
+	ctx context.Context,
+) (WifiChipCapabilities, error) {
+	return w.impl.GetWifiChipCapabilities(ctx)
+}
+
+func (w *wifiChipStubWrapper) GetUsableChannels(
+	ctx context.Context,
+	band WifiBand,
+	ifaceModeMask int32,
+	filterMask int32,
+) ([]WifiUsableChannel, error) {
+	return w.impl.GetUsableChannels(ctx, band, ifaceModeMask, filterMask)
+}
+
+func (w *wifiChipStubWrapper) SetAfcChannelAllowance(
+	ctx context.Context,
+	afcChannelAllowance AfcChannelAllowance,
+) error {
+	return w.impl.SetAfcChannelAllowance(ctx, afcChannelAllowance)
+}
+
+func (w *wifiChipStubWrapper) RegisterEventCallback(
+	ctx context.Context,
+	callback IWifiChipEventCallback,
+) error {
+	return w.impl.RegisterEventCallback(ctx, callback)
+}
+
+func (w *wifiChipStubWrapper) RemoveApIface(
+	ctx context.Context,
+	ifname string,
+) error {
+	return w.impl.RemoveApIface(ctx, ifname)
+}
+
+func (w *wifiChipStubWrapper) RemoveIfaceInstanceFromBridgedApIface(
+	ctx context.Context,
+	brIfaceName string,
+	ifaceInstanceName string,
+) error {
+	return w.impl.RemoveIfaceInstanceFromBridgedApIface(ctx, brIfaceName, ifaceInstanceName)
+}
+
+func (w *wifiChipStubWrapper) RemoveNanIface(
+	ctx context.Context,
+	ifname string,
+) error {
+	return w.impl.RemoveNanIface(ctx, ifname)
+}
+
+func (w *wifiChipStubWrapper) RemoveP2pIface(
+	ctx context.Context,
+	ifname string,
+) error {
+	return w.impl.RemoveP2pIface(ctx, ifname)
+}
+
+func (w *wifiChipStubWrapper) RemoveStaIface(
+	ctx context.Context,
+	ifname string,
+) error {
+	return w.impl.RemoveStaIface(ctx, ifname)
+}
+
+func (w *wifiChipStubWrapper) RequestChipDebugInfo(
+	ctx context.Context,
+) (wifiIWifiChip.ChipDebugInfo, error) {
+	return w.impl.RequestChipDebugInfo(ctx)
+}
+
+func (w *wifiChipStubWrapper) RequestDriverDebugDump(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.RequestDriverDebugDump(ctx)
+}
+
+func (w *wifiChipStubWrapper) RequestFirmwareDebugDump(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.RequestFirmwareDebugDump(ctx)
+}
+
+func (w *wifiChipStubWrapper) ResetTxPowerScenario(
+	ctx context.Context,
+) error {
+	return w.impl.ResetTxPowerScenario(ctx)
+}
+
+func (w *wifiChipStubWrapper) SelectTxPowerScenario(
+	ctx context.Context,
+	scenario wifiIWifiChip.TxPowerScenario,
+) error {
+	return w.impl.SelectTxPowerScenario(ctx, scenario)
+}
+
+func (w *wifiChipStubWrapper) SetCoexUnsafeChannels(
+	ctx context.Context,
+	unsafeChannels []wifiIWifiChip.CoexUnsafeChannel,
+	restrictions int32,
+) error {
+	return w.impl.SetCoexUnsafeChannels(ctx, unsafeChannels, restrictions)
+}
+
+func (w *wifiChipStubWrapper) SetCountryCode(
+	ctx context.Context,
+	code []byte,
+) error {
+	return w.impl.SetCountryCode(ctx, code)
+}
+
+func (w *wifiChipStubWrapper) SetLatencyMode(
+	ctx context.Context,
+	mode audio.LatencyMode,
+) error {
+	return w.impl.SetLatencyMode(ctx, mode)
+}
+
+func (w *wifiChipStubWrapper) SetMultiStaPrimaryConnection(
+	ctx context.Context,
+	ifName string,
+) error {
+	return w.impl.SetMultiStaPrimaryConnection(ctx, ifName)
+}
+
+func (w *wifiChipStubWrapper) SetMultiStaUseCase(
+	ctx context.Context,
+	useCase wifiIWifiChip.MultiStaUseCase,
+) error {
+	return w.impl.SetMultiStaUseCase(ctx, useCase)
+}
+
+func (w *wifiChipStubWrapper) StartLoggingToDebugRingBuffer(
+	ctx context.Context,
+	ringName string,
+	verboseLevel WifiDebugRingBufferVerboseLevel,
+	maxIntervalInSec int32,
+	minDataSizeInBytes int32,
+) error {
+	return w.impl.StartLoggingToDebugRingBuffer(ctx, ringName, verboseLevel, maxIntervalInSec, minDataSizeInBytes)
+}
+
+func (w *wifiChipStubWrapper) StopLoggingToDebugRingBuffer(
+	ctx context.Context,
+) error {
+	return w.impl.StopLoggingToDebugRingBuffer(ctx)
+}
+
+func (w *wifiChipStubWrapper) TriggerSubsystemRestart(
+	ctx context.Context,
+) error {
+	return w.impl.TriggerSubsystemRestart(ctx)
+}
+
+func (w *wifiChipStubWrapper) EnableStaChannelForPeerNetwork(
+	ctx context.Context,
+	channelCategoryEnableFlag int32,
+) error {
+	return w.impl.EnableStaChannelForPeerNetwork(ctx, channelCategoryEnableFlag)
+}
+
+func (w *wifiChipStubWrapper) SetMloMode(
+	ctx context.Context,
+	mode wifiIWifiChip.ChipMloMode,
+) error {
+	return w.impl.SetMloMode(ctx, mode)
+}
+
+func (w *wifiChipStubWrapper) CreateApOrBridgedApIface(
+	ctx context.Context,
+	iface IfaceConcurrencyType,
+	vendorData []common.OuiKeyedData,
+) (IWifiApIface, error) {
+	return w.impl.CreateApOrBridgedApIface(ctx, iface, vendorData)
+}
+
+func (w *wifiChipStubWrapper) SetVoipMode(
+	ctx context.Context,
+	mode wifiIWifiChip.VoipMode,
+) error {
+	return w.impl.SetVoipMode(ctx, mode)
+}
+
+func (w *wifiChipStubWrapper) CreateApOrBridgedApIfaceWithParams(
+	ctx context.Context,
+	params wifiIWifiChip.ApIfaceParams,
+) (IWifiApIface, error) {
+	return w.impl.CreateApOrBridgedApIfaceWithParams(ctx, params)
+}
+
+var _ IWifiChip = (*wifiChipStubWrapper)(nil)
+
+// NewWifiChipStub creates a server-side IWifiChip wrapping the given
+// server implementation. The returned value satisfies IWifiChip
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiChipStub(
+	impl IWifiChipServer,
+) IWifiChip {
+	wrapper := &wifiChipStubWrapper{impl: impl}
+	stub := &WifiChipStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

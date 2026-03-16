@@ -1,7 +1,6 @@
 package IAccessibilityManager
 
 import (
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -9,7 +8,7 @@ import (
 
 type WindowTransformationSpec struct {
 	TransformationMatrix []float32
-	MagnificationSpec    view.MagnificationSpec
+	MagnificationSpec    interface{}
 }
 
 var _ parcel.Parcelable = (*WindowTransformationSpec)(nil)
@@ -25,9 +24,6 @@ func (s *WindowTransformationSpec) MarshalParcel(
 		for _, _item := range s.TransformationMatrix {
 			p.WriteFloat32(_item)
 		}
-	}
-	if _err := s.MagnificationSpec.MarshalParcel(p); _err != nil {
-		return _err
 	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
@@ -55,10 +51,6 @@ func (s *WindowTransformationSpec) UnmarshalParcel(
 				return _err
 			}
 		}
-	}
-
-	if _err = s.MagnificationSpec.UnmarshalParcel(p); _err != nil {
-		return _err
 	}
 
 	parcel.SkipToParcelableEnd(p, _endPos)

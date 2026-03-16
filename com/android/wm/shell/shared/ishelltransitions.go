@@ -131,7 +131,7 @@ func (p *ShellTransitionsProxy) SetHomeTransitionListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShellTransitions)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShellTransitions, "setHomeTransitionListener")
 	if _err != nil {
@@ -207,7 +207,7 @@ func (p *ShellTransitionsProxy) SetFocusTransitionListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIShellTransitions)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIShellTransitions, "setFocusTransitionListener")
 	if _err != nil {
@@ -366,4 +366,91 @@ func (s *ShellTransitionsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IShellTransitionsServer is the server-side interface that user implementations
+// provide to NewShellTransitionsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IShellTransitionsServer interface {
+	RegisterRemote(ctx context.Context, filter window.TransitionFilter, remoteTransition window.RemoteTransition) error
+	UnregisterRemote(ctx context.Context, remoteTransition window.RemoteTransition) error
+	GetShellApplyToken(ctx context.Context) (binder.IBinder, error)
+	SetHomeTransitionListener(ctx context.Context, listener IHomeTransitionListener) error
+	GetHomeTaskOverlayContainer(ctx context.Context) (view.SurfaceControl, error)
+	RegisterRemoteForTakeover(ctx context.Context, filter window.TransitionFilter, remoteTransition window.RemoteTransition) error
+	SetFocusTransitionListener(ctx context.Context, listener IFocusTransitionListener) error
+}
+
+type shellTransitionsStubWrapper struct {
+	impl       IShellTransitionsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *shellTransitionsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *shellTransitionsStubWrapper) RegisterRemote(
+	ctx context.Context,
+	filter window.TransitionFilter,
+	remoteTransition window.RemoteTransition,
+) error {
+	return w.impl.RegisterRemote(ctx, filter, remoteTransition)
+}
+
+func (w *shellTransitionsStubWrapper) UnregisterRemote(
+	ctx context.Context,
+	remoteTransition window.RemoteTransition,
+) error {
+	return w.impl.UnregisterRemote(ctx, remoteTransition)
+}
+
+func (w *shellTransitionsStubWrapper) GetShellApplyToken(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.GetShellApplyToken(ctx)
+}
+
+func (w *shellTransitionsStubWrapper) SetHomeTransitionListener(
+	ctx context.Context,
+	listener IHomeTransitionListener,
+) error {
+	return w.impl.SetHomeTransitionListener(ctx, listener)
+}
+
+func (w *shellTransitionsStubWrapper) GetHomeTaskOverlayContainer(
+	ctx context.Context,
+) (view.SurfaceControl, error) {
+	return w.impl.GetHomeTaskOverlayContainer(ctx)
+}
+
+func (w *shellTransitionsStubWrapper) RegisterRemoteForTakeover(
+	ctx context.Context,
+	filter window.TransitionFilter,
+	remoteTransition window.RemoteTransition,
+) error {
+	return w.impl.RegisterRemoteForTakeover(ctx, filter, remoteTransition)
+}
+
+func (w *shellTransitionsStubWrapper) SetFocusTransitionListener(
+	ctx context.Context,
+	listener IFocusTransitionListener,
+) error {
+	return w.impl.SetFocusTransitionListener(ctx, listener)
+}
+
+var _ IShellTransitions = (*shellTransitionsStubWrapper)(nil)
+
+// NewShellTransitionsStub creates a server-side IShellTransitions wrapping the given
+// server implementation. The returned value satisfies IShellTransitions
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewShellTransitionsStub(
+	impl IShellTransitionsServer,
+) IShellTransitions {
+	wrapper := &shellTransitionsStubWrapper{impl: impl}
+	stub := &ShellTransitionsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

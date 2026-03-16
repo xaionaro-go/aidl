@@ -118,3 +118,51 @@ func (s *AttentionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAttentionCallbackServer is the server-side interface that user implementations
+// provide to NewAttentionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAttentionCallbackServer interface {
+	OnSuccess(ctx context.Context, result int32, timestamp int64) error
+	OnFailure(ctx context.Context, error_ int32) error
+}
+
+type attentionCallbackStubWrapper struct {
+	impl       IAttentionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *attentionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *attentionCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result int32,
+	timestamp int64,
+) error {
+	return w.impl.OnSuccess(ctx, result, timestamp)
+}
+
+func (w *attentionCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.OnFailure(ctx, error_)
+}
+
+var _ IAttentionCallback = (*attentionCallbackStubWrapper)(nil)
+
+// NewAttentionCallbackStub creates a server-side IAttentionCallback wrapping the given
+// server implementation. The returned value satisfies IAttentionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAttentionCallbackStub(
+	impl IAttentionCallbackServer,
+) IAttentionCallback {
+	wrapper := &attentionCallbackStubWrapper{impl: impl}
+	stub := &AttentionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

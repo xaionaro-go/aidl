@@ -3,7 +3,6 @@ package vibrator
 import (
 	"context"
 	"fmt"
-	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -20,7 +19,7 @@ const (
 
 type IVibrationSession interface {
 	AsBinder() binder.IBinder
-	Vibrate(ctx context.Context, vibration os.CombinedVibration, reason string) error
+	Vibrate(ctx context.Context, vibration interface{}, reason string) error
 	FinishSession(ctx context.Context) error
 	CancelSession(ctx context.Context) error
 }
@@ -52,15 +51,11 @@ var _ IVibrationSession = (*VibrationSessionProxy)(nil)
 
 func (p *VibrationSessionProxy) Vibrate(
 	ctx context.Context,
-	vibration os.CombinedVibration,
+	vibration interface{},
 	reason string,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrationSession)
-	_data.WriteInt32(1)
-	if _err := vibration.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteString16(reason)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibrationSession, "vibrate")
@@ -147,18 +142,7 @@ func (s *VibrationSessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_vibration os.CombinedVibration
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_vibration.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_vibration interface{}
 		_arg_reason, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -198,4 +182,58 @@ func (s *VibrationSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVibrationSessionServer is the server-side interface that user implementations
+// provide to NewVibrationSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVibrationSessionServer interface {
+	Vibrate(ctx context.Context, vibration interface{}, reason string) error
+	FinishSession(ctx context.Context) error
+	CancelSession(ctx context.Context) error
+}
+
+type vibrationSessionStubWrapper struct {
+	impl       IVibrationSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vibrationSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vibrationSessionStubWrapper) Vibrate(
+	ctx context.Context,
+	vibration interface{},
+	reason string,
+) error {
+	return w.impl.Vibrate(ctx, vibration, reason)
+}
+
+func (w *vibrationSessionStubWrapper) FinishSession(
+	ctx context.Context,
+) error {
+	return w.impl.FinishSession(ctx)
+}
+
+func (w *vibrationSessionStubWrapper) CancelSession(
+	ctx context.Context,
+) error {
+	return w.impl.CancelSession(ctx)
+}
+
+var _ IVibrationSession = (*vibrationSessionStubWrapper)(nil)
+
+// NewVibrationSessionStub creates a server-side IVibrationSession wrapping the given
+// server implementation. The returned value satisfies IVibrationSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVibrationSessionStub(
+	impl IVibrationSessionServer,
+) IVibrationSession {
+	wrapper := &vibrationSessionStubWrapper{impl: impl}
+	stub := &VibrationSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

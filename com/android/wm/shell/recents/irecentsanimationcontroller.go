@@ -133,7 +133,7 @@ func (p *RecentsAnimationControllerProxy) Finish(
 	_data.WriteInterfaceToken(DescriptorIRecentsAnimationController)
 	_data.WriteBool(moveHomeToTop)
 	_data.WriteBool(sendUserLeaveHint)
-	_data.WriteStrongBinder(finishCb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, finishCb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecentsAnimationController, "finish")
 	if _err != nil {
@@ -429,4 +429,96 @@ func (s *RecentsAnimationControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRecentsAnimationControllerServer is the server-side interface that user implementations
+// provide to NewRecentsAnimationControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecentsAnimationControllerServer interface {
+	ScreenshotTask(ctx context.Context, taskId int32) (view.WindowManagerTaskSnapshot, error)
+	SetFinishTaskTransaction(ctx context.Context, taskId int32, finishTransaction window.PictureInPictureSurfaceTransaction, overlay view.SurfaceControl) error
+	Finish(ctx context.Context, moveHomeToTop bool, sendUserLeaveHint bool, finishCb os.IResultReceiver) error
+	SetInputConsumerEnabled(ctx context.Context, enabled bool) error
+	SetWillFinishToHome(ctx context.Context, willFinishToHome bool) error
+	DetachNavigationBarFromApp(ctx context.Context, moveHomeToTop bool) error
+	HandOffAnimation(ctx context.Context, targets []view.RemoteAnimationTarget, states []window.WindowAnimationState) error
+}
+
+type recentsAnimationControllerStubWrapper struct {
+	impl       IRecentsAnimationControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recentsAnimationControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recentsAnimationControllerStubWrapper) ScreenshotTask(
+	ctx context.Context,
+	taskId int32,
+) (view.WindowManagerTaskSnapshot, error) {
+	return w.impl.ScreenshotTask(ctx, taskId)
+}
+
+func (w *recentsAnimationControllerStubWrapper) SetFinishTaskTransaction(
+	ctx context.Context,
+	taskId int32,
+	finishTransaction window.PictureInPictureSurfaceTransaction,
+	overlay view.SurfaceControl,
+) error {
+	return w.impl.SetFinishTaskTransaction(ctx, taskId, finishTransaction, overlay)
+}
+
+func (w *recentsAnimationControllerStubWrapper) Finish(
+	ctx context.Context,
+	moveHomeToTop bool,
+	sendUserLeaveHint bool,
+	finishCb os.IResultReceiver,
+) error {
+	return w.impl.Finish(ctx, moveHomeToTop, sendUserLeaveHint, finishCb)
+}
+
+func (w *recentsAnimationControllerStubWrapper) SetInputConsumerEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetInputConsumerEnabled(ctx, enabled)
+}
+
+func (w *recentsAnimationControllerStubWrapper) SetWillFinishToHome(
+	ctx context.Context,
+	willFinishToHome bool,
+) error {
+	return w.impl.SetWillFinishToHome(ctx, willFinishToHome)
+}
+
+func (w *recentsAnimationControllerStubWrapper) DetachNavigationBarFromApp(
+	ctx context.Context,
+	moveHomeToTop bool,
+) error {
+	return w.impl.DetachNavigationBarFromApp(ctx, moveHomeToTop)
+}
+
+func (w *recentsAnimationControllerStubWrapper) HandOffAnimation(
+	ctx context.Context,
+	targets []view.RemoteAnimationTarget,
+	states []window.WindowAnimationState,
+) error {
+	return w.impl.HandOffAnimation(ctx, targets, states)
+}
+
+var _ IRecentsAnimationController = (*recentsAnimationControllerStubWrapper)(nil)
+
+// NewRecentsAnimationControllerStub creates a server-side IRecentsAnimationController wrapping the given
+// server implementation. The returned value satisfies IRecentsAnimationController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecentsAnimationControllerStub(
+	impl IRecentsAnimationControllerServer,
+) IRecentsAnimationController {
+	wrapper := &recentsAnimationControllerStubWrapper{impl: impl}
+	stub := &RecentsAnimationControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

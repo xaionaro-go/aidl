@@ -344,3 +344,77 @@ func (s *SecureElementChannelStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISecureElementChannelServer is the server-side interface that user implementations
+// provide to NewSecureElementChannelStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecureElementChannelServer interface {
+	Close(ctx context.Context) error
+	IsClosed(ctx context.Context) (bool, error)
+	IsBasicChannel(ctx context.Context) (bool, error)
+	GetSelectResponse(ctx context.Context) ([]byte, error)
+	Transmit(ctx context.Context, command []byte) ([]byte, error)
+	SelectNext(ctx context.Context) (bool, error)
+}
+
+type secureElementChannelStubWrapper struct {
+	impl       ISecureElementChannelServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secureElementChannelStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *secureElementChannelStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *secureElementChannelStubWrapper) IsClosed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsClosed(ctx)
+}
+
+func (w *secureElementChannelStubWrapper) IsBasicChannel(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBasicChannel(ctx)
+}
+
+func (w *secureElementChannelStubWrapper) GetSelectResponse(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetSelectResponse(ctx)
+}
+
+func (w *secureElementChannelStubWrapper) Transmit(
+	ctx context.Context,
+	command []byte,
+) ([]byte, error) {
+	return w.impl.Transmit(ctx, command)
+}
+
+func (w *secureElementChannelStubWrapper) SelectNext(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.SelectNext(ctx)
+}
+
+var _ ISecureElementChannel = (*secureElementChannelStubWrapper)(nil)
+
+// NewSecureElementChannelStub creates a server-side ISecureElementChannel wrapping the given
+// server implementation. The returned value satisfies ISecureElementChannel
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecureElementChannelStub(
+	impl ISecureElementChannelServer,
+) ISecureElementChannel {
+	wrapper := &secureElementChannelStubWrapper{impl: impl}
+	stub := &SecureElementChannelStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

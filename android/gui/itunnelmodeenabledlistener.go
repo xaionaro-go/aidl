@@ -82,3 +82,42 @@ func (s *TunnelModeEnabledListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITunnelModeEnabledListenerServer is the server-side interface that user implementations
+// provide to NewTunnelModeEnabledListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunnelModeEnabledListenerServer interface {
+	OnTunnelModeEnabledChanged(ctx context.Context, enabled bool) error
+}
+
+type tunnelModeEnabledListenerStubWrapper struct {
+	impl       ITunnelModeEnabledListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunnelModeEnabledListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunnelModeEnabledListenerStubWrapper) OnTunnelModeEnabledChanged(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.OnTunnelModeEnabledChanged(ctx, enabled)
+}
+
+var _ ITunnelModeEnabledListener = (*tunnelModeEnabledListenerStubWrapper)(nil)
+
+// NewTunnelModeEnabledListenerStub creates a server-side ITunnelModeEnabledListener wrapping the given
+// server implementation. The returned value satisfies ITunnelModeEnabledListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunnelModeEnabledListenerStub(
+	impl ITunnelModeEnabledListenerServer,
+) ITunnelModeEnabledListener {
+	wrapper := &tunnelModeEnabledListenerStubWrapper{impl: impl}
+	stub := &TunnelModeEnabledListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

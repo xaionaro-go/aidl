@@ -582,3 +582,99 @@ func (s *HwCryptoKeyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHwCryptoKeyServer is the server-side interface that user implementations
+// provide to NewHwCryptoKeyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHwCryptoKeyServer interface {
+	DeriveCurrentDicePolicyBoundKey(ctx context.Context, derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey) (hwcryptoIHwCryptoKey.DiceCurrentBoundKeyResult, error)
+	DeriveDicePolicyBoundKey(ctx context.Context, derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey, dicePolicyForKeyVersion []byte) (hwcryptoIHwCryptoKey.DiceBoundKeyResult, error)
+	DeriveKey(ctx context.Context, parameters hwcryptoIHwCryptoKey.DerivedKeyParameters) (hwcryptoIHwCryptoKey.DerivedKey, error)
+	GetHwCryptoOperations(ctx context.Context) (IHwCryptoOperations, error)
+	ImportClearKey(ctx context.Context, keyMaterial types.ExplicitKeyMaterial, newKeyPolicy KeyPolicy) (IOpaqueKey, error)
+	GetCurrentDicePolicy(ctx context.Context) ([]byte, error)
+	KeyTokenImport(ctx context.Context, requestedKey types.OpaqueKeyToken, sealingDicePolicy []byte) (IOpaqueKey, error)
+	GetKeyslotData(ctx context.Context, slotId hwcryptoIHwCryptoKey.KeySlot) (IOpaqueKey, error)
+}
+
+type hwCryptoKeyStubWrapper struct {
+	impl       IHwCryptoKeyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hwCryptoKeyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hwCryptoKeyStubWrapper) DeriveCurrentDicePolicyBoundKey(
+	ctx context.Context,
+	derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey,
+) (hwcryptoIHwCryptoKey.DiceCurrentBoundKeyResult, error) {
+	return w.impl.DeriveCurrentDicePolicyBoundKey(ctx, derivationKey)
+}
+
+func (w *hwCryptoKeyStubWrapper) DeriveDicePolicyBoundKey(
+	ctx context.Context,
+	derivationKey hwcryptoIHwCryptoKey.DiceBoundDerivationKey,
+	dicePolicyForKeyVersion []byte,
+) (hwcryptoIHwCryptoKey.DiceBoundKeyResult, error) {
+	return w.impl.DeriveDicePolicyBoundKey(ctx, derivationKey, dicePolicyForKeyVersion)
+}
+
+func (w *hwCryptoKeyStubWrapper) DeriveKey(
+	ctx context.Context,
+	parameters hwcryptoIHwCryptoKey.DerivedKeyParameters,
+) (hwcryptoIHwCryptoKey.DerivedKey, error) {
+	return w.impl.DeriveKey(ctx, parameters)
+}
+
+func (w *hwCryptoKeyStubWrapper) GetHwCryptoOperations(
+	ctx context.Context,
+) (IHwCryptoOperations, error) {
+	return w.impl.GetHwCryptoOperations(ctx)
+}
+
+func (w *hwCryptoKeyStubWrapper) ImportClearKey(
+	ctx context.Context,
+	keyMaterial types.ExplicitKeyMaterial,
+	newKeyPolicy KeyPolicy,
+) (IOpaqueKey, error) {
+	return w.impl.ImportClearKey(ctx, keyMaterial, newKeyPolicy)
+}
+
+func (w *hwCryptoKeyStubWrapper) GetCurrentDicePolicy(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetCurrentDicePolicy(ctx)
+}
+
+func (w *hwCryptoKeyStubWrapper) KeyTokenImport(
+	ctx context.Context,
+	requestedKey types.OpaqueKeyToken,
+	sealingDicePolicy []byte,
+) (IOpaqueKey, error) {
+	return w.impl.KeyTokenImport(ctx, requestedKey, sealingDicePolicy)
+}
+
+func (w *hwCryptoKeyStubWrapper) GetKeyslotData(
+	ctx context.Context,
+	slotId hwcryptoIHwCryptoKey.KeySlot,
+) (IOpaqueKey, error) {
+	return w.impl.GetKeyslotData(ctx, slotId)
+}
+
+var _ IHwCryptoKey = (*hwCryptoKeyStubWrapper)(nil)
+
+// NewHwCryptoKeyStub creates a server-side IHwCryptoKey wrapping the given
+// server implementation. The returned value satisfies IHwCryptoKey
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHwCryptoKeyStub(
+	impl IHwCryptoKeyServer,
+) IHwCryptoKey {
+	wrapper := &hwCryptoKeyStubWrapper{impl: impl}
+	stub := &HwCryptoKeyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

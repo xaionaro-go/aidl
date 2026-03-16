@@ -24,7 +24,11 @@ func (s *PhraseRecognitionEventSys) MarshalParcel(
 		return _err
 	}
 	p.WriteInt64(s.HalEventReceivedMillis)
-	p.WriteStrongBinder(s.Token.Handle())
+	if s.Token == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Token.Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

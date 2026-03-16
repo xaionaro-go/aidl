@@ -146,3 +146,49 @@ func (s *DataVerifyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDataVerifyServer is the server-side interface that user implementations
+// provide to NewDataVerifyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataVerifyServer interface {
+	VerifyData(ctx context.Context, pdu []byte) (bool, error)
+	ResetData(ctx context.Context) error
+}
+
+type dataVerifyStubWrapper struct {
+	impl       IDataVerifyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataVerifyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dataVerifyStubWrapper) VerifyData(
+	ctx context.Context,
+	pdu []byte,
+) (bool, error) {
+	return w.impl.VerifyData(ctx, pdu)
+}
+
+func (w *dataVerifyStubWrapper) ResetData(
+	ctx context.Context,
+) error {
+	return w.impl.ResetData(ctx)
+}
+
+var _ IDataVerify = (*dataVerifyStubWrapper)(nil)
+
+// NewDataVerifyStub creates a server-side IDataVerify wrapping the given
+// server implementation. The returned value satisfies IDataVerify
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataVerifyStub(
+	impl IDataVerifyServer,
+) IDataVerify {
+	wrapper := &dataVerifyStubWrapper{impl: impl}
+	stub := &DataVerifyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

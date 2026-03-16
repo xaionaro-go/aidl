@@ -159,3 +159,57 @@ func (s *ConditionProviderStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IConditionProviderServer is the server-side interface that user implementations
+// provide to NewConditionProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConditionProviderServer interface {
+	OnConnected(ctx context.Context) error
+	OnSubscribe(ctx context.Context, conditionId net.Uri) error
+	OnUnsubscribe(ctx context.Context, conditionId net.Uri) error
+}
+
+type conditionProviderStubWrapper struct {
+	impl       IConditionProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *conditionProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *conditionProviderStubWrapper) OnConnected(
+	ctx context.Context,
+) error {
+	return w.impl.OnConnected(ctx)
+}
+
+func (w *conditionProviderStubWrapper) OnSubscribe(
+	ctx context.Context,
+	conditionId net.Uri,
+) error {
+	return w.impl.OnSubscribe(ctx, conditionId)
+}
+
+func (w *conditionProviderStubWrapper) OnUnsubscribe(
+	ctx context.Context,
+	conditionId net.Uri,
+) error {
+	return w.impl.OnUnsubscribe(ctx, conditionId)
+}
+
+var _ IConditionProvider = (*conditionProviderStubWrapper)(nil)
+
+// NewConditionProviderStub creates a server-side IConditionProvider wrapping the given
+// server implementation. The returned value satisfies IConditionProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConditionProviderStub(
+	impl IConditionProviderServer,
+) IConditionProvider {
+	wrapper := &conditionProviderStubWrapper{impl: impl}
+	stub := &ConditionProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

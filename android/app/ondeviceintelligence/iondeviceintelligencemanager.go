@@ -88,7 +88,7 @@ func (p *OnDeviceIntelligenceManagerProxy) GetFeature(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOnDeviceIntelligenceManager)
 	_data.WriteInt32(featureId)
-	_data.WriteStrongBinder(remoteCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, remoteCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceIntelligenceManager, "getFeature")
 	if _err != nil {
@@ -114,7 +114,7 @@ func (p *OnDeviceIntelligenceManagerProxy) ListFeatures(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIOnDeviceIntelligenceManager)
-	_data.WriteStrongBinder(listFeaturesCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listFeaturesCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceIntelligenceManager, "listFeatures")
 	if _err != nil {
@@ -145,7 +145,7 @@ func (p *OnDeviceIntelligenceManagerProxy) GetFeatureDetails(
 	if _err := feature.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(featureDetailsCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, featureDetailsCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceIntelligenceManager, "getFeatureDetails")
 	if _err != nil {
@@ -181,7 +181,7 @@ func (p *OnDeviceIntelligenceManagerProxy) RequestFeatureDownload(
 	if _err := cancellationSignalFuture.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceIntelligenceManager, "requestFeatureDownload")
 	if _err != nil {
@@ -218,7 +218,7 @@ func (p *OnDeviceIntelligenceManagerProxy) RequestTokenInfo(
 	if _err := cancellationSignalFuture.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(tokenInfocallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tokenInfocallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceIntelligenceManager, "requestTokenInfo")
 	if _err != nil {
@@ -262,7 +262,7 @@ func (p *OnDeviceIntelligenceManagerProxy) ProcessRequest(
 	if _err := processingSignalFuture.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(responseCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, responseCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceIntelligenceManager, "processRequest")
 	if _err != nil {
@@ -306,7 +306,7 @@ func (p *OnDeviceIntelligenceManagerProxy) ProcessRequestStreaming(
 	if _err := processingSignalFuture.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(streamingCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, streamingCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOnDeviceIntelligenceManager, "processRequestStreaming")
 	if _err != nil {
@@ -708,4 +708,131 @@ func (s *OnDeviceIntelligenceManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOnDeviceIntelligenceManagerServer is the server-side interface that user implementations
+// provide to NewOnDeviceIntelligenceManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnDeviceIntelligenceManagerServer interface {
+	GetVersion(ctx context.Context, remoteCallback interface{}) error
+	GetFeature(ctx context.Context, featureId int32, remoteCallback IFeatureCallback) error
+	ListFeatures(ctx context.Context, listFeaturesCallback IListFeaturesCallback) error
+	GetFeatureDetails(ctx context.Context, feature Feature, featureDetailsCallback IFeatureDetailsCallback) error
+	RequestFeatureDownload(ctx context.Context, feature Feature, cancellationSignalFuture infra.AndroidFuture, callback IDownloadCallback) error
+	RequestTokenInfo(ctx context.Context, feature Feature, requestBundle interface{}, cancellationSignalFuture infra.AndroidFuture, tokenInfocallback ITokenInfoCallback) error
+	ProcessRequest(ctx context.Context, feature Feature, requestBundle interface{}, requestType int32, cancellationSignalFuture infra.AndroidFuture, processingSignalFuture infra.AndroidFuture, responseCallback IResponseCallback) error
+	ProcessRequestStreaming(ctx context.Context, feature Feature, requestBundle interface{}, requestType int32, cancellationSignalFuture infra.AndroidFuture, processingSignalFuture infra.AndroidFuture, streamingCallback IStreamingResponseCallback) error
+	GetRemoteServicePackageName(ctx context.Context) (string, error)
+	GetLatestInferenceInfo(ctx context.Context, startTimeEpochMillis int64) ([]InferenceInfo, error)
+}
+
+type onDeviceIntelligenceManagerStubWrapper struct {
+	impl       IOnDeviceIntelligenceManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) GetVersion(
+	ctx context.Context,
+	remoteCallback interface{},
+) error {
+	return w.impl.GetVersion(ctx, remoteCallback)
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) GetFeature(
+	ctx context.Context,
+	featureId int32,
+	remoteCallback IFeatureCallback,
+) error {
+	return w.impl.GetFeature(ctx, featureId, remoteCallback)
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) ListFeatures(
+	ctx context.Context,
+	listFeaturesCallback IListFeaturesCallback,
+) error {
+	return w.impl.ListFeatures(ctx, listFeaturesCallback)
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) GetFeatureDetails(
+	ctx context.Context,
+	feature Feature,
+	featureDetailsCallback IFeatureDetailsCallback,
+) error {
+	return w.impl.GetFeatureDetails(ctx, feature, featureDetailsCallback)
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) RequestFeatureDownload(
+	ctx context.Context,
+	feature Feature,
+	cancellationSignalFuture infra.AndroidFuture,
+	callback IDownloadCallback,
+) error {
+	return w.impl.RequestFeatureDownload(ctx, feature, cancellationSignalFuture, callback)
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) RequestTokenInfo(
+	ctx context.Context,
+	feature Feature,
+	requestBundle interface{},
+	cancellationSignalFuture infra.AndroidFuture,
+	tokenInfocallback ITokenInfoCallback,
+) error {
+	return w.impl.RequestTokenInfo(ctx, feature, requestBundle, cancellationSignalFuture, tokenInfocallback)
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) ProcessRequest(
+	ctx context.Context,
+	feature Feature,
+	requestBundle interface{},
+	requestType int32,
+	cancellationSignalFuture infra.AndroidFuture,
+	processingSignalFuture infra.AndroidFuture,
+	responseCallback IResponseCallback,
+) error {
+	return w.impl.ProcessRequest(ctx, feature, requestBundle, requestType, cancellationSignalFuture, processingSignalFuture, responseCallback)
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) ProcessRequestStreaming(
+	ctx context.Context,
+	feature Feature,
+	requestBundle interface{},
+	requestType int32,
+	cancellationSignalFuture infra.AndroidFuture,
+	processingSignalFuture infra.AndroidFuture,
+	streamingCallback IStreamingResponseCallback,
+) error {
+	return w.impl.ProcessRequestStreaming(ctx, feature, requestBundle, requestType, cancellationSignalFuture, processingSignalFuture, streamingCallback)
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) GetRemoteServicePackageName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetRemoteServicePackageName(ctx)
+}
+
+func (w *onDeviceIntelligenceManagerStubWrapper) GetLatestInferenceInfo(
+	ctx context.Context,
+	startTimeEpochMillis int64,
+) ([]InferenceInfo, error) {
+	return w.impl.GetLatestInferenceInfo(ctx, startTimeEpochMillis)
+}
+
+var _ IOnDeviceIntelligenceManager = (*onDeviceIntelligenceManagerStubWrapper)(nil)
+
+// NewOnDeviceIntelligenceManagerStub creates a server-side IOnDeviceIntelligenceManager wrapping the given
+// server implementation. The returned value satisfies IOnDeviceIntelligenceManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnDeviceIntelligenceManagerStub(
+	impl IOnDeviceIntelligenceManagerServer,
+) IOnDeviceIntelligenceManager {
+	wrapper := &onDeviceIntelligenceManagerStubWrapper{impl: impl}
+	stub := &OnDeviceIntelligenceManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

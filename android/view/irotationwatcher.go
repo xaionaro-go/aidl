@@ -82,3 +82,42 @@ func (s *RotationWatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRotationWatcherServer is the server-side interface that user implementations
+// provide to NewRotationWatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRotationWatcherServer interface {
+	OnRotationChanged(ctx context.Context, rotation int32) error
+}
+
+type rotationWatcherStubWrapper struct {
+	impl       IRotationWatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *rotationWatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *rotationWatcherStubWrapper) OnRotationChanged(
+	ctx context.Context,
+	rotation int32,
+) error {
+	return w.impl.OnRotationChanged(ctx, rotation)
+}
+
+var _ IRotationWatcher = (*rotationWatcherStubWrapper)(nil)
+
+// NewRotationWatcherStub creates a server-side IRotationWatcher wrapping the given
+// server implementation. The returned value satisfies IRotationWatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRotationWatcherStub(
+	impl IRotationWatcherServer,
+) IRotationWatcher {
+	wrapper := &rotationWatcherStubWrapper{impl: impl}
+	stub := &RotationWatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

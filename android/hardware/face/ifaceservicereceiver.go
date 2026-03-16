@@ -548,3 +548,139 @@ func (s *FaceServiceReceiverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFaceServiceReceiverServer is the server-side interface that user implementations
+// provide to NewFaceServiceReceiverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFaceServiceReceiverServer interface {
+	OnEnrollResult(ctx context.Context, face Face, remaining int32) error
+	OnAcquired(ctx context.Context, acquiredInfo int32, vendorCode int32) error
+	OnAuthenticationSucceeded(ctx context.Context, face Face, isStrongBiometric bool) error
+	OnFaceDetected(ctx context.Context, sensorId int32, isStrongBiometric bool) error
+	OnAuthenticationFailed(ctx context.Context) error
+	OnError(ctx context.Context, error_ int32, vendorCode int32) error
+	OnRemoved(ctx context.Context, face Face, remaining int32) error
+	OnFeatureSet(ctx context.Context, success bool, feature int32) error
+	OnFeatureGet(ctx context.Context, success bool, features []int32, featureState []bool) error
+	OnChallengeGenerated(ctx context.Context, sensorId int32, challenge int64) error
+	OnAuthenticationFrame(ctx context.Context, frame FaceAuthenticationFrame) error
+	OnEnrollmentFrame(ctx context.Context, frame FaceEnrollFrame) error
+}
+
+type faceServiceReceiverStubWrapper struct {
+	impl       IFaceServiceReceiverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *faceServiceReceiverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *faceServiceReceiverStubWrapper) OnEnrollResult(
+	ctx context.Context,
+	face Face,
+	remaining int32,
+) error {
+	return w.impl.OnEnrollResult(ctx, face, remaining)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnAcquired(
+	ctx context.Context,
+	acquiredInfo int32,
+	vendorCode int32,
+) error {
+	return w.impl.OnAcquired(ctx, acquiredInfo, vendorCode)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnAuthenticationSucceeded(
+	ctx context.Context,
+	face Face,
+	isStrongBiometric bool,
+) error {
+	return w.impl.OnAuthenticationSucceeded(ctx, face, isStrongBiometric)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnFaceDetected(
+	ctx context.Context,
+	sensorId int32,
+	isStrongBiometric bool,
+) error {
+	return w.impl.OnFaceDetected(ctx, sensorId, isStrongBiometric)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnAuthenticationFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnAuthenticationFailed(ctx)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnError(
+	ctx context.Context,
+	error_ int32,
+	vendorCode int32,
+) error {
+	return w.impl.OnError(ctx, error_, vendorCode)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnRemoved(
+	ctx context.Context,
+	face Face,
+	remaining int32,
+) error {
+	return w.impl.OnRemoved(ctx, face, remaining)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnFeatureSet(
+	ctx context.Context,
+	success bool,
+	feature int32,
+) error {
+	return w.impl.OnFeatureSet(ctx, success, feature)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnFeatureGet(
+	ctx context.Context,
+	success bool,
+	features []int32,
+	featureState []bool,
+) error {
+	return w.impl.OnFeatureGet(ctx, success, features, featureState)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnChallengeGenerated(
+	ctx context.Context,
+	sensorId int32,
+	challenge int64,
+) error {
+	return w.impl.OnChallengeGenerated(ctx, sensorId, challenge)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnAuthenticationFrame(
+	ctx context.Context,
+	frame FaceAuthenticationFrame,
+) error {
+	return w.impl.OnAuthenticationFrame(ctx, frame)
+}
+
+func (w *faceServiceReceiverStubWrapper) OnEnrollmentFrame(
+	ctx context.Context,
+	frame FaceEnrollFrame,
+) error {
+	return w.impl.OnEnrollmentFrame(ctx, frame)
+}
+
+var _ IFaceServiceReceiver = (*faceServiceReceiverStubWrapper)(nil)
+
+// NewFaceServiceReceiverStub creates a server-side IFaceServiceReceiver wrapping the given
+// server implementation. The returned value satisfies IFaceServiceReceiver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFaceServiceReceiverStub(
+	impl IFaceServiceReceiverServer,
+) IFaceServiceReceiver {
+	wrapper := &faceServiceReceiverStubWrapper{impl: impl}
+	stub := &FaceServiceReceiverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

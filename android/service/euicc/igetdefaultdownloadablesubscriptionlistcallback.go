@@ -93,3 +93,42 @@ func (s *GetDefaultDownloadableSubscriptionListCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetDefaultDownloadableSubscriptionListCallbackServer is the server-side interface that user implementations
+// provide to NewGetDefaultDownloadableSubscriptionListCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetDefaultDownloadableSubscriptionListCallbackServer interface {
+	OnComplete(ctx context.Context, result GetDefaultDownloadableSubscriptionListResult) error
+}
+
+type getDefaultDownloadableSubscriptionListCallbackStubWrapper struct {
+	impl       IGetDefaultDownloadableSubscriptionListCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getDefaultDownloadableSubscriptionListCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getDefaultDownloadableSubscriptionListCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result GetDefaultDownloadableSubscriptionListResult,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IGetDefaultDownloadableSubscriptionListCallback = (*getDefaultDownloadableSubscriptionListCallbackStubWrapper)(nil)
+
+// NewGetDefaultDownloadableSubscriptionListCallbackStub creates a server-side IGetDefaultDownloadableSubscriptionListCallback wrapping the given
+// server implementation. The returned value satisfies IGetDefaultDownloadableSubscriptionListCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetDefaultDownloadableSubscriptionListCallbackStub(
+	impl IGetDefaultDownloadableSubscriptionListCallbackServer,
+) IGetDefaultDownloadableSubscriptionListCallback {
+	wrapper := &getDefaultDownloadableSubscriptionListCallbackStubWrapper{impl: impl}
+	stub := &GetDefaultDownloadableSubscriptionListCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -240,7 +240,7 @@ func (p *BackupTransportProxy) InitializeDevice(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "initializeDevice")
 	if _err != nil {
@@ -266,7 +266,7 @@ func (p *BackupTransportProxy) PerformBackup(
 	}
 	_data.WriteFileDescriptor(inFd)
 	_data.WriteInt32(flags)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "performBackup")
 	if _err != nil {
@@ -288,7 +288,7 @@ func (p *BackupTransportProxy) ClearBackupData(
 	if _err := packageInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "clearBackupData")
 	if _err != nil {
@@ -305,7 +305,7 @@ func (p *BackupTransportProxy) FinishBackup(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "finishBackup")
 	if _err != nil {
@@ -375,7 +375,7 @@ func (p *BackupTransportProxy) StartRestore(
 			}
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "startRestore")
 	if _err != nil {
@@ -414,7 +414,7 @@ func (p *BackupTransportProxy) GetRestoreData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
 	_data.WriteFileDescriptor(outFd)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "getRestoreData")
 	if _err != nil {
@@ -431,7 +431,7 @@ func (p *BackupTransportProxy) FinishRestore(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "finishRestore")
 	if _err != nil {
@@ -477,7 +477,7 @@ func (p *BackupTransportProxy) PerformFullBackup(
 	}
 	_data.WriteFileDescriptor(socket)
 	_data.WriteInt32(flags)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "performFullBackup")
 	if _err != nil {
@@ -496,7 +496,7 @@ func (p *BackupTransportProxy) CheckFullBackupSize(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
 	_data.WriteInt64(size)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "checkFullBackupSize")
 	if _err != nil {
@@ -515,7 +515,7 @@ func (p *BackupTransportProxy) SendBackupData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
 	_data.WriteInt32(numBytes)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "sendBackupData")
 	if _err != nil {
@@ -532,7 +532,7 @@ func (p *BackupTransportProxy) CancelFullBackup(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "cancelFullBackup")
 	if _err != nil {
@@ -602,7 +602,7 @@ func (p *BackupTransportProxy) GetNextFullRestoreDataChunk(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
 	_data.WriteFileDescriptor(socket)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "getNextFullRestoreDataChunk")
 	if _err != nil {
@@ -619,7 +619,7 @@ func (p *BackupTransportProxy) AbortFullRestore(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupTransport, "abortFullRestore")
 	if _err != nil {
@@ -1258,4 +1258,286 @@ func (s *BackupTransportStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBackupTransportServer is the server-side interface that user implementations
+// provide to NewBackupTransportStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackupTransportServer interface {
+	Name(ctx context.Context, result infra.AndroidFuture) error
+	ConfigurationIntent(ctx context.Context, resultFuture infra.AndroidFuture) error
+	CurrentDestinationString(ctx context.Context, resultFuture infra.AndroidFuture) error
+	DataManagementIntent(ctx context.Context, resultFuture infra.AndroidFuture) error
+	DataManagementIntentLabel(ctx context.Context, resultFuture infra.AndroidFuture) error
+	TransportDirName(ctx context.Context, resultFuture infra.AndroidFuture) error
+	RequestBackupTime(ctx context.Context, resultFuture infra.AndroidFuture) error
+	InitializeDevice(ctx context.Context, callback ITransportStatusCallback) error
+	PerformBackup(ctx context.Context, packageInfo pm.PackageInfo, inFd int32, flags int32, callback ITransportStatusCallback) error
+	ClearBackupData(ctx context.Context, packageInfo pm.PackageInfo, callback ITransportStatusCallback) error
+	FinishBackup(ctx context.Context, callback ITransportStatusCallback) error
+	GetAvailableRestoreSets(ctx context.Context, resultFuture infra.AndroidFuture) error
+	GetCurrentRestoreSet(ctx context.Context, resultFuture infra.AndroidFuture) error
+	StartRestore(ctx context.Context, token int64, packages []pm.PackageInfo, callback ITransportStatusCallback) error
+	NextRestorePackage(ctx context.Context, resultFuture infra.AndroidFuture) error
+	GetRestoreData(ctx context.Context, outFd int32, callback ITransportStatusCallback) error
+	FinishRestore(ctx context.Context, callback ITransportStatusCallback) error
+	RequestFullBackupTime(ctx context.Context, resultFuture infra.AndroidFuture) error
+	PerformFullBackup(ctx context.Context, targetPackage pm.PackageInfo, socket int32, flags int32, callback ITransportStatusCallback) error
+	CheckFullBackupSize(ctx context.Context, size int64, callback ITransportStatusCallback) error
+	SendBackupData(ctx context.Context, numBytes int32, callback ITransportStatusCallback) error
+	CancelFullBackup(ctx context.Context, callback ITransportStatusCallback) error
+	IsAppEligibleForBackup(ctx context.Context, targetPackage pm.PackageInfo, isFullBackup bool, resultFuture infra.AndroidFuture) error
+	GetBackupQuota(ctx context.Context, packageName string, isFullBackup bool, resultFuture infra.AndroidFuture) error
+	GetNextFullRestoreDataChunk(ctx context.Context, socket int32, callback ITransportStatusCallback) error
+	AbortFullRestore(ctx context.Context, callback ITransportStatusCallback) error
+	GetTransportFlags(ctx context.Context, resultFuture infra.AndroidFuture) error
+	GetBackupManagerMonitor(ctx context.Context, resultFuture infra.AndroidFuture) error
+	GetPackagesThatShouldNotUseRestrictedMode(ctx context.Context, packageNames []string, operationType int32, resultFuture infra.AndroidFuture) error
+}
+
+type backupTransportStubWrapper struct {
+	impl       IBackupTransportServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backupTransportStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backupTransportStubWrapper) Name(
+	ctx context.Context,
+	result infra.AndroidFuture,
+) error {
+	return w.impl.Name(ctx, result)
+}
+
+func (w *backupTransportStubWrapper) ConfigurationIntent(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.ConfigurationIntent(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) CurrentDestinationString(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.CurrentDestinationString(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) DataManagementIntent(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.DataManagementIntent(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) DataManagementIntentLabel(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.DataManagementIntentLabel(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) TransportDirName(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.TransportDirName(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) RequestBackupTime(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.RequestBackupTime(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) InitializeDevice(
+	ctx context.Context,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.InitializeDevice(ctx, callback)
+}
+
+func (w *backupTransportStubWrapper) PerformBackup(
+	ctx context.Context,
+	packageInfo pm.PackageInfo,
+	inFd int32,
+	flags int32,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.PerformBackup(ctx, packageInfo, inFd, flags, callback)
+}
+
+func (w *backupTransportStubWrapper) ClearBackupData(
+	ctx context.Context,
+	packageInfo pm.PackageInfo,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.ClearBackupData(ctx, packageInfo, callback)
+}
+
+func (w *backupTransportStubWrapper) FinishBackup(
+	ctx context.Context,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.FinishBackup(ctx, callback)
+}
+
+func (w *backupTransportStubWrapper) GetAvailableRestoreSets(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.GetAvailableRestoreSets(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) GetCurrentRestoreSet(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.GetCurrentRestoreSet(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) StartRestore(
+	ctx context.Context,
+	token int64,
+	packages []pm.PackageInfo,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.StartRestore(ctx, token, packages, callback)
+}
+
+func (w *backupTransportStubWrapper) NextRestorePackage(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.NextRestorePackage(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) GetRestoreData(
+	ctx context.Context,
+	outFd int32,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.GetRestoreData(ctx, outFd, callback)
+}
+
+func (w *backupTransportStubWrapper) FinishRestore(
+	ctx context.Context,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.FinishRestore(ctx, callback)
+}
+
+func (w *backupTransportStubWrapper) RequestFullBackupTime(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.RequestFullBackupTime(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) PerformFullBackup(
+	ctx context.Context,
+	targetPackage pm.PackageInfo,
+	socket int32,
+	flags int32,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.PerformFullBackup(ctx, targetPackage, socket, flags, callback)
+}
+
+func (w *backupTransportStubWrapper) CheckFullBackupSize(
+	ctx context.Context,
+	size int64,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.CheckFullBackupSize(ctx, size, callback)
+}
+
+func (w *backupTransportStubWrapper) SendBackupData(
+	ctx context.Context,
+	numBytes int32,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.SendBackupData(ctx, numBytes, callback)
+}
+
+func (w *backupTransportStubWrapper) CancelFullBackup(
+	ctx context.Context,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.CancelFullBackup(ctx, callback)
+}
+
+func (w *backupTransportStubWrapper) IsAppEligibleForBackup(
+	ctx context.Context,
+	targetPackage pm.PackageInfo,
+	isFullBackup bool,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.IsAppEligibleForBackup(ctx, targetPackage, isFullBackup, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) GetBackupQuota(
+	ctx context.Context,
+	packageName string,
+	isFullBackup bool,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.GetBackupQuota(ctx, packageName, isFullBackup, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) GetNextFullRestoreDataChunk(
+	ctx context.Context,
+	socket int32,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.GetNextFullRestoreDataChunk(ctx, socket, callback)
+}
+
+func (w *backupTransportStubWrapper) AbortFullRestore(
+	ctx context.Context,
+	callback ITransportStatusCallback,
+) error {
+	return w.impl.AbortFullRestore(ctx, callback)
+}
+
+func (w *backupTransportStubWrapper) GetTransportFlags(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.GetTransportFlags(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) GetBackupManagerMonitor(
+	ctx context.Context,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.GetBackupManagerMonitor(ctx, resultFuture)
+}
+
+func (w *backupTransportStubWrapper) GetPackagesThatShouldNotUseRestrictedMode(
+	ctx context.Context,
+	packageNames []string,
+	operationType int32,
+	resultFuture infra.AndroidFuture,
+) error {
+	return w.impl.GetPackagesThatShouldNotUseRestrictedMode(ctx, packageNames, operationType, resultFuture)
+}
+
+var _ IBackupTransport = (*backupTransportStubWrapper)(nil)
+
+// NewBackupTransportStub creates a server-side IBackupTransport wrapping the given
+// server implementation. The returned value satisfies IBackupTransport
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackupTransportStub(
+	impl IBackupTransportServer,
+) IBackupTransport {
+	wrapper := &backupTransportStubWrapper{impl: impl}
+	stub := &BackupTransportStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

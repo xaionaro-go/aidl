@@ -372,3 +372,82 @@ func (s *CryptoPluginStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICryptoPluginServer is the server-side interface that user implementations
+// provide to NewCryptoPluginStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICryptoPluginServer interface {
+	Decrypt(ctx context.Context, args DecryptArgs) (int32, error)
+	GetLogMessages(ctx context.Context) ([]LogMessage, error)
+	NotifyResolution(ctx context.Context, width int32, height int32) error
+	RequiresSecureDecoderComponent(ctx context.Context, mime string) (bool, error)
+	SetMediaDrmSession(ctx context.Context, sessionId []byte) error
+	SetSharedBufferBase(ctx context.Context, base SharedBuffer) error
+}
+
+type cryptoPluginStubWrapper struct {
+	impl       ICryptoPluginServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cryptoPluginStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cryptoPluginStubWrapper) Decrypt(
+	ctx context.Context,
+	args DecryptArgs,
+) (int32, error) {
+	return w.impl.Decrypt(ctx, args)
+}
+
+func (w *cryptoPluginStubWrapper) GetLogMessages(
+	ctx context.Context,
+) ([]LogMessage, error) {
+	return w.impl.GetLogMessages(ctx)
+}
+
+func (w *cryptoPluginStubWrapper) NotifyResolution(
+	ctx context.Context,
+	width int32,
+	height int32,
+) error {
+	return w.impl.NotifyResolution(ctx, width, height)
+}
+
+func (w *cryptoPluginStubWrapper) RequiresSecureDecoderComponent(
+	ctx context.Context,
+	mime string,
+) (bool, error) {
+	return w.impl.RequiresSecureDecoderComponent(ctx, mime)
+}
+
+func (w *cryptoPluginStubWrapper) SetMediaDrmSession(
+	ctx context.Context,
+	sessionId []byte,
+) error {
+	return w.impl.SetMediaDrmSession(ctx, sessionId)
+}
+
+func (w *cryptoPluginStubWrapper) SetSharedBufferBase(
+	ctx context.Context,
+	base SharedBuffer,
+) error {
+	return w.impl.SetSharedBufferBase(ctx, base)
+}
+
+var _ ICryptoPlugin = (*cryptoPluginStubWrapper)(nil)
+
+// NewCryptoPluginStub creates a server-side ICryptoPlugin wrapping the given
+// server implementation. The returned value satisfies ICryptoPlugin
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCryptoPluginStub(
+	impl ICryptoPluginServer,
+) ICryptoPlugin {
+	wrapper := &cryptoPluginStubWrapper{impl: impl}
+	stub := &CryptoPluginStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

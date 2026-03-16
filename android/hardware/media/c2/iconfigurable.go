@@ -424,3 +424,84 @@ func (s *ConfigurableStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IConfigurableServer is the server-side interface that user implementations
+// provide to NewConfigurableStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConfigurableServer interface {
+	Config(ctx context.Context, inParams Params, mayBlock bool) (c2IConfigurable.ConfigResult, error)
+	GetId(ctx context.Context) (int32, error)
+	GetName(ctx context.Context) (string, error)
+	Query(ctx context.Context, indices []int32, mayBlock bool) (c2IConfigurable.QueryResult, error)
+	QuerySupportedParams(ctx context.Context, start int32, count int32) ([]ParamDescriptor, error)
+	QuerySupportedValues(ctx context.Context, inFields []FieldSupportedValuesQuery, mayBlock bool) (c2IConfigurable.QuerySupportedValuesResult, error)
+}
+
+type configurableStubWrapper struct {
+	impl       IConfigurableServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *configurableStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *configurableStubWrapper) Config(
+	ctx context.Context,
+	inParams Params,
+	mayBlock bool,
+) (c2IConfigurable.ConfigResult, error) {
+	return w.impl.Config(ctx, inParams, mayBlock)
+}
+
+func (w *configurableStubWrapper) GetId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetId(ctx)
+}
+
+func (w *configurableStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+func (w *configurableStubWrapper) Query(
+	ctx context.Context,
+	indices []int32,
+	mayBlock bool,
+) (c2IConfigurable.QueryResult, error) {
+	return w.impl.Query(ctx, indices, mayBlock)
+}
+
+func (w *configurableStubWrapper) QuerySupportedParams(
+	ctx context.Context,
+	start int32,
+	count int32,
+) ([]ParamDescriptor, error) {
+	return w.impl.QuerySupportedParams(ctx, start, count)
+}
+
+func (w *configurableStubWrapper) QuerySupportedValues(
+	ctx context.Context,
+	inFields []FieldSupportedValuesQuery,
+	mayBlock bool,
+) (c2IConfigurable.QuerySupportedValuesResult, error) {
+	return w.impl.QuerySupportedValues(ctx, inFields, mayBlock)
+}
+
+var _ IConfigurable = (*configurableStubWrapper)(nil)
+
+// NewConfigurableStub creates a server-side IConfigurable wrapping the given
+// server implementation. The returned value satisfies IConfigurable
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConfigurableStub(
+	impl IConfigurableServer,
+) IConfigurable {
+	wrapper := &configurableStubWrapper{impl: impl}
+	stub := &ConfigurableStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

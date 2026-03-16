@@ -1701,3 +1701,350 @@ func (s *RadioVoiceResponseStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioVoiceResponseServer is the server-side interface that user implementations
+// provide to NewRadioVoiceResponseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioVoiceResponseServer interface {
+	AcceptCallResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	AcknowledgeRequest(ctx context.Context, serial int32) error
+	CancelPendingUssdResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	ConferenceResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	DialResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	EmergencyDialResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	ExitEmergencyCallbackModeResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	ExplicitCallTransferResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	GetCallForwardStatusResponse(ctx context.Context, info radio.RadioResponseInfo, callForwardInfos []CallForwardInfo) error
+	GetCallWaitingResponse(ctx context.Context, info radio.RadioResponseInfo, enable bool, serviceClass int32) error
+	GetClipResponse(ctx context.Context, info radio.RadioResponseInfo, status ClipStatus) error
+	GetClirResponse(ctx context.Context, info radio.RadioResponseInfo, n int32, m int32) error
+	GetCurrentCallsResponse(ctx context.Context, info radio.RadioResponseInfo, calls []Call) error
+	GetLastCallFailCauseResponse(ctx context.Context, info radio.RadioResponseInfo, failCauseinfo LastCallFailCauseInfo) error
+	GetMuteResponse(ctx context.Context, info radio.RadioResponseInfo, enable bool) error
+	GetPreferredVoicePrivacyResponse(ctx context.Context, info radio.RadioResponseInfo, enable bool) error
+	GetTtyModeResponse(ctx context.Context, info radio.RadioResponseInfo, mode TtyMode) error
+	HandleStkCallSetupRequestFromSimResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	HangupConnectionResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	HangupForegroundResumeBackgroundResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	HangupWaitingOrBackgroundResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	IsVoNrEnabledResponse(ctx context.Context, info radio.RadioResponseInfo, enable bool) error
+	RejectCallResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SendBurstDtmfResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SendCdmaFeatureCodeResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SendDtmfResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SendUssdResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SeparateConnectionResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetCallForwardResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetCallWaitingResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetClirResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetMuteResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetPreferredVoicePrivacyResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetTtyModeResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetVoNrEnabledResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	StartDtmfResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	StopDtmfResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SwitchWaitingOrHoldingAndActiveResponse(ctx context.Context, info radio.RadioResponseInfo) error
+}
+
+type radioVoiceResponseStubWrapper struct {
+	impl       IRadioVoiceResponseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioVoiceResponseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioVoiceResponseStubWrapper) AcceptCallResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.AcceptCallResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) AcknowledgeRequest(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.AcknowledgeRequest(ctx, serial)
+}
+
+func (w *radioVoiceResponseStubWrapper) CancelPendingUssdResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.CancelPendingUssdResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) ConferenceResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.ConferenceResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) DialResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.DialResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) EmergencyDialResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.EmergencyDialResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) ExitEmergencyCallbackModeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.ExitEmergencyCallbackModeResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) ExplicitCallTransferResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.ExplicitCallTransferResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) GetCallForwardStatusResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	callForwardInfos []CallForwardInfo,
+) error {
+	return w.impl.GetCallForwardStatusResponse(ctx, info, callForwardInfos)
+}
+
+func (w *radioVoiceResponseStubWrapper) GetCallWaitingResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	enable bool,
+	serviceClass int32,
+) error {
+	return w.impl.GetCallWaitingResponse(ctx, info, enable, serviceClass)
+}
+
+func (w *radioVoiceResponseStubWrapper) GetClipResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	status ClipStatus,
+) error {
+	return w.impl.GetClipResponse(ctx, info, status)
+}
+
+func (w *radioVoiceResponseStubWrapper) GetClirResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	n int32,
+	m int32,
+) error {
+	return w.impl.GetClirResponse(ctx, info, n, m)
+}
+
+func (w *radioVoiceResponseStubWrapper) GetCurrentCallsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	calls []Call,
+) error {
+	return w.impl.GetCurrentCallsResponse(ctx, info, calls)
+}
+
+func (w *radioVoiceResponseStubWrapper) GetLastCallFailCauseResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	failCauseinfo LastCallFailCauseInfo,
+) error {
+	return w.impl.GetLastCallFailCauseResponse(ctx, info, failCauseinfo)
+}
+
+func (w *radioVoiceResponseStubWrapper) GetMuteResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	enable bool,
+) error {
+	return w.impl.GetMuteResponse(ctx, info, enable)
+}
+
+func (w *radioVoiceResponseStubWrapper) GetPreferredVoicePrivacyResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	enable bool,
+) error {
+	return w.impl.GetPreferredVoicePrivacyResponse(ctx, info, enable)
+}
+
+func (w *radioVoiceResponseStubWrapper) GetTtyModeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	mode TtyMode,
+) error {
+	return w.impl.GetTtyModeResponse(ctx, info, mode)
+}
+
+func (w *radioVoiceResponseStubWrapper) HandleStkCallSetupRequestFromSimResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.HandleStkCallSetupRequestFromSimResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) HangupConnectionResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.HangupConnectionResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) HangupForegroundResumeBackgroundResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.HangupForegroundResumeBackgroundResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) HangupWaitingOrBackgroundResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.HangupWaitingOrBackgroundResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) IsVoNrEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	enable bool,
+) error {
+	return w.impl.IsVoNrEnabledResponse(ctx, info, enable)
+}
+
+func (w *radioVoiceResponseStubWrapper) RejectCallResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.RejectCallResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SendBurstDtmfResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SendBurstDtmfResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SendCdmaFeatureCodeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SendCdmaFeatureCodeResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SendDtmfResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SendDtmfResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SendUssdResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SendUssdResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SeparateConnectionResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SeparateConnectionResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SetCallForwardResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetCallForwardResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SetCallWaitingResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetCallWaitingResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SetClirResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetClirResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SetMuteResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetMuteResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SetPreferredVoicePrivacyResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetPreferredVoicePrivacyResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SetTtyModeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetTtyModeResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SetVoNrEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetVoNrEnabledResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) StartDtmfResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.StartDtmfResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) StopDtmfResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.StopDtmfResponse(ctx, info)
+}
+
+func (w *radioVoiceResponseStubWrapper) SwitchWaitingOrHoldingAndActiveResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SwitchWaitingOrHoldingAndActiveResponse(ctx, info)
+}
+
+var _ IRadioVoiceResponse = (*radioVoiceResponseStubWrapper)(nil)
+
+// NewRadioVoiceResponseStub creates a server-side IRadioVoiceResponse wrapping the given
+// server implementation. The returned value satisfies IRadioVoiceResponse
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioVoiceResponseStub(
+	impl IRadioVoiceResponseServer,
+) IRadioVoiceResponse {
+	wrapper := &radioVoiceResponseStubWrapper{impl: impl}
+	stub := &RadioVoiceResponseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

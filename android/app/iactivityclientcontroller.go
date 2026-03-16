@@ -4,10 +4,8 @@ import (
 	"context"
 	"fmt"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
-	content "github.com/xaionaro-go/binder/android/content"
 	res "github.com/xaionaro-go/binder/android/content/res"
 	net "github.com/xaionaro-go/binder/android/net"
-	view "github.com/xaionaro-go/binder/android/view"
 	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	policy "github.com/xaionaro-go/binder/com/android/internal_/policy"
@@ -104,9 +102,9 @@ type IActivityClientController interface {
 	ReportSizeConfigurations(ctx context.Context, token binder.IBinder, sizeConfigurations window.SizeConfigurationBuckets) error
 	MoveActivityTaskToBack(ctx context.Context, token binder.IBinder, nonRoot bool) (bool, error)
 	ShouldUpRecreateTask(ctx context.Context, token binder.IBinder, destAffinity string) (bool, error)
-	NavigateUpTo(ctx context.Context, token binder.IBinder, target content.Intent, resolvedType string, resultCode int32, resultData content.Intent) (bool, error)
+	NavigateUpTo(ctx context.Context, token binder.IBinder, target interface{}, resolvedType string, resultCode int32, resultData interface{}) (bool, error)
 	ReleaseActivityInstance(ctx context.Context, token binder.IBinder) (bool, error)
-	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data content.Intent, finishTask int32) (bool, error)
+	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data interface{}, finishTask int32) (bool, error)
 	FinishActivityAffinity(ctx context.Context, token binder.IBinder) (bool, error)
 	FinishSubActivity(ctx context.Context, token binder.IBinder, resultWho string, requestCode int32) error
 	SetForceSendResultForMediaProjection(ctx context.Context, token binder.IBinder) error
@@ -116,7 +114,7 @@ type IActivityClientController interface {
 	GetTaskForActivity(ctx context.Context, token binder.IBinder, onlyRoot bool) (int32, error)
 	GetTaskConfiguration(ctx context.Context, activityToken binder.IBinder) (res.Configuration, error)
 	GetActivityTokenBelow(ctx context.Context, token binder.IBinder) (binder.IBinder, error)
-	GetCallingActivity(ctx context.Context, token binder.IBinder) (content.ComponentName, error)
+	GetCallingActivity(ctx context.Context, token binder.IBinder) (interface{}, error)
 	GetCallingPackage(ctx context.Context, token binder.IBinder) (string, error)
 	GetLaunchedFromUid(ctx context.Context, token binder.IBinder) (int32, error)
 	GetActivityCallerUid(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder) (int32, error)
@@ -150,11 +148,11 @@ type IActivityClientController interface {
 	OverrideActivityTransition(ctx context.Context, token binder.IBinder, open bool, enterAnim int32, exitAnim int32, backgroundColor int32) error
 	ClearOverrideActivityTransition(ctx context.Context, token binder.IBinder, open bool) error
 	OverridePendingTransition(ctx context.Context, token binder.IBinder, packageName string, enterAnim int32, exitAnim int32, backgroundColor int32) error
-	SetVrMode(ctx context.Context, token binder.IBinder, enabled bool, packageName content.ComponentName) (int32, error)
+	SetVrMode(ctx context.Context, token binder.IBinder, enabled bool, packageName interface{}) (int32, error)
 	SetRecentsScreenshotEnabled(ctx context.Context, token binder.IBinder, enabled bool) error
 	InvalidateHomeTaskSnapshot(ctx context.Context, homeToken binder.IBinder) error
 	DismissKeyguard(ctx context.Context, token binder.IBinder, callback policy.IKeyguardDismissCallback, message interface{}) error
-	RegisterRemoteAnimations(ctx context.Context, token binder.IBinder, definition view.RemoteAnimationDefinition) error
+	RegisterRemoteAnimations(ctx context.Context, token binder.IBinder, definition interface{}) error
 	UnregisterRemoteAnimations(ctx context.Context, token binder.IBinder) error
 	OnBackPressed(ctx context.Context, activityToken binder.IBinder, callback IRequestFinishCallback) error
 	SplashScreenAttached(ctx context.Context, token binder.IBinder) error
@@ -187,7 +185,7 @@ func (p *ActivityClientControllerProxy) ActivityIdle(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := config.MarshalParcel(_data); _err != nil {
 		return _err
@@ -210,7 +208,7 @@ func (p *ActivityClientControllerProxy) ActivityResumed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(handleSplashScreenExit)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "activityResumed")
@@ -228,7 +226,7 @@ func (p *ActivityClientControllerProxy) ActivityRefreshed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "activityRefreshed")
 	if _err != nil {
@@ -269,7 +267,7 @@ func (p *ActivityClientControllerProxy) ActivityPaused(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "activityPaused")
 	if _err != nil {
@@ -298,7 +296,7 @@ func (p *ActivityClientControllerProxy) ActivityStopped(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "activityStopped")
 	if _err != nil {
@@ -315,7 +313,7 @@ func (p *ActivityClientControllerProxy) ActivityDestroyed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "activityDestroyed")
 	if _err != nil {
@@ -332,7 +330,7 @@ func (p *ActivityClientControllerProxy) ActivityLocalRelaunch(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "activityLocalRelaunch")
 	if _err != nil {
@@ -349,7 +347,7 @@ func (p *ActivityClientControllerProxy) ActivityRelaunched(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "activityRelaunched")
 	if _err != nil {
@@ -367,7 +365,7 @@ func (p *ActivityClientControllerProxy) ReportSizeConfigurations(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := sizeConfigurations.MarshalParcel(_data); _err != nil {
 		return _err
@@ -390,7 +388,7 @@ func (p *ActivityClientControllerProxy) MoveActivityTaskToBack(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(nonRoot)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "moveActivityTaskToBack")
@@ -423,7 +421,7 @@ func (p *ActivityClientControllerProxy) ShouldUpRecreateTask(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(destAffinity)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "shouldUpRecreateTask")
@@ -451,25 +449,17 @@ func (p *ActivityClientControllerProxy) ShouldUpRecreateTask(
 func (p *ActivityClientControllerProxy) NavigateUpTo(
 	ctx context.Context,
 	token binder.IBinder,
-	target content.Intent,
+	target interface{},
 	resolvedType string,
 	resultCode int32,
-	resultData content.Intent,
+	resultData interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(1)
-	if _err := target.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(resolvedType)
 	_data.WriteInt32(resultCode)
-	_data.WriteInt32(1)
-	if _err := resultData.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "navigateUpTo")
 	if _err != nil {
@@ -500,7 +490,7 @@ func (p *ActivityClientControllerProxy) ReleaseActivityInstance(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "releaseActivityInstance")
 	if _err != nil {
@@ -528,18 +518,14 @@ func (p *ActivityClientControllerProxy) FinishActivity(
 	ctx context.Context,
 	token binder.IBinder,
 	code int32,
-	data content.Intent,
+	data interface{},
 	finishTask int32,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(code)
-	_data.WriteInt32(1)
-	if _err := data.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteInt32(finishTask)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "finishActivity")
@@ -571,7 +557,7 @@ func (p *ActivityClientControllerProxy) FinishActivityAffinity(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "finishActivityAffinity")
 	if _err != nil {
@@ -603,7 +589,7 @@ func (p *ActivityClientControllerProxy) FinishSubActivity(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(resultWho)
 	_data.WriteInt32(requestCode)
 
@@ -631,7 +617,7 @@ func (p *ActivityClientControllerProxy) SetForceSendResultForMediaProjection(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setForceSendResultForMediaProjection")
 	if _err != nil {
@@ -658,7 +644,7 @@ func (p *ActivityClientControllerProxy) IsTopOfTask(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "isTopOfTask")
 	if _err != nil {
@@ -689,7 +675,7 @@ func (p *ActivityClientControllerProxy) WillActivityBeVisible(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "willActivityBeVisible")
 	if _err != nil {
@@ -720,7 +706,7 @@ func (p *ActivityClientControllerProxy) GetDisplayId(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(activityToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getDisplayId")
 	if _err != nil {
@@ -752,7 +738,7 @@ func (p *ActivityClientControllerProxy) GetTaskForActivity(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(onlyRoot)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getTaskForActivity")
@@ -784,7 +770,7 @@ func (p *ActivityClientControllerProxy) GetTaskConfiguration(
 	var _result res.Configuration
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(activityToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getTaskConfiguration")
 	if _err != nil {
@@ -820,7 +806,7 @@ func (p *ActivityClientControllerProxy) GetActivityTokenBelow(
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getActivityTokenBelow")
 	if _err != nil {
@@ -848,11 +834,11 @@ func (p *ActivityClientControllerProxy) GetActivityTokenBelow(
 func (p *ActivityClientControllerProxy) GetCallingActivity(
 	ctx context.Context,
 	token binder.IBinder,
-) (content.ComponentName, error) {
-	var _result content.ComponentName
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getCallingActivity")
 	if _err != nil {
@@ -869,15 +855,6 @@ func (p *ActivityClientControllerProxy) GetCallingActivity(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -888,7 +865,7 @@ func (p *ActivityClientControllerProxy) GetCallingPackage(
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getCallingPackage")
 	if _err != nil {
@@ -919,7 +896,7 @@ func (p *ActivityClientControllerProxy) GetLaunchedFromUid(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getLaunchedFromUid")
 	if _err != nil {
@@ -951,8 +928,8 @@ func (p *ActivityClientControllerProxy) GetActivityCallerUid(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(activityToken.Handle())
-	_data.WriteStrongBinder(callerToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callerToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getActivityCallerUid")
 	if _err != nil {
@@ -983,7 +960,7 @@ func (p *ActivityClientControllerProxy) GetLaunchedFromPackage(
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getLaunchedFromPackage")
 	if _err != nil {
@@ -1015,8 +992,8 @@ func (p *ActivityClientControllerProxy) GetActivityCallerPackage(
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(activityToken.Handle())
-	_data.WriteStrongBinder(callerToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callerToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getActivityCallerPackage")
 	if _err != nil {
@@ -1051,8 +1028,8 @@ func (p *ActivityClientControllerProxy) CheckActivityCallerContentUriPermission(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(activityToken.Handle())
-	_data.WriteStrongBinder(callerToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callerToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := uri.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -1089,7 +1066,7 @@ func (p *ActivityClientControllerProxy) SetRequestedOrientation(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(requestedOrientation)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setRequestedOrientation")
@@ -1117,7 +1094,7 @@ func (p *ActivityClientControllerProxy) GetRequestedOrientation(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "getRequestedOrientation")
 	if _err != nil {
@@ -1148,7 +1125,7 @@ func (p *ActivityClientControllerProxy) ConvertFromTranslucent(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "convertFromTranslucent")
 	if _err != nil {
@@ -1180,7 +1157,7 @@ func (p *ActivityClientControllerProxy) ConvertToTranslucent(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "convertToTranslucent")
 	if _err != nil {
@@ -1211,7 +1188,7 @@ func (p *ActivityClientControllerProxy) IsImmersive(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "isImmersive")
 	if _err != nil {
@@ -1242,7 +1219,7 @@ func (p *ActivityClientControllerProxy) SetImmersive(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(immersive)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setImmersive")
@@ -1271,7 +1248,7 @@ func (p *ActivityClientControllerProxy) EnterPictureInPictureMode(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -1306,7 +1283,7 @@ func (p *ActivityClientControllerProxy) SetPictureInPictureParams(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1337,7 +1314,7 @@ func (p *ActivityClientControllerProxy) SetShouldDockBigOverlays(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(shouldDockBigOverlays)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setShouldDockBigOverlays")
@@ -1355,7 +1332,7 @@ func (p *ActivityClientControllerProxy) ToggleFreeformWindowingMode(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "toggleFreeformWindowingMode")
 	if _err != nil {
@@ -1383,9 +1360,9 @@ func (p *ActivityClientControllerProxy) RequestMultiwindowFullscreen(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(request)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "requestMultiwindowFullscreen")
 	if _err != nil {
@@ -1402,7 +1379,7 @@ func (p *ActivityClientControllerProxy) StartLockTaskModeByToken(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "startLockTaskModeByToken")
 	if _err != nil {
@@ -1428,7 +1405,7 @@ func (p *ActivityClientControllerProxy) StopLockTaskModeByToken(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "stopLockTaskModeByToken")
 	if _err != nil {
@@ -1454,7 +1431,7 @@ func (p *ActivityClientControllerProxy) ShowLockTaskEscapeMessage(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "showLockTaskEscapeMessage")
 	if _err != nil {
@@ -1472,7 +1449,7 @@ func (p *ActivityClientControllerProxy) SetTaskDescription(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := values.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1504,7 +1481,7 @@ func (p *ActivityClientControllerProxy) ShowAssistFromActivity(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "showAssistFromActivity")
 	if _err != nil {
@@ -1535,7 +1512,7 @@ func (p *ActivityClientControllerProxy) IsRootVoiceInteraction(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "isRootVoiceInteraction")
 	if _err != nil {
@@ -1566,7 +1543,7 @@ func (p *ActivityClientControllerProxy) StartLocalVoiceInteraction(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "startLocalVoiceInteraction")
 	if _err != nil {
@@ -1592,7 +1569,7 @@ func (p *ActivityClientControllerProxy) StopLocalVoiceInteraction(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "stopLocalVoiceInteraction")
 	if _err != nil {
@@ -1619,7 +1596,7 @@ func (p *ActivityClientControllerProxy) SetShowWhenLocked(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(showWhenLocked)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setShowWhenLocked")
@@ -1638,7 +1615,7 @@ func (p *ActivityClientControllerProxy) SetInheritShowWhenLocked(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(setInheritShownWhenLocked)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setInheritShowWhenLocked")
@@ -1657,7 +1634,7 @@ func (p *ActivityClientControllerProxy) SetTurnScreenOn(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(turnScreenOn)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setTurnScreenOn")
@@ -1685,7 +1662,7 @@ func (p *ActivityClientControllerProxy) SetAllowCrossUidActivitySwitchFromBelow(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(allowed)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setAllowCrossUidActivitySwitchFromBelow")
@@ -1704,7 +1681,7 @@ func (p *ActivityClientControllerProxy) ReportActivityFullyDrawn(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(restoredFromBundle)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "reportActivityFullyDrawn")
@@ -1726,7 +1703,7 @@ func (p *ActivityClientControllerProxy) OverrideActivityTransition(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(open)
 	_data.WriteInt32(enterAnim)
 	_data.WriteInt32(exitAnim)
@@ -1748,7 +1725,7 @@ func (p *ActivityClientControllerProxy) ClearOverrideActivityTransition(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(open)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "clearOverrideActivityTransition")
@@ -1770,7 +1747,7 @@ func (p *ActivityClientControllerProxy) OverridePendingTransition(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteInt32(enterAnim)
 	_data.WriteInt32(exitAnim)
@@ -1798,17 +1775,13 @@ func (p *ActivityClientControllerProxy) SetVrMode(
 	ctx context.Context,
 	token binder.IBinder,
 	enabled bool,
-	packageName content.ComponentName,
+	packageName interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(enabled)
-	_data.WriteInt32(1)
-	if _err := packageName.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setVrMode")
 	if _err != nil {
@@ -1839,7 +1812,7 @@ func (p *ActivityClientControllerProxy) SetRecentsScreenshotEnabled(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(enabled)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setRecentsScreenshotEnabled")
@@ -1857,7 +1830,7 @@ func (p *ActivityClientControllerProxy) InvalidateHomeTaskSnapshot(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(homeToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, homeToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "invalidateHomeTaskSnapshot")
 	if _err != nil {
@@ -1885,8 +1858,8 @@ func (p *ActivityClientControllerProxy) DismissKeyguard(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "dismissKeyguard")
 	if _err != nil {
@@ -1909,15 +1882,11 @@ func (p *ActivityClientControllerProxy) DismissKeyguard(
 func (p *ActivityClientControllerProxy) RegisterRemoteAnimations(
 	ctx context.Context,
 	token binder.IBinder,
-	definition view.RemoteAnimationDefinition,
+	definition interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(1)
-	if _err := definition.MarshalParcel(_data); _err != nil {
-		return _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "registerRemoteAnimations")
 	if _err != nil {
@@ -1943,7 +1912,7 @@ func (p *ActivityClientControllerProxy) UnregisterRemoteAnimations(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "unregisterRemoteAnimations")
 	if _err != nil {
@@ -1970,8 +1939,8 @@ func (p *ActivityClientControllerProxy) OnBackPressed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(activityToken.Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "onBackPressed")
 	if _err != nil {
@@ -1988,7 +1957,7 @@ func (p *ActivityClientControllerProxy) SplashScreenAttached(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "splashScreenAttached")
 	if _err != nil {
@@ -2005,7 +1974,7 @@ func (p *ActivityClientControllerProxy) EnableTaskLocaleOverride(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "enableTaskLocaleOverride")
 	if _err != nil {
@@ -2033,8 +2002,8 @@ func (p *ActivityClientControllerProxy) IsRequestedToLaunchInTaskFragment(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(activityToken.Handle())
-	_data.WriteStrongBinder(taskFragmentToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, taskFragmentToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "isRequestedToLaunchInTaskFragment")
 	if _err != nil {
@@ -2065,7 +2034,7 @@ func (p *ActivityClientControllerProxy) SetActivityRecordInputSinkEnabled(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityClientController)
-	_data.WriteStrongBinder(activityToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
 	_data.WriteBool(enabled)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityClientController, "setActivityRecordInputSinkEnabled")
@@ -2280,18 +2249,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_target content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_target.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_target interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -2300,18 +2258,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_resultData content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_resultData.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_resultData interface{}
 		_result, _err := s.Impl.NavigateUpTo(ctx, _arg_token, _arg_target, _arg_resolvedType, _arg_resultCode, _arg_resultData)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2348,18 +2295,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_data content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_data.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_data interface{}
 		_arg_finishTask, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -2545,10 +2481,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIActivityClientControllerGetCallingPackage:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -3166,18 +3099,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_packageName content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_packageName.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_packageName interface{}
 		_result, _err := s.Impl.SetVrMode(ctx, _arg_token, _arg_enabled, _arg_packageName)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3242,18 +3164,7 @@ func (s *ActivityClientControllerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_definition view.RemoteAnimationDefinition
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_definition.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_definition interface{}
 		_err := s.Impl.RegisterRemoteAnimations(ctx, _arg_token, _arg_definition)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3351,4 +3262,644 @@ func (s *ActivityClientControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IActivityClientControllerServer is the server-side interface that user implementations
+// provide to NewActivityClientControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IActivityClientControllerServer interface {
+	ActivityIdle(ctx context.Context, token binder.IBinder, config res.Configuration, stopProfiling bool) error
+	ActivityResumed(ctx context.Context, token binder.IBinder, handleSplashScreenExit bool) error
+	ActivityRefreshed(ctx context.Context, token binder.IBinder) error
+	ActivityTopResumedStateLost(ctx context.Context) error
+	ActivityPaused(ctx context.Context, token binder.IBinder) error
+	ActivityStopped(ctx context.Context, token binder.IBinder, state interface{}, persistentState interface{}, description interface{}) error
+	ActivityDestroyed(ctx context.Context, token binder.IBinder) error
+	ActivityLocalRelaunch(ctx context.Context, token binder.IBinder) error
+	ActivityRelaunched(ctx context.Context, token binder.IBinder) error
+	ReportSizeConfigurations(ctx context.Context, token binder.IBinder, sizeConfigurations window.SizeConfigurationBuckets) error
+	MoveActivityTaskToBack(ctx context.Context, token binder.IBinder, nonRoot bool) (bool, error)
+	ShouldUpRecreateTask(ctx context.Context, token binder.IBinder, destAffinity string) (bool, error)
+	NavigateUpTo(ctx context.Context, token binder.IBinder, target interface{}, resolvedType string, resultCode int32, resultData interface{}) (bool, error)
+	ReleaseActivityInstance(ctx context.Context, token binder.IBinder) (bool, error)
+	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data interface{}, finishTask int32) (bool, error)
+	FinishActivityAffinity(ctx context.Context, token binder.IBinder) (bool, error)
+	FinishSubActivity(ctx context.Context, token binder.IBinder, resultWho string, requestCode int32) error
+	SetForceSendResultForMediaProjection(ctx context.Context, token binder.IBinder) error
+	IsTopOfTask(ctx context.Context, token binder.IBinder) (bool, error)
+	WillActivityBeVisible(ctx context.Context, token binder.IBinder) (bool, error)
+	GetDisplayId(ctx context.Context, activityToken binder.IBinder) (int32, error)
+	GetTaskForActivity(ctx context.Context, token binder.IBinder, onlyRoot bool) (int32, error)
+	GetTaskConfiguration(ctx context.Context, activityToken binder.IBinder) (res.Configuration, error)
+	GetActivityTokenBelow(ctx context.Context, token binder.IBinder) (binder.IBinder, error)
+	GetCallingActivity(ctx context.Context, token binder.IBinder) (interface{}, error)
+	GetCallingPackage(ctx context.Context, token binder.IBinder) (string, error)
+	GetLaunchedFromUid(ctx context.Context, token binder.IBinder) (int32, error)
+	GetActivityCallerUid(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder) (int32, error)
+	GetLaunchedFromPackage(ctx context.Context, token binder.IBinder) (string, error)
+	GetActivityCallerPackage(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder) (string, error)
+	CheckActivityCallerContentUriPermission(ctx context.Context, activityToken binder.IBinder, callerToken binder.IBinder, uri net.Uri, modeFlags int32) (int32, error)
+	SetRequestedOrientation(ctx context.Context, token binder.IBinder, requestedOrientation int32) error
+	GetRequestedOrientation(ctx context.Context, token binder.IBinder) (int32, error)
+	ConvertFromTranslucent(ctx context.Context, token binder.IBinder) (bool, error)
+	ConvertToTranslucent(ctx context.Context, token binder.IBinder, options interface{}) (bool, error)
+	IsImmersive(ctx context.Context, token binder.IBinder) (bool, error)
+	SetImmersive(ctx context.Context, token binder.IBinder, immersive bool) error
+	EnterPictureInPictureMode(ctx context.Context, token binder.IBinder, params PictureInPictureParams) (bool, error)
+	SetPictureInPictureParams(ctx context.Context, token binder.IBinder, params PictureInPictureParams) error
+	SetShouldDockBigOverlays(ctx context.Context, token binder.IBinder, shouldDockBigOverlays bool) error
+	ToggleFreeformWindowingMode(ctx context.Context, token binder.IBinder) error
+	RequestMultiwindowFullscreen(ctx context.Context, token binder.IBinder, request int32, callback ondeviceintelligence.IRemoteCallback) error
+	StartLockTaskModeByToken(ctx context.Context, token binder.IBinder) error
+	StopLockTaskModeByToken(ctx context.Context, token binder.IBinder) error
+	ShowLockTaskEscapeMessage(ctx context.Context, token binder.IBinder) error
+	SetTaskDescription(ctx context.Context, token binder.IBinder, values ActivityManagerTaskDescription) error
+	ShowAssistFromActivity(ctx context.Context, token binder.IBinder, args interface{}) (bool, error)
+	IsRootVoiceInteraction(ctx context.Context, token binder.IBinder) (bool, error)
+	StartLocalVoiceInteraction(ctx context.Context, token binder.IBinder, options interface{}) error
+	StopLocalVoiceInteraction(ctx context.Context, token binder.IBinder) error
+	SetShowWhenLocked(ctx context.Context, token binder.IBinder, showWhenLocked bool) error
+	SetInheritShowWhenLocked(ctx context.Context, token binder.IBinder, setInheritShownWhenLocked bool) error
+	SetTurnScreenOn(ctx context.Context, token binder.IBinder, turnScreenOn bool) error
+	SetAllowCrossUidActivitySwitchFromBelow(ctx context.Context, token binder.IBinder, allowed bool) error
+	ReportActivityFullyDrawn(ctx context.Context, token binder.IBinder, restoredFromBundle bool) error
+	OverrideActivityTransition(ctx context.Context, token binder.IBinder, open bool, enterAnim int32, exitAnim int32, backgroundColor int32) error
+	ClearOverrideActivityTransition(ctx context.Context, token binder.IBinder, open bool) error
+	OverridePendingTransition(ctx context.Context, token binder.IBinder, packageName string, enterAnim int32, exitAnim int32, backgroundColor int32) error
+	SetVrMode(ctx context.Context, token binder.IBinder, enabled bool, packageName interface{}) (int32, error)
+	SetRecentsScreenshotEnabled(ctx context.Context, token binder.IBinder, enabled bool) error
+	InvalidateHomeTaskSnapshot(ctx context.Context, homeToken binder.IBinder) error
+	DismissKeyguard(ctx context.Context, token binder.IBinder, callback policy.IKeyguardDismissCallback, message interface{}) error
+	RegisterRemoteAnimations(ctx context.Context, token binder.IBinder, definition interface{}) error
+	UnregisterRemoteAnimations(ctx context.Context, token binder.IBinder) error
+	OnBackPressed(ctx context.Context, activityToken binder.IBinder, callback IRequestFinishCallback) error
+	SplashScreenAttached(ctx context.Context, token binder.IBinder) error
+	EnableTaskLocaleOverride(ctx context.Context, token binder.IBinder) error
+	IsRequestedToLaunchInTaskFragment(ctx context.Context, activityToken binder.IBinder, taskFragmentToken binder.IBinder) (bool, error)
+	SetActivityRecordInputSinkEnabled(ctx context.Context, activityToken binder.IBinder, enabled bool) error
+}
+
+type activityClientControllerStubWrapper struct {
+	impl       IActivityClientControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *activityClientControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *activityClientControllerStubWrapper) ActivityIdle(
+	ctx context.Context,
+	token binder.IBinder,
+	config res.Configuration,
+	stopProfiling bool,
+) error {
+	return w.impl.ActivityIdle(ctx, token, config, stopProfiling)
+}
+
+func (w *activityClientControllerStubWrapper) ActivityResumed(
+	ctx context.Context,
+	token binder.IBinder,
+	handleSplashScreenExit bool,
+) error {
+	return w.impl.ActivityResumed(ctx, token, handleSplashScreenExit)
+}
+
+func (w *activityClientControllerStubWrapper) ActivityRefreshed(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ActivityRefreshed(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) ActivityTopResumedStateLost(
+	ctx context.Context,
+) error {
+	return w.impl.ActivityTopResumedStateLost(ctx)
+}
+
+func (w *activityClientControllerStubWrapper) ActivityPaused(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ActivityPaused(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) ActivityStopped(
+	ctx context.Context,
+	token binder.IBinder,
+	state interface{},
+	persistentState interface{},
+	description interface{},
+) error {
+	return w.impl.ActivityStopped(ctx, token, state, persistentState, description)
+}
+
+func (w *activityClientControllerStubWrapper) ActivityDestroyed(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ActivityDestroyed(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) ActivityLocalRelaunch(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ActivityLocalRelaunch(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) ActivityRelaunched(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ActivityRelaunched(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) ReportSizeConfigurations(
+	ctx context.Context,
+	token binder.IBinder,
+	sizeConfigurations window.SizeConfigurationBuckets,
+) error {
+	return w.impl.ReportSizeConfigurations(ctx, token, sizeConfigurations)
+}
+
+func (w *activityClientControllerStubWrapper) MoveActivityTaskToBack(
+	ctx context.Context,
+	token binder.IBinder,
+	nonRoot bool,
+) (bool, error) {
+	return w.impl.MoveActivityTaskToBack(ctx, token, nonRoot)
+}
+
+func (w *activityClientControllerStubWrapper) ShouldUpRecreateTask(
+	ctx context.Context,
+	token binder.IBinder,
+	destAffinity string,
+) (bool, error) {
+	return w.impl.ShouldUpRecreateTask(ctx, token, destAffinity)
+}
+
+func (w *activityClientControllerStubWrapper) NavigateUpTo(
+	ctx context.Context,
+	token binder.IBinder,
+	target interface{},
+	resolvedType string,
+	resultCode int32,
+	resultData interface{},
+) (bool, error) {
+	return w.impl.NavigateUpTo(ctx, token, target, resolvedType, resultCode, resultData)
+}
+
+func (w *activityClientControllerStubWrapper) ReleaseActivityInstance(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.ReleaseActivityInstance(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) FinishActivity(
+	ctx context.Context,
+	token binder.IBinder,
+	code int32,
+	data interface{},
+	finishTask int32,
+) (bool, error) {
+	return w.impl.FinishActivity(ctx, token, code, data, finishTask)
+}
+
+func (w *activityClientControllerStubWrapper) FinishActivityAffinity(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.FinishActivityAffinity(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) FinishSubActivity(
+	ctx context.Context,
+	token binder.IBinder,
+	resultWho string,
+	requestCode int32,
+) error {
+	return w.impl.FinishSubActivity(ctx, token, resultWho, requestCode)
+}
+
+func (w *activityClientControllerStubWrapper) SetForceSendResultForMediaProjection(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.SetForceSendResultForMediaProjection(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) IsTopOfTask(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.IsTopOfTask(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) WillActivityBeVisible(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.WillActivityBeVisible(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) GetDisplayId(
+	ctx context.Context,
+	activityToken binder.IBinder,
+) (int32, error) {
+	return w.impl.GetDisplayId(ctx, activityToken)
+}
+
+func (w *activityClientControllerStubWrapper) GetTaskForActivity(
+	ctx context.Context,
+	token binder.IBinder,
+	onlyRoot bool,
+) (int32, error) {
+	return w.impl.GetTaskForActivity(ctx, token, onlyRoot)
+}
+
+func (w *activityClientControllerStubWrapper) GetTaskConfiguration(
+	ctx context.Context,
+	activityToken binder.IBinder,
+) (res.Configuration, error) {
+	return w.impl.GetTaskConfiguration(ctx, activityToken)
+}
+
+func (w *activityClientControllerStubWrapper) GetActivityTokenBelow(
+	ctx context.Context,
+	token binder.IBinder,
+) (binder.IBinder, error) {
+	return w.impl.GetActivityTokenBelow(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) GetCallingActivity(
+	ctx context.Context,
+	token binder.IBinder,
+) (interface{}, error) {
+	return w.impl.GetCallingActivity(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) GetCallingPackage(
+	ctx context.Context,
+	token binder.IBinder,
+) (string, error) {
+	return w.impl.GetCallingPackage(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) GetLaunchedFromUid(
+	ctx context.Context,
+	token binder.IBinder,
+) (int32, error) {
+	return w.impl.GetLaunchedFromUid(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) GetActivityCallerUid(
+	ctx context.Context,
+	activityToken binder.IBinder,
+	callerToken binder.IBinder,
+) (int32, error) {
+	return w.impl.GetActivityCallerUid(ctx, activityToken, callerToken)
+}
+
+func (w *activityClientControllerStubWrapper) GetLaunchedFromPackage(
+	ctx context.Context,
+	token binder.IBinder,
+) (string, error) {
+	return w.impl.GetLaunchedFromPackage(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) GetActivityCallerPackage(
+	ctx context.Context,
+	activityToken binder.IBinder,
+	callerToken binder.IBinder,
+) (string, error) {
+	return w.impl.GetActivityCallerPackage(ctx, activityToken, callerToken)
+}
+
+func (w *activityClientControllerStubWrapper) CheckActivityCallerContentUriPermission(
+	ctx context.Context,
+	activityToken binder.IBinder,
+	callerToken binder.IBinder,
+	uri net.Uri,
+	modeFlags int32,
+) (int32, error) {
+	return w.impl.CheckActivityCallerContentUriPermission(ctx, activityToken, callerToken, uri, modeFlags)
+}
+
+func (w *activityClientControllerStubWrapper) SetRequestedOrientation(
+	ctx context.Context,
+	token binder.IBinder,
+	requestedOrientation int32,
+) error {
+	return w.impl.SetRequestedOrientation(ctx, token, requestedOrientation)
+}
+
+func (w *activityClientControllerStubWrapper) GetRequestedOrientation(
+	ctx context.Context,
+	token binder.IBinder,
+) (int32, error) {
+	return w.impl.GetRequestedOrientation(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) ConvertFromTranslucent(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.ConvertFromTranslucent(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) ConvertToTranslucent(
+	ctx context.Context,
+	token binder.IBinder,
+	options interface{},
+) (bool, error) {
+	return w.impl.ConvertToTranslucent(ctx, token, options)
+}
+
+func (w *activityClientControllerStubWrapper) IsImmersive(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.IsImmersive(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) SetImmersive(
+	ctx context.Context,
+	token binder.IBinder,
+	immersive bool,
+) error {
+	return w.impl.SetImmersive(ctx, token, immersive)
+}
+
+func (w *activityClientControllerStubWrapper) EnterPictureInPictureMode(
+	ctx context.Context,
+	token binder.IBinder,
+	params PictureInPictureParams,
+) (bool, error) {
+	return w.impl.EnterPictureInPictureMode(ctx, token, params)
+}
+
+func (w *activityClientControllerStubWrapper) SetPictureInPictureParams(
+	ctx context.Context,
+	token binder.IBinder,
+	params PictureInPictureParams,
+) error {
+	return w.impl.SetPictureInPictureParams(ctx, token, params)
+}
+
+func (w *activityClientControllerStubWrapper) SetShouldDockBigOverlays(
+	ctx context.Context,
+	token binder.IBinder,
+	shouldDockBigOverlays bool,
+) error {
+	return w.impl.SetShouldDockBigOverlays(ctx, token, shouldDockBigOverlays)
+}
+
+func (w *activityClientControllerStubWrapper) ToggleFreeformWindowingMode(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ToggleFreeformWindowingMode(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) RequestMultiwindowFullscreen(
+	ctx context.Context,
+	token binder.IBinder,
+	request int32,
+	callback ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.RequestMultiwindowFullscreen(ctx, token, request, callback)
+}
+
+func (w *activityClientControllerStubWrapper) StartLockTaskModeByToken(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.StartLockTaskModeByToken(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) StopLockTaskModeByToken(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.StopLockTaskModeByToken(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) ShowLockTaskEscapeMessage(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ShowLockTaskEscapeMessage(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) SetTaskDescription(
+	ctx context.Context,
+	token binder.IBinder,
+	values ActivityManagerTaskDescription,
+) error {
+	return w.impl.SetTaskDescription(ctx, token, values)
+}
+
+func (w *activityClientControllerStubWrapper) ShowAssistFromActivity(
+	ctx context.Context,
+	token binder.IBinder,
+	args interface{},
+) (bool, error) {
+	return w.impl.ShowAssistFromActivity(ctx, token, args)
+}
+
+func (w *activityClientControllerStubWrapper) IsRootVoiceInteraction(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.IsRootVoiceInteraction(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) StartLocalVoiceInteraction(
+	ctx context.Context,
+	token binder.IBinder,
+	options interface{},
+) error {
+	return w.impl.StartLocalVoiceInteraction(ctx, token, options)
+}
+
+func (w *activityClientControllerStubWrapper) StopLocalVoiceInteraction(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.StopLocalVoiceInteraction(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) SetShowWhenLocked(
+	ctx context.Context,
+	token binder.IBinder,
+	showWhenLocked bool,
+) error {
+	return w.impl.SetShowWhenLocked(ctx, token, showWhenLocked)
+}
+
+func (w *activityClientControllerStubWrapper) SetInheritShowWhenLocked(
+	ctx context.Context,
+	token binder.IBinder,
+	setInheritShownWhenLocked bool,
+) error {
+	return w.impl.SetInheritShowWhenLocked(ctx, token, setInheritShownWhenLocked)
+}
+
+func (w *activityClientControllerStubWrapper) SetTurnScreenOn(
+	ctx context.Context,
+	token binder.IBinder,
+	turnScreenOn bool,
+) error {
+	return w.impl.SetTurnScreenOn(ctx, token, turnScreenOn)
+}
+
+func (w *activityClientControllerStubWrapper) SetAllowCrossUidActivitySwitchFromBelow(
+	ctx context.Context,
+	token binder.IBinder,
+	allowed bool,
+) error {
+	return w.impl.SetAllowCrossUidActivitySwitchFromBelow(ctx, token, allowed)
+}
+
+func (w *activityClientControllerStubWrapper) ReportActivityFullyDrawn(
+	ctx context.Context,
+	token binder.IBinder,
+	restoredFromBundle bool,
+) error {
+	return w.impl.ReportActivityFullyDrawn(ctx, token, restoredFromBundle)
+}
+
+func (w *activityClientControllerStubWrapper) OverrideActivityTransition(
+	ctx context.Context,
+	token binder.IBinder,
+	open bool,
+	enterAnim int32,
+	exitAnim int32,
+	backgroundColor int32,
+) error {
+	return w.impl.OverrideActivityTransition(ctx, token, open, enterAnim, exitAnim, backgroundColor)
+}
+
+func (w *activityClientControllerStubWrapper) ClearOverrideActivityTransition(
+	ctx context.Context,
+	token binder.IBinder,
+	open bool,
+) error {
+	return w.impl.ClearOverrideActivityTransition(ctx, token, open)
+}
+
+func (w *activityClientControllerStubWrapper) OverridePendingTransition(
+	ctx context.Context,
+	token binder.IBinder,
+	packageName string,
+	enterAnim int32,
+	exitAnim int32,
+	backgroundColor int32,
+) error {
+	return w.impl.OverridePendingTransition(ctx, token, packageName, enterAnim, exitAnim, backgroundColor)
+}
+
+func (w *activityClientControllerStubWrapper) SetVrMode(
+	ctx context.Context,
+	token binder.IBinder,
+	enabled bool,
+	packageName interface{},
+) (int32, error) {
+	return w.impl.SetVrMode(ctx, token, enabled, packageName)
+}
+
+func (w *activityClientControllerStubWrapper) SetRecentsScreenshotEnabled(
+	ctx context.Context,
+	token binder.IBinder,
+	enabled bool,
+) error {
+	return w.impl.SetRecentsScreenshotEnabled(ctx, token, enabled)
+}
+
+func (w *activityClientControllerStubWrapper) InvalidateHomeTaskSnapshot(
+	ctx context.Context,
+	homeToken binder.IBinder,
+) error {
+	return w.impl.InvalidateHomeTaskSnapshot(ctx, homeToken)
+}
+
+func (w *activityClientControllerStubWrapper) DismissKeyguard(
+	ctx context.Context,
+	token binder.IBinder,
+	callback policy.IKeyguardDismissCallback,
+	message interface{},
+) error {
+	return w.impl.DismissKeyguard(ctx, token, callback, message)
+}
+
+func (w *activityClientControllerStubWrapper) RegisterRemoteAnimations(
+	ctx context.Context,
+	token binder.IBinder,
+	definition interface{},
+) error {
+	return w.impl.RegisterRemoteAnimations(ctx, token, definition)
+}
+
+func (w *activityClientControllerStubWrapper) UnregisterRemoteAnimations(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.UnregisterRemoteAnimations(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) OnBackPressed(
+	ctx context.Context,
+	activityToken binder.IBinder,
+	callback IRequestFinishCallback,
+) error {
+	return w.impl.OnBackPressed(ctx, activityToken, callback)
+}
+
+func (w *activityClientControllerStubWrapper) SplashScreenAttached(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.SplashScreenAttached(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) EnableTaskLocaleOverride(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.EnableTaskLocaleOverride(ctx, token)
+}
+
+func (w *activityClientControllerStubWrapper) IsRequestedToLaunchInTaskFragment(
+	ctx context.Context,
+	activityToken binder.IBinder,
+	taskFragmentToken binder.IBinder,
+) (bool, error) {
+	return w.impl.IsRequestedToLaunchInTaskFragment(ctx, activityToken, taskFragmentToken)
+}
+
+func (w *activityClientControllerStubWrapper) SetActivityRecordInputSinkEnabled(
+	ctx context.Context,
+	activityToken binder.IBinder,
+	enabled bool,
+) error {
+	return w.impl.SetActivityRecordInputSinkEnabled(ctx, activityToken, enabled)
+}
+
+var _ IActivityClientController = (*activityClientControllerStubWrapper)(nil)
+
+// NewActivityClientControllerStub creates a server-side IActivityClientController wrapping the given
+// server implementation. The returned value satisfies IActivityClientController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewActivityClientControllerStub(
+	impl IActivityClientControllerServer,
+) IActivityClientController {
+	wrapper := &activityClientControllerStubWrapper{impl: impl}
+	stub := &ActivityClientControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

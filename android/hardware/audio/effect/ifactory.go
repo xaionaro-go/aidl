@@ -193,7 +193,7 @@ func (p *FactoryProxy) DestroyEffect(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFactory)
-	_data.WriteStrongBinder(handle.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, handle.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFactory, "destroyEffect")
 	if _err != nil {
@@ -347,4 +347,69 @@ func (s *FactoryStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFactoryServer is the server-side interface that user implementations
+// provide to NewFactoryStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFactoryServer interface {
+	QueryEffects(ctx context.Context, type_ *common.AudioUuid, implementation *common.AudioUuid, proxy *common.AudioUuid) ([]Descriptor, error)
+	QueryProcessing(ctx context.Context, type_ *effectProcessing.Type) ([]Processing, error)
+	CreateEffect(ctx context.Context, implUuid common.AudioUuid) (IEffect, error)
+	DestroyEffect(ctx context.Context, handle IEffect) error
+}
+
+type factoryStubWrapper struct {
+	impl       IFactoryServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *factoryStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *factoryStubWrapper) QueryEffects(
+	ctx context.Context,
+	type_ *common.AudioUuid,
+	implementation *common.AudioUuid,
+	proxy *common.AudioUuid,
+) ([]Descriptor, error) {
+	return w.impl.QueryEffects(ctx, type_, implementation, proxy)
+}
+
+func (w *factoryStubWrapper) QueryProcessing(
+	ctx context.Context,
+	type_ *effectProcessing.Type,
+) ([]Processing, error) {
+	return w.impl.QueryProcessing(ctx, type_)
+}
+
+func (w *factoryStubWrapper) CreateEffect(
+	ctx context.Context,
+	implUuid common.AudioUuid,
+) (IEffect, error) {
+	return w.impl.CreateEffect(ctx, implUuid)
+}
+
+func (w *factoryStubWrapper) DestroyEffect(
+	ctx context.Context,
+	handle IEffect,
+) error {
+	return w.impl.DestroyEffect(ctx, handle)
+}
+
+var _ IFactory = (*factoryStubWrapper)(nil)
+
+// NewFactoryStub creates a server-side IFactory wrapping the given
+// server implementation. The returned value satisfies IFactory
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFactoryStub(
+	impl IFactoryServer,
+) IFactory {
+	wrapper := &factoryStubWrapper{impl: impl}
+	stub := &FactoryStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

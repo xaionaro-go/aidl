@@ -72,6 +72,11 @@ func (m *MockBinder) Handle() uint32 {
 	return 42
 }
 
+// Cookie returns 0 (mock has no local binder cookie).
+func (m *MockBinder) Cookie() uintptr {
+	return 0
+}
+
 // Transport returns nil since there is no underlying transport.
 func (m *MockBinder) Transport() binder.VersionAwareTransport {
 	return nil

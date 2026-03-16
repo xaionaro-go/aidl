@@ -82,3 +82,42 @@ func (s *CaptureStateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICaptureStateListenerServer is the server-side interface that user implementations
+// provide to NewCaptureStateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICaptureStateListenerServer interface {
+	SetCaptureState(ctx context.Context, active bool) error
+}
+
+type captureStateListenerStubWrapper struct {
+	impl       ICaptureStateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *captureStateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *captureStateListenerStubWrapper) SetCaptureState(
+	ctx context.Context,
+	active bool,
+) error {
+	return w.impl.SetCaptureState(ctx, active)
+}
+
+var _ ICaptureStateListener = (*captureStateListenerStubWrapper)(nil)
+
+// NewCaptureStateListenerStub creates a server-side ICaptureStateListener wrapping the given
+// server implementation. The returned value satisfies ICaptureStateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCaptureStateListenerStub(
+	impl ICaptureStateListenerServer,
+) ICaptureStateListener {
+	wrapper := &captureStateListenerStubWrapper{impl: impl}
+	stub := &CaptureStateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

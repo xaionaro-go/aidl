@@ -304,3 +304,83 @@ func (s *AppOpsUserClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppOpsUserClientServer is the server-side interface that user implementations
+// provide to NewAppOpsUserClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppOpsUserClientServer interface {
+	NoteSyncOpNative(ctx context.Context) error
+	NoteNonPermissionSyncOpNative(ctx context.Context) error
+	NoteSyncOpOnewayNative(ctx context.Context) error
+	FreezeAndNoteSyncOp(ctx context.Context) error
+	NoteSyncOpOtherUidNative(ctx context.Context) error
+	NoteAsyncOpNative(ctx context.Context) error
+	NoteAsyncOpNativeWithCustomMessage(ctx context.Context) error
+}
+
+type appOpsUserClientStubWrapper struct {
+	impl       IAppOpsUserClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appOpsUserClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appOpsUserClientStubWrapper) NoteSyncOpNative(
+	ctx context.Context,
+) error {
+	return w.impl.NoteSyncOpNative(ctx)
+}
+
+func (w *appOpsUserClientStubWrapper) NoteNonPermissionSyncOpNative(
+	ctx context.Context,
+) error {
+	return w.impl.NoteNonPermissionSyncOpNative(ctx)
+}
+
+func (w *appOpsUserClientStubWrapper) NoteSyncOpOnewayNative(
+	ctx context.Context,
+) error {
+	return w.impl.NoteSyncOpOnewayNative(ctx)
+}
+
+func (w *appOpsUserClientStubWrapper) FreezeAndNoteSyncOp(
+	ctx context.Context,
+) error {
+	return w.impl.FreezeAndNoteSyncOp(ctx)
+}
+
+func (w *appOpsUserClientStubWrapper) NoteSyncOpOtherUidNative(
+	ctx context.Context,
+) error {
+	return w.impl.NoteSyncOpOtherUidNative(ctx)
+}
+
+func (w *appOpsUserClientStubWrapper) NoteAsyncOpNative(
+	ctx context.Context,
+) error {
+	return w.impl.NoteAsyncOpNative(ctx)
+}
+
+func (w *appOpsUserClientStubWrapper) NoteAsyncOpNativeWithCustomMessage(
+	ctx context.Context,
+) error {
+	return w.impl.NoteAsyncOpNativeWithCustomMessage(ctx)
+}
+
+var _ IAppOpsUserClient = (*appOpsUserClientStubWrapper)(nil)
+
+// NewAppOpsUserClientStub creates a server-side IAppOpsUserClient wrapping the given
+// server implementation. The returned value satisfies IAppOpsUserClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppOpsUserClientStub(
+	impl IAppOpsUserClientServer,
+) IAppOpsUserClient {
+	wrapper := &appOpsUserClientStubWrapper{impl: impl}
+	stub := &AppOpsUserClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

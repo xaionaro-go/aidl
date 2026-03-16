@@ -116,3 +116,52 @@ func (s *CallNotificationEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICallNotificationEventCallbackServer is the server-side interface that user implementations
+// provide to NewCallNotificationEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallNotificationEventCallbackServer interface {
+	OnCallNotificationPosted(ctx context.Context, packageName string, userHandle interface{}) error
+	OnCallNotificationRemoved(ctx context.Context, packageName string, userHandle interface{}) error
+}
+
+type callNotificationEventCallbackStubWrapper struct {
+	impl       ICallNotificationEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callNotificationEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callNotificationEventCallbackStubWrapper) OnCallNotificationPosted(
+	ctx context.Context,
+	packageName string,
+	userHandle interface{},
+) error {
+	return w.impl.OnCallNotificationPosted(ctx, packageName, userHandle)
+}
+
+func (w *callNotificationEventCallbackStubWrapper) OnCallNotificationRemoved(
+	ctx context.Context,
+	packageName string,
+	userHandle interface{},
+) error {
+	return w.impl.OnCallNotificationRemoved(ctx, packageName, userHandle)
+}
+
+var _ ICallNotificationEventCallback = (*callNotificationEventCallbackStubWrapper)(nil)
+
+// NewCallNotificationEventCallbackStub creates a server-side ICallNotificationEventCallback wrapping the given
+// server implementation. The returned value satisfies ICallNotificationEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallNotificationEventCallbackStub(
+	impl ICallNotificationEventCallbackServer,
+) ICallNotificationEventCallback {
+	wrapper := &callNotificationEventCallbackStubWrapper{impl: impl}
+	stub := &CallNotificationEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

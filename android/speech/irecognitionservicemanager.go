@@ -3,7 +3,6 @@ package speech
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -19,8 +18,8 @@ const (
 
 type IRecognitionServiceManager interface {
 	AsBinder() binder.IBinder
-	CreateSession(ctx context.Context, componentName content.ComponentName, clientToken binder.IBinder, onDevice bool, callback IRecognitionServiceManagerCallback) error
-	SetTemporaryComponent(ctx context.Context, componentName content.ComponentName) error
+	CreateSession(ctx context.Context, componentName interface{}, clientToken binder.IBinder, onDevice bool, callback IRecognitionServiceManagerCallback) error
+	SetTemporaryComponent(ctx context.Context, componentName interface{}) error
 }
 
 type RecognitionServiceManagerProxy struct {
@@ -41,20 +40,16 @@ var _ IRecognitionServiceManager = (*RecognitionServiceManagerProxy)(nil)
 
 func (p *RecognitionServiceManagerProxy) CreateSession(
 	ctx context.Context,
-	componentName content.ComponentName,
+	componentName interface{},
 	clientToken binder.IBinder,
 	onDevice bool,
 	callback IRecognitionServiceManagerCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionServiceManager)
-	_data.WriteInt32(1)
-	if _err := componentName.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(clientToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
 	_data.WriteBool(onDevice)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionServiceManager, "createSession")
 	if _err != nil {
@@ -67,14 +62,10 @@ func (p *RecognitionServiceManagerProxy) CreateSession(
 
 func (p *RecognitionServiceManagerProxy) SetTemporaryComponent(
 	ctx context.Context,
-	componentName content.ComponentName,
+	componentName interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionServiceManager)
-	_data.WriteInt32(1)
-	if _err := componentName.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionServiceManager, "setTemporaryComponent")
 	if _err != nil {
@@ -103,18 +94,7 @@ func (s *RecognitionServiceManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_componentName interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_clientToken binder.IBinder
 		_ = _arg_clientToken
@@ -132,22 +112,61 @@ func (s *RecognitionServiceManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_componentName interface{}
 		_err := s.Impl.SetTemporaryComponent(ctx, _arg_componentName)
 		_ = _err
 		return nil, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRecognitionServiceManagerServer is the server-side interface that user implementations
+// provide to NewRecognitionServiceManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecognitionServiceManagerServer interface {
+	CreateSession(ctx context.Context, componentName interface{}, clientToken binder.IBinder, onDevice bool, callback IRecognitionServiceManagerCallback) error
+	SetTemporaryComponent(ctx context.Context, componentName interface{}) error
+}
+
+type recognitionServiceManagerStubWrapper struct {
+	impl       IRecognitionServiceManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recognitionServiceManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recognitionServiceManagerStubWrapper) CreateSession(
+	ctx context.Context,
+	componentName interface{},
+	clientToken binder.IBinder,
+	onDevice bool,
+	callback IRecognitionServiceManagerCallback,
+) error {
+	return w.impl.CreateSession(ctx, componentName, clientToken, onDevice, callback)
+}
+
+func (w *recognitionServiceManagerStubWrapper) SetTemporaryComponent(
+	ctx context.Context,
+	componentName interface{},
+) error {
+	return w.impl.SetTemporaryComponent(ctx, componentName)
+}
+
+var _ IRecognitionServiceManager = (*recognitionServiceManagerStubWrapper)(nil)
+
+// NewRecognitionServiceManagerStub creates a server-side IRecognitionServiceManager wrapping the given
+// server implementation. The returned value satisfies IRecognitionServiceManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecognitionServiceManagerStub(
+	impl IRecognitionServiceManagerServer,
+) IRecognitionServiceManager {
+	wrapper := &recognitionServiceManagerStubWrapper{impl: impl}
+	stub := &RecognitionServiceManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

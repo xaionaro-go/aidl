@@ -447,7 +447,7 @@ func (p *TunerServiceProxy) OpenSharedFilter(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerService)
 	_data.WriteString16(filterToken)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerService, "openSharedFilter")
 	if _err != nil {
@@ -878,4 +878,161 @@ func (s *TunerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITunerServiceServer is the server-side interface that user implementations
+// provide to NewTunerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerServiceServer interface {
+	GetFrontendIds(ctx context.Context, ids []int32) error
+	GetFrontendInfo(ctx context.Context, frontendId int32) (tvTuner.FrontendInfo, error)
+	OpenFrontend(ctx context.Context, frontendHandle int64) (ITunerFrontend, error)
+	OpenLnb(ctx context.Context, lnbHandle int64) (ITunerLnb, error)
+	OpenLnbByName(ctx context.Context, lnbName string) (ITunerLnb, error)
+	OpenDemux(ctx context.Context, demuxHandle int64) (ITunerDemux, error)
+	GetDemuxInfo(ctx context.Context, demuxHandle int64) (tvTuner.DemuxInfo, error)
+	GetDemuxInfoList(ctx context.Context) ([]tvTuner.DemuxInfo, error)
+	GetDemuxCaps(ctx context.Context) (tvTuner.DemuxCapabilities, error)
+	OpenDescrambler(ctx context.Context, descramblerHandle int64) (ITunerDescrambler, error)
+	GetTunerHalVersion(ctx context.Context) (int32, error)
+	OpenSharedFilter(ctx context.Context, filterToken string, cb ITunerFilterCallback) (ITunerFilter, error)
+	IsLnaSupported(ctx context.Context) (bool, error)
+	SetLna(ctx context.Context, bEnable bool) error
+	SetMaxNumberOfFrontends(ctx context.Context, frontendType tvTuner.FrontendType, maxNumber int32) error
+	GetMaxNumberOfFrontends(ctx context.Context, frontendType tvTuner.FrontendType) (int32, error)
+}
+
+type tunerServiceStubWrapper struct {
+	impl       ITunerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerServiceStubWrapper) GetFrontendIds(
+	ctx context.Context,
+	ids []int32,
+) error {
+	return w.impl.GetFrontendIds(ctx, ids)
+}
+
+func (w *tunerServiceStubWrapper) GetFrontendInfo(
+	ctx context.Context,
+	frontendId int32,
+) (tvTuner.FrontendInfo, error) {
+	return w.impl.GetFrontendInfo(ctx, frontendId)
+}
+
+func (w *tunerServiceStubWrapper) OpenFrontend(
+	ctx context.Context,
+	frontendHandle int64,
+) (ITunerFrontend, error) {
+	return w.impl.OpenFrontend(ctx, frontendHandle)
+}
+
+func (w *tunerServiceStubWrapper) OpenLnb(
+	ctx context.Context,
+	lnbHandle int64,
+) (ITunerLnb, error) {
+	return w.impl.OpenLnb(ctx, lnbHandle)
+}
+
+func (w *tunerServiceStubWrapper) OpenLnbByName(
+	ctx context.Context,
+	lnbName string,
+) (ITunerLnb, error) {
+	return w.impl.OpenLnbByName(ctx, lnbName)
+}
+
+func (w *tunerServiceStubWrapper) OpenDemux(
+	ctx context.Context,
+	demuxHandle int64,
+) (ITunerDemux, error) {
+	return w.impl.OpenDemux(ctx, demuxHandle)
+}
+
+func (w *tunerServiceStubWrapper) GetDemuxInfo(
+	ctx context.Context,
+	demuxHandle int64,
+) (tvTuner.DemuxInfo, error) {
+	return w.impl.GetDemuxInfo(ctx, demuxHandle)
+}
+
+func (w *tunerServiceStubWrapper) GetDemuxInfoList(
+	ctx context.Context,
+) ([]tvTuner.DemuxInfo, error) {
+	return w.impl.GetDemuxInfoList(ctx)
+}
+
+func (w *tunerServiceStubWrapper) GetDemuxCaps(
+	ctx context.Context,
+) (tvTuner.DemuxCapabilities, error) {
+	return w.impl.GetDemuxCaps(ctx)
+}
+
+func (w *tunerServiceStubWrapper) OpenDescrambler(
+	ctx context.Context,
+	descramblerHandle int64,
+) (ITunerDescrambler, error) {
+	return w.impl.OpenDescrambler(ctx, descramblerHandle)
+}
+
+func (w *tunerServiceStubWrapper) GetTunerHalVersion(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetTunerHalVersion(ctx)
+}
+
+func (w *tunerServiceStubWrapper) OpenSharedFilter(
+	ctx context.Context,
+	filterToken string,
+	cb ITunerFilterCallback,
+) (ITunerFilter, error) {
+	return w.impl.OpenSharedFilter(ctx, filterToken, cb)
+}
+
+func (w *tunerServiceStubWrapper) IsLnaSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLnaSupported(ctx)
+}
+
+func (w *tunerServiceStubWrapper) SetLna(
+	ctx context.Context,
+	bEnable bool,
+) error {
+	return w.impl.SetLna(ctx, bEnable)
+}
+
+func (w *tunerServiceStubWrapper) SetMaxNumberOfFrontends(
+	ctx context.Context,
+	frontendType tvTuner.FrontendType,
+	maxNumber int32,
+) error {
+	return w.impl.SetMaxNumberOfFrontends(ctx, frontendType, maxNumber)
+}
+
+func (w *tunerServiceStubWrapper) GetMaxNumberOfFrontends(
+	ctx context.Context,
+	frontendType tvTuner.FrontendType,
+) (int32, error) {
+	return w.impl.GetMaxNumberOfFrontends(ctx, frontendType)
+}
+
+var _ ITunerService = (*tunerServiceStubWrapper)(nil)
+
+// NewTunerServiceStub creates a server-side ITunerService wrapping the given
+// server implementation. The returned value satisfies ITunerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerServiceStub(
+	impl ITunerServiceServer,
+) ITunerService {
+	wrapper := &tunerServiceStubWrapper{impl: impl}
+	stub := &TunerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

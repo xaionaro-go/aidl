@@ -56,3 +56,34 @@ func (s *DeviceProductInfoConstantsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDeviceProductInfoConstantsServer is the server-side interface that user implementations
+// provide to NewDeviceProductInfoConstantsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceProductInfoConstantsServer interface {
+}
+
+type deviceProductInfoConstantsStubWrapper struct {
+	impl       IDeviceProductInfoConstantsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceProductInfoConstantsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IDeviceProductInfoConstants = (*deviceProductInfoConstantsStubWrapper)(nil)
+
+// NewDeviceProductInfoConstantsStub creates a server-side IDeviceProductInfoConstants wrapping the given
+// server implementation. The returned value satisfies IDeviceProductInfoConstants
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceProductInfoConstantsStub(
+	impl IDeviceProductInfoConstantsServer,
+) IDeviceProductInfoConstants {
+	wrapper := &deviceProductInfoConstantsStubWrapper{impl: impl}
+	stub := &DeviceProductInfoConstantsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

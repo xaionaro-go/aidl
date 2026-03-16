@@ -49,7 +49,7 @@ func (p *SuspendCallbackProxy) NotifyWakeup(
 	} else {
 		_data.WriteInt32(int32(len(wakeupReasons)))
 		for _, _item := range wakeupReasons {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 
@@ -107,4 +107,44 @@ func (s *SuspendCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISuspendCallbackServer is the server-side interface that user implementations
+// provide to NewSuspendCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISuspendCallbackServer interface {
+	NotifyWakeup(ctx context.Context, success bool, wakeupReasons []string) error
+}
+
+type suspendCallbackStubWrapper struct {
+	impl       ISuspendCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *suspendCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *suspendCallbackStubWrapper) NotifyWakeup(
+	ctx context.Context,
+	success bool,
+	wakeupReasons []string,
+) error {
+	return w.impl.NotifyWakeup(ctx, success, wakeupReasons)
+}
+
+var _ ISuspendCallback = (*suspendCallbackStubWrapper)(nil)
+
+// NewSuspendCallbackStub creates a server-side ISuspendCallback wrapping the given
+// server implementation. The returned value satisfies ISuspendCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSuspendCallbackStub(
+	impl ISuspendCallbackServer,
+) ISuspendCallback {
+	wrapper := &suspendCallbackStubWrapper{impl: impl}
+	stub := &SuspendCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

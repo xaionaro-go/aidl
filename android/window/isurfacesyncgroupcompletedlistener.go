@@ -76,3 +76,41 @@ func (s *SurfaceSyncGroupCompletedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISurfaceSyncGroupCompletedListenerServer is the server-side interface that user implementations
+// provide to NewSurfaceSyncGroupCompletedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISurfaceSyncGroupCompletedListenerServer interface {
+	OnSurfaceSyncGroupComplete(ctx context.Context) error
+}
+
+type surfaceSyncGroupCompletedListenerStubWrapper struct {
+	impl       ISurfaceSyncGroupCompletedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *surfaceSyncGroupCompletedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *surfaceSyncGroupCompletedListenerStubWrapper) OnSurfaceSyncGroupComplete(
+	ctx context.Context,
+) error {
+	return w.impl.OnSurfaceSyncGroupComplete(ctx)
+}
+
+var _ ISurfaceSyncGroupCompletedListener = (*surfaceSyncGroupCompletedListenerStubWrapper)(nil)
+
+// NewSurfaceSyncGroupCompletedListenerStub creates a server-side ISurfaceSyncGroupCompletedListener wrapping the given
+// server implementation. The returned value satisfies ISurfaceSyncGroupCompletedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSurfaceSyncGroupCompletedListenerStub(
+	impl ISurfaceSyncGroupCompletedListenerServer,
+) ISurfaceSyncGroupCompletedListener {
+	wrapper := &surfaceSyncGroupCompletedListenerStubWrapper{impl: impl}
+	stub := &SurfaceSyncGroupCompletedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

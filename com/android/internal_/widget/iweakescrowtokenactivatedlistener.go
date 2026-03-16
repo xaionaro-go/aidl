@@ -87,3 +87,42 @@ func (s *WeakEscrowTokenActivatedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWeakEscrowTokenActivatedListenerServer is the server-side interface that user implementations
+// provide to NewWeakEscrowTokenActivatedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWeakEscrowTokenActivatedListenerServer interface {
+	OnWeakEscrowTokenActivated(ctx context.Context, handle int64) error
+}
+
+type weakEscrowTokenActivatedListenerStubWrapper struct {
+	impl       IWeakEscrowTokenActivatedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *weakEscrowTokenActivatedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *weakEscrowTokenActivatedListenerStubWrapper) OnWeakEscrowTokenActivated(
+	ctx context.Context,
+	handle int64,
+) error {
+	return w.impl.OnWeakEscrowTokenActivated(ctx, handle)
+}
+
+var _ IWeakEscrowTokenActivatedListener = (*weakEscrowTokenActivatedListenerStubWrapper)(nil)
+
+// NewWeakEscrowTokenActivatedListenerStub creates a server-side IWeakEscrowTokenActivatedListener wrapping the given
+// server implementation. The returned value satisfies IWeakEscrowTokenActivatedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWeakEscrowTokenActivatedListenerStub(
+	impl IWeakEscrowTokenActivatedListenerServer,
+) IWeakEscrowTokenActivatedListener {
+	wrapper := &weakEscrowTokenActivatedListenerStubWrapper{impl: impl}
+	stub := &WeakEscrowTokenActivatedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -129,3 +129,51 @@ func (s *GetCandidateCredentialsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetCandidateCredentialsCallbackServer is the server-side interface that user implementations
+// provide to NewGetCandidateCredentialsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetCandidateCredentialsCallbackServer interface {
+	OnResponse(ctx context.Context, response GetCandidateCredentialsResponse) error
+	OnError(ctx context.Context, errorType string, message string) error
+}
+
+type getCandidateCredentialsCallbackStubWrapper struct {
+	impl       IGetCandidateCredentialsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getCandidateCredentialsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getCandidateCredentialsCallbackStubWrapper) OnResponse(
+	ctx context.Context,
+	response GetCandidateCredentialsResponse,
+) error {
+	return w.impl.OnResponse(ctx, response)
+}
+
+func (w *getCandidateCredentialsCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorType string,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorType, message)
+}
+
+var _ IGetCandidateCredentialsCallback = (*getCandidateCredentialsCallbackStubWrapper)(nil)
+
+// NewGetCandidateCredentialsCallbackStub creates a server-side IGetCandidateCredentialsCallback wrapping the given
+// server implementation. The returned value satisfies IGetCandidateCredentialsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetCandidateCredentialsCallbackStub(
+	impl IGetCandidateCredentialsCallbackServer,
+) IGetCandidateCredentialsCallback {
+	wrapper := &getCandidateCredentialsCallbackStubWrapper{impl: impl}
+	stub := &GetCandidateCredentialsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

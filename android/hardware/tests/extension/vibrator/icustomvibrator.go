@@ -109,7 +109,7 @@ func (p *CustomVibratorProxy) Perform(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICustomVibrator)
 	_data.WriteInt32(int32(effect))
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICustomVibrator, "perform")
 	if _err != nil {
@@ -201,4 +201,59 @@ func (s *CustomVibratorStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICustomVibratorServer is the server-side interface that user implementations
+// provide to NewCustomVibratorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICustomVibratorServer interface {
+	GetVendorCapabilities(ctx context.Context) (int32, error)
+	SetDirectionality(ctx context.Context, directionality Directionality) error
+	Perform(ctx context.Context, effect VendorEffect, callback hardwareVibrator.IVibratorCallback) (int32, error)
+}
+
+type customVibratorStubWrapper struct {
+	impl       ICustomVibratorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *customVibratorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *customVibratorStubWrapper) GetVendorCapabilities(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetVendorCapabilities(ctx)
+}
+
+func (w *customVibratorStubWrapper) SetDirectionality(
+	ctx context.Context,
+	directionality Directionality,
+) error {
+	return w.impl.SetDirectionality(ctx, directionality)
+}
+
+func (w *customVibratorStubWrapper) Perform(
+	ctx context.Context,
+	effect VendorEffect,
+	callback hardwareVibrator.IVibratorCallback,
+) (int32, error) {
+	return w.impl.Perform(ctx, effect, callback)
+}
+
+var _ ICustomVibrator = (*customVibratorStubWrapper)(nil)
+
+// NewCustomVibratorStub creates a server-side ICustomVibrator wrapping the given
+// server implementation. The returned value satisfies ICustomVibrator
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCustomVibratorStub(
+	impl ICustomVibratorServer,
+) ICustomVibrator {
+	wrapper := &customVibratorStubWrapper{impl: impl}
+	stub := &CustomVibratorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

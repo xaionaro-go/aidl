@@ -272,3 +272,88 @@ func (s *PlayerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPlayerServer is the server-side interface that user implementations
+// provide to NewPlayerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPlayerServer interface {
+	Start(ctx context.Context) error
+	Pause(ctx context.Context) error
+	Stop(ctx context.Context) error
+	SetVolume(ctx context.Context, vol float32) error
+	SetPan(ctx context.Context, pan float32) error
+	SetStartDelayMs(ctx context.Context, delayMs int32) error
+	ApplyVolumeShaper(ctx context.Context, configuration VolumeShaperConfiguration, operation VolumeShaperOperation) error
+}
+
+type playerStubWrapper struct {
+	impl       IPlayerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *playerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *playerStubWrapper) Start(
+	ctx context.Context,
+) error {
+	return w.impl.Start(ctx)
+}
+
+func (w *playerStubWrapper) Pause(
+	ctx context.Context,
+) error {
+	return w.impl.Pause(ctx)
+}
+
+func (w *playerStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *playerStubWrapper) SetVolume(
+	ctx context.Context,
+	vol float32,
+) error {
+	return w.impl.SetVolume(ctx, vol)
+}
+
+func (w *playerStubWrapper) SetPan(
+	ctx context.Context,
+	pan float32,
+) error {
+	return w.impl.SetPan(ctx, pan)
+}
+
+func (w *playerStubWrapper) SetStartDelayMs(
+	ctx context.Context,
+	delayMs int32,
+) error {
+	return w.impl.SetStartDelayMs(ctx, delayMs)
+}
+
+func (w *playerStubWrapper) ApplyVolumeShaper(
+	ctx context.Context,
+	configuration VolumeShaperConfiguration,
+	operation VolumeShaperOperation,
+) error {
+	return w.impl.ApplyVolumeShaper(ctx, configuration, operation)
+}
+
+var _ IPlayer = (*playerStubWrapper)(nil)
+
+// NewPlayerStub creates a server-side IPlayer wrapping the given
+// server implementation. The returned value satisfies IPlayer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPlayerStub(
+	impl IPlayerServer,
+) IPlayer {
+	wrapper := &playerStubWrapper{impl: impl}
+	stub := &PlayerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

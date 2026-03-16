@@ -286,3 +286,66 @@ func (s *KeystoreOperationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeystoreOperationServer is the server-side interface that user implementations
+// provide to NewKeystoreOperationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeystoreOperationServer interface {
+	UpdateAad(ctx context.Context, aadInput []byte) error
+	Update(ctx context.Context, input []byte) ([]byte, error)
+	Finish(ctx context.Context, input []byte, signature []byte) ([]byte, error)
+	Abort(ctx context.Context) error
+}
+
+type keystoreOperationStubWrapper struct {
+	impl       IKeystoreOperationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keystoreOperationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keystoreOperationStubWrapper) UpdateAad(
+	ctx context.Context,
+	aadInput []byte,
+) error {
+	return w.impl.UpdateAad(ctx, aadInput)
+}
+
+func (w *keystoreOperationStubWrapper) Update(
+	ctx context.Context,
+	input []byte,
+) ([]byte, error) {
+	return w.impl.Update(ctx, input)
+}
+
+func (w *keystoreOperationStubWrapper) Finish(
+	ctx context.Context,
+	input []byte,
+	signature []byte,
+) ([]byte, error) {
+	return w.impl.Finish(ctx, input, signature)
+}
+
+func (w *keystoreOperationStubWrapper) Abort(
+	ctx context.Context,
+) error {
+	return w.impl.Abort(ctx)
+}
+
+var _ IKeystoreOperation = (*keystoreOperationStubWrapper)(nil)
+
+// NewKeystoreOperationStub creates a server-side IKeystoreOperation wrapping the given
+// server implementation. The returned value satisfies IKeystoreOperation
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeystoreOperationStub(
+	impl IKeystoreOperationServer,
+) IKeystoreOperation {
+	wrapper := &keystoreOperationStubWrapper{impl: impl}
+	stub := &KeystoreOperationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -3,7 +3,6 @@ package backup
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -106,23 +105,23 @@ type IBackupManager interface {
 	AdbRestore(ctx context.Context, fd int32) error
 	AcknowledgeFullBackupOrRestoreForUser(ctx context.Context, token int32, allow bool, curPassword string, encryptionPassword string, observer IFullBackupRestoreObserver) error
 	AcknowledgeFullBackupOrRestore(ctx context.Context, token int32, allow bool, curPassword string, encryptionPassword string, observer IFullBackupRestoreObserver) error
-	UpdateTransportAttributesForUser(ctx context.Context, transportComponent content.ComponentName, name string, configurationIntent content.Intent, currentDestinationString string, dataManagementIntent content.Intent, dataManagementLabel interface{}) error
+	UpdateTransportAttributesForUser(ctx context.Context, transportComponent interface{}, name string, configurationIntent interface{}, currentDestinationString string, dataManagementIntent interface{}, dataManagementLabel interface{}) error
 	GetCurrentTransportForUser(ctx context.Context) (string, error)
 	GetCurrentTransport(ctx context.Context) (string, error)
-	GetCurrentTransportComponentForUser(ctx context.Context) (content.ComponentName, error)
+	GetCurrentTransportComponentForUser(ctx context.Context) (interface{}, error)
 	ListAllTransportsForUser(ctx context.Context) ([]string, error)
 	ListAllTransports(ctx context.Context) ([]string, error)
-	ListAllTransportComponentsForUser(ctx context.Context) ([]content.ComponentName, error)
+	ListAllTransportComponentsForUser(ctx context.Context) ([]interface{}, error)
 	GetTransportWhitelist(ctx context.Context) ([]string, error)
 	SelectBackupTransportForUser(ctx context.Context, transport string) (string, error)
 	SelectBackupTransport(ctx context.Context, transport string) (string, error)
-	SelectBackupTransportAsyncForUser(ctx context.Context, transport content.ComponentName, listener ISelectBackupTransportCallback) error
-	GetConfigurationIntentForUser(ctx context.Context, transport string) (content.Intent, error)
-	GetConfigurationIntent(ctx context.Context, transport string) (content.Intent, error)
+	SelectBackupTransportAsyncForUser(ctx context.Context, transport interface{}, listener ISelectBackupTransportCallback) error
+	GetConfigurationIntentForUser(ctx context.Context, transport string) (interface{}, error)
+	GetConfigurationIntent(ctx context.Context, transport string) (interface{}, error)
 	GetDestinationStringForUser(ctx context.Context, transport string) (string, error)
 	GetDestinationString(ctx context.Context, transport string) (string, error)
-	GetDataManagementIntentForUser(ctx context.Context, transport string) (content.Intent, error)
-	GetDataManagementIntent(ctx context.Context, transport string) (content.Intent, error)
+	GetDataManagementIntentForUser(ctx context.Context, transport string) (interface{}, error)
+	GetDataManagementIntent(ctx context.Context, transport string) (interface{}, error)
 	GetDataManagementLabelForUser(ctx context.Context, transport string) (interface{}, error)
 	BeginRestoreSessionForUser(ctx context.Context, packageName string, transportID string) (IRestoreSession, error)
 	OpCompleteForUser(ctx context.Context, token int32, result int64) error
@@ -288,7 +287,7 @@ func (p *BackupManagerProxy) InitializeTransportsForUser(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupManager, "initializeTransportsForUser")
 	if _err != nil {
@@ -318,7 +317,7 @@ func (p *BackupManagerProxy) AgentConnectedForUser(
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(agent.Handle())
+	binder.WriteBinderToParcel(ctx, _data, agent, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupManager, "agentConnectedForUser")
 	if _err != nil {
@@ -346,7 +345,7 @@ func (p *BackupManagerProxy) AgentConnected(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(agent.Handle())
+	binder.WriteBinderToParcel(ctx, _data, agent, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupManager, "agentConnected")
 	if _err != nil {
@@ -918,7 +917,7 @@ func (p *BackupManagerProxy) AcknowledgeFullBackupOrRestoreForUser(
 	_data.WriteBool(allow)
 	_data.WriteString16(curPassword)
 	_data.WriteString16(encryptionPassword)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupManager, "acknowledgeFullBackupOrRestoreForUser")
 	if _err != nil {
@@ -952,7 +951,7 @@ func (p *BackupManagerProxy) AcknowledgeFullBackupOrRestore(
 	_data.WriteBool(allow)
 	_data.WriteString16(curPassword)
 	_data.WriteString16(encryptionPassword)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupManager, "acknowledgeFullBackupOrRestore")
 	if _err != nil {
@@ -974,31 +973,19 @@ func (p *BackupManagerProxy) AcknowledgeFullBackupOrRestore(
 
 func (p *BackupManagerProxy) UpdateTransportAttributesForUser(
 	ctx context.Context,
-	transportComponent content.ComponentName,
+	transportComponent interface{},
 	name string,
-	configurationIntent content.Intent,
+	configurationIntent interface{},
 	currentDestinationString string,
-	dataManagementIntent content.Intent,
+	dataManagementIntent interface{},
 	dataManagementLabel interface{},
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteInt32(1)
-	if _err := transportComponent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteString16(name)
-	_data.WriteInt32(1)
-	if _err := configurationIntent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteString16(currentDestinationString)
-	_data.WriteInt32(1)
-	if _err := dataManagementIntent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupManager, "updateTransportAttributesForUser")
 	if _err != nil {
@@ -1080,8 +1067,8 @@ func (p *BackupManagerProxy) GetCurrentTransport(
 
 func (p *BackupManagerProxy) GetCurrentTransportComponentForUser(
 	ctx context.Context,
-) (content.ComponentName, error) {
-	var _result content.ComponentName
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
@@ -1102,15 +1089,6 @@ func (p *BackupManagerProxy) GetCurrentTransportComponentForUser(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -1196,8 +1174,8 @@ func (p *BackupManagerProxy) ListAllTransports(
 
 func (p *BackupManagerProxy) ListAllTransportComponentsForUser(
 	ctx context.Context,
-) ([]content.ComponentName, error) {
-	var _result []content.ComponentName
+) ([]interface{}, error) {
+	var _result []interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
@@ -1224,11 +1202,8 @@ func (p *BackupManagerProxy) ListAllTransportComponentsForUser(
 	}
 
 	if _count >= 0 {
-		_result = make([]content.ComponentName, _count)
+		_result = make([]interface{}, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
-				return _result, _err
-			}
 		}
 	}
 	return _result, nil
@@ -1339,18 +1314,14 @@ func (p *BackupManagerProxy) SelectBackupTransport(
 
 func (p *BackupManagerProxy) SelectBackupTransportAsyncForUser(
 	ctx context.Context,
-	transport content.ComponentName,
+	transport interface{},
 	listener ISelectBackupTransportCallback,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteInt32(1)
-	if _err := transport.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupManager, "selectBackupTransportAsyncForUser")
 	if _err != nil {
@@ -1373,8 +1344,8 @@ func (p *BackupManagerProxy) SelectBackupTransportAsyncForUser(
 func (p *BackupManagerProxy) GetConfigurationIntentForUser(
 	ctx context.Context,
 	transport string,
-) (content.Intent, error) {
-	var _result content.Intent
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
@@ -1396,23 +1367,14 @@ func (p *BackupManagerProxy) GetConfigurationIntentForUser(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
 func (p *BackupManagerProxy) GetConfigurationIntent(
 	ctx context.Context,
 	transport string,
-) (content.Intent, error) {
-	var _result content.Intent
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
 	_data.WriteString16(transport)
@@ -1432,15 +1394,6 @@ func (p *BackupManagerProxy) GetConfigurationIntent(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -1511,8 +1464,8 @@ func (p *BackupManagerProxy) GetDestinationString(
 func (p *BackupManagerProxy) GetDataManagementIntentForUser(
 	ctx context.Context,
 	transport string,
-) (content.Intent, error) {
-	var _result content.Intent
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
@@ -1534,23 +1487,14 @@ func (p *BackupManagerProxy) GetDataManagementIntentForUser(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
 func (p *BackupManagerProxy) GetDataManagementIntent(
 	ctx context.Context,
 	transport string,
-) (content.Intent, error) {
-	var _result content.Intent
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
 	_data.WriteString16(transport)
@@ -1570,15 +1514,6 @@ func (p *BackupManagerProxy) GetDataManagementIntent(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -1931,8 +1866,8 @@ func (p *BackupManagerProxy) RequestBackupForUser(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
-	_data.WriteStrongBinder(monitor.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, monitor.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupManager, "requestBackupForUser")
@@ -1975,8 +1910,8 @@ func (p *BackupManagerProxy) RequestBackup(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
-	_data.WriteStrongBinder(monitor.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, monitor.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackupManager, "requestBackup")
@@ -2750,50 +2685,17 @@ func (s *BackupManagerStub) OnTransaction(
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
-		var _arg_transportComponent content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_transportComponent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_transportComponent interface{}
 		_arg_name, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_configurationIntent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_configurationIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_configurationIntent interface{}
 		_arg_currentDestinationString, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_dataManagementIntent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_dataManagementIntent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_dataManagementIntent interface{}
 		var _arg_dataManagementLabel interface{}
 		_err = s.Impl.UpdateTransportAttributesForUser(ctx, _arg_transportComponent, _arg_name, _arg_configurationIntent, _arg_currentDestinationString, _arg_dataManagementIntent, _arg_dataManagementLabel)
 		_reply := parcel.New()
@@ -2846,10 +2748,7 @@ func (s *BackupManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIBackupManagerListAllTransportsForUser:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -2957,18 +2856,7 @@ func (s *BackupManagerStub) OnTransaction(
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
-		var _arg_transport content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_transport.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_transport interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_listener ISelectBackupTransportCallback
 		_ = _arg_listener
@@ -2998,10 +2886,7 @@ func (s *BackupManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIBackupManagerGetConfigurationIntent:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -3018,10 +2903,7 @@ func (s *BackupManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIBackupManagerGetDestinationStringForUser:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -3078,10 +2960,7 @@ func (s *BackupManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIBackupManagerGetDataManagementIntent:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -3098,10 +2977,7 @@ func (s *BackupManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIBackupManagerGetDataManagementLabelForUser:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -3460,4 +3336,559 @@ func (s *BackupManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBackupManagerServer is the server-side interface that user implementations
+// provide to NewBackupManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackupManagerServer interface {
+	DataChangedForUser(ctx context.Context, packageName string) error
+	DataChanged(ctx context.Context, packageName string) error
+	ClearBackupDataForUser(ctx context.Context, transportName string, packageName string) error
+	ClearBackupData(ctx context.Context, transportName string, packageName string) error
+	InitializeTransportsForUser(ctx context.Context, transportNames []string, observer IBackupObserver) error
+	AgentConnectedForUser(ctx context.Context, packageName string, agent binder.IBinder) error
+	AgentConnected(ctx context.Context, packageName string, agent binder.IBinder) error
+	AgentDisconnectedForUser(ctx context.Context, packageName string) error
+	AgentDisconnected(ctx context.Context, packageName string) error
+	RestoreAtInstallForUser(ctx context.Context, packageName string, token int32) error
+	RestoreAtInstall(ctx context.Context, packageName string, token int32) error
+	SetBackupEnabledForUser(ctx context.Context, isEnabled bool) error
+	SetFrameworkSchedulingEnabledForUser(ctx context.Context, isEnabled bool) error
+	SetBackupEnabled(ctx context.Context, isEnabled bool) error
+	SetAutoRestoreForUser(ctx context.Context, doAutoRestore bool) error
+	SetAutoRestore(ctx context.Context, doAutoRestore bool) error
+	IsBackupEnabledForUser(ctx context.Context) (bool, error)
+	IsBackupEnabled(ctx context.Context) (bool, error)
+	SetBackupPassword(ctx context.Context, currentPw string, newPw string) (bool, error)
+	HasBackupPassword(ctx context.Context) (bool, error)
+	BackupNowForUser(ctx context.Context) error
+	BackupNow(ctx context.Context) error
+	AdbBackup(ctx context.Context, fd int32, includeApks bool, includeObbs bool, includeShared bool, doWidgets bool, allApps bool, allIncludesSystem bool, doCompress bool, doKeyValue bool, packageNames []string) error
+	FullTransportBackupForUser(ctx context.Context, packageNames []string) error
+	AdbRestore(ctx context.Context, fd int32) error
+	AcknowledgeFullBackupOrRestoreForUser(ctx context.Context, token int32, allow bool, curPassword string, encryptionPassword string, observer IFullBackupRestoreObserver) error
+	AcknowledgeFullBackupOrRestore(ctx context.Context, token int32, allow bool, curPassword string, encryptionPassword string, observer IFullBackupRestoreObserver) error
+	UpdateTransportAttributesForUser(ctx context.Context, transportComponent interface{}, name string, configurationIntent interface{}, currentDestinationString string, dataManagementIntent interface{}, dataManagementLabel interface{}) error
+	GetCurrentTransportForUser(ctx context.Context) (string, error)
+	GetCurrentTransport(ctx context.Context) (string, error)
+	GetCurrentTransportComponentForUser(ctx context.Context) (interface{}, error)
+	ListAllTransportsForUser(ctx context.Context) ([]string, error)
+	ListAllTransports(ctx context.Context) ([]string, error)
+	ListAllTransportComponentsForUser(ctx context.Context) ([]interface{}, error)
+	GetTransportWhitelist(ctx context.Context) ([]string, error)
+	SelectBackupTransportForUser(ctx context.Context, transport string) (string, error)
+	SelectBackupTransport(ctx context.Context, transport string) (string, error)
+	SelectBackupTransportAsyncForUser(ctx context.Context, transport interface{}, listener ISelectBackupTransportCallback) error
+	GetConfigurationIntentForUser(ctx context.Context, transport string) (interface{}, error)
+	GetConfigurationIntent(ctx context.Context, transport string) (interface{}, error)
+	GetDestinationStringForUser(ctx context.Context, transport string) (string, error)
+	GetDestinationString(ctx context.Context, transport string) (string, error)
+	GetDataManagementIntentForUser(ctx context.Context, transport string) (interface{}, error)
+	GetDataManagementIntent(ctx context.Context, transport string) (interface{}, error)
+	GetDataManagementLabelForUser(ctx context.Context, transport string) (interface{}, error)
+	BeginRestoreSessionForUser(ctx context.Context, packageName string, transportID string) (IRestoreSession, error)
+	OpCompleteForUser(ctx context.Context, token int32, result int64) error
+	OpComplete(ctx context.Context, token int32, result int64) error
+	SetBackupServiceActive(ctx context.Context, whichUser int32, makeActive bool) error
+	IsBackupServiceActive(ctx context.Context, whichUser int32) (bool, error)
+	IsUserReadyForBackup(ctx context.Context) (bool, error)
+	GetAvailableRestoreTokenForUser(ctx context.Context, packageName string) (int64, error)
+	IsAppEligibleForBackupForUser(ctx context.Context, packageName string) (bool, error)
+	FilterAppsEligibleForBackupForUser(ctx context.Context, packages []string) ([]string, error)
+	RequestBackupForUser(ctx context.Context, packages []string, observer IBackupObserver, monitor IBackupManagerMonitor, flags int32) (int32, error)
+	RequestBackup(ctx context.Context, packages []string, observer IBackupObserver, monitor IBackupManagerMonitor, flags int32) (int32, error)
+	CancelBackupsForUser(ctx context.Context) error
+	CancelBackups(ctx context.Context) error
+	GetUserForAncestralSerialNumber(ctx context.Context, ancestralSerialNumber int64) (interface{}, error)
+	SetAncestralSerialNumber(ctx context.Context, ancestralSerialNumber int64) error
+	ExcludeKeysFromRestore(ctx context.Context, packageName string, keys []string) error
+	ReportDelayedRestoreResult(ctx context.Context, packageName string, results []BackupRestoreEventLoggerDataTypeResult) error
+}
+
+type backupManagerStubWrapper struct {
+	impl       IBackupManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backupManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backupManagerStubWrapper) DataChangedForUser(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.DataChangedForUser(ctx, packageName)
+}
+
+func (w *backupManagerStubWrapper) DataChanged(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.DataChanged(ctx, packageName)
+}
+
+func (w *backupManagerStubWrapper) ClearBackupDataForUser(
+	ctx context.Context,
+	transportName string,
+	packageName string,
+) error {
+	return w.impl.ClearBackupDataForUser(ctx, transportName, packageName)
+}
+
+func (w *backupManagerStubWrapper) ClearBackupData(
+	ctx context.Context,
+	transportName string,
+	packageName string,
+) error {
+	return w.impl.ClearBackupData(ctx, transportName, packageName)
+}
+
+func (w *backupManagerStubWrapper) InitializeTransportsForUser(
+	ctx context.Context,
+	transportNames []string,
+	observer IBackupObserver,
+) error {
+	return w.impl.InitializeTransportsForUser(ctx, transportNames, observer)
+}
+
+func (w *backupManagerStubWrapper) AgentConnectedForUser(
+	ctx context.Context,
+	packageName string,
+	agent binder.IBinder,
+) error {
+	return w.impl.AgentConnectedForUser(ctx, packageName, agent)
+}
+
+func (w *backupManagerStubWrapper) AgentConnected(
+	ctx context.Context,
+	packageName string,
+	agent binder.IBinder,
+) error {
+	return w.impl.AgentConnected(ctx, packageName, agent)
+}
+
+func (w *backupManagerStubWrapper) AgentDisconnectedForUser(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.AgentDisconnectedForUser(ctx, packageName)
+}
+
+func (w *backupManagerStubWrapper) AgentDisconnected(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.AgentDisconnected(ctx, packageName)
+}
+
+func (w *backupManagerStubWrapper) RestoreAtInstallForUser(
+	ctx context.Context,
+	packageName string,
+	token int32,
+) error {
+	return w.impl.RestoreAtInstallForUser(ctx, packageName, token)
+}
+
+func (w *backupManagerStubWrapper) RestoreAtInstall(
+	ctx context.Context,
+	packageName string,
+	token int32,
+) error {
+	return w.impl.RestoreAtInstall(ctx, packageName, token)
+}
+
+func (w *backupManagerStubWrapper) SetBackupEnabledForUser(
+	ctx context.Context,
+	isEnabled bool,
+) error {
+	return w.impl.SetBackupEnabledForUser(ctx, isEnabled)
+}
+
+func (w *backupManagerStubWrapper) SetFrameworkSchedulingEnabledForUser(
+	ctx context.Context,
+	isEnabled bool,
+) error {
+	return w.impl.SetFrameworkSchedulingEnabledForUser(ctx, isEnabled)
+}
+
+func (w *backupManagerStubWrapper) SetBackupEnabled(
+	ctx context.Context,
+	isEnabled bool,
+) error {
+	return w.impl.SetBackupEnabled(ctx, isEnabled)
+}
+
+func (w *backupManagerStubWrapper) SetAutoRestoreForUser(
+	ctx context.Context,
+	doAutoRestore bool,
+) error {
+	return w.impl.SetAutoRestoreForUser(ctx, doAutoRestore)
+}
+
+func (w *backupManagerStubWrapper) SetAutoRestore(
+	ctx context.Context,
+	doAutoRestore bool,
+) error {
+	return w.impl.SetAutoRestore(ctx, doAutoRestore)
+}
+
+func (w *backupManagerStubWrapper) IsBackupEnabledForUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBackupEnabledForUser(ctx)
+}
+
+func (w *backupManagerStubWrapper) IsBackupEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBackupEnabled(ctx)
+}
+
+func (w *backupManagerStubWrapper) SetBackupPassword(
+	ctx context.Context,
+	currentPw string,
+	newPw string,
+) (bool, error) {
+	return w.impl.SetBackupPassword(ctx, currentPw, newPw)
+}
+
+func (w *backupManagerStubWrapper) HasBackupPassword(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasBackupPassword(ctx)
+}
+
+func (w *backupManagerStubWrapper) BackupNowForUser(
+	ctx context.Context,
+) error {
+	return w.impl.BackupNowForUser(ctx)
+}
+
+func (w *backupManagerStubWrapper) BackupNow(
+	ctx context.Context,
+) error {
+	return w.impl.BackupNow(ctx)
+}
+
+func (w *backupManagerStubWrapper) AdbBackup(
+	ctx context.Context,
+	fd int32,
+	includeApks bool,
+	includeObbs bool,
+	includeShared bool,
+	doWidgets bool,
+	allApps bool,
+	allIncludesSystem bool,
+	doCompress bool,
+	doKeyValue bool,
+	packageNames []string,
+) error {
+	return w.impl.AdbBackup(ctx, fd, includeApks, includeObbs, includeShared, doWidgets, allApps, allIncludesSystem, doCompress, doKeyValue, packageNames)
+}
+
+func (w *backupManagerStubWrapper) FullTransportBackupForUser(
+	ctx context.Context,
+	packageNames []string,
+) error {
+	return w.impl.FullTransportBackupForUser(ctx, packageNames)
+}
+
+func (w *backupManagerStubWrapper) AdbRestore(
+	ctx context.Context,
+	fd int32,
+) error {
+	return w.impl.AdbRestore(ctx, fd)
+}
+
+func (w *backupManagerStubWrapper) AcknowledgeFullBackupOrRestoreForUser(
+	ctx context.Context,
+	token int32,
+	allow bool,
+	curPassword string,
+	encryptionPassword string,
+	observer IFullBackupRestoreObserver,
+) error {
+	return w.impl.AcknowledgeFullBackupOrRestoreForUser(ctx, token, allow, curPassword, encryptionPassword, observer)
+}
+
+func (w *backupManagerStubWrapper) AcknowledgeFullBackupOrRestore(
+	ctx context.Context,
+	token int32,
+	allow bool,
+	curPassword string,
+	encryptionPassword string,
+	observer IFullBackupRestoreObserver,
+) error {
+	return w.impl.AcknowledgeFullBackupOrRestore(ctx, token, allow, curPassword, encryptionPassword, observer)
+}
+
+func (w *backupManagerStubWrapper) UpdateTransportAttributesForUser(
+	ctx context.Context,
+	transportComponent interface{},
+	name string,
+	configurationIntent interface{},
+	currentDestinationString string,
+	dataManagementIntent interface{},
+	dataManagementLabel interface{},
+) error {
+	return w.impl.UpdateTransportAttributesForUser(ctx, transportComponent, name, configurationIntent, currentDestinationString, dataManagementIntent, dataManagementLabel)
+}
+
+func (w *backupManagerStubWrapper) GetCurrentTransportForUser(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCurrentTransportForUser(ctx)
+}
+
+func (w *backupManagerStubWrapper) GetCurrentTransport(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCurrentTransport(ctx)
+}
+
+func (w *backupManagerStubWrapper) GetCurrentTransportComponentForUser(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetCurrentTransportComponentForUser(ctx)
+}
+
+func (w *backupManagerStubWrapper) ListAllTransportsForUser(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.ListAllTransportsForUser(ctx)
+}
+
+func (w *backupManagerStubWrapper) ListAllTransports(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.ListAllTransports(ctx)
+}
+
+func (w *backupManagerStubWrapper) ListAllTransportComponentsForUser(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.ListAllTransportComponentsForUser(ctx)
+}
+
+func (w *backupManagerStubWrapper) GetTransportWhitelist(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetTransportWhitelist(ctx)
+}
+
+func (w *backupManagerStubWrapper) SelectBackupTransportForUser(
+	ctx context.Context,
+	transport string,
+) (string, error) {
+	return w.impl.SelectBackupTransportForUser(ctx, transport)
+}
+
+func (w *backupManagerStubWrapper) SelectBackupTransport(
+	ctx context.Context,
+	transport string,
+) (string, error) {
+	return w.impl.SelectBackupTransport(ctx, transport)
+}
+
+func (w *backupManagerStubWrapper) SelectBackupTransportAsyncForUser(
+	ctx context.Context,
+	transport interface{},
+	listener ISelectBackupTransportCallback,
+) error {
+	return w.impl.SelectBackupTransportAsyncForUser(ctx, transport, listener)
+}
+
+func (w *backupManagerStubWrapper) GetConfigurationIntentForUser(
+	ctx context.Context,
+	transport string,
+) (interface{}, error) {
+	return w.impl.GetConfigurationIntentForUser(ctx, transport)
+}
+
+func (w *backupManagerStubWrapper) GetConfigurationIntent(
+	ctx context.Context,
+	transport string,
+) (interface{}, error) {
+	return w.impl.GetConfigurationIntent(ctx, transport)
+}
+
+func (w *backupManagerStubWrapper) GetDestinationStringForUser(
+	ctx context.Context,
+	transport string,
+) (string, error) {
+	return w.impl.GetDestinationStringForUser(ctx, transport)
+}
+
+func (w *backupManagerStubWrapper) GetDestinationString(
+	ctx context.Context,
+	transport string,
+) (string, error) {
+	return w.impl.GetDestinationString(ctx, transport)
+}
+
+func (w *backupManagerStubWrapper) GetDataManagementIntentForUser(
+	ctx context.Context,
+	transport string,
+) (interface{}, error) {
+	return w.impl.GetDataManagementIntentForUser(ctx, transport)
+}
+
+func (w *backupManagerStubWrapper) GetDataManagementIntent(
+	ctx context.Context,
+	transport string,
+) (interface{}, error) {
+	return w.impl.GetDataManagementIntent(ctx, transport)
+}
+
+func (w *backupManagerStubWrapper) GetDataManagementLabelForUser(
+	ctx context.Context,
+	transport string,
+) (interface{}, error) {
+	return w.impl.GetDataManagementLabelForUser(ctx, transport)
+}
+
+func (w *backupManagerStubWrapper) BeginRestoreSessionForUser(
+	ctx context.Context,
+	packageName string,
+	transportID string,
+) (IRestoreSession, error) {
+	return w.impl.BeginRestoreSessionForUser(ctx, packageName, transportID)
+}
+
+func (w *backupManagerStubWrapper) OpCompleteForUser(
+	ctx context.Context,
+	token int32,
+	result int64,
+) error {
+	return w.impl.OpCompleteForUser(ctx, token, result)
+}
+
+func (w *backupManagerStubWrapper) OpComplete(
+	ctx context.Context,
+	token int32,
+	result int64,
+) error {
+	return w.impl.OpComplete(ctx, token, result)
+}
+
+func (w *backupManagerStubWrapper) SetBackupServiceActive(
+	ctx context.Context,
+	whichUser int32,
+	makeActive bool,
+) error {
+	return w.impl.SetBackupServiceActive(ctx, whichUser, makeActive)
+}
+
+func (w *backupManagerStubWrapper) IsBackupServiceActive(
+	ctx context.Context,
+	whichUser int32,
+) (bool, error) {
+	return w.impl.IsBackupServiceActive(ctx, whichUser)
+}
+
+func (w *backupManagerStubWrapper) IsUserReadyForBackup(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUserReadyForBackup(ctx)
+}
+
+func (w *backupManagerStubWrapper) GetAvailableRestoreTokenForUser(
+	ctx context.Context,
+	packageName string,
+) (int64, error) {
+	return w.impl.GetAvailableRestoreTokenForUser(ctx, packageName)
+}
+
+func (w *backupManagerStubWrapper) IsAppEligibleForBackupForUser(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsAppEligibleForBackupForUser(ctx, packageName)
+}
+
+func (w *backupManagerStubWrapper) FilterAppsEligibleForBackupForUser(
+	ctx context.Context,
+	packages []string,
+) ([]string, error) {
+	return w.impl.FilterAppsEligibleForBackupForUser(ctx, packages)
+}
+
+func (w *backupManagerStubWrapper) RequestBackupForUser(
+	ctx context.Context,
+	packages []string,
+	observer IBackupObserver,
+	monitor IBackupManagerMonitor,
+	flags int32,
+) (int32, error) {
+	return w.impl.RequestBackupForUser(ctx, packages, observer, monitor, flags)
+}
+
+func (w *backupManagerStubWrapper) RequestBackup(
+	ctx context.Context,
+	packages []string,
+	observer IBackupObserver,
+	monitor IBackupManagerMonitor,
+	flags int32,
+) (int32, error) {
+	return w.impl.RequestBackup(ctx, packages, observer, monitor, flags)
+}
+
+func (w *backupManagerStubWrapper) CancelBackupsForUser(
+	ctx context.Context,
+) error {
+	return w.impl.CancelBackupsForUser(ctx)
+}
+
+func (w *backupManagerStubWrapper) CancelBackups(
+	ctx context.Context,
+) error {
+	return w.impl.CancelBackups(ctx)
+}
+
+func (w *backupManagerStubWrapper) GetUserForAncestralSerialNumber(
+	ctx context.Context,
+	ancestralSerialNumber int64,
+) (interface{}, error) {
+	return w.impl.GetUserForAncestralSerialNumber(ctx, ancestralSerialNumber)
+}
+
+func (w *backupManagerStubWrapper) SetAncestralSerialNumber(
+	ctx context.Context,
+	ancestralSerialNumber int64,
+) error {
+	return w.impl.SetAncestralSerialNumber(ctx, ancestralSerialNumber)
+}
+
+func (w *backupManagerStubWrapper) ExcludeKeysFromRestore(
+	ctx context.Context,
+	packageName string,
+	keys []string,
+) error {
+	return w.impl.ExcludeKeysFromRestore(ctx, packageName, keys)
+}
+
+func (w *backupManagerStubWrapper) ReportDelayedRestoreResult(
+	ctx context.Context,
+	packageName string,
+	results []BackupRestoreEventLoggerDataTypeResult,
+) error {
+	return w.impl.ReportDelayedRestoreResult(ctx, packageName, results)
+}
+
+var _ IBackupManager = (*backupManagerStubWrapper)(nil)
+
+// NewBackupManagerStub creates a server-side IBackupManager wrapping the given
+// server implementation. The returned value satisfies IBackupManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackupManagerStub(
+	impl IBackupManagerServer,
+) IBackupManager {
+	wrapper := &backupManagerStubWrapper{impl: impl}
+	stub := &BackupManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -745,8 +745,8 @@ func (p *RadioVoiceProxy) SetResponseFunctions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRadioVoice)
-	_data.WriteStrongBinder(radioVoiceResponse.AsBinder().Handle())
-	_data.WriteStrongBinder(radioVoiceIndication.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, radioVoiceResponse.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, radioVoiceIndication.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioVoice, "setResponseFunctions")
 	if _err != nil {
@@ -1433,4 +1433,374 @@ func (s *RadioVoiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRadioVoiceServer is the server-side interface that user implementations
+// provide to NewRadioVoiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioVoiceServer interface {
+	AcceptCall(ctx context.Context, serial int32) error
+	CancelPendingUssd(ctx context.Context, serial int32) error
+	Conference(ctx context.Context, serial int32) error
+	Dial(ctx context.Context, serial int32, dialInfo Dial) error
+	EmergencyDial(ctx context.Context, serial int32, dialInfo Dial, categories int32, urns []string, routing EmergencyCallRouting, hasKnownUserIntentEmergency bool, isTesting bool) error
+	ExitEmergencyCallbackMode(ctx context.Context, serial int32) error
+	ExplicitCallTransfer(ctx context.Context, serial int32) error
+	GetCallForwardStatus(ctx context.Context, serial int32, callInfo CallForwardInfo) error
+	GetCallWaiting(ctx context.Context, serial int32, serviceClass int32) error
+	GetClip(ctx context.Context, serial int32) error
+	GetClir(ctx context.Context, serial int32) error
+	GetCurrentCalls(ctx context.Context, serial int32) error
+	GetLastCallFailCause(ctx context.Context, serial int32) error
+	GetMute(ctx context.Context, serial int32) error
+	GetPreferredVoicePrivacy(ctx context.Context, serial int32) error
+	GetTtyMode(ctx context.Context, serial int32) error
+	HandleStkCallSetupRequestFromSim(ctx context.Context, serial int32, accept bool) error
+	Hangup(ctx context.Context, serial int32, gsmIndex int32) error
+	HangupForegroundResumeBackground(ctx context.Context, serial int32) error
+	HangupWaitingOrBackground(ctx context.Context, serial int32) error
+	IsVoNrEnabled(ctx context.Context, serial int32) error
+	RejectCall(ctx context.Context, serial int32) error
+	ResponseAcknowledgement(ctx context.Context) error
+	SendBurstDtmf(ctx context.Context, serial int32, dtmf string, on int32, off int32) error
+	SendCdmaFeatureCode(ctx context.Context, serial int32, featureCode string) error
+	SendDtmf(ctx context.Context, serial int32, s_ string) error
+	SendUssd(ctx context.Context, serial int32, ussd string) error
+	SeparateConnection(ctx context.Context, serial int32, gsmIndex int32) error
+	SetCallForward(ctx context.Context, serial int32, callInfo CallForwardInfo) error
+	SetCallWaiting(ctx context.Context, serial int32, enable bool, serviceClass int32) error
+	SetClir(ctx context.Context, serial int32, status int32) error
+	SetMute(ctx context.Context, serial int32, enable bool) error
+	SetPreferredVoicePrivacy(ctx context.Context, serial int32, enable bool) error
+	SetResponseFunctions(ctx context.Context, radioVoiceResponse IRadioVoiceResponse, radioVoiceIndication IRadioVoiceIndication) error
+	SetTtyMode(ctx context.Context, serial int32, mode TtyMode) error
+	SetVoNrEnabled(ctx context.Context, serial int32, enable bool) error
+	StartDtmf(ctx context.Context, serial int32, s_ string) error
+	StopDtmf(ctx context.Context, serial int32) error
+	SwitchWaitingOrHoldingAndActive(ctx context.Context, serial int32) error
+}
+
+type radioVoiceStubWrapper struct {
+	impl       IRadioVoiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioVoiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioVoiceStubWrapper) AcceptCall(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.AcceptCall(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) CancelPendingUssd(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.CancelPendingUssd(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) Conference(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.Conference(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) Dial(
+	ctx context.Context,
+	serial int32,
+	dialInfo Dial,
+) error {
+	return w.impl.Dial(ctx, serial, dialInfo)
+}
+
+func (w *radioVoiceStubWrapper) EmergencyDial(
+	ctx context.Context,
+	serial int32,
+	dialInfo Dial,
+	categories int32,
+	urns []string,
+	routing EmergencyCallRouting,
+	hasKnownUserIntentEmergency bool,
+	isTesting bool,
+) error {
+	return w.impl.EmergencyDial(ctx, serial, dialInfo, categories, urns, routing, hasKnownUserIntentEmergency, isTesting)
+}
+
+func (w *radioVoiceStubWrapper) ExitEmergencyCallbackMode(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.ExitEmergencyCallbackMode(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) ExplicitCallTransfer(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.ExplicitCallTransfer(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) GetCallForwardStatus(
+	ctx context.Context,
+	serial int32,
+	callInfo CallForwardInfo,
+) error {
+	return w.impl.GetCallForwardStatus(ctx, serial, callInfo)
+}
+
+func (w *radioVoiceStubWrapper) GetCallWaiting(
+	ctx context.Context,
+	serial int32,
+	serviceClass int32,
+) error {
+	return w.impl.GetCallWaiting(ctx, serial, serviceClass)
+}
+
+func (w *radioVoiceStubWrapper) GetClip(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetClip(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) GetClir(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetClir(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) GetCurrentCalls(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetCurrentCalls(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) GetLastCallFailCause(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetLastCallFailCause(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) GetMute(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetMute(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) GetPreferredVoicePrivacy(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetPreferredVoicePrivacy(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) GetTtyMode(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetTtyMode(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) HandleStkCallSetupRequestFromSim(
+	ctx context.Context,
+	serial int32,
+	accept bool,
+) error {
+	return w.impl.HandleStkCallSetupRequestFromSim(ctx, serial, accept)
+}
+
+func (w *radioVoiceStubWrapper) Hangup(
+	ctx context.Context,
+	serial int32,
+	gsmIndex int32,
+) error {
+	return w.impl.Hangup(ctx, serial, gsmIndex)
+}
+
+func (w *radioVoiceStubWrapper) HangupForegroundResumeBackground(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.HangupForegroundResumeBackground(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) HangupWaitingOrBackground(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.HangupWaitingOrBackground(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) IsVoNrEnabled(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.IsVoNrEnabled(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) RejectCall(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.RejectCall(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) ResponseAcknowledgement(
+	ctx context.Context,
+) error {
+	return w.impl.ResponseAcknowledgement(ctx)
+}
+
+func (w *radioVoiceStubWrapper) SendBurstDtmf(
+	ctx context.Context,
+	serial int32,
+	dtmf string,
+	on int32,
+	off int32,
+) error {
+	return w.impl.SendBurstDtmf(ctx, serial, dtmf, on, off)
+}
+
+func (w *radioVoiceStubWrapper) SendCdmaFeatureCode(
+	ctx context.Context,
+	serial int32,
+	featureCode string,
+) error {
+	return w.impl.SendCdmaFeatureCode(ctx, serial, featureCode)
+}
+
+func (w *radioVoiceStubWrapper) SendDtmf(
+	ctx context.Context,
+	serial int32,
+	s_ string,
+) error {
+	return w.impl.SendDtmf(ctx, serial, s_)
+}
+
+func (w *radioVoiceStubWrapper) SendUssd(
+	ctx context.Context,
+	serial int32,
+	ussd string,
+) error {
+	return w.impl.SendUssd(ctx, serial, ussd)
+}
+
+func (w *radioVoiceStubWrapper) SeparateConnection(
+	ctx context.Context,
+	serial int32,
+	gsmIndex int32,
+) error {
+	return w.impl.SeparateConnection(ctx, serial, gsmIndex)
+}
+
+func (w *radioVoiceStubWrapper) SetCallForward(
+	ctx context.Context,
+	serial int32,
+	callInfo CallForwardInfo,
+) error {
+	return w.impl.SetCallForward(ctx, serial, callInfo)
+}
+
+func (w *radioVoiceStubWrapper) SetCallWaiting(
+	ctx context.Context,
+	serial int32,
+	enable bool,
+	serviceClass int32,
+) error {
+	return w.impl.SetCallWaiting(ctx, serial, enable, serviceClass)
+}
+
+func (w *radioVoiceStubWrapper) SetClir(
+	ctx context.Context,
+	serial int32,
+	status int32,
+) error {
+	return w.impl.SetClir(ctx, serial, status)
+}
+
+func (w *radioVoiceStubWrapper) SetMute(
+	ctx context.Context,
+	serial int32,
+	enable bool,
+) error {
+	return w.impl.SetMute(ctx, serial, enable)
+}
+
+func (w *radioVoiceStubWrapper) SetPreferredVoicePrivacy(
+	ctx context.Context,
+	serial int32,
+	enable bool,
+) error {
+	return w.impl.SetPreferredVoicePrivacy(ctx, serial, enable)
+}
+
+func (w *radioVoiceStubWrapper) SetResponseFunctions(
+	ctx context.Context,
+	radioVoiceResponse IRadioVoiceResponse,
+	radioVoiceIndication IRadioVoiceIndication,
+) error {
+	return w.impl.SetResponseFunctions(ctx, radioVoiceResponse, radioVoiceIndication)
+}
+
+func (w *radioVoiceStubWrapper) SetTtyMode(
+	ctx context.Context,
+	serial int32,
+	mode TtyMode,
+) error {
+	return w.impl.SetTtyMode(ctx, serial, mode)
+}
+
+func (w *radioVoiceStubWrapper) SetVoNrEnabled(
+	ctx context.Context,
+	serial int32,
+	enable bool,
+) error {
+	return w.impl.SetVoNrEnabled(ctx, serial, enable)
+}
+
+func (w *radioVoiceStubWrapper) StartDtmf(
+	ctx context.Context,
+	serial int32,
+	s_ string,
+) error {
+	return w.impl.StartDtmf(ctx, serial, s_)
+}
+
+func (w *radioVoiceStubWrapper) StopDtmf(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.StopDtmf(ctx, serial)
+}
+
+func (w *radioVoiceStubWrapper) SwitchWaitingOrHoldingAndActive(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.SwitchWaitingOrHoldingAndActive(ctx, serial)
+}
+
+var _ IRadioVoice = (*radioVoiceStubWrapper)(nil)
+
+// NewRadioVoiceStub creates a server-side IRadioVoice wrapping the given
+// server implementation. The returned value satisfies IRadioVoice
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioVoiceStub(
+	impl IRadioVoiceServer,
+) IRadioVoice {
+	wrapper := &radioVoiceStubWrapper{impl: impl}
+	stub := &RadioVoiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

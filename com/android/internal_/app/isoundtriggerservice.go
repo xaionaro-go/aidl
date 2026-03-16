@@ -64,7 +64,7 @@ func (p *SoundTriggerServiceProxy) AttachAsOriginator(
 	if _err := moduleProperties.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(client.Handle())
+	binder.WriteBinderToParcel(ctx, _data, client, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerService, "attachAsOriginator")
 	if _err != nil {
@@ -111,7 +111,7 @@ func (p *SoundTriggerServiceProxy) AttachAsMiddleman(
 	if _err := moduleProperties.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(client.Handle())
+	binder.WriteBinderToParcel(ctx, _data, client, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerService, "attachAsMiddleman")
 	if _err != nil {
@@ -185,7 +185,7 @@ func (p *SoundTriggerServiceProxy) AttachInjection(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISoundTriggerService)
-	_data.WriteStrongBinder(injection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, injection.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISoundTriggerService, "attachInjection")
 	if _err != nil {
@@ -399,4 +399,80 @@ func (s *SoundTriggerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISoundTriggerServiceServer is the server-side interface that user implementations
+// provide to NewSoundTriggerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerServiceServer interface {
+	AttachAsOriginator(ctx context.Context, originatorIdentity Descriptor.Identity, moduleProperties soundtrigger.SoundTriggerModuleProperties, client binder.IBinder) (ISoundTriggerSession, error)
+	AttachAsMiddleman(ctx context.Context, middlemanIdentity Descriptor.Identity, originatorIdentity Descriptor.Identity, moduleProperties soundtrigger.SoundTriggerModuleProperties, client binder.IBinder) (ISoundTriggerSession, error)
+	ListModuleProperties(ctx context.Context, originatorIdentity Descriptor.Identity) ([]soundtrigger.SoundTriggerModuleProperties, error)
+	AttachInjection(ctx context.Context, injection soundtrigger_middleware.ISoundTriggerInjection) error
+	SetInPhoneCallState(ctx context.Context, isInPhoneCall bool) error
+}
+
+type soundTriggerServiceStubWrapper struct {
+	impl       ISoundTriggerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerServiceStubWrapper) AttachAsOriginator(
+	ctx context.Context,
+	originatorIdentity Descriptor.Identity,
+	moduleProperties soundtrigger.SoundTriggerModuleProperties,
+	client binder.IBinder,
+) (ISoundTriggerSession, error) {
+	return w.impl.AttachAsOriginator(ctx, originatorIdentity, moduleProperties, client)
+}
+
+func (w *soundTriggerServiceStubWrapper) AttachAsMiddleman(
+	ctx context.Context,
+	middlemanIdentity Descriptor.Identity,
+	originatorIdentity Descriptor.Identity,
+	moduleProperties soundtrigger.SoundTriggerModuleProperties,
+	client binder.IBinder,
+) (ISoundTriggerSession, error) {
+	return w.impl.AttachAsMiddleman(ctx, middlemanIdentity, originatorIdentity, moduleProperties, client)
+}
+
+func (w *soundTriggerServiceStubWrapper) ListModuleProperties(
+	ctx context.Context,
+	originatorIdentity Descriptor.Identity,
+) ([]soundtrigger.SoundTriggerModuleProperties, error) {
+	return w.impl.ListModuleProperties(ctx, originatorIdentity)
+}
+
+func (w *soundTriggerServiceStubWrapper) AttachInjection(
+	ctx context.Context,
+	injection soundtrigger_middleware.ISoundTriggerInjection,
+) error {
+	return w.impl.AttachInjection(ctx, injection)
+}
+
+func (w *soundTriggerServiceStubWrapper) SetInPhoneCallState(
+	ctx context.Context,
+	isInPhoneCall bool,
+) error {
+	return w.impl.SetInPhoneCallState(ctx, isInPhoneCall)
+}
+
+var _ ISoundTriggerService = (*soundTriggerServiceStubWrapper)(nil)
+
+// NewSoundTriggerServiceStub creates a server-side ISoundTriggerService wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerServiceStub(
+	impl ISoundTriggerServiceServer,
+) ISoundTriggerService {
+	wrapper := &soundTriggerServiceStubWrapper{impl: impl}
+	stub := &SoundTriggerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

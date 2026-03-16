@@ -130,3 +130,51 @@ func (s *OccupantAwarenessClientCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOccupantAwarenessClientCallbackServer is the server-side interface that user implementations
+// provide to NewOccupantAwarenessClientCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOccupantAwarenessClientCallbackServer interface {
+	OnSystemStatusChanged(ctx context.Context, detectionFlags int32, status OccupantAwarenessStatus) error
+	OnDetectionEvent(ctx context.Context, detections OccupantDetections) error
+}
+
+type occupantAwarenessClientCallbackStubWrapper struct {
+	impl       IOccupantAwarenessClientCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *occupantAwarenessClientCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *occupantAwarenessClientCallbackStubWrapper) OnSystemStatusChanged(
+	ctx context.Context,
+	detectionFlags int32,
+	status OccupantAwarenessStatus,
+) error {
+	return w.impl.OnSystemStatusChanged(ctx, detectionFlags, status)
+}
+
+func (w *occupantAwarenessClientCallbackStubWrapper) OnDetectionEvent(
+	ctx context.Context,
+	detections OccupantDetections,
+) error {
+	return w.impl.OnDetectionEvent(ctx, detections)
+}
+
+var _ IOccupantAwarenessClientCallback = (*occupantAwarenessClientCallbackStubWrapper)(nil)
+
+// NewOccupantAwarenessClientCallbackStub creates a server-side IOccupantAwarenessClientCallback wrapping the given
+// server implementation. The returned value satisfies IOccupantAwarenessClientCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOccupantAwarenessClientCallbackStub(
+	impl IOccupantAwarenessClientCallbackServer,
+) IOccupantAwarenessClientCallback {
+	wrapper := &occupantAwarenessClientCallbackStubWrapper{impl: impl}
+	stub := &OccupantAwarenessClientCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

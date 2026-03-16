@@ -93,3 +93,42 @@ func (s *MessengerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMessengerServer is the server-side interface that user implementations
+// provide to NewMessengerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMessengerServer interface {
+	Send(ctx context.Context, msg Message) error
+}
+
+type messengerStubWrapper struct {
+	impl       IMessengerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *messengerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *messengerStubWrapper) Send(
+	ctx context.Context,
+	msg Message,
+) error {
+	return w.impl.Send(ctx, msg)
+}
+
+var _ IMessenger = (*messengerStubWrapper)(nil)
+
+// NewMessengerStub creates a server-side IMessenger wrapping the given
+// server implementation. The returned value satisfies IMessenger
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMessengerStub(
+	impl IMessengerServer,
+) IMessenger {
+	wrapper := &messengerStubWrapper{impl: impl}
+	stub := &MessengerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

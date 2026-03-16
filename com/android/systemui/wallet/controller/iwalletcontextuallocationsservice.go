@@ -44,7 +44,7 @@ func (p *WalletContextualLocationsServiceProxy) AddWalletCardsUpdatedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWalletContextualLocationsService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWalletContextualLocationsService, "addWalletCardsUpdatedListener")
 	if _err != nil {
@@ -144,4 +144,51 @@ func (s *WalletContextualLocationsServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWalletContextualLocationsServiceServer is the server-side interface that user implementations
+// provide to NewWalletContextualLocationsServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWalletContextualLocationsServiceServer interface {
+	AddWalletCardsUpdatedListener(ctx context.Context, listener IWalletCardsUpdatedListener) error
+	OnWalletContextualLocationsStateUpdated(ctx context.Context, storeLocations []string) error
+}
+
+type walletContextualLocationsServiceStubWrapper struct {
+	impl       IWalletContextualLocationsServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *walletContextualLocationsServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *walletContextualLocationsServiceStubWrapper) AddWalletCardsUpdatedListener(
+	ctx context.Context,
+	listener IWalletCardsUpdatedListener,
+) error {
+	return w.impl.AddWalletCardsUpdatedListener(ctx, listener)
+}
+
+func (w *walletContextualLocationsServiceStubWrapper) OnWalletContextualLocationsStateUpdated(
+	ctx context.Context,
+	storeLocations []string,
+) error {
+	return w.impl.OnWalletContextualLocationsStateUpdated(ctx, storeLocations)
+}
+
+var _ IWalletContextualLocationsService = (*walletContextualLocationsServiceStubWrapper)(nil)
+
+// NewWalletContextualLocationsServiceStub creates a server-side IWalletContextualLocationsService wrapping the given
+// server implementation. The returned value satisfies IWalletContextualLocationsService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWalletContextualLocationsServiceStub(
+	impl IWalletContextualLocationsServiceServer,
+) IWalletContextualLocationsService {
+	wrapper := &walletContextualLocationsServiceStubWrapper{impl: impl}
+	stub := &WalletContextualLocationsServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

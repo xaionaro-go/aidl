@@ -63,7 +63,7 @@ func (p *AdvertisingSetCallbackProxy) OnAdvertisingSetStarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAdvertisingSetCallback)
-	_data.WriteStrongBinder(advertiseBinder.Handle())
+	binder.WriteBinderToParcel(ctx, _data, advertiseBinder, p.remote.Transport())
 	_data.WriteInt32(advertiserId)
 	_data.WriteInt32(tx_power)
 	_data.WriteInt32(status)
@@ -440,4 +440,130 @@ func (s *AdvertisingSetCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAdvertisingSetCallbackServer is the server-side interface that user implementations
+// provide to NewAdvertisingSetCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAdvertisingSetCallbackServer interface {
+	OnAdvertisingSetStarted(ctx context.Context, advertiseBinder binder.IBinder, advertiserId int32, tx_power int32, status int32) error
+	OnOwnAddressRead(ctx context.Context, advertiserId int32, addressType int32, address string) error
+	OnAdvertisingSetStopped(ctx context.Context, advertiserId int32) error
+	OnAdvertisingEnabled(ctx context.Context, advertiserId int32, enable bool, status int32) error
+	OnAdvertisingDataSet(ctx context.Context, advertiserId int32, status int32) error
+	OnScanResponseDataSet(ctx context.Context, advertiserId int32, status int32) error
+	OnAdvertisingParametersUpdated(ctx context.Context, advertiserId int32, tx_power int32, status int32) error
+	OnPeriodicAdvertisingParametersUpdated(ctx context.Context, advertiserId int32, status int32) error
+	OnPeriodicAdvertisingDataSet(ctx context.Context, advertiserId int32, status int32) error
+	OnPeriodicAdvertisingEnabled(ctx context.Context, advertiserId int32, enable bool, status int32) error
+}
+
+type advertisingSetCallbackStubWrapper struct {
+	impl       IAdvertisingSetCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *advertisingSetCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnAdvertisingSetStarted(
+	ctx context.Context,
+	advertiseBinder binder.IBinder,
+	advertiserId int32,
+	tx_power int32,
+	status int32,
+) error {
+	return w.impl.OnAdvertisingSetStarted(ctx, advertiseBinder, advertiserId, tx_power, status)
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnOwnAddressRead(
+	ctx context.Context,
+	advertiserId int32,
+	addressType int32,
+	address string,
+) error {
+	return w.impl.OnOwnAddressRead(ctx, advertiserId, addressType, address)
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnAdvertisingSetStopped(
+	ctx context.Context,
+	advertiserId int32,
+) error {
+	return w.impl.OnAdvertisingSetStopped(ctx, advertiserId)
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnAdvertisingEnabled(
+	ctx context.Context,
+	advertiserId int32,
+	enable bool,
+	status int32,
+) error {
+	return w.impl.OnAdvertisingEnabled(ctx, advertiserId, enable, status)
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnAdvertisingDataSet(
+	ctx context.Context,
+	advertiserId int32,
+	status int32,
+) error {
+	return w.impl.OnAdvertisingDataSet(ctx, advertiserId, status)
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnScanResponseDataSet(
+	ctx context.Context,
+	advertiserId int32,
+	status int32,
+) error {
+	return w.impl.OnScanResponseDataSet(ctx, advertiserId, status)
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnAdvertisingParametersUpdated(
+	ctx context.Context,
+	advertiserId int32,
+	tx_power int32,
+	status int32,
+) error {
+	return w.impl.OnAdvertisingParametersUpdated(ctx, advertiserId, tx_power, status)
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnPeriodicAdvertisingParametersUpdated(
+	ctx context.Context,
+	advertiserId int32,
+	status int32,
+) error {
+	return w.impl.OnPeriodicAdvertisingParametersUpdated(ctx, advertiserId, status)
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnPeriodicAdvertisingDataSet(
+	ctx context.Context,
+	advertiserId int32,
+	status int32,
+) error {
+	return w.impl.OnPeriodicAdvertisingDataSet(ctx, advertiserId, status)
+}
+
+func (w *advertisingSetCallbackStubWrapper) OnPeriodicAdvertisingEnabled(
+	ctx context.Context,
+	advertiserId int32,
+	enable bool,
+	status int32,
+) error {
+	return w.impl.OnPeriodicAdvertisingEnabled(ctx, advertiserId, enable, status)
+}
+
+var _ IAdvertisingSetCallback = (*advertisingSetCallbackStubWrapper)(nil)
+
+// NewAdvertisingSetCallbackStub creates a server-side IAdvertisingSetCallback wrapping the given
+// server implementation. The returned value satisfies IAdvertisingSetCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAdvertisingSetCallbackStub(
+	impl IAdvertisingSetCallbackServer,
+) IAdvertisingSetCallback {
+	wrapper := &advertisingSetCallbackStubWrapper{impl: impl}
+	stub := &AdvertisingSetCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

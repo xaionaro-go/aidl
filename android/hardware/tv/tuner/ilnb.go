@@ -52,7 +52,7 @@ func (p *LnbProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILnb)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILnb, "setCallback")
 	if _err != nil {
@@ -317,4 +317,82 @@ func (s *LnbStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ILnbServer is the server-side interface that user implementations
+// provide to NewLnbStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILnbServer interface {
+	SetCallback(ctx context.Context, callback ILnbCallback) error
+	SetVoltage(ctx context.Context, voltage LnbVoltage) error
+	SetTone(ctx context.Context, tone LnbTone) error
+	SetSatellitePosition(ctx context.Context, position LnbPosition) error
+	SendDiseqcMessage(ctx context.Context, diseqcMessage []byte) error
+	Close(ctx context.Context) error
+}
+
+type lnbStubWrapper struct {
+	impl       ILnbServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *lnbStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *lnbStubWrapper) SetCallback(
+	ctx context.Context,
+	callback ILnbCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *lnbStubWrapper) SetVoltage(
+	ctx context.Context,
+	voltage LnbVoltage,
+) error {
+	return w.impl.SetVoltage(ctx, voltage)
+}
+
+func (w *lnbStubWrapper) SetTone(
+	ctx context.Context,
+	tone LnbTone,
+) error {
+	return w.impl.SetTone(ctx, tone)
+}
+
+func (w *lnbStubWrapper) SetSatellitePosition(
+	ctx context.Context,
+	position LnbPosition,
+) error {
+	return w.impl.SetSatellitePosition(ctx, position)
+}
+
+func (w *lnbStubWrapper) SendDiseqcMessage(
+	ctx context.Context,
+	diseqcMessage []byte,
+) error {
+	return w.impl.SendDiseqcMessage(ctx, diseqcMessage)
+}
+
+func (w *lnbStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ ILnb = (*lnbStubWrapper)(nil)
+
+// NewLnbStub creates a server-side ILnb wrapping the given
+// server implementation. The returned value satisfies ILnb
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLnbStub(
+	impl ILnbServer,
+) ILnb {
+	wrapper := &lnbStubWrapper{impl: impl}
+	stub := &LnbStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

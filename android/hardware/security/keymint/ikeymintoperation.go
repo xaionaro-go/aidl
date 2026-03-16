@@ -419,3 +419,73 @@ func (s *KeyMintOperationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyMintOperationServer is the server-side interface that user implementations
+// provide to NewKeyMintOperationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyMintOperationServer interface {
+	UpdateAad(ctx context.Context, input []byte, authToken *HardwareAuthToken, timeStampToken *secureclock.TimeStampToken) error
+	Update(ctx context.Context, input []byte, authToken *HardwareAuthToken, timeStampToken *secureclock.TimeStampToken) ([]byte, error)
+	Finish(ctx context.Context, input []byte, signature []byte, authToken *HardwareAuthToken, timestampToken *secureclock.TimeStampToken, confirmationToken []byte) ([]byte, error)
+	Abort(ctx context.Context) error
+}
+
+type keyMintOperationStubWrapper struct {
+	impl       IKeyMintOperationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyMintOperationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyMintOperationStubWrapper) UpdateAad(
+	ctx context.Context,
+	input []byte,
+	authToken *HardwareAuthToken,
+	timeStampToken *secureclock.TimeStampToken,
+) error {
+	return w.impl.UpdateAad(ctx, input, authToken, timeStampToken)
+}
+
+func (w *keyMintOperationStubWrapper) Update(
+	ctx context.Context,
+	input []byte,
+	authToken *HardwareAuthToken,
+	timeStampToken *secureclock.TimeStampToken,
+) ([]byte, error) {
+	return w.impl.Update(ctx, input, authToken, timeStampToken)
+}
+
+func (w *keyMintOperationStubWrapper) Finish(
+	ctx context.Context,
+	input []byte,
+	signature []byte,
+	authToken *HardwareAuthToken,
+	timestampToken *secureclock.TimeStampToken,
+	confirmationToken []byte,
+) ([]byte, error) {
+	return w.impl.Finish(ctx, input, signature, authToken, timestampToken, confirmationToken)
+}
+
+func (w *keyMintOperationStubWrapper) Abort(
+	ctx context.Context,
+) error {
+	return w.impl.Abort(ctx)
+}
+
+var _ IKeyMintOperation = (*keyMintOperationStubWrapper)(nil)
+
+// NewKeyMintOperationStub creates a server-side IKeyMintOperation wrapping the given
+// server implementation. The returned value satisfies IKeyMintOperation
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyMintOperationStub(
+	impl IKeyMintOperationServer,
+) IKeyMintOperation {
+	wrapper := &keyMintOperationStubWrapper{impl: impl}
+	stub := &KeyMintOperationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

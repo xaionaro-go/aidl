@@ -201,7 +201,7 @@ func (p *VibratorManagerProxy) TriggerSynced(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibratorManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorManager, "triggerSynced")
 	if _err != nil {
@@ -266,7 +266,7 @@ func (p *VibratorManagerProxy) StartSession(
 	if _err := config.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorManager, "startSession")
 	if _err != nil {
@@ -463,4 +463,97 @@ func (s *VibratorManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVibratorManagerServer is the server-side interface that user implementations
+// provide to NewVibratorManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVibratorManagerServer interface {
+	GetCapabilities(ctx context.Context) (int32, error)
+	GetVibratorIds(ctx context.Context) ([]int32, error)
+	GetVibrator(ctx context.Context, vibratorId int32) (IVibrator, error)
+	PrepareSynced(ctx context.Context, vibratorIds []int32) error
+	TriggerSynced(ctx context.Context, callback IVibratorCallback) error
+	CancelSynced(ctx context.Context) error
+	StartSession(ctx context.Context, vibratorIds []int32, config VibrationSessionConfig, callback IVibratorCallback) (IVibrationSession, error)
+	ClearSessions(ctx context.Context) error
+}
+
+type vibratorManagerStubWrapper struct {
+	impl       IVibratorManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vibratorManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vibratorManagerStubWrapper) GetCapabilities(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCapabilities(ctx)
+}
+
+func (w *vibratorManagerStubWrapper) GetVibratorIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetVibratorIds(ctx)
+}
+
+func (w *vibratorManagerStubWrapper) GetVibrator(
+	ctx context.Context,
+	vibratorId int32,
+) (IVibrator, error) {
+	return w.impl.GetVibrator(ctx, vibratorId)
+}
+
+func (w *vibratorManagerStubWrapper) PrepareSynced(
+	ctx context.Context,
+	vibratorIds []int32,
+) error {
+	return w.impl.PrepareSynced(ctx, vibratorIds)
+}
+
+func (w *vibratorManagerStubWrapper) TriggerSynced(
+	ctx context.Context,
+	callback IVibratorCallback,
+) error {
+	return w.impl.TriggerSynced(ctx, callback)
+}
+
+func (w *vibratorManagerStubWrapper) CancelSynced(
+	ctx context.Context,
+) error {
+	return w.impl.CancelSynced(ctx)
+}
+
+func (w *vibratorManagerStubWrapper) StartSession(
+	ctx context.Context,
+	vibratorIds []int32,
+	config VibrationSessionConfig,
+	callback IVibratorCallback,
+) (IVibrationSession, error) {
+	return w.impl.StartSession(ctx, vibratorIds, config, callback)
+}
+
+func (w *vibratorManagerStubWrapper) ClearSessions(
+	ctx context.Context,
+) error {
+	return w.impl.ClearSessions(ctx)
+}
+
+var _ IVibratorManager = (*vibratorManagerStubWrapper)(nil)
+
+// NewVibratorManagerStub creates a server-side IVibratorManager wrapping the given
+// server implementation. The returned value satisfies IVibratorManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVibratorManagerStub(
+	impl IVibratorManagerServer,
+) IVibratorManager {
+	wrapper := &vibratorManagerStubWrapper{impl: impl}
+	stub := &VibratorManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -137,7 +137,7 @@ func (p *ConnectionServiceProxy) AddConnectionServiceAdapter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConnectionService)
-	_data.WriteStrongBinder(adapter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, adapter.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := sessionInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -159,7 +159,7 @@ func (p *ConnectionServiceProxy) RemoveConnectionServiceAdapter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIConnectionService)
-	_data.WriteStrongBinder(adapter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, adapter.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := sessionInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -2642,4 +2642,488 @@ func (s *ConnectionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IConnectionServiceServer is the server-side interface that user implementations
+// provide to NewConnectionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConnectionServiceServer interface {
+	AddConnectionServiceAdapter(ctx context.Context, adapter IConnectionServiceAdapter, sessionInfo Logging.SessionInfo) error
+	RemoveConnectionServiceAdapter(ctx context.Context, adapter IConnectionServiceAdapter, sessionInfo Logging.SessionInfo) error
+	CreateConnection(ctx context.Context, connectionManagerPhoneAccount androidTelecom.PhoneAccountHandle, callId string, request androidTelecom.ConnectionRequest, isIncoming bool, isUnknown bool, sessionInfo Logging.SessionInfo) error
+	CreateConnectionComplete(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	CreateConnectionFailed(ctx context.Context, connectionManagerPhoneAccount androidTelecom.PhoneAccountHandle, callId string, request androidTelecom.ConnectionRequest, isIncoming bool, sessionInfo Logging.SessionInfo) error
+	CreateConference(ctx context.Context, connectionManagerPhoneAccount androidTelecom.PhoneAccountHandle, callId string, request androidTelecom.ConnectionRequest, isIncoming bool, isUnknown bool, sessionInfo Logging.SessionInfo) error
+	CreateConferenceComplete(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	CreateConferenceFailed(ctx context.Context, connectionManagerPhoneAccount androidTelecom.PhoneAccountHandle, callId string, request androidTelecom.ConnectionRequest, isIncoming bool, sessionInfo Logging.SessionInfo) error
+	Abort(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	AnswerVideo(ctx context.Context, callId string, videoState int32, sessionInfo Logging.SessionInfo) error
+	Answer(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	Deflect(ctx context.Context, callId string, address net.Uri, sessionInfo Logging.SessionInfo) error
+	Reject(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	RejectWithReason(ctx context.Context, callId string, rejectReason int32, sessionInfo Logging.SessionInfo) error
+	RejectWithMessage(ctx context.Context, callId string, message string, sessionInfo Logging.SessionInfo) error
+	Transfer(ctx context.Context, callId string, number net.Uri, isConfirmationRequired bool, sessionInfo Logging.SessionInfo) error
+	ConsultativeTransfer(ctx context.Context, callId string, otherCallId string, sessionInfo Logging.SessionInfo) error
+	Disconnect(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	Silence(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	Hold(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	Unhold(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	OnCallAudioStateChanged(ctx context.Context, activeCallId string, callAudioState androidTelecom.CallAudioState, sessionInfo Logging.SessionInfo) error
+	OnCallEndpointChanged(ctx context.Context, activeCallId string, callEndpoint androidTelecom.CallEndpoint, sessionInfo Logging.SessionInfo) error
+	OnAvailableCallEndpointsChanged(ctx context.Context, activeCallId string, availableCallEndpoints []androidTelecom.CallEndpoint, sessionInfo Logging.SessionInfo) error
+	OnMuteStateChanged(ctx context.Context, activeCallId string, isMuted bool, sessionInfo Logging.SessionInfo) error
+	PlayDtmfTone(ctx context.Context, callId string, digit uint16, sessionInfo Logging.SessionInfo) error
+	StopDtmfTone(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	Conference(ctx context.Context, conferenceCallId string, callId string, sessionInfo Logging.SessionInfo) error
+	SplitFromConference(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	MergeConference(ctx context.Context, conferenceCallId string, sessionInfo Logging.SessionInfo) error
+	SwapConference(ctx context.Context, conferenceCallId string, sessionInfo Logging.SessionInfo) error
+	AddConferenceParticipants(ctx context.Context, CallId string, participants []net.Uri, sessionInfo Logging.SessionInfo) error
+	OnPostDialContinue(ctx context.Context, callId string, proceed bool, sessionInfo Logging.SessionInfo) error
+	PullExternalCall(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	SendCallEvent(ctx context.Context, callId string, event string, extras os.Bundle, sessionInfo Logging.SessionInfo) error
+	OnCallFilteringCompleted(ctx context.Context, callId string, completionInfo androidTelecom.ConnectionCallFilteringCompletionInfo, sessionInfo Logging.SessionInfo) error
+	OnExtrasChanged(ctx context.Context, callId string, extras os.Bundle, sessionInfo Logging.SessionInfo) error
+	StartRtt(ctx context.Context, callId string, fromInCall int32, toInCall int32, sessionInfo Logging.SessionInfo) error
+	StopRtt(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	RespondToRttUpgradeRequest(ctx context.Context, callId string, fromInCall int32, toInCall int32, sessionInfo Logging.SessionInfo) error
+	ConnectionServiceFocusLost(ctx context.Context, sessionInfo Logging.SessionInfo) error
+	ConnectionServiceFocusGained(ctx context.Context, sessionInfo Logging.SessionInfo) error
+	HandoverFailed(ctx context.Context, callId string, request androidTelecom.ConnectionRequest, error_ int32, sessionInfo Logging.SessionInfo) error
+	HandoverComplete(ctx context.Context, callId string, sessionInfo Logging.SessionInfo) error
+	OnUsingAlternativeUi(ctx context.Context, callId string, isUsingAlternativeUi bool, sessionInfo Logging.SessionInfo) error
+	OnTrackedByNonUiService(ctx context.Context, callId string, isTracked bool, sessionInfo Logging.SessionInfo) error
+}
+
+type connectionServiceStubWrapper struct {
+	impl       IConnectionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *connectionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *connectionServiceStubWrapper) AddConnectionServiceAdapter(
+	ctx context.Context,
+	adapter IConnectionServiceAdapter,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.AddConnectionServiceAdapter(ctx, adapter, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) RemoveConnectionServiceAdapter(
+	ctx context.Context,
+	adapter IConnectionServiceAdapter,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.RemoveConnectionServiceAdapter(ctx, adapter, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) CreateConnection(
+	ctx context.Context,
+	connectionManagerPhoneAccount androidTelecom.PhoneAccountHandle,
+	callId string,
+	request androidTelecom.ConnectionRequest,
+	isIncoming bool,
+	isUnknown bool,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.CreateConnection(ctx, connectionManagerPhoneAccount, callId, request, isIncoming, isUnknown, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) CreateConnectionComplete(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.CreateConnectionComplete(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) CreateConnectionFailed(
+	ctx context.Context,
+	connectionManagerPhoneAccount androidTelecom.PhoneAccountHandle,
+	callId string,
+	request androidTelecom.ConnectionRequest,
+	isIncoming bool,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.CreateConnectionFailed(ctx, connectionManagerPhoneAccount, callId, request, isIncoming, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) CreateConference(
+	ctx context.Context,
+	connectionManagerPhoneAccount androidTelecom.PhoneAccountHandle,
+	callId string,
+	request androidTelecom.ConnectionRequest,
+	isIncoming bool,
+	isUnknown bool,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.CreateConference(ctx, connectionManagerPhoneAccount, callId, request, isIncoming, isUnknown, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) CreateConferenceComplete(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.CreateConferenceComplete(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) CreateConferenceFailed(
+	ctx context.Context,
+	connectionManagerPhoneAccount androidTelecom.PhoneAccountHandle,
+	callId string,
+	request androidTelecom.ConnectionRequest,
+	isIncoming bool,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.CreateConferenceFailed(ctx, connectionManagerPhoneAccount, callId, request, isIncoming, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Abort(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Abort(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) AnswerVideo(
+	ctx context.Context,
+	callId string,
+	videoState int32,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.AnswerVideo(ctx, callId, videoState, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Answer(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Answer(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Deflect(
+	ctx context.Context,
+	callId string,
+	address net.Uri,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Deflect(ctx, callId, address, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Reject(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Reject(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) RejectWithReason(
+	ctx context.Context,
+	callId string,
+	rejectReason int32,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.RejectWithReason(ctx, callId, rejectReason, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) RejectWithMessage(
+	ctx context.Context,
+	callId string,
+	message string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.RejectWithMessage(ctx, callId, message, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Transfer(
+	ctx context.Context,
+	callId string,
+	number net.Uri,
+	isConfirmationRequired bool,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Transfer(ctx, callId, number, isConfirmationRequired, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) ConsultativeTransfer(
+	ctx context.Context,
+	callId string,
+	otherCallId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.ConsultativeTransfer(ctx, callId, otherCallId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Disconnect(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Disconnect(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Silence(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Silence(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Hold(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Hold(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Unhold(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Unhold(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) OnCallAudioStateChanged(
+	ctx context.Context,
+	activeCallId string,
+	callAudioState androidTelecom.CallAudioState,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.OnCallAudioStateChanged(ctx, activeCallId, callAudioState, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) OnCallEndpointChanged(
+	ctx context.Context,
+	activeCallId string,
+	callEndpoint androidTelecom.CallEndpoint,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.OnCallEndpointChanged(ctx, activeCallId, callEndpoint, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) OnAvailableCallEndpointsChanged(
+	ctx context.Context,
+	activeCallId string,
+	availableCallEndpoints []androidTelecom.CallEndpoint,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.OnAvailableCallEndpointsChanged(ctx, activeCallId, availableCallEndpoints, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) OnMuteStateChanged(
+	ctx context.Context,
+	activeCallId string,
+	isMuted bool,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.OnMuteStateChanged(ctx, activeCallId, isMuted, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) PlayDtmfTone(
+	ctx context.Context,
+	callId string,
+	digit uint16,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.PlayDtmfTone(ctx, callId, digit, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) StopDtmfTone(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.StopDtmfTone(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) Conference(
+	ctx context.Context,
+	conferenceCallId string,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.Conference(ctx, conferenceCallId, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) SplitFromConference(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.SplitFromConference(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) MergeConference(
+	ctx context.Context,
+	conferenceCallId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.MergeConference(ctx, conferenceCallId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) SwapConference(
+	ctx context.Context,
+	conferenceCallId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.SwapConference(ctx, conferenceCallId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) AddConferenceParticipants(
+	ctx context.Context,
+	CallId string,
+	participants []net.Uri,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.AddConferenceParticipants(ctx, CallId, participants, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) OnPostDialContinue(
+	ctx context.Context,
+	callId string,
+	proceed bool,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.OnPostDialContinue(ctx, callId, proceed, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) PullExternalCall(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.PullExternalCall(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) SendCallEvent(
+	ctx context.Context,
+	callId string,
+	event string,
+	extras os.Bundle,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.SendCallEvent(ctx, callId, event, extras, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) OnCallFilteringCompleted(
+	ctx context.Context,
+	callId string,
+	completionInfo androidTelecom.ConnectionCallFilteringCompletionInfo,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.OnCallFilteringCompleted(ctx, callId, completionInfo, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) OnExtrasChanged(
+	ctx context.Context,
+	callId string,
+	extras os.Bundle,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.OnExtrasChanged(ctx, callId, extras, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) StartRtt(
+	ctx context.Context,
+	callId string,
+	fromInCall int32,
+	toInCall int32,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.StartRtt(ctx, callId, fromInCall, toInCall, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) StopRtt(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.StopRtt(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) RespondToRttUpgradeRequest(
+	ctx context.Context,
+	callId string,
+	fromInCall int32,
+	toInCall int32,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.RespondToRttUpgradeRequest(ctx, callId, fromInCall, toInCall, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) ConnectionServiceFocusLost(
+	ctx context.Context,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.ConnectionServiceFocusLost(ctx, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) ConnectionServiceFocusGained(
+	ctx context.Context,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.ConnectionServiceFocusGained(ctx, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) HandoverFailed(
+	ctx context.Context,
+	callId string,
+	request androidTelecom.ConnectionRequest,
+	error_ int32,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.HandoverFailed(ctx, callId, request, error_, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) HandoverComplete(
+	ctx context.Context,
+	callId string,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.HandoverComplete(ctx, callId, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) OnUsingAlternativeUi(
+	ctx context.Context,
+	callId string,
+	isUsingAlternativeUi bool,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.OnUsingAlternativeUi(ctx, callId, isUsingAlternativeUi, sessionInfo)
+}
+
+func (w *connectionServiceStubWrapper) OnTrackedByNonUiService(
+	ctx context.Context,
+	callId string,
+	isTracked bool,
+	sessionInfo Logging.SessionInfo,
+) error {
+	return w.impl.OnTrackedByNonUiService(ctx, callId, isTracked, sessionInfo)
+}
+
+var _ IConnectionService = (*connectionServiceStubWrapper)(nil)
+
+// NewConnectionServiceStub creates a server-side IConnectionService wrapping the given
+// server implementation. The returned value satisfies IConnectionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConnectionServiceStub(
+	impl IConnectionServiceServer,
+) IConnectionService {
+	wrapper := &connectionServiceStubWrapper{impl: impl}
+	stub := &ConnectionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

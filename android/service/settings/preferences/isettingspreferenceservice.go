@@ -51,7 +51,7 @@ func (p *SettingsPreferenceServiceProxy) GetAllPreferenceMetadata(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISettingsPreferenceService, "getAllPreferenceMetadata")
 	if _err != nil {
@@ -73,7 +73,7 @@ func (p *SettingsPreferenceServiceProxy) GetPreferenceValue(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISettingsPreferenceService, "getPreferenceValue")
 	if _err != nil {
@@ -95,7 +95,7 @@ func (p *SettingsPreferenceServiceProxy) SetPreferenceValue(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISettingsPreferenceService, "setPreferenceValue")
 	if _err != nil {
@@ -189,4 +189,62 @@ func (s *SettingsPreferenceServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISettingsPreferenceServiceServer is the server-side interface that user implementations
+// provide to NewSettingsPreferenceServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISettingsPreferenceServiceServer interface {
+	GetAllPreferenceMetadata(ctx context.Context, request MetadataRequest, callback IMetadataCallback) error
+	GetPreferenceValue(ctx context.Context, request GetValueRequest, callback IGetValueCallback) error
+	SetPreferenceValue(ctx context.Context, request SetValueRequest, callback ISetValueCallback) error
+}
+
+type settingsPreferenceServiceStubWrapper struct {
+	impl       ISettingsPreferenceServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *settingsPreferenceServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *settingsPreferenceServiceStubWrapper) GetAllPreferenceMetadata(
+	ctx context.Context,
+	request MetadataRequest,
+	callback IMetadataCallback,
+) error {
+	return w.impl.GetAllPreferenceMetadata(ctx, request, callback)
+}
+
+func (w *settingsPreferenceServiceStubWrapper) GetPreferenceValue(
+	ctx context.Context,
+	request GetValueRequest,
+	callback IGetValueCallback,
+) error {
+	return w.impl.GetPreferenceValue(ctx, request, callback)
+}
+
+func (w *settingsPreferenceServiceStubWrapper) SetPreferenceValue(
+	ctx context.Context,
+	request SetValueRequest,
+	callback ISetValueCallback,
+) error {
+	return w.impl.SetPreferenceValue(ctx, request, callback)
+}
+
+var _ ISettingsPreferenceService = (*settingsPreferenceServiceStubWrapper)(nil)
+
+// NewSettingsPreferenceServiceStub creates a server-side ISettingsPreferenceService wrapping the given
+// server implementation. The returned value satisfies ISettingsPreferenceService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSettingsPreferenceServiceStub(
+	impl ISettingsPreferenceServiceServer,
+) ISettingsPreferenceService {
+	wrapper := &settingsPreferenceServiceStubWrapper{impl: impl}
+	stub := &SettingsPreferenceServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

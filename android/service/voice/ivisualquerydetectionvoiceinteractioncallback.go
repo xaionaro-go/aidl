@@ -212,3 +212,72 @@ func (s *VisualQueryDetectionVoiceInteractionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVisualQueryDetectionVoiceInteractionCallbackServer is the server-side interface that user implementations
+// provide to NewVisualQueryDetectionVoiceInteractionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVisualQueryDetectionVoiceInteractionCallbackServer interface {
+	OnQueryDetected(ctx context.Context, partialQuery string) error
+	OnResultDetected(ctx context.Context, partialResult VisualQueryDetectedResult) error
+	OnQueryFinished(ctx context.Context) error
+	OnQueryRejected(ctx context.Context) error
+	OnVisualQueryDetectionServiceFailure(ctx context.Context, visualQueryDetectionServiceFailure VisualQueryDetectionServiceFailure) error
+}
+
+type visualQueryDetectionVoiceInteractionCallbackStubWrapper struct {
+	impl       IVisualQueryDetectionVoiceInteractionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *visualQueryDetectionVoiceInteractionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *visualQueryDetectionVoiceInteractionCallbackStubWrapper) OnQueryDetected(
+	ctx context.Context,
+	partialQuery string,
+) error {
+	return w.impl.OnQueryDetected(ctx, partialQuery)
+}
+
+func (w *visualQueryDetectionVoiceInteractionCallbackStubWrapper) OnResultDetected(
+	ctx context.Context,
+	partialResult VisualQueryDetectedResult,
+) error {
+	return w.impl.OnResultDetected(ctx, partialResult)
+}
+
+func (w *visualQueryDetectionVoiceInteractionCallbackStubWrapper) OnQueryFinished(
+	ctx context.Context,
+) error {
+	return w.impl.OnQueryFinished(ctx)
+}
+
+func (w *visualQueryDetectionVoiceInteractionCallbackStubWrapper) OnQueryRejected(
+	ctx context.Context,
+) error {
+	return w.impl.OnQueryRejected(ctx)
+}
+
+func (w *visualQueryDetectionVoiceInteractionCallbackStubWrapper) OnVisualQueryDetectionServiceFailure(
+	ctx context.Context,
+	visualQueryDetectionServiceFailure VisualQueryDetectionServiceFailure,
+) error {
+	return w.impl.OnVisualQueryDetectionServiceFailure(ctx, visualQueryDetectionServiceFailure)
+}
+
+var _ IVisualQueryDetectionVoiceInteractionCallback = (*visualQueryDetectionVoiceInteractionCallbackStubWrapper)(nil)
+
+// NewVisualQueryDetectionVoiceInteractionCallbackStub creates a server-side IVisualQueryDetectionVoiceInteractionCallback wrapping the given
+// server implementation. The returned value satisfies IVisualQueryDetectionVoiceInteractionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVisualQueryDetectionVoiceInteractionCallbackStub(
+	impl IVisualQueryDetectionVoiceInteractionCallbackServer,
+) IVisualQueryDetectionVoiceInteractionCallback {
+	wrapper := &visualQueryDetectionVoiceInteractionCallbackStubWrapper{impl: impl}
+	stub := &VisualQueryDetectionVoiceInteractionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

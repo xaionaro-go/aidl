@@ -84,3 +84,43 @@ func (s *ResultReceiverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IResultReceiverServer is the server-side interface that user implementations
+// provide to NewResultReceiverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResultReceiverServer interface {
+	Send(ctx context.Context, resultCode int32, resultData interface{}) error
+}
+
+type resultReceiverStubWrapper struct {
+	impl       IResultReceiverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resultReceiverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resultReceiverStubWrapper) Send(
+	ctx context.Context,
+	resultCode int32,
+	resultData interface{},
+) error {
+	return w.impl.Send(ctx, resultCode, resultData)
+}
+
+var _ IResultReceiver = (*resultReceiverStubWrapper)(nil)
+
+// NewResultReceiverStub creates a server-side IResultReceiver wrapping the given
+// server implementation. The returned value satisfies IResultReceiver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResultReceiverStub(
+	impl IResultReceiverServer,
+) IResultReceiver {
+	wrapper := &resultReceiverStubWrapper{impl: impl}
+	stub := &ResultReceiverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

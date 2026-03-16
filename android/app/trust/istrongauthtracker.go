@@ -122,3 +122,50 @@ func (s *StrongAuthTrackerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStrongAuthTrackerServer is the server-side interface that user implementations
+// provide to NewStrongAuthTrackerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStrongAuthTrackerServer interface {
+	OnStrongAuthRequiredChanged(ctx context.Context, strongAuthRequired int32) error
+	OnIsNonStrongBiometricAllowedChanged(ctx context.Context, allowed bool) error
+}
+
+type strongAuthTrackerStubWrapper struct {
+	impl       IStrongAuthTrackerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *strongAuthTrackerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *strongAuthTrackerStubWrapper) OnStrongAuthRequiredChanged(
+	ctx context.Context,
+	strongAuthRequired int32,
+) error {
+	return w.impl.OnStrongAuthRequiredChanged(ctx, strongAuthRequired)
+}
+
+func (w *strongAuthTrackerStubWrapper) OnIsNonStrongBiometricAllowedChanged(
+	ctx context.Context,
+	allowed bool,
+) error {
+	return w.impl.OnIsNonStrongBiometricAllowedChanged(ctx, allowed)
+}
+
+var _ IStrongAuthTracker = (*strongAuthTrackerStubWrapper)(nil)
+
+// NewStrongAuthTrackerStub creates a server-side IStrongAuthTracker wrapping the given
+// server implementation. The returned value satisfies IStrongAuthTracker
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStrongAuthTrackerStub(
+	impl IStrongAuthTrackerServer,
+) IStrongAuthTracker {
+	wrapper := &strongAuthTrackerStubWrapper{impl: impl}
+	stub := &StrongAuthTrackerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

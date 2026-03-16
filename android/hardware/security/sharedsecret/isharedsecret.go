@@ -178,3 +178,49 @@ func (s *SharedSecretStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISharedSecretServer is the server-side interface that user implementations
+// provide to NewSharedSecretStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISharedSecretServer interface {
+	GetSharedSecretParameters(ctx context.Context) (SharedSecretParameters, error)
+	ComputeSharedSecret(ctx context.Context, params []SharedSecretParameters) ([]byte, error)
+}
+
+type sharedSecretStubWrapper struct {
+	impl       ISharedSecretServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sharedSecretStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sharedSecretStubWrapper) GetSharedSecretParameters(
+	ctx context.Context,
+) (SharedSecretParameters, error) {
+	return w.impl.GetSharedSecretParameters(ctx)
+}
+
+func (w *sharedSecretStubWrapper) ComputeSharedSecret(
+	ctx context.Context,
+	params []SharedSecretParameters,
+) ([]byte, error) {
+	return w.impl.ComputeSharedSecret(ctx, params)
+}
+
+var _ ISharedSecret = (*sharedSecretStubWrapper)(nil)
+
+// NewSharedSecretStub creates a server-side ISharedSecret wrapping the given
+// server implementation. The returned value satisfies ISharedSecret
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSharedSecretStub(
+	impl ISharedSecretServer,
+) ISharedSecret {
+	wrapper := &sharedSecretStubWrapper{impl: impl}
+	stub := &SharedSecretStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

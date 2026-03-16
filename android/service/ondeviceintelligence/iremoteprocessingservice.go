@@ -48,7 +48,7 @@ func (p *RemoteProcessingServiceProxy) UpdateProcessingState(
 	if _err := processingState.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteProcessingService, "updateProcessingState")
 	if _err != nil {
@@ -98,4 +98,44 @@ func (s *RemoteProcessingServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRemoteProcessingServiceServer is the server-side interface that user implementations
+// provide to NewRemoteProcessingServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteProcessingServiceServer interface {
+	UpdateProcessingState(ctx context.Context, processingState os.Bundle, callback IProcessingUpdateStatusCallback) error
+}
+
+type remoteProcessingServiceStubWrapper struct {
+	impl       IRemoteProcessingServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteProcessingServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteProcessingServiceStubWrapper) UpdateProcessingState(
+	ctx context.Context,
+	processingState os.Bundle,
+	callback IProcessingUpdateStatusCallback,
+) error {
+	return w.impl.UpdateProcessingState(ctx, processingState, callback)
+}
+
+var _ IRemoteProcessingService = (*remoteProcessingServiceStubWrapper)(nil)
+
+// NewRemoteProcessingServiceStub creates a server-side IRemoteProcessingService wrapping the given
+// server implementation. The returned value satisfies IRemoteProcessingService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteProcessingServiceStub(
+	impl IRemoteProcessingServiceServer,
+) IRemoteProcessingService {
+	wrapper := &remoteProcessingServiceStubWrapper{impl: impl}
+	stub := &RemoteProcessingServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

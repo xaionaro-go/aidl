@@ -152,7 +152,7 @@ func (p *WifiProxy) RegisterEventCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifi)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWifi, "registerEventCallback")
 	if _err != nil {
@@ -321,4 +321,79 @@ func (s *WifiStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWifiServer is the server-side interface that user implementations
+// provide to NewWifiStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiServer interface {
+	GetChip(ctx context.Context, chipId int32) (IWifiChip, error)
+	GetChipIds(ctx context.Context) ([]int32, error)
+	IsStarted(ctx context.Context) (bool, error)
+	RegisterEventCallback(ctx context.Context, callback IWifiEventCallback) error
+	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
+}
+
+type wifiStubWrapper struct {
+	impl       IWifiServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiStubWrapper) GetChip(
+	ctx context.Context,
+	chipId int32,
+) (IWifiChip, error) {
+	return w.impl.GetChip(ctx, chipId)
+}
+
+func (w *wifiStubWrapper) GetChipIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetChipIds(ctx)
+}
+
+func (w *wifiStubWrapper) IsStarted(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsStarted(ctx)
+}
+
+func (w *wifiStubWrapper) RegisterEventCallback(
+	ctx context.Context,
+	callback IWifiEventCallback,
+) error {
+	return w.impl.RegisterEventCallback(ctx, callback)
+}
+
+func (w *wifiStubWrapper) Start(
+	ctx context.Context,
+) error {
+	return w.impl.Start(ctx)
+}
+
+func (w *wifiStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+var _ IWifi = (*wifiStubWrapper)(nil)
+
+// NewWifiStub creates a server-side IWifi wrapping the given
+// server implementation. The returned value satisfies IWifi
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiStub(
+	impl IWifiServer,
+) IWifi {
+	wrapper := &wifiStubWrapper{impl: impl}
+	stub := &WifiStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

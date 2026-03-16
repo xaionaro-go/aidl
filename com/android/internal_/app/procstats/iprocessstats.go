@@ -419,3 +419,87 @@ func (s *ProcessStatsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProcessStatsServer is the server-side interface that user implementations
+// provide to NewProcessStatsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProcessStatsServer interface {
+	GetCurrentStats(ctx context.Context, historic []int32) ([]byte, error)
+	GetStatsOverTime(ctx context.Context, minTime int64) (int32, error)
+	GetCurrentMemoryState(ctx context.Context) (int32, error)
+	GetCommittedStats(ctx context.Context, highWaterMarkMs int64, section int32, doAggregate bool, committedStats []int32) (int64, error)
+	GetCommittedStatsMerged(ctx context.Context, highWaterMarkMs int64, section int32, doAggregate bool, committedStats []int32, mergedStats ProcessStats) (int64, error)
+	GetMinAssociationDumpDuration(ctx context.Context) (int64, error)
+}
+
+type processStatsStubWrapper struct {
+	impl       IProcessStatsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *processStatsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *processStatsStubWrapper) GetCurrentStats(
+	ctx context.Context,
+	historic []int32,
+) ([]byte, error) {
+	return w.impl.GetCurrentStats(ctx, historic)
+}
+
+func (w *processStatsStubWrapper) GetStatsOverTime(
+	ctx context.Context,
+	minTime int64,
+) (int32, error) {
+	return w.impl.GetStatsOverTime(ctx, minTime)
+}
+
+func (w *processStatsStubWrapper) GetCurrentMemoryState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentMemoryState(ctx)
+}
+
+func (w *processStatsStubWrapper) GetCommittedStats(
+	ctx context.Context,
+	highWaterMarkMs int64,
+	section int32,
+	doAggregate bool,
+	committedStats []int32,
+) (int64, error) {
+	return w.impl.GetCommittedStats(ctx, highWaterMarkMs, section, doAggregate, committedStats)
+}
+
+func (w *processStatsStubWrapper) GetCommittedStatsMerged(
+	ctx context.Context,
+	highWaterMarkMs int64,
+	section int32,
+	doAggregate bool,
+	committedStats []int32,
+	mergedStats ProcessStats,
+) (int64, error) {
+	return w.impl.GetCommittedStatsMerged(ctx, highWaterMarkMs, section, doAggregate, committedStats, mergedStats)
+}
+
+func (w *processStatsStubWrapper) GetMinAssociationDumpDuration(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetMinAssociationDumpDuration(ctx)
+}
+
+var _ IProcessStats = (*processStatsStubWrapper)(nil)
+
+// NewProcessStatsStub creates a server-side IProcessStats wrapping the given
+// server implementation. The returned value satisfies IProcessStats
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProcessStatsStub(
+	impl IProcessStatsServer,
+) IProcessStats {
+	wrapper := &processStatsStubWrapper{impl: impl}
+	stub := &ProcessStatsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -112,7 +112,7 @@ func (p *IncrementalServiceProxy) OpenStorage(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "openStorage")
 	if _err != nil {
@@ -145,7 +145,7 @@ func (p *IncrementalServiceProxy) CreateStorage(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 	_data.WriteInt32(createMode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "createStorage")
@@ -179,7 +179,7 @@ func (p *IncrementalServiceProxy) CreateLinkedStorage(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 	_data.WriteInt32(otherStorageId)
 	_data.WriteInt32(createMode)
 
@@ -222,7 +222,7 @@ func (p *IncrementalServiceProxy) StartLoading(
 	if _err := healthCheckParams.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(healthListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, healthListener.AsBinder(), p.remote.Transport())
 	if perUidReadTimeouts == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -293,8 +293,8 @@ func (p *IncrementalServiceProxy) MakeBindMount(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(sourcePath)
-	_data.WriteString(targetFullPath)
+	_data.WriteString16(sourcePath)
+	_data.WriteString16(targetFullPath)
 	_data.WriteInt32(bindType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "makeBindMount")
@@ -328,7 +328,7 @@ func (p *IncrementalServiceProxy) DeleteBindMount(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(targetFullPath)
+	_data.WriteString16(targetFullPath)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "deleteBindMount")
 	if _err != nil {
@@ -361,7 +361,7 @@ func (p *IncrementalServiceProxy) MakeDirectory(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "makeDirectory")
 	if _err != nil {
@@ -394,7 +394,7 @@ func (p *IncrementalServiceProxy) MakeDirectories(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "makeDirectories")
 	if _err != nil {
@@ -430,7 +430,7 @@ func (p *IncrementalServiceProxy) MakeFile(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 	_data.WriteInt32(mode)
 	_data.WriteInt32(1)
 	if _err := params.MarshalParcel(_data); _err != nil {
@@ -479,8 +479,8 @@ func (p *IncrementalServiceProxy) MakeFileFromRange(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(targetPath)
-	_data.WriteString(sourcePath)
+	_data.WriteString16(targetPath)
+	_data.WriteString16(sourcePath)
 	_data.WriteInt64(start)
 	_data.WriteInt64(end)
 
@@ -517,9 +517,9 @@ func (p *IncrementalServiceProxy) MakeLink(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(sourceStorageId)
-	_data.WriteString(sourcePath)
+	_data.WriteString16(sourcePath)
 	_data.WriteInt32(destStorageId)
-	_data.WriteString(destPath)
+	_data.WriteString16(destPath)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "makeLink")
 	if _err != nil {
@@ -552,7 +552,7 @@ func (p *IncrementalServiceProxy) Unlink(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "unlink")
 	if _err != nil {
@@ -585,7 +585,7 @@ func (p *IncrementalServiceProxy) IsFileFullyLoaded(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "isFileFullyLoaded")
 	if _err != nil {
@@ -680,7 +680,7 @@ func (p *IncrementalServiceProxy) GetMetadataByPath(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "getMetadataByPath")
 	if _err != nil {
@@ -828,9 +828,9 @@ func (p *IncrementalServiceProxy) ConfigureNativeBinaries(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteString(apkFullPath)
-	_data.WriteString(libDirRelativePath)
-	_data.WriteString(abi)
+	_data.WriteString16(apkFullPath)
+	_data.WriteString16(libDirRelativePath)
+	_data.WriteString16(abi)
 	_data.WriteBool(extractNativeLibs)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "configureNativeBinaries")
@@ -895,7 +895,7 @@ func (p *IncrementalServiceProxy) RegisterLoadingProgressListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncrementalService)
 	_data.WriteInt32(storageId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncrementalService, "registerLoadingProgressListener")
 	if _err != nil {
@@ -995,7 +995,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1012,7 +1012,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1034,7 +1034,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1116,11 +1116,11 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_sourcePath, _err := _data.ReadString()
+		_arg_sourcePath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_targetFullPath, _err := _data.ReadString()
+		_arg_targetFullPath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1145,7 +1145,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_targetFullPath, _err := _data.ReadString()
+		_arg_targetFullPath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1166,7 +1166,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1187,7 +1187,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1208,7 +1208,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1248,11 +1248,11 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_targetPath, _err := _data.ReadString()
+		_arg_targetPath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_sourcePath, _err := _data.ReadString()
+		_arg_sourcePath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1281,7 +1281,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_sourcePath, _err := _data.ReadString()
+		_arg_sourcePath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1289,7 +1289,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_destPath, _err := _data.ReadString()
+		_arg_destPath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1310,7 +1310,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1331,7 +1331,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1386,7 +1386,7 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1461,15 +1461,15 @@ func (s *IncrementalServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_apkFullPath, _err := _data.ReadString()
+		_arg_apkFullPath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_libDirRelativePath, _err := _data.ReadString()
+		_arg_libDirRelativePath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_abi, _err := _data.ReadString()
+		_arg_abi, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1560,4 +1560,270 @@ func (s *IncrementalServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IIncrementalServiceServer is the server-side interface that user implementations
+// provide to NewIncrementalServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIncrementalServiceServer interface {
+	OpenStorage(ctx context.Context, path string) (int32, error)
+	CreateStorage(ctx context.Context, path string, params interface{}, createMode int32) (int32, error)
+	CreateLinkedStorage(ctx context.Context, path string, otherStorageId int32, createMode int32) (int32, error)
+	StartLoading(ctx context.Context, storageId int32, params interface{}, statusListener interface{}, healthCheckParams StorageHealthCheckParams, healthListener IStorageHealthListener, perUidReadTimeouts []PerUidReadTimeouts) (bool, error)
+	OnInstallationComplete(ctx context.Context, storageId int32) error
+	MakeBindMount(ctx context.Context, storageId int32, sourcePath string, targetFullPath string, bindType int32) (int32, error)
+	DeleteBindMount(ctx context.Context, storageId int32, targetFullPath string) (int32, error)
+	MakeDirectory(ctx context.Context, storageId int32, path string) (int32, error)
+	MakeDirectories(ctx context.Context, storageId int32, path string) (int32, error)
+	MakeFile(ctx context.Context, storageId int32, path string, mode int32, params IncrementalNewFileParams, content []byte) (int32, error)
+	MakeFileFromRange(ctx context.Context, storageId int32, targetPath string, sourcePath string, start int64, end int64) (int32, error)
+	MakeLink(ctx context.Context, sourceStorageId int32, sourcePath string, destStorageId int32, destPath string) (int32, error)
+	Unlink(ctx context.Context, storageId int32, path string) (int32, error)
+	IsFileFullyLoaded(ctx context.Context, storageId int32, path string) (int32, error)
+	IsFullyLoaded(ctx context.Context, storageId int32) (int32, error)
+	GetLoadingProgress(ctx context.Context, storageId int32) (float32, error)
+	GetMetadataByPath(ctx context.Context, storageId int32, path string) ([]byte, error)
+	GetMetadataById(ctx context.Context, storageId int32, fileId []byte) ([]byte, error)
+	DeleteStorage(ctx context.Context, storageId int32) error
+	DisallowReadLogs(ctx context.Context, storageId int32) error
+	ConfigureNativeBinaries(ctx context.Context, storageId int32, apkFullPath string, libDirRelativePath string, abi string, extractNativeLibs bool) (bool, error)
+	WaitForNativeBinariesExtraction(ctx context.Context, storageId int32) (bool, error)
+	RegisterLoadingProgressListener(ctx context.Context, storageId int32, listener IStorageLoadingProgressListener) (bool, error)
+	UnregisterLoadingProgressListener(ctx context.Context, storageId int32) (bool, error)
+	GetMetrics(ctx context.Context, storageId int32) (interface{}, error)
+}
+
+type incrementalServiceStubWrapper struct {
+	impl       IIncrementalServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *incrementalServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *incrementalServiceStubWrapper) OpenStorage(
+	ctx context.Context,
+	path string,
+) (int32, error) {
+	return w.impl.OpenStorage(ctx, path)
+}
+
+func (w *incrementalServiceStubWrapper) CreateStorage(
+	ctx context.Context,
+	path string,
+	params interface{},
+	createMode int32,
+) (int32, error) {
+	return w.impl.CreateStorage(ctx, path, params, createMode)
+}
+
+func (w *incrementalServiceStubWrapper) CreateLinkedStorage(
+	ctx context.Context,
+	path string,
+	otherStorageId int32,
+	createMode int32,
+) (int32, error) {
+	return w.impl.CreateLinkedStorage(ctx, path, otherStorageId, createMode)
+}
+
+func (w *incrementalServiceStubWrapper) StartLoading(
+	ctx context.Context,
+	storageId int32,
+	params interface{},
+	statusListener interface{},
+	healthCheckParams StorageHealthCheckParams,
+	healthListener IStorageHealthListener,
+	perUidReadTimeouts []PerUidReadTimeouts,
+) (bool, error) {
+	return w.impl.StartLoading(ctx, storageId, params, statusListener, healthCheckParams, healthListener, perUidReadTimeouts)
+}
+
+func (w *incrementalServiceStubWrapper) OnInstallationComplete(
+	ctx context.Context,
+	storageId int32,
+) error {
+	return w.impl.OnInstallationComplete(ctx, storageId)
+}
+
+func (w *incrementalServiceStubWrapper) MakeBindMount(
+	ctx context.Context,
+	storageId int32,
+	sourcePath string,
+	targetFullPath string,
+	bindType int32,
+) (int32, error) {
+	return w.impl.MakeBindMount(ctx, storageId, sourcePath, targetFullPath, bindType)
+}
+
+func (w *incrementalServiceStubWrapper) DeleteBindMount(
+	ctx context.Context,
+	storageId int32,
+	targetFullPath string,
+) (int32, error) {
+	return w.impl.DeleteBindMount(ctx, storageId, targetFullPath)
+}
+
+func (w *incrementalServiceStubWrapper) MakeDirectory(
+	ctx context.Context,
+	storageId int32,
+	path string,
+) (int32, error) {
+	return w.impl.MakeDirectory(ctx, storageId, path)
+}
+
+func (w *incrementalServiceStubWrapper) MakeDirectories(
+	ctx context.Context,
+	storageId int32,
+	path string,
+) (int32, error) {
+	return w.impl.MakeDirectories(ctx, storageId, path)
+}
+
+func (w *incrementalServiceStubWrapper) MakeFile(
+	ctx context.Context,
+	storageId int32,
+	path string,
+	mode int32,
+	params IncrementalNewFileParams,
+	content []byte,
+) (int32, error) {
+	return w.impl.MakeFile(ctx, storageId, path, mode, params, content)
+}
+
+func (w *incrementalServiceStubWrapper) MakeFileFromRange(
+	ctx context.Context,
+	storageId int32,
+	targetPath string,
+	sourcePath string,
+	start int64,
+	end int64,
+) (int32, error) {
+	return w.impl.MakeFileFromRange(ctx, storageId, targetPath, sourcePath, start, end)
+}
+
+func (w *incrementalServiceStubWrapper) MakeLink(
+	ctx context.Context,
+	sourceStorageId int32,
+	sourcePath string,
+	destStorageId int32,
+	destPath string,
+) (int32, error) {
+	return w.impl.MakeLink(ctx, sourceStorageId, sourcePath, destStorageId, destPath)
+}
+
+func (w *incrementalServiceStubWrapper) Unlink(
+	ctx context.Context,
+	storageId int32,
+	path string,
+) (int32, error) {
+	return w.impl.Unlink(ctx, storageId, path)
+}
+
+func (w *incrementalServiceStubWrapper) IsFileFullyLoaded(
+	ctx context.Context,
+	storageId int32,
+	path string,
+) (int32, error) {
+	return w.impl.IsFileFullyLoaded(ctx, storageId, path)
+}
+
+func (w *incrementalServiceStubWrapper) IsFullyLoaded(
+	ctx context.Context,
+	storageId int32,
+) (int32, error) {
+	return w.impl.IsFullyLoaded(ctx, storageId)
+}
+
+func (w *incrementalServiceStubWrapper) GetLoadingProgress(
+	ctx context.Context,
+	storageId int32,
+) (float32, error) {
+	return w.impl.GetLoadingProgress(ctx, storageId)
+}
+
+func (w *incrementalServiceStubWrapper) GetMetadataByPath(
+	ctx context.Context,
+	storageId int32,
+	path string,
+) ([]byte, error) {
+	return w.impl.GetMetadataByPath(ctx, storageId, path)
+}
+
+func (w *incrementalServiceStubWrapper) GetMetadataById(
+	ctx context.Context,
+	storageId int32,
+	fileId []byte,
+) ([]byte, error) {
+	return w.impl.GetMetadataById(ctx, storageId, fileId)
+}
+
+func (w *incrementalServiceStubWrapper) DeleteStorage(
+	ctx context.Context,
+	storageId int32,
+) error {
+	return w.impl.DeleteStorage(ctx, storageId)
+}
+
+func (w *incrementalServiceStubWrapper) DisallowReadLogs(
+	ctx context.Context,
+	storageId int32,
+) error {
+	return w.impl.DisallowReadLogs(ctx, storageId)
+}
+
+func (w *incrementalServiceStubWrapper) ConfigureNativeBinaries(
+	ctx context.Context,
+	storageId int32,
+	apkFullPath string,
+	libDirRelativePath string,
+	abi string,
+	extractNativeLibs bool,
+) (bool, error) {
+	return w.impl.ConfigureNativeBinaries(ctx, storageId, apkFullPath, libDirRelativePath, abi, extractNativeLibs)
+}
+
+func (w *incrementalServiceStubWrapper) WaitForNativeBinariesExtraction(
+	ctx context.Context,
+	storageId int32,
+) (bool, error) {
+	return w.impl.WaitForNativeBinariesExtraction(ctx, storageId)
+}
+
+func (w *incrementalServiceStubWrapper) RegisterLoadingProgressListener(
+	ctx context.Context,
+	storageId int32,
+	listener IStorageLoadingProgressListener,
+) (bool, error) {
+	return w.impl.RegisterLoadingProgressListener(ctx, storageId, listener)
+}
+
+func (w *incrementalServiceStubWrapper) UnregisterLoadingProgressListener(
+	ctx context.Context,
+	storageId int32,
+) (bool, error) {
+	return w.impl.UnregisterLoadingProgressListener(ctx, storageId)
+}
+
+func (w *incrementalServiceStubWrapper) GetMetrics(
+	ctx context.Context,
+	storageId int32,
+) (interface{}, error) {
+	return w.impl.GetMetrics(ctx, storageId)
+}
+
+var _ IIncrementalService = (*incrementalServiceStubWrapper)(nil)
+
+// NewIncrementalServiceStub creates a server-side IIncrementalService wrapping the given
+// server implementation. The returned value satisfies IIncrementalService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIncrementalServiceStub(
+	impl IIncrementalServiceServer,
+) IIncrementalService {
+	wrapper := &incrementalServiceStubWrapper{impl: impl}
+	stub := &IncrementalServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

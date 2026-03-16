@@ -90,3 +90,42 @@ func (s *ChooserTargetResultStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IChooserTargetResultServer is the server-side interface that user implementations
+// provide to NewChooserTargetResultStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IChooserTargetResultServer interface {
+	SendResult(ctx context.Context, targets []ChooserTarget) error
+}
+
+type chooserTargetResultStubWrapper struct {
+	impl       IChooserTargetResultServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *chooserTargetResultStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *chooserTargetResultStubWrapper) SendResult(
+	ctx context.Context,
+	targets []ChooserTarget,
+) error {
+	return w.impl.SendResult(ctx, targets)
+}
+
+var _ IChooserTargetResult = (*chooserTargetResultStubWrapper)(nil)
+
+// NewChooserTargetResultStub creates a server-side IChooserTargetResult wrapping the given
+// server implementation. The returned value satisfies IChooserTargetResult
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewChooserTargetResultStub(
+	impl IChooserTargetResultServer,
+) IChooserTargetResult {
+	wrapper := &chooserTargetResultStubWrapper{impl: impl}
+	stub := &ChooserTargetResultStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

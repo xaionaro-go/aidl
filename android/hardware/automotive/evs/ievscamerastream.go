@@ -131,3 +131,50 @@ func (s *EvsCameraStreamStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEvsCameraStreamServer is the server-side interface that user implementations
+// provide to NewEvsCameraStreamStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEvsCameraStreamServer interface {
+	DeliverFrame(ctx context.Context, buffer []BufferDesc) error
+	Notify(ctx context.Context, event EvsEventDesc) error
+}
+
+type evsCameraStreamStubWrapper struct {
+	impl       IEvsCameraStreamServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *evsCameraStreamStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *evsCameraStreamStubWrapper) DeliverFrame(
+	ctx context.Context,
+	buffer []BufferDesc,
+) error {
+	return w.impl.DeliverFrame(ctx, buffer)
+}
+
+func (w *evsCameraStreamStubWrapper) Notify(
+	ctx context.Context,
+	event EvsEventDesc,
+) error {
+	return w.impl.Notify(ctx, event)
+}
+
+var _ IEvsCameraStream = (*evsCameraStreamStubWrapper)(nil)
+
+// NewEvsCameraStreamStub creates a server-side IEvsCameraStream wrapping the given
+// server implementation. The returned value satisfies IEvsCameraStream
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEvsCameraStreamStub(
+	impl IEvsCameraStreamServer,
+) IEvsCameraStream {
+	wrapper := &evsCameraStreamStubWrapper{impl: impl}
+	stub := &EvsCameraStreamStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -49,3 +49,34 @@ func (s *SecureElementListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISecureElementListenerServer is the server-side interface that user implementations
+// provide to NewSecureElementListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecureElementListenerServer interface {
+}
+
+type secureElementListenerStubWrapper struct {
+	impl       ISecureElementListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secureElementListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ ISecureElementListener = (*secureElementListenerStubWrapper)(nil)
+
+// NewSecureElementListenerStub creates a server-side ISecureElementListener wrapping the given
+// server implementation. The returned value satisfies ISecureElementListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecureElementListenerStub(
+	impl ISecureElementListenerServer,
+) ISecureElementListener {
+	wrapper := &secureElementListenerStubWrapper{impl: impl}
+	stub := &SecureElementListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

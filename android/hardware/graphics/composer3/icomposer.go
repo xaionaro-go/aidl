@@ -158,3 +158,48 @@ func (s *ComposerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IComposerServer is the server-side interface that user implementations
+// provide to NewComposerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IComposerServer interface {
+	CreateClient(ctx context.Context) (IComposerClient, error)
+	GetCapabilities(ctx context.Context) ([]Capability, error)
+}
+
+type composerStubWrapper struct {
+	impl       IComposerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *composerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *composerStubWrapper) CreateClient(
+	ctx context.Context,
+) (IComposerClient, error) {
+	return w.impl.CreateClient(ctx)
+}
+
+func (w *composerStubWrapper) GetCapabilities(
+	ctx context.Context,
+) ([]Capability, error) {
+	return w.impl.GetCapabilities(ctx)
+}
+
+var _ IComposer = (*composerStubWrapper)(nil)
+
+// NewComposerStub creates a server-side IComposer wrapping the given
+// server implementation. The returned value satisfies IComposer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewComposerStub(
+	impl IComposerServer,
+) IComposer {
+	wrapper := &composerStubWrapper{impl: impl}
+	stub := &ComposerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

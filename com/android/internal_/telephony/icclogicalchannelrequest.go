@@ -31,7 +31,11 @@ func (s *IccLogicalChannelRequest) MarshalParcel(
 	p.WriteString16(s.Aid)
 	p.WriteInt32(s.P2)
 	p.WriteInt32(s.Channel)
-	p.WriteStrongBinder(s.Binder.Handle())
+	if s.Binder == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Binder.Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

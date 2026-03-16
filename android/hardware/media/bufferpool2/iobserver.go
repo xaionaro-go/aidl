@@ -88,3 +88,43 @@ func (s *ObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IObserverServer is the server-side interface that user implementations
+// provide to NewObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IObserverServer interface {
+	OnMessage(ctx context.Context, connectionId int64, msgId int32) error
+}
+
+type observerStubWrapper struct {
+	impl       IObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *observerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *observerStubWrapper) OnMessage(
+	ctx context.Context,
+	connectionId int64,
+	msgId int32,
+) error {
+	return w.impl.OnMessage(ctx, connectionId, msgId)
+}
+
+var _ IObserver = (*observerStubWrapper)(nil)
+
+// NewObserverStub creates a server-side IObserver wrapping the given
+// server implementation. The returned value satisfies IObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewObserverStub(
+	impl IObserverServer,
+) IObserver {
+	wrapper := &observerStubWrapper{impl: impl}
+	stub := &ObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -47,7 +47,7 @@ func (p *RotationResolverCallbackProxy) OnCancellable(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRotationResolverCallback)
-	_data.WriteStrongBinder(cancellation.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellation.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRotationResolverCallback, "onCancellable")
 	if _err != nil {
@@ -141,4 +141,59 @@ func (s *RotationResolverCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRotationResolverCallbackServer is the server-side interface that user implementations
+// provide to NewRotationResolverCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRotationResolverCallbackServer interface {
+	OnCancellable(ctx context.Context, cancellation ondeviceintelligence.ICancellationSignal) error
+	OnSuccess(ctx context.Context, recommendedRotation int32) error
+	OnFailure(ctx context.Context, error_ int32) error
+}
+
+type rotationResolverCallbackStubWrapper struct {
+	impl       IRotationResolverCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *rotationResolverCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *rotationResolverCallbackStubWrapper) OnCancellable(
+	ctx context.Context,
+	cancellation ondeviceintelligence.ICancellationSignal,
+) error {
+	return w.impl.OnCancellable(ctx, cancellation)
+}
+
+func (w *rotationResolverCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	recommendedRotation int32,
+) error {
+	return w.impl.OnSuccess(ctx, recommendedRotation)
+}
+
+func (w *rotationResolverCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.OnFailure(ctx, error_)
+}
+
+var _ IRotationResolverCallback = (*rotationResolverCallbackStubWrapper)(nil)
+
+// NewRotationResolverCallbackStub creates a server-side IRotationResolverCallback wrapping the given
+// server implementation. The returned value satisfies IRotationResolverCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRotationResolverCallbackStub(
+	impl IRotationResolverCallbackServer,
+) IRotationResolverCallback {
+	wrapper := &rotationResolverCallbackStubWrapper{impl: impl}
+	stub := &RotationResolverCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

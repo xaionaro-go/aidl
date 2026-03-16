@@ -100,3 +100,43 @@ func (s *WearableSensingCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWearableSensingCallbackServer is the server-side interface that user implementations
+// provide to NewWearableSensingCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWearableSensingCallbackServer interface {
+	OpenFile(ctx context.Context, filename string, future infra.AndroidFuture) error
+}
+
+type wearableSensingCallbackStubWrapper struct {
+	impl       IWearableSensingCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wearableSensingCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wearableSensingCallbackStubWrapper) OpenFile(
+	ctx context.Context,
+	filename string,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.OpenFile(ctx, filename, future)
+}
+
+var _ IWearableSensingCallback = (*wearableSensingCallbackStubWrapper)(nil)
+
+// NewWearableSensingCallbackStub creates a server-side IWearableSensingCallback wrapping the given
+// server implementation. The returned value satisfies IWearableSensingCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWearableSensingCallbackStub(
+	impl IWearableSensingCallbackServer,
+) IWearableSensingCallback {
+	wrapper := &wearableSensingCallbackStubWrapper{impl: impl}
+	stub := &WearableSensingCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

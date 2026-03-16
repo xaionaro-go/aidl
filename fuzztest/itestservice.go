@@ -102,3 +102,42 @@ func (s *TestServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITestServiceServer is the server-side interface that user implementations
+// provide to NewTestServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITestServiceServer interface {
+	RepeatData(ctx context.Context, token bool) (bool, error)
+}
+
+type testServiceStubWrapper struct {
+	impl       ITestServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *testServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *testServiceStubWrapper) RepeatData(
+	ctx context.Context,
+	token bool,
+) (bool, error) {
+	return w.impl.RepeatData(ctx, token)
+}
+
+var _ ITestService = (*testServiceStubWrapper)(nil)
+
+// NewTestServiceStub creates a server-side ITestService wrapping the given
+// server implementation. The returned value satisfies ITestService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTestServiceStub(
+	impl ITestServiceServer,
+) ITestService {
+	wrapper := &testServiceStubWrapper{impl: impl}
+	stub := &TestServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

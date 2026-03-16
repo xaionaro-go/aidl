@@ -213,3 +213,62 @@ func (s *CameraProviderCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraProviderCallbackServer is the server-side interface that user implementations
+// provide to NewCameraProviderCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraProviderCallbackServer interface {
+	CameraDeviceStatusChange(ctx context.Context, cameraDeviceName string, newStatus service.CameraDeviceStatus) error
+	TorchModeStatusChange(ctx context.Context, cameraDeviceName string, newStatus common.TorchModeStatus) error
+	PhysicalCameraDeviceStatusChange(ctx context.Context, cameraDeviceName string, physicalCameraDeviceName string, newStatus service.CameraDeviceStatus) error
+}
+
+type cameraProviderCallbackStubWrapper struct {
+	impl       ICameraProviderCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraProviderCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraProviderCallbackStubWrapper) CameraDeviceStatusChange(
+	ctx context.Context,
+	cameraDeviceName string,
+	newStatus service.CameraDeviceStatus,
+) error {
+	return w.impl.CameraDeviceStatusChange(ctx, cameraDeviceName, newStatus)
+}
+
+func (w *cameraProviderCallbackStubWrapper) TorchModeStatusChange(
+	ctx context.Context,
+	cameraDeviceName string,
+	newStatus common.TorchModeStatus,
+) error {
+	return w.impl.TorchModeStatusChange(ctx, cameraDeviceName, newStatus)
+}
+
+func (w *cameraProviderCallbackStubWrapper) PhysicalCameraDeviceStatusChange(
+	ctx context.Context,
+	cameraDeviceName string,
+	physicalCameraDeviceName string,
+	newStatus service.CameraDeviceStatus,
+) error {
+	return w.impl.PhysicalCameraDeviceStatusChange(ctx, cameraDeviceName, physicalCameraDeviceName, newStatus)
+}
+
+var _ ICameraProviderCallback = (*cameraProviderCallbackStubWrapper)(nil)
+
+// NewCameraProviderCallbackStub creates a server-side ICameraProviderCallback wrapping the given
+// server implementation. The returned value satisfies ICameraProviderCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraProviderCallbackStub(
+	impl ICameraProviderCallbackServer,
+) ICameraProviderCallback {
+	wrapper := &cameraProviderCallbackStubWrapper{impl: impl}
+	stub := &CameraProviderCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

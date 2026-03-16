@@ -63,7 +63,7 @@ func (p *SharedConnectivityServiceProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISharedConnectivityService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISharedConnectivityService, "registerCallback")
 	if _err != nil {
@@ -89,7 +89,7 @@ func (p *SharedConnectivityServiceProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISharedConnectivityService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISharedConnectivityService, "unregisterCallback")
 	if _err != nil {
@@ -622,4 +622,118 @@ func (s *SharedConnectivityServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISharedConnectivityServiceServer is the server-side interface that user implementations
+// provide to NewSharedConnectivityServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISharedConnectivityServiceServer interface {
+	RegisterCallback(ctx context.Context, callback ISharedConnectivityCallback) error
+	UnregisterCallback(ctx context.Context, callback ISharedConnectivityCallback) error
+	ConnectHotspotNetwork(ctx context.Context, network app.HotspotNetwork) error
+	DisconnectHotspotNetwork(ctx context.Context, network app.HotspotNetwork) error
+	ConnectKnownNetwork(ctx context.Context, network app.KnownNetwork) error
+	ForgetKnownNetwork(ctx context.Context, network app.KnownNetwork) error
+	GetHotspotNetworks(ctx context.Context) ([]app.HotspotNetwork, error)
+	GetKnownNetworks(ctx context.Context) ([]app.KnownNetwork, error)
+	GetSettingsState(ctx context.Context) (app.SharedConnectivitySettingsState, error)
+	GetHotspotNetworkConnectionStatus(ctx context.Context) (app.HotspotNetworkConnectionStatus, error)
+	GetKnownNetworkConnectionStatus(ctx context.Context) (app.KnownNetworkConnectionStatus, error)
+}
+
+type sharedConnectivityServiceStubWrapper struct {
+	impl       ISharedConnectivityServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sharedConnectivityServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sharedConnectivityServiceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ISharedConnectivityCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback ISharedConnectivityCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) ConnectHotspotNetwork(
+	ctx context.Context,
+	network app.HotspotNetwork,
+) error {
+	return w.impl.ConnectHotspotNetwork(ctx, network)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) DisconnectHotspotNetwork(
+	ctx context.Context,
+	network app.HotspotNetwork,
+) error {
+	return w.impl.DisconnectHotspotNetwork(ctx, network)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) ConnectKnownNetwork(
+	ctx context.Context,
+	network app.KnownNetwork,
+) error {
+	return w.impl.ConnectKnownNetwork(ctx, network)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) ForgetKnownNetwork(
+	ctx context.Context,
+	network app.KnownNetwork,
+) error {
+	return w.impl.ForgetKnownNetwork(ctx, network)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) GetHotspotNetworks(
+	ctx context.Context,
+) ([]app.HotspotNetwork, error) {
+	return w.impl.GetHotspotNetworks(ctx)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) GetKnownNetworks(
+	ctx context.Context,
+) ([]app.KnownNetwork, error) {
+	return w.impl.GetKnownNetworks(ctx)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) GetSettingsState(
+	ctx context.Context,
+) (app.SharedConnectivitySettingsState, error) {
+	return w.impl.GetSettingsState(ctx)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) GetHotspotNetworkConnectionStatus(
+	ctx context.Context,
+) (app.HotspotNetworkConnectionStatus, error) {
+	return w.impl.GetHotspotNetworkConnectionStatus(ctx)
+}
+
+func (w *sharedConnectivityServiceStubWrapper) GetKnownNetworkConnectionStatus(
+	ctx context.Context,
+) (app.KnownNetworkConnectionStatus, error) {
+	return w.impl.GetKnownNetworkConnectionStatus(ctx)
+}
+
+var _ ISharedConnectivityService = (*sharedConnectivityServiceStubWrapper)(nil)
+
+// NewSharedConnectivityServiceStub creates a server-side ISharedConnectivityService wrapping the given
+// server implementation. The returned value satisfies ISharedConnectivityService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSharedConnectivityServiceStub(
+	impl ISharedConnectivityServiceServer,
+) ISharedConnectivityService {
+	wrapper := &sharedConnectivityServiceStubWrapper{impl: impl}
+	stub := &SharedConnectivityServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

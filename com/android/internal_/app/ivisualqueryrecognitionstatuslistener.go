@@ -100,3 +100,48 @@ func (s *VisualQueryRecognitionStatusListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVisualQueryRecognitionStatusListenerServer is the server-side interface that user implementations
+// provide to NewVisualQueryRecognitionStatusListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVisualQueryRecognitionStatusListenerServer interface {
+	OnStartPerceiving(ctx context.Context) error
+	OnStopPerceiving(ctx context.Context) error
+}
+
+type visualQueryRecognitionStatusListenerStubWrapper struct {
+	impl       IVisualQueryRecognitionStatusListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *visualQueryRecognitionStatusListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *visualQueryRecognitionStatusListenerStubWrapper) OnStartPerceiving(
+	ctx context.Context,
+) error {
+	return w.impl.OnStartPerceiving(ctx)
+}
+
+func (w *visualQueryRecognitionStatusListenerStubWrapper) OnStopPerceiving(
+	ctx context.Context,
+) error {
+	return w.impl.OnStopPerceiving(ctx)
+}
+
+var _ IVisualQueryRecognitionStatusListener = (*visualQueryRecognitionStatusListenerStubWrapper)(nil)
+
+// NewVisualQueryRecognitionStatusListenerStub creates a server-side IVisualQueryRecognitionStatusListener wrapping the given
+// server implementation. The returned value satisfies IVisualQueryRecognitionStatusListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVisualQueryRecognitionStatusListenerStub(
+	impl IVisualQueryRecognitionStatusListenerServer,
+) IVisualQueryRecognitionStatusListener {
+	wrapper := &visualQueryRecognitionStatusListenerStubWrapper{impl: impl}
+	stub := &VisualQueryRecognitionStatusListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

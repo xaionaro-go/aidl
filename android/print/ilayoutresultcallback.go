@@ -50,7 +50,7 @@ func (p *LayoutResultCallbackProxy) OnLayoutStarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILayoutResultCallback)
-	_data.WriteStrongBinder(cancellation.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellation.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sequence)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILayoutResultCallback, "onLayoutStarted")
@@ -202,4 +202,71 @@ func (s *LayoutResultCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ILayoutResultCallbackServer is the server-side interface that user implementations
+// provide to NewLayoutResultCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILayoutResultCallbackServer interface {
+	OnLayoutStarted(ctx context.Context, cancellation ondeviceintelligence.ICancellationSignal, sequence int32) error
+	OnLayoutFinished(ctx context.Context, info PrintDocumentInfo, changed bool, sequence int32) error
+	OnLayoutFailed(ctx context.Context, error_ interface{}, sequence int32) error
+	OnLayoutCanceled(ctx context.Context, sequence int32) error
+}
+
+type layoutResultCallbackStubWrapper struct {
+	impl       ILayoutResultCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *layoutResultCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *layoutResultCallbackStubWrapper) OnLayoutStarted(
+	ctx context.Context,
+	cancellation ondeviceintelligence.ICancellationSignal,
+	sequence int32,
+) error {
+	return w.impl.OnLayoutStarted(ctx, cancellation, sequence)
+}
+
+func (w *layoutResultCallbackStubWrapper) OnLayoutFinished(
+	ctx context.Context,
+	info PrintDocumentInfo,
+	changed bool,
+	sequence int32,
+) error {
+	return w.impl.OnLayoutFinished(ctx, info, changed, sequence)
+}
+
+func (w *layoutResultCallbackStubWrapper) OnLayoutFailed(
+	ctx context.Context,
+	error_ interface{},
+	sequence int32,
+) error {
+	return w.impl.OnLayoutFailed(ctx, error_, sequence)
+}
+
+func (w *layoutResultCallbackStubWrapper) OnLayoutCanceled(
+	ctx context.Context,
+	sequence int32,
+) error {
+	return w.impl.OnLayoutCanceled(ctx, sequence)
+}
+
+var _ ILayoutResultCallback = (*layoutResultCallbackStubWrapper)(nil)
+
+// NewLayoutResultCallbackStub creates a server-side ILayoutResultCallback wrapping the given
+// server implementation. The returned value satisfies ILayoutResultCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLayoutResultCallbackStub(
+	impl ILayoutResultCallbackServer,
+) ILayoutResultCallback {
+	wrapper := &layoutResultCallbackStubWrapper{impl: impl}
+	stub := &LayoutResultCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

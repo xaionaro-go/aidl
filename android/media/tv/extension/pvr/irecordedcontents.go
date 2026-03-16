@@ -55,7 +55,7 @@ func (p *RecordedContentsProxy) DeleteRecordedContents(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecordedContents, "deleteRecordedContents")
 	if _err != nil {
@@ -114,7 +114,7 @@ func (p *RecordedContentsProxy) GetRecordedContentsLockInfoAsync(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecordedContents)
 	_data.WriteString16(contentUri)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecordedContents, "getRecordedContentsLockInfoAsync")
 	if _err != nil {
@@ -205,4 +205,61 @@ func (s *RecordedContentsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRecordedContentsServer is the server-side interface that user implementations
+// provide to NewRecordedContentsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecordedContentsServer interface {
+	DeleteRecordedContents(ctx context.Context, contentUri []string, callback IDeleteRecordedContentsCallback) error
+	GetRecordedContentsLockInfoSync(ctx context.Context, contentUri string) (int32, error)
+	GetRecordedContentsLockInfoAsync(ctx context.Context, contentUri string, callback IGetInfoRecordedContentsCallback) error
+}
+
+type recordedContentsStubWrapper struct {
+	impl       IRecordedContentsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recordedContentsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recordedContentsStubWrapper) DeleteRecordedContents(
+	ctx context.Context,
+	contentUri []string,
+	callback IDeleteRecordedContentsCallback,
+) error {
+	return w.impl.DeleteRecordedContents(ctx, contentUri, callback)
+}
+
+func (w *recordedContentsStubWrapper) GetRecordedContentsLockInfoSync(
+	ctx context.Context,
+	contentUri string,
+) (int32, error) {
+	return w.impl.GetRecordedContentsLockInfoSync(ctx, contentUri)
+}
+
+func (w *recordedContentsStubWrapper) GetRecordedContentsLockInfoAsync(
+	ctx context.Context,
+	contentUri string,
+	callback IGetInfoRecordedContentsCallback,
+) error {
+	return w.impl.GetRecordedContentsLockInfoAsync(ctx, contentUri, callback)
+}
+
+var _ IRecordedContents = (*recordedContentsStubWrapper)(nil)
+
+// NewRecordedContentsStub creates a server-side IRecordedContents wrapping the given
+// server implementation. The returned value satisfies IRecordedContents
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecordedContentsStub(
+	impl IRecordedContentsServer,
+) IRecordedContents {
+	wrapper := &recordedContentsStubWrapper{impl: impl}
+	stub := &RecordedContentsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -120,7 +120,7 @@ func (p *FavoriteNetworkProxy) SetListener(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFavoriteNetwork)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFavoriteNetwork, "setListener")
 	if _err != nil {
@@ -216,4 +216,58 @@ func (s *FavoriteNetworkStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFavoriteNetworkServer is the server-side interface that user implementations
+// provide to NewFavoriteNetworkStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFavoriteNetworkServer interface {
+	GetFavoriteNetworks(ctx context.Context) ([]os.Bundle, error)
+	SetFavoriteNetwork(ctx context.Context, favoriteNetworkSettings os.Bundle) (int32, error)
+	SetListener(ctx context.Context, listener IFavoriteNetworkListener) (int32, error)
+}
+
+type favoriteNetworkStubWrapper struct {
+	impl       IFavoriteNetworkServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *favoriteNetworkStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *favoriteNetworkStubWrapper) GetFavoriteNetworks(
+	ctx context.Context,
+) ([]os.Bundle, error) {
+	return w.impl.GetFavoriteNetworks(ctx)
+}
+
+func (w *favoriteNetworkStubWrapper) SetFavoriteNetwork(
+	ctx context.Context,
+	favoriteNetworkSettings os.Bundle,
+) (int32, error) {
+	return w.impl.SetFavoriteNetwork(ctx, favoriteNetworkSettings)
+}
+
+func (w *favoriteNetworkStubWrapper) SetListener(
+	ctx context.Context,
+	listener IFavoriteNetworkListener,
+) (int32, error) {
+	return w.impl.SetListener(ctx, listener)
+}
+
+var _ IFavoriteNetwork = (*favoriteNetworkStubWrapper)(nil)
+
+// NewFavoriteNetworkStub creates a server-side IFavoriteNetwork wrapping the given
+// server implementation. The returned value satisfies IFavoriteNetwork
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFavoriteNetworkStub(
+	impl IFavoriteNetworkServer,
+) IFavoriteNetwork {
+	wrapper := &favoriteNetworkStubWrapper{impl: impl}
+	stub := &FavoriteNetworkStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

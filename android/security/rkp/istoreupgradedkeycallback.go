@@ -106,3 +106,49 @@ func (s *StoreUpgradedKeyCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStoreUpgradedKeyCallbackServer is the server-side interface that user implementations
+// provide to NewStoreUpgradedKeyCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStoreUpgradedKeyCallbackServer interface {
+	OnSuccess(ctx context.Context) error
+	OnError(ctx context.Context, error_ string) error
+}
+
+type storeUpgradedKeyCallbackStubWrapper struct {
+	impl       IStoreUpgradedKeyCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *storeUpgradedKeyCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *storeUpgradedKeyCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+) error {
+	return w.impl.OnSuccess(ctx)
+}
+
+func (w *storeUpgradedKeyCallbackStubWrapper) OnError(
+	ctx context.Context,
+	error_ string,
+) error {
+	return w.impl.OnError(ctx, error_)
+}
+
+var _ IStoreUpgradedKeyCallback = (*storeUpgradedKeyCallbackStubWrapper)(nil)
+
+// NewStoreUpgradedKeyCallbackStub creates a server-side IStoreUpgradedKeyCallback wrapping the given
+// server implementation. The returned value satisfies IStoreUpgradedKeyCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStoreUpgradedKeyCallbackStub(
+	impl IStoreUpgradedKeyCallbackServer,
+) IStoreUpgradedKeyCallback {
+	wrapper := &storeUpgradedKeyCallbackStubWrapper{impl: impl}
+	stub := &StoreUpgradedKeyCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

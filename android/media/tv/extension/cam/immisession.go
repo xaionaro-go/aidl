@@ -222,3 +222,65 @@ func (s *MmiSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMmiSessionServer is the server-side interface that user implementations
+// provide to NewMmiSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMmiSessionServer interface {
+	SetMenuListAnswer(ctx context.Context, response int32) error
+	SetEnquiryAnswer(ctx context.Context, answerId int32, answer string) error
+	CloseMmi(ctx context.Context) error
+	Close(ctx context.Context) error
+}
+
+type mmiSessionStubWrapper struct {
+	impl       IMmiSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mmiSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mmiSessionStubWrapper) SetMenuListAnswer(
+	ctx context.Context,
+	response int32,
+) error {
+	return w.impl.SetMenuListAnswer(ctx, response)
+}
+
+func (w *mmiSessionStubWrapper) SetEnquiryAnswer(
+	ctx context.Context,
+	answerId int32,
+	answer string,
+) error {
+	return w.impl.SetEnquiryAnswer(ctx, answerId, answer)
+}
+
+func (w *mmiSessionStubWrapper) CloseMmi(
+	ctx context.Context,
+) error {
+	return w.impl.CloseMmi(ctx)
+}
+
+func (w *mmiSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ IMmiSession = (*mmiSessionStubWrapper)(nil)
+
+// NewMmiSessionStub creates a server-side IMmiSession wrapping the given
+// server implementation. The returned value satisfies IMmiSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMmiSessionStub(
+	impl IMmiSessionServer,
+) IMmiSession {
+	wrapper := &mmiSessionStubWrapper{impl: impl}
+	stub := &MmiSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

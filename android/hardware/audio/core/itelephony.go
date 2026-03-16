@@ -224,3 +224,57 @@ func (s *TelephonyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITelephonyServer is the server-side interface that user implementations
+// provide to NewTelephonyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITelephonyServer interface {
+	GetSupportedAudioModes(ctx context.Context) ([]common.AudioMode, error)
+	SwitchAudioMode(ctx context.Context, mode common.AudioMode) error
+	SetTelecomConfig(ctx context.Context, config coreITelephony.TelecomConfig) (coreITelephony.TelecomConfig, error)
+}
+
+type telephonyStubWrapper struct {
+	impl       ITelephonyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *telephonyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *telephonyStubWrapper) GetSupportedAudioModes(
+	ctx context.Context,
+) ([]common.AudioMode, error) {
+	return w.impl.GetSupportedAudioModes(ctx)
+}
+
+func (w *telephonyStubWrapper) SwitchAudioMode(
+	ctx context.Context,
+	mode common.AudioMode,
+) error {
+	return w.impl.SwitchAudioMode(ctx, mode)
+}
+
+func (w *telephonyStubWrapper) SetTelecomConfig(
+	ctx context.Context,
+	config coreITelephony.TelecomConfig,
+) (coreITelephony.TelecomConfig, error) {
+	return w.impl.SetTelecomConfig(ctx, config)
+}
+
+var _ ITelephony = (*telephonyStubWrapper)(nil)
+
+// NewTelephonyStub creates a server-side ITelephony wrapping the given
+// server implementation. The returned value satisfies ITelephony
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTelephonyStub(
+	impl ITelephonyServer,
+) ITelephony {
+	wrapper := &telephonyStubWrapper{impl: impl}
+	stub := &TelephonyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

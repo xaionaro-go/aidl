@@ -96,3 +96,41 @@ func (s *ParcelFileDescriptorRetrieverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IParcelFileDescriptorRetrieverServer is the server-side interface that user implementations
+// provide to NewParcelFileDescriptorRetrieverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IParcelFileDescriptorRetrieverServer interface {
+	GetPfd(ctx context.Context) (int32, error)
+}
+
+type parcelFileDescriptorRetrieverStubWrapper struct {
+	impl       IParcelFileDescriptorRetrieverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *parcelFileDescriptorRetrieverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *parcelFileDescriptorRetrieverStubWrapper) GetPfd(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPfd(ctx)
+}
+
+var _ IParcelFileDescriptorRetriever = (*parcelFileDescriptorRetrieverStubWrapper)(nil)
+
+// NewParcelFileDescriptorRetrieverStub creates a server-side IParcelFileDescriptorRetriever wrapping the given
+// server implementation. The returned value satisfies IParcelFileDescriptorRetriever
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewParcelFileDescriptorRetrieverStub(
+	impl IParcelFileDescriptorRetrieverServer,
+) IParcelFileDescriptorRetriever {
+	wrapper := &parcelFileDescriptorRetrieverStubWrapper{impl: impl}
+	stub := &ParcelFileDescriptorRetrieverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

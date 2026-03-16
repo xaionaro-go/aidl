@@ -145,3 +145,49 @@ func (s *AutofillFieldClassificationServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAutofillFieldClassificationServiceServer is the server-side interface that user implementations
+// provide to NewAutofillFieldClassificationServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAutofillFieldClassificationServiceServer interface {
+	CalculateScores(ctx context.Context, callback interface{}, actualValues []interface{}, userDataValues []string, categoryIds []string, defaultAlgorithm string, defaultArgs interface{}, algorithms map[interface{}]interface{}, args map[interface{}]interface{}) error
+}
+
+type autofillFieldClassificationServiceStubWrapper struct {
+	impl       IAutofillFieldClassificationServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *autofillFieldClassificationServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *autofillFieldClassificationServiceStubWrapper) CalculateScores(
+	ctx context.Context,
+	callback interface{},
+	actualValues []interface{},
+	userDataValues []string,
+	categoryIds []string,
+	defaultAlgorithm string,
+	defaultArgs interface{},
+	algorithms map[interface{}]interface{},
+	args map[interface{}]interface{},
+) error {
+	return w.impl.CalculateScores(ctx, callback, actualValues, userDataValues, categoryIds, defaultAlgorithm, defaultArgs, algorithms, args)
+}
+
+var _ IAutofillFieldClassificationService = (*autofillFieldClassificationServiceStubWrapper)(nil)
+
+// NewAutofillFieldClassificationServiceStub creates a server-side IAutofillFieldClassificationService wrapping the given
+// server implementation. The returned value satisfies IAutofillFieldClassificationService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAutofillFieldClassificationServiceStub(
+	impl IAutofillFieldClassificationServiceServer,
+) IAutofillFieldClassificationService {
+	wrapper := &autofillFieldClassificationServiceStubWrapper{impl: impl}
+	stub := &AutofillFieldClassificationServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

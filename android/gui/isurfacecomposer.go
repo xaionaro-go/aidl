@@ -220,7 +220,7 @@ func (p *SurfaceComposerProxy) CreateDisplayEventConnection(
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
 	_data.WriteInt32(int32(vsyncSource))
 	_data.WriteInt32(int32(eventRegistration))
-	_data.WriteStrongBinder(layerHandle.Handle())
+	binder.WriteBinderToParcel(ctx, _data, layerHandle, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "createDisplayEventConnection")
 	if _err != nil {
@@ -319,7 +319,7 @@ func (p *SurfaceComposerProxy) DestroyVirtualDisplay(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(displayToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, displayToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "destroyVirtualDisplay")
 	if _err != nil {
@@ -457,7 +457,7 @@ func (p *SurfaceComposerProxy) SetPowerMode(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 	_data.WriteInt32(mode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "setPowerMode")
@@ -485,7 +485,7 @@ func (p *SurfaceComposerProxy) GetDisplayStats(
 	var _result DisplayStatInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "getDisplayStats")
 	if _err != nil {
@@ -521,7 +521,7 @@ func (p *SurfaceComposerProxy) GetDisplayState(
 	var _result DisplayState
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "getDisplayState")
 	if _err != nil {
@@ -629,7 +629,7 @@ func (p *SurfaceComposerProxy) GetDynamicDisplayInfoFromToken(
 	var _result DynamicDisplayInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "getDynamicDisplayInfoFromToken")
 	if _err != nil {
@@ -665,7 +665,7 @@ func (p *SurfaceComposerProxy) GetDisplayNativePrimaries(
 	var _result DisplayPrimaries
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "getDisplayNativePrimaries")
 	if _err != nil {
@@ -701,7 +701,7 @@ func (p *SurfaceComposerProxy) SetActiveColorMode(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 	_data.WriteInt32(colorMode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "setActiveColorMode")
@@ -729,7 +729,7 @@ func (p *SurfaceComposerProxy) SetBootDisplayMode(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 	_data.WriteInt32(displayModeId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "setBootDisplayMode")
@@ -756,7 +756,7 @@ func (p *SurfaceComposerProxy) ClearBootDisplayMode(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "clearBootDisplayMode")
 	if _err != nil {
@@ -913,7 +913,7 @@ func (p *SurfaceComposerProxy) SetAutoLowLatencyMode(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 	_data.WriteBool(on)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "setAutoLowLatencyMode")
@@ -941,7 +941,7 @@ func (p *SurfaceComposerProxy) SetGameContentType(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 	_data.WriteBool(on)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "setGameContentType")
@@ -969,7 +969,7 @@ func (p *SurfaceComposerProxy) GetMaxLayerPictureProfiles(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "getMaxLayerPictureProfiles")
 	if _err != nil {
@@ -1004,7 +1004,7 @@ func (p *SurfaceComposerProxy) CaptureDisplay(
 	if _err := args.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "captureDisplay")
 	if _err != nil {
@@ -1028,7 +1028,7 @@ func (p *SurfaceComposerProxy) CaptureDisplayById(
 	if _err := args.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "captureDisplayById")
 	if _err != nil {
@@ -1080,7 +1080,7 @@ func (p *SurfaceComposerProxy) CaptureLayers(
 	if _err := args.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "captureLayers")
 	if _err != nil {
@@ -1156,7 +1156,7 @@ func (p *SurfaceComposerProxy) OverrideHdrTypes(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 	if hdrTypes == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1261,7 +1261,7 @@ func (p *SurfaceComposerProxy) GetDisplayedContentSamplingAttributes(
 	var _result ContentSamplingAttributes
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "getDisplayedContentSamplingAttributes")
 	if _err != nil {
@@ -1299,7 +1299,7 @@ func (p *SurfaceComposerProxy) SetDisplayContentSamplingEnabled(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 	_data.WriteBool(enable)
 	_data.WritePaddedByte(componentMask)
 	_data.WriteInt64(maxFrames)
@@ -1331,7 +1331,7 @@ func (p *SurfaceComposerProxy) GetDisplayedContentSample(
 	var _result DisplayedFrameStats
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(display.Handle())
+	binder.WriteBinderToParcel(ctx, _data, display, p.remote.Transport())
 	_data.WriteInt64(maxFrames)
 	_data.WriteInt64(timestamp)
 
@@ -1398,7 +1398,7 @@ func (p *SurfaceComposerProxy) IsWideColorDisplay(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "isWideColorDisplay")
 	if _err != nil {
@@ -1434,8 +1434,8 @@ func (p *SurfaceComposerProxy) AddRegionSamplingListener(
 	if _err := samplingArea.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(stopLayerHandle.Handle())
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, stopLayerHandle, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "addRegionSamplingListener")
 	if _err != nil {
@@ -1461,7 +1461,7 @@ func (p *SurfaceComposerProxy) RemoveRegionSamplingListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "removeRegionSamplingListener")
 	if _err != nil {
@@ -1489,7 +1489,7 @@ func (p *SurfaceComposerProxy) AddFpsListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
 	_data.WriteInt32(taskId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "addFpsListener")
 	if _err != nil {
@@ -1515,7 +1515,7 @@ func (p *SurfaceComposerProxy) RemoveFpsListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "removeFpsListener")
 	if _err != nil {
@@ -1541,7 +1541,7 @@ func (p *SurfaceComposerProxy) AddTunnelModeEnabledListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "addTunnelModeEnabledListener")
 	if _err != nil {
@@ -1567,7 +1567,7 @@ func (p *SurfaceComposerProxy) RemoveTunnelModeEnabledListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "removeTunnelModeEnabledListener")
 	if _err != nil {
@@ -1594,7 +1594,7 @@ func (p *SurfaceComposerProxy) SetDesiredDisplayModeSpecs(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(displayToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, displayToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := specs.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1625,7 +1625,7 @@ func (p *SurfaceComposerProxy) GetDesiredDisplayModeSpecs(
 	var _result DisplayModeSpecs
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(displayToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, displayToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "getDesiredDisplayModeSpecs")
 	if _err != nil {
@@ -1661,7 +1661,7 @@ func (p *SurfaceComposerProxy) GetDisplayBrightnessSupport(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(displayToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, displayToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "getDisplayBrightnessSupport")
 	if _err != nil {
@@ -1692,7 +1692,7 @@ func (p *SurfaceComposerProxy) SetDisplayBrightness(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(displayToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, displayToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := brightness.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1723,8 +1723,8 @@ func (p *SurfaceComposerProxy) AddHdrLayerInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(displayToken.Handle())
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, displayToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "addHdrLayerInfoListener")
 	if _err != nil {
@@ -1751,8 +1751,8 @@ func (p *SurfaceComposerProxy) RemoveHdrLayerInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(displayToken.Handle())
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, displayToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "removeHdrLayerInfoListener")
 	if _err != nil {
@@ -1827,7 +1827,7 @@ func (p *SurfaceComposerProxy) GetDisplayDecorationSupport(
 	var _result DisplayDecorationSupport
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(displayToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, displayToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "getDisplayDecorationSupport")
 	if _err != nil {
@@ -2155,7 +2155,7 @@ func (p *SurfaceComposerProxy) AddWindowInfosListener(
 	var _result WindowInfosListenerInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(windowInfosListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowInfosListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "addWindowInfosListener")
 	if _err != nil {
@@ -2190,7 +2190,7 @@ func (p *SurfaceComposerProxy) RemoveWindowInfosListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(windowInfosListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowInfosListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "removeWindowInfosListener")
 	if _err != nil {
@@ -2336,8 +2336,8 @@ func (p *SurfaceComposerProxy) AddJankListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(layer.Handle())
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, layer, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "addJankListener")
 	if _err != nil {
@@ -2383,7 +2383,7 @@ func (p *SurfaceComposerProxy) RemoveJankListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
 	_data.WriteInt32(layerId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(afterVsync)
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "removeJankListener")
@@ -2401,7 +2401,7 @@ func (p *SurfaceComposerProxy) SetActivePictureListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfaceComposer, "setActivePictureListener")
 	if _err != nil {
@@ -3782,4 +3782,655 @@ func (s *SurfaceComposerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISurfaceComposerServer is the server-side interface that user implementations
+// provide to NewSurfaceComposerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISurfaceComposerServer interface {
+	BootFinished(ctx context.Context) error
+	CreateDisplayEventConnection(ctx context.Context, vsyncSource guiISurfaceComposer.VsyncSource, eventRegistration guiISurfaceComposer.EventRegistration, layerHandle binder.IBinder) (IDisplayEventConnection, error)
+	CreateConnection(ctx context.Context) (ISurfaceComposerClient, error)
+	CreateVirtualDisplay(ctx context.Context, displayName string, isSecure bool, uniqueId string, requestedRefreshRate float32) (binder.IBinder, error)
+	DestroyVirtualDisplay(ctx context.Context, displayToken binder.IBinder) error
+	GetPhysicalDisplayIds(ctx context.Context) ([]int64, error)
+	GetPhysicalDisplayToken(ctx context.Context, displayId int64) (binder.IBinder, error)
+	GetSupportedFrameTimestamps(ctx context.Context) ([]FrameEvent, error)
+	SetPowerMode(ctx context.Context, display binder.IBinder, mode int32) error
+	GetDisplayStats(ctx context.Context, display binder.IBinder) (DisplayStatInfo, error)
+	GetDisplayState(ctx context.Context, display binder.IBinder) (DisplayState, error)
+	GetStaticDisplayInfo(ctx context.Context, displayId int64) (StaticDisplayInfo, error)
+	GetDynamicDisplayInfoFromId(ctx context.Context, displayId int64) (DynamicDisplayInfo, error)
+	GetDynamicDisplayInfoFromToken(ctx context.Context, display binder.IBinder) (DynamicDisplayInfo, error)
+	GetDisplayNativePrimaries(ctx context.Context, display binder.IBinder) (DisplayPrimaries, error)
+	SetActiveColorMode(ctx context.Context, display binder.IBinder, colorMode int32) error
+	SetBootDisplayMode(ctx context.Context, display binder.IBinder, displayModeId int32) error
+	ClearBootDisplayMode(ctx context.Context, display binder.IBinder) error
+	GetBootDisplayModeSupport(ctx context.Context) (bool, error)
+	GetHdrConversionCapabilities(ctx context.Context) ([]HdrConversionCapability, error)
+	SetHdrConversionStrategy(ctx context.Context, hdrConversionStrategy HdrConversionStrategy) (int32, error)
+	GetHdrOutputConversionSupport(ctx context.Context) (bool, error)
+	SetAutoLowLatencyMode(ctx context.Context, display binder.IBinder, on bool) error
+	SetGameContentType(ctx context.Context, display binder.IBinder, on bool) error
+	GetMaxLayerPictureProfiles(ctx context.Context, display binder.IBinder) (int32, error)
+	CaptureDisplay(ctx context.Context, args DisplayCaptureArgs, listener IScreenCaptureListener) error
+	CaptureDisplayById(ctx context.Context, displayId int64, args CaptureArgs, listener IScreenCaptureListener) error
+	CaptureLayersSync(ctx context.Context, args LayerCaptureArgs) (interface{}, error)
+	CaptureLayers(ctx context.Context, args LayerCaptureArgs, listener IScreenCaptureListener) error
+	ClearAnimationFrameStats(ctx context.Context) error
+	GetAnimationFrameStats(ctx context.Context) (FrameStats, error)
+	OverrideHdrTypes(ctx context.Context, display binder.IBinder, hdrTypes []int32) error
+	OnPullAtom(ctx context.Context, atomId int32) (PullAtomData, error)
+	GetCompositionPreference(ctx context.Context) (CompositionPreference, error)
+	GetDisplayedContentSamplingAttributes(ctx context.Context, display binder.IBinder) (ContentSamplingAttributes, error)
+	SetDisplayContentSamplingEnabled(ctx context.Context, display binder.IBinder, enable bool, componentMask byte, maxFrames int64) error
+	GetDisplayedContentSample(ctx context.Context, display binder.IBinder, maxFrames int64, timestamp int64) (DisplayedFrameStats, error)
+	GetProtectedContentSupport(ctx context.Context) (bool, error)
+	IsWideColorDisplay(ctx context.Context, token binder.IBinder) (bool, error)
+	AddRegionSamplingListener(ctx context.Context, samplingArea ARect, stopLayerHandle binder.IBinder, listener IRegionSamplingListener) error
+	RemoveRegionSamplingListener(ctx context.Context, listener IRegionSamplingListener) error
+	AddFpsListener(ctx context.Context, taskId int32, listener IFpsListener) error
+	RemoveFpsListener(ctx context.Context, listener IFpsListener) error
+	AddTunnelModeEnabledListener(ctx context.Context, listener ITunnelModeEnabledListener) error
+	RemoveTunnelModeEnabledListener(ctx context.Context, listener ITunnelModeEnabledListener) error
+	SetDesiredDisplayModeSpecs(ctx context.Context, displayToken binder.IBinder, specs DisplayModeSpecs) error
+	GetDesiredDisplayModeSpecs(ctx context.Context, displayToken binder.IBinder) (DisplayModeSpecs, error)
+	GetDisplayBrightnessSupport(ctx context.Context, displayToken binder.IBinder) (bool, error)
+	SetDisplayBrightness(ctx context.Context, displayToken binder.IBinder, brightness DisplayBrightness) error
+	AddHdrLayerInfoListener(ctx context.Context, displayToken binder.IBinder, listener IHdrLayerInfoListener) error
+	RemoveHdrLayerInfoListener(ctx context.Context, displayToken binder.IBinder, listener IHdrLayerInfoListener) error
+	NotifyPowerBoost(ctx context.Context, boostId int32) error
+	SetGlobalShadowSettings(ctx context.Context, ambientColor Color, spotColor Color, lightPosY float32, lightPosZ float32, lightRadius float32) error
+	GetDisplayDecorationSupport(ctx context.Context, displayToken binder.IBinder) (DisplayDecorationSupport, error)
+	SetGameModeFrameRateOverride(ctx context.Context, uid int32, frameRate float32) error
+	SetGameDefaultFrameRateOverride(ctx context.Context, uid int32, frameRate float32) error
+	UpdateSmallAreaDetection(ctx context.Context, appIds []int32, thresholds []float32) error
+	SetSmallAreaDetectionThreshold(ctx context.Context, appId int32, threshold float32) error
+	EnableRefreshRateOverlay(ctx context.Context, active bool) error
+	SetDebugFlash(ctx context.Context, delay int32) error
+	ScheduleComposite(ctx context.Context) error
+	ScheduleCommit(ctx context.Context) error
+	ForceClientComposition(ctx context.Context, enabled bool) error
+	GetGpuContextPriority(ctx context.Context) (int32, error)
+	GetMaxAcquiredBufferCount(ctx context.Context) (int32, error)
+	AddWindowInfosListener(ctx context.Context, windowInfosListener IWindowInfosListener) (WindowInfosListenerInfo, error)
+	RemoveWindowInfosListener(ctx context.Context, windowInfosListener IWindowInfosListener) error
+	GetOverlaySupport(ctx context.Context) (OverlayProperties, error)
+	GetStalledTransactionInfo(ctx context.Context, pid int32) (StalledTransactionInfo, error)
+	GetSchedulingPolicy(ctx context.Context) (SchedulingPolicy, error)
+	NotifyShutdown(ctx context.Context) error
+	AddJankListener(ctx context.Context, layer binder.IBinder, listener IJankListener) error
+	FlushJankData(ctx context.Context, layerId int32) error
+	RemoveJankListener(ctx context.Context, layerId int32, listener IJankListener, afterVsync int64) error
+	SetActivePictureListener(ctx context.Context, listener IActivePictureListener) error
+}
+
+type surfaceComposerStubWrapper struct {
+	impl       ISurfaceComposerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *surfaceComposerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *surfaceComposerStubWrapper) BootFinished(
+	ctx context.Context,
+) error {
+	return w.impl.BootFinished(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) CreateDisplayEventConnection(
+	ctx context.Context,
+	vsyncSource guiISurfaceComposer.VsyncSource,
+	eventRegistration guiISurfaceComposer.EventRegistration,
+	layerHandle binder.IBinder,
+) (IDisplayEventConnection, error) {
+	return w.impl.CreateDisplayEventConnection(ctx, vsyncSource, eventRegistration, layerHandle)
+}
+
+func (w *surfaceComposerStubWrapper) CreateConnection(
+	ctx context.Context,
+) (ISurfaceComposerClient, error) {
+	return w.impl.CreateConnection(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) CreateVirtualDisplay(
+	ctx context.Context,
+	displayName string,
+	isSecure bool,
+	uniqueId string,
+	requestedRefreshRate float32,
+) (binder.IBinder, error) {
+	return w.impl.CreateVirtualDisplay(ctx, displayName, isSecure, uniqueId, requestedRefreshRate)
+}
+
+func (w *surfaceComposerStubWrapper) DestroyVirtualDisplay(
+	ctx context.Context,
+	displayToken binder.IBinder,
+) error {
+	return w.impl.DestroyVirtualDisplay(ctx, displayToken)
+}
+
+func (w *surfaceComposerStubWrapper) GetPhysicalDisplayIds(
+	ctx context.Context,
+) ([]int64, error) {
+	return w.impl.GetPhysicalDisplayIds(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) GetPhysicalDisplayToken(
+	ctx context.Context,
+	displayId int64,
+) (binder.IBinder, error) {
+	return w.impl.GetPhysicalDisplayToken(ctx, displayId)
+}
+
+func (w *surfaceComposerStubWrapper) GetSupportedFrameTimestamps(
+	ctx context.Context,
+) ([]FrameEvent, error) {
+	return w.impl.GetSupportedFrameTimestamps(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) SetPowerMode(
+	ctx context.Context,
+	display binder.IBinder,
+	mode int32,
+) error {
+	return w.impl.SetPowerMode(ctx, display, mode)
+}
+
+func (w *surfaceComposerStubWrapper) GetDisplayStats(
+	ctx context.Context,
+	display binder.IBinder,
+) (DisplayStatInfo, error) {
+	return w.impl.GetDisplayStats(ctx, display)
+}
+
+func (w *surfaceComposerStubWrapper) GetDisplayState(
+	ctx context.Context,
+	display binder.IBinder,
+) (DisplayState, error) {
+	return w.impl.GetDisplayState(ctx, display)
+}
+
+func (w *surfaceComposerStubWrapper) GetStaticDisplayInfo(
+	ctx context.Context,
+	displayId int64,
+) (StaticDisplayInfo, error) {
+	return w.impl.GetStaticDisplayInfo(ctx, displayId)
+}
+
+func (w *surfaceComposerStubWrapper) GetDynamicDisplayInfoFromId(
+	ctx context.Context,
+	displayId int64,
+) (DynamicDisplayInfo, error) {
+	return w.impl.GetDynamicDisplayInfoFromId(ctx, displayId)
+}
+
+func (w *surfaceComposerStubWrapper) GetDynamicDisplayInfoFromToken(
+	ctx context.Context,
+	display binder.IBinder,
+) (DynamicDisplayInfo, error) {
+	return w.impl.GetDynamicDisplayInfoFromToken(ctx, display)
+}
+
+func (w *surfaceComposerStubWrapper) GetDisplayNativePrimaries(
+	ctx context.Context,
+	display binder.IBinder,
+) (DisplayPrimaries, error) {
+	return w.impl.GetDisplayNativePrimaries(ctx, display)
+}
+
+func (w *surfaceComposerStubWrapper) SetActiveColorMode(
+	ctx context.Context,
+	display binder.IBinder,
+	colorMode int32,
+) error {
+	return w.impl.SetActiveColorMode(ctx, display, colorMode)
+}
+
+func (w *surfaceComposerStubWrapper) SetBootDisplayMode(
+	ctx context.Context,
+	display binder.IBinder,
+	displayModeId int32,
+) error {
+	return w.impl.SetBootDisplayMode(ctx, display, displayModeId)
+}
+
+func (w *surfaceComposerStubWrapper) ClearBootDisplayMode(
+	ctx context.Context,
+	display binder.IBinder,
+) error {
+	return w.impl.ClearBootDisplayMode(ctx, display)
+}
+
+func (w *surfaceComposerStubWrapper) GetBootDisplayModeSupport(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetBootDisplayModeSupport(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) GetHdrConversionCapabilities(
+	ctx context.Context,
+) ([]HdrConversionCapability, error) {
+	return w.impl.GetHdrConversionCapabilities(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) SetHdrConversionStrategy(
+	ctx context.Context,
+	hdrConversionStrategy HdrConversionStrategy,
+) (int32, error) {
+	return w.impl.SetHdrConversionStrategy(ctx, hdrConversionStrategy)
+}
+
+func (w *surfaceComposerStubWrapper) GetHdrOutputConversionSupport(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetHdrOutputConversionSupport(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) SetAutoLowLatencyMode(
+	ctx context.Context,
+	display binder.IBinder,
+	on bool,
+) error {
+	return w.impl.SetAutoLowLatencyMode(ctx, display, on)
+}
+
+func (w *surfaceComposerStubWrapper) SetGameContentType(
+	ctx context.Context,
+	display binder.IBinder,
+	on bool,
+) error {
+	return w.impl.SetGameContentType(ctx, display, on)
+}
+
+func (w *surfaceComposerStubWrapper) GetMaxLayerPictureProfiles(
+	ctx context.Context,
+	display binder.IBinder,
+) (int32, error) {
+	return w.impl.GetMaxLayerPictureProfiles(ctx, display)
+}
+
+func (w *surfaceComposerStubWrapper) CaptureDisplay(
+	ctx context.Context,
+	args DisplayCaptureArgs,
+	listener IScreenCaptureListener,
+) error {
+	return w.impl.CaptureDisplay(ctx, args, listener)
+}
+
+func (w *surfaceComposerStubWrapper) CaptureDisplayById(
+	ctx context.Context,
+	displayId int64,
+	args CaptureArgs,
+	listener IScreenCaptureListener,
+) error {
+	return w.impl.CaptureDisplayById(ctx, displayId, args, listener)
+}
+
+func (w *surfaceComposerStubWrapper) CaptureLayersSync(
+	ctx context.Context,
+	args LayerCaptureArgs,
+) (interface{}, error) {
+	return w.impl.CaptureLayersSync(ctx, args)
+}
+
+func (w *surfaceComposerStubWrapper) CaptureLayers(
+	ctx context.Context,
+	args LayerCaptureArgs,
+	listener IScreenCaptureListener,
+) error {
+	return w.impl.CaptureLayers(ctx, args, listener)
+}
+
+func (w *surfaceComposerStubWrapper) ClearAnimationFrameStats(
+	ctx context.Context,
+) error {
+	return w.impl.ClearAnimationFrameStats(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) GetAnimationFrameStats(
+	ctx context.Context,
+) (FrameStats, error) {
+	return w.impl.GetAnimationFrameStats(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) OverrideHdrTypes(
+	ctx context.Context,
+	display binder.IBinder,
+	hdrTypes []int32,
+) error {
+	return w.impl.OverrideHdrTypes(ctx, display, hdrTypes)
+}
+
+func (w *surfaceComposerStubWrapper) OnPullAtom(
+	ctx context.Context,
+	atomId int32,
+) (PullAtomData, error) {
+	return w.impl.OnPullAtom(ctx, atomId)
+}
+
+func (w *surfaceComposerStubWrapper) GetCompositionPreference(
+	ctx context.Context,
+) (CompositionPreference, error) {
+	return w.impl.GetCompositionPreference(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) GetDisplayedContentSamplingAttributes(
+	ctx context.Context,
+	display binder.IBinder,
+) (ContentSamplingAttributes, error) {
+	return w.impl.GetDisplayedContentSamplingAttributes(ctx, display)
+}
+
+func (w *surfaceComposerStubWrapper) SetDisplayContentSamplingEnabled(
+	ctx context.Context,
+	display binder.IBinder,
+	enable bool,
+	componentMask byte,
+	maxFrames int64,
+) error {
+	return w.impl.SetDisplayContentSamplingEnabled(ctx, display, enable, componentMask, maxFrames)
+}
+
+func (w *surfaceComposerStubWrapper) GetDisplayedContentSample(
+	ctx context.Context,
+	display binder.IBinder,
+	maxFrames int64,
+	timestamp int64,
+) (DisplayedFrameStats, error) {
+	return w.impl.GetDisplayedContentSample(ctx, display, maxFrames, timestamp)
+}
+
+func (w *surfaceComposerStubWrapper) GetProtectedContentSupport(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetProtectedContentSupport(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) IsWideColorDisplay(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.IsWideColorDisplay(ctx, token)
+}
+
+func (w *surfaceComposerStubWrapper) AddRegionSamplingListener(
+	ctx context.Context,
+	samplingArea ARect,
+	stopLayerHandle binder.IBinder,
+	listener IRegionSamplingListener,
+) error {
+	return w.impl.AddRegionSamplingListener(ctx, samplingArea, stopLayerHandle, listener)
+}
+
+func (w *surfaceComposerStubWrapper) RemoveRegionSamplingListener(
+	ctx context.Context,
+	listener IRegionSamplingListener,
+) error {
+	return w.impl.RemoveRegionSamplingListener(ctx, listener)
+}
+
+func (w *surfaceComposerStubWrapper) AddFpsListener(
+	ctx context.Context,
+	taskId int32,
+	listener IFpsListener,
+) error {
+	return w.impl.AddFpsListener(ctx, taskId, listener)
+}
+
+func (w *surfaceComposerStubWrapper) RemoveFpsListener(
+	ctx context.Context,
+	listener IFpsListener,
+) error {
+	return w.impl.RemoveFpsListener(ctx, listener)
+}
+
+func (w *surfaceComposerStubWrapper) AddTunnelModeEnabledListener(
+	ctx context.Context,
+	listener ITunnelModeEnabledListener,
+) error {
+	return w.impl.AddTunnelModeEnabledListener(ctx, listener)
+}
+
+func (w *surfaceComposerStubWrapper) RemoveTunnelModeEnabledListener(
+	ctx context.Context,
+	listener ITunnelModeEnabledListener,
+) error {
+	return w.impl.RemoveTunnelModeEnabledListener(ctx, listener)
+}
+
+func (w *surfaceComposerStubWrapper) SetDesiredDisplayModeSpecs(
+	ctx context.Context,
+	displayToken binder.IBinder,
+	specs DisplayModeSpecs,
+) error {
+	return w.impl.SetDesiredDisplayModeSpecs(ctx, displayToken, specs)
+}
+
+func (w *surfaceComposerStubWrapper) GetDesiredDisplayModeSpecs(
+	ctx context.Context,
+	displayToken binder.IBinder,
+) (DisplayModeSpecs, error) {
+	return w.impl.GetDesiredDisplayModeSpecs(ctx, displayToken)
+}
+
+func (w *surfaceComposerStubWrapper) GetDisplayBrightnessSupport(
+	ctx context.Context,
+	displayToken binder.IBinder,
+) (bool, error) {
+	return w.impl.GetDisplayBrightnessSupport(ctx, displayToken)
+}
+
+func (w *surfaceComposerStubWrapper) SetDisplayBrightness(
+	ctx context.Context,
+	displayToken binder.IBinder,
+	brightness DisplayBrightness,
+) error {
+	return w.impl.SetDisplayBrightness(ctx, displayToken, brightness)
+}
+
+func (w *surfaceComposerStubWrapper) AddHdrLayerInfoListener(
+	ctx context.Context,
+	displayToken binder.IBinder,
+	listener IHdrLayerInfoListener,
+) error {
+	return w.impl.AddHdrLayerInfoListener(ctx, displayToken, listener)
+}
+
+func (w *surfaceComposerStubWrapper) RemoveHdrLayerInfoListener(
+	ctx context.Context,
+	displayToken binder.IBinder,
+	listener IHdrLayerInfoListener,
+) error {
+	return w.impl.RemoveHdrLayerInfoListener(ctx, displayToken, listener)
+}
+
+func (w *surfaceComposerStubWrapper) NotifyPowerBoost(
+	ctx context.Context,
+	boostId int32,
+) error {
+	return w.impl.NotifyPowerBoost(ctx, boostId)
+}
+
+func (w *surfaceComposerStubWrapper) SetGlobalShadowSettings(
+	ctx context.Context,
+	ambientColor Color,
+	spotColor Color,
+	lightPosY float32,
+	lightPosZ float32,
+	lightRadius float32,
+) error {
+	return w.impl.SetGlobalShadowSettings(ctx, ambientColor, spotColor, lightPosY, lightPosZ, lightRadius)
+}
+
+func (w *surfaceComposerStubWrapper) GetDisplayDecorationSupport(
+	ctx context.Context,
+	displayToken binder.IBinder,
+) (DisplayDecorationSupport, error) {
+	return w.impl.GetDisplayDecorationSupport(ctx, displayToken)
+}
+
+func (w *surfaceComposerStubWrapper) SetGameModeFrameRateOverride(
+	ctx context.Context,
+	uid int32,
+	frameRate float32,
+) error {
+	return w.impl.SetGameModeFrameRateOverride(ctx, uid, frameRate)
+}
+
+func (w *surfaceComposerStubWrapper) SetGameDefaultFrameRateOverride(
+	ctx context.Context,
+	uid int32,
+	frameRate float32,
+) error {
+	return w.impl.SetGameDefaultFrameRateOverride(ctx, uid, frameRate)
+}
+
+func (w *surfaceComposerStubWrapper) UpdateSmallAreaDetection(
+	ctx context.Context,
+	appIds []int32,
+	thresholds []float32,
+) error {
+	return w.impl.UpdateSmallAreaDetection(ctx, appIds, thresholds)
+}
+
+func (w *surfaceComposerStubWrapper) SetSmallAreaDetectionThreshold(
+	ctx context.Context,
+	appId int32,
+	threshold float32,
+) error {
+	return w.impl.SetSmallAreaDetectionThreshold(ctx, appId, threshold)
+}
+
+func (w *surfaceComposerStubWrapper) EnableRefreshRateOverlay(
+	ctx context.Context,
+	active bool,
+) error {
+	return w.impl.EnableRefreshRateOverlay(ctx, active)
+}
+
+func (w *surfaceComposerStubWrapper) SetDebugFlash(
+	ctx context.Context,
+	delay int32,
+) error {
+	return w.impl.SetDebugFlash(ctx, delay)
+}
+
+func (w *surfaceComposerStubWrapper) ScheduleComposite(
+	ctx context.Context,
+) error {
+	return w.impl.ScheduleComposite(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) ScheduleCommit(
+	ctx context.Context,
+) error {
+	return w.impl.ScheduleCommit(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) ForceClientComposition(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.ForceClientComposition(ctx, enabled)
+}
+
+func (w *surfaceComposerStubWrapper) GetGpuContextPriority(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetGpuContextPriority(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) GetMaxAcquiredBufferCount(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMaxAcquiredBufferCount(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) AddWindowInfosListener(
+	ctx context.Context,
+	windowInfosListener IWindowInfosListener,
+) (WindowInfosListenerInfo, error) {
+	return w.impl.AddWindowInfosListener(ctx, windowInfosListener)
+}
+
+func (w *surfaceComposerStubWrapper) RemoveWindowInfosListener(
+	ctx context.Context,
+	windowInfosListener IWindowInfosListener,
+) error {
+	return w.impl.RemoveWindowInfosListener(ctx, windowInfosListener)
+}
+
+func (w *surfaceComposerStubWrapper) GetOverlaySupport(
+	ctx context.Context,
+) (OverlayProperties, error) {
+	return w.impl.GetOverlaySupport(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) GetStalledTransactionInfo(
+	ctx context.Context,
+	pid int32,
+) (StalledTransactionInfo, error) {
+	return w.impl.GetStalledTransactionInfo(ctx, pid)
+}
+
+func (w *surfaceComposerStubWrapper) GetSchedulingPolicy(
+	ctx context.Context,
+) (SchedulingPolicy, error) {
+	return w.impl.GetSchedulingPolicy(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) NotifyShutdown(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyShutdown(ctx)
+}
+
+func (w *surfaceComposerStubWrapper) AddJankListener(
+	ctx context.Context,
+	layer binder.IBinder,
+	listener IJankListener,
+) error {
+	return w.impl.AddJankListener(ctx, layer, listener)
+}
+
+func (w *surfaceComposerStubWrapper) FlushJankData(
+	ctx context.Context,
+	layerId int32,
+) error {
+	return w.impl.FlushJankData(ctx, layerId)
+}
+
+func (w *surfaceComposerStubWrapper) RemoveJankListener(
+	ctx context.Context,
+	layerId int32,
+	listener IJankListener,
+	afterVsync int64,
+) error {
+	return w.impl.RemoveJankListener(ctx, layerId, listener, afterVsync)
+}
+
+func (w *surfaceComposerStubWrapper) SetActivePictureListener(
+	ctx context.Context,
+	listener IActivePictureListener,
+) error {
+	return w.impl.SetActivePictureListener(ctx, listener)
+}
+
+var _ ISurfaceComposer = (*surfaceComposerStubWrapper)(nil)
+
+// NewSurfaceComposerStub creates a server-side ISurfaceComposer wrapping the given
+// server implementation. The returned value satisfies ISurfaceComposer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSurfaceComposerStub(
+	impl ISurfaceComposerServer,
+) ISurfaceComposer {
+	wrapper := &surfaceComposerStubWrapper{impl: impl}
+	stub := &SurfaceComposerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

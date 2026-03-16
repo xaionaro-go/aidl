@@ -114,3 +114,44 @@ func (s *AppTraceRetrieverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppTraceRetrieverServer is the server-side interface that user implementations
+// provide to NewAppTraceRetrieverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppTraceRetrieverServer interface {
+	GetTraceFileDescriptor(ctx context.Context, packageName string, uid int32, pid int32) (int32, error)
+}
+
+type appTraceRetrieverStubWrapper struct {
+	impl       IAppTraceRetrieverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appTraceRetrieverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appTraceRetrieverStubWrapper) GetTraceFileDescriptor(
+	ctx context.Context,
+	packageName string,
+	uid int32,
+	pid int32,
+) (int32, error) {
+	return w.impl.GetTraceFileDescriptor(ctx, packageName, uid, pid)
+}
+
+var _ IAppTraceRetriever = (*appTraceRetrieverStubWrapper)(nil)
+
+// NewAppTraceRetrieverStub creates a server-side IAppTraceRetriever wrapping the given
+// server implementation. The returned value satisfies IAppTraceRetriever
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppTraceRetrieverStub(
+	impl IAppTraceRetrieverServer,
+) IAppTraceRetriever {
+	wrapper := &appTraceRetrieverStubWrapper{impl: impl}
+	stub := &AppTraceRetrieverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

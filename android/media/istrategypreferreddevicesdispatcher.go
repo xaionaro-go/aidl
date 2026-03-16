@@ -96,3 +96,43 @@ func (s *StrategyPreferredDevicesDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStrategyPreferredDevicesDispatcherServer is the server-side interface that user implementations
+// provide to NewStrategyPreferredDevicesDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStrategyPreferredDevicesDispatcherServer interface {
+	DispatchPrefDevicesChanged(ctx context.Context, strategyId int32, devices []AudioDeviceAttributes) error
+}
+
+type strategyPreferredDevicesDispatcherStubWrapper struct {
+	impl       IStrategyPreferredDevicesDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *strategyPreferredDevicesDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *strategyPreferredDevicesDispatcherStubWrapper) DispatchPrefDevicesChanged(
+	ctx context.Context,
+	strategyId int32,
+	devices []AudioDeviceAttributes,
+) error {
+	return w.impl.DispatchPrefDevicesChanged(ctx, strategyId, devices)
+}
+
+var _ IStrategyPreferredDevicesDispatcher = (*strategyPreferredDevicesDispatcherStubWrapper)(nil)
+
+// NewStrategyPreferredDevicesDispatcherStub creates a server-side IStrategyPreferredDevicesDispatcher wrapping the given
+// server implementation. The returned value satisfies IStrategyPreferredDevicesDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStrategyPreferredDevicesDispatcherStub(
+	impl IStrategyPreferredDevicesDispatcherServer,
+) IStrategyPreferredDevicesDispatcher {
+	wrapper := &strategyPreferredDevicesDispatcherStubWrapper{impl: impl}
+	stub := &StrategyPreferredDevicesDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -213,3 +213,71 @@ func (s *SatelliteTransmissionUpdateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteTransmissionUpdateCallbackServer is the server-side interface that user implementations
+// provide to NewSatelliteTransmissionUpdateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteTransmissionUpdateCallbackServer interface {
+	OnSendDatagramStateChanged(ctx context.Context, datagramType int32, state int32, sendPendingCount int32, errorCode int32) error
+	OnReceiveDatagramStateChanged(ctx context.Context, state int32, receivePendingCount int32, errorCode int32) error
+	OnSatellitePositionChanged(ctx context.Context, pointingInfo PointingInfo) error
+	OnSendDatagramRequested(ctx context.Context, datagramType int32) error
+}
+
+type satelliteTransmissionUpdateCallbackStubWrapper struct {
+	impl       ISatelliteTransmissionUpdateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteTransmissionUpdateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteTransmissionUpdateCallbackStubWrapper) OnSendDatagramStateChanged(
+	ctx context.Context,
+	datagramType int32,
+	state int32,
+	sendPendingCount int32,
+	errorCode int32,
+) error {
+	return w.impl.OnSendDatagramStateChanged(ctx, datagramType, state, sendPendingCount, errorCode)
+}
+
+func (w *satelliteTransmissionUpdateCallbackStubWrapper) OnReceiveDatagramStateChanged(
+	ctx context.Context,
+	state int32,
+	receivePendingCount int32,
+	errorCode int32,
+) error {
+	return w.impl.OnReceiveDatagramStateChanged(ctx, state, receivePendingCount, errorCode)
+}
+
+func (w *satelliteTransmissionUpdateCallbackStubWrapper) OnSatellitePositionChanged(
+	ctx context.Context,
+	pointingInfo PointingInfo,
+) error {
+	return w.impl.OnSatellitePositionChanged(ctx, pointingInfo)
+}
+
+func (w *satelliteTransmissionUpdateCallbackStubWrapper) OnSendDatagramRequested(
+	ctx context.Context,
+	datagramType int32,
+) error {
+	return w.impl.OnSendDatagramRequested(ctx, datagramType)
+}
+
+var _ ISatelliteTransmissionUpdateCallback = (*satelliteTransmissionUpdateCallbackStubWrapper)(nil)
+
+// NewSatelliteTransmissionUpdateCallbackStub creates a server-side ISatelliteTransmissionUpdateCallback wrapping the given
+// server implementation. The returned value satisfies ISatelliteTransmissionUpdateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteTransmissionUpdateCallbackStub(
+	impl ISatelliteTransmissionUpdateCallbackServer,
+) ISatelliteTransmissionUpdateCallback {
+	wrapper := &satelliteTransmissionUpdateCallbackStubWrapper{impl: impl}
+	stub := &SatelliteTransmissionUpdateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

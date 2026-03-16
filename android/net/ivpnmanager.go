@@ -1650,3 +1650,266 @@ func (s *VpnManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVpnManagerServer is the server-side interface that user implementations
+// provide to NewVpnManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVpnManagerServer interface {
+	PrepareVpn(ctx context.Context, oldPackage string, newPackage string) (bool, error)
+	SetVpnPackageAuthorization(ctx context.Context, packageName string, vpnType int32) error
+	EstablishVpn(ctx context.Context, config internalNet.VpnConfig) (int32, error)
+	AddVpnAddress(ctx context.Context, address string, prefixLength int32) (bool, error)
+	RemoveVpnAddress(ctx context.Context, address string, prefixLength int32) (bool, error)
+	SetUnderlyingNetworksForVpn(ctx context.Context, networks []interface{}) (bool, error)
+	ProvisionVpnProfile(ctx context.Context, profile internalNet.VpnProfile, packageName string) (bool, error)
+	DeleteVpnProfile(ctx context.Context, packageName string) error
+	StartVpnProfile(ctx context.Context, packageName string) (string, error)
+	StopVpnProfile(ctx context.Context, packageName string) error
+	GetProvisionedVpnProfileState(ctx context.Context, packageName string) (VpnProfileState, error)
+	SetAppExclusionList(ctx context.Context, vpnPackage string, excludedApps []string) (bool, error)
+	GetAppExclusionList(ctx context.Context, vpnPackage string) ([]string, error)
+	IsAlwaysOnVpnPackageSupported(ctx context.Context, packageName string) (bool, error)
+	SetAlwaysOnVpnPackage(ctx context.Context, packageName string, lockdown bool, lockdownAllowlist []string) (bool, error)
+	GetAlwaysOnVpnPackage(ctx context.Context) (string, error)
+	IsVpnLockdownEnabled(ctx context.Context) (bool, error)
+	GetVpnLockdownAllowlist(ctx context.Context) ([]string, error)
+	IsCallerCurrentAlwaysOnVpnApp(ctx context.Context) (bool, error)
+	IsCallerCurrentAlwaysOnVpnLockdownApp(ctx context.Context) (bool, error)
+	StartLegacyVpn(ctx context.Context, profile internalNet.VpnProfile) error
+	GetLegacyVpnInfo(ctx context.Context) (internalNet.LegacyVpnInfo, error)
+	UpdateLockdownVpn(ctx context.Context) (bool, error)
+	GetFromVpnProfileStore(ctx context.Context, name string) ([]byte, error)
+	PutIntoVpnProfileStore(ctx context.Context, name string, blob []byte) (bool, error)
+	RemoveFromVpnProfileStore(ctx context.Context, name string) (bool, error)
+	ListFromVpnProfileStore(ctx context.Context, prefix string) ([]string, error)
+	GetVpnConfig(ctx context.Context) (internalNet.VpnConfig, error)
+	FactoryReset(ctx context.Context) error
+}
+
+type vpnManagerStubWrapper struct {
+	impl       IVpnManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vpnManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vpnManagerStubWrapper) PrepareVpn(
+	ctx context.Context,
+	oldPackage string,
+	newPackage string,
+) (bool, error) {
+	return w.impl.PrepareVpn(ctx, oldPackage, newPackage)
+}
+
+func (w *vpnManagerStubWrapper) SetVpnPackageAuthorization(
+	ctx context.Context,
+	packageName string,
+	vpnType int32,
+) error {
+	return w.impl.SetVpnPackageAuthorization(ctx, packageName, vpnType)
+}
+
+func (w *vpnManagerStubWrapper) EstablishVpn(
+	ctx context.Context,
+	config internalNet.VpnConfig,
+) (int32, error) {
+	return w.impl.EstablishVpn(ctx, config)
+}
+
+func (w *vpnManagerStubWrapper) AddVpnAddress(
+	ctx context.Context,
+	address string,
+	prefixLength int32,
+) (bool, error) {
+	return w.impl.AddVpnAddress(ctx, address, prefixLength)
+}
+
+func (w *vpnManagerStubWrapper) RemoveVpnAddress(
+	ctx context.Context,
+	address string,
+	prefixLength int32,
+) (bool, error) {
+	return w.impl.RemoveVpnAddress(ctx, address, prefixLength)
+}
+
+func (w *vpnManagerStubWrapper) SetUnderlyingNetworksForVpn(
+	ctx context.Context,
+	networks []interface{},
+) (bool, error) {
+	return w.impl.SetUnderlyingNetworksForVpn(ctx, networks)
+}
+
+func (w *vpnManagerStubWrapper) ProvisionVpnProfile(
+	ctx context.Context,
+	profile internalNet.VpnProfile,
+	packageName string,
+) (bool, error) {
+	return w.impl.ProvisionVpnProfile(ctx, profile, packageName)
+}
+
+func (w *vpnManagerStubWrapper) DeleteVpnProfile(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.DeleteVpnProfile(ctx, packageName)
+}
+
+func (w *vpnManagerStubWrapper) StartVpnProfile(
+	ctx context.Context,
+	packageName string,
+) (string, error) {
+	return w.impl.StartVpnProfile(ctx, packageName)
+}
+
+func (w *vpnManagerStubWrapper) StopVpnProfile(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.StopVpnProfile(ctx, packageName)
+}
+
+func (w *vpnManagerStubWrapper) GetProvisionedVpnProfileState(
+	ctx context.Context,
+	packageName string,
+) (VpnProfileState, error) {
+	return w.impl.GetProvisionedVpnProfileState(ctx, packageName)
+}
+
+func (w *vpnManagerStubWrapper) SetAppExclusionList(
+	ctx context.Context,
+	vpnPackage string,
+	excludedApps []string,
+) (bool, error) {
+	return w.impl.SetAppExclusionList(ctx, vpnPackage, excludedApps)
+}
+
+func (w *vpnManagerStubWrapper) GetAppExclusionList(
+	ctx context.Context,
+	vpnPackage string,
+) ([]string, error) {
+	return w.impl.GetAppExclusionList(ctx, vpnPackage)
+}
+
+func (w *vpnManagerStubWrapper) IsAlwaysOnVpnPackageSupported(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsAlwaysOnVpnPackageSupported(ctx, packageName)
+}
+
+func (w *vpnManagerStubWrapper) SetAlwaysOnVpnPackage(
+	ctx context.Context,
+	packageName string,
+	lockdown bool,
+	lockdownAllowlist []string,
+) (bool, error) {
+	return w.impl.SetAlwaysOnVpnPackage(ctx, packageName, lockdown, lockdownAllowlist)
+}
+
+func (w *vpnManagerStubWrapper) GetAlwaysOnVpnPackage(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetAlwaysOnVpnPackage(ctx)
+}
+
+func (w *vpnManagerStubWrapper) IsVpnLockdownEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsVpnLockdownEnabled(ctx)
+}
+
+func (w *vpnManagerStubWrapper) GetVpnLockdownAllowlist(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetVpnLockdownAllowlist(ctx)
+}
+
+func (w *vpnManagerStubWrapper) IsCallerCurrentAlwaysOnVpnApp(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCallerCurrentAlwaysOnVpnApp(ctx)
+}
+
+func (w *vpnManagerStubWrapper) IsCallerCurrentAlwaysOnVpnLockdownApp(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCallerCurrentAlwaysOnVpnLockdownApp(ctx)
+}
+
+func (w *vpnManagerStubWrapper) StartLegacyVpn(
+	ctx context.Context,
+	profile internalNet.VpnProfile,
+) error {
+	return w.impl.StartLegacyVpn(ctx, profile)
+}
+
+func (w *vpnManagerStubWrapper) GetLegacyVpnInfo(
+	ctx context.Context,
+) (internalNet.LegacyVpnInfo, error) {
+	return w.impl.GetLegacyVpnInfo(ctx)
+}
+
+func (w *vpnManagerStubWrapper) UpdateLockdownVpn(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.UpdateLockdownVpn(ctx)
+}
+
+func (w *vpnManagerStubWrapper) GetFromVpnProfileStore(
+	ctx context.Context,
+	name string,
+) ([]byte, error) {
+	return w.impl.GetFromVpnProfileStore(ctx, name)
+}
+
+func (w *vpnManagerStubWrapper) PutIntoVpnProfileStore(
+	ctx context.Context,
+	name string,
+	blob []byte,
+) (bool, error) {
+	return w.impl.PutIntoVpnProfileStore(ctx, name, blob)
+}
+
+func (w *vpnManagerStubWrapper) RemoveFromVpnProfileStore(
+	ctx context.Context,
+	name string,
+) (bool, error) {
+	return w.impl.RemoveFromVpnProfileStore(ctx, name)
+}
+
+func (w *vpnManagerStubWrapper) ListFromVpnProfileStore(
+	ctx context.Context,
+	prefix string,
+) ([]string, error) {
+	return w.impl.ListFromVpnProfileStore(ctx, prefix)
+}
+
+func (w *vpnManagerStubWrapper) GetVpnConfig(
+	ctx context.Context,
+) (internalNet.VpnConfig, error) {
+	return w.impl.GetVpnConfig(ctx)
+}
+
+func (w *vpnManagerStubWrapper) FactoryReset(
+	ctx context.Context,
+) error {
+	return w.impl.FactoryReset(ctx)
+}
+
+var _ IVpnManager = (*vpnManagerStubWrapper)(nil)
+
+// NewVpnManagerStub creates a server-side IVpnManager wrapping the given
+// server implementation. The returned value satisfies IVpnManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVpnManagerStub(
+	impl IVpnManagerServer,
+) IVpnManager {
+	wrapper := &vpnManagerStubWrapper{impl: impl}
+	stub := &VpnManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

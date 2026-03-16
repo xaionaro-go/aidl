@@ -180,7 +180,7 @@ func (p *SecureElementSessionProxy) OpenBasicChannel(
 		}
 	}
 	_data.WritePaddedByte(p2)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISecureElementSession, "openBasicChannel")
 	if _err != nil {
@@ -223,7 +223,7 @@ func (p *SecureElementSessionProxy) OpenLogicalChannel(
 		}
 	}
 	_data.WritePaddedByte(p2)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISecureElementSession, "openLogicalChannel")
 	if _err != nil {
@@ -364,4 +364,83 @@ func (s *SecureElementSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISecureElementSessionServer is the server-side interface that user implementations
+// provide to NewSecureElementSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecureElementSessionServer interface {
+	GetAtr(ctx context.Context) ([]byte, error)
+	Close(ctx context.Context) error
+	CloseChannels(ctx context.Context) error
+	IsClosed(ctx context.Context) (bool, error)
+	OpenBasicChannel(ctx context.Context, aid []byte, p2 byte, listener ISecureElementListener) (ISecureElementChannel, error)
+	OpenLogicalChannel(ctx context.Context, aid []byte, p2 byte, listener ISecureElementListener) (ISecureElementChannel, error)
+}
+
+type secureElementSessionStubWrapper struct {
+	impl       ISecureElementSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secureElementSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *secureElementSessionStubWrapper) GetAtr(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetAtr(ctx)
+}
+
+func (w *secureElementSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *secureElementSessionStubWrapper) CloseChannels(
+	ctx context.Context,
+) error {
+	return w.impl.CloseChannels(ctx)
+}
+
+func (w *secureElementSessionStubWrapper) IsClosed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsClosed(ctx)
+}
+
+func (w *secureElementSessionStubWrapper) OpenBasicChannel(
+	ctx context.Context,
+	aid []byte,
+	p2 byte,
+	listener ISecureElementListener,
+) (ISecureElementChannel, error) {
+	return w.impl.OpenBasicChannel(ctx, aid, p2, listener)
+}
+
+func (w *secureElementSessionStubWrapper) OpenLogicalChannel(
+	ctx context.Context,
+	aid []byte,
+	p2 byte,
+	listener ISecureElementListener,
+) (ISecureElementChannel, error) {
+	return w.impl.OpenLogicalChannel(ctx, aid, p2, listener)
+}
+
+var _ ISecureElementSession = (*secureElementSessionStubWrapper)(nil)
+
+// NewSecureElementSessionStub creates a server-side ISecureElementSession wrapping the given
+// server implementation. The returned value satisfies ISecureElementSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecureElementSessionStub(
+	impl ISecureElementSessionServer,
+) ISecureElementSession {
+	wrapper := &secureElementSessionStubWrapper{impl: impl}
+	stub := &SecureElementSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

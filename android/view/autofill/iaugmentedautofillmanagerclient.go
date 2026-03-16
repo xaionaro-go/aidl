@@ -198,7 +198,7 @@ func (p *AugmentedAutofillManagerClientProxy) RequestShowFillUi(
 	if _err := anchorBounds.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(presenter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, presenter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAugmentedAutofillManagerClient, "requestShowFillUi")
 	if _err != nil {
@@ -492,4 +492,93 @@ func (s *AugmentedAutofillManagerClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAugmentedAutofillManagerClientServer is the server-side interface that user implementations
+// provide to NewAugmentedAutofillManagerClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAugmentedAutofillManagerClientServer interface {
+	GetViewCoordinates(ctx context.Context, id AutofillId) (graphics.Rect, error)
+	GetViewNodeParcelable(ctx context.Context, id AutofillId) (assist.AssistStructureViewNodeParcelable, error)
+	Autofill(ctx context.Context, sessionId int32, ids []AutofillId, values []AutofillValue, hideHighlight bool) error
+	RequestShowFillUi(ctx context.Context, sessionId int32, id AutofillId, width int32, height int32, anchorBounds graphics.Rect, presenter IAutofillWindowPresenter) error
+	RequestHideFillUi(ctx context.Context, sessionId int32, id AutofillId) error
+	RequestAutofill(ctx context.Context, sessionId int32, id AutofillId) (bool, error)
+}
+
+type augmentedAutofillManagerClientStubWrapper struct {
+	impl       IAugmentedAutofillManagerClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *augmentedAutofillManagerClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *augmentedAutofillManagerClientStubWrapper) GetViewCoordinates(
+	ctx context.Context,
+	id AutofillId,
+) (graphics.Rect, error) {
+	return w.impl.GetViewCoordinates(ctx, id)
+}
+
+func (w *augmentedAutofillManagerClientStubWrapper) GetViewNodeParcelable(
+	ctx context.Context,
+	id AutofillId,
+) (assist.AssistStructureViewNodeParcelable, error) {
+	return w.impl.GetViewNodeParcelable(ctx, id)
+}
+
+func (w *augmentedAutofillManagerClientStubWrapper) Autofill(
+	ctx context.Context,
+	sessionId int32,
+	ids []AutofillId,
+	values []AutofillValue,
+	hideHighlight bool,
+) error {
+	return w.impl.Autofill(ctx, sessionId, ids, values, hideHighlight)
+}
+
+func (w *augmentedAutofillManagerClientStubWrapper) RequestShowFillUi(
+	ctx context.Context,
+	sessionId int32,
+	id AutofillId,
+	width int32,
+	height int32,
+	anchorBounds graphics.Rect,
+	presenter IAutofillWindowPresenter,
+) error {
+	return w.impl.RequestShowFillUi(ctx, sessionId, id, width, height, anchorBounds, presenter)
+}
+
+func (w *augmentedAutofillManagerClientStubWrapper) RequestHideFillUi(
+	ctx context.Context,
+	sessionId int32,
+	id AutofillId,
+) error {
+	return w.impl.RequestHideFillUi(ctx, sessionId, id)
+}
+
+func (w *augmentedAutofillManagerClientStubWrapper) RequestAutofill(
+	ctx context.Context,
+	sessionId int32,
+	id AutofillId,
+) (bool, error) {
+	return w.impl.RequestAutofill(ctx, sessionId, id)
+}
+
+var _ IAugmentedAutofillManagerClient = (*augmentedAutofillManagerClientStubWrapper)(nil)
+
+// NewAugmentedAutofillManagerClientStub creates a server-side IAugmentedAutofillManagerClient wrapping the given
+// server implementation. The returned value satisfies IAugmentedAutofillManagerClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAugmentedAutofillManagerClientStub(
+	impl IAugmentedAutofillManagerClientServer,
+) IAugmentedAutofillManagerClient {
+	wrapper := &augmentedAutofillManagerClientStubWrapper{impl: impl}
+	stub := &AugmentedAutofillManagerClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

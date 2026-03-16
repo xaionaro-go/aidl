@@ -56,7 +56,7 @@ func (p *VoiceInteractorCallbackProxy) DeliverConfirmationResult(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
-	_data.WriteStrongBinder(request.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, request.AsBinder(), p.remote.Transport())
 	_data.WriteBool(confirmed)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverConfirmationResult")
@@ -77,7 +77,7 @@ func (p *VoiceInteractorCallbackProxy) DeliverPickOptionResult(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
-	_data.WriteStrongBinder(request.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, request.AsBinder(), p.remote.Transport())
 	_data.WriteBool(finished)
 	if selections == nil {
 		_data.WriteInt32(-1)
@@ -101,7 +101,7 @@ func (p *VoiceInteractorCallbackProxy) DeliverCompleteVoiceResult(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
-	_data.WriteStrongBinder(request.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, request.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverCompleteVoiceResult")
 	if _err != nil {
@@ -119,7 +119,7 @@ func (p *VoiceInteractorCallbackProxy) DeliverAbortVoiceResult(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
-	_data.WriteStrongBinder(request.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, request.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverAbortVoiceResult")
 	if _err != nil {
@@ -138,7 +138,7 @@ func (p *VoiceInteractorCallbackProxy) DeliverCommandResult(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
-	_data.WriteStrongBinder(request.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, request.AsBinder(), p.remote.Transport())
 	_data.WriteBool(finished)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverCommandResult")
@@ -156,7 +156,7 @@ func (p *VoiceInteractorCallbackProxy) DeliverCancel(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractorCallback)
-	_data.WriteStrongBinder(request.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, request.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractorCallback, "deliverCancel")
 	if _err != nil {
@@ -286,4 +286,99 @@ func (s *VoiceInteractorCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVoiceInteractorCallbackServer is the server-side interface that user implementations
+// provide to NewVoiceInteractorCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceInteractorCallbackServer interface {
+	DeliverConfirmationResult(ctx context.Context, request IVoiceInteractorRequest, confirmed bool, result interface{}) error
+	DeliverPickOptionResult(ctx context.Context, request IVoiceInteractorRequest, finished bool, selections []interface{}, result interface{}) error
+	DeliverCompleteVoiceResult(ctx context.Context, request IVoiceInteractorRequest, result interface{}) error
+	DeliverAbortVoiceResult(ctx context.Context, request IVoiceInteractorRequest, result interface{}) error
+	DeliverCommandResult(ctx context.Context, request IVoiceInteractorRequest, finished bool, result interface{}) error
+	DeliverCancel(ctx context.Context, request IVoiceInteractorRequest) error
+	Destroy(ctx context.Context) error
+}
+
+type voiceInteractorCallbackStubWrapper struct {
+	impl       IVoiceInteractorCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceInteractorCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceInteractorCallbackStubWrapper) DeliverConfirmationResult(
+	ctx context.Context,
+	request IVoiceInteractorRequest,
+	confirmed bool,
+	result interface{},
+) error {
+	return w.impl.DeliverConfirmationResult(ctx, request, confirmed, result)
+}
+
+func (w *voiceInteractorCallbackStubWrapper) DeliverPickOptionResult(
+	ctx context.Context,
+	request IVoiceInteractorRequest,
+	finished bool,
+	selections []interface{},
+	result interface{},
+) error {
+	return w.impl.DeliverPickOptionResult(ctx, request, finished, selections, result)
+}
+
+func (w *voiceInteractorCallbackStubWrapper) DeliverCompleteVoiceResult(
+	ctx context.Context,
+	request IVoiceInteractorRequest,
+	result interface{},
+) error {
+	return w.impl.DeliverCompleteVoiceResult(ctx, request, result)
+}
+
+func (w *voiceInteractorCallbackStubWrapper) DeliverAbortVoiceResult(
+	ctx context.Context,
+	request IVoiceInteractorRequest,
+	result interface{},
+) error {
+	return w.impl.DeliverAbortVoiceResult(ctx, request, result)
+}
+
+func (w *voiceInteractorCallbackStubWrapper) DeliverCommandResult(
+	ctx context.Context,
+	request IVoiceInteractorRequest,
+	finished bool,
+	result interface{},
+) error {
+	return w.impl.DeliverCommandResult(ctx, request, finished, result)
+}
+
+func (w *voiceInteractorCallbackStubWrapper) DeliverCancel(
+	ctx context.Context,
+	request IVoiceInteractorRequest,
+) error {
+	return w.impl.DeliverCancel(ctx, request)
+}
+
+func (w *voiceInteractorCallbackStubWrapper) Destroy(
+	ctx context.Context,
+) error {
+	return w.impl.Destroy(ctx)
+}
+
+var _ IVoiceInteractorCallback = (*voiceInteractorCallbackStubWrapper)(nil)
+
+// NewVoiceInteractorCallbackStub creates a server-side IVoiceInteractorCallback wrapping the given
+// server implementation. The returned value satisfies IVoiceInteractorCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceInteractorCallbackStub(
+	impl IVoiceInteractorCallbackServer,
+) IVoiceInteractorCallback {
+	wrapper := &voiceInteractorCallbackStubWrapper{impl: impl}
+	stub := &VoiceInteractorCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

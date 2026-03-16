@@ -309,3 +309,99 @@ func (s *ContextHubClientCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IContextHubClientCallbackServer is the server-side interface that user implementations
+// provide to NewContextHubClientCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContextHubClientCallbackServer interface {
+	OnMessageFromNanoApp(ctx context.Context, message NanoAppMessage) error
+	OnHubReset(ctx context.Context) error
+	OnNanoAppAborted(ctx context.Context, nanoAppId int64, abortCode int32) error
+	OnNanoAppLoaded(ctx context.Context, nanoAppId int64) error
+	OnNanoAppUnloaded(ctx context.Context, nanoAppId int64) error
+	OnNanoAppEnabled(ctx context.Context, nanoAppId int64) error
+	OnNanoAppDisabled(ctx context.Context, nanoAppId int64) error
+	OnClientAuthorizationChanged(ctx context.Context, nanoAppId int64, authorization int32) error
+}
+
+type contextHubClientCallbackStubWrapper struct {
+	impl       IContextHubClientCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contextHubClientCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contextHubClientCallbackStubWrapper) OnMessageFromNanoApp(
+	ctx context.Context,
+	message NanoAppMessage,
+) error {
+	return w.impl.OnMessageFromNanoApp(ctx, message)
+}
+
+func (w *contextHubClientCallbackStubWrapper) OnHubReset(
+	ctx context.Context,
+) error {
+	return w.impl.OnHubReset(ctx)
+}
+
+func (w *contextHubClientCallbackStubWrapper) OnNanoAppAborted(
+	ctx context.Context,
+	nanoAppId int64,
+	abortCode int32,
+) error {
+	return w.impl.OnNanoAppAborted(ctx, nanoAppId, abortCode)
+}
+
+func (w *contextHubClientCallbackStubWrapper) OnNanoAppLoaded(
+	ctx context.Context,
+	nanoAppId int64,
+) error {
+	return w.impl.OnNanoAppLoaded(ctx, nanoAppId)
+}
+
+func (w *contextHubClientCallbackStubWrapper) OnNanoAppUnloaded(
+	ctx context.Context,
+	nanoAppId int64,
+) error {
+	return w.impl.OnNanoAppUnloaded(ctx, nanoAppId)
+}
+
+func (w *contextHubClientCallbackStubWrapper) OnNanoAppEnabled(
+	ctx context.Context,
+	nanoAppId int64,
+) error {
+	return w.impl.OnNanoAppEnabled(ctx, nanoAppId)
+}
+
+func (w *contextHubClientCallbackStubWrapper) OnNanoAppDisabled(
+	ctx context.Context,
+	nanoAppId int64,
+) error {
+	return w.impl.OnNanoAppDisabled(ctx, nanoAppId)
+}
+
+func (w *contextHubClientCallbackStubWrapper) OnClientAuthorizationChanged(
+	ctx context.Context,
+	nanoAppId int64,
+	authorization int32,
+) error {
+	return w.impl.OnClientAuthorizationChanged(ctx, nanoAppId, authorization)
+}
+
+var _ IContextHubClientCallback = (*contextHubClientCallbackStubWrapper)(nil)
+
+// NewContextHubClientCallbackStub creates a server-side IContextHubClientCallback wrapping the given
+// server implementation. The returned value satisfies IContextHubClientCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContextHubClientCallbackStub(
+	impl IContextHubClientCallbackServer,
+) IContextHubClientCallback {
+	wrapper := &contextHubClientCallbackStubWrapper{impl: impl}
+	stub := &ContextHubClientCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -88,3 +88,42 @@ func (s *SpatializerHeadToSoundStagePoseCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISpatializerHeadToSoundStagePoseCallbackServer is the server-side interface that user implementations
+// provide to NewSpatializerHeadToSoundStagePoseCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpatializerHeadToSoundStagePoseCallbackServer interface {
+	DispatchPoseChanged(ctx context.Context, pose []float32) error
+}
+
+type spatializerHeadToSoundStagePoseCallbackStubWrapper struct {
+	impl       ISpatializerHeadToSoundStagePoseCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spatializerHeadToSoundStagePoseCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spatializerHeadToSoundStagePoseCallbackStubWrapper) DispatchPoseChanged(
+	ctx context.Context,
+	pose []float32,
+) error {
+	return w.impl.DispatchPoseChanged(ctx, pose)
+}
+
+var _ ISpatializerHeadToSoundStagePoseCallback = (*spatializerHeadToSoundStagePoseCallbackStubWrapper)(nil)
+
+// NewSpatializerHeadToSoundStagePoseCallbackStub creates a server-side ISpatializerHeadToSoundStagePoseCallback wrapping the given
+// server implementation. The returned value satisfies ISpatializerHeadToSoundStagePoseCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpatializerHeadToSoundStagePoseCallbackStub(
+	impl ISpatializerHeadToSoundStagePoseCallbackServer,
+) ISpatializerHeadToSoundStagePoseCallback {
+	wrapper := &spatializerHeadToSoundStagePoseCallbackStubWrapper{impl: impl}
+	stub := &SpatializerHeadToSoundStagePoseCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

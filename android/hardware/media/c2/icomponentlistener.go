@@ -255,3 +255,75 @@ func (s *ComponentListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IComponentListenerServer is the server-side interface that user implementations
+// provide to NewComponentListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IComponentListenerServer interface {
+	OnError(ctx context.Context, status Status, errorCode int32) error
+	OnFramesRendered(ctx context.Context, renderedFrames []c2IComponentListener.RenderedFrame) error
+	OnInputBuffersReleased(ctx context.Context, inputBuffers []c2IComponentListener.InputBuffer) error
+	OnTripped(ctx context.Context, settingResults []SettingResult) error
+	OnWorkDone(ctx context.Context, workBundle WorkBundle) error
+}
+
+type componentListenerStubWrapper struct {
+	impl       IComponentListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *componentListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *componentListenerStubWrapper) OnError(
+	ctx context.Context,
+	status Status,
+	errorCode int32,
+) error {
+	return w.impl.OnError(ctx, status, errorCode)
+}
+
+func (w *componentListenerStubWrapper) OnFramesRendered(
+	ctx context.Context,
+	renderedFrames []c2IComponentListener.RenderedFrame,
+) error {
+	return w.impl.OnFramesRendered(ctx, renderedFrames)
+}
+
+func (w *componentListenerStubWrapper) OnInputBuffersReleased(
+	ctx context.Context,
+	inputBuffers []c2IComponentListener.InputBuffer,
+) error {
+	return w.impl.OnInputBuffersReleased(ctx, inputBuffers)
+}
+
+func (w *componentListenerStubWrapper) OnTripped(
+	ctx context.Context,
+	settingResults []SettingResult,
+) error {
+	return w.impl.OnTripped(ctx, settingResults)
+}
+
+func (w *componentListenerStubWrapper) OnWorkDone(
+	ctx context.Context,
+	workBundle WorkBundle,
+) error {
+	return w.impl.OnWorkDone(ctx, workBundle)
+}
+
+var _ IComponentListener = (*componentListenerStubWrapper)(nil)
+
+// NewComponentListenerStub creates a server-side IComponentListener wrapping the given
+// server implementation. The returned value satisfies IComponentListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewComponentListenerStub(
+	impl IComponentListenerServer,
+) IComponentListener {
+	wrapper := &componentListenerStubWrapper{impl: impl}
+	stub := &ComponentListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -229,7 +229,7 @@ func (p *HdmiControlServiceProxy) OneTouchPlay(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "oneTouchPlay")
 	if _err != nil {
@@ -308,7 +308,7 @@ func (p *HdmiControlServiceProxy) QueryDisplayStatus(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "queryDisplayStatus")
 	if _err != nil {
@@ -334,7 +334,7 @@ func (p *HdmiControlServiceProxy) AddHdmiControlStatusChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addHdmiControlStatusChangeListener")
 	if _err != nil {
@@ -360,7 +360,7 @@ func (p *HdmiControlServiceProxy) RemoveHdmiControlStatusChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeHdmiControlStatusChangeListener")
 	if _err != nil {
@@ -386,7 +386,7 @@ func (p *HdmiControlServiceProxy) AddHdmiCecVolumeControlFeatureListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addHdmiCecVolumeControlFeatureListener")
 	if _err != nil {
@@ -412,7 +412,7 @@ func (p *HdmiControlServiceProxy) RemoveHdmiCecVolumeControlFeatureListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeHdmiCecVolumeControlFeatureListener")
 	if _err != nil {
@@ -438,7 +438,7 @@ func (p *HdmiControlServiceProxy) AddHotplugEventListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addHotplugEventListener")
 	if _err != nil {
@@ -464,7 +464,7 @@ func (p *HdmiControlServiceProxy) RemoveHotplugEventListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeHotplugEventListener")
 	if _err != nil {
@@ -490,7 +490,7 @@ func (p *HdmiControlServiceProxy) AddDeviceEventListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addDeviceEventListener")
 	if _err != nil {
@@ -518,7 +518,7 @@ func (p *HdmiControlServiceProxy) DeviceSelect(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteInt32(deviceId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "deviceSelect")
 	if _err != nil {
@@ -546,7 +546,7 @@ func (p *HdmiControlServiceProxy) PortSelect(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteInt32(portId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "portSelect")
 	if _err != nil {
@@ -759,7 +759,7 @@ func (p *HdmiControlServiceProxy) SetSystemAudioMode(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteBool(enabled)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setSystemAudioMode")
 	if _err != nil {
@@ -785,7 +785,7 @@ func (p *HdmiControlServiceProxy) AddSystemAudioModeChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addSystemAudioModeChangeListener")
 	if _err != nil {
@@ -811,7 +811,7 @@ func (p *HdmiControlServiceProxy) RemoveSystemAudioModeChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeSystemAudioModeChangeListener")
 	if _err != nil {
@@ -945,7 +945,7 @@ func (p *HdmiControlServiceProxy) SetInputChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setInputChangeListener")
 	if _err != nil {
@@ -1169,7 +1169,7 @@ func (p *HdmiControlServiceProxy) AddVendorCommandListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(vendorId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addVendorCommandListener")
@@ -1224,7 +1224,7 @@ func (p *HdmiControlServiceProxy) SetHdmiRecordListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "setHdmiRecordListener")
 	if _err != nil {
@@ -1424,7 +1424,7 @@ func (p *HdmiControlServiceProxy) AddHdmiMhlVendorCommandListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addHdmiMhlVendorCommandListener")
 	if _err != nil {
@@ -1594,7 +1594,7 @@ func (p *HdmiControlServiceProxy) AddCecSettingChangeListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "addCecSettingChangeListener")
 	if _err != nil {
@@ -1622,7 +1622,7 @@ func (p *HdmiControlServiceProxy) RemoveCecSettingChangeListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiControlService)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiControlService, "removeCecSettingChangeListener")
 	if _err != nil {
@@ -2899,4 +2899,517 @@ func (s *HdmiControlServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IHdmiControlServiceServer is the server-side interface that user implementations
+// provide to NewHdmiControlServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiControlServiceServer interface {
+	GetSupportedTypes(ctx context.Context) ([]int32, error)
+	GetActiveSource(ctx context.Context) (HdmiDeviceInfo, error)
+	OneTouchPlay(ctx context.Context, callback IHdmiControlCallback) error
+	ToggleAndFollowTvPower(ctx context.Context) error
+	ShouldHandleTvPowerKey(ctx context.Context) (bool, error)
+	QueryDisplayStatus(ctx context.Context, callback IHdmiControlCallback) error
+	AddHdmiControlStatusChangeListener(ctx context.Context, listener IHdmiControlStatusChangeListener) error
+	RemoveHdmiControlStatusChangeListener(ctx context.Context, listener IHdmiControlStatusChangeListener) error
+	AddHdmiCecVolumeControlFeatureListener(ctx context.Context, listener IHdmiCecVolumeControlFeatureListener) error
+	RemoveHdmiCecVolumeControlFeatureListener(ctx context.Context, listener IHdmiCecVolumeControlFeatureListener) error
+	AddHotplugEventListener(ctx context.Context, listener IHdmiHotplugEventListener) error
+	RemoveHotplugEventListener(ctx context.Context, listener IHdmiHotplugEventListener) error
+	AddDeviceEventListener(ctx context.Context, listener IHdmiDeviceEventListener) error
+	DeviceSelect(ctx context.Context, deviceId int32, callback IHdmiControlCallback) error
+	PortSelect(ctx context.Context, portId int32, callback IHdmiControlCallback) error
+	SendKeyEvent(ctx context.Context, deviceType int32, keyCode int32, isPressed bool) error
+	SendVolumeKeyEvent(ctx context.Context, deviceType int32, keyCode int32, isPressed bool) error
+	GetPortInfo(ctx context.Context) ([]HdmiPortInfo, error)
+	CanChangeSystemAudioMode(ctx context.Context) (bool, error)
+	GetSystemAudioMode(ctx context.Context) (bool, error)
+	GetPhysicalAddress(ctx context.Context) (int32, error)
+	SetSystemAudioMode(ctx context.Context, enabled bool, callback IHdmiControlCallback) error
+	AddSystemAudioModeChangeListener(ctx context.Context, listener IHdmiSystemAudioModeChangeListener) error
+	RemoveSystemAudioModeChangeListener(ctx context.Context, listener IHdmiSystemAudioModeChangeListener) error
+	SetArcMode(ctx context.Context, enabled bool) error
+	SetProhibitMode(ctx context.Context, enabled bool) error
+	SetSystemAudioVolume(ctx context.Context, oldIndex int32, newIndex int32, maxIndex int32) error
+	SetSystemAudioMute(ctx context.Context, mute bool) error
+	SetInputChangeListener(ctx context.Context, listener IHdmiInputChangeListener) error
+	GetInputDevices(ctx context.Context) ([]HdmiDeviceInfo, error)
+	GetDeviceList(ctx context.Context) ([]HdmiDeviceInfo, error)
+	PowerOffRemoteDevice(ctx context.Context, logicalAddress int32, powerStatus int32) error
+	PowerOnRemoteDevice(ctx context.Context, logicalAddress int32, powerStatus int32) error
+	AskRemoteDeviceToBecomeActiveSource(ctx context.Context, physicalAddress int32) error
+	SendVendorCommand(ctx context.Context, deviceType int32, targetAddress int32, params []byte, hasVendorId bool) error
+	AddVendorCommandListener(ctx context.Context, listener IHdmiVendorCommandListener, vendorId int32) error
+	SendStandby(ctx context.Context, deviceType int32, deviceId int32) error
+	SetHdmiRecordListener(ctx context.Context, callback IHdmiRecordListener) error
+	StartOneTouchRecord(ctx context.Context, recorderAddress int32, recordSource []byte) error
+	StopOneTouchRecord(ctx context.Context, recorderAddress int32) error
+	StartTimerRecording(ctx context.Context, recorderAddress int32, sourceType int32, recordSource []byte) error
+	ClearTimerRecording(ctx context.Context, recorderAddress int32, sourceType int32, recordSource []byte) error
+	SendMhlVendorCommand(ctx context.Context, portId int32, offset int32, length int32, data []byte) error
+	AddHdmiMhlVendorCommandListener(ctx context.Context, listener IHdmiMhlVendorCommandListener) error
+	SetStandbyMode(ctx context.Context, isStandbyModeOn bool) error
+	ReportAudioStatus(ctx context.Context, deviceType int32, volume int32, maxVolume int32, isMute bool) error
+	SetSystemAudioModeOnForAudioOnlySource(ctx context.Context) error
+	SetMessageHistorySize(ctx context.Context, newSize int32) (bool, error)
+	GetMessageHistorySize(ctx context.Context) (int32, error)
+	AddCecSettingChangeListener(ctx context.Context, name string, listener IHdmiCecSettingChangeListener) error
+	RemoveCecSettingChangeListener(ctx context.Context, name string, listener IHdmiCecSettingChangeListener) error
+	GetUserCecSettings(ctx context.Context) ([]string, error)
+	GetAllowedCecSettingStringValues(ctx context.Context, name string) ([]string, error)
+	GetAllowedCecSettingIntValues(ctx context.Context, name string) ([]int32, error)
+	GetCecSettingStringValue(ctx context.Context, name string) (string, error)
+	SetCecSettingStringValue(ctx context.Context, name string, value string) error
+	GetCecSettingIntValue(ctx context.Context, name string) (int32, error)
+	SetCecSettingIntValue(ctx context.Context, name string, value int32) error
+}
+
+type hdmiControlServiceStubWrapper struct {
+	impl       IHdmiControlServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiControlServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiControlServiceStubWrapper) GetSupportedTypes(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetSupportedTypes(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetActiveSource(
+	ctx context.Context,
+) (HdmiDeviceInfo, error) {
+	return w.impl.GetActiveSource(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) OneTouchPlay(
+	ctx context.Context,
+	callback IHdmiControlCallback,
+) error {
+	return w.impl.OneTouchPlay(ctx, callback)
+}
+
+func (w *hdmiControlServiceStubWrapper) ToggleAndFollowTvPower(
+	ctx context.Context,
+) error {
+	return w.impl.ToggleAndFollowTvPower(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) ShouldHandleTvPowerKey(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ShouldHandleTvPowerKey(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) QueryDisplayStatus(
+	ctx context.Context,
+	callback IHdmiControlCallback,
+) error {
+	return w.impl.QueryDisplayStatus(ctx, callback)
+}
+
+func (w *hdmiControlServiceStubWrapper) AddHdmiControlStatusChangeListener(
+	ctx context.Context,
+	listener IHdmiControlStatusChangeListener,
+) error {
+	return w.impl.AddHdmiControlStatusChangeListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) RemoveHdmiControlStatusChangeListener(
+	ctx context.Context,
+	listener IHdmiControlStatusChangeListener,
+) error {
+	return w.impl.RemoveHdmiControlStatusChangeListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) AddHdmiCecVolumeControlFeatureListener(
+	ctx context.Context,
+	listener IHdmiCecVolumeControlFeatureListener,
+) error {
+	return w.impl.AddHdmiCecVolumeControlFeatureListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) RemoveHdmiCecVolumeControlFeatureListener(
+	ctx context.Context,
+	listener IHdmiCecVolumeControlFeatureListener,
+) error {
+	return w.impl.RemoveHdmiCecVolumeControlFeatureListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) AddHotplugEventListener(
+	ctx context.Context,
+	listener IHdmiHotplugEventListener,
+) error {
+	return w.impl.AddHotplugEventListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) RemoveHotplugEventListener(
+	ctx context.Context,
+	listener IHdmiHotplugEventListener,
+) error {
+	return w.impl.RemoveHotplugEventListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) AddDeviceEventListener(
+	ctx context.Context,
+	listener IHdmiDeviceEventListener,
+) error {
+	return w.impl.AddDeviceEventListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) DeviceSelect(
+	ctx context.Context,
+	deviceId int32,
+	callback IHdmiControlCallback,
+) error {
+	return w.impl.DeviceSelect(ctx, deviceId, callback)
+}
+
+func (w *hdmiControlServiceStubWrapper) PortSelect(
+	ctx context.Context,
+	portId int32,
+	callback IHdmiControlCallback,
+) error {
+	return w.impl.PortSelect(ctx, portId, callback)
+}
+
+func (w *hdmiControlServiceStubWrapper) SendKeyEvent(
+	ctx context.Context,
+	deviceType int32,
+	keyCode int32,
+	isPressed bool,
+) error {
+	return w.impl.SendKeyEvent(ctx, deviceType, keyCode, isPressed)
+}
+
+func (w *hdmiControlServiceStubWrapper) SendVolumeKeyEvent(
+	ctx context.Context,
+	deviceType int32,
+	keyCode int32,
+	isPressed bool,
+) error {
+	return w.impl.SendVolumeKeyEvent(ctx, deviceType, keyCode, isPressed)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetPortInfo(
+	ctx context.Context,
+) ([]HdmiPortInfo, error) {
+	return w.impl.GetPortInfo(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) CanChangeSystemAudioMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanChangeSystemAudioMode(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetSystemAudioMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetSystemAudioMode(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetPhysicalAddress(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPhysicalAddress(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetSystemAudioMode(
+	ctx context.Context,
+	enabled bool,
+	callback IHdmiControlCallback,
+) error {
+	return w.impl.SetSystemAudioMode(ctx, enabled, callback)
+}
+
+func (w *hdmiControlServiceStubWrapper) AddSystemAudioModeChangeListener(
+	ctx context.Context,
+	listener IHdmiSystemAudioModeChangeListener,
+) error {
+	return w.impl.AddSystemAudioModeChangeListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) RemoveSystemAudioModeChangeListener(
+	ctx context.Context,
+	listener IHdmiSystemAudioModeChangeListener,
+) error {
+	return w.impl.RemoveSystemAudioModeChangeListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetArcMode(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetArcMode(ctx, enabled)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetProhibitMode(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetProhibitMode(ctx, enabled)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetSystemAudioVolume(
+	ctx context.Context,
+	oldIndex int32,
+	newIndex int32,
+	maxIndex int32,
+) error {
+	return w.impl.SetSystemAudioVolume(ctx, oldIndex, newIndex, maxIndex)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetSystemAudioMute(
+	ctx context.Context,
+	mute bool,
+) error {
+	return w.impl.SetSystemAudioMute(ctx, mute)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetInputChangeListener(
+	ctx context.Context,
+	listener IHdmiInputChangeListener,
+) error {
+	return w.impl.SetInputChangeListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetInputDevices(
+	ctx context.Context,
+) ([]HdmiDeviceInfo, error) {
+	return w.impl.GetInputDevices(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetDeviceList(
+	ctx context.Context,
+) ([]HdmiDeviceInfo, error) {
+	return w.impl.GetDeviceList(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) PowerOffRemoteDevice(
+	ctx context.Context,
+	logicalAddress int32,
+	powerStatus int32,
+) error {
+	return w.impl.PowerOffRemoteDevice(ctx, logicalAddress, powerStatus)
+}
+
+func (w *hdmiControlServiceStubWrapper) PowerOnRemoteDevice(
+	ctx context.Context,
+	logicalAddress int32,
+	powerStatus int32,
+) error {
+	return w.impl.PowerOnRemoteDevice(ctx, logicalAddress, powerStatus)
+}
+
+func (w *hdmiControlServiceStubWrapper) AskRemoteDeviceToBecomeActiveSource(
+	ctx context.Context,
+	physicalAddress int32,
+) error {
+	return w.impl.AskRemoteDeviceToBecomeActiveSource(ctx, physicalAddress)
+}
+
+func (w *hdmiControlServiceStubWrapper) SendVendorCommand(
+	ctx context.Context,
+	deviceType int32,
+	targetAddress int32,
+	params []byte,
+	hasVendorId bool,
+) error {
+	return w.impl.SendVendorCommand(ctx, deviceType, targetAddress, params, hasVendorId)
+}
+
+func (w *hdmiControlServiceStubWrapper) AddVendorCommandListener(
+	ctx context.Context,
+	listener IHdmiVendorCommandListener,
+	vendorId int32,
+) error {
+	return w.impl.AddVendorCommandListener(ctx, listener, vendorId)
+}
+
+func (w *hdmiControlServiceStubWrapper) SendStandby(
+	ctx context.Context,
+	deviceType int32,
+	deviceId int32,
+) error {
+	return w.impl.SendStandby(ctx, deviceType, deviceId)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetHdmiRecordListener(
+	ctx context.Context,
+	callback IHdmiRecordListener,
+) error {
+	return w.impl.SetHdmiRecordListener(ctx, callback)
+}
+
+func (w *hdmiControlServiceStubWrapper) StartOneTouchRecord(
+	ctx context.Context,
+	recorderAddress int32,
+	recordSource []byte,
+) error {
+	return w.impl.StartOneTouchRecord(ctx, recorderAddress, recordSource)
+}
+
+func (w *hdmiControlServiceStubWrapper) StopOneTouchRecord(
+	ctx context.Context,
+	recorderAddress int32,
+) error {
+	return w.impl.StopOneTouchRecord(ctx, recorderAddress)
+}
+
+func (w *hdmiControlServiceStubWrapper) StartTimerRecording(
+	ctx context.Context,
+	recorderAddress int32,
+	sourceType int32,
+	recordSource []byte,
+) error {
+	return w.impl.StartTimerRecording(ctx, recorderAddress, sourceType, recordSource)
+}
+
+func (w *hdmiControlServiceStubWrapper) ClearTimerRecording(
+	ctx context.Context,
+	recorderAddress int32,
+	sourceType int32,
+	recordSource []byte,
+) error {
+	return w.impl.ClearTimerRecording(ctx, recorderAddress, sourceType, recordSource)
+}
+
+func (w *hdmiControlServiceStubWrapper) SendMhlVendorCommand(
+	ctx context.Context,
+	portId int32,
+	offset int32,
+	length int32,
+	data []byte,
+) error {
+	return w.impl.SendMhlVendorCommand(ctx, portId, offset, length, data)
+}
+
+func (w *hdmiControlServiceStubWrapper) AddHdmiMhlVendorCommandListener(
+	ctx context.Context,
+	listener IHdmiMhlVendorCommandListener,
+) error {
+	return w.impl.AddHdmiMhlVendorCommandListener(ctx, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetStandbyMode(
+	ctx context.Context,
+	isStandbyModeOn bool,
+) error {
+	return w.impl.SetStandbyMode(ctx, isStandbyModeOn)
+}
+
+func (w *hdmiControlServiceStubWrapper) ReportAudioStatus(
+	ctx context.Context,
+	deviceType int32,
+	volume int32,
+	maxVolume int32,
+	isMute bool,
+) error {
+	return w.impl.ReportAudioStatus(ctx, deviceType, volume, maxVolume, isMute)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetSystemAudioModeOnForAudioOnlySource(
+	ctx context.Context,
+) error {
+	return w.impl.SetSystemAudioModeOnForAudioOnlySource(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetMessageHistorySize(
+	ctx context.Context,
+	newSize int32,
+) (bool, error) {
+	return w.impl.SetMessageHistorySize(ctx, newSize)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetMessageHistorySize(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMessageHistorySize(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) AddCecSettingChangeListener(
+	ctx context.Context,
+	name string,
+	listener IHdmiCecSettingChangeListener,
+) error {
+	return w.impl.AddCecSettingChangeListener(ctx, name, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) RemoveCecSettingChangeListener(
+	ctx context.Context,
+	name string,
+	listener IHdmiCecSettingChangeListener,
+) error {
+	return w.impl.RemoveCecSettingChangeListener(ctx, name, listener)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetUserCecSettings(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetUserCecSettings(ctx)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetAllowedCecSettingStringValues(
+	ctx context.Context,
+	name string,
+) ([]string, error) {
+	return w.impl.GetAllowedCecSettingStringValues(ctx, name)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetAllowedCecSettingIntValues(
+	ctx context.Context,
+	name string,
+) ([]int32, error) {
+	return w.impl.GetAllowedCecSettingIntValues(ctx, name)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetCecSettingStringValue(
+	ctx context.Context,
+	name string,
+) (string, error) {
+	return w.impl.GetCecSettingStringValue(ctx, name)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetCecSettingStringValue(
+	ctx context.Context,
+	name string,
+	value string,
+) error {
+	return w.impl.SetCecSettingStringValue(ctx, name, value)
+}
+
+func (w *hdmiControlServiceStubWrapper) GetCecSettingIntValue(
+	ctx context.Context,
+	name string,
+) (int32, error) {
+	return w.impl.GetCecSettingIntValue(ctx, name)
+}
+
+func (w *hdmiControlServiceStubWrapper) SetCecSettingIntValue(
+	ctx context.Context,
+	name string,
+	value int32,
+) error {
+	return w.impl.SetCecSettingIntValue(ctx, name, value)
+}
+
+var _ IHdmiControlService = (*hdmiControlServiceStubWrapper)(nil)
+
+// NewHdmiControlServiceStub creates a server-side IHdmiControlService wrapping the given
+// server implementation. The returned value satisfies IHdmiControlService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiControlServiceStub(
+	impl IHdmiControlServiceServer,
+) IHdmiControlService {
+	wrapper := &hdmiControlServiceStubWrapper{impl: impl}
+	stub := &HdmiControlServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -207,3 +207,56 @@ func (s *AttestationVerificationManagerServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAttestationVerificationManagerServiceServer is the server-side interface that user implementations
+// provide to NewAttestationVerificationManagerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAttestationVerificationManagerServiceServer interface {
+	VerifyAttestation(ctx context.Context, profile AttestationProfile, localBindingType int32, requirements os.Bundle, attestation []byte, resultCallback infra.AndroidFuture) error
+	VerifyToken(ctx context.Context, token VerificationToken, maximumTokenAge interface{}, resultCallback infra.AndroidFuture) error
+}
+
+type attestationVerificationManagerServiceStubWrapper struct {
+	impl       IAttestationVerificationManagerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *attestationVerificationManagerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *attestationVerificationManagerServiceStubWrapper) VerifyAttestation(
+	ctx context.Context,
+	profile AttestationProfile,
+	localBindingType int32,
+	requirements os.Bundle,
+	attestation []byte,
+	resultCallback infra.AndroidFuture,
+) error {
+	return w.impl.VerifyAttestation(ctx, profile, localBindingType, requirements, attestation, resultCallback)
+}
+
+func (w *attestationVerificationManagerServiceStubWrapper) VerifyToken(
+	ctx context.Context,
+	token VerificationToken,
+	maximumTokenAge interface{},
+	resultCallback infra.AndroidFuture,
+) error {
+	return w.impl.VerifyToken(ctx, token, maximumTokenAge, resultCallback)
+}
+
+var _ IAttestationVerificationManagerService = (*attestationVerificationManagerServiceStubWrapper)(nil)
+
+// NewAttestationVerificationManagerServiceStub creates a server-side IAttestationVerificationManagerService wrapping the given
+// server implementation. The returned value satisfies IAttestationVerificationManagerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAttestationVerificationManagerServiceStub(
+	impl IAttestationVerificationManagerServiceServer,
+) IAttestationVerificationManagerService {
+	wrapper := &attestationVerificationManagerServiceStubWrapper{impl: impl}
+	stub := &AttestationVerificationManagerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

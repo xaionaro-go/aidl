@@ -43,7 +43,7 @@ func (p *DecorViewGestureListenerProxy) OnInterceptionChanged(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDecorViewGestureListener)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteBool(intercepted)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDecorViewGestureListener, "onInterceptionChanged")
@@ -86,4 +86,44 @@ func (s *DecorViewGestureListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDecorViewGestureListenerServer is the server-side interface that user implementations
+// provide to NewDecorViewGestureListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDecorViewGestureListenerServer interface {
+	OnInterceptionChanged(ctx context.Context, windowToken binder.IBinder, intercepted bool) error
+}
+
+type decorViewGestureListenerStubWrapper struct {
+	impl       IDecorViewGestureListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *decorViewGestureListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *decorViewGestureListenerStubWrapper) OnInterceptionChanged(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	intercepted bool,
+) error {
+	return w.impl.OnInterceptionChanged(ctx, windowToken, intercepted)
+}
+
+var _ IDecorViewGestureListener = (*decorViewGestureListenerStubWrapper)(nil)
+
+// NewDecorViewGestureListenerStub creates a server-side IDecorViewGestureListener wrapping the given
+// server implementation. The returned value satisfies IDecorViewGestureListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDecorViewGestureListenerStub(
+	impl IDecorViewGestureListenerServer,
+) IDecorViewGestureListener {
+	wrapper := &decorViewGestureListenerStubWrapper{impl: impl}
+	stub := &DecorViewGestureListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

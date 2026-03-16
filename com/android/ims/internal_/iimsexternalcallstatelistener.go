@@ -91,3 +91,42 @@ func (s *ImsExternalCallStateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsExternalCallStateListenerServer is the server-side interface that user implementations
+// provide to NewImsExternalCallStateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsExternalCallStateListenerServer interface {
+	OnImsExternalCallStateUpdate(ctx context.Context, externalCallDialogs []ims.ImsExternalCallState) error
+}
+
+type imsExternalCallStateListenerStubWrapper struct {
+	impl       IImsExternalCallStateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsExternalCallStateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsExternalCallStateListenerStubWrapper) OnImsExternalCallStateUpdate(
+	ctx context.Context,
+	externalCallDialogs []ims.ImsExternalCallState,
+) error {
+	return w.impl.OnImsExternalCallStateUpdate(ctx, externalCallDialogs)
+}
+
+var _ IImsExternalCallStateListener = (*imsExternalCallStateListenerStubWrapper)(nil)
+
+// NewImsExternalCallStateListenerStub creates a server-side IImsExternalCallStateListener wrapping the given
+// server implementation. The returned value satisfies IImsExternalCallStateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsExternalCallStateListenerStub(
+	impl IImsExternalCallStateListenerServer,
+) IImsExternalCallStateListener {
+	wrapper := &imsExternalCallStateListenerStubWrapper{impl: impl}
+	stub := &ImsExternalCallStateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -105,7 +105,7 @@ func (p *EArcProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEArc)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEArc, "setCallback")
 	if _err != nil {
@@ -294,4 +294,74 @@ func (s *EArcStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IEArcServer is the server-side interface that user implementations
+// provide to NewEArcStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEArcServer interface {
+	SetEArcEnabled(ctx context.Context, enabled bool) error
+	IsEArcEnabled(ctx context.Context) (bool, error)
+	SetCallback(ctx context.Context, callback IEArcCallback) error
+	GetState(ctx context.Context, portId int32) (IEArcStatus, error)
+	GetLastReportedAudioCapabilities(ctx context.Context, portId int32) ([]byte, error)
+}
+
+type eArcStubWrapper struct {
+	impl       IEArcServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eArcStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eArcStubWrapper) SetEArcEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetEArcEnabled(ctx, enabled)
+}
+
+func (w *eArcStubWrapper) IsEArcEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsEArcEnabled(ctx)
+}
+
+func (w *eArcStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IEArcCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *eArcStubWrapper) GetState(
+	ctx context.Context,
+	portId int32,
+) (IEArcStatus, error) {
+	return w.impl.GetState(ctx, portId)
+}
+
+func (w *eArcStubWrapper) GetLastReportedAudioCapabilities(
+	ctx context.Context,
+	portId int32,
+) ([]byte, error) {
+	return w.impl.GetLastReportedAudioCapabilities(ctx, portId)
+}
+
+var _ IEArc = (*eArcStubWrapper)(nil)
+
+// NewEArcStub creates a server-side IEArc wrapping the given
+// server implementation. The returned value satisfies IEArc
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEArcStub(
+	impl IEArcServer,
+) IEArc {
+	wrapper := &eArcStubWrapper{impl: impl}
+	stub := &EArcStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

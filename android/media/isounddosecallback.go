@@ -132,3 +132,52 @@ func (s *SoundDoseCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundDoseCallbackServer is the server-side interface that user implementations
+// provide to NewSoundDoseCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundDoseCallbackServer interface {
+	OnMomentaryExposure(ctx context.Context, currentMel float32, deviceId int32) error
+	OnNewCsdValue(ctx context.Context, currentCsd float32, records []SoundDoseRecord) error
+}
+
+type soundDoseCallbackStubWrapper struct {
+	impl       ISoundDoseCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundDoseCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundDoseCallbackStubWrapper) OnMomentaryExposure(
+	ctx context.Context,
+	currentMel float32,
+	deviceId int32,
+) error {
+	return w.impl.OnMomentaryExposure(ctx, currentMel, deviceId)
+}
+
+func (w *soundDoseCallbackStubWrapper) OnNewCsdValue(
+	ctx context.Context,
+	currentCsd float32,
+	records []SoundDoseRecord,
+) error {
+	return w.impl.OnNewCsdValue(ctx, currentCsd, records)
+}
+
+var _ ISoundDoseCallback = (*soundDoseCallbackStubWrapper)(nil)
+
+// NewSoundDoseCallbackStub creates a server-side ISoundDoseCallback wrapping the given
+// server implementation. The returned value satisfies ISoundDoseCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundDoseCallbackStub(
+	impl ISoundDoseCallbackServer,
+) ISoundDoseCallback {
+	wrapper := &soundDoseCallbackStubWrapper{impl: impl}
+	stub := &SoundDoseCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

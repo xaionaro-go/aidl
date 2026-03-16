@@ -3,7 +3,6 @@ package os
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	pm "github.com/xaionaro-go/binder/android/content/pm"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -31,8 +30,8 @@ type ISystemConfig interface {
 	GetDisabledUntilUsedPreinstalledCarrierAssociatedApps(ctx context.Context) (map[interface{}]interface{}, error)
 	GetDisabledUntilUsedPreinstalledCarrierAssociatedAppEntries(ctx context.Context) (map[interface{}]interface{}, error)
 	GetSystemPermissionUids(ctx context.Context, permissionName string) ([]int32, error)
-	GetEnabledComponentOverrides(ctx context.Context, packageName string) ([]content.ComponentName, error)
-	GetDefaultVrComponents(ctx context.Context) ([]content.ComponentName, error)
+	GetEnabledComponentOverrides(ctx context.Context, packageName string) ([]interface{}, error)
+	GetDefaultVrComponents(ctx context.Context) ([]interface{}, error)
 	GetPreventUserDisablePackages(ctx context.Context) ([]string, error)
 	GetEnhancedConfirmationTrustedPackages(ctx context.Context) ([]pm.SignedPackageParcel, error)
 	GetEnhancedConfirmationTrustedInstallers(ctx context.Context) ([]pm.SignedPackageParcel, error)
@@ -223,8 +222,8 @@ func (p *SystemConfigProxy) GetSystemPermissionUids(
 func (p *SystemConfigProxy) GetEnabledComponentOverrides(
 	ctx context.Context,
 	packageName string,
-) ([]content.ComponentName, error) {
-	var _result []content.ComponentName
+) ([]interface{}, error) {
+	var _result []interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemConfig)
 	_data.WriteString16(packageName)
@@ -250,11 +249,8 @@ func (p *SystemConfigProxy) GetEnabledComponentOverrides(
 	}
 
 	if _count >= 0 {
-		_result = make([]content.ComponentName, _count)
+		_result = make([]interface{}, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
-				return _result, _err
-			}
 		}
 	}
 	return _result, nil
@@ -262,8 +258,8 @@ func (p *SystemConfigProxy) GetEnabledComponentOverrides(
 
 func (p *SystemConfigProxy) GetDefaultVrComponents(
 	ctx context.Context,
-) ([]content.ComponentName, error) {
-	var _result []content.ComponentName
+) ([]interface{}, error) {
+	var _result []interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISystemConfig)
 
@@ -288,11 +284,8 @@ func (p *SystemConfigProxy) GetDefaultVrComponents(
 	}
 
 	if _count >= 0 {
-		_result = make([]content.ComponentName, _count)
+		_result = make([]interface{}, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
-				return _result, _err
-			}
 		}
 	}
 	return _result, nil
@@ -564,4 +557,100 @@ func (s *SystemConfigStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISystemConfigServer is the server-side interface that user implementations
+// provide to NewSystemConfigStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISystemConfigServer interface {
+	GetDisabledUntilUsedPreinstalledCarrierApps(ctx context.Context) ([]string, error)
+	GetDisabledUntilUsedPreinstalledCarrierAssociatedApps(ctx context.Context) (map[interface{}]interface{}, error)
+	GetDisabledUntilUsedPreinstalledCarrierAssociatedAppEntries(ctx context.Context) (map[interface{}]interface{}, error)
+	GetSystemPermissionUids(ctx context.Context, permissionName string) ([]int32, error)
+	GetEnabledComponentOverrides(ctx context.Context, packageName string) ([]interface{}, error)
+	GetDefaultVrComponents(ctx context.Context) ([]interface{}, error)
+	GetPreventUserDisablePackages(ctx context.Context) ([]string, error)
+	GetEnhancedConfirmationTrustedPackages(ctx context.Context) ([]pm.SignedPackageParcel, error)
+	GetEnhancedConfirmationTrustedInstallers(ctx context.Context) ([]pm.SignedPackageParcel, error)
+}
+
+type systemConfigStubWrapper struct {
+	impl       ISystemConfigServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *systemConfigStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *systemConfigStubWrapper) GetDisabledUntilUsedPreinstalledCarrierApps(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetDisabledUntilUsedPreinstalledCarrierApps(ctx)
+}
+
+func (w *systemConfigStubWrapper) GetDisabledUntilUsedPreinstalledCarrierAssociatedApps(
+	ctx context.Context,
+) (map[interface{}]interface{}, error) {
+	return w.impl.GetDisabledUntilUsedPreinstalledCarrierAssociatedApps(ctx)
+}
+
+func (w *systemConfigStubWrapper) GetDisabledUntilUsedPreinstalledCarrierAssociatedAppEntries(
+	ctx context.Context,
+) (map[interface{}]interface{}, error) {
+	return w.impl.GetDisabledUntilUsedPreinstalledCarrierAssociatedAppEntries(ctx)
+}
+
+func (w *systemConfigStubWrapper) GetSystemPermissionUids(
+	ctx context.Context,
+	permissionName string,
+) ([]int32, error) {
+	return w.impl.GetSystemPermissionUids(ctx, permissionName)
+}
+
+func (w *systemConfigStubWrapper) GetEnabledComponentOverrides(
+	ctx context.Context,
+	packageName string,
+) ([]interface{}, error) {
+	return w.impl.GetEnabledComponentOverrides(ctx, packageName)
+}
+
+func (w *systemConfigStubWrapper) GetDefaultVrComponents(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetDefaultVrComponents(ctx)
+}
+
+func (w *systemConfigStubWrapper) GetPreventUserDisablePackages(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetPreventUserDisablePackages(ctx)
+}
+
+func (w *systemConfigStubWrapper) GetEnhancedConfirmationTrustedPackages(
+	ctx context.Context,
+) ([]pm.SignedPackageParcel, error) {
+	return w.impl.GetEnhancedConfirmationTrustedPackages(ctx)
+}
+
+func (w *systemConfigStubWrapper) GetEnhancedConfirmationTrustedInstallers(
+	ctx context.Context,
+) ([]pm.SignedPackageParcel, error) {
+	return w.impl.GetEnhancedConfirmationTrustedInstallers(ctx)
+}
+
+var _ ISystemConfig = (*systemConfigStubWrapper)(nil)
+
+// NewSystemConfigStub creates a server-side ISystemConfig wrapping the given
+// server implementation. The returned value satisfies ISystemConfig
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSystemConfigStub(
+	impl ISystemConfigServer,
+) ISystemConfig {
+	wrapper := &systemConfigStubWrapper{impl: impl}
+	stub := &SystemConfigStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

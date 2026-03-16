@@ -107,3 +107,42 @@ func (s *InputSinkStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputSinkServer is the server-side interface that user implementations
+// provide to NewInputSinkStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputSinkServer interface {
+	Queue(ctx context.Context, workBundle WorkBundle) error
+}
+
+type inputSinkStubWrapper struct {
+	impl       IInputSinkServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputSinkStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputSinkStubWrapper) Queue(
+	ctx context.Context,
+	workBundle WorkBundle,
+) error {
+	return w.impl.Queue(ctx, workBundle)
+}
+
+var _ IInputSink = (*inputSinkStubWrapper)(nil)
+
+// NewInputSinkStub creates a server-side IInputSink wrapping the given
+// server implementation. The returned value satisfies IInputSink
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputSinkStub(
+	impl IInputSinkServer,
+) IInputSink {
+	wrapper := &inputSinkStubWrapper{impl: impl}
+	stub := &InputSinkStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

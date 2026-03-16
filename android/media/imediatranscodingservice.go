@@ -59,7 +59,7 @@ func (p *MediaTranscodingServiceProxy) RegisterClient(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaTranscodingService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(clientName)
 	_data.WriteString16(_identity.PackageName)
 
@@ -169,4 +169,51 @@ func (s *MediaTranscodingServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaTranscodingServiceServer is the server-side interface that user implementations
+// provide to NewMediaTranscodingServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaTranscodingServiceServer interface {
+	RegisterClient(ctx context.Context, callback ITranscodingClientCallback, clientName string) (ITranscodingClient, error)
+	GetNumOfClients(ctx context.Context) (int32, error)
+}
+
+type mediaTranscodingServiceStubWrapper struct {
+	impl       IMediaTranscodingServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaTranscodingServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaTranscodingServiceStubWrapper) RegisterClient(
+	ctx context.Context,
+	callback ITranscodingClientCallback,
+	clientName string,
+) (ITranscodingClient, error) {
+	return w.impl.RegisterClient(ctx, callback, clientName)
+}
+
+func (w *mediaTranscodingServiceStubWrapper) GetNumOfClients(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNumOfClients(ctx)
+}
+
+var _ IMediaTranscodingService = (*mediaTranscodingServiceStubWrapper)(nil)
+
+// NewMediaTranscodingServiceStub creates a server-side IMediaTranscodingService wrapping the given
+// server implementation. The returned value satisfies IMediaTranscodingService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaTranscodingServiceStub(
+	impl IMediaTranscodingServiceServer,
+) IMediaTranscodingService {
+	wrapper := &mediaTranscodingServiceStubWrapper{impl: impl}
+	stub := &MediaTranscodingServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

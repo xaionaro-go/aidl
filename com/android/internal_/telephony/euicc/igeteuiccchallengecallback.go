@@ -94,3 +94,43 @@ func (s *GetEuiccChallengeCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetEuiccChallengeCallbackServer is the server-side interface that user implementations
+// provide to NewGetEuiccChallengeCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetEuiccChallengeCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, challenge []byte) error
+}
+
+type getEuiccChallengeCallbackStubWrapper struct {
+	impl       IGetEuiccChallengeCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getEuiccChallengeCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getEuiccChallengeCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	challenge []byte,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, challenge)
+}
+
+var _ IGetEuiccChallengeCallback = (*getEuiccChallengeCallbackStubWrapper)(nil)
+
+// NewGetEuiccChallengeCallbackStub creates a server-side IGetEuiccChallengeCallback wrapping the given
+// server implementation. The returned value satisfies IGetEuiccChallengeCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetEuiccChallengeCallbackStub(
+	impl IGetEuiccChallengeCallbackServer,
+) IGetEuiccChallengeCallback {
+	wrapper := &getEuiccChallengeCallbackStubWrapper{impl: impl}
+	stub := &GetEuiccChallengeCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

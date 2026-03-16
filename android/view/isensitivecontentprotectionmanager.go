@@ -44,7 +44,7 @@ func (p *SensitiveContentProtectionManagerProxy) SetSensitiveContentProtection(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensitiveContentProtectionManager)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteBool(isShowingSensitiveContent)
 
@@ -92,4 +92,45 @@ func (s *SensitiveContentProtectionManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISensitiveContentProtectionManagerServer is the server-side interface that user implementations
+// provide to NewSensitiveContentProtectionManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISensitiveContentProtectionManagerServer interface {
+	SetSensitiveContentProtection(ctx context.Context, windowToken binder.IBinder, packageName string, isShowingSensitiveContent bool) error
+}
+
+type sensitiveContentProtectionManagerStubWrapper struct {
+	impl       ISensitiveContentProtectionManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sensitiveContentProtectionManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sensitiveContentProtectionManagerStubWrapper) SetSensitiveContentProtection(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	packageName string,
+	isShowingSensitiveContent bool,
+) error {
+	return w.impl.SetSensitiveContentProtection(ctx, windowToken, packageName, isShowingSensitiveContent)
+}
+
+var _ ISensitiveContentProtectionManager = (*sensitiveContentProtectionManagerStubWrapper)(nil)
+
+// NewSensitiveContentProtectionManagerStub creates a server-side ISensitiveContentProtectionManager wrapping the given
+// server implementation. The returned value satisfies ISensitiveContentProtectionManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSensitiveContentProtectionManagerStub(
+	impl ISensitiveContentProtectionManagerServer,
+) ISensitiveContentProtectionManager {
+	wrapper := &sensitiveContentProtectionManagerStubWrapper{impl: impl}
+	stub := &SensitiveContentProtectionManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

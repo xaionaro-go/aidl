@@ -105,3 +105,42 @@ func (s *IrisServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIrisServiceServer is the server-side interface that user implementations
+// provide to NewIrisServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIrisServiceServer interface {
+	RegisterAuthenticators(ctx context.Context, hidlSensors []biometrics.SensorPropertiesInternal) error
+}
+
+type irisServiceStubWrapper struct {
+	impl       IIrisServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *irisServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *irisServiceStubWrapper) RegisterAuthenticators(
+	ctx context.Context,
+	hidlSensors []biometrics.SensorPropertiesInternal,
+) error {
+	return w.impl.RegisterAuthenticators(ctx, hidlSensors)
+}
+
+var _ IIrisService = (*irisServiceStubWrapper)(nil)
+
+// NewIrisServiceStub creates a server-side IIrisService wrapping the given
+// server implementation. The returned value satisfies IIrisService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIrisServiceStub(
+	impl IIrisServiceServer,
+) IIrisService {
+	wrapper := &irisServiceStubWrapper{impl: impl}
+	stub := &IrisServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -1801,3 +1801,353 @@ func (s *RadioSimResponseStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioSimResponseServer is the server-side interface that user implementations
+// provide to NewRadioSimResponseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioSimResponseServer interface {
+	AcknowledgeRequest(ctx context.Context, serial int32) error
+	AreUiccApplicationsEnabledResponse(ctx context.Context, info radio.RadioResponseInfo, enabled bool) error
+	ChangeIccPin2ForAppResponse(ctx context.Context, info radio.RadioResponseInfo, remainingRetries int32) error
+	ChangeIccPinForAppResponse(ctx context.Context, info radio.RadioResponseInfo, remainingRetries int32) error
+	EnableUiccApplicationsResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	GetAllowedCarriersResponse(ctx context.Context, info radio.RadioResponseInfo, carriers CarrierRestrictions, multiSimPolicy SimLockMultiSimPolicy) error
+	GetCdmaSubscriptionResponse(ctx context.Context, info radio.RadioResponseInfo, mdn string, hSid string, hNid string, min_ string, prl string) error
+	GetCdmaSubscriptionSourceResponse(ctx context.Context, info radio.RadioResponseInfo, source CdmaSubscriptionSource) error
+	GetFacilityLockForAppResponse(ctx context.Context, info radio.RadioResponseInfo, response int32) error
+	GetIccCardStatusResponse(ctx context.Context, info radio.RadioResponseInfo, cardStatus CardStatus) error
+	GetImsiForAppResponse(ctx context.Context, info radio.RadioResponseInfo, imsi string) error
+	GetSimPhonebookCapacityResponse(ctx context.Context, info radio.RadioResponseInfo, capacity PhonebookCapacity) error
+	GetSimPhonebookRecordsResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	IccCloseLogicalChannelResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	IccIoForAppResponse(ctx context.Context, info radio.RadioResponseInfo, iccIo IccIoResult) error
+	IccOpenLogicalChannelResponse(ctx context.Context, info radio.RadioResponseInfo, channelId int32, selectResponse []byte) error
+	IccTransmitApduBasicChannelResponse(ctx context.Context, info radio.RadioResponseInfo, result IccIoResult) error
+	IccTransmitApduLogicalChannelResponse(ctx context.Context, info radio.RadioResponseInfo, result IccIoResult) error
+	ReportStkServiceIsRunningResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	RequestIccSimAuthenticationResponse(ctx context.Context, info radio.RadioResponseInfo, result IccIoResult) error
+	SendEnvelopeResponse(ctx context.Context, info radio.RadioResponseInfo, commandResponse string) error
+	SendEnvelopeWithStatusResponse(ctx context.Context, info radio.RadioResponseInfo, iccIo IccIoResult) error
+	SendTerminalResponseToSimResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetAllowedCarriersResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetCarrierInfoForImsiEncryptionResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetCdmaSubscriptionSourceResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetFacilityLockForAppResponse(ctx context.Context, info radio.RadioResponseInfo, retry int32) error
+	SetSimCardPowerResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SetUiccSubscriptionResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SupplyIccPin2ForAppResponse(ctx context.Context, info radio.RadioResponseInfo, remainingRetries int32) error
+	SupplyIccPinForAppResponse(ctx context.Context, info radio.RadioResponseInfo, remainingRetries int32) error
+	SupplyIccPuk2ForAppResponse(ctx context.Context, info radio.RadioResponseInfo, remainingRetries int32) error
+	SupplyIccPukForAppResponse(ctx context.Context, info radio.RadioResponseInfo, remainingRetries int32) error
+	SupplySimDepersonalizationResponse(ctx context.Context, info radio.RadioResponseInfo, persoType PersoSubstate, remainingRetries int32) error
+	UpdateSimPhonebookRecordsResponse(ctx context.Context, info radio.RadioResponseInfo, updatedRecordIndex int32) error
+	IccCloseLogicalChannelWithSessionInfoResponse(ctx context.Context, info radio.RadioResponseInfo) error
+}
+
+type radioSimResponseStubWrapper struct {
+	impl       IRadioSimResponseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioSimResponseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioSimResponseStubWrapper) AcknowledgeRequest(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.AcknowledgeRequest(ctx, serial)
+}
+
+func (w *radioSimResponseStubWrapper) AreUiccApplicationsEnabledResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	enabled bool,
+) error {
+	return w.impl.AreUiccApplicationsEnabledResponse(ctx, info, enabled)
+}
+
+func (w *radioSimResponseStubWrapper) ChangeIccPin2ForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	remainingRetries int32,
+) error {
+	return w.impl.ChangeIccPin2ForAppResponse(ctx, info, remainingRetries)
+}
+
+func (w *radioSimResponseStubWrapper) ChangeIccPinForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	remainingRetries int32,
+) error {
+	return w.impl.ChangeIccPinForAppResponse(ctx, info, remainingRetries)
+}
+
+func (w *radioSimResponseStubWrapper) EnableUiccApplicationsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.EnableUiccApplicationsResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) GetAllowedCarriersResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	carriers CarrierRestrictions,
+	multiSimPolicy SimLockMultiSimPolicy,
+) error {
+	return w.impl.GetAllowedCarriersResponse(ctx, info, carriers, multiSimPolicy)
+}
+
+func (w *radioSimResponseStubWrapper) GetCdmaSubscriptionResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	mdn string,
+	hSid string,
+	hNid string,
+	min_ string,
+	prl string,
+) error {
+	return w.impl.GetCdmaSubscriptionResponse(ctx, info, mdn, hSid, hNid, min_, prl)
+}
+
+func (w *radioSimResponseStubWrapper) GetCdmaSubscriptionSourceResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	source CdmaSubscriptionSource,
+) error {
+	return w.impl.GetCdmaSubscriptionSourceResponse(ctx, info, source)
+}
+
+func (w *radioSimResponseStubWrapper) GetFacilityLockForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	response int32,
+) error {
+	return w.impl.GetFacilityLockForAppResponse(ctx, info, response)
+}
+
+func (w *radioSimResponseStubWrapper) GetIccCardStatusResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	cardStatus CardStatus,
+) error {
+	return w.impl.GetIccCardStatusResponse(ctx, info, cardStatus)
+}
+
+func (w *radioSimResponseStubWrapper) GetImsiForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	imsi string,
+) error {
+	return w.impl.GetImsiForAppResponse(ctx, info, imsi)
+}
+
+func (w *radioSimResponseStubWrapper) GetSimPhonebookCapacityResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	capacity PhonebookCapacity,
+) error {
+	return w.impl.GetSimPhonebookCapacityResponse(ctx, info, capacity)
+}
+
+func (w *radioSimResponseStubWrapper) GetSimPhonebookRecordsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.GetSimPhonebookRecordsResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) IccCloseLogicalChannelResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.IccCloseLogicalChannelResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) IccIoForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	iccIo IccIoResult,
+) error {
+	return w.impl.IccIoForAppResponse(ctx, info, iccIo)
+}
+
+func (w *radioSimResponseStubWrapper) IccOpenLogicalChannelResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	channelId int32,
+	selectResponse []byte,
+) error {
+	return w.impl.IccOpenLogicalChannelResponse(ctx, info, channelId, selectResponse)
+}
+
+func (w *radioSimResponseStubWrapper) IccTransmitApduBasicChannelResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	result IccIoResult,
+) error {
+	return w.impl.IccTransmitApduBasicChannelResponse(ctx, info, result)
+}
+
+func (w *radioSimResponseStubWrapper) IccTransmitApduLogicalChannelResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	result IccIoResult,
+) error {
+	return w.impl.IccTransmitApduLogicalChannelResponse(ctx, info, result)
+}
+
+func (w *radioSimResponseStubWrapper) ReportStkServiceIsRunningResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.ReportStkServiceIsRunningResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) RequestIccSimAuthenticationResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	result IccIoResult,
+) error {
+	return w.impl.RequestIccSimAuthenticationResponse(ctx, info, result)
+}
+
+func (w *radioSimResponseStubWrapper) SendEnvelopeResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	commandResponse string,
+) error {
+	return w.impl.SendEnvelopeResponse(ctx, info, commandResponse)
+}
+
+func (w *radioSimResponseStubWrapper) SendEnvelopeWithStatusResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	iccIo IccIoResult,
+) error {
+	return w.impl.SendEnvelopeWithStatusResponse(ctx, info, iccIo)
+}
+
+func (w *radioSimResponseStubWrapper) SendTerminalResponseToSimResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SendTerminalResponseToSimResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) SetAllowedCarriersResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetAllowedCarriersResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) SetCarrierInfoForImsiEncryptionResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetCarrierInfoForImsiEncryptionResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) SetCdmaSubscriptionSourceResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetCdmaSubscriptionSourceResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) SetFacilityLockForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	retry int32,
+) error {
+	return w.impl.SetFacilityLockForAppResponse(ctx, info, retry)
+}
+
+func (w *radioSimResponseStubWrapper) SetSimCardPowerResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSimCardPowerResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) SetUiccSubscriptionResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetUiccSubscriptionResponse(ctx, info)
+}
+
+func (w *radioSimResponseStubWrapper) SupplyIccPin2ForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	remainingRetries int32,
+) error {
+	return w.impl.SupplyIccPin2ForAppResponse(ctx, info, remainingRetries)
+}
+
+func (w *radioSimResponseStubWrapper) SupplyIccPinForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	remainingRetries int32,
+) error {
+	return w.impl.SupplyIccPinForAppResponse(ctx, info, remainingRetries)
+}
+
+func (w *radioSimResponseStubWrapper) SupplyIccPuk2ForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	remainingRetries int32,
+) error {
+	return w.impl.SupplyIccPuk2ForAppResponse(ctx, info, remainingRetries)
+}
+
+func (w *radioSimResponseStubWrapper) SupplyIccPukForAppResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	remainingRetries int32,
+) error {
+	return w.impl.SupplyIccPukForAppResponse(ctx, info, remainingRetries)
+}
+
+func (w *radioSimResponseStubWrapper) SupplySimDepersonalizationResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	persoType PersoSubstate,
+	remainingRetries int32,
+) error {
+	return w.impl.SupplySimDepersonalizationResponse(ctx, info, persoType, remainingRetries)
+}
+
+func (w *radioSimResponseStubWrapper) UpdateSimPhonebookRecordsResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	updatedRecordIndex int32,
+) error {
+	return w.impl.UpdateSimPhonebookRecordsResponse(ctx, info, updatedRecordIndex)
+}
+
+func (w *radioSimResponseStubWrapper) IccCloseLogicalChannelWithSessionInfoResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.IccCloseLogicalChannelWithSessionInfoResponse(ctx, info)
+}
+
+var _ IRadioSimResponse = (*radioSimResponseStubWrapper)(nil)
+
+// NewRadioSimResponseStub creates a server-side IRadioSimResponse wrapping the given
+// server implementation. The returned value satisfies IRadioSimResponse
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioSimResponseStub(
+	impl IRadioSimResponseServer,
+) IRadioSimResponse {
+	wrapper := &radioSimResponseStubWrapper{impl: impl}
+	stub := &RadioSimResponseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

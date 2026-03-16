@@ -73,7 +73,7 @@ func (p *GnssAssistanceInterfaceProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssAssistanceInterface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGnssAssistanceInterface, "setCallback")
 	if _err != nil {
@@ -149,4 +149,51 @@ func (s *GnssAssistanceInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssAssistanceInterfaceServer is the server-side interface that user implementations
+// provide to NewGnssAssistanceInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssAssistanceInterfaceServer interface {
+	InjectGnssAssistance(ctx context.Context, gnssAssistance GnssAssistance) error
+	SetCallback(ctx context.Context, callback IGnssAssistanceCallback) error
+}
+
+type gnssAssistanceInterfaceStubWrapper struct {
+	impl       IGnssAssistanceInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssAssistanceInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssAssistanceInterfaceStubWrapper) InjectGnssAssistance(
+	ctx context.Context,
+	gnssAssistance GnssAssistance,
+) error {
+	return w.impl.InjectGnssAssistance(ctx, gnssAssistance)
+}
+
+func (w *gnssAssistanceInterfaceStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IGnssAssistanceCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+var _ IGnssAssistanceInterface = (*gnssAssistanceInterfaceStubWrapper)(nil)
+
+// NewGnssAssistanceInterfaceStub creates a server-side IGnssAssistanceInterface wrapping the given
+// server implementation. The returned value satisfies IGnssAssistanceInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssAssistanceInterfaceStub(
+	impl IGnssAssistanceInterfaceServer,
+) IGnssAssistanceInterface {
+	wrapper := &gnssAssistanceInterfaceStubWrapper{impl: impl}
+	stub := &GnssAssistanceInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

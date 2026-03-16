@@ -106,3 +106,49 @@ func (s *TransportStatusCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITransportStatusCallbackServer is the server-side interface that user implementations
+// provide to NewTransportStatusCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITransportStatusCallbackServer interface {
+	OnOperationCompleteWithStatus(ctx context.Context, status int32) error
+	OnOperationComplete(ctx context.Context) error
+}
+
+type transportStatusCallbackStubWrapper struct {
+	impl       ITransportStatusCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transportStatusCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transportStatusCallbackStubWrapper) OnOperationCompleteWithStatus(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnOperationCompleteWithStatus(ctx, status)
+}
+
+func (w *transportStatusCallbackStubWrapper) OnOperationComplete(
+	ctx context.Context,
+) error {
+	return w.impl.OnOperationComplete(ctx)
+}
+
+var _ ITransportStatusCallback = (*transportStatusCallbackStubWrapper)(nil)
+
+// NewTransportStatusCallbackStub creates a server-side ITransportStatusCallback wrapping the given
+// server implementation. The returned value satisfies ITransportStatusCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTransportStatusCallbackStub(
+	impl ITransportStatusCallbackServer,
+) ITransportStatusCallback {
+	wrapper := &transportStatusCallbackStubWrapper{impl: impl}
+	stub := &TransportStatusCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

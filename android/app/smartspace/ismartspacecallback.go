@@ -94,3 +94,42 @@ func (s *SmartspaceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISmartspaceCallbackServer is the server-side interface that user implementations
+// provide to NewSmartspaceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISmartspaceCallbackServer interface {
+	OnResult(ctx context.Context, result pm.ParceledListSlice) error
+}
+
+type smartspaceCallbackStubWrapper struct {
+	impl       ISmartspaceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *smartspaceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *smartspaceCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	result pm.ParceledListSlice,
+) error {
+	return w.impl.OnResult(ctx, result)
+}
+
+var _ ISmartspaceCallback = (*smartspaceCallbackStubWrapper)(nil)
+
+// NewSmartspaceCallbackStub creates a server-side ISmartspaceCallback wrapping the given
+// server implementation. The returned value satisfies ISmartspaceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSmartspaceCallbackStub(
+	impl ISmartspaceCallbackServer,
+) ISmartspaceCallback {
+	wrapper := &smartspaceCallbackStubWrapper{impl: impl}
+	stub := &SmartspaceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -94,3 +94,44 @@ func (s *DexModuleRegisterCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDexModuleRegisterCallbackServer is the server-side interface that user implementations
+// provide to NewDexModuleRegisterCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDexModuleRegisterCallbackServer interface {
+	OnDexModuleRegistered(ctx context.Context, dexModulePath string, success bool, message string) error
+}
+
+type dexModuleRegisterCallbackStubWrapper struct {
+	impl       IDexModuleRegisterCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dexModuleRegisterCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dexModuleRegisterCallbackStubWrapper) OnDexModuleRegistered(
+	ctx context.Context,
+	dexModulePath string,
+	success bool,
+	message string,
+) error {
+	return w.impl.OnDexModuleRegistered(ctx, dexModulePath, success, message)
+}
+
+var _ IDexModuleRegisterCallback = (*dexModuleRegisterCallbackStubWrapper)(nil)
+
+// NewDexModuleRegisterCallbackStub creates a server-side IDexModuleRegisterCallback wrapping the given
+// server implementation. The returned value satisfies IDexModuleRegisterCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDexModuleRegisterCallbackStub(
+	impl IDexModuleRegisterCallbackServer,
+) IDexModuleRegisterCallback {
+	wrapper := &dexModuleRegisterCallbackStubWrapper{impl: impl}
+	stub := &DexModuleRegisterCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

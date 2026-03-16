@@ -239,3 +239,64 @@ func (s *CasListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICasListenerServer is the server-side interface that user implementations
+// provide to NewCasListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICasListenerServer interface {
+	OnEvent(ctx context.Context, event int32, arg int32, data []byte) error
+	OnSessionEvent(ctx context.Context, sessionId []byte, event int32, arg int32, data []byte) error
+	OnStatusUpdate(ctx context.Context, event StatusEvent, number int32) error
+}
+
+type casListenerStubWrapper struct {
+	impl       ICasListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *casListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *casListenerStubWrapper) OnEvent(
+	ctx context.Context,
+	event int32,
+	arg int32,
+	data []byte,
+) error {
+	return w.impl.OnEvent(ctx, event, arg, data)
+}
+
+func (w *casListenerStubWrapper) OnSessionEvent(
+	ctx context.Context,
+	sessionId []byte,
+	event int32,
+	arg int32,
+	data []byte,
+) error {
+	return w.impl.OnSessionEvent(ctx, sessionId, event, arg, data)
+}
+
+func (w *casListenerStubWrapper) OnStatusUpdate(
+	ctx context.Context,
+	event StatusEvent,
+	number int32,
+) error {
+	return w.impl.OnStatusUpdate(ctx, event, number)
+}
+
+var _ ICasListener = (*casListenerStubWrapper)(nil)
+
+// NewCasListenerStub creates a server-side ICasListener wrapping the given
+// server implementation. The returned value satisfies ICasListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCasListenerStub(
+	impl ICasListenerServer,
+) ICasListener {
+	wrapper := &casListenerStubWrapper{impl: impl}
+	stub := &CasListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

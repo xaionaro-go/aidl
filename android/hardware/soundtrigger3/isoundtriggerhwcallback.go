@@ -220,3 +220,60 @@ func (s *SoundTriggerHwCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundTriggerHwCallbackServer is the server-side interface that user implementations
+// provide to NewSoundTriggerHwCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerHwCallbackServer interface {
+	ModelUnloaded(ctx context.Context, model int32) error
+	PhraseRecognitionCallback(ctx context.Context, model int32, event soundtrigger.PhraseRecognitionEvent) error
+	RecognitionCallback(ctx context.Context, model int32, event hardwareSoundtrigger.SoundTriggerRecognitionEvent) error
+}
+
+type soundTriggerHwCallbackStubWrapper struct {
+	impl       ISoundTriggerHwCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerHwCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerHwCallbackStubWrapper) ModelUnloaded(
+	ctx context.Context,
+	model int32,
+) error {
+	return w.impl.ModelUnloaded(ctx, model)
+}
+
+func (w *soundTriggerHwCallbackStubWrapper) PhraseRecognitionCallback(
+	ctx context.Context,
+	model int32,
+	event soundtrigger.PhraseRecognitionEvent,
+) error {
+	return w.impl.PhraseRecognitionCallback(ctx, model, event)
+}
+
+func (w *soundTriggerHwCallbackStubWrapper) RecognitionCallback(
+	ctx context.Context,
+	model int32,
+	event hardwareSoundtrigger.SoundTriggerRecognitionEvent,
+) error {
+	return w.impl.RecognitionCallback(ctx, model, event)
+}
+
+var _ ISoundTriggerHwCallback = (*soundTriggerHwCallbackStubWrapper)(nil)
+
+// NewSoundTriggerHwCallbackStub creates a server-side ISoundTriggerHwCallback wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerHwCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerHwCallbackStub(
+	impl ISoundTriggerHwCallbackServer,
+) ISoundTriggerHwCallback {
+	wrapper := &soundTriggerHwCallbackStubWrapper{impl: impl}
+	stub := &SoundTriggerHwCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -6,7 +6,6 @@ import (
 	content "github.com/xaionaro-go/binder/android/content"
 	drawable "github.com/xaionaro-go/binder/android/graphics/drawable"
 	os "github.com/xaionaro-go/binder/android/os"
-	printservice "github.com/xaionaro-go/binder/android/printservice"
 	recommendation "github.com/xaionaro-go/binder/android/printservice/recommendation"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -55,7 +54,7 @@ type IPrintManager interface {
 	RemovePrintJobStateChangeListener(ctx context.Context, listener IPrintJobStateChangeListener) error
 	AddPrintServicesChangeListener(ctx context.Context, listener IPrintServicesChangeListener) error
 	RemovePrintServicesChangeListener(ctx context.Context, listener IPrintServicesChangeListener) error
-	GetPrintServices(ctx context.Context, selectionFlags int32) ([]printservice.PrintServiceInfo, error)
+	GetPrintServices(ctx context.Context, selectionFlags int32) ([]interface{}, error)
 	SetPrintServiceEnabled(ctx context.Context, service content.ComponentName, isEnabled bool) error
 	IsPrintServiceEnabled(ctx context.Context, service content.ComponentName) (bool, error)
 	AddPrintServiceRecommendationsChangeListener(ctx context.Context, listener recommendation.IRecommendationsChangeListener) error
@@ -187,7 +186,7 @@ func (p *PrintManagerProxy) Print(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
 	_data.WriteString16(printJobName)
-	_data.WriteStrongBinder(printAdapter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, printAdapter.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := attributes.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -297,7 +296,7 @@ func (p *PrintManagerProxy) AddPrintJobStateChangeListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(appId)
 	_data.WriteInt32(_identity.UserID)
 
@@ -326,7 +325,7 @@ func (p *PrintManagerProxy) RemovePrintJobStateChangeListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "removePrintJobStateChangeListener")
@@ -354,7 +353,7 @@ func (p *PrintManagerProxy) AddPrintServicesChangeListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "addPrintServicesChangeListener")
@@ -382,7 +381,7 @@ func (p *PrintManagerProxy) RemovePrintServicesChangeListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "removePrintServicesChangeListener")
@@ -406,8 +405,8 @@ func (p *PrintManagerProxy) RemovePrintServicesChangeListener(
 func (p *PrintManagerProxy) GetPrintServices(
 	ctx context.Context,
 	selectionFlags int32,
-) ([]printservice.PrintServiceInfo, error) {
-	var _result []printservice.PrintServiceInfo
+) ([]interface{}, error) {
+	var _result []interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
@@ -435,11 +434,8 @@ func (p *PrintManagerProxy) GetPrintServices(
 	}
 
 	if _count >= 0 {
-		_result = make([]printservice.PrintServiceInfo, _count)
+		_result = make([]interface{}, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
-				return _result, _err
-			}
 		}
 	}
 	return _result, nil
@@ -521,7 +517,7 @@ func (p *PrintManagerProxy) AddPrintServiceRecommendationsChangeListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "addPrintServiceRecommendationsChangeListener")
@@ -549,7 +545,7 @@ func (p *PrintManagerProxy) RemovePrintServiceRecommendationsChangeListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "removePrintServiceRecommendationsChangeListener")
@@ -617,7 +613,7 @@ func (p *PrintManagerProxy) CreatePrinterDiscoverySession(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "createPrinterDiscoverySession")
@@ -646,7 +642,7 @@ func (p *PrintManagerProxy) StartPrinterDiscovery(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	if priorityList == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -684,7 +680,7 @@ func (p *PrintManagerProxy) StopPrinterDiscovery(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "stopPrinterDiscovery")
@@ -852,7 +848,7 @@ func (p *PrintManagerProxy) DestroyPrinterDiscoverySession(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPrintManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPrintManager, "destroyPrinterDiscoverySession")
@@ -1535,4 +1531,243 @@ func (s *PrintManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPrintManagerServer is the server-side interface that user implementations
+// provide to NewPrintManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrintManagerServer interface {
+	GetPrintJobInfos(ctx context.Context, appId int32) ([]PrintJobInfo, error)
+	GetPrintJobInfo(ctx context.Context, printJobId PrintJobId, appId int32) (PrintJobInfo, error)
+	Print(ctx context.Context, printJobName string, printAdapter IPrintDocumentAdapter, attributes PrintAttributes, packageName string, appId int32) (os.Bundle, error)
+	CancelPrintJob(ctx context.Context, printJobId PrintJobId, appId int32) error
+	RestartPrintJob(ctx context.Context, printJobId PrintJobId, appId int32) error
+	AddPrintJobStateChangeListener(ctx context.Context, listener IPrintJobStateChangeListener, appId int32) error
+	RemovePrintJobStateChangeListener(ctx context.Context, listener IPrintJobStateChangeListener) error
+	AddPrintServicesChangeListener(ctx context.Context, listener IPrintServicesChangeListener) error
+	RemovePrintServicesChangeListener(ctx context.Context, listener IPrintServicesChangeListener) error
+	GetPrintServices(ctx context.Context, selectionFlags int32) ([]interface{}, error)
+	SetPrintServiceEnabled(ctx context.Context, service content.ComponentName, isEnabled bool) error
+	IsPrintServiceEnabled(ctx context.Context, service content.ComponentName) (bool, error)
+	AddPrintServiceRecommendationsChangeListener(ctx context.Context, listener recommendation.IRecommendationsChangeListener) error
+	RemovePrintServiceRecommendationsChangeListener(ctx context.Context, listener recommendation.IRecommendationsChangeListener) error
+	GetPrintServiceRecommendations(ctx context.Context) ([]recommendation.RecommendationInfo, error)
+	CreatePrinterDiscoverySession(ctx context.Context, observer IPrinterDiscoveryObserver) error
+	StartPrinterDiscovery(ctx context.Context, observer IPrinterDiscoveryObserver, priorityList []PrinterId) error
+	StopPrinterDiscovery(ctx context.Context, observer IPrinterDiscoveryObserver) error
+	ValidatePrinters(ctx context.Context, printerIds []PrinterId) error
+	StartPrinterStateTracking(ctx context.Context, printerId PrinterId) error
+	GetCustomPrinterIcon(ctx context.Context, printerId PrinterId) (drawable.Icon, error)
+	StopPrinterStateTracking(ctx context.Context, printerId PrinterId) error
+	DestroyPrinterDiscoverySession(ctx context.Context, observer IPrinterDiscoveryObserver) error
+	GetBindInstantServiceAllowed(ctx context.Context) (bool, error)
+	SetBindInstantServiceAllowed(ctx context.Context, allowed bool) error
+}
+
+type printManagerStubWrapper struct {
+	impl       IPrintManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *printManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *printManagerStubWrapper) GetPrintJobInfos(
+	ctx context.Context,
+	appId int32,
+) ([]PrintJobInfo, error) {
+	return w.impl.GetPrintJobInfos(ctx, appId)
+}
+
+func (w *printManagerStubWrapper) GetPrintJobInfo(
+	ctx context.Context,
+	printJobId PrintJobId,
+	appId int32,
+) (PrintJobInfo, error) {
+	return w.impl.GetPrintJobInfo(ctx, printJobId, appId)
+}
+
+func (w *printManagerStubWrapper) Print(
+	ctx context.Context,
+	printJobName string,
+	printAdapter IPrintDocumentAdapter,
+	attributes PrintAttributes,
+	packageName string,
+	appId int32,
+) (os.Bundle, error) {
+	return w.impl.Print(ctx, printJobName, printAdapter, attributes, packageName, appId)
+}
+
+func (w *printManagerStubWrapper) CancelPrintJob(
+	ctx context.Context,
+	printJobId PrintJobId,
+	appId int32,
+) error {
+	return w.impl.CancelPrintJob(ctx, printJobId, appId)
+}
+
+func (w *printManagerStubWrapper) RestartPrintJob(
+	ctx context.Context,
+	printJobId PrintJobId,
+	appId int32,
+) error {
+	return w.impl.RestartPrintJob(ctx, printJobId, appId)
+}
+
+func (w *printManagerStubWrapper) AddPrintJobStateChangeListener(
+	ctx context.Context,
+	listener IPrintJobStateChangeListener,
+	appId int32,
+) error {
+	return w.impl.AddPrintJobStateChangeListener(ctx, listener, appId)
+}
+
+func (w *printManagerStubWrapper) RemovePrintJobStateChangeListener(
+	ctx context.Context,
+	listener IPrintJobStateChangeListener,
+) error {
+	return w.impl.RemovePrintJobStateChangeListener(ctx, listener)
+}
+
+func (w *printManagerStubWrapper) AddPrintServicesChangeListener(
+	ctx context.Context,
+	listener IPrintServicesChangeListener,
+) error {
+	return w.impl.AddPrintServicesChangeListener(ctx, listener)
+}
+
+func (w *printManagerStubWrapper) RemovePrintServicesChangeListener(
+	ctx context.Context,
+	listener IPrintServicesChangeListener,
+) error {
+	return w.impl.RemovePrintServicesChangeListener(ctx, listener)
+}
+
+func (w *printManagerStubWrapper) GetPrintServices(
+	ctx context.Context,
+	selectionFlags int32,
+) ([]interface{}, error) {
+	return w.impl.GetPrintServices(ctx, selectionFlags)
+}
+
+func (w *printManagerStubWrapper) SetPrintServiceEnabled(
+	ctx context.Context,
+	service content.ComponentName,
+	isEnabled bool,
+) error {
+	return w.impl.SetPrintServiceEnabled(ctx, service, isEnabled)
+}
+
+func (w *printManagerStubWrapper) IsPrintServiceEnabled(
+	ctx context.Context,
+	service content.ComponentName,
+) (bool, error) {
+	return w.impl.IsPrintServiceEnabled(ctx, service)
+}
+
+func (w *printManagerStubWrapper) AddPrintServiceRecommendationsChangeListener(
+	ctx context.Context,
+	listener recommendation.IRecommendationsChangeListener,
+) error {
+	return w.impl.AddPrintServiceRecommendationsChangeListener(ctx, listener)
+}
+
+func (w *printManagerStubWrapper) RemovePrintServiceRecommendationsChangeListener(
+	ctx context.Context,
+	listener recommendation.IRecommendationsChangeListener,
+) error {
+	return w.impl.RemovePrintServiceRecommendationsChangeListener(ctx, listener)
+}
+
+func (w *printManagerStubWrapper) GetPrintServiceRecommendations(
+	ctx context.Context,
+) ([]recommendation.RecommendationInfo, error) {
+	return w.impl.GetPrintServiceRecommendations(ctx)
+}
+
+func (w *printManagerStubWrapper) CreatePrinterDiscoverySession(
+	ctx context.Context,
+	observer IPrinterDiscoveryObserver,
+) error {
+	return w.impl.CreatePrinterDiscoverySession(ctx, observer)
+}
+
+func (w *printManagerStubWrapper) StartPrinterDiscovery(
+	ctx context.Context,
+	observer IPrinterDiscoveryObserver,
+	priorityList []PrinterId,
+) error {
+	return w.impl.StartPrinterDiscovery(ctx, observer, priorityList)
+}
+
+func (w *printManagerStubWrapper) StopPrinterDiscovery(
+	ctx context.Context,
+	observer IPrinterDiscoveryObserver,
+) error {
+	return w.impl.StopPrinterDiscovery(ctx, observer)
+}
+
+func (w *printManagerStubWrapper) ValidatePrinters(
+	ctx context.Context,
+	printerIds []PrinterId,
+) error {
+	return w.impl.ValidatePrinters(ctx, printerIds)
+}
+
+func (w *printManagerStubWrapper) StartPrinterStateTracking(
+	ctx context.Context,
+	printerId PrinterId,
+) error {
+	return w.impl.StartPrinterStateTracking(ctx, printerId)
+}
+
+func (w *printManagerStubWrapper) GetCustomPrinterIcon(
+	ctx context.Context,
+	printerId PrinterId,
+) (drawable.Icon, error) {
+	return w.impl.GetCustomPrinterIcon(ctx, printerId)
+}
+
+func (w *printManagerStubWrapper) StopPrinterStateTracking(
+	ctx context.Context,
+	printerId PrinterId,
+) error {
+	return w.impl.StopPrinterStateTracking(ctx, printerId)
+}
+
+func (w *printManagerStubWrapper) DestroyPrinterDiscoverySession(
+	ctx context.Context,
+	observer IPrinterDiscoveryObserver,
+) error {
+	return w.impl.DestroyPrinterDiscoverySession(ctx, observer)
+}
+
+func (w *printManagerStubWrapper) GetBindInstantServiceAllowed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetBindInstantServiceAllowed(ctx)
+}
+
+func (w *printManagerStubWrapper) SetBindInstantServiceAllowed(
+	ctx context.Context,
+	allowed bool,
+) error {
+	return w.impl.SetBindInstantServiceAllowed(ctx, allowed)
+}
+
+var _ IPrintManager = (*printManagerStubWrapper)(nil)
+
+// NewPrintManagerStub creates a server-side IPrintManager wrapping the given
+// server implementation. The returned value satisfies IPrintManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrintManagerStub(
+	impl IPrintManagerServer,
+) IPrintManager {
+	wrapper := &printManagerStubWrapper{impl: impl}
+	stub := &PrintManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

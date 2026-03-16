@@ -136,3 +136,57 @@ func (s *DataShareReadAdapterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDataShareReadAdapterServer is the server-side interface that user implementations
+// provide to NewDataShareReadAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataShareReadAdapterServer interface {
+	Start(ctx context.Context, fd int32) error
+	Error(ctx context.Context, errorCode int32) error
+	Finish(ctx context.Context) error
+}
+
+type dataShareReadAdapterStubWrapper struct {
+	impl       IDataShareReadAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataShareReadAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dataShareReadAdapterStubWrapper) Start(
+	ctx context.Context,
+	fd int32,
+) error {
+	return w.impl.Start(ctx, fd)
+}
+
+func (w *dataShareReadAdapterStubWrapper) Error(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.Error(ctx, errorCode)
+}
+
+func (w *dataShareReadAdapterStubWrapper) Finish(
+	ctx context.Context,
+) error {
+	return w.impl.Finish(ctx)
+}
+
+var _ IDataShareReadAdapter = (*dataShareReadAdapterStubWrapper)(nil)
+
+// NewDataShareReadAdapterStub creates a server-side IDataShareReadAdapter wrapping the given
+// server implementation. The returned value satisfies IDataShareReadAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataShareReadAdapterStub(
+	impl IDataShareReadAdapterServer,
+) IDataShareReadAdapter {
+	wrapper := &dataShareReadAdapterStubWrapper{impl: impl}
+	stub := &DataShareReadAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

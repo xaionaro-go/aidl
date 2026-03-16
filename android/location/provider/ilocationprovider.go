@@ -48,7 +48,7 @@ func (p *LocationProviderProxy) SetLocationProviderManager(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationProvider)
-	_data.WriteStrongBinder(manager.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, manager.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationProvider, "setLocationProviderManager")
 	if _err != nil {
@@ -177,4 +177,67 @@ func (s *LocationProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ILocationProviderServer is the server-side interface that user implementations
+// provide to NewLocationProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILocationProviderServer interface {
+	SetLocationProviderManager(ctx context.Context, manager ILocationProviderManager) error
+	SetRequest(ctx context.Context, request ProviderRequest) error
+	Flush(ctx context.Context) error
+	SendExtraCommand(ctx context.Context, command string, extras interface{}) error
+}
+
+type locationProviderStubWrapper struct {
+	impl       ILocationProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *locationProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *locationProviderStubWrapper) SetLocationProviderManager(
+	ctx context.Context,
+	manager ILocationProviderManager,
+) error {
+	return w.impl.SetLocationProviderManager(ctx, manager)
+}
+
+func (w *locationProviderStubWrapper) SetRequest(
+	ctx context.Context,
+	request ProviderRequest,
+) error {
+	return w.impl.SetRequest(ctx, request)
+}
+
+func (w *locationProviderStubWrapper) Flush(
+	ctx context.Context,
+) error {
+	return w.impl.Flush(ctx)
+}
+
+func (w *locationProviderStubWrapper) SendExtraCommand(
+	ctx context.Context,
+	command string,
+	extras interface{},
+) error {
+	return w.impl.SendExtraCommand(ctx, command, extras)
+}
+
+var _ ILocationProvider = (*locationProviderStubWrapper)(nil)
+
+// NewLocationProviderStub creates a server-side ILocationProvider wrapping the given
+// server implementation. The returned value satisfies ILocationProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLocationProviderStub(
+	impl ILocationProviderServer,
+) ILocationProvider {
+	wrapper := &locationProviderStubWrapper{impl: impl}
+	stub := &LocationProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

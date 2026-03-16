@@ -3,7 +3,6 @@ package window
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type IBackAnimationHandoffHandler interface {
 	AsBinder() binder.IBinder
-	HandOffAnimation(ctx context.Context, targets []view.RemoteAnimationTarget, states []WindowAnimationState) error
+	HandOffAnimation(ctx context.Context, targets []interface{}, states []WindowAnimationState) error
 }
 
 type BackAnimationHandoffHandlerProxy struct {
@@ -39,7 +38,7 @@ var _ IBackAnimationHandoffHandler = (*BackAnimationHandoffHandlerProxy)(nil)
 
 func (p *BackAnimationHandoffHandlerProxy) HandOffAnimation(
 	ctx context.Context,
-	targets []view.RemoteAnimationTarget,
+	targets []interface{},
 	states []WindowAnimationState,
 ) error {
 	_data := parcel.New()
@@ -48,11 +47,6 @@ func (p *BackAnimationHandoffHandlerProxy) HandOffAnimation(
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(targets)))
-		for _, _item := range targets {
-			if _err := _item.MarshalParcel(_data); _err != nil {
-				return _err
-			}
-		}
 	}
 	if states == nil {
 		_data.WriteInt32(-1)
@@ -93,7 +87,7 @@ func (s *BackAnimationHandoffHandlerStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_targets []view.RemoteAnimationTarget
+		var _arg_targets []interface{}
 		_ = _arg_targets
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_states []WindowAnimationState
@@ -104,4 +98,44 @@ func (s *BackAnimationHandoffHandlerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBackAnimationHandoffHandlerServer is the server-side interface that user implementations
+// provide to NewBackAnimationHandoffHandlerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackAnimationHandoffHandlerServer interface {
+	HandOffAnimation(ctx context.Context, targets []interface{}, states []WindowAnimationState) error
+}
+
+type backAnimationHandoffHandlerStubWrapper struct {
+	impl       IBackAnimationHandoffHandlerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backAnimationHandoffHandlerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backAnimationHandoffHandlerStubWrapper) HandOffAnimation(
+	ctx context.Context,
+	targets []interface{},
+	states []WindowAnimationState,
+) error {
+	return w.impl.HandOffAnimation(ctx, targets, states)
+}
+
+var _ IBackAnimationHandoffHandler = (*backAnimationHandoffHandlerStubWrapper)(nil)
+
+// NewBackAnimationHandoffHandlerStub creates a server-side IBackAnimationHandoffHandler wrapping the given
+// server implementation. The returned value satisfies IBackAnimationHandoffHandler
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackAnimationHandoffHandlerStub(
+	impl IBackAnimationHandoffHandlerServer,
+) IBackAnimationHandoffHandler {
+	wrapper := &backAnimationHandoffHandlerStubWrapper{impl: impl}
+	stub := &BackAnimationHandoffHandlerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

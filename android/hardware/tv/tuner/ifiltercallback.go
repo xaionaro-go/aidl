@@ -121,3 +121,50 @@ func (s *FilterCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFilterCallbackServer is the server-side interface that user implementations
+// provide to NewFilterCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFilterCallbackServer interface {
+	OnFilterEvent(ctx context.Context, events []DemuxFilterEvent) error
+	OnFilterStatus(ctx context.Context, status DemuxFilterStatus) error
+}
+
+type filterCallbackStubWrapper struct {
+	impl       IFilterCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *filterCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *filterCallbackStubWrapper) OnFilterEvent(
+	ctx context.Context,
+	events []DemuxFilterEvent,
+) error {
+	return w.impl.OnFilterEvent(ctx, events)
+}
+
+func (w *filterCallbackStubWrapper) OnFilterStatus(
+	ctx context.Context,
+	status DemuxFilterStatus,
+) error {
+	return w.impl.OnFilterStatus(ctx, status)
+}
+
+var _ IFilterCallback = (*filterCallbackStubWrapper)(nil)
+
+// NewFilterCallbackStub creates a server-side IFilterCallback wrapping the given
+// server implementation. The returned value satisfies IFilterCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFilterCallbackStub(
+	impl IFilterCallbackServer,
+) IFilterCallback {
+	wrapper := &filterCallbackStubWrapper{impl: impl}
+	stub := &FilterCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

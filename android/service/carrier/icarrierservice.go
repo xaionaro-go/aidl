@@ -117,3 +117,44 @@ func (s *CarrierServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICarrierServiceServer is the server-side interface that user implementations
+// provide to NewCarrierServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarrierServiceServer interface {
+	GetCarrierConfig(ctx context.Context, phoneId int32, id CarrierIdentifier, result os.ResultReceiver) error
+}
+
+type carrierServiceStubWrapper struct {
+	impl       ICarrierServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carrierServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carrierServiceStubWrapper) GetCarrierConfig(
+	ctx context.Context,
+	phoneId int32,
+	id CarrierIdentifier,
+	result os.ResultReceiver,
+) error {
+	return w.impl.GetCarrierConfig(ctx, phoneId, id, result)
+}
+
+var _ ICarrierService = (*carrierServiceStubWrapper)(nil)
+
+// NewCarrierServiceStub creates a server-side ICarrierService wrapping the given
+// server implementation. The returned value satisfies ICarrierService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarrierServiceStub(
+	impl ICarrierServiceServer,
+) ICarrierService {
+	wrapper := &carrierServiceStubWrapper{impl: impl}
+	stub := &CarrierServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

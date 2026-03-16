@@ -106,3 +106,45 @@ func (s *ThermalHeadroomListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IThermalHeadroomListenerServer is the server-side interface that user implementations
+// provide to NewThermalHeadroomListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IThermalHeadroomListenerServer interface {
+	OnHeadroomChange(ctx context.Context, headroom float32, forecastHeadroom float32, forecastSeconds int32, thresholds []float32) error
+}
+
+type thermalHeadroomListenerStubWrapper struct {
+	impl       IThermalHeadroomListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *thermalHeadroomListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *thermalHeadroomListenerStubWrapper) OnHeadroomChange(
+	ctx context.Context,
+	headroom float32,
+	forecastHeadroom float32,
+	forecastSeconds int32,
+	thresholds []float32,
+) error {
+	return w.impl.OnHeadroomChange(ctx, headroom, forecastHeadroom, forecastSeconds, thresholds)
+}
+
+var _ IThermalHeadroomListener = (*thermalHeadroomListenerStubWrapper)(nil)
+
+// NewThermalHeadroomListenerStub creates a server-side IThermalHeadroomListener wrapping the given
+// server implementation. The returned value satisfies IThermalHeadroomListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewThermalHeadroomListenerStub(
+	impl IThermalHeadroomListenerServer,
+) IThermalHeadroomListener {
+	wrapper := &thermalHeadroomListenerStubWrapper{impl: impl}
+	stub := &ThermalHeadroomListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

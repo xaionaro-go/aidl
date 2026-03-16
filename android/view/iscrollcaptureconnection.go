@@ -52,7 +52,7 @@ func (p *ScrollCaptureConnectionProxy) StartCapture(
 	var _result ondeviceintelligence.ICancellationSignal
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIScrollCaptureConnection)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIScrollCaptureConnection, "startCapture")
 	if _err != nil {
@@ -239,4 +239,66 @@ func (s *ScrollCaptureConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IScrollCaptureConnectionServer is the server-side interface that user implementations
+// provide to NewScrollCaptureConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScrollCaptureConnectionServer interface {
+	StartCapture(ctx context.Context, surface interface{}, callbacks IScrollCaptureCallbacks) (ondeviceintelligence.ICancellationSignal, error)
+	RequestImage(ctx context.Context, captureArea graphics.Rect) (ondeviceintelligence.ICancellationSignal, error)
+	EndCapture(ctx context.Context) (ondeviceintelligence.ICancellationSignal, error)
+	Close(ctx context.Context) error
+}
+
+type scrollCaptureConnectionStubWrapper struct {
+	impl       IScrollCaptureConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scrollCaptureConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scrollCaptureConnectionStubWrapper) StartCapture(
+	ctx context.Context,
+	surface interface{},
+	callbacks IScrollCaptureCallbacks,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.StartCapture(ctx, surface, callbacks)
+}
+
+func (w *scrollCaptureConnectionStubWrapper) RequestImage(
+	ctx context.Context,
+	captureArea graphics.Rect,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.RequestImage(ctx, captureArea)
+}
+
+func (w *scrollCaptureConnectionStubWrapper) EndCapture(
+	ctx context.Context,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.EndCapture(ctx)
+}
+
+func (w *scrollCaptureConnectionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ IScrollCaptureConnection = (*scrollCaptureConnectionStubWrapper)(nil)
+
+// NewScrollCaptureConnectionStub creates a server-side IScrollCaptureConnection wrapping the given
+// server implementation. The returned value satisfies IScrollCaptureConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScrollCaptureConnectionStub(
+	impl IScrollCaptureConnectionServer,
+) IScrollCaptureConnection {
+	wrapper := &scrollCaptureConnectionStubWrapper{impl: impl}
+	stub := &ScrollCaptureConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

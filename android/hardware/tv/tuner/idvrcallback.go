@@ -114,3 +114,50 @@ func (s *DvrCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDvrCallbackServer is the server-side interface that user implementations
+// provide to NewDvrCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDvrCallbackServer interface {
+	OnPlaybackStatus(ctx context.Context, status PlaybackStatus) error
+	OnRecordStatus(ctx context.Context, status RecordStatus) error
+}
+
+type dvrCallbackStubWrapper struct {
+	impl       IDvrCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dvrCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dvrCallbackStubWrapper) OnPlaybackStatus(
+	ctx context.Context,
+	status PlaybackStatus,
+) error {
+	return w.impl.OnPlaybackStatus(ctx, status)
+}
+
+func (w *dvrCallbackStubWrapper) OnRecordStatus(
+	ctx context.Context,
+	status RecordStatus,
+) error {
+	return w.impl.OnRecordStatus(ctx, status)
+}
+
+var _ IDvrCallback = (*dvrCallbackStubWrapper)(nil)
+
+// NewDvrCallbackStub creates a server-side IDvrCallback wrapping the given
+// server implementation. The returned value satisfies IDvrCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDvrCallbackStub(
+	impl IDvrCallbackServer,
+) IDvrCallback {
+	wrapper := &dvrCallbackStubWrapper{impl: impl}
+	stub := &DvrCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

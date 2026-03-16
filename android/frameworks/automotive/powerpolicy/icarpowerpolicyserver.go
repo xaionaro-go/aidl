@@ -118,7 +118,7 @@ func (p *CarPowerPolicyServerProxy) RegisterPowerPolicyChangeCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICarPowerPolicyServer)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := filter.MarshalParcel(_data); _err != nil {
 		return _err
@@ -148,7 +148,7 @@ func (p *CarPowerPolicyServerProxy) UnregisterPowerPolicyChangeCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICarPowerPolicyServer)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarPowerPolicyServer, "unregisterPowerPolicyChangeCallback")
 	if _err != nil {
@@ -174,7 +174,7 @@ func (p *CarPowerPolicyServerProxy) ApplyPowerPolicy(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICarPowerPolicyServer)
-	_data.WriteString(policyId)
+	_data.WriteString16(policyId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarPowerPolicyServer, "applyPowerPolicy")
 	if _err != nil {
@@ -200,7 +200,7 @@ func (p *CarPowerPolicyServerProxy) SetPowerPolicyGroup(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICarPowerPolicyServer)
-	_data.WriteString(policyGroupId)
+	_data.WriteString16(policyGroupId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICarPowerPolicyServer, "setPowerPolicyGroup")
 	if _err != nil {
@@ -314,7 +314,7 @@ func (s *CarPowerPolicyServerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_policyId, _err := _data.ReadString()
+		_arg_policyId, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -330,7 +330,7 @@ func (s *CarPowerPolicyServerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_policyGroupId, _err := _data.ReadString()
+		_arg_policyGroupId, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -345,4 +345,83 @@ func (s *CarPowerPolicyServerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICarPowerPolicyServerServer is the server-side interface that user implementations
+// provide to NewCarPowerPolicyServerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarPowerPolicyServerServer interface {
+	GetCurrentPowerPolicy(ctx context.Context) (CarPowerPolicy, error)
+	GetPowerComponentState(ctx context.Context, componentId PowerComponent) (bool, error)
+	RegisterPowerPolicyChangeCallback(ctx context.Context, callback ICarPowerPolicyChangeCallback, filter CarPowerPolicyFilter) error
+	UnregisterPowerPolicyChangeCallback(ctx context.Context, callback ICarPowerPolicyChangeCallback) error
+	ApplyPowerPolicy(ctx context.Context, policyId string) error
+	SetPowerPolicyGroup(ctx context.Context, policyGroupId string) error
+}
+
+type carPowerPolicyServerStubWrapper struct {
+	impl       ICarPowerPolicyServerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carPowerPolicyServerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carPowerPolicyServerStubWrapper) GetCurrentPowerPolicy(
+	ctx context.Context,
+) (CarPowerPolicy, error) {
+	return w.impl.GetCurrentPowerPolicy(ctx)
+}
+
+func (w *carPowerPolicyServerStubWrapper) GetPowerComponentState(
+	ctx context.Context,
+	componentId PowerComponent,
+) (bool, error) {
+	return w.impl.GetPowerComponentState(ctx, componentId)
+}
+
+func (w *carPowerPolicyServerStubWrapper) RegisterPowerPolicyChangeCallback(
+	ctx context.Context,
+	callback ICarPowerPolicyChangeCallback,
+	filter CarPowerPolicyFilter,
+) error {
+	return w.impl.RegisterPowerPolicyChangeCallback(ctx, callback, filter)
+}
+
+func (w *carPowerPolicyServerStubWrapper) UnregisterPowerPolicyChangeCallback(
+	ctx context.Context,
+	callback ICarPowerPolicyChangeCallback,
+) error {
+	return w.impl.UnregisterPowerPolicyChangeCallback(ctx, callback)
+}
+
+func (w *carPowerPolicyServerStubWrapper) ApplyPowerPolicy(
+	ctx context.Context,
+	policyId string,
+) error {
+	return w.impl.ApplyPowerPolicy(ctx, policyId)
+}
+
+func (w *carPowerPolicyServerStubWrapper) SetPowerPolicyGroup(
+	ctx context.Context,
+	policyGroupId string,
+) error {
+	return w.impl.SetPowerPolicyGroup(ctx, policyGroupId)
+}
+
+var _ ICarPowerPolicyServer = (*carPowerPolicyServerStubWrapper)(nil)
+
+// NewCarPowerPolicyServerStub creates a server-side ICarPowerPolicyServer wrapping the given
+// server implementation. The returned value satisfies ICarPowerPolicyServer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarPowerPolicyServerStub(
+	impl ICarPowerPolicyServerServer,
+) ICarPowerPolicyServer {
+	wrapper := &carPowerPolicyServerStubWrapper{impl: impl}
+	stub := &CarPowerPolicyServerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

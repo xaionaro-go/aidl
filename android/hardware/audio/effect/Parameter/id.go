@@ -7,7 +7,6 @@ import (
 	AutomaticGainControlV2 "github.com/xaionaro-go/binder/android/hardware/audio/effect/AutomaticGainControlV2"
 	BassBoost "github.com/xaionaro-go/binder/android/hardware/audio/effect/BassBoost"
 	Downmix "github.com/xaionaro-go/binder/android/hardware/audio/effect/Downmix"
-	DynamicsProcessing "github.com/xaionaro-go/binder/android/hardware/audio/effect/DynamicsProcessing"
 	EnvironmentalReverb "github.com/xaionaro-go/binder/android/hardware/audio/effect/EnvironmentalReverb"
 	Equalizer "github.com/xaionaro-go/binder/android/hardware/audio/effect/Equalizer"
 	Eraser "github.com/xaionaro-go/binder/android/hardware/audio/effect/Eraser"
@@ -53,7 +52,7 @@ type Id struct {
 	AutomaticGainControlV2Tag AutomaticGainControlV2.Id
 	BassBoostTag              BassBoost.Id
 	DownmixTag                Downmix.Id
-	DynamicsProcessingTag     DynamicsProcessing.Id
+	DynamicsProcessingTag     interface{}
 	EnvironmentalReverbTag    EnvironmentalReverb.Id
 	EqualizerTag              Equalizer.Id
 	HapticGeneratorTag        HapticGenerator.Id
@@ -160,16 +159,16 @@ func (u *Id) SetDownmixTag(
 	u.DownmixTag = v
 }
 
-func (u *Id) GetDynamicsProcessingTag() (DynamicsProcessing.Id, bool) {
+func (u *Id) GetDynamicsProcessingTag() (interface{}, bool) {
 	if u.Tag != IdTagDynamicsProcessingTag {
-		var _zero DynamicsProcessing.Id
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.DynamicsProcessingTag, true
 }
 
 func (u *Id) SetDynamicsProcessingTag(
-	v DynamicsProcessing.Id,
+	v interface{},
 ) {
 	u.Tag = IdTagDynamicsProcessingTag
 	u.DynamicsProcessingTag = v

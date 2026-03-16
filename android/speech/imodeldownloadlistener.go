@@ -160,3 +160,64 @@ func (s *ModelDownloadListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IModelDownloadListenerServer is the server-side interface that user implementations
+// provide to NewModelDownloadListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IModelDownloadListenerServer interface {
+	OnProgress(ctx context.Context, completedPercent int32) error
+	OnSuccess(ctx context.Context) error
+	OnScheduled(ctx context.Context) error
+	OnError(ctx context.Context, error_ int32) error
+}
+
+type modelDownloadListenerStubWrapper struct {
+	impl       IModelDownloadListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *modelDownloadListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *modelDownloadListenerStubWrapper) OnProgress(
+	ctx context.Context,
+	completedPercent int32,
+) error {
+	return w.impl.OnProgress(ctx, completedPercent)
+}
+
+func (w *modelDownloadListenerStubWrapper) OnSuccess(
+	ctx context.Context,
+) error {
+	return w.impl.OnSuccess(ctx)
+}
+
+func (w *modelDownloadListenerStubWrapper) OnScheduled(
+	ctx context.Context,
+) error {
+	return w.impl.OnScheduled(ctx)
+}
+
+func (w *modelDownloadListenerStubWrapper) OnError(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.OnError(ctx, error_)
+}
+
+var _ IModelDownloadListener = (*modelDownloadListenerStubWrapper)(nil)
+
+// NewModelDownloadListenerStub creates a server-side IModelDownloadListener wrapping the given
+// server implementation. The returned value satisfies IModelDownloadListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewModelDownloadListenerStub(
+	impl IModelDownloadListenerServer,
+) IModelDownloadListener {
+	wrapper := &modelDownloadListenerStubWrapper{impl: impl}
+	stub := &ModelDownloadListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

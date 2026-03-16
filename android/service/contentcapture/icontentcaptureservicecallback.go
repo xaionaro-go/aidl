@@ -259,3 +259,71 @@ func (s *ContentCaptureServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IContentCaptureServiceCallbackServer is the server-side interface that user implementations
+// provide to NewContentCaptureServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentCaptureServiceCallbackServer interface {
+	SetContentCaptureWhitelist(ctx context.Context, packages []string, activities []content.ComponentName) error
+	SetContentCaptureConditions(ctx context.Context, packageName string, conditions []viewContentcapture.ContentCaptureCondition) error
+	DisableSelf(ctx context.Context) error
+	WriteSessionFlush(ctx context.Context, sessionId int32, app content.ComponentName, flushMetrics FlushMetrics, options content.ContentCaptureOptions, flushReason int32) error
+}
+
+type contentCaptureServiceCallbackStubWrapper struct {
+	impl       IContentCaptureServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentCaptureServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentCaptureServiceCallbackStubWrapper) SetContentCaptureWhitelist(
+	ctx context.Context,
+	packages []string,
+	activities []content.ComponentName,
+) error {
+	return w.impl.SetContentCaptureWhitelist(ctx, packages, activities)
+}
+
+func (w *contentCaptureServiceCallbackStubWrapper) SetContentCaptureConditions(
+	ctx context.Context,
+	packageName string,
+	conditions []viewContentcapture.ContentCaptureCondition,
+) error {
+	return w.impl.SetContentCaptureConditions(ctx, packageName, conditions)
+}
+
+func (w *contentCaptureServiceCallbackStubWrapper) DisableSelf(
+	ctx context.Context,
+) error {
+	return w.impl.DisableSelf(ctx)
+}
+
+func (w *contentCaptureServiceCallbackStubWrapper) WriteSessionFlush(
+	ctx context.Context,
+	sessionId int32,
+	app content.ComponentName,
+	flushMetrics FlushMetrics,
+	options content.ContentCaptureOptions,
+	flushReason int32,
+) error {
+	return w.impl.WriteSessionFlush(ctx, sessionId, app, flushMetrics, options, flushReason)
+}
+
+var _ IContentCaptureServiceCallback = (*contentCaptureServiceCallbackStubWrapper)(nil)
+
+// NewContentCaptureServiceCallbackStub creates a server-side IContentCaptureServiceCallback wrapping the given
+// server implementation. The returned value satisfies IContentCaptureServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentCaptureServiceCallbackStub(
+	impl IContentCaptureServiceCallbackServer,
+) IContentCaptureServiceCallback {
+	wrapper := &contentCaptureServiceCallbackStubWrapper{impl: impl}
+	stub := &ContentCaptureServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

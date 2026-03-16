@@ -805,7 +805,7 @@ func (p *CameraDeviceUserProxy) SwitchToOffline(
 	var _result ICameraOfflineSession
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraDeviceUser)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 	if offlineOutputIds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1341,4 +1341,237 @@ func (s *CameraDeviceUserStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICameraDeviceUserServer is the server-side interface that user implementations
+// provide to NewCameraDeviceUserStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraDeviceUserServer interface {
+	Disconnect(ctx context.Context) error
+	SubmitRequest(ctx context.Context, request interface{}, streaming bool) (device.SubmitInfo, error)
+	SubmitRequestList(ctx context.Context, requestList []interface{}, streaming bool) (device.SubmitInfo, error)
+	CancelRequest(ctx context.Context, requestId int32) (int64, error)
+	BeginConfigure(ctx context.Context) error
+	EndConfigure(ctx context.Context, operatingMode int32, sessionParams interface{}, startTimeMs int64) ([]int32, error)
+	IsSessionConfigurationSupported(ctx context.Context, sessionConfiguration device.SessionConfiguration) (bool, error)
+	DeleteStream(ctx context.Context, streamId int32) error
+	CreateStream(ctx context.Context, outputConfiguration device.OutputConfiguration) (int32, error)
+	CreateInputStream(ctx context.Context, width int32, height int32, format int32, isMultiResolution bool) (int32, error)
+	GetInputSurface(ctx context.Context) (interface{}, error)
+	CreateDefaultRequest(ctx context.Context, templateId int32) (interface{}, error)
+	GetCameraInfo(ctx context.Context) (interface{}, error)
+	WaitUntilIdle(ctx context.Context) error
+	Flush(ctx context.Context) (int64, error)
+	Prepare(ctx context.Context, streamId int32) error
+	TearDown(ctx context.Context, streamId int32) error
+	Prepare2(ctx context.Context, maxCount int32, streamId int32) error
+	UpdateOutputConfiguration(ctx context.Context, streamId int32, outputConfiguration device.OutputConfiguration) error
+	FinalizeOutputConfigurations(ctx context.Context, streamId int32, outputConfiguration device.OutputConfiguration) error
+	GetCaptureResultMetadataQueue(ctx context.Context) (fmq.MQDescriptor, error)
+	SetCameraAudioRestriction(ctx context.Context, mode int32) error
+	GetGlobalAudioRestriction(ctx context.Context) (int32, error)
+	SwitchToOffline(ctx context.Context, callbacks ICameraDeviceCallbacks, offlineOutputIds []int32) (ICameraOfflineSession, error)
+	IsPrimaryClient(ctx context.Context) (bool, error)
+}
+
+type cameraDeviceUserStubWrapper struct {
+	impl       ICameraDeviceUserServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraDeviceUserStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraDeviceUserStubWrapper) Disconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnect(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) SubmitRequest(
+	ctx context.Context,
+	request interface{},
+	streaming bool,
+) (device.SubmitInfo, error) {
+	return w.impl.SubmitRequest(ctx, request, streaming)
+}
+
+func (w *cameraDeviceUserStubWrapper) SubmitRequestList(
+	ctx context.Context,
+	requestList []interface{},
+	streaming bool,
+) (device.SubmitInfo, error) {
+	return w.impl.SubmitRequestList(ctx, requestList, streaming)
+}
+
+func (w *cameraDeviceUserStubWrapper) CancelRequest(
+	ctx context.Context,
+	requestId int32,
+) (int64, error) {
+	return w.impl.CancelRequest(ctx, requestId)
+}
+
+func (w *cameraDeviceUserStubWrapper) BeginConfigure(
+	ctx context.Context,
+) error {
+	return w.impl.BeginConfigure(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) EndConfigure(
+	ctx context.Context,
+	operatingMode int32,
+	sessionParams interface{},
+	startTimeMs int64,
+) ([]int32, error) {
+	return w.impl.EndConfigure(ctx, operatingMode, sessionParams, startTimeMs)
+}
+
+func (w *cameraDeviceUserStubWrapper) IsSessionConfigurationSupported(
+	ctx context.Context,
+	sessionConfiguration device.SessionConfiguration,
+) (bool, error) {
+	return w.impl.IsSessionConfigurationSupported(ctx, sessionConfiguration)
+}
+
+func (w *cameraDeviceUserStubWrapper) DeleteStream(
+	ctx context.Context,
+	streamId int32,
+) error {
+	return w.impl.DeleteStream(ctx, streamId)
+}
+
+func (w *cameraDeviceUserStubWrapper) CreateStream(
+	ctx context.Context,
+	outputConfiguration device.OutputConfiguration,
+) (int32, error) {
+	return w.impl.CreateStream(ctx, outputConfiguration)
+}
+
+func (w *cameraDeviceUserStubWrapper) CreateInputStream(
+	ctx context.Context,
+	width int32,
+	height int32,
+	format int32,
+	isMultiResolution bool,
+) (int32, error) {
+	return w.impl.CreateInputStream(ctx, width, height, format, isMultiResolution)
+}
+
+func (w *cameraDeviceUserStubWrapper) GetInputSurface(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetInputSurface(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) CreateDefaultRequest(
+	ctx context.Context,
+	templateId int32,
+) (interface{}, error) {
+	return w.impl.CreateDefaultRequest(ctx, templateId)
+}
+
+func (w *cameraDeviceUserStubWrapper) GetCameraInfo(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetCameraInfo(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) WaitUntilIdle(
+	ctx context.Context,
+) error {
+	return w.impl.WaitUntilIdle(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) Flush(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.Flush(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) Prepare(
+	ctx context.Context,
+	streamId int32,
+) error {
+	return w.impl.Prepare(ctx, streamId)
+}
+
+func (w *cameraDeviceUserStubWrapper) TearDown(
+	ctx context.Context,
+	streamId int32,
+) error {
+	return w.impl.TearDown(ctx, streamId)
+}
+
+func (w *cameraDeviceUserStubWrapper) Prepare2(
+	ctx context.Context,
+	maxCount int32,
+	streamId int32,
+) error {
+	return w.impl.Prepare2(ctx, maxCount, streamId)
+}
+
+func (w *cameraDeviceUserStubWrapper) UpdateOutputConfiguration(
+	ctx context.Context,
+	streamId int32,
+	outputConfiguration device.OutputConfiguration,
+) error {
+	return w.impl.UpdateOutputConfiguration(ctx, streamId, outputConfiguration)
+}
+
+func (w *cameraDeviceUserStubWrapper) FinalizeOutputConfigurations(
+	ctx context.Context,
+	streamId int32,
+	outputConfiguration device.OutputConfiguration,
+) error {
+	return w.impl.FinalizeOutputConfigurations(ctx, streamId, outputConfiguration)
+}
+
+func (w *cameraDeviceUserStubWrapper) GetCaptureResultMetadataQueue(
+	ctx context.Context,
+) (fmq.MQDescriptor, error) {
+	return w.impl.GetCaptureResultMetadataQueue(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) SetCameraAudioRestriction(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.SetCameraAudioRestriction(ctx, mode)
+}
+
+func (w *cameraDeviceUserStubWrapper) GetGlobalAudioRestriction(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetGlobalAudioRestriction(ctx)
+}
+
+func (w *cameraDeviceUserStubWrapper) SwitchToOffline(
+	ctx context.Context,
+	callbacks ICameraDeviceCallbacks,
+	offlineOutputIds []int32,
+) (ICameraOfflineSession, error) {
+	return w.impl.SwitchToOffline(ctx, callbacks, offlineOutputIds)
+}
+
+func (w *cameraDeviceUserStubWrapper) IsPrimaryClient(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsPrimaryClient(ctx)
+}
+
+var _ ICameraDeviceUser = (*cameraDeviceUserStubWrapper)(nil)
+
+// NewCameraDeviceUserStub creates a server-side ICameraDeviceUser wrapping the given
+// server implementation. The returned value satisfies ICameraDeviceUser
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraDeviceUserStub(
+	impl ICameraDeviceUserServer,
+) ICameraDeviceUser {
+	wrapper := &cameraDeviceUserStubWrapper{impl: impl}
+	stub := &CameraDeviceUserStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

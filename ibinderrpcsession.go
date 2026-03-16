@@ -96,3 +96,41 @@ func (s *BinderRpcSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBinderRpcSessionServer is the server-side interface that user implementations
+// provide to NewBinderRpcSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderRpcSessionServer interface {
+	GetName(ctx context.Context) (string, error)
+}
+
+type binderRpcSessionStubWrapper struct {
+	impl       IBinderRpcSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderRpcSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderRpcSessionStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+var _ IBinderRpcSession = (*binderRpcSessionStubWrapper)(nil)
+
+// NewBinderRpcSessionStub creates a server-side IBinderRpcSession wrapping the given
+// server implementation. The returned value satisfies IBinderRpcSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderRpcSessionStub(
+	impl IBinderRpcSessionServer,
+) IBinderRpcSession {
+	wrapper := &binderRpcSessionStubWrapper{impl: impl}
+	stub := &BinderRpcSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

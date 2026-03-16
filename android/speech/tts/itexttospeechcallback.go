@@ -322,3 +322,99 @@ func (s *TextToSpeechCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITextToSpeechCallbackServer is the server-side interface that user implementations
+// provide to NewTextToSpeechCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITextToSpeechCallbackServer interface {
+	OnStart(ctx context.Context, utteranceId string) error
+	OnSuccess(ctx context.Context, utteranceId string) error
+	OnStop(ctx context.Context, utteranceId string, isStarted bool) error
+	OnError(ctx context.Context, utteranceId string, errorCode int32) error
+	OnBeginSynthesis(ctx context.Context, utteranceId string, sampleRateInHz int32, audioFormat int32, channelCount int32) error
+	OnAudioAvailable(ctx context.Context, utteranceId string, audio []byte) error
+	OnRangeStart(ctx context.Context, utteranceId string, start int32, end int32, frame int32) error
+}
+
+type textToSpeechCallbackStubWrapper struct {
+	impl       ITextToSpeechCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *textToSpeechCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *textToSpeechCallbackStubWrapper) OnStart(
+	ctx context.Context,
+	utteranceId string,
+) error {
+	return w.impl.OnStart(ctx, utteranceId)
+}
+
+func (w *textToSpeechCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	utteranceId string,
+) error {
+	return w.impl.OnSuccess(ctx, utteranceId)
+}
+
+func (w *textToSpeechCallbackStubWrapper) OnStop(
+	ctx context.Context,
+	utteranceId string,
+	isStarted bool,
+) error {
+	return w.impl.OnStop(ctx, utteranceId, isStarted)
+}
+
+func (w *textToSpeechCallbackStubWrapper) OnError(
+	ctx context.Context,
+	utteranceId string,
+	errorCode int32,
+) error {
+	return w.impl.OnError(ctx, utteranceId, errorCode)
+}
+
+func (w *textToSpeechCallbackStubWrapper) OnBeginSynthesis(
+	ctx context.Context,
+	utteranceId string,
+	sampleRateInHz int32,
+	audioFormat int32,
+	channelCount int32,
+) error {
+	return w.impl.OnBeginSynthesis(ctx, utteranceId, sampleRateInHz, audioFormat, channelCount)
+}
+
+func (w *textToSpeechCallbackStubWrapper) OnAudioAvailable(
+	ctx context.Context,
+	utteranceId string,
+	audio []byte,
+) error {
+	return w.impl.OnAudioAvailable(ctx, utteranceId, audio)
+}
+
+func (w *textToSpeechCallbackStubWrapper) OnRangeStart(
+	ctx context.Context,
+	utteranceId string,
+	start int32,
+	end int32,
+	frame int32,
+) error {
+	return w.impl.OnRangeStart(ctx, utteranceId, start, end, frame)
+}
+
+var _ ITextToSpeechCallback = (*textToSpeechCallbackStubWrapper)(nil)
+
+// NewTextToSpeechCallbackStub creates a server-side ITextToSpeechCallback wrapping the given
+// server implementation. The returned value satisfies ITextToSpeechCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTextToSpeechCallbackStub(
+	impl ITextToSpeechCallbackServer,
+) ITextToSpeechCallback {
+	wrapper := &textToSpeechCallbackStubWrapper{impl: impl}
+	stub := &TextToSpeechCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

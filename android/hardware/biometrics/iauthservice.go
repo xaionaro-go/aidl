@@ -80,7 +80,7 @@ func (p *AuthServiceProxy) CreateTestSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteInt32(sensorId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "createTestSession")
@@ -186,10 +186,10 @@ func (p *AuthServiceProxy) Authenticate(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt64(sessionId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(1)
 	if _err := promptInfo.MarshalParcel(_data); _err != nil {
@@ -226,7 +226,7 @@ func (p *AuthServiceProxy) CancelAuthentication(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
@@ -353,7 +353,7 @@ func (p *AuthServiceProxy) RegisterEnabledOnKeyguardCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "registerEnabledOnKeyguardCallback")
 	if _err != nil {
@@ -379,7 +379,7 @@ func (p *AuthServiceProxy) RegisterAuthenticationStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "registerAuthenticationStateListener")
 	if _err != nil {
@@ -405,7 +405,7 @@ func (p *AuthServiceProxy) UnregisterAuthenticationStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "unregisterAuthenticationStateListener")
 	if _err != nil {
@@ -435,7 +435,7 @@ func (p *AuthServiceProxy) InvalidateAuthenticatorIds(
 	_data.WriteInterfaceToken(DescriptorIAuthService)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(fromSensorId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAuthService, "invalidateAuthenticatorIds")
 	if _err != nil {
@@ -505,7 +505,7 @@ func (p *AuthServiceProxy) ResetLockoutTimeBound(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAuthService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(fromSensorId)
 	_data.WriteInt32(_identity.UserID)
@@ -1056,4 +1056,183 @@ func (s *AuthServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAuthServiceServer is the server-side interface that user implementations
+// provide to NewAuthServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAuthServiceServer interface {
+	CreateTestSession(ctx context.Context, sensorId int32, callback ITestSessionCallback) (ITestSession, error)
+	GetSensorProperties(ctx context.Context) ([]SensorPropertiesInternal, error)
+	GetUiPackage(ctx context.Context) (string, error)
+	Authenticate(ctx context.Context, token binder.IBinder, sessionId int64, receiver IBiometricServiceReceiver, promptInfo PromptInfo) (int64, error)
+	CancelAuthentication(ctx context.Context, token binder.IBinder, requestId int64) error
+	CanAuthenticate(ctx context.Context, authenticators int32) (int32, error)
+	GetLastAuthenticationTime(ctx context.Context, authenticators int32) (int64, error)
+	HasEnrolledBiometrics(ctx context.Context) (bool, error)
+	RegisterEnabledOnKeyguardCallback(ctx context.Context, callback IBiometricEnabledOnKeyguardCallback) error
+	RegisterAuthenticationStateListener(ctx context.Context, listener AuthenticationStateListener) error
+	UnregisterAuthenticationStateListener(ctx context.Context, listener AuthenticationStateListener) error
+	InvalidateAuthenticatorIds(ctx context.Context, fromSensorId int32, callback IInvalidationCallback) error
+	GetAuthenticatorIds(ctx context.Context) ([]int64, error)
+	ResetLockoutTimeBound(ctx context.Context, token binder.IBinder, fromSensorId int32, hardwareAuthToken []byte) error
+	ResetLockout(ctx context.Context, hardwareAuthToken []byte) error
+	GetButtonLabel(ctx context.Context, authenticators int32) (interface{}, error)
+	GetPromptMessage(ctx context.Context, authenticators int32) (interface{}, error)
+	GetSettingName(ctx context.Context, authenticators int32) (interface{}, error)
+}
+
+type authServiceStubWrapper struct {
+	impl       IAuthServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *authServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *authServiceStubWrapper) CreateTestSession(
+	ctx context.Context,
+	sensorId int32,
+	callback ITestSessionCallback,
+) (ITestSession, error) {
+	return w.impl.CreateTestSession(ctx, sensorId, callback)
+}
+
+func (w *authServiceStubWrapper) GetSensorProperties(
+	ctx context.Context,
+) ([]SensorPropertiesInternal, error) {
+	return w.impl.GetSensorProperties(ctx)
+}
+
+func (w *authServiceStubWrapper) GetUiPackage(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetUiPackage(ctx)
+}
+
+func (w *authServiceStubWrapper) Authenticate(
+	ctx context.Context,
+	token binder.IBinder,
+	sessionId int64,
+	receiver IBiometricServiceReceiver,
+	promptInfo PromptInfo,
+) (int64, error) {
+	return w.impl.Authenticate(ctx, token, sessionId, receiver, promptInfo)
+}
+
+func (w *authServiceStubWrapper) CancelAuthentication(
+	ctx context.Context,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelAuthentication(ctx, token, requestId)
+}
+
+func (w *authServiceStubWrapper) CanAuthenticate(
+	ctx context.Context,
+	authenticators int32,
+) (int32, error) {
+	return w.impl.CanAuthenticate(ctx, authenticators)
+}
+
+func (w *authServiceStubWrapper) GetLastAuthenticationTime(
+	ctx context.Context,
+	authenticators int32,
+) (int64, error) {
+	return w.impl.GetLastAuthenticationTime(ctx, authenticators)
+}
+
+func (w *authServiceStubWrapper) HasEnrolledBiometrics(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasEnrolledBiometrics(ctx)
+}
+
+func (w *authServiceStubWrapper) RegisterEnabledOnKeyguardCallback(
+	ctx context.Context,
+	callback IBiometricEnabledOnKeyguardCallback,
+) error {
+	return w.impl.RegisterEnabledOnKeyguardCallback(ctx, callback)
+}
+
+func (w *authServiceStubWrapper) RegisterAuthenticationStateListener(
+	ctx context.Context,
+	listener AuthenticationStateListener,
+) error {
+	return w.impl.RegisterAuthenticationStateListener(ctx, listener)
+}
+
+func (w *authServiceStubWrapper) UnregisterAuthenticationStateListener(
+	ctx context.Context,
+	listener AuthenticationStateListener,
+) error {
+	return w.impl.UnregisterAuthenticationStateListener(ctx, listener)
+}
+
+func (w *authServiceStubWrapper) InvalidateAuthenticatorIds(
+	ctx context.Context,
+	fromSensorId int32,
+	callback IInvalidationCallback,
+) error {
+	return w.impl.InvalidateAuthenticatorIds(ctx, fromSensorId, callback)
+}
+
+func (w *authServiceStubWrapper) GetAuthenticatorIds(
+	ctx context.Context,
+) ([]int64, error) {
+	return w.impl.GetAuthenticatorIds(ctx)
+}
+
+func (w *authServiceStubWrapper) ResetLockoutTimeBound(
+	ctx context.Context,
+	token binder.IBinder,
+	fromSensorId int32,
+	hardwareAuthToken []byte,
+) error {
+	return w.impl.ResetLockoutTimeBound(ctx, token, fromSensorId, hardwareAuthToken)
+}
+
+func (w *authServiceStubWrapper) ResetLockout(
+	ctx context.Context,
+	hardwareAuthToken []byte,
+) error {
+	return w.impl.ResetLockout(ctx, hardwareAuthToken)
+}
+
+func (w *authServiceStubWrapper) GetButtonLabel(
+	ctx context.Context,
+	authenticators int32,
+) (interface{}, error) {
+	return w.impl.GetButtonLabel(ctx, authenticators)
+}
+
+func (w *authServiceStubWrapper) GetPromptMessage(
+	ctx context.Context,
+	authenticators int32,
+) (interface{}, error) {
+	return w.impl.GetPromptMessage(ctx, authenticators)
+}
+
+func (w *authServiceStubWrapper) GetSettingName(
+	ctx context.Context,
+	authenticators int32,
+) (interface{}, error) {
+	return w.impl.GetSettingName(ctx, authenticators)
+}
+
+var _ IAuthService = (*authServiceStubWrapper)(nil)
+
+// NewAuthServiceStub creates a server-side IAuthService wrapping the given
+// server implementation. The returned value satisfies IAuthService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAuthServiceStub(
+	impl IAuthServiceServer,
+) IAuthService {
+	wrapper := &authServiceStubWrapper{impl: impl}
+	stub := &AuthServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

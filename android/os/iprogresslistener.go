@@ -199,3 +199,62 @@ func (s *ProgressListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProgressListenerServer is the server-side interface that user implementations
+// provide to NewProgressListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProgressListenerServer interface {
+	OnStarted(ctx context.Context, id int32, extras Bundle) error
+	OnProgress(ctx context.Context, id int32, progress int32, extras Bundle) error
+	OnFinished(ctx context.Context, id int32, extras Bundle) error
+}
+
+type progressListenerStubWrapper struct {
+	impl       IProgressListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *progressListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *progressListenerStubWrapper) OnStarted(
+	ctx context.Context,
+	id int32,
+	extras Bundle,
+) error {
+	return w.impl.OnStarted(ctx, id, extras)
+}
+
+func (w *progressListenerStubWrapper) OnProgress(
+	ctx context.Context,
+	id int32,
+	progress int32,
+	extras Bundle,
+) error {
+	return w.impl.OnProgress(ctx, id, progress, extras)
+}
+
+func (w *progressListenerStubWrapper) OnFinished(
+	ctx context.Context,
+	id int32,
+	extras Bundle,
+) error {
+	return w.impl.OnFinished(ctx, id, extras)
+}
+
+var _ IProgressListener = (*progressListenerStubWrapper)(nil)
+
+// NewProgressListenerStub creates a server-side IProgressListener wrapping the given
+// server implementation. The returned value satisfies IProgressListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProgressListenerStub(
+	impl IProgressListenerServer,
+) IProgressListener {
+	wrapper := &progressListenerStubWrapper{impl: impl}
+	stub := &ProgressListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

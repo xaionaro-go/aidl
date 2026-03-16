@@ -124,3 +124,55 @@ func (s *VirtualDisplayCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVirtualDisplayCallbackServer is the server-side interface that user implementations
+// provide to NewVirtualDisplayCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualDisplayCallbackServer interface {
+	OnPaused(ctx context.Context) error
+	OnResumed(ctx context.Context) error
+	OnStopped(ctx context.Context) error
+}
+
+type virtualDisplayCallbackStubWrapper struct {
+	impl       IVirtualDisplayCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualDisplayCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualDisplayCallbackStubWrapper) OnPaused(
+	ctx context.Context,
+) error {
+	return w.impl.OnPaused(ctx)
+}
+
+func (w *virtualDisplayCallbackStubWrapper) OnResumed(
+	ctx context.Context,
+) error {
+	return w.impl.OnResumed(ctx)
+}
+
+func (w *virtualDisplayCallbackStubWrapper) OnStopped(
+	ctx context.Context,
+) error {
+	return w.impl.OnStopped(ctx)
+}
+
+var _ IVirtualDisplayCallback = (*virtualDisplayCallbackStubWrapper)(nil)
+
+// NewVirtualDisplayCallbackStub creates a server-side IVirtualDisplayCallback wrapping the given
+// server implementation. The returned value satisfies IVirtualDisplayCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualDisplayCallbackStub(
+	impl IVirtualDisplayCallbackServer,
+) IVirtualDisplayCallback {
+	wrapper := &virtualDisplayCallbackStubWrapper{impl: impl}
+	stub := &VirtualDisplayCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

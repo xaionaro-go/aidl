@@ -94,7 +94,7 @@ func (p *PresenceServiceProxy) AddListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPresenceService)
 	_data.WriteInt32(presenceServiceHdl)
-	_data.WriteStrongBinder(presenceServiceListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, presenceServiceListener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := presenceServiceListenerHdl.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -591,4 +591,112 @@ func (s *PresenceServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPresenceServiceServer is the server-side interface that user implementations
+// provide to NewPresenceServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPresenceServiceServer interface {
+	GetVersion(ctx context.Context, presenceServiceHdl int32) (vehicle.StatusCode, error)
+	AddListener(ctx context.Context, presenceServiceHdl int32, presenceServiceListener IPresenceListener, presenceServiceListenerHdl common.UceLong) (vehicle.StatusCode, error)
+	RemoveListener(ctx context.Context, presenceServiceHdl int32, presenceServiceListenerHdl common.UceLong) (vehicle.StatusCode, error)
+	ReenableService(ctx context.Context, presenceServiceHdl int32, userData int32) (vehicle.StatusCode, error)
+	PublishMyCap(ctx context.Context, presenceServiceHdl int32, myCapInfo PresCapInfo, userData int32) (vehicle.StatusCode, error)
+	GetContactCap(ctx context.Context, presenceServiceHdl int32, remoteUri string, userData int32) (vehicle.StatusCode, error)
+	GetContactListCap(ctx context.Context, presenceServiceHdl int32, remoteUriList []string, userData int32) (vehicle.StatusCode, error)
+	SetNewFeatureTag(ctx context.Context, presenceServiceHdl int32, featureTag string, serviceInfo PresServiceInfo, userData int32) (vehicle.StatusCode, error)
+}
+
+type presenceServiceStubWrapper struct {
+	impl       IPresenceServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *presenceServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *presenceServiceStubWrapper) GetVersion(
+	ctx context.Context,
+	presenceServiceHdl int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.GetVersion(ctx, presenceServiceHdl)
+}
+
+func (w *presenceServiceStubWrapper) AddListener(
+	ctx context.Context,
+	presenceServiceHdl int32,
+	presenceServiceListener IPresenceListener,
+	presenceServiceListenerHdl common.UceLong,
+) (vehicle.StatusCode, error) {
+	return w.impl.AddListener(ctx, presenceServiceHdl, presenceServiceListener, presenceServiceListenerHdl)
+}
+
+func (w *presenceServiceStubWrapper) RemoveListener(
+	ctx context.Context,
+	presenceServiceHdl int32,
+	presenceServiceListenerHdl common.UceLong,
+) (vehicle.StatusCode, error) {
+	return w.impl.RemoveListener(ctx, presenceServiceHdl, presenceServiceListenerHdl)
+}
+
+func (w *presenceServiceStubWrapper) ReenableService(
+	ctx context.Context,
+	presenceServiceHdl int32,
+	userData int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.ReenableService(ctx, presenceServiceHdl, userData)
+}
+
+func (w *presenceServiceStubWrapper) PublishMyCap(
+	ctx context.Context,
+	presenceServiceHdl int32,
+	myCapInfo PresCapInfo,
+	userData int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.PublishMyCap(ctx, presenceServiceHdl, myCapInfo, userData)
+}
+
+func (w *presenceServiceStubWrapper) GetContactCap(
+	ctx context.Context,
+	presenceServiceHdl int32,
+	remoteUri string,
+	userData int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.GetContactCap(ctx, presenceServiceHdl, remoteUri, userData)
+}
+
+func (w *presenceServiceStubWrapper) GetContactListCap(
+	ctx context.Context,
+	presenceServiceHdl int32,
+	remoteUriList []string,
+	userData int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.GetContactListCap(ctx, presenceServiceHdl, remoteUriList, userData)
+}
+
+func (w *presenceServiceStubWrapper) SetNewFeatureTag(
+	ctx context.Context,
+	presenceServiceHdl int32,
+	featureTag string,
+	serviceInfo PresServiceInfo,
+	userData int32,
+) (vehicle.StatusCode, error) {
+	return w.impl.SetNewFeatureTag(ctx, presenceServiceHdl, featureTag, serviceInfo, userData)
+}
+
+var _ IPresenceService = (*presenceServiceStubWrapper)(nil)
+
+// NewPresenceServiceStub creates a server-side IPresenceService wrapping the given
+// server implementation. The returned value satisfies IPresenceService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPresenceServiceStub(
+	impl IPresenceServiceServer,
+) IPresenceService {
+	wrapper := &presenceServiceStubWrapper{impl: impl}
+	stub := &PresenceServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

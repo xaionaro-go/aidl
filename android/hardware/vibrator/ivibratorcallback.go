@@ -76,3 +76,41 @@ func (s *VibratorCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVibratorCallbackServer is the server-side interface that user implementations
+// provide to NewVibratorCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVibratorCallbackServer interface {
+	OnComplete(ctx context.Context) error
+}
+
+type vibratorCallbackStubWrapper struct {
+	impl       IVibratorCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vibratorCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vibratorCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+) error {
+	return w.impl.OnComplete(ctx)
+}
+
+var _ IVibratorCallback = (*vibratorCallbackStubWrapper)(nil)
+
+// NewVibratorCallbackStub creates a server-side IVibratorCallback wrapping the given
+// server implementation. The returned value satisfies IVibratorCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVibratorCallbackStub(
+	impl IVibratorCallbackServer,
+) IVibratorCallback {
+	wrapper := &vibratorCallbackStubWrapper{impl: impl}
+	stub := &VibratorCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

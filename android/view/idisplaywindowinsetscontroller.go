@@ -356,3 +356,89 @@ func (s *DisplayWindowInsetsControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDisplayWindowInsetsControllerServer is the server-side interface that user implementations
+// provide to NewDisplayWindowInsetsControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayWindowInsetsControllerServer interface {
+	TopFocusedWindowChanged(ctx context.Context, component content.ComponentName, requestedVisibleTypes int32) error
+	InsetsChanged(ctx context.Context, insetsState InsetsState) error
+	InsetsControlChanged(ctx context.Context, insetsState InsetsState, activeControls []InsetsSourceControl) error
+	ShowInsets(ctx context.Context, types int32, fromIme bool, statsToken *inputmethod.ImeTrackerToken) error
+	HideInsets(ctx context.Context, types int32, fromIme bool, statsToken *inputmethod.ImeTrackerToken) error
+	SetImeInputTargetRequestedVisibility(ctx context.Context, visible bool, statsToken inputmethod.ImeTrackerToken) error
+}
+
+type displayWindowInsetsControllerStubWrapper struct {
+	impl       IDisplayWindowInsetsControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayWindowInsetsControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayWindowInsetsControllerStubWrapper) TopFocusedWindowChanged(
+	ctx context.Context,
+	component content.ComponentName,
+	requestedVisibleTypes int32,
+) error {
+	return w.impl.TopFocusedWindowChanged(ctx, component, requestedVisibleTypes)
+}
+
+func (w *displayWindowInsetsControllerStubWrapper) InsetsChanged(
+	ctx context.Context,
+	insetsState InsetsState,
+) error {
+	return w.impl.InsetsChanged(ctx, insetsState)
+}
+
+func (w *displayWindowInsetsControllerStubWrapper) InsetsControlChanged(
+	ctx context.Context,
+	insetsState InsetsState,
+	activeControls []InsetsSourceControl,
+) error {
+	return w.impl.InsetsControlChanged(ctx, insetsState, activeControls)
+}
+
+func (w *displayWindowInsetsControllerStubWrapper) ShowInsets(
+	ctx context.Context,
+	types int32,
+	fromIme bool,
+	statsToken *inputmethod.ImeTrackerToken,
+) error {
+	return w.impl.ShowInsets(ctx, types, fromIme, statsToken)
+}
+
+func (w *displayWindowInsetsControllerStubWrapper) HideInsets(
+	ctx context.Context,
+	types int32,
+	fromIme bool,
+	statsToken *inputmethod.ImeTrackerToken,
+) error {
+	return w.impl.HideInsets(ctx, types, fromIme, statsToken)
+}
+
+func (w *displayWindowInsetsControllerStubWrapper) SetImeInputTargetRequestedVisibility(
+	ctx context.Context,
+	visible bool,
+	statsToken inputmethod.ImeTrackerToken,
+) error {
+	return w.impl.SetImeInputTargetRequestedVisibility(ctx, visible, statsToken)
+}
+
+var _ IDisplayWindowInsetsController = (*displayWindowInsetsControllerStubWrapper)(nil)
+
+// NewDisplayWindowInsetsControllerStub creates a server-side IDisplayWindowInsetsController wrapping the given
+// server implementation. The returned value satisfies IDisplayWindowInsetsController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayWindowInsetsControllerStub(
+	impl IDisplayWindowInsetsControllerServer,
+) IDisplayWindowInsetsController {
+	wrapper := &displayWindowInsetsControllerStubWrapper{impl: impl}
+	stub := &DisplayWindowInsetsControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

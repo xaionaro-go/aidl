@@ -341,7 +341,7 @@ func (p *TvInteractiveAppManagerProxy) StartInteractiveApp(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "startInteractiveApp")
@@ -369,7 +369,7 @@ func (p *TvInteractiveAppManagerProxy) StopInteractiveApp(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "stopInteractiveApp")
@@ -397,7 +397,7 @@ func (p *TvInteractiveAppManagerProxy) ResetInteractiveApp(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "resetInteractiveApp")
@@ -427,7 +427,7 @@ func (p *TvInteractiveAppManagerProxy) CreateBiInteractiveApp(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := biIAppUri.MarshalParcel(_data); _err != nil {
 		return _err
@@ -464,7 +464,7 @@ func (p *TvInteractiveAppManagerProxy) DestroyBiInteractiveApp(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(biIAppId)
 	_data.WriteInt32(_identity.UserID)
 
@@ -494,7 +494,7 @@ func (p *TvInteractiveAppManagerProxy) SetTeletextAppEnabled(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteBool(enable)
 	_data.WriteInt32(_identity.UserID)
 
@@ -524,7 +524,7 @@ func (p *TvInteractiveAppManagerProxy) SendCurrentVideoBounds(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := bounds.MarshalParcel(_data); _err != nil {
 		return _err
@@ -557,7 +557,7 @@ func (p *TvInteractiveAppManagerProxy) SendCurrentChannelUri(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := channelUri.MarshalParcel(_data); _err != nil {
 		return _err
@@ -590,7 +590,7 @@ func (p *TvInteractiveAppManagerProxy) SendCurrentChannelLcn(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(lcn)
 	_data.WriteInt32(_identity.UserID)
 
@@ -620,7 +620,7 @@ func (p *TvInteractiveAppManagerProxy) SendStreamVolume(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteFloat32(volume)
 	_data.WriteInt32(_identity.UserID)
 
@@ -650,7 +650,7 @@ func (p *TvInteractiveAppManagerProxy) SendTrackInfoList(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	if tracks == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -689,7 +689,7 @@ func (p *TvInteractiveAppManagerProxy) SendCurrentTvInputId(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(inputId)
 	_data.WriteInt32(_identity.UserID)
 
@@ -719,7 +719,7 @@ func (p *TvInteractiveAppManagerProxy) SendTimeShiftMode(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(mode)
 	_data.WriteInt32(_identity.UserID)
 
@@ -749,7 +749,7 @@ func (p *TvInteractiveAppManagerProxy) SendAvailableSpeeds(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	if speeds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -787,7 +787,7 @@ func (p *TvInteractiveAppManagerProxy) SendSigningResult(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(signingId)
 	if result == nil {
 		_data.WriteInt32(-1)
@@ -827,7 +827,7 @@ func (p *TvInteractiveAppManagerProxy) SendCertificate(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(host)
 	_data.WriteInt32(port)
 	_data.WriteInt32(1)
@@ -862,7 +862,7 @@ func (p *TvInteractiveAppManagerProxy) SendTvRecordingInfo(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := recordingInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -895,7 +895,7 @@ func (p *TvInteractiveAppManagerProxy) SendTvRecordingInfoList(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	if recordingInfoList == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -935,7 +935,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyError(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(errMsg)
 	_data.WriteInt32(1)
 	if _err := params.MarshalParcel(_data); _err != nil {
@@ -969,7 +969,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyTimeShiftPlaybackParams(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1003,7 +1003,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyTimeShiftStatusChanged(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(inputId)
 	_data.WriteInt32(status)
 	_data.WriteInt32(_identity.UserID)
@@ -1035,7 +1035,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyTimeShiftStartPositionChanged(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(inputId)
 	_data.WriteInt64(timeMs)
 	_data.WriteInt32(_identity.UserID)
@@ -1067,7 +1067,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyTimeShiftCurrentPositionChanged(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(inputId)
 	_data.WriteInt64(timeMs)
 	_data.WriteInt32(_identity.UserID)
@@ -1099,7 +1099,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyRecordingConnectionFailed(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(recordingId)
 	_data.WriteString16(inputId)
 	_data.WriteInt32(_identity.UserID)
@@ -1131,7 +1131,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyRecordingDisconnected(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(recordingId)
 	_data.WriteString16(inputId)
 	_data.WriteInt32(_identity.UserID)
@@ -1163,7 +1163,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyRecordingTuned(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(recordingId)
 	_data.WriteInt32(1)
 	if _err := channelUri.MarshalParcel(_data); _err != nil {
@@ -1198,7 +1198,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyRecordingError(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(recordingId)
 	_data.WriteInt32(err)
 	_data.WriteInt32(_identity.UserID)
@@ -1230,7 +1230,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyRecordingScheduled(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(recordingId)
 	_data.WriteString16(requestId)
 	_data.WriteInt32(_identity.UserID)
@@ -1263,7 +1263,7 @@ func (p *TvInteractiveAppManagerProxy) CreateSession(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteString16(iAppServiceId)
 	_data.WriteInt32(type_)
 	_data.WriteInt32(seq)
@@ -1294,7 +1294,7 @@ func (p *TvInteractiveAppManagerProxy) ReleaseSession(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "releaseSession")
@@ -1323,7 +1323,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyTuned(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := channelUri.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1357,7 +1357,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyTrackSelected(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(type_)
 	_data.WriteString16(trackId)
 	_data.WriteInt32(_identity.UserID)
@@ -1388,7 +1388,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyTracksChanged(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	if tracks == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1426,7 +1426,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyVideoAvailable(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "notifyVideoAvailable")
@@ -1455,7 +1455,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyVideoUnavailable(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(reason)
 	_data.WriteInt32(_identity.UserID)
 
@@ -1485,7 +1485,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyVideoFreezeUpdated(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteBool(isFrozen)
 	_data.WriteInt32(_identity.UserID)
 
@@ -1514,7 +1514,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyContentAllowed(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "notifyContentAllowed")
@@ -1543,7 +1543,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyContentBlocked(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(rating)
 	_data.WriteInt32(_identity.UserID)
 
@@ -1573,7 +1573,7 @@ func (p *TvInteractiveAppManagerProxy) NotifySignalStrength(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(stength)
 	_data.WriteInt32(_identity.UserID)
 
@@ -1604,7 +1604,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyRecordingStarted(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(recordingId)
 	_data.WriteString16(requestId)
 	_data.WriteInt32(_identity.UserID)
@@ -1635,7 +1635,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyRecordingStopped(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteString16(recordingId)
 	_data.WriteInt32(_identity.UserID)
 
@@ -1666,7 +1666,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyTvMessage(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(type_)
 	_data.WriteInt32(1)
 	if _err := data.MarshalParcel(_data); _err != nil {
@@ -1700,7 +1700,7 @@ func (p *TvInteractiveAppManagerProxy) SetSurface(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "setSurface")
@@ -1731,7 +1731,7 @@ func (p *TvInteractiveAppManagerProxy) DispatchSurfaceChanged(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(format)
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
@@ -1763,7 +1763,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyBroadcastInfoResponse(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := response.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1796,7 +1796,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyAdResponse(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := response.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1829,7 +1829,7 @@ func (p *TvInteractiveAppManagerProxy) NotifyAdBufferConsumed(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := buffer.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1862,7 +1862,7 @@ func (p *TvInteractiveAppManagerProxy) SendSelectedTrackInfo(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	if tracks == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1902,8 +1902,8 @@ func (p *TvInteractiveAppManagerProxy) CreateMediaView(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := frame.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1936,7 +1936,7 @@ func (p *TvInteractiveAppManagerProxy) RelayoutMediaView(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := frame.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1968,7 +1968,7 @@ func (p *TvInteractiveAppManagerProxy) RemoveMediaView(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(sessionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionToken, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "removeMediaView")
@@ -1996,7 +1996,7 @@ func (p *TvInteractiveAppManagerProxy) RegisterCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "registerCallback")
@@ -2024,7 +2024,7 @@ func (p *TvInteractiveAppManagerProxy) UnregisterCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInteractiveAppManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInteractiveAppManager, "unregisterCallback")
@@ -3523,4 +3523,567 @@ func (s *TvInteractiveAppManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvInteractiveAppManagerServer is the server-side interface that user implementations
+// provide to NewTvInteractiveAppManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInteractiveAppManagerServer interface {
+	GetTvInteractiveAppServiceList(ctx context.Context) ([]TvInteractiveAppServiceInfo, error)
+	GetAppLinkInfoList(ctx context.Context) ([]AppLinkInfo, error)
+	RegisterAppLinkInfo(ctx context.Context, tiasId string, info AppLinkInfo) error
+	UnregisterAppLinkInfo(ctx context.Context, tiasId string, info AppLinkInfo) error
+	SendAppLinkCommand(ctx context.Context, tiasId string, command os.Bundle) error
+	StartInteractiveApp(ctx context.Context, sessionToken binder.IBinder) error
+	StopInteractiveApp(ctx context.Context, sessionToken binder.IBinder) error
+	ResetInteractiveApp(ctx context.Context, sessionToken binder.IBinder) error
+	CreateBiInteractiveApp(ctx context.Context, sessionToken binder.IBinder, biIAppUri net.Uri, params os.Bundle) error
+	DestroyBiInteractiveApp(ctx context.Context, sessionToken binder.IBinder, biIAppId string) error
+	SetTeletextAppEnabled(ctx context.Context, sessionToken binder.IBinder, enable bool) error
+	SendCurrentVideoBounds(ctx context.Context, sessionToken binder.IBinder, bounds graphics.Rect) error
+	SendCurrentChannelUri(ctx context.Context, sessionToken binder.IBinder, channelUri net.Uri) error
+	SendCurrentChannelLcn(ctx context.Context, sessionToken binder.IBinder, lcn int32) error
+	SendStreamVolume(ctx context.Context, sessionToken binder.IBinder, volume float32) error
+	SendTrackInfoList(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo) error
+	SendCurrentTvInputId(ctx context.Context, sessionToken binder.IBinder, inputId string) error
+	SendTimeShiftMode(ctx context.Context, sessionToken binder.IBinder, mode int32) error
+	SendAvailableSpeeds(ctx context.Context, sessionToken binder.IBinder, speeds []float32) error
+	SendSigningResult(ctx context.Context, sessionToken binder.IBinder, signingId string, result []byte) error
+	SendCertificate(ctx context.Context, sessionToken binder.IBinder, host string, port int32, certBundle os.Bundle) error
+	SendTvRecordingInfo(ctx context.Context, sessionToken binder.IBinder, recordingInfo tv.TvRecordingInfo) error
+	SendTvRecordingInfoList(ctx context.Context, sessionToken binder.IBinder, recordingInfoList []tv.TvRecordingInfo) error
+	NotifyError(ctx context.Context, sessionToken binder.IBinder, errMsg string, params os.Bundle) error
+	NotifyTimeShiftPlaybackParams(ctx context.Context, sessionToken binder.IBinder, params media.PlaybackParams) error
+	NotifyTimeShiftStatusChanged(ctx context.Context, sessionToken binder.IBinder, inputId string, status int32) error
+	NotifyTimeShiftStartPositionChanged(ctx context.Context, sessionToken binder.IBinder, inputId string, timeMs int64) error
+	NotifyTimeShiftCurrentPositionChanged(ctx context.Context, sessionToken binder.IBinder, inputId string, timeMs int64) error
+	NotifyRecordingConnectionFailed(ctx context.Context, sessionToken binder.IBinder, recordingId string, inputId string) error
+	NotifyRecordingDisconnected(ctx context.Context, sessionToken binder.IBinder, recordingId string, inputId string) error
+	NotifyRecordingTuned(ctx context.Context, sessionToken binder.IBinder, recordingId string, channelUri net.Uri) error
+	NotifyRecordingError(ctx context.Context, sessionToken binder.IBinder, recordingId string, err int32) error
+	NotifyRecordingScheduled(ctx context.Context, sessionToken binder.IBinder, recordingId string, requestId string) error
+	CreateSession(ctx context.Context, client ITvInteractiveAppClient, iAppServiceId string, type_ int32, seq int32) error
+	ReleaseSession(ctx context.Context, sessionToken binder.IBinder) error
+	NotifyTuned(ctx context.Context, sessionToken binder.IBinder, channelUri net.Uri) error
+	NotifyTrackSelected(ctx context.Context, sessionToken binder.IBinder, type_ int32, trackId string) error
+	NotifyTracksChanged(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo) error
+	NotifyVideoAvailable(ctx context.Context, sessionToken binder.IBinder) error
+	NotifyVideoUnavailable(ctx context.Context, sessionToken binder.IBinder, reason int32) error
+	NotifyVideoFreezeUpdated(ctx context.Context, sessionToken binder.IBinder, isFrozen bool) error
+	NotifyContentAllowed(ctx context.Context, sessionToken binder.IBinder) error
+	NotifyContentBlocked(ctx context.Context, sessionToken binder.IBinder, rating string) error
+	NotifySignalStrength(ctx context.Context, sessionToken binder.IBinder, stength int32) error
+	NotifyRecordingStarted(ctx context.Context, sessionToken binder.IBinder, recordingId string, requestId string) error
+	NotifyRecordingStopped(ctx context.Context, sessionToken binder.IBinder, recordingId string) error
+	NotifyTvMessage(ctx context.Context, sessionToken binder.IBinder, type_ int32, data os.Bundle) error
+	SetSurface(ctx context.Context, sessionToken binder.IBinder, surface interface{}) error
+	DispatchSurfaceChanged(ctx context.Context, sessionToken binder.IBinder, format int32, width int32, height int32) error
+	NotifyBroadcastInfoResponse(ctx context.Context, sessionToken binder.IBinder, response tv.BroadcastInfoResponse, UserId int32) error
+	NotifyAdResponse(ctx context.Context, sessionToken binder.IBinder, response tv.AdResponse, UserId int32) error
+	NotifyAdBufferConsumed(ctx context.Context, sessionToken binder.IBinder, buffer tv.AdBuffer) error
+	SendSelectedTrackInfo(ctx context.Context, sessionToken binder.IBinder, tracks []tv.TvTrackInfo) error
+	CreateMediaView(ctx context.Context, sessionToken binder.IBinder, windowToken binder.IBinder, frame graphics.Rect) error
+	RelayoutMediaView(ctx context.Context, sessionToken binder.IBinder, frame graphics.Rect) error
+	RemoveMediaView(ctx context.Context, sessionToken binder.IBinder) error
+	RegisterCallback(ctx context.Context, callback ITvInteractiveAppManagerCallback) error
+	UnregisterCallback(ctx context.Context, callback ITvInteractiveAppManagerCallback) error
+}
+
+type tvInteractiveAppManagerStubWrapper struct {
+	impl       ITvInteractiveAppManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) GetTvInteractiveAppServiceList(
+	ctx context.Context,
+) ([]TvInteractiveAppServiceInfo, error) {
+	return w.impl.GetTvInteractiveAppServiceList(ctx)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) GetAppLinkInfoList(
+	ctx context.Context,
+) ([]AppLinkInfo, error) {
+	return w.impl.GetAppLinkInfoList(ctx)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) RegisterAppLinkInfo(
+	ctx context.Context,
+	tiasId string,
+	info AppLinkInfo,
+) error {
+	return w.impl.RegisterAppLinkInfo(ctx, tiasId, info)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) UnregisterAppLinkInfo(
+	ctx context.Context,
+	tiasId string,
+	info AppLinkInfo,
+) error {
+	return w.impl.UnregisterAppLinkInfo(ctx, tiasId, info)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendAppLinkCommand(
+	ctx context.Context,
+	tiasId string,
+	command os.Bundle,
+) error {
+	return w.impl.SendAppLinkCommand(ctx, tiasId, command)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) StartInteractiveApp(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.StartInteractiveApp(ctx, sessionToken)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) StopInteractiveApp(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.StopInteractiveApp(ctx, sessionToken)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) ResetInteractiveApp(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.ResetInteractiveApp(ctx, sessionToken)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) CreateBiInteractiveApp(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	biIAppUri net.Uri,
+	params os.Bundle,
+) error {
+	return w.impl.CreateBiInteractiveApp(ctx, sessionToken, biIAppUri, params)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) DestroyBiInteractiveApp(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	biIAppId string,
+) error {
+	return w.impl.DestroyBiInteractiveApp(ctx, sessionToken, biIAppId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SetTeletextAppEnabled(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	enable bool,
+) error {
+	return w.impl.SetTeletextAppEnabled(ctx, sessionToken, enable)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendCurrentVideoBounds(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	bounds graphics.Rect,
+) error {
+	return w.impl.SendCurrentVideoBounds(ctx, sessionToken, bounds)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendCurrentChannelUri(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	channelUri net.Uri,
+) error {
+	return w.impl.SendCurrentChannelUri(ctx, sessionToken, channelUri)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendCurrentChannelLcn(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	lcn int32,
+) error {
+	return w.impl.SendCurrentChannelLcn(ctx, sessionToken, lcn)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendStreamVolume(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	volume float32,
+) error {
+	return w.impl.SendStreamVolume(ctx, sessionToken, volume)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendTrackInfoList(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	tracks []tv.TvTrackInfo,
+) error {
+	return w.impl.SendTrackInfoList(ctx, sessionToken, tracks)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendCurrentTvInputId(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	inputId string,
+) error {
+	return w.impl.SendCurrentTvInputId(ctx, sessionToken, inputId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendTimeShiftMode(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	mode int32,
+) error {
+	return w.impl.SendTimeShiftMode(ctx, sessionToken, mode)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendAvailableSpeeds(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	speeds []float32,
+) error {
+	return w.impl.SendAvailableSpeeds(ctx, sessionToken, speeds)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendSigningResult(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	signingId string,
+	result []byte,
+) error {
+	return w.impl.SendSigningResult(ctx, sessionToken, signingId, result)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendCertificate(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	host string,
+	port int32,
+	certBundle os.Bundle,
+) error {
+	return w.impl.SendCertificate(ctx, sessionToken, host, port, certBundle)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendTvRecordingInfo(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	recordingInfo tv.TvRecordingInfo,
+) error {
+	return w.impl.SendTvRecordingInfo(ctx, sessionToken, recordingInfo)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendTvRecordingInfoList(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	recordingInfoList []tv.TvRecordingInfo,
+) error {
+	return w.impl.SendTvRecordingInfoList(ctx, sessionToken, recordingInfoList)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyError(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	errMsg string,
+	params os.Bundle,
+) error {
+	return w.impl.NotifyError(ctx, sessionToken, errMsg, params)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyTimeShiftPlaybackParams(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	params media.PlaybackParams,
+) error {
+	return w.impl.NotifyTimeShiftPlaybackParams(ctx, sessionToken, params)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyTimeShiftStatusChanged(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	inputId string,
+	status int32,
+) error {
+	return w.impl.NotifyTimeShiftStatusChanged(ctx, sessionToken, inputId, status)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyTimeShiftStartPositionChanged(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	inputId string,
+	timeMs int64,
+) error {
+	return w.impl.NotifyTimeShiftStartPositionChanged(ctx, sessionToken, inputId, timeMs)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyTimeShiftCurrentPositionChanged(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	inputId string,
+	timeMs int64,
+) error {
+	return w.impl.NotifyTimeShiftCurrentPositionChanged(ctx, sessionToken, inputId, timeMs)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyRecordingConnectionFailed(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	recordingId string,
+	inputId string,
+) error {
+	return w.impl.NotifyRecordingConnectionFailed(ctx, sessionToken, recordingId, inputId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyRecordingDisconnected(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	recordingId string,
+	inputId string,
+) error {
+	return w.impl.NotifyRecordingDisconnected(ctx, sessionToken, recordingId, inputId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyRecordingTuned(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	recordingId string,
+	channelUri net.Uri,
+) error {
+	return w.impl.NotifyRecordingTuned(ctx, sessionToken, recordingId, channelUri)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyRecordingError(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	recordingId string,
+	err int32,
+) error {
+	return w.impl.NotifyRecordingError(ctx, sessionToken, recordingId, err)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyRecordingScheduled(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	recordingId string,
+	requestId string,
+) error {
+	return w.impl.NotifyRecordingScheduled(ctx, sessionToken, recordingId, requestId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) CreateSession(
+	ctx context.Context,
+	client ITvInteractiveAppClient,
+	iAppServiceId string,
+	type_ int32,
+	seq int32,
+) error {
+	return w.impl.CreateSession(ctx, client, iAppServiceId, type_, seq)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) ReleaseSession(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.ReleaseSession(ctx, sessionToken)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyTuned(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	channelUri net.Uri,
+) error {
+	return w.impl.NotifyTuned(ctx, sessionToken, channelUri)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyTrackSelected(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	type_ int32,
+	trackId string,
+) error {
+	return w.impl.NotifyTrackSelected(ctx, sessionToken, type_, trackId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyTracksChanged(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	tracks []tv.TvTrackInfo,
+) error {
+	return w.impl.NotifyTracksChanged(ctx, sessionToken, tracks)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyVideoAvailable(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.NotifyVideoAvailable(ctx, sessionToken)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyVideoUnavailable(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	reason int32,
+) error {
+	return w.impl.NotifyVideoUnavailable(ctx, sessionToken, reason)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyVideoFreezeUpdated(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	isFrozen bool,
+) error {
+	return w.impl.NotifyVideoFreezeUpdated(ctx, sessionToken, isFrozen)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyContentAllowed(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.NotifyContentAllowed(ctx, sessionToken)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyContentBlocked(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	rating string,
+) error {
+	return w.impl.NotifyContentBlocked(ctx, sessionToken, rating)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifySignalStrength(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	stength int32,
+) error {
+	return w.impl.NotifySignalStrength(ctx, sessionToken, stength)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyRecordingStarted(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	recordingId string,
+	requestId string,
+) error {
+	return w.impl.NotifyRecordingStarted(ctx, sessionToken, recordingId, requestId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyRecordingStopped(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	recordingId string,
+) error {
+	return w.impl.NotifyRecordingStopped(ctx, sessionToken, recordingId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyTvMessage(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	type_ int32,
+	data os.Bundle,
+) error {
+	return w.impl.NotifyTvMessage(ctx, sessionToken, type_, data)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SetSurface(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	surface interface{},
+) error {
+	return w.impl.SetSurface(ctx, sessionToken, surface)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) DispatchSurfaceChanged(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	format int32,
+	width int32,
+	height int32,
+) error {
+	return w.impl.DispatchSurfaceChanged(ctx, sessionToken, format, width, height)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyBroadcastInfoResponse(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	response tv.BroadcastInfoResponse,
+	UserId int32,
+) error {
+	return w.impl.NotifyBroadcastInfoResponse(ctx, sessionToken, response, UserId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyAdResponse(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	response tv.AdResponse,
+	UserId int32,
+) error {
+	return w.impl.NotifyAdResponse(ctx, sessionToken, response, UserId)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) NotifyAdBufferConsumed(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	buffer tv.AdBuffer,
+) error {
+	return w.impl.NotifyAdBufferConsumed(ctx, sessionToken, buffer)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) SendSelectedTrackInfo(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	tracks []tv.TvTrackInfo,
+) error {
+	return w.impl.SendSelectedTrackInfo(ctx, sessionToken, tracks)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) CreateMediaView(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	windowToken binder.IBinder,
+	frame graphics.Rect,
+) error {
+	return w.impl.CreateMediaView(ctx, sessionToken, windowToken, frame)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) RelayoutMediaView(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+	frame graphics.Rect,
+) error {
+	return w.impl.RelayoutMediaView(ctx, sessionToken, frame)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) RemoveMediaView(
+	ctx context.Context,
+	sessionToken binder.IBinder,
+) error {
+	return w.impl.RemoveMediaView(ctx, sessionToken)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ITvInteractiveAppManagerCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *tvInteractiveAppManagerStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback ITvInteractiveAppManagerCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+var _ ITvInteractiveAppManager = (*tvInteractiveAppManagerStubWrapper)(nil)
+
+// NewTvInteractiveAppManagerStub creates a server-side ITvInteractiveAppManager wrapping the given
+// server implementation. The returned value satisfies ITvInteractiveAppManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInteractiveAppManagerStub(
+	impl ITvInteractiveAppManagerServer,
+) ITvInteractiveAppManager {
+	wrapper := &tvInteractiveAppManagerStubWrapper{impl: impl}
+	stub := &TvInteractiveAppManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

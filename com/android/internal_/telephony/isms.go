@@ -2563,3 +2563,408 @@ func (s *SmsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISmsServer is the server-side interface that user implementations
+// provide to NewSmsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISmsServer interface {
+	GetAllMessagesFromIccEfForSubscriber(ctx context.Context, subId int32, callingPkg string) ([]SmsRawData, error)
+	UpdateMessageOnIccEfForSubscriber(ctx context.Context, subId int32, callingPkg string, messageIndex int32, newStatus int32, pdu []byte) (bool, error)
+	CopyMessageToIccEfForSubscriber(ctx context.Context, subId int32, callingPkg string, status int32, pdu []byte, smsc []byte) (bool, error)
+	SendDataForSubscriber(ctx context.Context, subId int32, callingPkg string, callingattributionTag string, destAddr string, scAddr string, destPort int32, data []byte, sentIntent app.PendingIntent, deliveryIntent app.PendingIntent) error
+	SendTextForSubscriber(ctx context.Context, subId int32, callingPkg string, callingAttributionTag string, destAddr string, scAddr string, text string, sentIntent app.PendingIntent, deliveryIntent app.PendingIntent, persistMessageForNonDefaultSmsApp bool, messageId int64) error
+	SendTextForSubscriberWithOptions(ctx context.Context, subId int32, callingPkg string, callingAttributionTag string, destAddr string, scAddr string, text string, sentIntent app.PendingIntent, deliveryIntent app.PendingIntent, persistMessageForNonDefaultSmsApp bool, priority int32, expectMore bool, validityPeriod int32) error
+	InjectSmsPduForSubscriber(ctx context.Context, subId int32, pdu []byte, format string, receivedIntent app.PendingIntent) error
+	SendMultipartTextForSubscriber(ctx context.Context, subId int32, callingPkg string, callingAttributionTag string, destinationAddress string, scAddress string, parts []string, sentIntents []app.PendingIntent, deliveryIntents []app.PendingIntent, persistMessageForNonDefaultSmsApp bool, messageId int64) error
+	SendMultipartTextForSubscriberWithOptions(ctx context.Context, subId int32, callingPkg string, callingAttributionTag string, destinationAddress string, scAddress string, parts []string, sentIntents []app.PendingIntent, deliveryIntents []app.PendingIntent, persistMessageForNonDefaultSmsApp bool, priority int32, expectMore bool, validityPeriod int32) error
+	EnableCellBroadcastForSubscriber(ctx context.Context, subId int32, messageIdentifier int32, ranType int32) (bool, error)
+	DisableCellBroadcastForSubscriber(ctx context.Context, subId int32, messageIdentifier int32, ranType int32) (bool, error)
+	EnableCellBroadcastRangeForSubscriber(ctx context.Context, subId int32, startMessageId int32, endMessageId int32, ranType int32) (bool, error)
+	DisableCellBroadcastRangeForSubscriber(ctx context.Context, subId int32, startMessageId int32, endMessageId int32, ranType int32) (bool, error)
+	GetPremiumSmsPermission(ctx context.Context, packageName string) (int32, error)
+	GetPremiumSmsPermissionForSubscriber(ctx context.Context, subId int32, packageName string) (int32, error)
+	SetPremiumSmsPermission(ctx context.Context, packageName string, permission int32) error
+	SetPremiumSmsPermissionForSubscriber(ctx context.Context, subId int32, packageName string, permission int32) error
+	IsImsSmsSupportedForSubscriber(ctx context.Context, subId int32) (bool, error)
+	IsSmsSimPickActivityNeeded(ctx context.Context, subId int32) (bool, error)
+	GetPreferredSmsSubscription(ctx context.Context) (int32, error)
+	GetImsSmsFormatForSubscriber(ctx context.Context, subId int32) (string, error)
+	IsSMSPromptEnabled(ctx context.Context) (bool, error)
+	SendStoredText(ctx context.Context, subId int32, callingPkg string, callingAttributionTag string, messageUri net.Uri, scAddress string, sentIntent app.PendingIntent, deliveryIntent app.PendingIntent) error
+	SendStoredMultipartText(ctx context.Context, subId int32, callingPkg string, callingAttributeTag string, messageUri net.Uri, scAddress string, sentIntents []app.PendingIntent, deliveryIntents []app.PendingIntent) error
+	GetCarrierConfigValuesForSubscriber(ctx context.Context, subId int32) (os.Bundle, error)
+	CreateAppSpecificSmsToken(ctx context.Context, subId int32, callingPkg string, intent app.PendingIntent) (string, error)
+	CreateAppSpecificSmsTokenWithPackageInfo(ctx context.Context, subId int32, callingPkg string, prefixes string, intent app.PendingIntent) (string, error)
+	SetStorageMonitorMemoryStatusOverride(ctx context.Context, subId int32, isStorageAvailable bool) error
+	ClearStorageMonitorMemoryStatusOverride(ctx context.Context, subId int32) error
+	CheckSmsShortCodeDestination(ctx context.Context, subId int32, callingApk string, destAddress string, countryIso string) (int32, error)
+	GetSmscAddressFromIccEfForSubscriber(ctx context.Context, subId int32) (string, error)
+	SetSmscAddressOnIccEfForSubscriber(ctx context.Context, smsc string, subId int32) (bool, error)
+	GetSmsCapacityOnIccForSubscriber(ctx context.Context, subId int32) (int32, error)
+	ResetAllCellBroadcastRanges(ctx context.Context, subId int32) (bool, error)
+	GetWapMessageSize(ctx context.Context, locationUrl string) (int64, error)
+}
+
+type smsStubWrapper struct {
+	impl       ISmsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *smsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *smsStubWrapper) GetAllMessagesFromIccEfForSubscriber(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+) ([]SmsRawData, error) {
+	return w.impl.GetAllMessagesFromIccEfForSubscriber(ctx, subId, callingPkg)
+}
+
+func (w *smsStubWrapper) UpdateMessageOnIccEfForSubscriber(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	messageIndex int32,
+	newStatus int32,
+	pdu []byte,
+) (bool, error) {
+	return w.impl.UpdateMessageOnIccEfForSubscriber(ctx, subId, callingPkg, messageIndex, newStatus, pdu)
+}
+
+func (w *smsStubWrapper) CopyMessageToIccEfForSubscriber(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	status int32,
+	pdu []byte,
+	smsc []byte,
+) (bool, error) {
+	return w.impl.CopyMessageToIccEfForSubscriber(ctx, subId, callingPkg, status, pdu, smsc)
+}
+
+func (w *smsStubWrapper) SendDataForSubscriber(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	callingattributionTag string,
+	destAddr string,
+	scAddr string,
+	destPort int32,
+	data []byte,
+	sentIntent app.PendingIntent,
+	deliveryIntent app.PendingIntent,
+) error {
+	return w.impl.SendDataForSubscriber(ctx, subId, callingPkg, callingattributionTag, destAddr, scAddr, destPort, data, sentIntent, deliveryIntent)
+}
+
+func (w *smsStubWrapper) SendTextForSubscriber(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	callingAttributionTag string,
+	destAddr string,
+	scAddr string,
+	text string,
+	sentIntent app.PendingIntent,
+	deliveryIntent app.PendingIntent,
+	persistMessageForNonDefaultSmsApp bool,
+	messageId int64,
+) error {
+	return w.impl.SendTextForSubscriber(ctx, subId, callingPkg, callingAttributionTag, destAddr, scAddr, text, sentIntent, deliveryIntent, persistMessageForNonDefaultSmsApp, messageId)
+}
+
+func (w *smsStubWrapper) SendTextForSubscriberWithOptions(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	callingAttributionTag string,
+	destAddr string,
+	scAddr string,
+	text string,
+	sentIntent app.PendingIntent,
+	deliveryIntent app.PendingIntent,
+	persistMessageForNonDefaultSmsApp bool,
+	priority int32,
+	expectMore bool,
+	validityPeriod int32,
+) error {
+	return w.impl.SendTextForSubscriberWithOptions(ctx, subId, callingPkg, callingAttributionTag, destAddr, scAddr, text, sentIntent, deliveryIntent, persistMessageForNonDefaultSmsApp, priority, expectMore, validityPeriod)
+}
+
+func (w *smsStubWrapper) InjectSmsPduForSubscriber(
+	ctx context.Context,
+	subId int32,
+	pdu []byte,
+	format string,
+	receivedIntent app.PendingIntent,
+) error {
+	return w.impl.InjectSmsPduForSubscriber(ctx, subId, pdu, format, receivedIntent)
+}
+
+func (w *smsStubWrapper) SendMultipartTextForSubscriber(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	callingAttributionTag string,
+	destinationAddress string,
+	scAddress string,
+	parts []string,
+	sentIntents []app.PendingIntent,
+	deliveryIntents []app.PendingIntent,
+	persistMessageForNonDefaultSmsApp bool,
+	messageId int64,
+) error {
+	return w.impl.SendMultipartTextForSubscriber(ctx, subId, callingPkg, callingAttributionTag, destinationAddress, scAddress, parts, sentIntents, deliveryIntents, persistMessageForNonDefaultSmsApp, messageId)
+}
+
+func (w *smsStubWrapper) SendMultipartTextForSubscriberWithOptions(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	callingAttributionTag string,
+	destinationAddress string,
+	scAddress string,
+	parts []string,
+	sentIntents []app.PendingIntent,
+	deliveryIntents []app.PendingIntent,
+	persistMessageForNonDefaultSmsApp bool,
+	priority int32,
+	expectMore bool,
+	validityPeriod int32,
+) error {
+	return w.impl.SendMultipartTextForSubscriberWithOptions(ctx, subId, callingPkg, callingAttributionTag, destinationAddress, scAddress, parts, sentIntents, deliveryIntents, persistMessageForNonDefaultSmsApp, priority, expectMore, validityPeriod)
+}
+
+func (w *smsStubWrapper) EnableCellBroadcastForSubscriber(
+	ctx context.Context,
+	subId int32,
+	messageIdentifier int32,
+	ranType int32,
+) (bool, error) {
+	return w.impl.EnableCellBroadcastForSubscriber(ctx, subId, messageIdentifier, ranType)
+}
+
+func (w *smsStubWrapper) DisableCellBroadcastForSubscriber(
+	ctx context.Context,
+	subId int32,
+	messageIdentifier int32,
+	ranType int32,
+) (bool, error) {
+	return w.impl.DisableCellBroadcastForSubscriber(ctx, subId, messageIdentifier, ranType)
+}
+
+func (w *smsStubWrapper) EnableCellBroadcastRangeForSubscriber(
+	ctx context.Context,
+	subId int32,
+	startMessageId int32,
+	endMessageId int32,
+	ranType int32,
+) (bool, error) {
+	return w.impl.EnableCellBroadcastRangeForSubscriber(ctx, subId, startMessageId, endMessageId, ranType)
+}
+
+func (w *smsStubWrapper) DisableCellBroadcastRangeForSubscriber(
+	ctx context.Context,
+	subId int32,
+	startMessageId int32,
+	endMessageId int32,
+	ranType int32,
+) (bool, error) {
+	return w.impl.DisableCellBroadcastRangeForSubscriber(ctx, subId, startMessageId, endMessageId, ranType)
+}
+
+func (w *smsStubWrapper) GetPremiumSmsPermission(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetPremiumSmsPermission(ctx, packageName)
+}
+
+func (w *smsStubWrapper) GetPremiumSmsPermissionForSubscriber(
+	ctx context.Context,
+	subId int32,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetPremiumSmsPermissionForSubscriber(ctx, subId, packageName)
+}
+
+func (w *smsStubWrapper) SetPremiumSmsPermission(
+	ctx context.Context,
+	packageName string,
+	permission int32,
+) error {
+	return w.impl.SetPremiumSmsPermission(ctx, packageName, permission)
+}
+
+func (w *smsStubWrapper) SetPremiumSmsPermissionForSubscriber(
+	ctx context.Context,
+	subId int32,
+	packageName string,
+	permission int32,
+) error {
+	return w.impl.SetPremiumSmsPermissionForSubscriber(ctx, subId, packageName, permission)
+}
+
+func (w *smsStubWrapper) IsImsSmsSupportedForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsImsSmsSupportedForSubscriber(ctx, subId)
+}
+
+func (w *smsStubWrapper) IsSmsSimPickActivityNeeded(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsSmsSimPickActivityNeeded(ctx, subId)
+}
+
+func (w *smsStubWrapper) GetPreferredSmsSubscription(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPreferredSmsSubscription(ctx)
+}
+
+func (w *smsStubWrapper) GetImsSmsFormatForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetImsSmsFormatForSubscriber(ctx, subId)
+}
+
+func (w *smsStubWrapper) IsSMSPromptEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSMSPromptEnabled(ctx)
+}
+
+func (w *smsStubWrapper) SendStoredText(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	callingAttributionTag string,
+	messageUri net.Uri,
+	scAddress string,
+	sentIntent app.PendingIntent,
+	deliveryIntent app.PendingIntent,
+) error {
+	return w.impl.SendStoredText(ctx, subId, callingPkg, callingAttributionTag, messageUri, scAddress, sentIntent, deliveryIntent)
+}
+
+func (w *smsStubWrapper) SendStoredMultipartText(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	callingAttributeTag string,
+	messageUri net.Uri,
+	scAddress string,
+	sentIntents []app.PendingIntent,
+	deliveryIntents []app.PendingIntent,
+) error {
+	return w.impl.SendStoredMultipartText(ctx, subId, callingPkg, callingAttributeTag, messageUri, scAddress, sentIntents, deliveryIntents)
+}
+
+func (w *smsStubWrapper) GetCarrierConfigValuesForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (os.Bundle, error) {
+	return w.impl.GetCarrierConfigValuesForSubscriber(ctx, subId)
+}
+
+func (w *smsStubWrapper) CreateAppSpecificSmsToken(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	intent app.PendingIntent,
+) (string, error) {
+	return w.impl.CreateAppSpecificSmsToken(ctx, subId, callingPkg, intent)
+}
+
+func (w *smsStubWrapper) CreateAppSpecificSmsTokenWithPackageInfo(
+	ctx context.Context,
+	subId int32,
+	callingPkg string,
+	prefixes string,
+	intent app.PendingIntent,
+) (string, error) {
+	return w.impl.CreateAppSpecificSmsTokenWithPackageInfo(ctx, subId, callingPkg, prefixes, intent)
+}
+
+func (w *smsStubWrapper) SetStorageMonitorMemoryStatusOverride(
+	ctx context.Context,
+	subId int32,
+	isStorageAvailable bool,
+) error {
+	return w.impl.SetStorageMonitorMemoryStatusOverride(ctx, subId, isStorageAvailable)
+}
+
+func (w *smsStubWrapper) ClearStorageMonitorMemoryStatusOverride(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.ClearStorageMonitorMemoryStatusOverride(ctx, subId)
+}
+
+func (w *smsStubWrapper) CheckSmsShortCodeDestination(
+	ctx context.Context,
+	subId int32,
+	callingApk string,
+	destAddress string,
+	countryIso string,
+) (int32, error) {
+	return w.impl.CheckSmsShortCodeDestination(ctx, subId, callingApk, destAddress, countryIso)
+}
+
+func (w *smsStubWrapper) GetSmscAddressFromIccEfForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetSmscAddressFromIccEfForSubscriber(ctx, subId)
+}
+
+func (w *smsStubWrapper) SetSmscAddressOnIccEfForSubscriber(
+	ctx context.Context,
+	smsc string,
+	subId int32,
+) (bool, error) {
+	return w.impl.SetSmscAddressOnIccEfForSubscriber(ctx, smsc, subId)
+}
+
+func (w *smsStubWrapper) GetSmsCapacityOnIccForSubscriber(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetSmsCapacityOnIccForSubscriber(ctx, subId)
+}
+
+func (w *smsStubWrapper) ResetAllCellBroadcastRanges(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.ResetAllCellBroadcastRanges(ctx, subId)
+}
+
+func (w *smsStubWrapper) GetWapMessageSize(
+	ctx context.Context,
+	locationUrl string,
+) (int64, error) {
+	return w.impl.GetWapMessageSize(ctx, locationUrl)
+}
+
+var _ ISms = (*smsStubWrapper)(nil)
+
+// NewSmsStub creates a server-side ISms wrapping the given
+// server implementation. The returned value satisfies ISms
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSmsStub(
+	impl ISmsServer,
+) ISms {
+	wrapper := &smsStubWrapper{impl: impl}
+	stub := &SmsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

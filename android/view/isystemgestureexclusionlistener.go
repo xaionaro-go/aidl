@@ -117,3 +117,44 @@ func (s *SystemGestureExclusionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISystemGestureExclusionListenerServer is the server-side interface that user implementations
+// provide to NewSystemGestureExclusionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISystemGestureExclusionListenerServer interface {
+	OnSystemGestureExclusionChanged(ctx context.Context, displayId int32, systemGestureExclusion graphics.Region, systemGestureExclusionUnrestricted graphics.Region) error
+}
+
+type systemGestureExclusionListenerStubWrapper struct {
+	impl       ISystemGestureExclusionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *systemGestureExclusionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *systemGestureExclusionListenerStubWrapper) OnSystemGestureExclusionChanged(
+	ctx context.Context,
+	displayId int32,
+	systemGestureExclusion graphics.Region,
+	systemGestureExclusionUnrestricted graphics.Region,
+) error {
+	return w.impl.OnSystemGestureExclusionChanged(ctx, displayId, systemGestureExclusion, systemGestureExclusionUnrestricted)
+}
+
+var _ ISystemGestureExclusionListener = (*systemGestureExclusionListenerStubWrapper)(nil)
+
+// NewSystemGestureExclusionListenerStub creates a server-side ISystemGestureExclusionListener wrapping the given
+// server implementation. The returned value satisfies ISystemGestureExclusionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSystemGestureExclusionListenerStub(
+	impl ISystemGestureExclusionListenerServer,
+) ISystemGestureExclusionListener {
+	wrapper := &systemGestureExclusionListenerStubWrapper{impl: impl}
+	stub := &SystemGestureExclusionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

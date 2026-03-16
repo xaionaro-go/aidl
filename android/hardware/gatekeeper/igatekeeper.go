@@ -324,3 +324,71 @@ func (s *GatekeeperStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGatekeeperServer is the server-side interface that user implementations
+// provide to NewGatekeeperStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGatekeeperServer interface {
+	DeleteAllUsers(ctx context.Context) error
+	DeleteUser(ctx context.Context, uid int32) error
+	Enroll(ctx context.Context, uid int32, currentPasswordHandle []byte, currentPassword []byte, desiredPassword []byte) (GatekeeperEnrollResponse, error)
+	Verify(ctx context.Context, uid int32, challenge int64, enrolledPasswordHandle []byte, providedPassword []byte) (GatekeeperVerifyResponse, error)
+}
+
+type gatekeeperStubWrapper struct {
+	impl       IGatekeeperServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gatekeeperStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gatekeeperStubWrapper) DeleteAllUsers(
+	ctx context.Context,
+) error {
+	return w.impl.DeleteAllUsers(ctx)
+}
+
+func (w *gatekeeperStubWrapper) DeleteUser(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.DeleteUser(ctx, uid)
+}
+
+func (w *gatekeeperStubWrapper) Enroll(
+	ctx context.Context,
+	uid int32,
+	currentPasswordHandle []byte,
+	currentPassword []byte,
+	desiredPassword []byte,
+) (GatekeeperEnrollResponse, error) {
+	return w.impl.Enroll(ctx, uid, currentPasswordHandle, currentPassword, desiredPassword)
+}
+
+func (w *gatekeeperStubWrapper) Verify(
+	ctx context.Context,
+	uid int32,
+	challenge int64,
+	enrolledPasswordHandle []byte,
+	providedPassword []byte,
+) (GatekeeperVerifyResponse, error) {
+	return w.impl.Verify(ctx, uid, challenge, enrolledPasswordHandle, providedPassword)
+}
+
+var _ IGatekeeper = (*gatekeeperStubWrapper)(nil)
+
+// NewGatekeeperStub creates a server-side IGatekeeper wrapping the given
+// server implementation. The returned value satisfies IGatekeeper
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGatekeeperStub(
+	impl IGatekeeperServer,
+) IGatekeeper {
+	wrapper := &gatekeeperStubWrapper{impl: impl}
+	stub := &GatekeeperStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

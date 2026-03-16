@@ -115,3 +115,50 @@ func (s *GeocodeCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGeocodeCallbackServer is the server-side interface that user implementations
+// provide to NewGeocodeCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGeocodeCallbackServer interface {
+	OnError(ctx context.Context, error_ string) error
+	OnResults(ctx context.Context, results []interface{}) error
+}
+
+type geocodeCallbackStubWrapper struct {
+	impl       IGeocodeCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *geocodeCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *geocodeCallbackStubWrapper) OnError(
+	ctx context.Context,
+	error_ string,
+) error {
+	return w.impl.OnError(ctx, error_)
+}
+
+func (w *geocodeCallbackStubWrapper) OnResults(
+	ctx context.Context,
+	results []interface{},
+) error {
+	return w.impl.OnResults(ctx, results)
+}
+
+var _ IGeocodeCallback = (*geocodeCallbackStubWrapper)(nil)
+
+// NewGeocodeCallbackStub creates a server-side IGeocodeCallback wrapping the given
+// server implementation. The returned value satisfies IGeocodeCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGeocodeCallbackStub(
+	impl IGeocodeCallbackServer,
+) IGeocodeCallback {
+	wrapper := &geocodeCallbackStubWrapper{impl: impl}
+	stub := &GeocodeCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

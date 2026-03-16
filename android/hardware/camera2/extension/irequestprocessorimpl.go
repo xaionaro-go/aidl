@@ -57,7 +57,7 @@ func (p *RequestProcessorImplProxy) SetImageProcessor(
 	if _err := outputConfigId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(imageProcessor.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, imageProcessor.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "setImageProcessor")
 	if _err != nil {
@@ -89,7 +89,7 @@ func (p *RequestProcessorImplProxy) Submit(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "submit")
 	if _err != nil {
@@ -131,7 +131,7 @@ func (p *RequestProcessorImplProxy) SubmitBurst(
 			}
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "submitBurst")
 	if _err != nil {
@@ -167,7 +167,7 @@ func (p *RequestProcessorImplProxy) SetRepeating(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRequestProcessorImpl, "setRepeating")
 	if _err != nil {
@@ -382,4 +382,85 @@ func (s *RequestProcessorImplStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRequestProcessorImplServer is the server-side interface that user implementations
+// provide to NewRequestProcessorImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRequestProcessorImplServer interface {
+	SetImageProcessor(ctx context.Context, outputConfigId OutputConfigId, imageProcessor IImageProcessorImpl) error
+	Submit(ctx context.Context, request Request, callback IRequestCallback) (int32, error)
+	SubmitBurst(ctx context.Context, requests []Request, callback IRequestCallback) (int32, error)
+	SetRepeating(ctx context.Context, request Request, callback IRequestCallback) (int32, error)
+	AbortCaptures(ctx context.Context) error
+	StopRepeating(ctx context.Context) error
+}
+
+type requestProcessorImplStubWrapper struct {
+	impl       IRequestProcessorImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *requestProcessorImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *requestProcessorImplStubWrapper) SetImageProcessor(
+	ctx context.Context,
+	outputConfigId OutputConfigId,
+	imageProcessor IImageProcessorImpl,
+) error {
+	return w.impl.SetImageProcessor(ctx, outputConfigId, imageProcessor)
+}
+
+func (w *requestProcessorImplStubWrapper) Submit(
+	ctx context.Context,
+	request Request,
+	callback IRequestCallback,
+) (int32, error) {
+	return w.impl.Submit(ctx, request, callback)
+}
+
+func (w *requestProcessorImplStubWrapper) SubmitBurst(
+	ctx context.Context,
+	requests []Request,
+	callback IRequestCallback,
+) (int32, error) {
+	return w.impl.SubmitBurst(ctx, requests, callback)
+}
+
+func (w *requestProcessorImplStubWrapper) SetRepeating(
+	ctx context.Context,
+	request Request,
+	callback IRequestCallback,
+) (int32, error) {
+	return w.impl.SetRepeating(ctx, request, callback)
+}
+
+func (w *requestProcessorImplStubWrapper) AbortCaptures(
+	ctx context.Context,
+) error {
+	return w.impl.AbortCaptures(ctx)
+}
+
+func (w *requestProcessorImplStubWrapper) StopRepeating(
+	ctx context.Context,
+) error {
+	return w.impl.StopRepeating(ctx)
+}
+
+var _ IRequestProcessorImpl = (*requestProcessorImplStubWrapper)(nil)
+
+// NewRequestProcessorImplStub creates a server-side IRequestProcessorImpl wrapping the given
+// server implementation. The returned value satisfies IRequestProcessorImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRequestProcessorImplStub(
+	impl IRequestProcessorImplServer,
+) IRequestProcessorImpl {
+	wrapper := &requestProcessorImplStubWrapper{impl: impl}
+	stub := &RequestProcessorImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

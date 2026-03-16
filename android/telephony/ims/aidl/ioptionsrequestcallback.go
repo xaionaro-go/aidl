@@ -136,3 +136,52 @@ func (s *OptionsRequestCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOptionsRequestCallbackServer is the server-side interface that user implementations
+// provide to NewOptionsRequestCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOptionsRequestCallbackServer interface {
+	RespondToCapabilityRequest(ctx context.Context, ownCapabilities ims.RcsContactUceCapability, isBlocked bool) error
+	RespondToCapabilityRequestWithError(ctx context.Context, code int32, reason string) error
+}
+
+type optionsRequestCallbackStubWrapper struct {
+	impl       IOptionsRequestCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *optionsRequestCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *optionsRequestCallbackStubWrapper) RespondToCapabilityRequest(
+	ctx context.Context,
+	ownCapabilities ims.RcsContactUceCapability,
+	isBlocked bool,
+) error {
+	return w.impl.RespondToCapabilityRequest(ctx, ownCapabilities, isBlocked)
+}
+
+func (w *optionsRequestCallbackStubWrapper) RespondToCapabilityRequestWithError(
+	ctx context.Context,
+	code int32,
+	reason string,
+) error {
+	return w.impl.RespondToCapabilityRequestWithError(ctx, code, reason)
+}
+
+var _ IOptionsRequestCallback = (*optionsRequestCallbackStubWrapper)(nil)
+
+// NewOptionsRequestCallbackStub creates a server-side IOptionsRequestCallback wrapping the given
+// server implementation. The returned value satisfies IOptionsRequestCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOptionsRequestCallbackStub(
+	impl IOptionsRequestCallbackServer,
+) IOptionsRequestCallback {
+	wrapper := &optionsRequestCallbackStubWrapper{impl: impl}
+	stub := &OptionsRequestCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

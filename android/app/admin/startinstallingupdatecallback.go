@@ -88,3 +88,43 @@ func (s *StartInstallingUpdateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// StartInstallingUpdateCallbackServer is the server-side interface that user implementations
+// provide to NewStartInstallingUpdateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type StartInstallingUpdateCallbackServer interface {
+	OnStartInstallingUpdateError(ctx context.Context, errorCode int32, errorMessage string) error
+}
+
+type startInstallingUpdateCallbackStubWrapper struct {
+	impl       StartInstallingUpdateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *startInstallingUpdateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *startInstallingUpdateCallbackStubWrapper) OnStartInstallingUpdateError(
+	ctx context.Context,
+	errorCode int32,
+	errorMessage string,
+) error {
+	return w.impl.OnStartInstallingUpdateError(ctx, errorCode, errorMessage)
+}
+
+var _ StartInstallingUpdateCallback = (*startInstallingUpdateCallbackStubWrapper)(nil)
+
+// NewStartInstallingUpdateCallbackStub creates a server-side StartInstallingUpdateCallback wrapping the given
+// server implementation. The returned value satisfies StartInstallingUpdateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStartInstallingUpdateCallbackStub(
+	impl StartInstallingUpdateCallbackServer,
+) StartInstallingUpdateCallback {
+	wrapper := &startInstallingUpdateCallbackStubWrapper{impl: impl}
+	stub := &StartInstallingUpdateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -428,7 +428,7 @@ func (p *FilterProxy) SetDataSource(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFilter)
-	_data.WriteStrongBinder(filter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, filter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFilter, "setDataSource")
 	if _err != nil {
@@ -742,4 +742,150 @@ func (s *FilterStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFilterServer is the server-side interface that user implementations
+// provide to NewFilterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFilterServer interface {
+	GetQueueDesc(ctx context.Context, queue fmq.MQDescriptor) error
+	Close(ctx context.Context) error
+	Configure(ctx context.Context, settings DemuxFilterSettings) error
+	ConfigureAvStreamType(ctx context.Context, avStreamType AvStreamType) error
+	ConfigureIpCid(ctx context.Context, ipCid int32) error
+	ConfigureMonitorEvent(ctx context.Context, monitorEventTypes int32) error
+	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
+	Flush(ctx context.Context) error
+	GetAvSharedHandle(ctx context.Context, avMemory common.NativeHandle) (int64, error)
+	GetId(ctx context.Context) (int32, error)
+	GetId64Bit(ctx context.Context) (int64, error)
+	ReleaseAvHandle(ctx context.Context, avMemory common.NativeHandle, avDataId int64) error
+	SetDataSource(ctx context.Context, filter IFilter) error
+	SetDelayHint(ctx context.Context, hint FilterDelayHint) error
+}
+
+type filterStubWrapper struct {
+	impl       IFilterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *filterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *filterStubWrapper) GetQueueDesc(
+	ctx context.Context,
+	queue fmq.MQDescriptor,
+) error {
+	return w.impl.GetQueueDesc(ctx, queue)
+}
+
+func (w *filterStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *filterStubWrapper) Configure(
+	ctx context.Context,
+	settings DemuxFilterSettings,
+) error {
+	return w.impl.Configure(ctx, settings)
+}
+
+func (w *filterStubWrapper) ConfigureAvStreamType(
+	ctx context.Context,
+	avStreamType AvStreamType,
+) error {
+	return w.impl.ConfigureAvStreamType(ctx, avStreamType)
+}
+
+func (w *filterStubWrapper) ConfigureIpCid(
+	ctx context.Context,
+	ipCid int32,
+) error {
+	return w.impl.ConfigureIpCid(ctx, ipCid)
+}
+
+func (w *filterStubWrapper) ConfigureMonitorEvent(
+	ctx context.Context,
+	monitorEventTypes int32,
+) error {
+	return w.impl.ConfigureMonitorEvent(ctx, monitorEventTypes)
+}
+
+func (w *filterStubWrapper) Start(
+	ctx context.Context,
+) error {
+	return w.impl.Start(ctx)
+}
+
+func (w *filterStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *filterStubWrapper) Flush(
+	ctx context.Context,
+) error {
+	return w.impl.Flush(ctx)
+}
+
+func (w *filterStubWrapper) GetAvSharedHandle(
+	ctx context.Context,
+	avMemory common.NativeHandle,
+) (int64, error) {
+	return w.impl.GetAvSharedHandle(ctx, avMemory)
+}
+
+func (w *filterStubWrapper) GetId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetId(ctx)
+}
+
+func (w *filterStubWrapper) GetId64Bit(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetId64Bit(ctx)
+}
+
+func (w *filterStubWrapper) ReleaseAvHandle(
+	ctx context.Context,
+	avMemory common.NativeHandle,
+	avDataId int64,
+) error {
+	return w.impl.ReleaseAvHandle(ctx, avMemory, avDataId)
+}
+
+func (w *filterStubWrapper) SetDataSource(
+	ctx context.Context,
+	filter IFilter,
+) error {
+	return w.impl.SetDataSource(ctx, filter)
+}
+
+func (w *filterStubWrapper) SetDelayHint(
+	ctx context.Context,
+	hint FilterDelayHint,
+) error {
+	return w.impl.SetDelayHint(ctx, hint)
+}
+
+var _ IFilter = (*filterStubWrapper)(nil)
+
+// NewFilterStub creates a server-side IFilter wrapping the given
+// server implementation. The returned value satisfies IFilter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFilterStub(
+	impl IFilterServer,
+) IFilter {
+	wrapper := &filterStubWrapper{impl: impl}
+	stub := &FilterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

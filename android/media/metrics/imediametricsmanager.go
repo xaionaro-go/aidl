@@ -793,3 +793,140 @@ func (s *MediaMetricsManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaMetricsManagerServer is the server-side interface that user implementations
+// provide to NewMediaMetricsManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaMetricsManagerServer interface {
+	ReportPlaybackMetrics(ctx context.Context, sessionId string, metrics PlaybackMetrics) error
+	GetPlaybackSessionId(ctx context.Context) (string, error)
+	GetRecordingSessionId(ctx context.Context) (string, error)
+	ReportNetworkEvent(ctx context.Context, sessionId string, event NetworkEvent) error
+	ReportPlaybackErrorEvent(ctx context.Context, sessionId string, event PlaybackErrorEvent) error
+	ReportPlaybackStateEvent(ctx context.Context, sessionId string, event PlaybackStateEvent) error
+	ReportTrackChangeEvent(ctx context.Context, sessionId string, event TrackChangeEvent) error
+	ReportEditingEndedEvent(ctx context.Context, sessionId string, event EditingEndedEvent) error
+	GetTranscodingSessionId(ctx context.Context) (string, error)
+	GetEditingSessionId(ctx context.Context) (string, error)
+	GetBundleSessionId(ctx context.Context) (string, error)
+	ReportBundleMetrics(ctx context.Context, sessionId string, metrics interface{}) error
+	ReleaseSessionId(ctx context.Context, sessionId string) error
+}
+
+type mediaMetricsManagerStubWrapper struct {
+	impl       IMediaMetricsManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaMetricsManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaMetricsManagerStubWrapper) ReportPlaybackMetrics(
+	ctx context.Context,
+	sessionId string,
+	metrics PlaybackMetrics,
+) error {
+	return w.impl.ReportPlaybackMetrics(ctx, sessionId, metrics)
+}
+
+func (w *mediaMetricsManagerStubWrapper) GetPlaybackSessionId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetPlaybackSessionId(ctx)
+}
+
+func (w *mediaMetricsManagerStubWrapper) GetRecordingSessionId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetRecordingSessionId(ctx)
+}
+
+func (w *mediaMetricsManagerStubWrapper) ReportNetworkEvent(
+	ctx context.Context,
+	sessionId string,
+	event NetworkEvent,
+) error {
+	return w.impl.ReportNetworkEvent(ctx, sessionId, event)
+}
+
+func (w *mediaMetricsManagerStubWrapper) ReportPlaybackErrorEvent(
+	ctx context.Context,
+	sessionId string,
+	event PlaybackErrorEvent,
+) error {
+	return w.impl.ReportPlaybackErrorEvent(ctx, sessionId, event)
+}
+
+func (w *mediaMetricsManagerStubWrapper) ReportPlaybackStateEvent(
+	ctx context.Context,
+	sessionId string,
+	event PlaybackStateEvent,
+) error {
+	return w.impl.ReportPlaybackStateEvent(ctx, sessionId, event)
+}
+
+func (w *mediaMetricsManagerStubWrapper) ReportTrackChangeEvent(
+	ctx context.Context,
+	sessionId string,
+	event TrackChangeEvent,
+) error {
+	return w.impl.ReportTrackChangeEvent(ctx, sessionId, event)
+}
+
+func (w *mediaMetricsManagerStubWrapper) ReportEditingEndedEvent(
+	ctx context.Context,
+	sessionId string,
+	event EditingEndedEvent,
+) error {
+	return w.impl.ReportEditingEndedEvent(ctx, sessionId, event)
+}
+
+func (w *mediaMetricsManagerStubWrapper) GetTranscodingSessionId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetTranscodingSessionId(ctx)
+}
+
+func (w *mediaMetricsManagerStubWrapper) GetEditingSessionId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetEditingSessionId(ctx)
+}
+
+func (w *mediaMetricsManagerStubWrapper) GetBundleSessionId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetBundleSessionId(ctx)
+}
+
+func (w *mediaMetricsManagerStubWrapper) ReportBundleMetrics(
+	ctx context.Context,
+	sessionId string,
+	metrics interface{},
+) error {
+	return w.impl.ReportBundleMetrics(ctx, sessionId, metrics)
+}
+
+func (w *mediaMetricsManagerStubWrapper) ReleaseSessionId(
+	ctx context.Context,
+	sessionId string,
+) error {
+	return w.impl.ReleaseSessionId(ctx, sessionId)
+}
+
+var _ IMediaMetricsManager = (*mediaMetricsManagerStubWrapper)(nil)
+
+// NewMediaMetricsManagerStub creates a server-side IMediaMetricsManager wrapping the given
+// server implementation. The returned value satisfies IMediaMetricsManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaMetricsManagerStub(
+	impl IMediaMetricsManagerServer,
+) IMediaMetricsManager {
+	wrapper := &mediaMetricsManagerStubWrapper{impl: impl}
+	stub := &MediaMetricsManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

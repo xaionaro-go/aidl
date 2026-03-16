@@ -49,3 +49,34 @@ func (s *EmptyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEmptyServer is the server-side interface that user implementations
+// provide to NewEmptyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEmptyServer interface {
+}
+
+type emptyStubWrapper struct {
+	impl       IEmptyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *emptyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IEmpty = (*emptyStubWrapper)(nil)
+
+// NewEmptyStub creates a server-side IEmpty wrapping the given
+// server implementation. The returned value satisfies IEmpty
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEmptyStub(
+	impl IEmptyServer,
+) IEmpty {
+	wrapper := &emptyStubWrapper{impl: impl}
+	stub := &EmptyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

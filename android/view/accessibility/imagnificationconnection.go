@@ -74,7 +74,7 @@ func (p *MagnificationConnectionProxy) EnableWindowMagnification(
 	_data.WriteFloat32(centerY)
 	_data.WriteFloat32(magnificationFrameOffsetRatioX)
 	_data.WriteFloat32(magnificationFrameOffsetRatioY)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMagnificationConnection, "enableWindowMagnification")
 	if _err != nil {
@@ -112,7 +112,7 @@ func (p *MagnificationConnectionProxy) DisableWindowMagnification(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMagnificationConnection)
 	_data.WriteInt32(displayId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMagnificationConnection, "disableWindowMagnification")
 	if _err != nil {
@@ -156,7 +156,7 @@ func (p *MagnificationConnectionProxy) MoveWindowMagnifierToPosition(
 	_data.WriteInt32(displayId)
 	_data.WriteFloat32(positionX)
 	_data.WriteFloat32(positionY)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMagnificationConnection, "moveWindowMagnifierToPosition")
 	if _err != nil {
@@ -226,7 +226,7 @@ func (p *MagnificationConnectionProxy) SetConnectionCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMagnificationConnection)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMagnificationConnection, "setConnectionCallback")
 	if _err != nil {
@@ -478,4 +478,139 @@ func (s *MagnificationConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMagnificationConnectionServer is the server-side interface that user implementations
+// provide to NewMagnificationConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMagnificationConnectionServer interface {
+	EnableWindowMagnification(ctx context.Context, displayId int32, scale float32, centerX float32, centerY float32, magnificationFrameOffsetRatioX float32, magnificationFrameOffsetRatioY float32, callback IRemoteMagnificationAnimationCallback) error
+	SetScaleForWindowMagnification(ctx context.Context, displayId int32, scale float32) error
+	DisableWindowMagnification(ctx context.Context, displayId int32, callback IRemoteMagnificationAnimationCallback) error
+	MoveWindowMagnifier(ctx context.Context, displayId int32, offsetX float32, offsetY float32) error
+	MoveWindowMagnifierToPosition(ctx context.Context, displayId int32, positionX float32, positionY float32, callback IRemoteMagnificationAnimationCallback) error
+	ShowMagnificationButton(ctx context.Context, displayId int32, magnificationMode int32) error
+	RemoveMagnificationButton(ctx context.Context, displayId int32) error
+	RemoveMagnificationSettingsPanel(ctx context.Context, displayId int32) error
+	SetConnectionCallback(ctx context.Context, callback IMagnificationConnectionCallback) error
+	OnUserMagnificationScaleChanged(ctx context.Context, displayId int32, scale float32) error
+	OnFullscreenMagnificationActivationChanged(ctx context.Context, displayId int32, activated bool) error
+}
+
+type magnificationConnectionStubWrapper struct {
+	impl       IMagnificationConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *magnificationConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *magnificationConnectionStubWrapper) EnableWindowMagnification(
+	ctx context.Context,
+	displayId int32,
+	scale float32,
+	centerX float32,
+	centerY float32,
+	magnificationFrameOffsetRatioX float32,
+	magnificationFrameOffsetRatioY float32,
+	callback IRemoteMagnificationAnimationCallback,
+) error {
+	return w.impl.EnableWindowMagnification(ctx, displayId, scale, centerX, centerY, magnificationFrameOffsetRatioX, magnificationFrameOffsetRatioY, callback)
+}
+
+func (w *magnificationConnectionStubWrapper) SetScaleForWindowMagnification(
+	ctx context.Context,
+	displayId int32,
+	scale float32,
+) error {
+	return w.impl.SetScaleForWindowMagnification(ctx, displayId, scale)
+}
+
+func (w *magnificationConnectionStubWrapper) DisableWindowMagnification(
+	ctx context.Context,
+	displayId int32,
+	callback IRemoteMagnificationAnimationCallback,
+) error {
+	return w.impl.DisableWindowMagnification(ctx, displayId, callback)
+}
+
+func (w *magnificationConnectionStubWrapper) MoveWindowMagnifier(
+	ctx context.Context,
+	displayId int32,
+	offsetX float32,
+	offsetY float32,
+) error {
+	return w.impl.MoveWindowMagnifier(ctx, displayId, offsetX, offsetY)
+}
+
+func (w *magnificationConnectionStubWrapper) MoveWindowMagnifierToPosition(
+	ctx context.Context,
+	displayId int32,
+	positionX float32,
+	positionY float32,
+	callback IRemoteMagnificationAnimationCallback,
+) error {
+	return w.impl.MoveWindowMagnifierToPosition(ctx, displayId, positionX, positionY, callback)
+}
+
+func (w *magnificationConnectionStubWrapper) ShowMagnificationButton(
+	ctx context.Context,
+	displayId int32,
+	magnificationMode int32,
+) error {
+	return w.impl.ShowMagnificationButton(ctx, displayId, magnificationMode)
+}
+
+func (w *magnificationConnectionStubWrapper) RemoveMagnificationButton(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.RemoveMagnificationButton(ctx, displayId)
+}
+
+func (w *magnificationConnectionStubWrapper) RemoveMagnificationSettingsPanel(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.RemoveMagnificationSettingsPanel(ctx, displayId)
+}
+
+func (w *magnificationConnectionStubWrapper) SetConnectionCallback(
+	ctx context.Context,
+	callback IMagnificationConnectionCallback,
+) error {
+	return w.impl.SetConnectionCallback(ctx, callback)
+}
+
+func (w *magnificationConnectionStubWrapper) OnUserMagnificationScaleChanged(
+	ctx context.Context,
+	displayId int32,
+	scale float32,
+) error {
+	return w.impl.OnUserMagnificationScaleChanged(ctx, displayId, scale)
+}
+
+func (w *magnificationConnectionStubWrapper) OnFullscreenMagnificationActivationChanged(
+	ctx context.Context,
+	displayId int32,
+	activated bool,
+) error {
+	return w.impl.OnFullscreenMagnificationActivationChanged(ctx, displayId, activated)
+}
+
+var _ IMagnificationConnection = (*magnificationConnectionStubWrapper)(nil)
+
+// NewMagnificationConnectionStub creates a server-side IMagnificationConnection wrapping the given
+// server implementation. The returned value satisfies IMagnificationConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMagnificationConnectionStub(
+	impl IMagnificationConnectionServer,
+) IMagnificationConnection {
+	wrapper := &magnificationConnectionStubWrapper{impl: impl}
+	stub := &MagnificationConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

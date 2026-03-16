@@ -112,3 +112,50 @@ func (s *SnapshotRuntimeProfileCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISnapshotRuntimeProfileCallbackServer is the server-side interface that user implementations
+// provide to NewSnapshotRuntimeProfileCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISnapshotRuntimeProfileCallbackServer interface {
+	OnSuccess(ctx context.Context, profileReadFd int32) error
+	OnError(ctx context.Context, errCode int32) error
+}
+
+type snapshotRuntimeProfileCallbackStubWrapper struct {
+	impl       ISnapshotRuntimeProfileCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *snapshotRuntimeProfileCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *snapshotRuntimeProfileCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	profileReadFd int32,
+) error {
+	return w.impl.OnSuccess(ctx, profileReadFd)
+}
+
+func (w *snapshotRuntimeProfileCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errCode int32,
+) error {
+	return w.impl.OnError(ctx, errCode)
+}
+
+var _ ISnapshotRuntimeProfileCallback = (*snapshotRuntimeProfileCallbackStubWrapper)(nil)
+
+// NewSnapshotRuntimeProfileCallbackStub creates a server-side ISnapshotRuntimeProfileCallback wrapping the given
+// server implementation. The returned value satisfies ISnapshotRuntimeProfileCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSnapshotRuntimeProfileCallbackStub(
+	impl ISnapshotRuntimeProfileCallbackServer,
+) ISnapshotRuntimeProfileCallback {
+	wrapper := &snapshotRuntimeProfileCallbackStubWrapper{impl: impl}
+	stub := &SnapshotRuntimeProfileCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -94,3 +94,43 @@ func (s *CancelSessionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICancelSessionCallbackServer is the server-side interface that user implementations
+// provide to NewCancelSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICancelSessionCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, response []byte) error
+}
+
+type cancelSessionCallbackStubWrapper struct {
+	impl       ICancelSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cancelSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cancelSessionCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	response []byte,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, response)
+}
+
+var _ ICancelSessionCallback = (*cancelSessionCallbackStubWrapper)(nil)
+
+// NewCancelSessionCallbackStub creates a server-side ICancelSessionCallback wrapping the given
+// server implementation. The returned value satisfies ICancelSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCancelSessionCallbackStub(
+	impl ICancelSessionCallbackServer,
+) ICancelSessionCallback {
+	wrapper := &cancelSessionCallbackStubWrapper{impl: impl}
+	stub := &CancelSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

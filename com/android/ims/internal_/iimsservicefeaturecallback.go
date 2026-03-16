@@ -196,3 +196,68 @@ func (s *ImsServiceFeatureCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsServiceFeatureCallbackServer is the server-side interface that user implementations
+// provide to NewImsServiceFeatureCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsServiceFeatureCallbackServer interface {
+	ImsFeatureCreated(ctx context.Context, feature ims.ImsFeatureContainer, subId int32) error
+	ImsFeatureRemoved(ctx context.Context, reason int32) error
+	ImsStatusChanged(ctx context.Context, status int32, subId int32) error
+	UpdateCapabilities(ctx context.Context, capabilities int64) error
+}
+
+type imsServiceFeatureCallbackStubWrapper struct {
+	impl       IImsServiceFeatureCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsServiceFeatureCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsServiceFeatureCallbackStubWrapper) ImsFeatureCreated(
+	ctx context.Context,
+	feature ims.ImsFeatureContainer,
+	subId int32,
+) error {
+	return w.impl.ImsFeatureCreated(ctx, feature, subId)
+}
+
+func (w *imsServiceFeatureCallbackStubWrapper) ImsFeatureRemoved(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.ImsFeatureRemoved(ctx, reason)
+}
+
+func (w *imsServiceFeatureCallbackStubWrapper) ImsStatusChanged(
+	ctx context.Context,
+	status int32,
+	subId int32,
+) error {
+	return w.impl.ImsStatusChanged(ctx, status, subId)
+}
+
+func (w *imsServiceFeatureCallbackStubWrapper) UpdateCapabilities(
+	ctx context.Context,
+	capabilities int64,
+) error {
+	return w.impl.UpdateCapabilities(ctx, capabilities)
+}
+
+var _ IImsServiceFeatureCallback = (*imsServiceFeatureCallbackStubWrapper)(nil)
+
+// NewImsServiceFeatureCallbackStub creates a server-side IImsServiceFeatureCallback wrapping the given
+// server implementation. The returned value satisfies IImsServiceFeatureCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsServiceFeatureCallbackStub(
+	impl IImsServiceFeatureCallbackServer,
+) IImsServiceFeatureCallback {
+	wrapper := &imsServiceFeatureCallbackStubWrapper{impl: impl}
+	stub := &ImsServiceFeatureCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

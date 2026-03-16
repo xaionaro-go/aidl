@@ -90,3 +90,42 @@ func (s *DeviceSettingsListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDeviceSettingsListenerServer is the server-side interface that user implementations
+// provide to NewDeviceSettingsListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceSettingsListenerServer interface {
+	OnDeviceSettingsChanged(ctx context.Context, settings []DeviceSetting) error
+}
+
+type deviceSettingsListenerStubWrapper struct {
+	impl       IDeviceSettingsListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceSettingsListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceSettingsListenerStubWrapper) OnDeviceSettingsChanged(
+	ctx context.Context,
+	settings []DeviceSetting,
+) error {
+	return w.impl.OnDeviceSettingsChanged(ctx, settings)
+}
+
+var _ IDeviceSettingsListener = (*deviceSettingsListenerStubWrapper)(nil)
+
+// NewDeviceSettingsListenerStub creates a server-side IDeviceSettingsListener wrapping the given
+// server implementation. The returned value satisfies IDeviceSettingsListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceSettingsListenerStub(
+	impl IDeviceSettingsListenerServer,
+) IDeviceSettingsListener {
+	wrapper := &deviceSettingsListenerStubWrapper{impl: impl}
+	stub := &DeviceSettingsListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

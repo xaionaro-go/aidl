@@ -146,3 +146,50 @@ func (s *GnssPowerIndicationCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssPowerIndicationCallbackServer is the server-side interface that user implementations
+// provide to NewGnssPowerIndicationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssPowerIndicationCallbackServer interface {
+	SetCapabilitiesCb(ctx context.Context, capabilities int32) error
+	GnssPowerStatsCb(ctx context.Context, gnssPowerStats GnssPowerStats) error
+}
+
+type gnssPowerIndicationCallbackStubWrapper struct {
+	impl       IGnssPowerIndicationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssPowerIndicationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssPowerIndicationCallbackStubWrapper) SetCapabilitiesCb(
+	ctx context.Context,
+	capabilities int32,
+) error {
+	return w.impl.SetCapabilitiesCb(ctx, capabilities)
+}
+
+func (w *gnssPowerIndicationCallbackStubWrapper) GnssPowerStatsCb(
+	ctx context.Context,
+	gnssPowerStats GnssPowerStats,
+) error {
+	return w.impl.GnssPowerStatsCb(ctx, gnssPowerStats)
+}
+
+var _ IGnssPowerIndicationCallback = (*gnssPowerIndicationCallbackStubWrapper)(nil)
+
+// NewGnssPowerIndicationCallbackStub creates a server-side IGnssPowerIndicationCallback wrapping the given
+// server implementation. The returned value satisfies IGnssPowerIndicationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssPowerIndicationCallbackStub(
+	impl IGnssPowerIndicationCallbackServer,
+) IGnssPowerIndicationCallback {
+	wrapper := &gnssPowerIndicationCallbackStubWrapper{impl: impl}
+	stub := &GnssPowerIndicationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

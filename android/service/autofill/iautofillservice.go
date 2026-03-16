@@ -77,7 +77,7 @@ func (p *AutoFillServiceProxy) OnFillRequest(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillService, "onFillRequest")
 	if _err != nil {
@@ -100,8 +100,8 @@ func (p *AutoFillServiceProxy) OnFillCredentialRequest(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteStrongBinder(client.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, client, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillService, "onFillCredentialRequest")
 	if _err != nil {
@@ -123,7 +123,7 @@ func (p *AutoFillServiceProxy) OnSaveRequest(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillService, "onSaveRequest")
 	if _err != nil {
@@ -140,7 +140,7 @@ func (p *AutoFillServiceProxy) OnSavedPasswordCountRequest(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAutoFillService)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillService, "onSavedPasswordCountRequest")
 	if _err != nil {
@@ -162,7 +162,7 @@ func (p *AutoFillServiceProxy) OnConvertCredentialRequest(
 	if _err := convertCredentialRequest.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(convertCredentialCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, convertCredentialCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAutoFillService, "onConvertCredentialRequest")
 	if _err != nil {
@@ -341,4 +341,96 @@ func (s *AutoFillServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAutoFillServiceServer is the server-side interface that user implementations
+// provide to NewAutoFillServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAutoFillServiceServer interface {
+	OnConnectedStateChanged(ctx context.Context, connected bool) error
+	OnFillRequest(ctx context.Context, request FillRequest, callback IFillCallback) error
+	OnFillCredentialRequest(ctx context.Context, request FillRequest, callback IFillCallback, client binder.IBinder) error
+	OnSaveRequest(ctx context.Context, request SaveRequest, callback ISaveCallback) error
+	OnSavedPasswordCountRequest(ctx context.Context, receiver os.IResultReceiver) error
+	OnConvertCredentialRequest(ctx context.Context, convertCredentialRequest ConvertCredentialRequest, convertCredentialCallback IConvertCredentialCallback) error
+	OnSessionDestroyed(ctx context.Context, history FillEventHistory) error
+}
+
+type autoFillServiceStubWrapper struct {
+	impl       IAutoFillServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *autoFillServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *autoFillServiceStubWrapper) OnConnectedStateChanged(
+	ctx context.Context,
+	connected bool,
+) error {
+	return w.impl.OnConnectedStateChanged(ctx, connected)
+}
+
+func (w *autoFillServiceStubWrapper) OnFillRequest(
+	ctx context.Context,
+	request FillRequest,
+	callback IFillCallback,
+) error {
+	return w.impl.OnFillRequest(ctx, request, callback)
+}
+
+func (w *autoFillServiceStubWrapper) OnFillCredentialRequest(
+	ctx context.Context,
+	request FillRequest,
+	callback IFillCallback,
+	client binder.IBinder,
+) error {
+	return w.impl.OnFillCredentialRequest(ctx, request, callback, client)
+}
+
+func (w *autoFillServiceStubWrapper) OnSaveRequest(
+	ctx context.Context,
+	request SaveRequest,
+	callback ISaveCallback,
+) error {
+	return w.impl.OnSaveRequest(ctx, request, callback)
+}
+
+func (w *autoFillServiceStubWrapper) OnSavedPasswordCountRequest(
+	ctx context.Context,
+	receiver os.IResultReceiver,
+) error {
+	return w.impl.OnSavedPasswordCountRequest(ctx, receiver)
+}
+
+func (w *autoFillServiceStubWrapper) OnConvertCredentialRequest(
+	ctx context.Context,
+	convertCredentialRequest ConvertCredentialRequest,
+	convertCredentialCallback IConvertCredentialCallback,
+) error {
+	return w.impl.OnConvertCredentialRequest(ctx, convertCredentialRequest, convertCredentialCallback)
+}
+
+func (w *autoFillServiceStubWrapper) OnSessionDestroyed(
+	ctx context.Context,
+	history FillEventHistory,
+) error {
+	return w.impl.OnSessionDestroyed(ctx, history)
+}
+
+var _ IAutoFillService = (*autoFillServiceStubWrapper)(nil)
+
+// NewAutoFillServiceStub creates a server-side IAutoFillService wrapping the given
+// server implementation. The returned value satisfies IAutoFillService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAutoFillServiceStub(
+	impl IAutoFillServiceServer,
+) IAutoFillService {
+	wrapper := &autoFillServiceStubWrapper{impl: impl}
+	stub := &AutoFillServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

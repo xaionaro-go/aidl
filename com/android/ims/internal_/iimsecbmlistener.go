@@ -100,3 +100,48 @@ func (s *ImsEcbmListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsEcbmListenerServer is the server-side interface that user implementations
+// provide to NewImsEcbmListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsEcbmListenerServer interface {
+	EnteredECBM(ctx context.Context) error
+	ExitedECBM(ctx context.Context) error
+}
+
+type imsEcbmListenerStubWrapper struct {
+	impl       IImsEcbmListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsEcbmListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsEcbmListenerStubWrapper) EnteredECBM(
+	ctx context.Context,
+) error {
+	return w.impl.EnteredECBM(ctx)
+}
+
+func (w *imsEcbmListenerStubWrapper) ExitedECBM(
+	ctx context.Context,
+) error {
+	return w.impl.ExitedECBM(ctx)
+}
+
+var _ IImsEcbmListener = (*imsEcbmListenerStubWrapper)(nil)
+
+// NewImsEcbmListenerStub creates a server-side IImsEcbmListener wrapping the given
+// server implementation. The returned value satisfies IImsEcbmListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsEcbmListenerStub(
+	impl IImsEcbmListenerServer,
+) IImsEcbmListener {
+	wrapper := &imsEcbmListenerStubWrapper{impl: impl}
+	stub := &ImsEcbmListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

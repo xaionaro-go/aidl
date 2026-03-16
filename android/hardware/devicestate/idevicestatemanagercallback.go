@@ -66,7 +66,7 @@ func (p *DeviceStateManagerCallbackProxy) OnRequestActive(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceStateManagerCallback)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceStateManagerCallback, "onRequestActive")
 	if _err != nil {
@@ -83,7 +83,7 @@ func (p *DeviceStateManagerCallbackProxy) OnRequestCanceled(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceStateManagerCallback)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceStateManagerCallback, "onRequestCanceled")
 	if _err != nil {
@@ -150,4 +150,59 @@ func (s *DeviceStateManagerCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDeviceStateManagerCallbackServer is the server-side interface that user implementations
+// provide to NewDeviceStateManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceStateManagerCallbackServer interface {
+	OnDeviceStateInfoChanged(ctx context.Context, info DeviceStateInfo) error
+	OnRequestActive(ctx context.Context, token binder.IBinder) error
+	OnRequestCanceled(ctx context.Context, token binder.IBinder) error
+}
+
+type deviceStateManagerCallbackStubWrapper struct {
+	impl       IDeviceStateManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceStateManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceStateManagerCallbackStubWrapper) OnDeviceStateInfoChanged(
+	ctx context.Context,
+	info DeviceStateInfo,
+) error {
+	return w.impl.OnDeviceStateInfoChanged(ctx, info)
+}
+
+func (w *deviceStateManagerCallbackStubWrapper) OnRequestActive(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.OnRequestActive(ctx, token)
+}
+
+func (w *deviceStateManagerCallbackStubWrapper) OnRequestCanceled(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.OnRequestCanceled(ctx, token)
+}
+
+var _ IDeviceStateManagerCallback = (*deviceStateManagerCallbackStubWrapper)(nil)
+
+// NewDeviceStateManagerCallbackStub creates a server-side IDeviceStateManagerCallback wrapping the given
+// server implementation. The returned value satisfies IDeviceStateManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceStateManagerCallbackStub(
+	impl IDeviceStateManagerCallbackServer,
+) IDeviceStateManagerCallback {
+	wrapper := &deviceStateManagerCallbackStubWrapper{impl: impl}
+	stub := &DeviceStateManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

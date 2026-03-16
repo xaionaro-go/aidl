@@ -58,7 +58,7 @@ func (p *ImsMediaSessionProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMediaSession)
-	_data.WriteStrongBinder(sessionListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaSession, "setListener")
 	if _err != nil {
@@ -352,4 +352,107 @@ func (s *ImsMediaSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsMediaSessionServer is the server-side interface that user implementations
+// provide to NewImsMediaSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsMediaSessionServer interface {
+	SetListener(ctx context.Context, sessionListener IImsMediaSessionListener) error
+	ModifySession(ctx context.Context, config RtpConfig) error
+	SendDtmf(ctx context.Context, dtmfDigit uint16, duration int32) error
+	StartDtmf(ctx context.Context, dtmfDigit uint16) error
+	StopDtmf(ctx context.Context) error
+	SendHeaderExtension(ctx context.Context, extensions []RtpHeaderExtension) error
+	SetMediaQualityThreshold(ctx context.Context, threshold MediaQualityThreshold) error
+	RequestRtpReceptionStats(ctx context.Context, intervalMs int32) error
+	AdjustDelay(ctx context.Context, delayMs int32) error
+}
+
+type imsMediaSessionStubWrapper struct {
+	impl       IImsMediaSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsMediaSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsMediaSessionStubWrapper) SetListener(
+	ctx context.Context,
+	sessionListener IImsMediaSessionListener,
+) error {
+	return w.impl.SetListener(ctx, sessionListener)
+}
+
+func (w *imsMediaSessionStubWrapper) ModifySession(
+	ctx context.Context,
+	config RtpConfig,
+) error {
+	return w.impl.ModifySession(ctx, config)
+}
+
+func (w *imsMediaSessionStubWrapper) SendDtmf(
+	ctx context.Context,
+	dtmfDigit uint16,
+	duration int32,
+) error {
+	return w.impl.SendDtmf(ctx, dtmfDigit, duration)
+}
+
+func (w *imsMediaSessionStubWrapper) StartDtmf(
+	ctx context.Context,
+	dtmfDigit uint16,
+) error {
+	return w.impl.StartDtmf(ctx, dtmfDigit)
+}
+
+func (w *imsMediaSessionStubWrapper) StopDtmf(
+	ctx context.Context,
+) error {
+	return w.impl.StopDtmf(ctx)
+}
+
+func (w *imsMediaSessionStubWrapper) SendHeaderExtension(
+	ctx context.Context,
+	extensions []RtpHeaderExtension,
+) error {
+	return w.impl.SendHeaderExtension(ctx, extensions)
+}
+
+func (w *imsMediaSessionStubWrapper) SetMediaQualityThreshold(
+	ctx context.Context,
+	threshold MediaQualityThreshold,
+) error {
+	return w.impl.SetMediaQualityThreshold(ctx, threshold)
+}
+
+func (w *imsMediaSessionStubWrapper) RequestRtpReceptionStats(
+	ctx context.Context,
+	intervalMs int32,
+) error {
+	return w.impl.RequestRtpReceptionStats(ctx, intervalMs)
+}
+
+func (w *imsMediaSessionStubWrapper) AdjustDelay(
+	ctx context.Context,
+	delayMs int32,
+) error {
+	return w.impl.AdjustDelay(ctx, delayMs)
+}
+
+var _ IImsMediaSession = (*imsMediaSessionStubWrapper)(nil)
+
+// NewImsMediaSessionStub creates a server-side IImsMediaSession wrapping the given
+// server implementation. The returned value satisfies IImsMediaSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsMediaSessionStub(
+	impl IImsMediaSessionServer,
+) IImsMediaSession {
+	wrapper := &imsMediaSessionStubWrapper{impl: impl}
+	stub := &ImsMediaSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

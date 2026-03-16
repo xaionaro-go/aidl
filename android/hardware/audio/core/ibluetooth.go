@@ -191,3 +191,50 @@ func (s *BluetoothStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothServer is the server-side interface that user implementations
+// provide to NewBluetoothStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothServer interface {
+	SetScoConfig(ctx context.Context, config coreIBluetooth.ScoConfig) (coreIBluetooth.ScoConfig, error)
+	SetHfpConfig(ctx context.Context, config coreIBluetooth.HfpConfig) (coreIBluetooth.HfpConfig, error)
+}
+
+type bluetoothStubWrapper struct {
+	impl       IBluetoothServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothStubWrapper) SetScoConfig(
+	ctx context.Context,
+	config coreIBluetooth.ScoConfig,
+) (coreIBluetooth.ScoConfig, error) {
+	return w.impl.SetScoConfig(ctx, config)
+}
+
+func (w *bluetoothStubWrapper) SetHfpConfig(
+	ctx context.Context,
+	config coreIBluetooth.HfpConfig,
+) (coreIBluetooth.HfpConfig, error) {
+	return w.impl.SetHfpConfig(ctx, config)
+}
+
+var _ IBluetooth = (*bluetoothStubWrapper)(nil)
+
+// NewBluetoothStub creates a server-side IBluetooth wrapping the given
+// server implementation. The returned value satisfies IBluetooth
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothStub(
+	impl IBluetoothServer,
+) IBluetooth {
+	wrapper := &bluetoothStubWrapper{impl: impl}
+	stub := &BluetoothStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

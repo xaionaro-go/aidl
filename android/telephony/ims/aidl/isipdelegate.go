@@ -196,3 +196,68 @@ func (s *SipDelegateStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISipDelegateServer is the server-side interface that user implementations
+// provide to NewSipDelegateStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISipDelegateServer interface {
+	SendMessage(ctx context.Context, sipMessage ims.SipMessage, configVersion int64) error
+	NotifyMessageReceived(ctx context.Context, viaTransactionId string) error
+	NotifyMessageReceiveError(ctx context.Context, viaTransactionId string, reason int32) error
+	CleanupSession(ctx context.Context, callId string) error
+}
+
+type sipDelegateStubWrapper struct {
+	impl       ISipDelegateServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sipDelegateStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sipDelegateStubWrapper) SendMessage(
+	ctx context.Context,
+	sipMessage ims.SipMessage,
+	configVersion int64,
+) error {
+	return w.impl.SendMessage(ctx, sipMessage, configVersion)
+}
+
+func (w *sipDelegateStubWrapper) NotifyMessageReceived(
+	ctx context.Context,
+	viaTransactionId string,
+) error {
+	return w.impl.NotifyMessageReceived(ctx, viaTransactionId)
+}
+
+func (w *sipDelegateStubWrapper) NotifyMessageReceiveError(
+	ctx context.Context,
+	viaTransactionId string,
+	reason int32,
+) error {
+	return w.impl.NotifyMessageReceiveError(ctx, viaTransactionId, reason)
+}
+
+func (w *sipDelegateStubWrapper) CleanupSession(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.CleanupSession(ctx, callId)
+}
+
+var _ ISipDelegate = (*sipDelegateStubWrapper)(nil)
+
+// NewSipDelegateStub creates a server-side ISipDelegate wrapping the given
+// server implementation. The returned value satisfies ISipDelegate
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSipDelegateStub(
+	impl ISipDelegateServer,
+) ISipDelegate {
+	wrapper := &sipDelegateStubWrapper{impl: impl}
+	stub := &SipDelegateStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

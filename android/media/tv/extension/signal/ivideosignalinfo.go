@@ -49,7 +49,7 @@ func (p *VideoSignalInfoProxy) AddVideoSignalInfoListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVideoSignalInfo)
 	_data.WriteString16(clientToken)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVideoSignalInfo, "addVideoSignalInfoListener")
 	if _err != nil {
@@ -75,7 +75,7 @@ func (p *VideoSignalInfoProxy) RemoveVideoSignalInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVideoSignalInfo)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVideoSignalInfo, "removeVideoSignalInfoListener")
 	if _err != nil {
@@ -202,4 +202,60 @@ func (s *VideoSignalInfoStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVideoSignalInfoServer is the server-side interface that user implementations
+// provide to NewVideoSignalInfoStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVideoSignalInfoServer interface {
+	AddVideoSignalInfoListener(ctx context.Context, clientToken string, listener IVideoSignalInfoListener) error
+	RemoveVideoSignalInfoListener(ctx context.Context, listener IVideoSignalInfoListener) error
+	GetVideoSignalInfo(ctx context.Context, sessionToken string) (os.Bundle, error)
+}
+
+type videoSignalInfoStubWrapper struct {
+	impl       IVideoSignalInfoServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *videoSignalInfoStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *videoSignalInfoStubWrapper) AddVideoSignalInfoListener(
+	ctx context.Context,
+	clientToken string,
+	listener IVideoSignalInfoListener,
+) error {
+	return w.impl.AddVideoSignalInfoListener(ctx, clientToken, listener)
+}
+
+func (w *videoSignalInfoStubWrapper) RemoveVideoSignalInfoListener(
+	ctx context.Context,
+	listener IVideoSignalInfoListener,
+) error {
+	return w.impl.RemoveVideoSignalInfoListener(ctx, listener)
+}
+
+func (w *videoSignalInfoStubWrapper) GetVideoSignalInfo(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetVideoSignalInfo(ctx, sessionToken)
+}
+
+var _ IVideoSignalInfo = (*videoSignalInfoStubWrapper)(nil)
+
+// NewVideoSignalInfoStub creates a server-side IVideoSignalInfo wrapping the given
+// server implementation. The returned value satisfies IVideoSignalInfo
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVideoSignalInfoStub(
+	impl IVideoSignalInfoServer,
+) IVideoSignalInfo {
+	wrapper := &videoSignalInfoStubWrapper{impl: impl}
+	stub := &VideoSignalInfoStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

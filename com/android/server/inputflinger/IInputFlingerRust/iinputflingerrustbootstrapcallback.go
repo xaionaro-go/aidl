@@ -43,7 +43,7 @@ func (p *InputFlingerRustBootstrapCallbackProxy) OnProvideInputFlingerRust(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputFlingerRustBootstrapCallback)
-	_data.WriteStrongBinder(inputFlingerRust.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, inputFlingerRust.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputFlingerRustBootstrapCallback, "onProvideInputFlingerRust")
 	if _err != nil {
@@ -95,4 +95,43 @@ func (s *InputFlingerRustBootstrapCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputFlingerRustBootstrapCallbackServer is the server-side interface that user implementations
+// provide to NewInputFlingerRustBootstrapCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputFlingerRustBootstrapCallbackServer interface {
+	OnProvideInputFlingerRust(ctx context.Context, inputFlingerRust inputflinger.IInputFlingerRust) error
+}
+
+type inputFlingerRustBootstrapCallbackStubWrapper struct {
+	impl       IInputFlingerRustBootstrapCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputFlingerRustBootstrapCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputFlingerRustBootstrapCallbackStubWrapper) OnProvideInputFlingerRust(
+	ctx context.Context,
+	inputFlingerRust inputflinger.IInputFlingerRust,
+) error {
+	return w.impl.OnProvideInputFlingerRust(ctx, inputFlingerRust)
+}
+
+var _ IInputFlingerRustBootstrapCallback = (*inputFlingerRustBootstrapCallbackStubWrapper)(nil)
+
+// NewInputFlingerRustBootstrapCallbackStub creates a server-side IInputFlingerRustBootstrapCallback wrapping the given
+// server implementation. The returned value satisfies IInputFlingerRustBootstrapCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputFlingerRustBootstrapCallbackStub(
+	impl IInputFlingerRustBootstrapCallbackServer,
+) IInputFlingerRustBootstrapCallback {
+	wrapper := &inputFlingerRustBootstrapCallbackStubWrapper{impl: impl}
+	stub := &InputFlingerRustBootstrapCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

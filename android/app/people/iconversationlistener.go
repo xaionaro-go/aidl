@@ -93,3 +93,42 @@ func (s *ConversationListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IConversationListenerServer is the server-side interface that user implementations
+// provide to NewConversationListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConversationListenerServer interface {
+	OnConversationUpdate(ctx context.Context, conversation ConversationChannel) error
+}
+
+type conversationListenerStubWrapper struct {
+	impl       IConversationListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *conversationListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *conversationListenerStubWrapper) OnConversationUpdate(
+	ctx context.Context,
+	conversation ConversationChannel,
+) error {
+	return w.impl.OnConversationUpdate(ctx, conversation)
+}
+
+var _ IConversationListener = (*conversationListenerStubWrapper)(nil)
+
+// NewConversationListenerStub creates a server-side IConversationListener wrapping the given
+// server implementation. The returned value satisfies IConversationListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConversationListenerStub(
+	impl IConversationListenerServer,
+) IConversationListener {
+	wrapper := &conversationListenerStubWrapper{impl: impl}
+	stub := &ConversationListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

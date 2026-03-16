@@ -274,3 +274,89 @@ func (s *UidObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUidObserverServer is the server-side interface that user implementations
+// provide to NewUidObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUidObserverServer interface {
+	OnUidGone(ctx context.Context, uid int32, disabled bool) error
+	OnUidActive(ctx context.Context, uid int32) error
+	OnUidIdle(ctx context.Context, uid int32, disabled bool) error
+	OnUidStateChanged(ctx context.Context, uid int32, procState int32, procStateSeq int64, capability int32) error
+	OnUidProcAdjChanged(ctx context.Context, uid int32, adj int32) error
+	OnUidCachedChanged(ctx context.Context, uid int32, cached bool) error
+}
+
+type uidObserverStubWrapper struct {
+	impl       IUidObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *uidObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *uidObserverStubWrapper) OnUidGone(
+	ctx context.Context,
+	uid int32,
+	disabled bool,
+) error {
+	return w.impl.OnUidGone(ctx, uid, disabled)
+}
+
+func (w *uidObserverStubWrapper) OnUidActive(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.OnUidActive(ctx, uid)
+}
+
+func (w *uidObserverStubWrapper) OnUidIdle(
+	ctx context.Context,
+	uid int32,
+	disabled bool,
+) error {
+	return w.impl.OnUidIdle(ctx, uid, disabled)
+}
+
+func (w *uidObserverStubWrapper) OnUidStateChanged(
+	ctx context.Context,
+	uid int32,
+	procState int32,
+	procStateSeq int64,
+	capability int32,
+) error {
+	return w.impl.OnUidStateChanged(ctx, uid, procState, procStateSeq, capability)
+}
+
+func (w *uidObserverStubWrapper) OnUidProcAdjChanged(
+	ctx context.Context,
+	uid int32,
+	adj int32,
+) error {
+	return w.impl.OnUidProcAdjChanged(ctx, uid, adj)
+}
+
+func (w *uidObserverStubWrapper) OnUidCachedChanged(
+	ctx context.Context,
+	uid int32,
+	cached bool,
+) error {
+	return w.impl.OnUidCachedChanged(ctx, uid, cached)
+}
+
+var _ IUidObserver = (*uidObserverStubWrapper)(nil)
+
+// NewUidObserverStub creates a server-side IUidObserver wrapping the given
+// server implementation. The returned value satisfies IUidObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUidObserverStub(
+	impl IUidObserverServer,
+) IUidObserver {
+	wrapper := &uidObserverStubWrapper{impl: impl}
+	stub := &UidObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

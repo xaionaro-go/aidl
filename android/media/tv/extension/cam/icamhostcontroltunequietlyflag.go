@@ -47,7 +47,7 @@ func (p *CamHostControlTuneQuietlyFlagProxy) AddHcTuneQuietlyFlagListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamHostControlTuneQuietlyFlag)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamHostControlTuneQuietlyFlag, "addHcTuneQuietlyFlagListener")
 	if _err != nil {
@@ -73,7 +73,7 @@ func (p *CamHostControlTuneQuietlyFlagProxy) RemoveHcTuneQuietlyFlagListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICamHostControlTuneQuietlyFlag)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICamHostControlTuneQuietlyFlag, "removeHcTuneQuietlyFlagListener")
 	if _err != nil {
@@ -196,4 +196,59 @@ func (s *CamHostControlTuneQuietlyFlagStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICamHostControlTuneQuietlyFlagServer is the server-side interface that user implementations
+// provide to NewCamHostControlTuneQuietlyFlagStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICamHostControlTuneQuietlyFlagServer interface {
+	AddHcTuneQuietlyFlagListener(ctx context.Context, listener ICamHostControlTuneQuietlyFlagListener) error
+	RemoveHcTuneQuietlyFlagListener(ctx context.Context, listener ICamHostControlTuneQuietlyFlagListener) error
+	GetHcTuneQuietlyFlag(ctx context.Context, sessionToken string) (os.Bundle, error)
+}
+
+type camHostControlTuneQuietlyFlagStubWrapper struct {
+	impl       ICamHostControlTuneQuietlyFlagServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *camHostControlTuneQuietlyFlagStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *camHostControlTuneQuietlyFlagStubWrapper) AddHcTuneQuietlyFlagListener(
+	ctx context.Context,
+	listener ICamHostControlTuneQuietlyFlagListener,
+) error {
+	return w.impl.AddHcTuneQuietlyFlagListener(ctx, listener)
+}
+
+func (w *camHostControlTuneQuietlyFlagStubWrapper) RemoveHcTuneQuietlyFlagListener(
+	ctx context.Context,
+	listener ICamHostControlTuneQuietlyFlagListener,
+) error {
+	return w.impl.RemoveHcTuneQuietlyFlagListener(ctx, listener)
+}
+
+func (w *camHostControlTuneQuietlyFlagStubWrapper) GetHcTuneQuietlyFlag(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetHcTuneQuietlyFlag(ctx, sessionToken)
+}
+
+var _ ICamHostControlTuneQuietlyFlag = (*camHostControlTuneQuietlyFlagStubWrapper)(nil)
+
+// NewCamHostControlTuneQuietlyFlagStub creates a server-side ICamHostControlTuneQuietlyFlag wrapping the given
+// server implementation. The returned value satisfies ICamHostControlTuneQuietlyFlag
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCamHostControlTuneQuietlyFlagStub(
+	impl ICamHostControlTuneQuietlyFlagServer,
+) ICamHostControlTuneQuietlyFlag {
+	wrapper := &camHostControlTuneQuietlyFlagStubWrapper{impl: impl}
+	stub := &CamHostControlTuneQuietlyFlagStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

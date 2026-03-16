@@ -284,7 +284,7 @@ func (p *ClipboardProxy) AddPrimaryClipChangedListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(_identity.UserID)
@@ -316,7 +316,7 @@ func (p *ClipboardProxy) RemovePrimaryClipChangedListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClipboard)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteInt32(_identity.UserID)
@@ -817,4 +817,136 @@ func (s *ClipboardStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IClipboardServer is the server-side interface that user implementations
+// provide to NewClipboardStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IClipboardServer interface {
+	SetPrimaryClip(ctx context.Context, clip ClipData, deviceId int32) error
+	SetPrimaryClipAsPackage(ctx context.Context, clip ClipData, deviceId int32, sourcePackage string) error
+	ClearPrimaryClip(ctx context.Context, deviceId int32) error
+	GetPrimaryClip(ctx context.Context, pkg string, deviceId int32) (ClipData, error)
+	GetPrimaryClipDescription(ctx context.Context, deviceId int32) (ClipDescription, error)
+	HasPrimaryClip(ctx context.Context, deviceId int32) (bool, error)
+	AddPrimaryClipChangedListener(ctx context.Context, listener IOnPrimaryClipChangedListener, deviceId int32) error
+	RemovePrimaryClipChangedListener(ctx context.Context, listener IOnPrimaryClipChangedListener, deviceId int32) error
+	HasClipboardText(ctx context.Context, deviceId int32) (bool, error)
+	GetPrimaryClipSource(ctx context.Context, deviceId int32) (string, error)
+	AreClipboardAccessNotificationsEnabledForUser(ctx context.Context) (bool, error)
+	SetClipboardAccessNotificationsEnabledForUser(ctx context.Context, enable bool) error
+}
+
+type clipboardStubWrapper struct {
+	impl       IClipboardServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *clipboardStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *clipboardStubWrapper) SetPrimaryClip(
+	ctx context.Context,
+	clip ClipData,
+	deviceId int32,
+) error {
+	return w.impl.SetPrimaryClip(ctx, clip, deviceId)
+}
+
+func (w *clipboardStubWrapper) SetPrimaryClipAsPackage(
+	ctx context.Context,
+	clip ClipData,
+	deviceId int32,
+	sourcePackage string,
+) error {
+	return w.impl.SetPrimaryClipAsPackage(ctx, clip, deviceId, sourcePackage)
+}
+
+func (w *clipboardStubWrapper) ClearPrimaryClip(
+	ctx context.Context,
+	deviceId int32,
+) error {
+	return w.impl.ClearPrimaryClip(ctx, deviceId)
+}
+
+func (w *clipboardStubWrapper) GetPrimaryClip(
+	ctx context.Context,
+	pkg string,
+	deviceId int32,
+) (ClipData, error) {
+	return w.impl.GetPrimaryClip(ctx, pkg, deviceId)
+}
+
+func (w *clipboardStubWrapper) GetPrimaryClipDescription(
+	ctx context.Context,
+	deviceId int32,
+) (ClipDescription, error) {
+	return w.impl.GetPrimaryClipDescription(ctx, deviceId)
+}
+
+func (w *clipboardStubWrapper) HasPrimaryClip(
+	ctx context.Context,
+	deviceId int32,
+) (bool, error) {
+	return w.impl.HasPrimaryClip(ctx, deviceId)
+}
+
+func (w *clipboardStubWrapper) AddPrimaryClipChangedListener(
+	ctx context.Context,
+	listener IOnPrimaryClipChangedListener,
+	deviceId int32,
+) error {
+	return w.impl.AddPrimaryClipChangedListener(ctx, listener, deviceId)
+}
+
+func (w *clipboardStubWrapper) RemovePrimaryClipChangedListener(
+	ctx context.Context,
+	listener IOnPrimaryClipChangedListener,
+	deviceId int32,
+) error {
+	return w.impl.RemovePrimaryClipChangedListener(ctx, listener, deviceId)
+}
+
+func (w *clipboardStubWrapper) HasClipboardText(
+	ctx context.Context,
+	deviceId int32,
+) (bool, error) {
+	return w.impl.HasClipboardText(ctx, deviceId)
+}
+
+func (w *clipboardStubWrapper) GetPrimaryClipSource(
+	ctx context.Context,
+	deviceId int32,
+) (string, error) {
+	return w.impl.GetPrimaryClipSource(ctx, deviceId)
+}
+
+func (w *clipboardStubWrapper) AreClipboardAccessNotificationsEnabledForUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.AreClipboardAccessNotificationsEnabledForUser(ctx)
+}
+
+func (w *clipboardStubWrapper) SetClipboardAccessNotificationsEnabledForUser(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetClipboardAccessNotificationsEnabledForUser(ctx, enable)
+}
+
+var _ IClipboard = (*clipboardStubWrapper)(nil)
+
+// NewClipboardStub creates a server-side IClipboard wrapping the given
+// server implementation. The returned value satisfies IClipboard
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewClipboardStub(
+	impl IClipboardServer,
+) IClipboard {
+	wrapper := &clipboardStubWrapper{impl: impl}
+	stub := &ClipboardStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

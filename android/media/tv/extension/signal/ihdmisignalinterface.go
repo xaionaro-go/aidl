@@ -53,7 +53,7 @@ func (p *HdmiSignalInterfaceProxy) AddHdmiSignalInfoListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiSignalInterface)
 	_data.WriteString16(inputId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiSignalInterface, "addHdmiSignalInfoListener")
 	if _err != nil {
@@ -81,7 +81,7 @@ func (p *HdmiSignalInterfaceProxy) RemoveHdmiSignalInfoListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiSignalInterface)
 	_data.WriteString16(inputId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiSignalInterface, "removeHdmiSignalInfoListener")
 	if _err != nil {
@@ -308,4 +308,79 @@ func (s *HdmiSignalInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IHdmiSignalInterfaceServer is the server-side interface that user implementations
+// provide to NewHdmiSignalInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiSignalInterfaceServer interface {
+	AddHdmiSignalInfoListener(ctx context.Context, inputId string, listener IHdmiSignalInfoListener) error
+	RemoveHdmiSignalInfoListener(ctx context.Context, inputId string, listener IHdmiSignalInfoListener) error
+	GetHdmiSignalInfo(ctx context.Context, sessionToken string) (os.Bundle, error)
+	SetLowLatency(ctx context.Context, sessionToken string, mode int32) error
+	SetForceVrr(ctx context.Context, sessionToken string, mode int32) error
+}
+
+type hdmiSignalInterfaceStubWrapper struct {
+	impl       IHdmiSignalInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiSignalInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiSignalInterfaceStubWrapper) AddHdmiSignalInfoListener(
+	ctx context.Context,
+	inputId string,
+	listener IHdmiSignalInfoListener,
+) error {
+	return w.impl.AddHdmiSignalInfoListener(ctx, inputId, listener)
+}
+
+func (w *hdmiSignalInterfaceStubWrapper) RemoveHdmiSignalInfoListener(
+	ctx context.Context,
+	inputId string,
+	listener IHdmiSignalInfoListener,
+) error {
+	return w.impl.RemoveHdmiSignalInfoListener(ctx, inputId, listener)
+}
+
+func (w *hdmiSignalInterfaceStubWrapper) GetHdmiSignalInfo(
+	ctx context.Context,
+	sessionToken string,
+) (os.Bundle, error) {
+	return w.impl.GetHdmiSignalInfo(ctx, sessionToken)
+}
+
+func (w *hdmiSignalInterfaceStubWrapper) SetLowLatency(
+	ctx context.Context,
+	sessionToken string,
+	mode int32,
+) error {
+	return w.impl.SetLowLatency(ctx, sessionToken, mode)
+}
+
+func (w *hdmiSignalInterfaceStubWrapper) SetForceVrr(
+	ctx context.Context,
+	sessionToken string,
+	mode int32,
+) error {
+	return w.impl.SetForceVrr(ctx, sessionToken, mode)
+}
+
+var _ IHdmiSignalInterface = (*hdmiSignalInterfaceStubWrapper)(nil)
+
+// NewHdmiSignalInterfaceStub creates a server-side IHdmiSignalInterface wrapping the given
+// server implementation. The returned value satisfies IHdmiSignalInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiSignalInterfaceStub(
+	impl IHdmiSignalInterfaceServer,
+) IHdmiSignalInterface {
+	wrapper := &hdmiSignalInterfaceStubWrapper{impl: impl}
+	stub := &HdmiSignalInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

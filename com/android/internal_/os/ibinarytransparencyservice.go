@@ -307,3 +307,72 @@ func (s *BinaryTransparencyServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBinaryTransparencyServiceServer is the server-side interface that user implementations
+// provide to NewBinaryTransparencyServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinaryTransparencyServiceServer interface {
+	GetSignedImageInfo(ctx context.Context) (string, error)
+	RecordMeasurementsForAllPackages(ctx context.Context) error
+	CollectAllApexInfo(ctx context.Context, includeTestOnly bool) ([]osIBinaryTransparencyService.ApexInfo, error)
+	CollectAllUpdatedPreloadInfo(ctx context.Context, packagesToSkip interface{}) ([]osIBinaryTransparencyService.AppInfo, error)
+	CollectAllSilentInstalledMbaInfo(ctx context.Context, packagesToSkip interface{}) ([]osIBinaryTransparencyService.AppInfo, error)
+}
+
+type binaryTransparencyServiceStubWrapper struct {
+	impl       IBinaryTransparencyServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binaryTransparencyServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binaryTransparencyServiceStubWrapper) GetSignedImageInfo(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSignedImageInfo(ctx)
+}
+
+func (w *binaryTransparencyServiceStubWrapper) RecordMeasurementsForAllPackages(
+	ctx context.Context,
+) error {
+	return w.impl.RecordMeasurementsForAllPackages(ctx)
+}
+
+func (w *binaryTransparencyServiceStubWrapper) CollectAllApexInfo(
+	ctx context.Context,
+	includeTestOnly bool,
+) ([]osIBinaryTransparencyService.ApexInfo, error) {
+	return w.impl.CollectAllApexInfo(ctx, includeTestOnly)
+}
+
+func (w *binaryTransparencyServiceStubWrapper) CollectAllUpdatedPreloadInfo(
+	ctx context.Context,
+	packagesToSkip interface{},
+) ([]osIBinaryTransparencyService.AppInfo, error) {
+	return w.impl.CollectAllUpdatedPreloadInfo(ctx, packagesToSkip)
+}
+
+func (w *binaryTransparencyServiceStubWrapper) CollectAllSilentInstalledMbaInfo(
+	ctx context.Context,
+	packagesToSkip interface{},
+) ([]osIBinaryTransparencyService.AppInfo, error) {
+	return w.impl.CollectAllSilentInstalledMbaInfo(ctx, packagesToSkip)
+}
+
+var _ IBinaryTransparencyService = (*binaryTransparencyServiceStubWrapper)(nil)
+
+// NewBinaryTransparencyServiceStub creates a server-side IBinaryTransparencyService wrapping the given
+// server implementation. The returned value satisfies IBinaryTransparencyService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinaryTransparencyServiceStub(
+	impl IBinaryTransparencyServiceServer,
+) IBinaryTransparencyService {
+	wrapper := &binaryTransparencyServiceStubWrapper{impl: impl}
+	stub := &BinaryTransparencyServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

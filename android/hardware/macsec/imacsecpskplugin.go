@@ -448,3 +448,81 @@ func (s *MacsecPskPluginStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMacsecPskPluginServer is the server-side interface that user implementations
+// provide to NewMacsecPskPluginStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMacsecPskPluginServer interface {
+	AddTestKey(ctx context.Context, keyId []byte, CAK []byte, CKN []byte) error
+	CalcIcv(ctx context.Context, keyId []byte, data []byte) ([]byte, error)
+	GenerateSak(ctx context.Context, keyId []byte, data []byte, sakLength int32) ([]byte, error)
+	WrapSak(ctx context.Context, keyId []byte, sak []byte) ([]byte, error)
+	UnwrapSak(ctx context.Context, keyId []byte, sak []byte) ([]byte, error)
+}
+
+type macsecPskPluginStubWrapper struct {
+	impl       IMacsecPskPluginServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *macsecPskPluginStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *macsecPskPluginStubWrapper) AddTestKey(
+	ctx context.Context,
+	keyId []byte,
+	CAK []byte,
+	CKN []byte,
+) error {
+	return w.impl.AddTestKey(ctx, keyId, CAK, CKN)
+}
+
+func (w *macsecPskPluginStubWrapper) CalcIcv(
+	ctx context.Context,
+	keyId []byte,
+	data []byte,
+) ([]byte, error) {
+	return w.impl.CalcIcv(ctx, keyId, data)
+}
+
+func (w *macsecPskPluginStubWrapper) GenerateSak(
+	ctx context.Context,
+	keyId []byte,
+	data []byte,
+	sakLength int32,
+) ([]byte, error) {
+	return w.impl.GenerateSak(ctx, keyId, data, sakLength)
+}
+
+func (w *macsecPskPluginStubWrapper) WrapSak(
+	ctx context.Context,
+	keyId []byte,
+	sak []byte,
+) ([]byte, error) {
+	return w.impl.WrapSak(ctx, keyId, sak)
+}
+
+func (w *macsecPskPluginStubWrapper) UnwrapSak(
+	ctx context.Context,
+	keyId []byte,
+	sak []byte,
+) ([]byte, error) {
+	return w.impl.UnwrapSak(ctx, keyId, sak)
+}
+
+var _ IMacsecPskPlugin = (*macsecPskPluginStubWrapper)(nil)
+
+// NewMacsecPskPluginStub creates a server-side IMacsecPskPlugin wrapping the given
+// server implementation. The returned value satisfies IMacsecPskPlugin
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMacsecPskPluginStub(
+	impl IMacsecPskPluginServer,
+) IMacsecPskPlugin {
+	wrapper := &macsecPskPluginStubWrapper{impl: impl}
+	stub := &MacsecPskPluginStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

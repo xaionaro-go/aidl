@@ -803,7 +803,7 @@ func (p *SubProxy) SetPreferredDataSubscriptionId(
 	_data.WriteInterfaceToken(DescriptorISub)
 	_data.WriteInt32(subId)
 	_data.WriteBool(needValidation)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISub, "setPreferredDataSubscriptionId")
 	if _err != nil {
@@ -3363,4 +3363,528 @@ func (s *SubStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISubServer is the server-side interface that user implementations
+// provide to NewSubStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISubServer interface {
+	GetAllSubInfoList(ctx context.Context) ([]androidTelephony.SubscriptionInfo, error)
+	GetActiveSubscriptionInfo(ctx context.Context, subId int32) (androidTelephony.SubscriptionInfo, error)
+	GetActiveSubscriptionInfoForIccId(ctx context.Context, iccId string) (androidTelephony.SubscriptionInfo, error)
+	GetActiveSubscriptionInfoForSimSlotIndex(ctx context.Context, slotIndex int32) (androidTelephony.SubscriptionInfo, error)
+	GetActiveSubscriptionInfoList(ctx context.Context, isForAllProfiles bool) ([]androidTelephony.SubscriptionInfo, error)
+	GetActiveSubInfoCount(ctx context.Context, isForAllProfile bool) (int32, error)
+	GetActiveSubInfoCountMax(ctx context.Context) (int32, error)
+	GetAvailableSubscriptionInfoList(ctx context.Context) ([]androidTelephony.SubscriptionInfo, error)
+	GetAccessibleSubscriptionInfoList(ctx context.Context) ([]androidTelephony.SubscriptionInfo, error)
+	RequestEmbeddedSubscriptionInfoListRefresh(ctx context.Context, cardId int32) error
+	AddSubInfo(ctx context.Context, uniqueId string, displayName string, slotIndex int32, subscriptionType int32) (int32, error)
+	RemoveSubInfo(ctx context.Context, uniqueId string, subscriptionType int32) (bool, error)
+	SetIconTint(ctx context.Context, subId int32, tint int32) (int32, error)
+	SetDisplayNameUsingSrc(ctx context.Context, displayName string, subId int32, nameSource int32) (int32, error)
+	SetDisplayNumber(ctx context.Context, number string, subId int32) (int32, error)
+	SetDataRoaming(ctx context.Context, roaming int32, subId int32) (int32, error)
+	SetOpportunistic(ctx context.Context, opportunistic bool, subId int32) (int32, error)
+	CreateSubscriptionGroup(ctx context.Context, subIdList []int32) (interface{}, error)
+	SetPreferredDataSubscriptionId(ctx context.Context, subId int32, needValidation bool, callback ISetOpportunisticDataCallback) error
+	GetPreferredDataSubscriptionId(ctx context.Context) (int32, error)
+	GetOpportunisticSubscriptions(ctx context.Context) ([]androidTelephony.SubscriptionInfo, error)
+	RemoveSubscriptionsFromGroup(ctx context.Context, subIdList []int32, groupUuid interface{}) error
+	AddSubscriptionsIntoGroup(ctx context.Context, subIdList []int32, groupUuid interface{}) error
+	GetSubscriptionsInGroup(ctx context.Context, groupUuid interface{}) ([]androidTelephony.SubscriptionInfo, error)
+	GetSlotIndex(ctx context.Context, subId int32) (int32, error)
+	GetSubId(ctx context.Context, slotIndex int32) (int32, error)
+	GetDefaultSubId(ctx context.Context) (int32, error)
+	GetDefaultSubIdAsUser(ctx context.Context) (int32, error)
+	GetPhoneId(ctx context.Context, subId int32) (int32, error)
+	GetDefaultDataSubId(ctx context.Context) (int32, error)
+	SetDefaultDataSubId(ctx context.Context, subId int32) error
+	GetDefaultVoiceSubId(ctx context.Context) (int32, error)
+	GetDefaultVoiceSubIdAsUser(ctx context.Context) (int32, error)
+	SetDefaultVoiceSubId(ctx context.Context, subId int32) error
+	GetDefaultSmsSubId(ctx context.Context) (int32, error)
+	GetDefaultSmsSubIdAsUser(ctx context.Context) (int32, error)
+	SetDefaultSmsSubId(ctx context.Context, subId int32) error
+	GetActiveSubIdList(ctx context.Context, visibleOnly bool) ([]int32, error)
+	SetSubscriptionProperty(ctx context.Context, subId int32, propKey string, propValue string) error
+	GetSubscriptionProperty(ctx context.Context, subId int32, propKey string) (string, error)
+	IsSubscriptionEnabled(ctx context.Context, subId int32) (bool, error)
+	GetEnabledSubscriptionId(ctx context.Context, slotIndex int32) (int32, error)
+	IsActiveSubId(ctx context.Context, subId int32) (bool, error)
+	GetActiveDataSubscriptionId(ctx context.Context) (int32, error)
+	CanDisablePhysicalSubscription(ctx context.Context) (bool, error)
+	SetUiccApplicationsEnabled(ctx context.Context, enabled bool, subscriptionId int32) error
+	SetDeviceToDeviceStatusSharing(ctx context.Context, sharing int32, subId int32) (int32, error)
+	SetDeviceToDeviceStatusSharingContacts(ctx context.Context, contacts string, subscriptionId int32) (int32, error)
+	GetPhoneNumber(ctx context.Context, subId int32, source int32) (string, error)
+	GetPhoneNumberFromFirstAvailableSource(ctx context.Context, subId int32) (string, error)
+	SetPhoneNumber(ctx context.Context, subId int32, source int32, number string) error
+	SetUsageSetting(ctx context.Context, usageSetting int32, subId int32) (int32, error)
+	SetGroupOwner(ctx context.Context, subId int32, groupOwner string) error
+	SetSubscriptionUserHandle(ctx context.Context, userHandle os.UserHandle, subId int32) (int32, error)
+	GetSubscriptionUserHandle(ctx context.Context, subId int32) (os.UserHandle, error)
+	IsSubscriptionAssociatedWithCallingUser(ctx context.Context, subscriptionId int32) (bool, error)
+	IsSubscriptionAssociatedWithUser(ctx context.Context, subscriptionId int32, userHandle os.UserHandle) (bool, error)
+	GetSubscriptionInfoListAssociatedWithUser(ctx context.Context, userHandle os.UserHandle) ([]androidTelephony.SubscriptionInfo, error)
+	RestoreAllSimSpecificSettingsFromBackup(ctx context.Context, data []byte) error
+	SetTransferStatus(ctx context.Context, subId int32, status int32) error
+}
+
+type subStubWrapper struct {
+	impl       ISubServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *subStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *subStubWrapper) GetAllSubInfoList(
+	ctx context.Context,
+) ([]androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetAllSubInfoList(ctx)
+}
+
+func (w *subStubWrapper) GetActiveSubscriptionInfo(
+	ctx context.Context,
+	subId int32,
+) (androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetActiveSubscriptionInfo(ctx, subId)
+}
+
+func (w *subStubWrapper) GetActiveSubscriptionInfoForIccId(
+	ctx context.Context,
+	iccId string,
+) (androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetActiveSubscriptionInfoForIccId(ctx, iccId)
+}
+
+func (w *subStubWrapper) GetActiveSubscriptionInfoForSimSlotIndex(
+	ctx context.Context,
+	slotIndex int32,
+) (androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetActiveSubscriptionInfoForSimSlotIndex(ctx, slotIndex)
+}
+
+func (w *subStubWrapper) GetActiveSubscriptionInfoList(
+	ctx context.Context,
+	isForAllProfiles bool,
+) ([]androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetActiveSubscriptionInfoList(ctx, isForAllProfiles)
+}
+
+func (w *subStubWrapper) GetActiveSubInfoCount(
+	ctx context.Context,
+	isForAllProfile bool,
+) (int32, error) {
+	return w.impl.GetActiveSubInfoCount(ctx, isForAllProfile)
+}
+
+func (w *subStubWrapper) GetActiveSubInfoCountMax(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetActiveSubInfoCountMax(ctx)
+}
+
+func (w *subStubWrapper) GetAvailableSubscriptionInfoList(
+	ctx context.Context,
+) ([]androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetAvailableSubscriptionInfoList(ctx)
+}
+
+func (w *subStubWrapper) GetAccessibleSubscriptionInfoList(
+	ctx context.Context,
+) ([]androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetAccessibleSubscriptionInfoList(ctx)
+}
+
+func (w *subStubWrapper) RequestEmbeddedSubscriptionInfoListRefresh(
+	ctx context.Context,
+	cardId int32,
+) error {
+	return w.impl.RequestEmbeddedSubscriptionInfoListRefresh(ctx, cardId)
+}
+
+func (w *subStubWrapper) AddSubInfo(
+	ctx context.Context,
+	uniqueId string,
+	displayName string,
+	slotIndex int32,
+	subscriptionType int32,
+) (int32, error) {
+	return w.impl.AddSubInfo(ctx, uniqueId, displayName, slotIndex, subscriptionType)
+}
+
+func (w *subStubWrapper) RemoveSubInfo(
+	ctx context.Context,
+	uniqueId string,
+	subscriptionType int32,
+) (bool, error) {
+	return w.impl.RemoveSubInfo(ctx, uniqueId, subscriptionType)
+}
+
+func (w *subStubWrapper) SetIconTint(
+	ctx context.Context,
+	subId int32,
+	tint int32,
+) (int32, error) {
+	return w.impl.SetIconTint(ctx, subId, tint)
+}
+
+func (w *subStubWrapper) SetDisplayNameUsingSrc(
+	ctx context.Context,
+	displayName string,
+	subId int32,
+	nameSource int32,
+) (int32, error) {
+	return w.impl.SetDisplayNameUsingSrc(ctx, displayName, subId, nameSource)
+}
+
+func (w *subStubWrapper) SetDisplayNumber(
+	ctx context.Context,
+	number string,
+	subId int32,
+) (int32, error) {
+	return w.impl.SetDisplayNumber(ctx, number, subId)
+}
+
+func (w *subStubWrapper) SetDataRoaming(
+	ctx context.Context,
+	roaming int32,
+	subId int32,
+) (int32, error) {
+	return w.impl.SetDataRoaming(ctx, roaming, subId)
+}
+
+func (w *subStubWrapper) SetOpportunistic(
+	ctx context.Context,
+	opportunistic bool,
+	subId int32,
+) (int32, error) {
+	return w.impl.SetOpportunistic(ctx, opportunistic, subId)
+}
+
+func (w *subStubWrapper) CreateSubscriptionGroup(
+	ctx context.Context,
+	subIdList []int32,
+) (interface{}, error) {
+	return w.impl.CreateSubscriptionGroup(ctx, subIdList)
+}
+
+func (w *subStubWrapper) SetPreferredDataSubscriptionId(
+	ctx context.Context,
+	subId int32,
+	needValidation bool,
+	callback ISetOpportunisticDataCallback,
+) error {
+	return w.impl.SetPreferredDataSubscriptionId(ctx, subId, needValidation, callback)
+}
+
+func (w *subStubWrapper) GetPreferredDataSubscriptionId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPreferredDataSubscriptionId(ctx)
+}
+
+func (w *subStubWrapper) GetOpportunisticSubscriptions(
+	ctx context.Context,
+) ([]androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetOpportunisticSubscriptions(ctx)
+}
+
+func (w *subStubWrapper) RemoveSubscriptionsFromGroup(
+	ctx context.Context,
+	subIdList []int32,
+	groupUuid interface{},
+) error {
+	return w.impl.RemoveSubscriptionsFromGroup(ctx, subIdList, groupUuid)
+}
+
+func (w *subStubWrapper) AddSubscriptionsIntoGroup(
+	ctx context.Context,
+	subIdList []int32,
+	groupUuid interface{},
+) error {
+	return w.impl.AddSubscriptionsIntoGroup(ctx, subIdList, groupUuid)
+}
+
+func (w *subStubWrapper) GetSubscriptionsInGroup(
+	ctx context.Context,
+	groupUuid interface{},
+) ([]androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetSubscriptionsInGroup(ctx, groupUuid)
+}
+
+func (w *subStubWrapper) GetSlotIndex(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetSlotIndex(ctx, subId)
+}
+
+func (w *subStubWrapper) GetSubId(
+	ctx context.Context,
+	slotIndex int32,
+) (int32, error) {
+	return w.impl.GetSubId(ctx, slotIndex)
+}
+
+func (w *subStubWrapper) GetDefaultSubId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDefaultSubId(ctx)
+}
+
+func (w *subStubWrapper) GetDefaultSubIdAsUser(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDefaultSubIdAsUser(ctx)
+}
+
+func (w *subStubWrapper) GetPhoneId(
+	ctx context.Context,
+	subId int32,
+) (int32, error) {
+	return w.impl.GetPhoneId(ctx, subId)
+}
+
+func (w *subStubWrapper) GetDefaultDataSubId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDefaultDataSubId(ctx)
+}
+
+func (w *subStubWrapper) SetDefaultDataSubId(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.SetDefaultDataSubId(ctx, subId)
+}
+
+func (w *subStubWrapper) GetDefaultVoiceSubId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDefaultVoiceSubId(ctx)
+}
+
+func (w *subStubWrapper) GetDefaultVoiceSubIdAsUser(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDefaultVoiceSubIdAsUser(ctx)
+}
+
+func (w *subStubWrapper) SetDefaultVoiceSubId(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.SetDefaultVoiceSubId(ctx, subId)
+}
+
+func (w *subStubWrapper) GetDefaultSmsSubId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDefaultSmsSubId(ctx)
+}
+
+func (w *subStubWrapper) GetDefaultSmsSubIdAsUser(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDefaultSmsSubIdAsUser(ctx)
+}
+
+func (w *subStubWrapper) SetDefaultSmsSubId(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.SetDefaultSmsSubId(ctx, subId)
+}
+
+func (w *subStubWrapper) GetActiveSubIdList(
+	ctx context.Context,
+	visibleOnly bool,
+) ([]int32, error) {
+	return w.impl.GetActiveSubIdList(ctx, visibleOnly)
+}
+
+func (w *subStubWrapper) SetSubscriptionProperty(
+	ctx context.Context,
+	subId int32,
+	propKey string,
+	propValue string,
+) error {
+	return w.impl.SetSubscriptionProperty(ctx, subId, propKey, propValue)
+}
+
+func (w *subStubWrapper) GetSubscriptionProperty(
+	ctx context.Context,
+	subId int32,
+	propKey string,
+) (string, error) {
+	return w.impl.GetSubscriptionProperty(ctx, subId, propKey)
+}
+
+func (w *subStubWrapper) IsSubscriptionEnabled(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsSubscriptionEnabled(ctx, subId)
+}
+
+func (w *subStubWrapper) GetEnabledSubscriptionId(
+	ctx context.Context,
+	slotIndex int32,
+) (int32, error) {
+	return w.impl.GetEnabledSubscriptionId(ctx, slotIndex)
+}
+
+func (w *subStubWrapper) IsActiveSubId(
+	ctx context.Context,
+	subId int32,
+) (bool, error) {
+	return w.impl.IsActiveSubId(ctx, subId)
+}
+
+func (w *subStubWrapper) GetActiveDataSubscriptionId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetActiveDataSubscriptionId(ctx)
+}
+
+func (w *subStubWrapper) CanDisablePhysicalSubscription(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanDisablePhysicalSubscription(ctx)
+}
+
+func (w *subStubWrapper) SetUiccApplicationsEnabled(
+	ctx context.Context,
+	enabled bool,
+	subscriptionId int32,
+) error {
+	return w.impl.SetUiccApplicationsEnabled(ctx, enabled, subscriptionId)
+}
+
+func (w *subStubWrapper) SetDeviceToDeviceStatusSharing(
+	ctx context.Context,
+	sharing int32,
+	subId int32,
+) (int32, error) {
+	return w.impl.SetDeviceToDeviceStatusSharing(ctx, sharing, subId)
+}
+
+func (w *subStubWrapper) SetDeviceToDeviceStatusSharingContacts(
+	ctx context.Context,
+	contacts string,
+	subscriptionId int32,
+) (int32, error) {
+	return w.impl.SetDeviceToDeviceStatusSharingContacts(ctx, contacts, subscriptionId)
+}
+
+func (w *subStubWrapper) GetPhoneNumber(
+	ctx context.Context,
+	subId int32,
+	source int32,
+) (string, error) {
+	return w.impl.GetPhoneNumber(ctx, subId, source)
+}
+
+func (w *subStubWrapper) GetPhoneNumberFromFirstAvailableSource(
+	ctx context.Context,
+	subId int32,
+) (string, error) {
+	return w.impl.GetPhoneNumberFromFirstAvailableSource(ctx, subId)
+}
+
+func (w *subStubWrapper) SetPhoneNumber(
+	ctx context.Context,
+	subId int32,
+	source int32,
+	number string,
+) error {
+	return w.impl.SetPhoneNumber(ctx, subId, source, number)
+}
+
+func (w *subStubWrapper) SetUsageSetting(
+	ctx context.Context,
+	usageSetting int32,
+	subId int32,
+) (int32, error) {
+	return w.impl.SetUsageSetting(ctx, usageSetting, subId)
+}
+
+func (w *subStubWrapper) SetGroupOwner(
+	ctx context.Context,
+	subId int32,
+	groupOwner string,
+) error {
+	return w.impl.SetGroupOwner(ctx, subId, groupOwner)
+}
+
+func (w *subStubWrapper) SetSubscriptionUserHandle(
+	ctx context.Context,
+	userHandle os.UserHandle,
+	subId int32,
+) (int32, error) {
+	return w.impl.SetSubscriptionUserHandle(ctx, userHandle, subId)
+}
+
+func (w *subStubWrapper) GetSubscriptionUserHandle(
+	ctx context.Context,
+	subId int32,
+) (os.UserHandle, error) {
+	return w.impl.GetSubscriptionUserHandle(ctx, subId)
+}
+
+func (w *subStubWrapper) IsSubscriptionAssociatedWithCallingUser(
+	ctx context.Context,
+	subscriptionId int32,
+) (bool, error) {
+	return w.impl.IsSubscriptionAssociatedWithCallingUser(ctx, subscriptionId)
+}
+
+func (w *subStubWrapper) IsSubscriptionAssociatedWithUser(
+	ctx context.Context,
+	subscriptionId int32,
+	userHandle os.UserHandle,
+) (bool, error) {
+	return w.impl.IsSubscriptionAssociatedWithUser(ctx, subscriptionId, userHandle)
+}
+
+func (w *subStubWrapper) GetSubscriptionInfoListAssociatedWithUser(
+	ctx context.Context,
+	userHandle os.UserHandle,
+) ([]androidTelephony.SubscriptionInfo, error) {
+	return w.impl.GetSubscriptionInfoListAssociatedWithUser(ctx, userHandle)
+}
+
+func (w *subStubWrapper) RestoreAllSimSpecificSettingsFromBackup(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.RestoreAllSimSpecificSettingsFromBackup(ctx, data)
+}
+
+func (w *subStubWrapper) SetTransferStatus(
+	ctx context.Context,
+	subId int32,
+	status int32,
+) error {
+	return w.impl.SetTransferStatus(ctx, subId, status)
+}
+
+var _ ISub = (*subStubWrapper)(nil)
+
+// NewSubStub creates a server-side ISub wrapping the given
+// server implementation. The returned value satisfies ISub
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSubStub(
+	impl ISubServer,
+) ISub {
+	wrapper := &subStubWrapper{impl: impl}
+	stub := &SubStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

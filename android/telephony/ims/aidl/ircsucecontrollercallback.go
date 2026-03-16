@@ -185,3 +185,60 @@ func (s *RcsUceControllerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRcsUceControllerCallbackServer is the server-side interface that user implementations
+// provide to NewRcsUceControllerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRcsUceControllerCallbackServer interface {
+	OnCapabilitiesReceived(ctx context.Context, contactCapabilities []ims.RcsContactUceCapability) error
+	OnComplete(ctx context.Context, details ims.SipDetails) error
+	OnError(ctx context.Context, errorCode int32, retryAfterMilliseconds int64, details ims.SipDetails) error
+}
+
+type rcsUceControllerCallbackStubWrapper struct {
+	impl       IRcsUceControllerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *rcsUceControllerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *rcsUceControllerCallbackStubWrapper) OnCapabilitiesReceived(
+	ctx context.Context,
+	contactCapabilities []ims.RcsContactUceCapability,
+) error {
+	return w.impl.OnCapabilitiesReceived(ctx, contactCapabilities)
+}
+
+func (w *rcsUceControllerCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	details ims.SipDetails,
+) error {
+	return w.impl.OnComplete(ctx, details)
+}
+
+func (w *rcsUceControllerCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+	retryAfterMilliseconds int64,
+	details ims.SipDetails,
+) error {
+	return w.impl.OnError(ctx, errorCode, retryAfterMilliseconds, details)
+}
+
+var _ IRcsUceControllerCallback = (*rcsUceControllerCallbackStubWrapper)(nil)
+
+// NewRcsUceControllerCallbackStub creates a server-side IRcsUceControllerCallback wrapping the given
+// server implementation. The returned value satisfies IRcsUceControllerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRcsUceControllerCallbackStub(
+	impl IRcsUceControllerCallbackServer,
+) IRcsUceControllerCallback {
+	wrapper := &rcsUceControllerCallbackStubWrapper{impl: impl}
+	stub := &RcsUceControllerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

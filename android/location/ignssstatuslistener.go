@@ -171,3 +171,64 @@ func (s *GnssStatusListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssStatusListenerServer is the server-side interface that user implementations
+// provide to NewGnssStatusListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssStatusListenerServer interface {
+	OnGnssStarted(ctx context.Context) error
+	OnGnssStopped(ctx context.Context) error
+	OnFirstFix(ctx context.Context, ttff int32) error
+	OnSvStatusChanged(ctx context.Context, gnssStatus GnssStatus) error
+}
+
+type gnssStatusListenerStubWrapper struct {
+	impl       IGnssStatusListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssStatusListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssStatusListenerStubWrapper) OnGnssStarted(
+	ctx context.Context,
+) error {
+	return w.impl.OnGnssStarted(ctx)
+}
+
+func (w *gnssStatusListenerStubWrapper) OnGnssStopped(
+	ctx context.Context,
+) error {
+	return w.impl.OnGnssStopped(ctx)
+}
+
+func (w *gnssStatusListenerStubWrapper) OnFirstFix(
+	ctx context.Context,
+	ttff int32,
+) error {
+	return w.impl.OnFirstFix(ctx, ttff)
+}
+
+func (w *gnssStatusListenerStubWrapper) OnSvStatusChanged(
+	ctx context.Context,
+	gnssStatus GnssStatus,
+) error {
+	return w.impl.OnSvStatusChanged(ctx, gnssStatus)
+}
+
+var _ IGnssStatusListener = (*gnssStatusListenerStubWrapper)(nil)
+
+// NewGnssStatusListenerStub creates a server-side IGnssStatusListener wrapping the given
+// server implementation. The returned value satisfies IGnssStatusListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssStatusListenerStub(
+	impl IGnssStatusListenerServer,
+) IGnssStatusListener {
+	wrapper := &gnssStatusListenerStubWrapper{impl: impl}
+	stub := &GnssStatusListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

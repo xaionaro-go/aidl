@@ -406,7 +406,7 @@ func (p *PeopleManagerProxy) RegisterConversationListener(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(shortcutId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "registerConversationListener")
 	if _err != nil {
@@ -432,7 +432,7 @@ func (p *PeopleManagerProxy) UnregisterConversationListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPeopleManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPeopleManager, "unregisterConversationListener")
 	if _err != nil {
@@ -748,4 +748,141 @@ func (s *PeopleManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPeopleManagerServer is the server-side interface that user implementations
+// provide to NewPeopleManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPeopleManagerServer interface {
+	GetConversation(ctx context.Context, packageName string, shortcutId string) (ConversationChannel, error)
+	GetRecentConversations(ctx context.Context) (pm.ParceledListSlice, error)
+	RemoveRecentConversation(ctx context.Context, packageName string, shortcutId string) error
+	RemoveAllRecentConversations(ctx context.Context) error
+	IsConversation(ctx context.Context, packageName string, shortcutId string) (bool, error)
+	GetLastInteraction(ctx context.Context, packageName string, shortcutId string) (int64, error)
+	AddOrUpdateStatus(ctx context.Context, packageName string, conversationId string, status ConversationStatus) error
+	ClearStatus(ctx context.Context, packageName string, conversationId string, statusId string) error
+	ClearStatuses(ctx context.Context, packageName string, conversationId string) error
+	GetStatuses(ctx context.Context, packageName string, conversationId string) (pm.ParceledListSlice, error)
+	RegisterConversationListener(ctx context.Context, packageName string, shortcutId string, callback IConversationListener) error
+	UnregisterConversationListener(ctx context.Context, callback IConversationListener) error
+}
+
+type peopleManagerStubWrapper struct {
+	impl       IPeopleManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *peopleManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *peopleManagerStubWrapper) GetConversation(
+	ctx context.Context,
+	packageName string,
+	shortcutId string,
+) (ConversationChannel, error) {
+	return w.impl.GetConversation(ctx, packageName, shortcutId)
+}
+
+func (w *peopleManagerStubWrapper) GetRecentConversations(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetRecentConversations(ctx)
+}
+
+func (w *peopleManagerStubWrapper) RemoveRecentConversation(
+	ctx context.Context,
+	packageName string,
+	shortcutId string,
+) error {
+	return w.impl.RemoveRecentConversation(ctx, packageName, shortcutId)
+}
+
+func (w *peopleManagerStubWrapper) RemoveAllRecentConversations(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveAllRecentConversations(ctx)
+}
+
+func (w *peopleManagerStubWrapper) IsConversation(
+	ctx context.Context,
+	packageName string,
+	shortcutId string,
+) (bool, error) {
+	return w.impl.IsConversation(ctx, packageName, shortcutId)
+}
+
+func (w *peopleManagerStubWrapper) GetLastInteraction(
+	ctx context.Context,
+	packageName string,
+	shortcutId string,
+) (int64, error) {
+	return w.impl.GetLastInteraction(ctx, packageName, shortcutId)
+}
+
+func (w *peopleManagerStubWrapper) AddOrUpdateStatus(
+	ctx context.Context,
+	packageName string,
+	conversationId string,
+	status ConversationStatus,
+) error {
+	return w.impl.AddOrUpdateStatus(ctx, packageName, conversationId, status)
+}
+
+func (w *peopleManagerStubWrapper) ClearStatus(
+	ctx context.Context,
+	packageName string,
+	conversationId string,
+	statusId string,
+) error {
+	return w.impl.ClearStatus(ctx, packageName, conversationId, statusId)
+}
+
+func (w *peopleManagerStubWrapper) ClearStatuses(
+	ctx context.Context,
+	packageName string,
+	conversationId string,
+) error {
+	return w.impl.ClearStatuses(ctx, packageName, conversationId)
+}
+
+func (w *peopleManagerStubWrapper) GetStatuses(
+	ctx context.Context,
+	packageName string,
+	conversationId string,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetStatuses(ctx, packageName, conversationId)
+}
+
+func (w *peopleManagerStubWrapper) RegisterConversationListener(
+	ctx context.Context,
+	packageName string,
+	shortcutId string,
+	callback IConversationListener,
+) error {
+	return w.impl.RegisterConversationListener(ctx, packageName, shortcutId, callback)
+}
+
+func (w *peopleManagerStubWrapper) UnregisterConversationListener(
+	ctx context.Context,
+	callback IConversationListener,
+) error {
+	return w.impl.UnregisterConversationListener(ctx, callback)
+}
+
+var _ IPeopleManager = (*peopleManagerStubWrapper)(nil)
+
+// NewPeopleManagerStub creates a server-side IPeopleManager wrapping the given
+// server implementation. The returned value satisfies IPeopleManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPeopleManagerStub(
+	impl IPeopleManagerServer,
+) IPeopleManager {
+	wrapper := &peopleManagerStubWrapper{impl: impl}
+	stub := &PeopleManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

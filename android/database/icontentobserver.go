@@ -160,3 +160,53 @@ func (s *ContentObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IContentObserverServer is the server-side interface that user implementations
+// provide to NewContentObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentObserverServer interface {
+	OnChange(ctx context.Context, selfUpdate bool, uri net.Uri) error
+	OnChangeEtc(ctx context.Context, selfUpdate bool, uri []net.Uri, flags int32) error
+}
+
+type contentObserverStubWrapper struct {
+	impl       IContentObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentObserverStubWrapper) OnChange(
+	ctx context.Context,
+	selfUpdate bool,
+	uri net.Uri,
+) error {
+	return w.impl.OnChange(ctx, selfUpdate, uri)
+}
+
+func (w *contentObserverStubWrapper) OnChangeEtc(
+	ctx context.Context,
+	selfUpdate bool,
+	uri []net.Uri,
+	flags int32,
+) error {
+	return w.impl.OnChangeEtc(ctx, selfUpdate, uri, flags)
+}
+
+var _ IContentObserver = (*contentObserverStubWrapper)(nil)
+
+// NewContentObserverStub creates a server-side IContentObserver wrapping the given
+// server implementation. The returned value satisfies IContentObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentObserverStub(
+	impl IContentObserverServer,
+) IContentObserver {
+	wrapper := &contentObserverStubWrapper{impl: impl}
+	stub := &ContentObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

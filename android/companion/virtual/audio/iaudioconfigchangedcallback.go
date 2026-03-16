@@ -129,3 +129,50 @@ func (s *AudioConfigChangedCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioConfigChangedCallbackServer is the server-side interface that user implementations
+// provide to NewAudioConfigChangedCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioConfigChangedCallbackServer interface {
+	OnPlaybackConfigChanged(ctx context.Context, configs []media.AudioPlaybackConfiguration) error
+	OnRecordingConfigChanged(ctx context.Context, configs []media.AudioRecordingConfiguration) error
+}
+
+type audioConfigChangedCallbackStubWrapper struct {
+	impl       IAudioConfigChangedCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioConfigChangedCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioConfigChangedCallbackStubWrapper) OnPlaybackConfigChanged(
+	ctx context.Context,
+	configs []media.AudioPlaybackConfiguration,
+) error {
+	return w.impl.OnPlaybackConfigChanged(ctx, configs)
+}
+
+func (w *audioConfigChangedCallbackStubWrapper) OnRecordingConfigChanged(
+	ctx context.Context,
+	configs []media.AudioRecordingConfiguration,
+) error {
+	return w.impl.OnRecordingConfigChanged(ctx, configs)
+}
+
+var _ IAudioConfigChangedCallback = (*audioConfigChangedCallbackStubWrapper)(nil)
+
+// NewAudioConfigChangedCallbackStub creates a server-side IAudioConfigChangedCallback wrapping the given
+// server implementation. The returned value satisfies IAudioConfigChangedCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioConfigChangedCallbackStub(
+	impl IAudioConfigChangedCallbackServer,
+) IAudioConfigChangedCallback {
+	wrapper := &audioConfigChangedCallbackStubWrapper{impl: impl}
+	stub := &AudioConfigChangedCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -88,7 +88,7 @@ func (p *PlayerServiceProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPlayerService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPlayerService, "registerCallback")
 	if _err != nil {
@@ -114,7 +114,7 @@ func (p *PlayerServiceProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPlayerService)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPlayerService, "unregisterCallback")
 	if _err != nil {
@@ -147,7 +147,7 @@ func (p *PlayerServiceProxy) SendRequest(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPlayerService, "sendRequest")
 	if _err != nil {
@@ -314,4 +314,76 @@ func (s *PlayerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPlayerServiceServer is the server-side interface that user implementations
+// provide to NewPlayerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPlayerServiceServer interface {
+	GetSessionToken(ctx context.Context) (session.MediaSessionToken, error)
+	RegisterCallback(ctx context.Context, cb IPlayerCallback) error
+	UnregisterCallback(ctx context.Context, cb IPlayerCallback) error
+	SendRequest(ctx context.Context, action string, params os.Bundle, cb extension.IRequestCallback) error
+	SetIcon(ctx context.Context, icon graphics.Bitmap) error
+}
+
+type playerServiceStubWrapper struct {
+	impl       IPlayerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *playerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *playerServiceStubWrapper) GetSessionToken(
+	ctx context.Context,
+) (session.MediaSessionToken, error) {
+	return w.impl.GetSessionToken(ctx)
+}
+
+func (w *playerServiceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	cb IPlayerCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, cb)
+}
+
+func (w *playerServiceStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	cb IPlayerCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, cb)
+}
+
+func (w *playerServiceStubWrapper) SendRequest(
+	ctx context.Context,
+	action string,
+	params os.Bundle,
+	cb extension.IRequestCallback,
+) error {
+	return w.impl.SendRequest(ctx, action, params, cb)
+}
+
+func (w *playerServiceStubWrapper) SetIcon(
+	ctx context.Context,
+	icon graphics.Bitmap,
+) error {
+	return w.impl.SetIcon(ctx, icon)
+}
+
+var _ IPlayerService = (*playerServiceStubWrapper)(nil)
+
+// NewPlayerServiceStub creates a server-side IPlayerService wrapping the given
+// server implementation. The returned value satisfies IPlayerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPlayerServiceStub(
+	impl IPlayerServiceServer,
+) IPlayerService {
+	wrapper := &playerServiceStubWrapper{impl: impl}
+	stub := &PlayerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -140,3 +140,50 @@ func (s *ServiceListImportListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IServiceListImportListenerServer is the server-side interface that user implementations
+// provide to NewServiceListImportListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListImportListenerServer interface {
+	OnImported(ctx context.Context, importResult int32) error
+	OnPreloaded(ctx context.Context, preloadResult int32) error
+}
+
+type serviceListImportListenerStubWrapper struct {
+	impl       IServiceListImportListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListImportListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListImportListenerStubWrapper) OnImported(
+	ctx context.Context,
+	importResult int32,
+) error {
+	return w.impl.OnImported(ctx, importResult)
+}
+
+func (w *serviceListImportListenerStubWrapper) OnPreloaded(
+	ctx context.Context,
+	preloadResult int32,
+) error {
+	return w.impl.OnPreloaded(ctx, preloadResult)
+}
+
+var _ IServiceListImportListener = (*serviceListImportListenerStubWrapper)(nil)
+
+// NewServiceListImportListenerStub creates a server-side IServiceListImportListener wrapping the given
+// server implementation. The returned value satisfies IServiceListImportListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListImportListenerStub(
+	impl IServiceListImportListenerServer,
+) IServiceListImportListener {
+	wrapper := &serviceListImportListenerStubWrapper{impl: impl}
+	stub := &ServiceListImportListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

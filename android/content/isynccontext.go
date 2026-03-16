@@ -145,3 +145,49 @@ func (s *SyncContextStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISyncContextServer is the server-side interface that user implementations
+// provide to NewSyncContextStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISyncContextServer interface {
+	SendHeartbeat(ctx context.Context) error
+	OnFinished(ctx context.Context, result SyncResult) error
+}
+
+type syncContextStubWrapper struct {
+	impl       ISyncContextServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *syncContextStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *syncContextStubWrapper) SendHeartbeat(
+	ctx context.Context,
+) error {
+	return w.impl.SendHeartbeat(ctx)
+}
+
+func (w *syncContextStubWrapper) OnFinished(
+	ctx context.Context,
+	result SyncResult,
+) error {
+	return w.impl.OnFinished(ctx, result)
+}
+
+var _ ISyncContext = (*syncContextStubWrapper)(nil)
+
+// NewSyncContextStub creates a server-side ISyncContext wrapping the given
+// server implementation. The returned value satisfies ISyncContext
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSyncContextStub(
+	impl ISyncContextServer,
+) ISyncContext {
+	wrapper := &syncContextStubWrapper{impl: impl}
+	stub := &SyncContextStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

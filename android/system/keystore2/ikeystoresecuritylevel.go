@@ -638,3 +638,96 @@ func (s *KeystoreSecurityLevelStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeystoreSecurityLevelServer is the server-side interface that user implementations
+// provide to NewKeystoreSecurityLevelStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeystoreSecurityLevelServer interface {
+	CreateOperation(ctx context.Context, key KeyDescriptor, operationParameters []keymint.KeyParameter, forced bool) (CreateOperationResponse, error)
+	GenerateKey(ctx context.Context, key KeyDescriptor, attestationKey *KeyDescriptor, params []keymint.KeyParameter, flags int32, entropy []byte) (KeyMetadata, error)
+	ImportKey(ctx context.Context, key KeyDescriptor, attestationKey *KeyDescriptor, params []keymint.KeyParameter, flags int32, keyData []byte) (KeyMetadata, error)
+	ImportWrappedKey(ctx context.Context, key KeyDescriptor, wrappingKey KeyDescriptor, maskingKey []byte, params []keymint.KeyParameter, authenticators []AuthenticatorSpec) (KeyMetadata, error)
+	ConvertStorageKeyToEphemeral(ctx context.Context, storageKey KeyDescriptor) (EphemeralStorageKeyResponse, error)
+	DeleteKey(ctx context.Context, key KeyDescriptor) error
+}
+
+type keystoreSecurityLevelStubWrapper struct {
+	impl       IKeystoreSecurityLevelServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keystoreSecurityLevelStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keystoreSecurityLevelStubWrapper) CreateOperation(
+	ctx context.Context,
+	key KeyDescriptor,
+	operationParameters []keymint.KeyParameter,
+	forced bool,
+) (CreateOperationResponse, error) {
+	return w.impl.CreateOperation(ctx, key, operationParameters, forced)
+}
+
+func (w *keystoreSecurityLevelStubWrapper) GenerateKey(
+	ctx context.Context,
+	key KeyDescriptor,
+	attestationKey *KeyDescriptor,
+	params []keymint.KeyParameter,
+	flags int32,
+	entropy []byte,
+) (KeyMetadata, error) {
+	return w.impl.GenerateKey(ctx, key, attestationKey, params, flags, entropy)
+}
+
+func (w *keystoreSecurityLevelStubWrapper) ImportKey(
+	ctx context.Context,
+	key KeyDescriptor,
+	attestationKey *KeyDescriptor,
+	params []keymint.KeyParameter,
+	flags int32,
+	keyData []byte,
+) (KeyMetadata, error) {
+	return w.impl.ImportKey(ctx, key, attestationKey, params, flags, keyData)
+}
+
+func (w *keystoreSecurityLevelStubWrapper) ImportWrappedKey(
+	ctx context.Context,
+	key KeyDescriptor,
+	wrappingKey KeyDescriptor,
+	maskingKey []byte,
+	params []keymint.KeyParameter,
+	authenticators []AuthenticatorSpec,
+) (KeyMetadata, error) {
+	return w.impl.ImportWrappedKey(ctx, key, wrappingKey, maskingKey, params, authenticators)
+}
+
+func (w *keystoreSecurityLevelStubWrapper) ConvertStorageKeyToEphemeral(
+	ctx context.Context,
+	storageKey KeyDescriptor,
+) (EphemeralStorageKeyResponse, error) {
+	return w.impl.ConvertStorageKeyToEphemeral(ctx, storageKey)
+}
+
+func (w *keystoreSecurityLevelStubWrapper) DeleteKey(
+	ctx context.Context,
+	key KeyDescriptor,
+) error {
+	return w.impl.DeleteKey(ctx, key)
+}
+
+var _ IKeystoreSecurityLevel = (*keystoreSecurityLevelStubWrapper)(nil)
+
+// NewKeystoreSecurityLevelStub creates a server-side IKeystoreSecurityLevel wrapping the given
+// server implementation. The returned value satisfies IKeystoreSecurityLevel
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeystoreSecurityLevelStub(
+	impl IKeystoreSecurityLevelServer,
+) IKeystoreSecurityLevel {
+	wrapper := &keystoreSecurityLevelStubWrapper{impl: impl}
+	stub := &KeystoreSecurityLevelStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

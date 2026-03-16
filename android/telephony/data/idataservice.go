@@ -133,7 +133,7 @@ func (p *DataServiceProxy) SetupDataCall(
 		return _err
 	}
 	_data.WriteBool(matchAllRuleAllowed)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "setupDataCall")
 	if _err != nil {
@@ -156,7 +156,7 @@ func (p *DataServiceProxy) DeactivateDataCall(
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(cid)
 	_data.WriteInt32(reason)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "deactivateDataCall")
 	if _err != nil {
@@ -182,7 +182,7 @@ func (p *DataServiceProxy) SetInitialAttachApn(
 		return _err
 	}
 	_data.WriteBool(isRoaming)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "setInitialAttachApn")
 	if _err != nil {
@@ -214,7 +214,7 @@ func (p *DataServiceProxy) SetDataProfile(
 		}
 	}
 	_data.WriteBool(isRoaming)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "setDataProfile")
 	if _err != nil {
@@ -233,7 +233,7 @@ func (p *DataServiceProxy) RequestDataCallList(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDataService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "requestDataCallList")
 	if _err != nil {
@@ -252,7 +252,7 @@ func (p *DataServiceProxy) RegisterForDataCallListChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDataService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "registerForDataCallListChanged")
 	if _err != nil {
@@ -271,7 +271,7 @@ func (p *DataServiceProxy) UnregisterForDataCallListChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDataService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "unregisterForDataCallListChanged")
 	if _err != nil {
@@ -292,7 +292,7 @@ func (p *DataServiceProxy) StartHandover(
 	_data.WriteInterfaceToken(DescriptorIDataService)
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(cid)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "startHandover")
 	if _err != nil {
@@ -313,7 +313,7 @@ func (p *DataServiceProxy) CancelHandover(
 	_data.WriteInterfaceToken(DescriptorIDataService)
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(cid)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "cancelHandover")
 	if _err != nil {
@@ -332,7 +332,7 @@ func (p *DataServiceProxy) RegisterForUnthrottleApn(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDataService)
 	_data.WriteInt32(slotIndex)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "registerForUnthrottleApn")
 	if _err != nil {
@@ -351,7 +351,7 @@ func (p *DataServiceProxy) UnregisterForUnthrottleApn(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDataService)
 	_data.WriteInt32(slotIndex)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "unregisterForUnthrottleApn")
 	if _err != nil {
@@ -372,7 +372,7 @@ func (p *DataServiceProxy) RequestNetworkValidation(
 	_data.WriteInterfaceToken(DescriptorIDataService)
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(cid)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataService, "requestNetworkValidation")
 	if _err != nil {
@@ -694,4 +694,178 @@ func (s *DataServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDataServiceServer is the server-side interface that user implementations
+// provide to NewDataServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataServiceServer interface {
+	CreateDataServiceProvider(ctx context.Context, slotId int32) error
+	RemoveDataServiceProvider(ctx context.Context, slotId int32) error
+	SetupDataCall(ctx context.Context, slotId int32, accessNetwork int32, dataProfile DataProfile, isRoaming bool, allowRoaming bool, reason int32, linkProperties interface{}, pduSessionId int32, sliceInfo NetworkSliceInfo, trafficDescriptor TrafficDescriptor, matchAllRuleAllowed bool, callback IDataServiceCallback) error
+	DeactivateDataCall(ctx context.Context, slotId int32, cid int32, reason int32, callback IDataServiceCallback) error
+	SetInitialAttachApn(ctx context.Context, slotId int32, dataProfile DataProfile, isRoaming bool, callback IDataServiceCallback) error
+	SetDataProfile(ctx context.Context, slotId int32, dps []DataProfile, isRoaming bool, callback IDataServiceCallback) error
+	RequestDataCallList(ctx context.Context, slotId int32, callback IDataServiceCallback) error
+	RegisterForDataCallListChanged(ctx context.Context, slotId int32, callback IDataServiceCallback) error
+	UnregisterForDataCallListChanged(ctx context.Context, slotId int32, callback IDataServiceCallback) error
+	StartHandover(ctx context.Context, slotId int32, cid int32, callback IDataServiceCallback) error
+	CancelHandover(ctx context.Context, slotId int32, cid int32, callback IDataServiceCallback) error
+	RegisterForUnthrottleApn(ctx context.Context, slotIndex int32, callback IDataServiceCallback) error
+	UnregisterForUnthrottleApn(ctx context.Context, slotIndex int32, callback IDataServiceCallback) error
+	RequestNetworkValidation(ctx context.Context, slotId int32, cid int32, callback telephony.IIntegerConsumer) error
+}
+
+type dataServiceStubWrapper struct {
+	impl       IDataServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dataServiceStubWrapper) CreateDataServiceProvider(
+	ctx context.Context,
+	slotId int32,
+) error {
+	return w.impl.CreateDataServiceProvider(ctx, slotId)
+}
+
+func (w *dataServiceStubWrapper) RemoveDataServiceProvider(
+	ctx context.Context,
+	slotId int32,
+) error {
+	return w.impl.RemoveDataServiceProvider(ctx, slotId)
+}
+
+func (w *dataServiceStubWrapper) SetupDataCall(
+	ctx context.Context,
+	slotId int32,
+	accessNetwork int32,
+	dataProfile DataProfile,
+	isRoaming bool,
+	allowRoaming bool,
+	reason int32,
+	linkProperties interface{},
+	pduSessionId int32,
+	sliceInfo NetworkSliceInfo,
+	trafficDescriptor TrafficDescriptor,
+	matchAllRuleAllowed bool,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.SetupDataCall(ctx, slotId, accessNetwork, dataProfile, isRoaming, allowRoaming, reason, linkProperties, pduSessionId, sliceInfo, trafficDescriptor, matchAllRuleAllowed, callback)
+}
+
+func (w *dataServiceStubWrapper) DeactivateDataCall(
+	ctx context.Context,
+	slotId int32,
+	cid int32,
+	reason int32,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.DeactivateDataCall(ctx, slotId, cid, reason, callback)
+}
+
+func (w *dataServiceStubWrapper) SetInitialAttachApn(
+	ctx context.Context,
+	slotId int32,
+	dataProfile DataProfile,
+	isRoaming bool,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.SetInitialAttachApn(ctx, slotId, dataProfile, isRoaming, callback)
+}
+
+func (w *dataServiceStubWrapper) SetDataProfile(
+	ctx context.Context,
+	slotId int32,
+	dps []DataProfile,
+	isRoaming bool,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.SetDataProfile(ctx, slotId, dps, isRoaming, callback)
+}
+
+func (w *dataServiceStubWrapper) RequestDataCallList(
+	ctx context.Context,
+	slotId int32,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.RequestDataCallList(ctx, slotId, callback)
+}
+
+func (w *dataServiceStubWrapper) RegisterForDataCallListChanged(
+	ctx context.Context,
+	slotId int32,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.RegisterForDataCallListChanged(ctx, slotId, callback)
+}
+
+func (w *dataServiceStubWrapper) UnregisterForDataCallListChanged(
+	ctx context.Context,
+	slotId int32,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.UnregisterForDataCallListChanged(ctx, slotId, callback)
+}
+
+func (w *dataServiceStubWrapper) StartHandover(
+	ctx context.Context,
+	slotId int32,
+	cid int32,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.StartHandover(ctx, slotId, cid, callback)
+}
+
+func (w *dataServiceStubWrapper) CancelHandover(
+	ctx context.Context,
+	slotId int32,
+	cid int32,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.CancelHandover(ctx, slotId, cid, callback)
+}
+
+func (w *dataServiceStubWrapper) RegisterForUnthrottleApn(
+	ctx context.Context,
+	slotIndex int32,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.RegisterForUnthrottleApn(ctx, slotIndex, callback)
+}
+
+func (w *dataServiceStubWrapper) UnregisterForUnthrottleApn(
+	ctx context.Context,
+	slotIndex int32,
+	callback IDataServiceCallback,
+) error {
+	return w.impl.UnregisterForUnthrottleApn(ctx, slotIndex, callback)
+}
+
+func (w *dataServiceStubWrapper) RequestNetworkValidation(
+	ctx context.Context,
+	slotId int32,
+	cid int32,
+	callback telephony.IIntegerConsumer,
+) error {
+	return w.impl.RequestNetworkValidation(ctx, slotId, cid, callback)
+}
+
+var _ IDataService = (*dataServiceStubWrapper)(nil)
+
+// NewDataServiceStub creates a server-side IDataService wrapping the given
+// server implementation. The returned value satisfies IDataService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataServiceStub(
+	impl IDataServiceServer,
+) IDataService {
+	wrapper := &dataServiceStubWrapper{impl: impl}
+	stub := &DataServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

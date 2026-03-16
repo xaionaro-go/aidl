@@ -167,3 +167,59 @@ func (s *AssociationRequestCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAssociationRequestCallbackServer is the server-side interface that user implementations
+// provide to NewAssociationRequestCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAssociationRequestCallbackServer interface {
+	OnAssociationPending(ctx context.Context, pendingIntent app.PendingIntent) error
+	OnAssociationCreated(ctx context.Context, associationInfo AssociationInfo) error
+	OnFailure(ctx context.Context, errorCode int32, error_ interface{}) error
+}
+
+type associationRequestCallbackStubWrapper struct {
+	impl       IAssociationRequestCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *associationRequestCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *associationRequestCallbackStubWrapper) OnAssociationPending(
+	ctx context.Context,
+	pendingIntent app.PendingIntent,
+) error {
+	return w.impl.OnAssociationPending(ctx, pendingIntent)
+}
+
+func (w *associationRequestCallbackStubWrapper) OnAssociationCreated(
+	ctx context.Context,
+	associationInfo AssociationInfo,
+) error {
+	return w.impl.OnAssociationCreated(ctx, associationInfo)
+}
+
+func (w *associationRequestCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	errorCode int32,
+	error_ interface{},
+) error {
+	return w.impl.OnFailure(ctx, errorCode, error_)
+}
+
+var _ IAssociationRequestCallback = (*associationRequestCallbackStubWrapper)(nil)
+
+// NewAssociationRequestCallbackStub creates a server-side IAssociationRequestCallback wrapping the given
+// server implementation. The returned value satisfies IAssociationRequestCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAssociationRequestCallbackStub(
+	impl IAssociationRequestCallbackServer,
+) IAssociationRequestCallback {
+	wrapper := &associationRequestCallbackStubWrapper{impl: impl}
+	stub := &AssociationRequestCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

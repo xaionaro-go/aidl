@@ -46,7 +46,7 @@ func (p *GetRegistrationCallbackProxy) OnSuccess(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGetRegistrationCallback)
-	_data.WriteStrongBinder(registration.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, registration.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGetRegistrationCallback, "onSuccess")
 	if _err != nil {
@@ -134,4 +134,58 @@ func (s *GetRegistrationCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGetRegistrationCallbackServer is the server-side interface that user implementations
+// provide to NewGetRegistrationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetRegistrationCallbackServer interface {
+	OnSuccess(ctx context.Context, registration IRegistration) error
+	OnCancel(ctx context.Context) error
+	OnError(ctx context.Context, error_ string) error
+}
+
+type getRegistrationCallbackStubWrapper struct {
+	impl       IGetRegistrationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getRegistrationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getRegistrationCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	registration IRegistration,
+) error {
+	return w.impl.OnSuccess(ctx, registration)
+}
+
+func (w *getRegistrationCallbackStubWrapper) OnCancel(
+	ctx context.Context,
+) error {
+	return w.impl.OnCancel(ctx)
+}
+
+func (w *getRegistrationCallbackStubWrapper) OnError(
+	ctx context.Context,
+	error_ string,
+) error {
+	return w.impl.OnError(ctx, error_)
+}
+
+var _ IGetRegistrationCallback = (*getRegistrationCallbackStubWrapper)(nil)
+
+// NewGetRegistrationCallbackStub creates a server-side IGetRegistrationCallback wrapping the given
+// server implementation. The returned value satisfies IGetRegistrationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetRegistrationCallbackStub(
+	impl IGetRegistrationCallbackServer,
+) IGetRegistrationCallback {
+	wrapper := &getRegistrationCallbackStubWrapper{impl: impl}
+	stub := &GetRegistrationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

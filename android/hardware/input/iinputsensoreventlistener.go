@@ -154,3 +154,56 @@ func (s *InputSensorEventListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputSensorEventListenerServer is the server-side interface that user implementations
+// provide to NewInputSensorEventListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputSensorEventListenerServer interface {
+	OnInputSensorChanged(ctx context.Context, deviceId int32, sensorId int32, accuracy int32, timestamp int64, values []float32) error
+	OnInputSensorAccuracyChanged(ctx context.Context, deviceId int32, sensorId int32, accuracy int32) error
+}
+
+type inputSensorEventListenerStubWrapper struct {
+	impl       IInputSensorEventListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputSensorEventListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputSensorEventListenerStubWrapper) OnInputSensorChanged(
+	ctx context.Context,
+	deviceId int32,
+	sensorId int32,
+	accuracy int32,
+	timestamp int64,
+	values []float32,
+) error {
+	return w.impl.OnInputSensorChanged(ctx, deviceId, sensorId, accuracy, timestamp, values)
+}
+
+func (w *inputSensorEventListenerStubWrapper) OnInputSensorAccuracyChanged(
+	ctx context.Context,
+	deviceId int32,
+	sensorId int32,
+	accuracy int32,
+) error {
+	return w.impl.OnInputSensorAccuracyChanged(ctx, deviceId, sensorId, accuracy)
+}
+
+var _ IInputSensorEventListener = (*inputSensorEventListenerStubWrapper)(nil)
+
+// NewInputSensorEventListenerStub creates a server-side IInputSensorEventListener wrapping the given
+// server implementation. The returned value satisfies IInputSensorEventListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputSensorEventListenerStub(
+	impl IInputSensorEventListenerServer,
+) IInputSensorEventListener {
+	wrapper := &inputSensorEventListenerStubWrapper{impl: impl}
+	stub := &InputSensorEventListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

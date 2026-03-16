@@ -422,3 +422,94 @@ func (s *ContextHubEndpointStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IContextHubEndpointServer is the server-side interface that user implementations
+// provide to NewContextHubEndpointStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContextHubEndpointServer interface {
+	GetAssignedHubEndpointInfo(ctx context.Context) (HubEndpointInfo, error)
+	OpenSession(ctx context.Context, destination HubEndpointInfo, serviceDescriptor string) (int32, error)
+	CloseSession(ctx context.Context, sessionId int32, reason int32) error
+	OpenSessionRequestComplete(ctx context.Context, sessionId int32) error
+	Unregister(ctx context.Context) error
+	SendMessage(ctx context.Context, sessionId int32, message HubMessage, transactionCallback *interface{}) error
+	SendMessageDeliveryStatus(ctx context.Context, sessionId int32, messageSeqNumber int32, errorCode byte) error
+}
+
+type contextHubEndpointStubWrapper struct {
+	impl       IContextHubEndpointServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contextHubEndpointStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contextHubEndpointStubWrapper) GetAssignedHubEndpointInfo(
+	ctx context.Context,
+) (HubEndpointInfo, error) {
+	return w.impl.GetAssignedHubEndpointInfo(ctx)
+}
+
+func (w *contextHubEndpointStubWrapper) OpenSession(
+	ctx context.Context,
+	destination HubEndpointInfo,
+	serviceDescriptor string,
+) (int32, error) {
+	return w.impl.OpenSession(ctx, destination, serviceDescriptor)
+}
+
+func (w *contextHubEndpointStubWrapper) CloseSession(
+	ctx context.Context,
+	sessionId int32,
+	reason int32,
+) error {
+	return w.impl.CloseSession(ctx, sessionId, reason)
+}
+
+func (w *contextHubEndpointStubWrapper) OpenSessionRequestComplete(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OpenSessionRequestComplete(ctx, sessionId)
+}
+
+func (w *contextHubEndpointStubWrapper) Unregister(
+	ctx context.Context,
+) error {
+	return w.impl.Unregister(ctx)
+}
+
+func (w *contextHubEndpointStubWrapper) SendMessage(
+	ctx context.Context,
+	sessionId int32,
+	message HubMessage,
+	transactionCallback *interface{},
+) error {
+	return w.impl.SendMessage(ctx, sessionId, message, transactionCallback)
+}
+
+func (w *contextHubEndpointStubWrapper) SendMessageDeliveryStatus(
+	ctx context.Context,
+	sessionId int32,
+	messageSeqNumber int32,
+	errorCode byte,
+) error {
+	return w.impl.SendMessageDeliveryStatus(ctx, sessionId, messageSeqNumber, errorCode)
+}
+
+var _ IContextHubEndpoint = (*contextHubEndpointStubWrapper)(nil)
+
+// NewContextHubEndpointStub creates a server-side IContextHubEndpoint wrapping the given
+// server implementation. The returned value satisfies IContextHubEndpoint
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContextHubEndpointStub(
+	impl IContextHubEndpointServer,
+) IContextHubEndpoint {
+	wrapper := &contextHubEndpointStubWrapper{impl: impl}
+	stub := &ContextHubEndpointStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

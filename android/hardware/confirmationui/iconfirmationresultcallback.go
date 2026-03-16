@@ -120,3 +120,44 @@ func (s *ConfirmationResultCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IConfirmationResultCallbackServer is the server-side interface that user implementations
+// provide to NewConfirmationResultCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IConfirmationResultCallbackServer interface {
+	Result(ctx context.Context, error_ int32, formattedMessage []byte, confirmationToken []byte) error
+}
+
+type confirmationResultCallbackStubWrapper struct {
+	impl       IConfirmationResultCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *confirmationResultCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *confirmationResultCallbackStubWrapper) Result(
+	ctx context.Context,
+	error_ int32,
+	formattedMessage []byte,
+	confirmationToken []byte,
+) error {
+	return w.impl.Result(ctx, error_, formattedMessage, confirmationToken)
+}
+
+var _ IConfirmationResultCallback = (*confirmationResultCallbackStubWrapper)(nil)
+
+// NewConfirmationResultCallbackStub creates a server-side IConfirmationResultCallback wrapping the given
+// server implementation. The returned value satisfies IConfirmationResultCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewConfirmationResultCallbackStub(
+	impl IConfirmationResultCallbackServer,
+) IConfirmationResultCallback {
+	wrapper := &confirmationResultCallbackStubWrapper{impl: impl}
+	stub := &ConfirmationResultCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

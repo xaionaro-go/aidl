@@ -218,3 +218,70 @@ func (s *ContextHubEndpointCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IContextHubEndpointCallbackServer is the server-side interface that user implementations
+// provide to NewContextHubEndpointCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContextHubEndpointCallbackServer interface {
+	OnSessionOpenRequest(ctx context.Context, sessionId int32, initiator HubEndpointInfo, serviceDescriptor string) error
+	OnSessionClosed(ctx context.Context, sessionId int32, reason int32) error
+	OnSessionOpenComplete(ctx context.Context, sessionId int32) error
+	OnMessageReceived(ctx context.Context, sessionId int32, message HubMessage) error
+}
+
+type contextHubEndpointCallbackStubWrapper struct {
+	impl       IContextHubEndpointCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contextHubEndpointCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contextHubEndpointCallbackStubWrapper) OnSessionOpenRequest(
+	ctx context.Context,
+	sessionId int32,
+	initiator HubEndpointInfo,
+	serviceDescriptor string,
+) error {
+	return w.impl.OnSessionOpenRequest(ctx, sessionId, initiator, serviceDescriptor)
+}
+
+func (w *contextHubEndpointCallbackStubWrapper) OnSessionClosed(
+	ctx context.Context,
+	sessionId int32,
+	reason int32,
+) error {
+	return w.impl.OnSessionClosed(ctx, sessionId, reason)
+}
+
+func (w *contextHubEndpointCallbackStubWrapper) OnSessionOpenComplete(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnSessionOpenComplete(ctx, sessionId)
+}
+
+func (w *contextHubEndpointCallbackStubWrapper) OnMessageReceived(
+	ctx context.Context,
+	sessionId int32,
+	message HubMessage,
+) error {
+	return w.impl.OnMessageReceived(ctx, sessionId, message)
+}
+
+var _ IContextHubEndpointCallback = (*contextHubEndpointCallbackStubWrapper)(nil)
+
+// NewContextHubEndpointCallbackStub creates a server-side IContextHubEndpointCallback wrapping the given
+// server implementation. The returned value satisfies IContextHubEndpointCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContextHubEndpointCallbackStub(
+	impl IContextHubEndpointCallbackServer,
+) IContextHubEndpointCallback {
+	wrapper := &contextHubEndpointCallbackStubWrapper{impl: impl}
+	stub := &ContextHubEndpointCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

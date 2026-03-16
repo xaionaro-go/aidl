@@ -584,3 +584,132 @@ func (s *ProtectedStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProtectedServer is the server-side interface that user implementations
+// provide to NewProtectedStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProtectedServer interface {
+	ProtectedByInternet(ctx context.Context) error
+	ProtectedByVibrate(ctx context.Context) error
+	ProtectedByInternetAndVibrateImplicitly(ctx context.Context) error
+	ProtectedByInternetAndAccessNetworkStateImplicitly(ctx context.Context) error
+	ProtectedByInternetAndReadSyncSettingsImplicitly(ctx context.Context) error
+	ProtectedByTurnScreenOn(ctx context.Context) error
+	ProtectedByReadContacts(ctx context.Context) error
+	ProtectedByReadCalendar(ctx context.Context) error
+	ProtectedByInternetAndVibrate(ctx context.Context) error
+	ProtectedByInternetAndReadSyncSettings(ctx context.Context) error
+	ProtectedByAccessWifiStateOrVibrate(ctx context.Context) error
+	ProtectedByInternetOrVibrate(ctx context.Context) error
+	NotProtected(ctx context.Context) error
+	ManuallyProtected(ctx context.Context) error
+}
+
+type protectedStubWrapper struct {
+	impl       IProtectedServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *protectedStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *protectedStubWrapper) ProtectedByInternet(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByInternet(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByVibrate(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByVibrate(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByInternetAndVibrateImplicitly(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByInternetAndVibrateImplicitly(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByInternetAndAccessNetworkStateImplicitly(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByInternetAndAccessNetworkStateImplicitly(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByInternetAndReadSyncSettingsImplicitly(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByInternetAndReadSyncSettingsImplicitly(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByTurnScreenOn(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByTurnScreenOn(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByReadContacts(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByReadContacts(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByReadCalendar(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByReadCalendar(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByInternetAndVibrate(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByInternetAndVibrate(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByInternetAndReadSyncSettings(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByInternetAndReadSyncSettings(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByAccessWifiStateOrVibrate(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByAccessWifiStateOrVibrate(ctx)
+}
+
+func (w *protectedStubWrapper) ProtectedByInternetOrVibrate(
+	ctx context.Context,
+) error {
+	return w.impl.ProtectedByInternetOrVibrate(ctx)
+}
+
+func (w *protectedStubWrapper) NotProtected(
+	ctx context.Context,
+) error {
+	return w.impl.NotProtected(ctx)
+}
+
+func (w *protectedStubWrapper) ManuallyProtected(
+	ctx context.Context,
+) error {
+	return w.impl.ManuallyProtected(ctx)
+}
+
+var _ IProtected = (*protectedStubWrapper)(nil)
+
+// NewProtectedStub creates a server-side IProtected wrapping the given
+// server implementation. The returned value satisfies IProtected
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProtectedStub(
+	impl IProtectedServer,
+) IProtected {
+	wrapper := &protectedStubWrapper{impl: impl}
+	stub := &ProtectedStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

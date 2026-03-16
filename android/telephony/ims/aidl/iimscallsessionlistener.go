@@ -370,7 +370,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionMergeStarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(newSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, newSession.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -391,7 +391,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionMergeComplete(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSessionListener, "callSessionMergeComplete")
 	if _err != nil {
@@ -489,7 +489,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceExtended(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(newSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, newSession.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -531,7 +531,7 @@ func (p *ImsCallSessionListenerProxy) CallSessionConferenceExtendReceived(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSessionListener)
-	_data.WriteStrongBinder(newSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, newSession.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1727,4 +1727,387 @@ func (s *ImsCallSessionListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsCallSessionListenerServer is the server-side interface that user implementations
+// provide to NewImsCallSessionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsCallSessionListenerServer interface {
+	CallSessionInitiating(ctx context.Context, profile ims.ImsCallProfile) error
+	CallSessionInitiatingFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionProgressing(ctx context.Context, profile ims.ImsStreamMediaProfile) error
+	CallSessionInitiated(ctx context.Context, profile ims.ImsCallProfile) error
+	CallSessionInitiatedFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionTerminated(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionHeld(ctx context.Context, profile ims.ImsCallProfile) error
+	CallSessionHoldFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionHoldReceived(ctx context.Context, profile ims.ImsCallProfile) error
+	CallSessionResumed(ctx context.Context, profile ims.ImsCallProfile) error
+	CallSessionResumeFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionResumeReceived(ctx context.Context, profile ims.ImsCallProfile) error
+	CallSessionMergeStarted(ctx context.Context, newSession internal.IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionMergeComplete(ctx context.Context, session internal.IImsCallSession) error
+	CallSessionMergeFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionUpdated(ctx context.Context, profile ims.ImsCallProfile) error
+	CallSessionUpdateFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionUpdateReceived(ctx context.Context, profile ims.ImsCallProfile) error
+	CallSessionConferenceExtended(ctx context.Context, newSession internal.IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionConferenceExtendFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionConferenceExtendReceived(ctx context.Context, newSession internal.IImsCallSession, profile ims.ImsCallProfile) error
+	CallSessionInviteParticipantsRequestDelivered(ctx context.Context) error
+	CallSessionInviteParticipantsRequestFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionRemoveParticipantsRequestDelivered(ctx context.Context) error
+	CallSessionRemoveParticipantsRequestFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionConferenceStateUpdated(ctx context.Context, state ims.ImsConferenceState) error
+	CallSessionUssdMessageReceived(ctx context.Context, mode int32, ussdMessage string) error
+	CallSessionHandover(ctx context.Context, srcNetworkType int32, targetNetworkType int32, reasonInfo ims.ImsReasonInfo) error
+	CallSessionHandoverFailed(ctx context.Context, srcNetworkType int32, targetNetworkType int32, reasonInfo ims.ImsReasonInfo) error
+	CallSessionMayHandover(ctx context.Context, srcNetworkType int32, targetNetworkType int32) error
+	CallSessionTtyModeReceived(ctx context.Context, mode int32) error
+	CallSessionMultipartyStateChanged(ctx context.Context, isMultiParty bool) error
+	CallSessionSuppServiceReceived(ctx context.Context, suppSrvNotification ims.ImsSuppServiceNotification) error
+	CallSessionRttModifyRequestReceived(ctx context.Context, callProfile ims.ImsCallProfile) error
+	CallSessionRttModifyResponseReceived(ctx context.Context, status int32) error
+	CallSessionRttMessageReceived(ctx context.Context, rttMessage string) error
+	CallSessionRttAudioIndicatorChanged(ctx context.Context, profile ims.ImsStreamMediaProfile) error
+	CallSessionTransferred(ctx context.Context) error
+	CallSessionTransferFailed(ctx context.Context, reasonInfo ims.ImsReasonInfo) error
+	CallSessionDtmfReceived(ctx context.Context, dtmf uint16) error
+	CallQualityChanged(ctx context.Context, callQuality media.CallQuality) error
+	CallSessionRtpHeaderExtensionsReceived(ctx context.Context, extensions []media.RtpHeaderExtension) error
+	CallSessionSendAnbrQuery(ctx context.Context, mediaType int32, direction int32, bitsPerSecond int32) error
+}
+
+type imsCallSessionListenerStubWrapper struct {
+	impl       IImsCallSessionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsCallSessionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionInitiating(
+	ctx context.Context,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionInitiating(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionInitiatingFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionInitiatingFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionProgressing(
+	ctx context.Context,
+	profile ims.ImsStreamMediaProfile,
+) error {
+	return w.impl.CallSessionProgressing(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionInitiated(
+	ctx context.Context,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionInitiated(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionInitiatedFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionInitiatedFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionTerminated(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionTerminated(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHeld(
+	ctx context.Context,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionHeld(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHoldFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionHoldFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHoldReceived(
+	ctx context.Context,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionHoldReceived(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionResumed(
+	ctx context.Context,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionResumed(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionResumeFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionResumeFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionResumeReceived(
+	ctx context.Context,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionResumeReceived(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMergeStarted(
+	ctx context.Context,
+	newSession internal.IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionMergeStarted(ctx, newSession, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMergeComplete(
+	ctx context.Context,
+	session internal.IImsCallSession,
+) error {
+	return w.impl.CallSessionMergeComplete(ctx, session)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMergeFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionMergeFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionUpdated(
+	ctx context.Context,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionUpdated(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionUpdateFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionUpdateFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionUpdateReceived(
+	ctx context.Context,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionUpdateReceived(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionConferenceExtended(
+	ctx context.Context,
+	newSession internal.IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionConferenceExtended(ctx, newSession, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionConferenceExtendFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionConferenceExtendFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionConferenceExtendReceived(
+	ctx context.Context,
+	newSession internal.IImsCallSession,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionConferenceExtendReceived(ctx, newSession, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionInviteParticipantsRequestDelivered(
+	ctx context.Context,
+) error {
+	return w.impl.CallSessionInviteParticipantsRequestDelivered(ctx)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionInviteParticipantsRequestFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionInviteParticipantsRequestFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRemoveParticipantsRequestDelivered(
+	ctx context.Context,
+) error {
+	return w.impl.CallSessionRemoveParticipantsRequestDelivered(ctx)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRemoveParticipantsRequestFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionRemoveParticipantsRequestFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionConferenceStateUpdated(
+	ctx context.Context,
+	state ims.ImsConferenceState,
+) error {
+	return w.impl.CallSessionConferenceStateUpdated(ctx, state)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionUssdMessageReceived(
+	ctx context.Context,
+	mode int32,
+	ussdMessage string,
+) error {
+	return w.impl.CallSessionUssdMessageReceived(ctx, mode, ussdMessage)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHandover(
+	ctx context.Context,
+	srcNetworkType int32,
+	targetNetworkType int32,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionHandover(ctx, srcNetworkType, targetNetworkType, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionHandoverFailed(
+	ctx context.Context,
+	srcNetworkType int32,
+	targetNetworkType int32,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionHandoverFailed(ctx, srcNetworkType, targetNetworkType, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMayHandover(
+	ctx context.Context,
+	srcNetworkType int32,
+	targetNetworkType int32,
+) error {
+	return w.impl.CallSessionMayHandover(ctx, srcNetworkType, targetNetworkType)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionTtyModeReceived(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.CallSessionTtyModeReceived(ctx, mode)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionMultipartyStateChanged(
+	ctx context.Context,
+	isMultiParty bool,
+) error {
+	return w.impl.CallSessionMultipartyStateChanged(ctx, isMultiParty)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionSuppServiceReceived(
+	ctx context.Context,
+	suppSrvNotification ims.ImsSuppServiceNotification,
+) error {
+	return w.impl.CallSessionSuppServiceReceived(ctx, suppSrvNotification)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRttModifyRequestReceived(
+	ctx context.Context,
+	callProfile ims.ImsCallProfile,
+) error {
+	return w.impl.CallSessionRttModifyRequestReceived(ctx, callProfile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRttModifyResponseReceived(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.CallSessionRttModifyResponseReceived(ctx, status)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRttMessageReceived(
+	ctx context.Context,
+	rttMessage string,
+) error {
+	return w.impl.CallSessionRttMessageReceived(ctx, rttMessage)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRttAudioIndicatorChanged(
+	ctx context.Context,
+	profile ims.ImsStreamMediaProfile,
+) error {
+	return w.impl.CallSessionRttAudioIndicatorChanged(ctx, profile)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionTransferred(
+	ctx context.Context,
+) error {
+	return w.impl.CallSessionTransferred(ctx)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionTransferFailed(
+	ctx context.Context,
+	reasonInfo ims.ImsReasonInfo,
+) error {
+	return w.impl.CallSessionTransferFailed(ctx, reasonInfo)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionDtmfReceived(
+	ctx context.Context,
+	dtmf uint16,
+) error {
+	return w.impl.CallSessionDtmfReceived(ctx, dtmf)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallQualityChanged(
+	ctx context.Context,
+	callQuality media.CallQuality,
+) error {
+	return w.impl.CallQualityChanged(ctx, callQuality)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionRtpHeaderExtensionsReceived(
+	ctx context.Context,
+	extensions []media.RtpHeaderExtension,
+) error {
+	return w.impl.CallSessionRtpHeaderExtensionsReceived(ctx, extensions)
+}
+
+func (w *imsCallSessionListenerStubWrapper) CallSessionSendAnbrQuery(
+	ctx context.Context,
+	mediaType int32,
+	direction int32,
+	bitsPerSecond int32,
+) error {
+	return w.impl.CallSessionSendAnbrQuery(ctx, mediaType, direction, bitsPerSecond)
+}
+
+var _ IImsCallSessionListener = (*imsCallSessionListenerStubWrapper)(nil)
+
+// NewImsCallSessionListenerStub creates a server-side IImsCallSessionListener wrapping the given
+// server implementation. The returned value satisfies IImsCallSessionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsCallSessionListenerStub(
+	impl IImsCallSessionListenerServer,
+) IImsCallSessionListener {
+	wrapper := &imsCallSessionListenerStubWrapper{impl: impl}
+	stub := &ImsCallSessionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

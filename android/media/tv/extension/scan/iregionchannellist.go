@@ -76,7 +76,7 @@ func (p *RegionChannelListProxy) SetListener(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRegionChannelList)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRegionChannelList, "setListener")
 	if _err != nil {
@@ -150,4 +150,51 @@ func (s *RegionChannelListStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRegionChannelListServer is the server-side interface that user implementations
+// provide to NewRegionChannelListStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRegionChannelListServer interface {
+	SetRegionChannelList(ctx context.Context, regionChannelList string) (int32, error)
+	SetListener(ctx context.Context, listener IRegionChannelListListener) (int32, error)
+}
+
+type regionChannelListStubWrapper struct {
+	impl       IRegionChannelListServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *regionChannelListStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *regionChannelListStubWrapper) SetRegionChannelList(
+	ctx context.Context,
+	regionChannelList string,
+) (int32, error) {
+	return w.impl.SetRegionChannelList(ctx, regionChannelList)
+}
+
+func (w *regionChannelListStubWrapper) SetListener(
+	ctx context.Context,
+	listener IRegionChannelListListener,
+) (int32, error) {
+	return w.impl.SetListener(ctx, listener)
+}
+
+var _ IRegionChannelList = (*regionChannelListStubWrapper)(nil)
+
+// NewRegionChannelListStub creates a server-side IRegionChannelList wrapping the given
+// server implementation. The returned value satisfies IRegionChannelList
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRegionChannelListStub(
+	impl IRegionChannelListServer,
+) IRegionChannelList {
+	wrapper := &regionChannelListStubWrapper{impl: impl}
+	stub := &RegionChannelListStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

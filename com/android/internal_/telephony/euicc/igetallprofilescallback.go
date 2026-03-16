@@ -97,3 +97,43 @@ func (s *GetAllProfilesCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetAllProfilesCallbackServer is the server-side interface that user implementations
+// provide to NewGetAllProfilesCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetAllProfilesCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, profiles []serviceEuicc.EuiccProfileInfo) error
+}
+
+type getAllProfilesCallbackStubWrapper struct {
+	impl       IGetAllProfilesCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getAllProfilesCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getAllProfilesCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	profiles []serviceEuicc.EuiccProfileInfo,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, profiles)
+}
+
+var _ IGetAllProfilesCallback = (*getAllProfilesCallbackStubWrapper)(nil)
+
+// NewGetAllProfilesCallbackStub creates a server-side IGetAllProfilesCallback wrapping the given
+// server implementation. The returned value satisfies IGetAllProfilesCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetAllProfilesCallbackStub(
+	impl IGetAllProfilesCallbackServer,
+) IGetAllProfilesCallback {
+	wrapper := &getAllProfilesCallbackStubWrapper{impl: impl}
+	stub := &GetAllProfilesCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

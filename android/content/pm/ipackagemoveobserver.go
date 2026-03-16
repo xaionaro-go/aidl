@@ -126,3 +126,53 @@ func (s *PackageMoveObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPackageMoveObserverServer is the server-side interface that user implementations
+// provide to NewPackageMoveObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageMoveObserverServer interface {
+	OnCreated(ctx context.Context, moveId int32, extras interface{}) error
+	OnStatusChanged(ctx context.Context, moveId int32, status int32, estMillis int64) error
+}
+
+type packageMoveObserverStubWrapper struct {
+	impl       IPackageMoveObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageMoveObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageMoveObserverStubWrapper) OnCreated(
+	ctx context.Context,
+	moveId int32,
+	extras interface{},
+) error {
+	return w.impl.OnCreated(ctx, moveId, extras)
+}
+
+func (w *packageMoveObserverStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	moveId int32,
+	status int32,
+	estMillis int64,
+) error {
+	return w.impl.OnStatusChanged(ctx, moveId, status, estMillis)
+}
+
+var _ IPackageMoveObserver = (*packageMoveObserverStubWrapper)(nil)
+
+// NewPackageMoveObserverStub creates a server-side IPackageMoveObserver wrapping the given
+// server implementation. The returned value satisfies IPackageMoveObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageMoveObserverStub(
+	impl IPackageMoveObserverServer,
+) IPackageMoveObserver {
+	wrapper := &packageMoveObserverStubWrapper{impl: impl}
+	stub := &PackageMoveObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

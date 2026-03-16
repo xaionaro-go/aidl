@@ -90,3 +90,41 @@ func (s *CameraOfflineSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraOfflineSessionServer is the server-side interface that user implementations
+// provide to NewCameraOfflineSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraOfflineSessionServer interface {
+	Disconnect(ctx context.Context) error
+}
+
+type cameraOfflineSessionStubWrapper struct {
+	impl       ICameraOfflineSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraOfflineSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraOfflineSessionStubWrapper) Disconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnect(ctx)
+}
+
+var _ ICameraOfflineSession = (*cameraOfflineSessionStubWrapper)(nil)
+
+// NewCameraOfflineSessionStub creates a server-side ICameraOfflineSession wrapping the given
+// server implementation. The returned value satisfies ICameraOfflineSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraOfflineSessionStub(
+	impl ICameraOfflineSessionServer,
+) ICameraOfflineSession {
+	wrapper := &cameraOfflineSessionStubWrapper{impl: impl}
+	stub := &CameraOfflineSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

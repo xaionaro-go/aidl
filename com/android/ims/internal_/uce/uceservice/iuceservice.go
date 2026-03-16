@@ -72,7 +72,7 @@ func (p *UceServiceProxy) StartService(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
-	_data.WriteStrongBinder(uceListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, uceListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUceService, "startService")
 	if _err != nil {
@@ -162,7 +162,7 @@ func (p *UceServiceProxy) CreateOptionsService(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
-	_data.WriteStrongBinder(optionsListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, optionsListener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := optionsServiceListenerHdl.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -202,7 +202,7 @@ func (p *UceServiceProxy) CreateOptionsServiceForSubscription(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
-	_data.WriteStrongBinder(optionsListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, optionsListener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := optionsServiceListenerHdl.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -268,7 +268,7 @@ func (p *UceServiceProxy) CreatePresenceService(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
-	_data.WriteStrongBinder(presenceServiceListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, presenceServiceListener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := presenceServiceListenerHdl.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -308,7 +308,7 @@ func (p *UceServiceProxy) CreatePresenceServiceForSubscription(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUceService)
-	_data.WriteStrongBinder(presenceServiceListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, presenceServiceListener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := presenceServiceListenerHdl.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -807,4 +807,148 @@ func (s *UceServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUceServiceServer is the server-side interface that user implementations
+// provide to NewUceServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUceServiceServer interface {
+	StartService(ctx context.Context, uceListener IUceListener) (bool, error)
+	StopService(ctx context.Context) (bool, error)
+	IsServiceStarted(ctx context.Context) (bool, error)
+	CreateOptionsService(ctx context.Context, optionsListener options.IOptionsListener, optionsServiceListenerHdl common.UceLong) (int32, error)
+	CreateOptionsServiceForSubscription(ctx context.Context, optionsListener options.IOptionsListener, optionsServiceListenerHdl common.UceLong, iccId string) (int32, error)
+	DestroyOptionsService(ctx context.Context, optionsServiceHandle int32) error
+	CreatePresenceService(ctx context.Context, presenceServiceListener presence.IPresenceListener, presenceServiceListenerHdl common.UceLong) (int32, error)
+	CreatePresenceServiceForSubscription(ctx context.Context, presenceServiceListener presence.IPresenceListener, presenceServiceListenerHdl common.UceLong, iccId string) (int32, error)
+	DestroyPresenceService(ctx context.Context, presenceServiceHdl int32) error
+	GetServiceStatus(ctx context.Context) (bool, error)
+	GetPresenceService(ctx context.Context) (presence.IPresenceService, error)
+	GetPresenceServiceForSubscription(ctx context.Context, iccId string) (presence.IPresenceService, error)
+	GetOptionsService(ctx context.Context) (options.IOptionsService, error)
+	GetOptionsServiceForSubscription(ctx context.Context, iccId string) (options.IOptionsService, error)
+}
+
+type uceServiceStubWrapper struct {
+	impl       IUceServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *uceServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *uceServiceStubWrapper) StartService(
+	ctx context.Context,
+	uceListener IUceListener,
+) (bool, error) {
+	return w.impl.StartService(ctx, uceListener)
+}
+
+func (w *uceServiceStubWrapper) StopService(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.StopService(ctx)
+}
+
+func (w *uceServiceStubWrapper) IsServiceStarted(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsServiceStarted(ctx)
+}
+
+func (w *uceServiceStubWrapper) CreateOptionsService(
+	ctx context.Context,
+	optionsListener options.IOptionsListener,
+	optionsServiceListenerHdl common.UceLong,
+) (int32, error) {
+	return w.impl.CreateOptionsService(ctx, optionsListener, optionsServiceListenerHdl)
+}
+
+func (w *uceServiceStubWrapper) CreateOptionsServiceForSubscription(
+	ctx context.Context,
+	optionsListener options.IOptionsListener,
+	optionsServiceListenerHdl common.UceLong,
+	iccId string,
+) (int32, error) {
+	return w.impl.CreateOptionsServiceForSubscription(ctx, optionsListener, optionsServiceListenerHdl, iccId)
+}
+
+func (w *uceServiceStubWrapper) DestroyOptionsService(
+	ctx context.Context,
+	optionsServiceHandle int32,
+) error {
+	return w.impl.DestroyOptionsService(ctx, optionsServiceHandle)
+}
+
+func (w *uceServiceStubWrapper) CreatePresenceService(
+	ctx context.Context,
+	presenceServiceListener presence.IPresenceListener,
+	presenceServiceListenerHdl common.UceLong,
+) (int32, error) {
+	return w.impl.CreatePresenceService(ctx, presenceServiceListener, presenceServiceListenerHdl)
+}
+
+func (w *uceServiceStubWrapper) CreatePresenceServiceForSubscription(
+	ctx context.Context,
+	presenceServiceListener presence.IPresenceListener,
+	presenceServiceListenerHdl common.UceLong,
+	iccId string,
+) (int32, error) {
+	return w.impl.CreatePresenceServiceForSubscription(ctx, presenceServiceListener, presenceServiceListenerHdl, iccId)
+}
+
+func (w *uceServiceStubWrapper) DestroyPresenceService(
+	ctx context.Context,
+	presenceServiceHdl int32,
+) error {
+	return w.impl.DestroyPresenceService(ctx, presenceServiceHdl)
+}
+
+func (w *uceServiceStubWrapper) GetServiceStatus(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetServiceStatus(ctx)
+}
+
+func (w *uceServiceStubWrapper) GetPresenceService(
+	ctx context.Context,
+) (presence.IPresenceService, error) {
+	return w.impl.GetPresenceService(ctx)
+}
+
+func (w *uceServiceStubWrapper) GetPresenceServiceForSubscription(
+	ctx context.Context,
+	iccId string,
+) (presence.IPresenceService, error) {
+	return w.impl.GetPresenceServiceForSubscription(ctx, iccId)
+}
+
+func (w *uceServiceStubWrapper) GetOptionsService(
+	ctx context.Context,
+) (options.IOptionsService, error) {
+	return w.impl.GetOptionsService(ctx)
+}
+
+func (w *uceServiceStubWrapper) GetOptionsServiceForSubscription(
+	ctx context.Context,
+	iccId string,
+) (options.IOptionsService, error) {
+	return w.impl.GetOptionsServiceForSubscription(ctx, iccId)
+}
+
+var _ IUceService = (*uceServiceStubWrapper)(nil)
+
+// NewUceServiceStub creates a server-side IUceService wrapping the given
+// server implementation. The returned value satisfies IUceService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUceServiceStub(
+	impl IUceServiceServer,
+) IUceService {
+	wrapper := &uceServiceStubWrapper{impl: impl}
+	stub := &UceServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

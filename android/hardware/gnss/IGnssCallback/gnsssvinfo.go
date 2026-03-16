@@ -1,6 +1,7 @@
 package IGnssCallback
 
 import (
+	gnss "github.com/xaionaro-go/binder/android/hardware/gnss"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,7 +9,7 @@ import (
 
 type GnssSvInfo struct {
 	Svid               int32
-	Constellation      interface{}
+	Constellation      gnss.GnssConstellationType
 	CN0Dbhz            float32
 	BasebandCN0DbHz    float32
 	ElevationDegrees   float32
@@ -24,6 +25,7 @@ func (s *GnssSvInfo) MarshalParcel(
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteInt32(s.Svid)
+	p.WriteInt32(int32(s.Constellation))
 	p.WriteFloat32(s.CN0Dbhz)
 	p.WriteFloat32(s.BasebandCN0DbHz)
 	p.WriteFloat32(s.ElevationDegrees)
@@ -47,6 +49,12 @@ func (s *GnssSvInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
+
+	_constellationRaw, _err := p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.Constellation = gnss.GnssConstellationType(_constellationRaw)
 
 	s.CN0Dbhz, _err = p.ReadFloat32()
 	if _err != nil {

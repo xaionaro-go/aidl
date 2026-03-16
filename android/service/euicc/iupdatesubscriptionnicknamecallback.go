@@ -82,3 +82,42 @@ func (s *UpdateSubscriptionNicknameCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUpdateSubscriptionNicknameCallbackServer is the server-side interface that user implementations
+// provide to NewUpdateSubscriptionNicknameCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUpdateSubscriptionNicknameCallbackServer interface {
+	OnComplete(ctx context.Context, result int32) error
+}
+
+type updateSubscriptionNicknameCallbackStubWrapper struct {
+	impl       IUpdateSubscriptionNicknameCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *updateSubscriptionNicknameCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *updateSubscriptionNicknameCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IUpdateSubscriptionNicknameCallback = (*updateSubscriptionNicknameCallbackStubWrapper)(nil)
+
+// NewUpdateSubscriptionNicknameCallbackStub creates a server-side IUpdateSubscriptionNicknameCallback wrapping the given
+// server implementation. The returned value satisfies IUpdateSubscriptionNicknameCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUpdateSubscriptionNicknameCallbackStub(
+	impl IUpdateSubscriptionNicknameCallbackServer,
+) IUpdateSubscriptionNicknameCallback {
+	wrapper := &updateSubscriptionNicknameCallbackStubWrapper{impl: impl}
+	stub := &UpdateSubscriptionNicknameCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

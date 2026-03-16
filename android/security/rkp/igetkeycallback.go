@@ -155,3 +155,58 @@ func (s *GetKeyCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetKeyCallbackServer is the server-side interface that user implementations
+// provide to NewGetKeyCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetKeyCallbackServer interface {
+	OnSuccess(ctx context.Context, key RemotelyProvisionedKey) error
+	OnCancel(ctx context.Context) error
+	OnError(ctx context.Context, error_ device.ErrorCode, description string) error
+}
+
+type getKeyCallbackStubWrapper struct {
+	impl       IGetKeyCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getKeyCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getKeyCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	key RemotelyProvisionedKey,
+) error {
+	return w.impl.OnSuccess(ctx, key)
+}
+
+func (w *getKeyCallbackStubWrapper) OnCancel(
+	ctx context.Context,
+) error {
+	return w.impl.OnCancel(ctx)
+}
+
+func (w *getKeyCallbackStubWrapper) OnError(
+	ctx context.Context,
+	error_ device.ErrorCode,
+	description string,
+) error {
+	return w.impl.OnError(ctx, error_, description)
+}
+
+var _ IGetKeyCallback = (*getKeyCallbackStubWrapper)(nil)
+
+// NewGetKeyCallbackStub creates a server-side IGetKeyCallback wrapping the given
+// server implementation. The returned value satisfies IGetKeyCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetKeyCallbackStub(
+	impl IGetKeyCallbackServer,
+) IGetKeyCallback {
+	wrapper := &getKeyCallbackStubWrapper{impl: impl}
+	stub := &GetKeyCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

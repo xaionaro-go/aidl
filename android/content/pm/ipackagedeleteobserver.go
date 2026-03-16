@@ -88,3 +88,43 @@ func (s *PackageDeleteObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPackageDeleteObserverServer is the server-side interface that user implementations
+// provide to NewPackageDeleteObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageDeleteObserverServer interface {
+	PackageDeleted(ctx context.Context, packageName string, returnCode int32) error
+}
+
+type packageDeleteObserverStubWrapper struct {
+	impl       IPackageDeleteObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageDeleteObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageDeleteObserverStubWrapper) PackageDeleted(
+	ctx context.Context,
+	packageName string,
+	returnCode int32,
+) error {
+	return w.impl.PackageDeleted(ctx, packageName, returnCode)
+}
+
+var _ IPackageDeleteObserver = (*packageDeleteObserverStubWrapper)(nil)
+
+// NewPackageDeleteObserverStub creates a server-side IPackageDeleteObserver wrapping the given
+// server implementation. The returned value satisfies IPackageDeleteObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageDeleteObserverStub(
+	impl IPackageDeleteObserverServer,
+) IPackageDeleteObserver {
+	wrapper := &packageDeleteObserverStubWrapper{impl: impl}
+	stub := &PackageDeleteObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

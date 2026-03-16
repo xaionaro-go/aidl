@@ -47,7 +47,7 @@ func (p *ServiceListTransferInterfaceProxy) CreateExportSession(
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceListTransferInterface)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceListTransferInterface, "createExportSession")
 	if _err != nil {
@@ -79,7 +79,7 @@ func (p *ServiceListTransferInterfaceProxy) CreateImportSession(
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceListTransferInterface)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceListTransferInterface, "createImportSession")
 	if _err != nil {
@@ -111,7 +111,7 @@ func (p *ServiceListTransferInterfaceProxy) CreateSetChannelListSession(
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceListTransferInterface)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceListTransferInterface, "createSetChannelListSession")
 	if _err != nil {
@@ -204,4 +204,59 @@ func (s *ServiceListTransferInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IServiceListTransferInterfaceServer is the server-side interface that user implementations
+// provide to NewServiceListTransferInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListTransferInterfaceServer interface {
+	CreateExportSession(ctx context.Context, listener IServiceListExportListener) (binder.IBinder, error)
+	CreateImportSession(ctx context.Context, listener IServiceListImportListener) (binder.IBinder, error)
+	CreateSetChannelListSession(ctx context.Context, listener IServiceListSetChannelListListener) (binder.IBinder, error)
+}
+
+type serviceListTransferInterfaceStubWrapper struct {
+	impl       IServiceListTransferInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListTransferInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListTransferInterfaceStubWrapper) CreateExportSession(
+	ctx context.Context,
+	listener IServiceListExportListener,
+) (binder.IBinder, error) {
+	return w.impl.CreateExportSession(ctx, listener)
+}
+
+func (w *serviceListTransferInterfaceStubWrapper) CreateImportSession(
+	ctx context.Context,
+	listener IServiceListImportListener,
+) (binder.IBinder, error) {
+	return w.impl.CreateImportSession(ctx, listener)
+}
+
+func (w *serviceListTransferInterfaceStubWrapper) CreateSetChannelListSession(
+	ctx context.Context,
+	listener IServiceListSetChannelListListener,
+) (binder.IBinder, error) {
+	return w.impl.CreateSetChannelListSession(ctx, listener)
+}
+
+var _ IServiceListTransferInterface = (*serviceListTransferInterfaceStubWrapper)(nil)
+
+// NewServiceListTransferInterfaceStub creates a server-side IServiceListTransferInterface wrapping the given
+// server implementation. The returned value satisfies IServiceListTransferInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListTransferInterfaceStub(
+	impl IServiceListTransferInterfaceServer,
+) IServiceListTransferInterface {
+	wrapper := &serviceListTransferInterfaceStubWrapper{impl: impl}
+	stub := &ServiceListTransferInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

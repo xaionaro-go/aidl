@@ -154,3 +154,51 @@ func (s *PowerStatsServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPowerStatsServiceServer is the server-side interface that user implementations
+// provide to NewPowerStatsServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPowerStatsServiceServer interface {
+	GetSupportedPowerMonitors(ctx context.Context, resultReceiver ResultReceiver) error
+	GetPowerMonitorReadings(ctx context.Context, powerMonitorIndices []int32, resultReceiver ResultReceiver) error
+}
+
+type powerStatsServiceStubWrapper struct {
+	impl       IPowerStatsServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *powerStatsServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *powerStatsServiceStubWrapper) GetSupportedPowerMonitors(
+	ctx context.Context,
+	resultReceiver ResultReceiver,
+) error {
+	return w.impl.GetSupportedPowerMonitors(ctx, resultReceiver)
+}
+
+func (w *powerStatsServiceStubWrapper) GetPowerMonitorReadings(
+	ctx context.Context,
+	powerMonitorIndices []int32,
+	resultReceiver ResultReceiver,
+) error {
+	return w.impl.GetPowerMonitorReadings(ctx, powerMonitorIndices, resultReceiver)
+}
+
+var _ IPowerStatsService = (*powerStatsServiceStubWrapper)(nil)
+
+// NewPowerStatsServiceStub creates a server-side IPowerStatsService wrapping the given
+// server implementation. The returned value satisfies IPowerStatsService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPowerStatsServiceStub(
+	impl IPowerStatsServiceServer,
+) IPowerStatsService {
+	wrapper := &powerStatsServiceStubWrapper{impl: impl}
+	stub := &PowerStatsServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

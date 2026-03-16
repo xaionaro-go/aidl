@@ -18,7 +18,11 @@ func (s *KeyEntryResponse) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.ISecurityLevel.AsBinder().Handle())
+	if s.ISecurityLevel == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.ISecurityLevel.AsBinder().Handle())
+	}
 	if _err := s.Metadata.MarshalParcel(p); _err != nil {
 		return _err
 	}

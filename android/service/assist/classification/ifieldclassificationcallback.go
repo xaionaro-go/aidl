@@ -51,7 +51,7 @@ func (p *FieldClassificationCallbackProxy) OnCancellable(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFieldClassificationCallback)
-	_data.WriteStrongBinder(cancellation.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellation.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationCallback, "onCancellable")
 	if _err != nil {
@@ -270,4 +270,72 @@ func (s *FieldClassificationCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFieldClassificationCallbackServer is the server-side interface that user implementations
+// provide to NewFieldClassificationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFieldClassificationCallbackServer interface {
+	OnCancellable(ctx context.Context, cancellation ondeviceintelligence.ICancellationSignal) error
+	OnSuccess(ctx context.Context, response FieldClassificationResponse) error
+	OnFailure(ctx context.Context) error
+	IsCompleted(ctx context.Context) (bool, error)
+	Cancel(ctx context.Context) error
+}
+
+type fieldClassificationCallbackStubWrapper struct {
+	impl       IFieldClassificationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fieldClassificationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fieldClassificationCallbackStubWrapper) OnCancellable(
+	ctx context.Context,
+	cancellation ondeviceintelligence.ICancellationSignal,
+) error {
+	return w.impl.OnCancellable(ctx, cancellation)
+}
+
+func (w *fieldClassificationCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	response FieldClassificationResponse,
+) error {
+	return w.impl.OnSuccess(ctx, response)
+}
+
+func (w *fieldClassificationCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+) error {
+	return w.impl.OnFailure(ctx)
+}
+
+func (w *fieldClassificationCallbackStubWrapper) IsCompleted(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCompleted(ctx)
+}
+
+func (w *fieldClassificationCallbackStubWrapper) Cancel(
+	ctx context.Context,
+) error {
+	return w.impl.Cancel(ctx)
+}
+
+var _ IFieldClassificationCallback = (*fieldClassificationCallbackStubWrapper)(nil)
+
+// NewFieldClassificationCallbackStub creates a server-side IFieldClassificationCallback wrapping the given
+// server implementation. The returned value satisfies IFieldClassificationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFieldClassificationCallbackStub(
+	impl IFieldClassificationCallbackServer,
+) IFieldClassificationCallback {
+	wrapper := &fieldClassificationCallbackStubWrapper{impl: impl}
+	stub := &FieldClassificationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

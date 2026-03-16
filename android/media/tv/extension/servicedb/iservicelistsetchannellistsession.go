@@ -178,3 +178,51 @@ func (s *ServiceListSetChannelListSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IServiceListSetChannelListSessionServer is the server-side interface that user implementations
+// provide to NewServiceListSetChannelListSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListSetChannelListSessionServer interface {
+	SetChannelList(ctx context.Context, channelsInfo []os.Bundle, ServiceListInfoBundle os.Bundle, optType int32) (int32, error)
+	Release(ctx context.Context) (int32, error)
+}
+
+type serviceListSetChannelListSessionStubWrapper struct {
+	impl       IServiceListSetChannelListSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListSetChannelListSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListSetChannelListSessionStubWrapper) SetChannelList(
+	ctx context.Context,
+	channelsInfo []os.Bundle,
+	ServiceListInfoBundle os.Bundle,
+	optType int32,
+) (int32, error) {
+	return w.impl.SetChannelList(ctx, channelsInfo, ServiceListInfoBundle, optType)
+}
+
+func (w *serviceListSetChannelListSessionStubWrapper) Release(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Release(ctx)
+}
+
+var _ IServiceListSetChannelListSession = (*serviceListSetChannelListSessionStubWrapper)(nil)
+
+// NewServiceListSetChannelListSessionStub creates a server-side IServiceListSetChannelListSession wrapping the given
+// server implementation. The returned value satisfies IServiceListSetChannelListSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListSetChannelListSessionStub(
+	impl IServiceListSetChannelListSessionServer,
+) IServiceListSetChannelListSession {
+	wrapper := &serviceListSetChannelListSessionStubWrapper{impl: impl}
+	stub := &ServiceListSetChannelListSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -100,7 +100,7 @@ func (p *SensorManagerProxy) CreateEventQueue(
 	var _result IEventQueue
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISensorManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISensorManager, "createEventQueue")
 	if _err != nil {
@@ -354,4 +354,76 @@ func (s *SensorManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISensorManagerServer is the server-side interface that user implementations
+// provide to NewSensorManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISensorManagerServer interface {
+	CreateAshmemDirectChannel(ctx context.Context, mem common.Ashmem, size int64) (IDirectReportChannel, error)
+	CreateEventQueue(ctx context.Context, callback IEventQueueCallback) (IEventQueue, error)
+	CreateGrallocDirectChannel(ctx context.Context, buffer int32, size int64) (IDirectReportChannel, error)
+	GetDefaultSensor(ctx context.Context, type_ sensors.SensorType) (sensors.SensorInfo, error)
+	GetSensorList(ctx context.Context) ([]sensors.SensorInfo, error)
+}
+
+type sensorManagerStubWrapper struct {
+	impl       ISensorManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sensorManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sensorManagerStubWrapper) CreateAshmemDirectChannel(
+	ctx context.Context,
+	mem common.Ashmem,
+	size int64,
+) (IDirectReportChannel, error) {
+	return w.impl.CreateAshmemDirectChannel(ctx, mem, size)
+}
+
+func (w *sensorManagerStubWrapper) CreateEventQueue(
+	ctx context.Context,
+	callback IEventQueueCallback,
+) (IEventQueue, error) {
+	return w.impl.CreateEventQueue(ctx, callback)
+}
+
+func (w *sensorManagerStubWrapper) CreateGrallocDirectChannel(
+	ctx context.Context,
+	buffer int32,
+	size int64,
+) (IDirectReportChannel, error) {
+	return w.impl.CreateGrallocDirectChannel(ctx, buffer, size)
+}
+
+func (w *sensorManagerStubWrapper) GetDefaultSensor(
+	ctx context.Context,
+	type_ sensors.SensorType,
+) (sensors.SensorInfo, error) {
+	return w.impl.GetDefaultSensor(ctx, type_)
+}
+
+func (w *sensorManagerStubWrapper) GetSensorList(
+	ctx context.Context,
+) ([]sensors.SensorInfo, error) {
+	return w.impl.GetSensorList(ctx)
+}
+
+var _ ISensorManager = (*sensorManagerStubWrapper)(nil)
+
+// NewSensorManagerStub creates a server-side ISensorManager wrapping the given
+// server implementation. The returned value satisfies ISensorManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSensorManagerStub(
+	impl ISensorManagerServer,
+) ISensorManager {
+	wrapper := &sensorManagerStubWrapper{impl: impl}
+	stub := &SensorManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

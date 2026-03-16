@@ -99,3 +99,43 @@ func (s *DeviceVolumeBehaviorDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDeviceVolumeBehaviorDispatcherServer is the server-side interface that user implementations
+// provide to NewDeviceVolumeBehaviorDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceVolumeBehaviorDispatcherServer interface {
+	DispatchDeviceVolumeBehaviorChanged(ctx context.Context, device AudioDeviceAttributes, deviceVolumeBehavior int32) error
+}
+
+type deviceVolumeBehaviorDispatcherStubWrapper struct {
+	impl       IDeviceVolumeBehaviorDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceVolumeBehaviorDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceVolumeBehaviorDispatcherStubWrapper) DispatchDeviceVolumeBehaviorChanged(
+	ctx context.Context,
+	device AudioDeviceAttributes,
+	deviceVolumeBehavior int32,
+) error {
+	return w.impl.DispatchDeviceVolumeBehaviorChanged(ctx, device, deviceVolumeBehavior)
+}
+
+var _ IDeviceVolumeBehaviorDispatcher = (*deviceVolumeBehaviorDispatcherStubWrapper)(nil)
+
+// NewDeviceVolumeBehaviorDispatcherStub creates a server-side IDeviceVolumeBehaviorDispatcher wrapping the given
+// server implementation. The returned value satisfies IDeviceVolumeBehaviorDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceVolumeBehaviorDispatcherStub(
+	impl IDeviceVolumeBehaviorDispatcherServer,
+) IDeviceVolumeBehaviorDispatcher {
+	wrapper := &deviceVolumeBehaviorDispatcherStubWrapper{impl: impl}
+	stub := &DeviceVolumeBehaviorDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

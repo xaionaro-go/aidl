@@ -136,3 +136,52 @@ func (s *SessionManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISessionManagerServer is the server-side interface that user implementations
+// provide to NewSessionManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISessionManagerServer interface {
+	AssociateSessionToLayers(ctx context.Context, sessionId int32, ownerUid int32, layers []binder.IBinder) error
+	TrackedSessionsDied(ctx context.Context, sessionId []int32) error
+}
+
+type sessionManagerStubWrapper struct {
+	impl       ISessionManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sessionManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sessionManagerStubWrapper) AssociateSessionToLayers(
+	ctx context.Context,
+	sessionId int32,
+	ownerUid int32,
+	layers []binder.IBinder,
+) error {
+	return w.impl.AssociateSessionToLayers(ctx, sessionId, ownerUid, layers)
+}
+
+func (w *sessionManagerStubWrapper) TrackedSessionsDied(
+	ctx context.Context,
+	sessionId []int32,
+) error {
+	return w.impl.TrackedSessionsDied(ctx, sessionId)
+}
+
+var _ ISessionManager = (*sessionManagerStubWrapper)(nil)
+
+// NewSessionManagerStub creates a server-side ISessionManager wrapping the given
+// server implementation. The returned value satisfies ISessionManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSessionManagerStub(
+	impl ISessionManagerServer,
+) ISessionManager {
+	wrapper := &sessionManagerStubWrapper{impl: impl}
+	stub := &SessionManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

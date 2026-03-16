@@ -203,3 +203,56 @@ func (s *HdcpAuthControlStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdcpAuthControlServer is the server-side interface that user implementations
+// provide to NewHdcpAuthControlStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdcpAuthControlServer interface {
+	GetHdcpLevels(ctx context.Context) (drm.HdcpLevels, error)
+	TrySetHdcpLevel(ctx context.Context, level drm.HdcpLevel) error
+	GetPendingHdcpLevel(ctx context.Context) (hdcpIHdcpAuthControl.PendingHdcpLevelResult, error)
+}
+
+type hdcpAuthControlStubWrapper struct {
+	impl       IHdcpAuthControlServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdcpAuthControlStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdcpAuthControlStubWrapper) GetHdcpLevels(
+	ctx context.Context,
+) (drm.HdcpLevels, error) {
+	return w.impl.GetHdcpLevels(ctx)
+}
+
+func (w *hdcpAuthControlStubWrapper) TrySetHdcpLevel(
+	ctx context.Context,
+	level drm.HdcpLevel,
+) error {
+	return w.impl.TrySetHdcpLevel(ctx, level)
+}
+
+func (w *hdcpAuthControlStubWrapper) GetPendingHdcpLevel(
+	ctx context.Context,
+) (hdcpIHdcpAuthControl.PendingHdcpLevelResult, error) {
+	return w.impl.GetPendingHdcpLevel(ctx)
+}
+
+var _ IHdcpAuthControl = (*hdcpAuthControlStubWrapper)(nil)
+
+// NewHdcpAuthControlStub creates a server-side IHdcpAuthControl wrapping the given
+// server implementation. The returned value satisfies IHdcpAuthControl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdcpAuthControlStub(
+	impl IHdcpAuthControlServer,
+) IHdcpAuthControl {
+	wrapper := &hdcpAuthControlStubWrapper{impl: impl}
+	stub := &HdcpAuthControlStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

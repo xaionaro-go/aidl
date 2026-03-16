@@ -44,7 +44,7 @@ func (p *ImsMultiEndpointProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMultiEndpoint)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMultiEndpoint, "setListener")
 	if _err != nil {
@@ -132,4 +132,50 @@ func (s *ImsMultiEndpointStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsMultiEndpointServer is the server-side interface that user implementations
+// provide to NewImsMultiEndpointStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsMultiEndpointServer interface {
+	SetListener(ctx context.Context, listener IImsExternalCallStateListener) error
+	RequestImsExternalCallStateInfo(ctx context.Context) error
+}
+
+type imsMultiEndpointStubWrapper struct {
+	impl       IImsMultiEndpointServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsMultiEndpointStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsMultiEndpointStubWrapper) SetListener(
+	ctx context.Context,
+	listener IImsExternalCallStateListener,
+) error {
+	return w.impl.SetListener(ctx, listener)
+}
+
+func (w *imsMultiEndpointStubWrapper) RequestImsExternalCallStateInfo(
+	ctx context.Context,
+) error {
+	return w.impl.RequestImsExternalCallStateInfo(ctx)
+}
+
+var _ IImsMultiEndpoint = (*imsMultiEndpointStubWrapper)(nil)
+
+// NewImsMultiEndpointStub creates a server-side IImsMultiEndpoint wrapping the given
+// server implementation. The returned value satisfies IImsMultiEndpoint
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsMultiEndpointStub(
+	impl IImsMultiEndpointServer,
+) IImsMultiEndpoint {
+	wrapper := &imsMultiEndpointStubWrapper{impl: impl}
+	stub := &ImsMultiEndpointStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -88,3 +88,42 @@ func (s *SatelliteDisallowedReasonsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteDisallowedReasonsCallbackServer is the server-side interface that user implementations
+// provide to NewSatelliteDisallowedReasonsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteDisallowedReasonsCallbackServer interface {
+	OnSatelliteDisallowedReasonsChanged(ctx context.Context, disallowedReasons []int32) error
+}
+
+type satelliteDisallowedReasonsCallbackStubWrapper struct {
+	impl       ISatelliteDisallowedReasonsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteDisallowedReasonsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteDisallowedReasonsCallbackStubWrapper) OnSatelliteDisallowedReasonsChanged(
+	ctx context.Context,
+	disallowedReasons []int32,
+) error {
+	return w.impl.OnSatelliteDisallowedReasonsChanged(ctx, disallowedReasons)
+}
+
+var _ ISatelliteDisallowedReasonsCallback = (*satelliteDisallowedReasonsCallbackStubWrapper)(nil)
+
+// NewSatelliteDisallowedReasonsCallbackStub creates a server-side ISatelliteDisallowedReasonsCallback wrapping the given
+// server implementation. The returned value satisfies ISatelliteDisallowedReasonsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteDisallowedReasonsCallbackStub(
+	impl ISatelliteDisallowedReasonsCallbackServer,
+) ISatelliteDisallowedReasonsCallback {
+	wrapper := &satelliteDisallowedReasonsCallbackStubWrapper{impl: impl}
+	stub := &SatelliteDisallowedReasonsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

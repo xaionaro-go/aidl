@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -46,7 +45,7 @@ type IMediaProjectionManager interface {
 	NotifyActiveProjectionCapturedContentVisibilityChanged(ctx context.Context, isVisible bool) error
 	AddCallback(ctx context.Context, callback IMediaProjectionWatcherCallback) (MediaProjectionInfo, error)
 	RemoveCallback(ctx context.Context, callback IMediaProjectionWatcherCallback) error
-	SetContentRecordingSession(ctx context.Context, incomingSession view.ContentRecordingSession, projection IMediaProjection) (bool, error)
+	SetContentRecordingSession(ctx context.Context, incomingSession interface{}, projection IMediaProjection) (bool, error)
 	SetUserReviewGrantedConsentResult(ctx context.Context, consentResult ReviewGrantedConsentResult, projection *IMediaProjection) error
 	NotifyPermissionRequestInitiated(ctx context.Context, hostProcessUid int32, sessionCreationSource int32) error
 	NotifyPermissionRequestDisplayed(ctx context.Context, hostProcessUid int32) error
@@ -191,7 +190,7 @@ func (p *MediaProjectionManagerProxy) IsCurrentProjection(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjectionManager)
-	_data.WriteStrongBinder(projection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, projection.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjectionManager, "isCurrentProjection")
 	if _err != nil {
@@ -221,7 +220,7 @@ func (p *MediaProjectionManagerProxy) RequestConsentForInvalidProjection(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjectionManager)
-	_data.WriteStrongBinder(projection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, projection.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjectionManager, "requestConsentForInvalidProjection")
 	if _err != nil {
@@ -334,7 +333,7 @@ func (p *MediaProjectionManagerProxy) AddCallback(
 	var _result MediaProjectionInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjectionManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjectionManager, "addCallback")
 	if _err != nil {
@@ -369,7 +368,7 @@ func (p *MediaProjectionManagerProxy) RemoveCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjectionManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjectionManager, "removeCallback")
 	if _err != nil {
@@ -391,17 +390,13 @@ func (p *MediaProjectionManagerProxy) RemoveCallback(
 
 func (p *MediaProjectionManagerProxy) SetContentRecordingSession(
 	ctx context.Context,
-	incomingSession view.ContentRecordingSession,
+	incomingSession interface{},
 	projection IMediaProjection,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjectionManager)
-	_data.WriteInt32(1)
-	if _err := incomingSession.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteStrongBinder(projection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, projection.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjectionManager, "setContentRecordingSession")
 	if _err != nil {
@@ -781,18 +776,7 @@ func (s *MediaProjectionManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_incomingSession view.ContentRecordingSession
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_incomingSession.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_incomingSession interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_projection IMediaProjection
 		_ = _arg_projection
@@ -922,4 +906,191 @@ func (s *MediaProjectionManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaProjectionManagerServer is the server-side interface that user implementations
+// provide to NewMediaProjectionManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaProjectionManagerServer interface {
+	HasProjectionPermission(ctx context.Context, processUid int32, packageName string) (bool, error)
+	CreateProjection(ctx context.Context, processUid int32, packageName string, type_ int32, permanentGrant bool, displayId int32) (IMediaProjection, error)
+	GetProjection(ctx context.Context, processUid int32, packageName string) (IMediaProjection, error)
+	IsCurrentProjection(ctx context.Context, projection IMediaProjection) (bool, error)
+	RequestConsentForInvalidProjection(ctx context.Context, projection IMediaProjection) error
+	GetActiveProjectionInfo(ctx context.Context) (MediaProjectionInfo, error)
+	StopActiveProjection(ctx context.Context, stopReason StopReason) error
+	NotifyActiveProjectionCapturedContentVisibilityChanged(ctx context.Context, isVisible bool) error
+	AddCallback(ctx context.Context, callback IMediaProjectionWatcherCallback) (MediaProjectionInfo, error)
+	RemoveCallback(ctx context.Context, callback IMediaProjectionWatcherCallback) error
+	SetContentRecordingSession(ctx context.Context, incomingSession interface{}, projection IMediaProjection) (bool, error)
+	SetUserReviewGrantedConsentResult(ctx context.Context, consentResult ReviewGrantedConsentResult, projection *IMediaProjection) error
+	NotifyPermissionRequestInitiated(ctx context.Context, hostProcessUid int32, sessionCreationSource int32) error
+	NotifyPermissionRequestDisplayed(ctx context.Context, hostProcessUid int32) error
+	NotifyPermissionRequestCancelled(ctx context.Context, hostProcessUid int32) error
+	NotifyAppSelectorDisplayed(ctx context.Context, hostProcessUid int32) error
+	NotifyWindowingModeChanged(ctx context.Context, contentToRecord int32, targetProcessUid int32, windowingMode int32) error
+	NotifyCaptureBoundsChanged(ctx context.Context, contentToRecord int32, targetProcessUid int32, captureBounds graphics.Rect) error
+}
+
+type mediaProjectionManagerStubWrapper struct {
+	impl       IMediaProjectionManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaProjectionManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaProjectionManagerStubWrapper) HasProjectionPermission(
+	ctx context.Context,
+	processUid int32,
+	packageName string,
+) (bool, error) {
+	return w.impl.HasProjectionPermission(ctx, processUid, packageName)
+}
+
+func (w *mediaProjectionManagerStubWrapper) CreateProjection(
+	ctx context.Context,
+	processUid int32,
+	packageName string,
+	type_ int32,
+	permanentGrant bool,
+	displayId int32,
+) (IMediaProjection, error) {
+	return w.impl.CreateProjection(ctx, processUid, packageName, type_, permanentGrant, displayId)
+}
+
+func (w *mediaProjectionManagerStubWrapper) GetProjection(
+	ctx context.Context,
+	processUid int32,
+	packageName string,
+) (IMediaProjection, error) {
+	return w.impl.GetProjection(ctx, processUid, packageName)
+}
+
+func (w *mediaProjectionManagerStubWrapper) IsCurrentProjection(
+	ctx context.Context,
+	projection IMediaProjection,
+) (bool, error) {
+	return w.impl.IsCurrentProjection(ctx, projection)
+}
+
+func (w *mediaProjectionManagerStubWrapper) RequestConsentForInvalidProjection(
+	ctx context.Context,
+	projection IMediaProjection,
+) error {
+	return w.impl.RequestConsentForInvalidProjection(ctx, projection)
+}
+
+func (w *mediaProjectionManagerStubWrapper) GetActiveProjectionInfo(
+	ctx context.Context,
+) (MediaProjectionInfo, error) {
+	return w.impl.GetActiveProjectionInfo(ctx)
+}
+
+func (w *mediaProjectionManagerStubWrapper) StopActiveProjection(
+	ctx context.Context,
+	stopReason StopReason,
+) error {
+	return w.impl.StopActiveProjection(ctx, stopReason)
+}
+
+func (w *mediaProjectionManagerStubWrapper) NotifyActiveProjectionCapturedContentVisibilityChanged(
+	ctx context.Context,
+	isVisible bool,
+) error {
+	return w.impl.NotifyActiveProjectionCapturedContentVisibilityChanged(ctx, isVisible)
+}
+
+func (w *mediaProjectionManagerStubWrapper) AddCallback(
+	ctx context.Context,
+	callback IMediaProjectionWatcherCallback,
+) (MediaProjectionInfo, error) {
+	return w.impl.AddCallback(ctx, callback)
+}
+
+func (w *mediaProjectionManagerStubWrapper) RemoveCallback(
+	ctx context.Context,
+	callback IMediaProjectionWatcherCallback,
+) error {
+	return w.impl.RemoveCallback(ctx, callback)
+}
+
+func (w *mediaProjectionManagerStubWrapper) SetContentRecordingSession(
+	ctx context.Context,
+	incomingSession interface{},
+	projection IMediaProjection,
+) (bool, error) {
+	return w.impl.SetContentRecordingSession(ctx, incomingSession, projection)
+}
+
+func (w *mediaProjectionManagerStubWrapper) SetUserReviewGrantedConsentResult(
+	ctx context.Context,
+	consentResult ReviewGrantedConsentResult,
+	projection *IMediaProjection,
+) error {
+	return w.impl.SetUserReviewGrantedConsentResult(ctx, consentResult, projection)
+}
+
+func (w *mediaProjectionManagerStubWrapper) NotifyPermissionRequestInitiated(
+	ctx context.Context,
+	hostProcessUid int32,
+	sessionCreationSource int32,
+) error {
+	return w.impl.NotifyPermissionRequestInitiated(ctx, hostProcessUid, sessionCreationSource)
+}
+
+func (w *mediaProjectionManagerStubWrapper) NotifyPermissionRequestDisplayed(
+	ctx context.Context,
+	hostProcessUid int32,
+) error {
+	return w.impl.NotifyPermissionRequestDisplayed(ctx, hostProcessUid)
+}
+
+func (w *mediaProjectionManagerStubWrapper) NotifyPermissionRequestCancelled(
+	ctx context.Context,
+	hostProcessUid int32,
+) error {
+	return w.impl.NotifyPermissionRequestCancelled(ctx, hostProcessUid)
+}
+
+func (w *mediaProjectionManagerStubWrapper) NotifyAppSelectorDisplayed(
+	ctx context.Context,
+	hostProcessUid int32,
+) error {
+	return w.impl.NotifyAppSelectorDisplayed(ctx, hostProcessUid)
+}
+
+func (w *mediaProjectionManagerStubWrapper) NotifyWindowingModeChanged(
+	ctx context.Context,
+	contentToRecord int32,
+	targetProcessUid int32,
+	windowingMode int32,
+) error {
+	return w.impl.NotifyWindowingModeChanged(ctx, contentToRecord, targetProcessUid, windowingMode)
+}
+
+func (w *mediaProjectionManagerStubWrapper) NotifyCaptureBoundsChanged(
+	ctx context.Context,
+	contentToRecord int32,
+	targetProcessUid int32,
+	captureBounds graphics.Rect,
+) error {
+	return w.impl.NotifyCaptureBoundsChanged(ctx, contentToRecord, targetProcessUid, captureBounds)
+}
+
+var _ IMediaProjectionManager = (*mediaProjectionManagerStubWrapper)(nil)
+
+// NewMediaProjectionManagerStub creates a server-side IMediaProjectionManager wrapping the given
+// server implementation. The returned value satisfies IMediaProjectionManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaProjectionManagerStub(
+	impl IMediaProjectionManagerServer,
+) IMediaProjectionManager {
+	wrapper := &mediaProjectionManagerStubWrapper{impl: impl}
+	stub := &MediaProjectionManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -3,8 +3,9 @@ package session
 import (
 	"context"
 	"fmt"
+	app "github.com/xaionaro-go/binder/android/app"
+	pm "github.com/xaionaro-go/binder/android/content/pm"
 	net "github.com/xaionaro-go/binder/android/net"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -56,13 +57,13 @@ const (
 type ISessionController interface {
 	AsBinder() binder.IBinder
 	SendCommand(ctx context.Context, packageName string, command string, args interface{}, cb interface{}) error
-	SendMediaButton(ctx context.Context, packageName string, mediaButton view.KeyEvent) (bool, error)
+	SendMediaButton(ctx context.Context, packageName string, mediaButton interface{}) (bool, error)
 	RegisterCallback(ctx context.Context, packageName string, cb ISessionControllerCallback) error
 	UnregisterCallback(ctx context.Context, cb ISessionControllerCallback) error
 	GetPackageName(ctx context.Context) (string, error)
 	GetTag(ctx context.Context) (string, error)
 	GetSessionInfo(ctx context.Context) (interface{}, error)
-	GetLaunchPendingIntent(ctx context.Context) (interface{}, error)
+	GetLaunchPendingIntent(ctx context.Context) (app.PendingIntent, error)
 	GetFlags(ctx context.Context) (int64, error)
 	GetVolumeAttributes(ctx context.Context) (MediaControllerPlaybackInfo, error)
 	AdjustVolume(ctx context.Context, packageName string, direction int32, flags int32) error
@@ -88,7 +89,7 @@ type ISessionController interface {
 	SendCustomAction(ctx context.Context, packageName string, action string, args interface{}) error
 	GetMetadata(ctx context.Context) (interface{}, error)
 	GetPlaybackState(ctx context.Context) (PlaybackState, error)
-	GetQueue(ctx context.Context) (interface{}, error)
+	GetQueue(ctx context.Context) (pm.ParceledListSlice, error)
 	GetQueueTitle(ctx context.Context) (interface{}, error)
 	GetExtras(ctx context.Context) (interface{}, error)
 	GetRatingType(ctx context.Context) (int32, error)
@@ -143,16 +144,12 @@ func (p *SessionControllerProxy) SendCommand(
 func (p *SessionControllerProxy) SendMediaButton(
 	ctx context.Context,
 	packageName string,
-	mediaButton view.KeyEvent,
+	mediaButton interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionController)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(1)
-	if _err := mediaButton.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionController, "sendMediaButton")
 	if _err != nil {
@@ -184,7 +181,7 @@ func (p *SessionControllerProxy) RegisterCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionController)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionController, "registerCallback")
 	if _err != nil {
@@ -210,7 +207,7 @@ func (p *SessionControllerProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionController)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISessionController, "unregisterCallback")
 	if _err != nil {
@@ -315,8 +312,8 @@ func (p *SessionControllerProxy) GetSessionInfo(
 
 func (p *SessionControllerProxy) GetLaunchPendingIntent(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (app.PendingIntent, error) {
+	var _result app.PendingIntent
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionController)
 
@@ -335,6 +332,15 @@ func (p *SessionControllerProxy) GetLaunchPendingIntent(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -1054,8 +1060,8 @@ func (p *SessionControllerProxy) GetPlaybackState(
 
 func (p *SessionControllerProxy) GetQueue(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (pm.ParceledListSlice, error) {
+	var _result pm.ParceledListSlice
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISessionController)
 
@@ -1074,6 +1080,15 @@ func (p *SessionControllerProxy) GetQueue(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -1200,18 +1215,7 @@ func (s *SessionControllerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_mediaButton view.KeyEvent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_mediaButton.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_mediaButton interface{}
 		_result, _err := s.Impl.SendMediaButton(ctx, _arg_packageName, _arg_mediaButton)
 		_reply := parcel.New()
 		if _err != nil {
@@ -1305,7 +1309,10 @@ func (s *SessionControllerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionISessionControllerGetFlags:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -1798,7 +1805,10 @@ func (s *SessionControllerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionISessionControllerGetQueueTitle:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -1842,4 +1852,346 @@ func (s *SessionControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISessionControllerServer is the server-side interface that user implementations
+// provide to NewSessionControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISessionControllerServer interface {
+	SendCommand(ctx context.Context, packageName string, command string, args interface{}, cb interface{}) error
+	SendMediaButton(ctx context.Context, packageName string, mediaButton interface{}) (bool, error)
+	RegisterCallback(ctx context.Context, packageName string, cb ISessionControllerCallback) error
+	UnregisterCallback(ctx context.Context, cb ISessionControllerCallback) error
+	GetPackageName(ctx context.Context) (string, error)
+	GetTag(ctx context.Context) (string, error)
+	GetSessionInfo(ctx context.Context) (interface{}, error)
+	GetLaunchPendingIntent(ctx context.Context) (app.PendingIntent, error)
+	GetFlags(ctx context.Context) (int64, error)
+	GetVolumeAttributes(ctx context.Context) (MediaControllerPlaybackInfo, error)
+	AdjustVolume(ctx context.Context, packageName string, direction int32, flags int32) error
+	SetVolumeTo(ctx context.Context, packageName string, value int32, flags int32) error
+	Prepare(ctx context.Context, packageName string) error
+	PrepareFromMediaId(ctx context.Context, packageName string, mediaId string, extras interface{}) error
+	PrepareFromSearch(ctx context.Context, packageName string, string_ string, extras interface{}) error
+	PrepareFromUri(ctx context.Context, packageName string, uri net.Uri, extras interface{}) error
+	Play(ctx context.Context, packageName string) error
+	PlayFromMediaId(ctx context.Context, packageName string, mediaId string, extras interface{}) error
+	PlayFromSearch(ctx context.Context, packageName string, string_ string, extras interface{}) error
+	PlayFromUri(ctx context.Context, packageName string, uri net.Uri, extras interface{}) error
+	SkipToQueueItem(ctx context.Context, packageName string, id int64) error
+	Pause(ctx context.Context, packageName string) error
+	Stop(ctx context.Context, packageName string) error
+	Next(ctx context.Context, packageName string) error
+	Previous(ctx context.Context, packageName string) error
+	FastForward(ctx context.Context, packageName string) error
+	Rewind(ctx context.Context, packageName string) error
+	SeekTo(ctx context.Context, packageName string, pos int64) error
+	Rate(ctx context.Context, packageName string, rating interface{}) error
+	SetPlaybackSpeed(ctx context.Context, packageName string, speed float32) error
+	SendCustomAction(ctx context.Context, packageName string, action string, args interface{}) error
+	GetMetadata(ctx context.Context) (interface{}, error)
+	GetPlaybackState(ctx context.Context) (PlaybackState, error)
+	GetQueue(ctx context.Context) (pm.ParceledListSlice, error)
+	GetQueueTitle(ctx context.Context) (interface{}, error)
+	GetExtras(ctx context.Context) (interface{}, error)
+	GetRatingType(ctx context.Context) (int32, error)
+}
+
+type sessionControllerStubWrapper struct {
+	impl       ISessionControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sessionControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sessionControllerStubWrapper) SendCommand(
+	ctx context.Context,
+	packageName string,
+	command string,
+	args interface{},
+	cb interface{},
+) error {
+	return w.impl.SendCommand(ctx, packageName, command, args, cb)
+}
+
+func (w *sessionControllerStubWrapper) SendMediaButton(
+	ctx context.Context,
+	packageName string,
+	mediaButton interface{},
+) (bool, error) {
+	return w.impl.SendMediaButton(ctx, packageName, mediaButton)
+}
+
+func (w *sessionControllerStubWrapper) RegisterCallback(
+	ctx context.Context,
+	packageName string,
+	cb ISessionControllerCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, packageName, cb)
+}
+
+func (w *sessionControllerStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	cb ISessionControllerCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, cb)
+}
+
+func (w *sessionControllerStubWrapper) GetPackageName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetPackageName(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetTag(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetTag(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetSessionInfo(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetSessionInfo(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetLaunchPendingIntent(
+	ctx context.Context,
+) (app.PendingIntent, error) {
+	return w.impl.GetLaunchPendingIntent(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetFlags(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetFlags(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetVolumeAttributes(
+	ctx context.Context,
+) (MediaControllerPlaybackInfo, error) {
+	return w.impl.GetVolumeAttributes(ctx)
+}
+
+func (w *sessionControllerStubWrapper) AdjustVolume(
+	ctx context.Context,
+	packageName string,
+	direction int32,
+	flags int32,
+) error {
+	return w.impl.AdjustVolume(ctx, packageName, direction, flags)
+}
+
+func (w *sessionControllerStubWrapper) SetVolumeTo(
+	ctx context.Context,
+	packageName string,
+	value int32,
+	flags int32,
+) error {
+	return w.impl.SetVolumeTo(ctx, packageName, value, flags)
+}
+
+func (w *sessionControllerStubWrapper) Prepare(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Prepare(ctx, packageName)
+}
+
+func (w *sessionControllerStubWrapper) PrepareFromMediaId(
+	ctx context.Context,
+	packageName string,
+	mediaId string,
+	extras interface{},
+) error {
+	return w.impl.PrepareFromMediaId(ctx, packageName, mediaId, extras)
+}
+
+func (w *sessionControllerStubWrapper) PrepareFromSearch(
+	ctx context.Context,
+	packageName string,
+	string_ string,
+	extras interface{},
+) error {
+	return w.impl.PrepareFromSearch(ctx, packageName, string_, extras)
+}
+
+func (w *sessionControllerStubWrapper) PrepareFromUri(
+	ctx context.Context,
+	packageName string,
+	uri net.Uri,
+	extras interface{},
+) error {
+	return w.impl.PrepareFromUri(ctx, packageName, uri, extras)
+}
+
+func (w *sessionControllerStubWrapper) Play(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Play(ctx, packageName)
+}
+
+func (w *sessionControllerStubWrapper) PlayFromMediaId(
+	ctx context.Context,
+	packageName string,
+	mediaId string,
+	extras interface{},
+) error {
+	return w.impl.PlayFromMediaId(ctx, packageName, mediaId, extras)
+}
+
+func (w *sessionControllerStubWrapper) PlayFromSearch(
+	ctx context.Context,
+	packageName string,
+	string_ string,
+	extras interface{},
+) error {
+	return w.impl.PlayFromSearch(ctx, packageName, string_, extras)
+}
+
+func (w *sessionControllerStubWrapper) PlayFromUri(
+	ctx context.Context,
+	packageName string,
+	uri net.Uri,
+	extras interface{},
+) error {
+	return w.impl.PlayFromUri(ctx, packageName, uri, extras)
+}
+
+func (w *sessionControllerStubWrapper) SkipToQueueItem(
+	ctx context.Context,
+	packageName string,
+	id int64,
+) error {
+	return w.impl.SkipToQueueItem(ctx, packageName, id)
+}
+
+func (w *sessionControllerStubWrapper) Pause(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Pause(ctx, packageName)
+}
+
+func (w *sessionControllerStubWrapper) Stop(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Stop(ctx, packageName)
+}
+
+func (w *sessionControllerStubWrapper) Next(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Next(ctx, packageName)
+}
+
+func (w *sessionControllerStubWrapper) Previous(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Previous(ctx, packageName)
+}
+
+func (w *sessionControllerStubWrapper) FastForward(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.FastForward(ctx, packageName)
+}
+
+func (w *sessionControllerStubWrapper) Rewind(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Rewind(ctx, packageName)
+}
+
+func (w *sessionControllerStubWrapper) SeekTo(
+	ctx context.Context,
+	packageName string,
+	pos int64,
+) error {
+	return w.impl.SeekTo(ctx, packageName, pos)
+}
+
+func (w *sessionControllerStubWrapper) Rate(
+	ctx context.Context,
+	packageName string,
+	rating interface{},
+) error {
+	return w.impl.Rate(ctx, packageName, rating)
+}
+
+func (w *sessionControllerStubWrapper) SetPlaybackSpeed(
+	ctx context.Context,
+	packageName string,
+	speed float32,
+) error {
+	return w.impl.SetPlaybackSpeed(ctx, packageName, speed)
+}
+
+func (w *sessionControllerStubWrapper) SendCustomAction(
+	ctx context.Context,
+	packageName string,
+	action string,
+	args interface{},
+) error {
+	return w.impl.SendCustomAction(ctx, packageName, action, args)
+}
+
+func (w *sessionControllerStubWrapper) GetMetadata(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetMetadata(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetPlaybackState(
+	ctx context.Context,
+) (PlaybackState, error) {
+	return w.impl.GetPlaybackState(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetQueue(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetQueue(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetQueueTitle(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetQueueTitle(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetExtras(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetExtras(ctx)
+}
+
+func (w *sessionControllerStubWrapper) GetRatingType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetRatingType(ctx)
+}
+
+var _ ISessionController = (*sessionControllerStubWrapper)(nil)
+
+// NewSessionControllerStub creates a server-side ISessionController wrapping the given
+// server implementation. The returned value satisfies ISessionController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSessionControllerStub(
+	impl ISessionControllerServer,
+) ISessionController {
+	wrapper := &sessionControllerStubWrapper{impl: impl}
+	stub := &SessionControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

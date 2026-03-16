@@ -62,8 +62,8 @@ func (p *ContextualSearchManagerProxy) GetContextualSearchState(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContextualSearchManager)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContextualSearchManager, "getContextualSearchState")
 	if _err != nil {
@@ -115,4 +115,52 @@ func (s *ContextualSearchManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContextualSearchManagerServer is the server-side interface that user implementations
+// provide to NewContextualSearchManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContextualSearchManagerServer interface {
+	StartContextualSearch(ctx context.Context, entrypoint int32) error
+	GetContextualSearchState(ctx context.Context, token binder.IBinder, callback IContextualSearchCallback) error
+}
+
+type contextualSearchManagerStubWrapper struct {
+	impl       IContextualSearchManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contextualSearchManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contextualSearchManagerStubWrapper) StartContextualSearch(
+	ctx context.Context,
+	entrypoint int32,
+) error {
+	return w.impl.StartContextualSearch(ctx, entrypoint)
+}
+
+func (w *contextualSearchManagerStubWrapper) GetContextualSearchState(
+	ctx context.Context,
+	token binder.IBinder,
+	callback IContextualSearchCallback,
+) error {
+	return w.impl.GetContextualSearchState(ctx, token, callback)
+}
+
+var _ IContextualSearchManager = (*contextualSearchManagerStubWrapper)(nil)
+
+// NewContextualSearchManagerStub creates a server-side IContextualSearchManager wrapping the given
+// server implementation. The returned value satisfies IContextualSearchManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContextualSearchManagerStub(
+	impl IContextualSearchManagerServer,
+) IContextualSearchManager {
+	wrapper := &contextualSearchManagerStubWrapper{impl: impl}
+	stub := &ContextualSearchManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

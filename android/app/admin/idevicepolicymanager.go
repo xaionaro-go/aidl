@@ -4702,7 +4702,7 @@ func (p *DevicePolicyManagerProxy) ChoosePrivateKeyAlias(
 		return _err
 	}
 	_data.WriteString16(alias)
-	_data.WriteStrongBinder(aliasCallback.Handle())
+	binder.WriteBinderToParcel(ctx, _data, aliasCallback, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "choosePrivateKeyAlias")
 	if _err != nil {
@@ -10769,7 +10769,7 @@ func (p *DevicePolicyManagerProxy) SetAuditLogEventsCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDevicePolicyManager)
 	_data.WriteString16(callerPackage)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "setAuditLogEventsCallback")
 	if _err != nil {
@@ -11152,13 +11152,13 @@ func (p *DevicePolicyManagerProxy) BindDeviceAdminServiceAsUser(
 	if _err := admin.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := service.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(flags)
 	_data.WriteInt32(targetUserId)
 
@@ -11595,7 +11595,7 @@ func (p *DevicePolicyManagerProxy) ClearApplicationUserData(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "clearApplicationUserData")
 	if _err != nil {
@@ -12416,7 +12416,7 @@ func (p *DevicePolicyManagerProxy) InstallUpdateFromFile(
 	}
 	_data.WriteString16(callerPackageName)
 	_data.WriteFileDescriptor(updateFileDescriptor)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDevicePolicyManager, "installUpdateFromFile")
 	if _err != nil {
@@ -25717,4 +25717,3635 @@ func (s *DevicePolicyManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDevicePolicyManagerServer is the server-side interface that user implementations
+// provide to NewDevicePolicyManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDevicePolicyManagerServer interface {
+	SetPasswordQuality(ctx context.Context, who content.ComponentName, quality int32, parent bool) error
+	GetPasswordQuality(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetPasswordMinimumLength(ctx context.Context, who content.ComponentName, length int32, parent bool) error
+	GetPasswordMinimumLength(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetPasswordMinimumUpperCase(ctx context.Context, who content.ComponentName, length int32, parent bool) error
+	GetPasswordMinimumUpperCase(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetPasswordMinimumLowerCase(ctx context.Context, who content.ComponentName, length int32, parent bool) error
+	GetPasswordMinimumLowerCase(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetPasswordMinimumLetters(ctx context.Context, who content.ComponentName, length int32, parent bool) error
+	GetPasswordMinimumLetters(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetPasswordMinimumNumeric(ctx context.Context, who content.ComponentName, length int32, parent bool) error
+	GetPasswordMinimumNumeric(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetPasswordMinimumSymbols(ctx context.Context, who content.ComponentName, length int32, parent bool) error
+	GetPasswordMinimumSymbols(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetPasswordMinimumNonLetter(ctx context.Context, who content.ComponentName, length int32, parent bool) error
+	GetPasswordMinimumNonLetter(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	GetPasswordMinimumMetrics(ctx context.Context, deviceWideOnly bool) (PasswordMetrics, error)
+	SetPasswordHistoryLength(ctx context.Context, who content.ComponentName, length int32, parent bool) error
+	GetPasswordHistoryLength(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetPasswordExpirationTimeout(ctx context.Context, who content.ComponentName, callerPackageName string, expiration int64, parent bool) error
+	GetPasswordExpirationTimeout(ctx context.Context, who content.ComponentName, parent bool) (int64, error)
+	GetPasswordExpiration(ctx context.Context, who content.ComponentName, parent bool) (int64, error)
+	IsActivePasswordSufficient(ctx context.Context, callerPackageName string, parent bool) (bool, error)
+	IsActivePasswordSufficientForDeviceRequirement(ctx context.Context) (bool, error)
+	IsPasswordSufficientAfterProfileUnification(ctx context.Context, profileUser int32) (bool, error)
+	GetPasswordComplexity(ctx context.Context, parent bool) (int32, error)
+	SetRequiredPasswordComplexity(ctx context.Context, callerPackageName string, passwordComplexity int32, parent bool) error
+	GetRequiredPasswordComplexity(ctx context.Context, callerPackageName string, parent bool) (int32, error)
+	GetAggregatedPasswordComplexityForUser(ctx context.Context, deviceWideOnly bool) (int32, error)
+	IsUsingUnifiedPassword(ctx context.Context, admin content.ComponentName) (bool, error)
+	GetCurrentFailedPasswordAttempts(ctx context.Context, callerPackageName string, parent bool) (int32, error)
+	GetProfileWithMinimumFailedPasswordsForWipe(ctx context.Context, parent bool) (int32, error)
+	SetMaximumFailedPasswordsForWipe(ctx context.Context, admin content.ComponentName, callerPackageName string, num int32, parent bool) error
+	GetMaximumFailedPasswordsForWipe(ctx context.Context, admin content.ComponentName, parent bool) (int32, error)
+	ResetPassword(ctx context.Context, password string, flags int32) (bool, error)
+	SetMaximumTimeToLock(ctx context.Context, who content.ComponentName, callerPackageName string, timeMs int64, parent bool) error
+	GetMaximumTimeToLock(ctx context.Context, who content.ComponentName, parent bool) (int64, error)
+	SetRequiredStrongAuthTimeout(ctx context.Context, who content.ComponentName, callerPackageName string, timeMs int64, parent bool) error
+	GetRequiredStrongAuthTimeout(ctx context.Context, who content.ComponentName, parent bool) (int64, error)
+	LockNow(ctx context.Context, flags int32, callerPackageName string, parent bool) error
+	WipeDataWithReason(ctx context.Context, callerPackageName string, flags int32, wipeReasonForUser string, parent bool, factoryReset bool) error
+	SetFactoryResetProtectionPolicy(ctx context.Context, who content.ComponentName, callerPackageName string, policy FactoryResetProtectionPolicy) error
+	GetFactoryResetProtectionPolicy(ctx context.Context, who content.ComponentName) (FactoryResetProtectionPolicy, error)
+	IsFactoryResetProtectionPolicySupported(ctx context.Context) (bool, error)
+	SendLostModeLocationUpdate(ctx context.Context, future infra.AndroidFuture) error
+	SetGlobalProxy(ctx context.Context, admin content.ComponentName, proxySpec string, exclusionList string) (content.ComponentName, error)
+	GetGlobalProxyAdmin(ctx context.Context) (content.ComponentName, error)
+	SetRecommendedGlobalProxy(ctx context.Context, admin content.ComponentName, proxyInfo interface{}) error
+	SetStorageEncryption(ctx context.Context, who content.ComponentName, encrypt bool) (int32, error)
+	GetStorageEncryption(ctx context.Context, who content.ComponentName) (bool, error)
+	GetStorageEncryptionStatus(ctx context.Context, callerPackage string) (int32, error)
+	RequestBugreport(ctx context.Context, who content.ComponentName) (bool, error)
+	SetCameraDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, disabled bool, parent bool) error
+	GetCameraDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, parent bool) (bool, error)
+	SetScreenCaptureDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, disabled bool, parent bool) error
+	GetScreenCaptureDisabled(ctx context.Context, who content.ComponentName, parent bool) (bool, error)
+	SetNearbyNotificationStreamingPolicy(ctx context.Context, policy int32) error
+	GetNearbyNotificationStreamingPolicy(ctx context.Context) (int32, error)
+	SetNearbyAppStreamingPolicy(ctx context.Context, policy int32) error
+	GetNearbyAppStreamingPolicy(ctx context.Context) (int32, error)
+	SetKeyguardDisabledFeatures(ctx context.Context, who content.ComponentName, callerPackageName string, which int32, parent bool) error
+	GetKeyguardDisabledFeatures(ctx context.Context, who content.ComponentName, parent bool) (int32, error)
+	SetActiveAdmin(ctx context.Context, policyReceiver content.ComponentName, refreshing bool, provisioningContext string) error
+	IsAdminActive(ctx context.Context, policyReceiver content.ComponentName) (bool, error)
+	GetActiveAdmins(ctx context.Context) ([]content.ComponentName, error)
+	PackageHasActiveAdmins(ctx context.Context, packageName string) (bool, error)
+	GetRemoveWarning(ctx context.Context, policyReceiver content.ComponentName, result os.RemoteCallback) error
+	RemoveActiveAdmin(ctx context.Context, policyReceiver content.ComponentName) error
+	ForceRemoveActiveAdmin(ctx context.Context, policyReceiver content.ComponentName) error
+	HasGrantedPolicy(ctx context.Context, policyReceiver content.ComponentName, usesPolicy int32) (bool, error)
+	ReportPasswordChanged(ctx context.Context, metrics PasswordMetrics) error
+	ReportFailedPasswordAttempt(ctx context.Context, parent bool) error
+	ReportSuccessfulPasswordAttempt(ctx context.Context) error
+	ReportFailedBiometricAttempt(ctx context.Context) error
+	ReportSuccessfulBiometricAttempt(ctx context.Context) error
+	ReportKeyguardDismissed(ctx context.Context) error
+	ReportKeyguardSecured(ctx context.Context) error
+	SetDeviceOwner(ctx context.Context, who content.ComponentName, setProfileOwnerOnCurrentUserIfNecessary bool) (bool, error)
+	GetDeviceOwnerComponent(ctx context.Context, callingUserOnly bool) (content.ComponentName, error)
+	GetDeviceOwnerComponentOnUser(ctx context.Context) (content.ComponentName, error)
+	HasDeviceOwner(ctx context.Context) (bool, error)
+	GetDeviceOwnerName(ctx context.Context) (string, error)
+	ClearDeviceOwner(ctx context.Context, packageName string) error
+	GetDeviceOwnerUserId(ctx context.Context) (int32, error)
+	SetProfileOwner(ctx context.Context, who content.ComponentName) (bool, error)
+	GetProfileOwnerAsUser(ctx context.Context) (content.ComponentName, error)
+	GetProfileOwnerOrDeviceOwnerSupervisionComponent(ctx context.Context, userHandle os.UserHandle) (content.ComponentName, error)
+	IsSupervisionComponent(ctx context.Context, who content.ComponentName) (bool, error)
+	GetProfileOwnerName(ctx context.Context) (string, error)
+	SetProfileEnabled(ctx context.Context, who content.ComponentName) error
+	SetProfileName(ctx context.Context, who content.ComponentName, profileName string) error
+	ClearProfileOwner(ctx context.Context, who content.ComponentName) error
+	HasUserSetupCompleted(ctx context.Context) (bool, error)
+	IsOrganizationOwnedDeviceWithManagedProfile(ctx context.Context) (bool, error)
+	CheckDeviceIdentifierAccess(ctx context.Context, packageName string, pid int32, uid int32) (bool, error)
+	SetDeviceOwnerLockScreenInfo(ctx context.Context, who content.ComponentName, deviceOwnerInfo interface{}) error
+	GetDeviceOwnerLockScreenInfo(ctx context.Context) (interface{}, error)
+	SetPackagesSuspended(ctx context.Context, admin content.ComponentName, callerPackage string, packageNames []string, suspended bool) ([]string, error)
+	IsPackageSuspended(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string) (bool, error)
+	ListPolicyExemptApps(ctx context.Context) ([]string, error)
+	InstallCaCert(ctx context.Context, admin content.ComponentName, callerPackage string, certBuffer []byte) (bool, error)
+	UninstallCaCerts(ctx context.Context, admin content.ComponentName, callerPackage string, aliases []string) error
+	EnforceCanManageCaCerts(ctx context.Context, admin content.ComponentName, callerPackage string) error
+	ApproveCaCert(ctx context.Context, alias string, approval bool) (bool, error)
+	IsCaCertApproved(ctx context.Context, alias string) (bool, error)
+	InstallKeyPair(ctx context.Context, who content.ComponentName, callerPackage string, privKeyBuffer []byte, certBuffer []byte, certChainBuffer []byte, alias string, requestAccess bool, isUserSelectable bool) (bool, error)
+	RemoveKeyPair(ctx context.Context, who content.ComponentName, callerPackage string, alias string) (bool, error)
+	HasKeyPair(ctx context.Context, callerPackage string, alias string) (bool, error)
+	GenerateKeyPair(ctx context.Context, who content.ComponentName, callerPackage string, algorithm string, keySpec keystore.ParcelableKeyGenParameterSpec, idAttestationFlags int32, attestationChain keymaster.KeymasterCertificateChain) (bool, error)
+	SetKeyPairCertificate(ctx context.Context, who content.ComponentName, callerPackage string, alias string, certBuffer []byte, certChainBuffer []byte, isUserSelectable bool) (bool, error)
+	ChoosePrivateKeyAlias(ctx context.Context, uid int32, uri net.Uri, alias string, aliasCallback binder.IBinder) error
+	SetDelegatedScopes(ctx context.Context, who content.ComponentName, delegatePackage string, scopes []string) error
+	GetDelegatedScopes(ctx context.Context, who content.ComponentName, delegatePackage string) ([]string, error)
+	GetDelegatePackages(ctx context.Context, who content.ComponentName, scope string) ([]string, error)
+	SetCertInstallerPackage(ctx context.Context, who content.ComponentName, installerPackage string) error
+	GetCertInstallerPackage(ctx context.Context, who content.ComponentName) (string, error)
+	SetAlwaysOnVpnPackage(ctx context.Context, who content.ComponentName, vpnPackage string, lockdown bool, lockdownAllowlist []string) (bool, error)
+	GetAlwaysOnVpnPackage(ctx context.Context, who content.ComponentName) (string, error)
+	GetAlwaysOnVpnPackageForUser(ctx context.Context) (string, error)
+	IsAlwaysOnVpnLockdownEnabled(ctx context.Context, who content.ComponentName) (bool, error)
+	IsAlwaysOnVpnLockdownEnabledForUser(ctx context.Context) (bool, error)
+	GetAlwaysOnVpnLockdownAllowlist(ctx context.Context, who content.ComponentName) ([]string, error)
+	AddPersistentPreferredActivity(ctx context.Context, admin content.ComponentName, callerPackageName string, filter content.IntentFilter, activity content.ComponentName) error
+	ClearPackagePersistentPreferredActivities(ctx context.Context, admin content.ComponentName, callerPackageName string, packageName string) error
+	SetDefaultSmsApplication(ctx context.Context, admin content.ComponentName, callerPackageName string, packageName string, parent bool) error
+	SetDefaultDialerApplication(ctx context.Context, packageName string) error
+	SetApplicationRestrictions(ctx context.Context, who content.ComponentName, callerPackage string, packageName string, settings os.Bundle, parent bool) error
+	GetApplicationRestrictions(ctx context.Context, who content.ComponentName, callerPackage string, packageName string, parent bool) (os.Bundle, error)
+	SetApplicationRestrictionsManagingPackage(ctx context.Context, admin content.ComponentName, packageName string) (bool, error)
+	GetApplicationRestrictionsManagingPackage(ctx context.Context, admin content.ComponentName) (string, error)
+	IsCallerApplicationRestrictionsManagingPackage(ctx context.Context, callerPackage string) (bool, error)
+	SetRestrictionsProvider(ctx context.Context, who content.ComponentName, provider content.ComponentName) error
+	GetRestrictionsProvider(ctx context.Context) (content.ComponentName, error)
+	SetUserRestriction(ctx context.Context, who content.ComponentName, callerPackage string, key string, enable bool, parent bool) error
+	SetUserRestrictionForUser(ctx context.Context, systemEntity string, key string, enable bool, targetUser int32) error
+	SetUserRestrictionGlobally(ctx context.Context, callerPackage string, key string) error
+	SetUserRestrictionGloballyFromSystem(ctx context.Context, systemEntity string, key string, enable bool) error
+	GetUserRestrictions(ctx context.Context, who content.ComponentName, callerPackage string, parent bool) (os.Bundle, error)
+	GetUserRestrictionsGlobally(ctx context.Context, callerPackage string) (os.Bundle, error)
+	AddCrossProfileIntentFilter(ctx context.Context, admin content.ComponentName, callerPackageName string, filter content.IntentFilter, flags int32) error
+	ClearCrossProfileIntentFilters(ctx context.Context, admin content.ComponentName, callerPackageName string) error
+	SetPermittedAccessibilityServices(ctx context.Context, admin content.ComponentName, packageList []string) (bool, error)
+	GetPermittedAccessibilityServices(ctx context.Context, admin content.ComponentName) ([]string, error)
+	GetPermittedAccessibilityServicesForUser(ctx context.Context) ([]string, error)
+	IsAccessibilityServicePermittedByAdmin(ctx context.Context, admin content.ComponentName, packageName string) (bool, error)
+	SetPermittedInputMethods(ctx context.Context, admin content.ComponentName, callerPackageName string, packageList []string, parent bool) (bool, error)
+	GetPermittedInputMethods(ctx context.Context, admin content.ComponentName, callerPackageName string, parent bool) ([]string, error)
+	GetPermittedInputMethodsAsUser(ctx context.Context) ([]string, error)
+	IsInputMethodPermittedByAdmin(ctx context.Context, admin content.ComponentName, packageName string, parent bool) (bool, error)
+	SetPermittedCrossProfileNotificationListeners(ctx context.Context, admin content.ComponentName, packageList []string) (bool, error)
+	GetPermittedCrossProfileNotificationListeners(ctx context.Context, admin content.ComponentName) ([]string, error)
+	IsNotificationListenerServicePermitted(ctx context.Context, packageName string) (bool, error)
+	CreateAdminSupportIntent(ctx context.Context, restriction string) (content.Intent, error)
+	GetEnforcingAdminAndUserDetails(ctx context.Context, restriction string) (os.Bundle, error)
+	GetEnforcingAdmin(ctx context.Context, identifier string) (EnforcingAdmin, error)
+	GetEnforcingAdminsForRestriction(ctx context.Context, restriction string) ([]EnforcingAdmin, error)
+	SetApplicationHidden(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string, hidden bool, parent bool) (bool, error)
+	IsApplicationHidden(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string, parent bool) (bool, error)
+	CreateAndManageUser(ctx context.Context, who content.ComponentName, name string, profileOwner content.ComponentName, adminExtras interface{}, flags int32) (os.UserHandle, error)
+	RemoveUser(ctx context.Context, who content.ComponentName, userHandle os.UserHandle) (bool, error)
+	SwitchUser(ctx context.Context, who content.ComponentName, userHandle os.UserHandle) (bool, error)
+	StartUserInBackground(ctx context.Context, who content.ComponentName, userHandle os.UserHandle) (int32, error)
+	StopUser(ctx context.Context, who content.ComponentName, userHandle os.UserHandle) (int32, error)
+	LogoutUser(ctx context.Context, who content.ComponentName) (int32, error)
+	LogoutUserInternal(ctx context.Context) (int32, error)
+	GetLogoutUserId(ctx context.Context) (int32, error)
+	GetSecondaryUsers(ctx context.Context, who content.ComponentName) ([]os.UserHandle, error)
+	AcknowledgeNewUserDisclaimer(ctx context.Context) error
+	IsNewUserDisclaimerAcknowledged(ctx context.Context) (bool, error)
+	EnableSystemApp(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string) error
+	EnableSystemAppWithIntent(ctx context.Context, admin content.ComponentName, callerPackage string, intent content.Intent) (int32, error)
+	InstallExistingPackage(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string) (bool, error)
+	SetAccountManagementDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, accountType string, disabled bool, parent bool) error
+	GetAccountTypesWithManagementDisabled(ctx context.Context, callerPackageName string) ([]string, error)
+	GetAccountTypesWithManagementDisabledAsUser(ctx context.Context, callerPackageName string, parent bool) ([]string, error)
+	SetSecondaryLockscreenEnabled(ctx context.Context, who content.ComponentName, enabled bool, options interface{}) error
+	IsSecondaryLockscreenEnabled(ctx context.Context, userHandle os.UserHandle) (bool, error)
+	SetPreferentialNetworkServiceConfigs(ctx context.Context, preferentialNetworkServiceConfigs []PreferentialNetworkServiceConfig) error
+	GetPreferentialNetworkServiceConfigs(ctx context.Context) ([]PreferentialNetworkServiceConfig, error)
+	SetLockTaskPackages(ctx context.Context, who content.ComponentName, callerPackageName string, packages []string) error
+	GetLockTaskPackages(ctx context.Context, who content.ComponentName, callerPackageName string) ([]string, error)
+	IsLockTaskPermitted(ctx context.Context, pkg string) (bool, error)
+	SetLockTaskFeatures(ctx context.Context, who content.ComponentName, callerPackageName string, flags int32) error
+	GetLockTaskFeatures(ctx context.Context, who content.ComponentName, callerPackageName string) (int32, error)
+	SetGlobalSetting(ctx context.Context, who content.ComponentName, setting string, value string) error
+	SetSystemSetting(ctx context.Context, who content.ComponentName, setting string, value string, parent bool) error
+	SetSecureSetting(ctx context.Context, who content.ComponentName, setting string, value string) error
+	SetConfiguredNetworksLockdownState(ctx context.Context, who content.ComponentName, callerPackageName string, lockdown bool) error
+	HasLockdownAdminConfiguredNetworks(ctx context.Context, who content.ComponentName) (bool, error)
+	SetLocationEnabled(ctx context.Context, who content.ComponentName, locationEnabled bool) error
+	SetTime(ctx context.Context, who content.ComponentName, callerPackageName string, millis int64) (bool, error)
+	SetTimeZone(ctx context.Context, who content.ComponentName, callerPackageName string, timeZone string) (bool, error)
+	SetMasterVolumeMuted(ctx context.Context, admin content.ComponentName, on bool) error
+	IsMasterVolumeMuted(ctx context.Context, admin content.ComponentName) (bool, error)
+	NotifyLockTaskModeChanged(ctx context.Context, isEnabled bool, pkg string) error
+	SetUninstallBlocked(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string, uninstallBlocked bool) error
+	IsUninstallBlocked(ctx context.Context, packageName string) (bool, error)
+	SetCrossProfileCallerIdDisabled(ctx context.Context, who content.ComponentName, disabled bool) error
+	GetCrossProfileCallerIdDisabled(ctx context.Context, who content.ComponentName) (bool, error)
+	GetCrossProfileCallerIdDisabledForUser(ctx context.Context) (bool, error)
+	SetCrossProfileContactsSearchDisabled(ctx context.Context, who content.ComponentName, disabled bool) error
+	GetCrossProfileContactsSearchDisabled(ctx context.Context, who content.ComponentName) (bool, error)
+	GetCrossProfileContactsSearchDisabledForUser(ctx context.Context) (bool, error)
+	StartManagedQuickContact(ctx context.Context, lookupKey string, contactId int64, isContactIdIgnored bool, directoryId int64, originalIntent content.Intent) error
+	SetManagedProfileCallerIdAccessPolicy(ctx context.Context, policy PackagePolicy) error
+	GetManagedProfileCallerIdAccessPolicy(ctx context.Context) (PackagePolicy, error)
+	HasManagedProfileCallerIdAccess(ctx context.Context, packageName string) (bool, error)
+	SetCredentialManagerPolicy(ctx context.Context, policy PackagePolicy) error
+	GetCredentialManagerPolicy(ctx context.Context) (PackagePolicy, error)
+	SetManagedProfileContactsAccessPolicy(ctx context.Context, policy PackagePolicy) error
+	GetManagedProfileContactsAccessPolicy(ctx context.Context) (PackagePolicy, error)
+	HasManagedProfileContactsAccess(ctx context.Context, packageName string) (bool, error)
+	SetBluetoothContactSharingDisabled(ctx context.Context, who content.ComponentName, disabled bool) error
+	GetBluetoothContactSharingDisabled(ctx context.Context, who content.ComponentName) (bool, error)
+	GetBluetoothContactSharingDisabledForUser(ctx context.Context) (bool, error)
+	SetTrustAgentConfiguration(ctx context.Context, admin content.ComponentName, callerPackageName string, agent content.ComponentName, args interface{}, parent bool) error
+	GetTrustAgentConfiguration(ctx context.Context, admin content.ComponentName, agent content.ComponentName, parent bool) ([]interface{}, error)
+	AddCrossProfileWidgetProvider(ctx context.Context, admin content.ComponentName, callerPackageName string, packageName string) (bool, error)
+	RemoveCrossProfileWidgetProvider(ctx context.Context, admin content.ComponentName, callerPackageName string, packageName string) (bool, error)
+	GetCrossProfileWidgetProviders(ctx context.Context, admin content.ComponentName, callerPackageName string) ([]string, error)
+	SetAutoTimeRequired(ctx context.Context, who content.ComponentName, required bool) error
+	GetAutoTimeRequired(ctx context.Context) (bool, error)
+	SetAutoTimeEnabled(ctx context.Context, who content.ComponentName, callerPackageName string, enabled bool) error
+	GetAutoTimeEnabled(ctx context.Context, who content.ComponentName, callerPackageName string) (bool, error)
+	SetAutoTimePolicy(ctx context.Context, callerPackageName string, policy int32) error
+	GetAutoTimePolicy(ctx context.Context, callerPackageName string) (int32, error)
+	SetAutoTimeZoneEnabled(ctx context.Context, who content.ComponentName, callerPackageName string, enabled bool) error
+	GetAutoTimeZoneEnabled(ctx context.Context, who content.ComponentName, callerPackageName string) (bool, error)
+	SetAutoTimeZonePolicy(ctx context.Context, callerPackageName string, policy int32) error
+	GetAutoTimeZonePolicy(ctx context.Context, callerPackageName string) (int32, error)
+	SetForceEphemeralUsers(ctx context.Context, who content.ComponentName, forceEpehemeralUsers bool) error
+	GetForceEphemeralUsers(ctx context.Context, who content.ComponentName) (bool, error)
+	IsRemovingAdmin(ctx context.Context, adminReceiver content.ComponentName) (bool, error)
+	SetUserIcon(ctx context.Context, admin content.ComponentName, icon graphics.Bitmap) error
+	SetSystemUpdatePolicy(ctx context.Context, who content.ComponentName, callerPackageName string, policy SystemUpdatePolicy) error
+	GetSystemUpdatePolicy(ctx context.Context) (SystemUpdatePolicy, error)
+	ClearSystemUpdatePolicyFreezePeriodRecord(ctx context.Context) error
+	SetKeyguardDisabled(ctx context.Context, admin content.ComponentName, disabled bool) (bool, error)
+	SetStatusBarDisabled(ctx context.Context, who content.ComponentName, callerPackageName string, disabled bool) (bool, error)
+	IsStatusBarDisabled(ctx context.Context, callerPackage string) (bool, error)
+	GetDoNotAskCredentialsOnBoot(ctx context.Context) (bool, error)
+	NotifyPendingSystemUpdate(ctx context.Context, info SystemUpdateInfo) error
+	GetPendingSystemUpdate(ctx context.Context, admin content.ComponentName, callerPackage string) (SystemUpdateInfo, error)
+	SetPermissionPolicy(ctx context.Context, admin content.ComponentName, callerPackage string, policy int32) error
+	GetPermissionPolicy(ctx context.Context, admin content.ComponentName) (int32, error)
+	SetPermissionGrantState(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string, permission string, grantState int32, resultReceiver os.RemoteCallback) error
+	GetPermissionGrantState(ctx context.Context, admin content.ComponentName, callerPackage string, packageName string, permission string) (int32, error)
+	IsProvisioningAllowed(ctx context.Context, action string, packageName string) (bool, error)
+	CheckProvisioningPrecondition(ctx context.Context, action string, packageName string) (int32, error)
+	SetKeepUninstalledPackages(ctx context.Context, admin content.ComponentName, callerPackage string, packageList []string) error
+	GetKeepUninstalledPackages(ctx context.Context, admin content.ComponentName, callerPackage string) ([]string, error)
+	IsManagedProfile(ctx context.Context, admin content.ComponentName) (bool, error)
+	GetWifiMacAddress(ctx context.Context, admin content.ComponentName, callerPackageName string) (string, error)
+	Reboot(ctx context.Context, admin content.ComponentName) error
+	SetShortSupportMessage(ctx context.Context, admin content.ComponentName, callerPackageName string, message interface{}) error
+	GetShortSupportMessage(ctx context.Context, admin content.ComponentName, callerPackageName string) (interface{}, error)
+	SetLongSupportMessage(ctx context.Context, admin content.ComponentName, message interface{}) error
+	GetLongSupportMessage(ctx context.Context, admin content.ComponentName) (interface{}, error)
+	GetShortSupportMessageForUser(ctx context.Context, admin content.ComponentName) (interface{}, error)
+	GetLongSupportMessageForUser(ctx context.Context, admin content.ComponentName) (interface{}, error)
+	SetOrganizationColor(ctx context.Context, admin content.ComponentName, color int32) error
+	SetOrganizationColorForUser(ctx context.Context, color int32) error
+	ClearOrganizationIdForUser(ctx context.Context) error
+	GetOrganizationColor(ctx context.Context, admin content.ComponentName) (int32, error)
+	GetOrganizationColorForUser(ctx context.Context) (int32, error)
+	SetOrganizationName(ctx context.Context, admin content.ComponentName, callerPackageName string, title interface{}) error
+	GetOrganizationName(ctx context.Context, admin content.ComponentName, callerPackageName string) (interface{}, error)
+	GetDeviceOwnerOrganizationName(ctx context.Context) (interface{}, error)
+	GetOrganizationNameForUser(ctx context.Context) (interface{}, error)
+	GetUserProvisioningState(ctx context.Context) (int32, error)
+	SetUserProvisioningState(ctx context.Context, state int32) error
+	SetAffiliationIds(ctx context.Context, admin content.ComponentName, ids []string) error
+	GetAffiliationIds(ctx context.Context, admin content.ComponentName) ([]string, error)
+	IsCallingUserAffiliated(ctx context.Context) (bool, error)
+	IsAffiliatedUser(ctx context.Context) (bool, error)
+	SetSecurityLoggingEnabled(ctx context.Context, admin content.ComponentName, packageName string, enabled bool) error
+	IsSecurityLoggingEnabled(ctx context.Context, admin content.ComponentName, packageName string) (bool, error)
+	RetrieveSecurityLogs(ctx context.Context, admin content.ComponentName, packageName string) (pm.ParceledListSlice, error)
+	RetrievePreRebootSecurityLogs(ctx context.Context, admin content.ComponentName, packageName string) (pm.ParceledListSlice, error)
+	ForceNetworkLogs(ctx context.Context) (int64, error)
+	ForceSecurityLogs(ctx context.Context) (int64, error)
+	SetAuditLogEnabled(ctx context.Context, callerPackage string, enabled bool) error
+	IsAuditLogEnabled(ctx context.Context, callerPackage string) (bool, error)
+	SetAuditLogEventsCallback(ctx context.Context, callerPackage string, callback IAuditLogEventsCallback) error
+	IsUninstallInQueue(ctx context.Context, packageName string) (bool, error)
+	UninstallPackageWithActiveAdmins(ctx context.Context, packageName string) error
+	IsDeviceProvisioned(ctx context.Context) (bool, error)
+	IsDeviceProvisioningConfigApplied(ctx context.Context) (bool, error)
+	SetDeviceProvisioningConfigApplied(ctx context.Context) error
+	ForceUpdateUserSetupComplete(ctx context.Context) error
+	SetBackupServiceEnabled(ctx context.Context, admin content.ComponentName, enabled bool) error
+	IsBackupServiceEnabled(ctx context.Context, admin content.ComponentName) (bool, error)
+	SetNetworkLoggingEnabled(ctx context.Context, admin content.ComponentName, packageName string, enabled bool) error
+	IsNetworkLoggingEnabled(ctx context.Context, admin content.ComponentName, packageName string) (bool, error)
+	RetrieveNetworkLogs(ctx context.Context, admin content.ComponentName, packageName string, batchToken int64) ([]NetworkEvent, error)
+	BindDeviceAdminServiceAsUser(ctx context.Context, admin content.ComponentName, caller app.IApplicationThread, token binder.IBinder, service content.Intent, connection app.IServiceConnection, flags int64, targetUserId int32) (bool, error)
+	GetBindDeviceAdminTargetUsers(ctx context.Context, admin content.ComponentName) ([]os.UserHandle, error)
+	IsEphemeralUser(ctx context.Context, admin content.ComponentName) (bool, error)
+	GetLastSecurityLogRetrievalTime(ctx context.Context) (int64, error)
+	GetLastBugReportRequestTime(ctx context.Context) (int64, error)
+	GetLastNetworkLogRetrievalTime(ctx context.Context) (int64, error)
+	SetResetPasswordToken(ctx context.Context, admin content.ComponentName, callerPackageName string, token []byte) (bool, error)
+	ClearResetPasswordToken(ctx context.Context, admin content.ComponentName, callerPackageName string) (bool, error)
+	IsResetPasswordTokenActive(ctx context.Context, admin content.ComponentName, callerPackageName string) (bool, error)
+	ResetPasswordWithToken(ctx context.Context, admin content.ComponentName, callerPackageName string, password string, token []byte, flags int32) (bool, error)
+	IsCurrentInputMethodSetByOwner(ctx context.Context) (bool, error)
+	GetOwnerInstalledCaCerts(ctx context.Context, user os.UserHandle) (pm.StringParceledListSlice, error)
+	ClearApplicationUserData(ctx context.Context, admin content.ComponentName, packageName string, callback pm.IPackageDataObserver) error
+	SetLogoutEnabled(ctx context.Context, admin content.ComponentName, enabled bool) error
+	IsLogoutEnabled(ctx context.Context) (bool, error)
+	GetDisallowedSystemApps(ctx context.Context, admin content.ComponentName, provisioningAction string) ([]string, error)
+	TransferOwnership(ctx context.Context, admin content.ComponentName, target content.ComponentName, bundle interface{}) error
+	GetTransferOwnershipBundle(ctx context.Context) (interface{}, error)
+	SetStartUserSessionMessage(ctx context.Context, admin content.ComponentName, startUserSessionMessage interface{}) error
+	SetEndUserSessionMessage(ctx context.Context, admin content.ComponentName, endUserSessionMessage interface{}) error
+	GetStartUserSessionMessage(ctx context.Context, admin content.ComponentName) (interface{}, error)
+	GetEndUserSessionMessage(ctx context.Context, admin content.ComponentName) (interface{}, error)
+	SetMeteredDataDisabledPackages(ctx context.Context, admin content.ComponentName, packageNames []string) ([]string, error)
+	GetMeteredDataDisabledPackages(ctx context.Context, admin content.ComponentName) ([]string, error)
+	AddOverrideApn(ctx context.Context, admin content.ComponentName, apnSetting data.ApnSetting) (int32, error)
+	UpdateOverrideApn(ctx context.Context, admin content.ComponentName, apnId int32, apnSetting data.ApnSetting) (bool, error)
+	RemoveOverrideApn(ctx context.Context, admin content.ComponentName, apnId int32) (bool, error)
+	GetOverrideApns(ctx context.Context, admin content.ComponentName) ([]data.ApnSetting, error)
+	SetOverrideApnsEnabled(ctx context.Context, admin content.ComponentName, enabled bool) error
+	IsOverrideApnEnabled(ctx context.Context, admin content.ComponentName) (bool, error)
+	IsMeteredDataDisabledPackageForUser(ctx context.Context, admin content.ComponentName, packageName string) (bool, error)
+	SetGlobalPrivateDns(ctx context.Context, admin content.ComponentName, mode int32, privateDnsHost string) (int32, error)
+	GetGlobalPrivateDnsMode(ctx context.Context, admin content.ComponentName) (int32, error)
+	GetGlobalPrivateDnsHost(ctx context.Context, admin content.ComponentName) (string, error)
+	SetProfileOwnerOnOrganizationOwnedDevice(ctx context.Context, who content.ComponentName, isProfileOwnerOnOrganizationOwnedDevice bool) error
+	InstallUpdateFromFile(ctx context.Context, admin content.ComponentName, callerPackageName string, updateFileDescriptor int32, listener StartInstallingUpdateCallback) error
+	SetCrossProfileCalendarPackages(ctx context.Context, admin content.ComponentName, packageNames []string) error
+	GetCrossProfileCalendarPackages(ctx context.Context, admin content.ComponentName) ([]string, error)
+	IsPackageAllowedToAccessCalendarForUser(ctx context.Context, packageName string) (bool, error)
+	GetCrossProfileCalendarPackagesForUser(ctx context.Context) ([]string, error)
+	SetCrossProfilePackages(ctx context.Context, admin content.ComponentName, packageNames []string) error
+	GetCrossProfilePackages(ctx context.Context, admin content.ComponentName) ([]string, error)
+	GetAllCrossProfilePackages(ctx context.Context) ([]string, error)
+	GetDefaultCrossProfilePackages(ctx context.Context) ([]string, error)
+	IsManagedKiosk(ctx context.Context) (bool, error)
+	IsUnattendedManagedKiosk(ctx context.Context) (bool, error)
+	StartViewCalendarEventInManagedProfile(ctx context.Context, packageName string, eventId int64, start int64, end int64, allDay bool, flags int32) (bool, error)
+	SetKeyGrantForApp(ctx context.Context, admin content.ComponentName, callerPackage string, alias string, packageName string, hasGrant bool) (bool, error)
+	GetKeyPairGrants(ctx context.Context, callerPackage string, alias string) (ParcelableGranteeMap, error)
+	SetKeyGrantToWifiAuth(ctx context.Context, callerPackage string, alias string, hasGrant bool) (bool, error)
+	IsKeyPairGrantedToWifiAuth(ctx context.Context, callerPackage string, alias string) (bool, error)
+	SetUserControlDisabledPackages(ctx context.Context, admin content.ComponentName, callerPackageName string, packages []string) error
+	GetUserControlDisabledPackages(ctx context.Context, admin content.ComponentName, callerPackageName string) ([]string, error)
+	SetCommonCriteriaModeEnabled(ctx context.Context, admin content.ComponentName, callerPackageName string, enabled bool) error
+	IsCommonCriteriaModeEnabled(ctx context.Context, admin content.ComponentName) (bool, error)
+	GetPersonalAppsSuspendedReasons(ctx context.Context, admin content.ComponentName) (int32, error)
+	SetPersonalAppsSuspended(ctx context.Context, admin content.ComponentName, suspended bool) error
+	GetManagedProfileMaximumTimeOff(ctx context.Context, admin content.ComponentName) (int64, error)
+	SetManagedProfileMaximumTimeOff(ctx context.Context, admin content.ComponentName, timeoutMs int64) error
+	AcknowledgeDeviceCompliant(ctx context.Context) error
+	IsComplianceAcknowledgementRequired(ctx context.Context) (bool, error)
+	CanProfileOwnerResetPasswordWhenLocked(ctx context.Context) (bool, error)
+	SetNextOperationSafety(ctx context.Context, operation int32, reason int32) error
+	IsSafeOperation(ctx context.Context, reason int32) (bool, error)
+	GetEnrollmentSpecificId(ctx context.Context, callerPackage string) (string, error)
+	SetOrganizationIdForUser(ctx context.Context, callerPackage string, enterpriseId string) error
+	CreateAndProvisionManagedProfile(ctx context.Context, provisioningParams ManagedProfileProvisioningParams, callerPackage string) (os.UserHandle, error)
+	CreateManagedProfile(ctx context.Context, provisioningParams ManagedProfileProvisioningParams, callerPackage string) (os.UserHandle, error)
+	FinalizeCreateManagedProfile(ctx context.Context, provisioningParams ManagedProfileProvisioningParams, managedProfileUser os.UserHandle) error
+	ProvisionFullyManagedDevice(ctx context.Context, provisioningParams FullyManagedDeviceProvisioningParams, callerPackage string) error
+	FinalizeWorkProfileProvisioning(ctx context.Context, managedProfileUser os.UserHandle, migratedAccount accounts.Account) error
+	RemoveManagedProfile(ctx context.Context) (bool, error)
+	SetDeviceOwnerType(ctx context.Context, admin content.ComponentName, deviceOwnerType int32) error
+	GetDeviceOwnerType(ctx context.Context, admin content.ComponentName) (int32, error)
+	ResetDefaultCrossProfileIntentFilters(ctx context.Context) error
+	CanAdminGrantSensorsPermissions(ctx context.Context) (bool, error)
+	SetUsbDataSignalingEnabled(ctx context.Context, callerPackage string, enabled bool) error
+	IsUsbDataSignalingEnabled(ctx context.Context, callerPackage string) (bool, error)
+	CanUsbDataSignalingBeDisabled(ctx context.Context) (bool, error)
+	SetMinimumRequiredWifiSecurityLevel(ctx context.Context, callerPackageName string, level int32) error
+	GetMinimumRequiredWifiSecurityLevel(ctx context.Context) (int32, error)
+	SetWifiSsidPolicy(ctx context.Context, callerPackageName string, policy WifiSsidPolicy) error
+	GetWifiSsidPolicy(ctx context.Context, callerPackageName string) (WifiSsidPolicy, error)
+	IsDevicePotentiallyStolen(ctx context.Context, callerPackageName string) (bool, error)
+	ListForegroundAffiliatedUsers(ctx context.Context) ([]os.UserHandle, error)
+	SetDrawables(ctx context.Context, drawables []DevicePolicyDrawableResource) error
+	ResetDrawables(ctx context.Context, drawableIds []string) error
+	GetDrawable(ctx context.Context, drawableId string, drawableStyle string, drawableSource string) (ParcelableResource, error)
+	IsDpcDownloaded(ctx context.Context) (bool, error)
+	SetDpcDownloaded(ctx context.Context, downloaded bool) error
+	SetStrings(ctx context.Context, strings []DevicePolicyStringResource) error
+	ResetStrings(ctx context.Context, stringIds []string) error
+	GetString(ctx context.Context, stringId string) (ParcelableResource, error)
+	ResetShouldAllowBypassingDevicePolicyManagementRoleQualificationState(ctx context.Context) error
+	ShouldAllowBypassingDevicePolicyManagementRoleQualification(ctx context.Context) (bool, error)
+	GetPolicyManagedProfiles(ctx context.Context, userHandle os.UserHandle) ([]os.UserHandle, error)
+	SetApplicationExemptions(ctx context.Context, callerPackage string, packageName string, exemptions []int32) error
+	GetApplicationExemptions(ctx context.Context, packageName string) ([]int32, error)
+	SetMtePolicy(ctx context.Context, flag int32, callerPackageName string) error
+	SetMtePolicyBySystem(ctx context.Context, systemEntity string, policy int32) error
+	GetMtePolicy(ctx context.Context, callerPackageName string) (int32, error)
+	SetManagedSubscriptionsPolicy(ctx context.Context, policy ManagedSubscriptionsPolicy) error
+	GetManagedSubscriptionsPolicy(ctx context.Context) (ManagedSubscriptionsPolicy, error)
+	GetDevicePolicyState(ctx context.Context) (DevicePolicyState, error)
+	TriggerDevicePolicyEngineMigration(ctx context.Context, forceMigration bool) (bool, error)
+	IsDeviceFinanced(ctx context.Context, callerPackageName string) (bool, error)
+	GetFinancedDeviceKioskRoleHolder(ctx context.Context, callerPackageName string) (string, error)
+	CalculateHasIncompatibleAccounts(ctx context.Context) error
+	SetContentProtectionPolicy(ctx context.Context, who content.ComponentName, callerPackageName string, policy int32) error
+	GetContentProtectionPolicy(ctx context.Context, who content.ComponentName, callerPackageName string) (int32, error)
+	GetSubscriptionIds(ctx context.Context, callerPackageName string) ([]int32, error)
+	SetMaxPolicyStorageLimit(ctx context.Context, callerPackageName string, storageLimit int32) error
+	ForceSetMaxPolicyStorageLimit(ctx context.Context, callerPackageName string, storageLimit int32) error
+	GetMaxPolicyStorageLimit(ctx context.Context, callerPackageName string) (int32, error)
+	GetPolicySizeForAdmin(ctx context.Context, callerPackageName string, admin EnforcingAdmin) (int32, error)
+	GetHeadlessDeviceOwnerMode(ctx context.Context, callerPackageName string) (int32, error)
+	SetAppFunctionsPolicy(ctx context.Context, callerPackageName string, policy int32) error
+	GetAppFunctionsPolicy(ctx context.Context, callerPackageName string) (int32, error)
+}
+
+type devicePolicyManagerStubWrapper struct {
+	impl       IDevicePolicyManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *devicePolicyManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordQuality(
+	ctx context.Context,
+	who content.ComponentName,
+	quality int32,
+	parent bool,
+) error {
+	return w.impl.SetPasswordQuality(ctx, who, quality, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordQuality(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordQuality(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordMinimumLength(
+	ctx context.Context,
+	who content.ComponentName,
+	length int32,
+	parent bool,
+) error {
+	return w.impl.SetPasswordMinimumLength(ctx, who, length, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordMinimumLength(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordMinimumLength(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordMinimumUpperCase(
+	ctx context.Context,
+	who content.ComponentName,
+	length int32,
+	parent bool,
+) error {
+	return w.impl.SetPasswordMinimumUpperCase(ctx, who, length, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordMinimumUpperCase(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordMinimumUpperCase(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordMinimumLowerCase(
+	ctx context.Context,
+	who content.ComponentName,
+	length int32,
+	parent bool,
+) error {
+	return w.impl.SetPasswordMinimumLowerCase(ctx, who, length, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordMinimumLowerCase(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordMinimumLowerCase(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordMinimumLetters(
+	ctx context.Context,
+	who content.ComponentName,
+	length int32,
+	parent bool,
+) error {
+	return w.impl.SetPasswordMinimumLetters(ctx, who, length, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordMinimumLetters(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordMinimumLetters(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordMinimumNumeric(
+	ctx context.Context,
+	who content.ComponentName,
+	length int32,
+	parent bool,
+) error {
+	return w.impl.SetPasswordMinimumNumeric(ctx, who, length, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordMinimumNumeric(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordMinimumNumeric(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordMinimumSymbols(
+	ctx context.Context,
+	who content.ComponentName,
+	length int32,
+	parent bool,
+) error {
+	return w.impl.SetPasswordMinimumSymbols(ctx, who, length, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordMinimumSymbols(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordMinimumSymbols(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordMinimumNonLetter(
+	ctx context.Context,
+	who content.ComponentName,
+	length int32,
+	parent bool,
+) error {
+	return w.impl.SetPasswordMinimumNonLetter(ctx, who, length, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordMinimumNonLetter(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordMinimumNonLetter(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordMinimumMetrics(
+	ctx context.Context,
+	deviceWideOnly bool,
+) (PasswordMetrics, error) {
+	return w.impl.GetPasswordMinimumMetrics(ctx, deviceWideOnly)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordHistoryLength(
+	ctx context.Context,
+	who content.ComponentName,
+	length int32,
+	parent bool,
+) error {
+	return w.impl.SetPasswordHistoryLength(ctx, who, length, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordHistoryLength(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordHistoryLength(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPasswordExpirationTimeout(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	expiration int64,
+	parent bool,
+) error {
+	return w.impl.SetPasswordExpirationTimeout(ctx, who, callerPackageName, expiration, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordExpirationTimeout(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int64, error) {
+	return w.impl.GetPasswordExpirationTimeout(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordExpiration(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int64, error) {
+	return w.impl.GetPasswordExpiration(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsActivePasswordSufficient(
+	ctx context.Context,
+	callerPackageName string,
+	parent bool,
+) (bool, error) {
+	return w.impl.IsActivePasswordSufficient(ctx, callerPackageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsActivePasswordSufficientForDeviceRequirement(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsActivePasswordSufficientForDeviceRequirement(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsPasswordSufficientAfterProfileUnification(
+	ctx context.Context,
+	profileUser int32,
+) (bool, error) {
+	return w.impl.IsPasswordSufficientAfterProfileUnification(ctx, profileUser)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPasswordComplexity(
+	ctx context.Context,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetPasswordComplexity(ctx, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetRequiredPasswordComplexity(
+	ctx context.Context,
+	callerPackageName string,
+	passwordComplexity int32,
+	parent bool,
+) error {
+	return w.impl.SetRequiredPasswordComplexity(ctx, callerPackageName, passwordComplexity, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetRequiredPasswordComplexity(
+	ctx context.Context,
+	callerPackageName string,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetRequiredPasswordComplexity(ctx, callerPackageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAggregatedPasswordComplexityForUser(
+	ctx context.Context,
+	deviceWideOnly bool,
+) (int32, error) {
+	return w.impl.GetAggregatedPasswordComplexityForUser(ctx, deviceWideOnly)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsUsingUnifiedPassword(
+	ctx context.Context,
+	admin content.ComponentName,
+) (bool, error) {
+	return w.impl.IsUsingUnifiedPassword(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCurrentFailedPasswordAttempts(
+	ctx context.Context,
+	callerPackageName string,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetCurrentFailedPasswordAttempts(ctx, callerPackageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetProfileWithMinimumFailedPasswordsForWipe(
+	ctx context.Context,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetProfileWithMinimumFailedPasswordsForWipe(ctx, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetMaximumFailedPasswordsForWipe(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	num int32,
+	parent bool,
+) error {
+	return w.impl.SetMaximumFailedPasswordsForWipe(ctx, admin, callerPackageName, num, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetMaximumFailedPasswordsForWipe(
+	ctx context.Context,
+	admin content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetMaximumFailedPasswordsForWipe(ctx, admin, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) ResetPassword(
+	ctx context.Context,
+	password string,
+	flags int32,
+) (bool, error) {
+	return w.impl.ResetPassword(ctx, password, flags)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetMaximumTimeToLock(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	timeMs int64,
+	parent bool,
+) error {
+	return w.impl.SetMaximumTimeToLock(ctx, who, callerPackageName, timeMs, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetMaximumTimeToLock(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int64, error) {
+	return w.impl.GetMaximumTimeToLock(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetRequiredStrongAuthTimeout(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	timeMs int64,
+	parent bool,
+) error {
+	return w.impl.SetRequiredStrongAuthTimeout(ctx, who, callerPackageName, timeMs, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetRequiredStrongAuthTimeout(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int64, error) {
+	return w.impl.GetRequiredStrongAuthTimeout(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) LockNow(
+	ctx context.Context,
+	flags int32,
+	callerPackageName string,
+	parent bool,
+) error {
+	return w.impl.LockNow(ctx, flags, callerPackageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) WipeDataWithReason(
+	ctx context.Context,
+	callerPackageName string,
+	flags int32,
+	wipeReasonForUser string,
+	parent bool,
+	factoryReset bool,
+) error {
+	return w.impl.WipeDataWithReason(ctx, callerPackageName, flags, wipeReasonForUser, parent, factoryReset)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetFactoryResetProtectionPolicy(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	policy FactoryResetProtectionPolicy,
+) error {
+	return w.impl.SetFactoryResetProtectionPolicy(ctx, who, callerPackageName, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetFactoryResetProtectionPolicy(
+	ctx context.Context,
+	who content.ComponentName,
+) (FactoryResetProtectionPolicy, error) {
+	return w.impl.GetFactoryResetProtectionPolicy(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsFactoryResetProtectionPolicySupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsFactoryResetProtectionPolicySupported(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SendLostModeLocationUpdate(
+	ctx context.Context,
+	future infra.AndroidFuture,
+) error {
+	return w.impl.SendLostModeLocationUpdate(ctx, future)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetGlobalProxy(
+	ctx context.Context,
+	admin content.ComponentName,
+	proxySpec string,
+	exclusionList string,
+) (content.ComponentName, error) {
+	return w.impl.SetGlobalProxy(ctx, admin, proxySpec, exclusionList)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetGlobalProxyAdmin(
+	ctx context.Context,
+) (content.ComponentName, error) {
+	return w.impl.GetGlobalProxyAdmin(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetRecommendedGlobalProxy(
+	ctx context.Context,
+	admin content.ComponentName,
+	proxyInfo interface{},
+) error {
+	return w.impl.SetRecommendedGlobalProxy(ctx, admin, proxyInfo)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetStorageEncryption(
+	ctx context.Context,
+	who content.ComponentName,
+	encrypt bool,
+) (int32, error) {
+	return w.impl.SetStorageEncryption(ctx, who, encrypt)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetStorageEncryption(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.GetStorageEncryption(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetStorageEncryptionStatus(
+	ctx context.Context,
+	callerPackage string,
+) (int32, error) {
+	return w.impl.GetStorageEncryptionStatus(ctx, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) RequestBugreport(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.RequestBugreport(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetCameraDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	disabled bool,
+	parent bool,
+) error {
+	return w.impl.SetCameraDisabled(ctx, who, callerPackageName, disabled, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCameraDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	parent bool,
+) (bool, error) {
+	return w.impl.GetCameraDisabled(ctx, who, callerPackageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetScreenCaptureDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	disabled bool,
+	parent bool,
+) error {
+	return w.impl.SetScreenCaptureDisabled(ctx, who, callerPackageName, disabled, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetScreenCaptureDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (bool, error) {
+	return w.impl.GetScreenCaptureDisabled(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetNearbyNotificationStreamingPolicy(
+	ctx context.Context,
+	policy int32,
+) error {
+	return w.impl.SetNearbyNotificationStreamingPolicy(ctx, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetNearbyNotificationStreamingPolicy(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNearbyNotificationStreamingPolicy(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetNearbyAppStreamingPolicy(
+	ctx context.Context,
+	policy int32,
+) error {
+	return w.impl.SetNearbyAppStreamingPolicy(ctx, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetNearbyAppStreamingPolicy(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNearbyAppStreamingPolicy(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetKeyguardDisabledFeatures(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	which int32,
+	parent bool,
+) error {
+	return w.impl.SetKeyguardDisabledFeatures(ctx, who, callerPackageName, which, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetKeyguardDisabledFeatures(
+	ctx context.Context,
+	who content.ComponentName,
+	parent bool,
+) (int32, error) {
+	return w.impl.GetKeyguardDisabledFeatures(ctx, who, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetActiveAdmin(
+	ctx context.Context,
+	policyReceiver content.ComponentName,
+	refreshing bool,
+	provisioningContext string,
+) error {
+	return w.impl.SetActiveAdmin(ctx, policyReceiver, refreshing, provisioningContext)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsAdminActive(
+	ctx context.Context,
+	policyReceiver content.ComponentName,
+) (bool, error) {
+	return w.impl.IsAdminActive(ctx, policyReceiver)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetActiveAdmins(
+	ctx context.Context,
+) ([]content.ComponentName, error) {
+	return w.impl.GetActiveAdmins(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) PackageHasActiveAdmins(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.PackageHasActiveAdmins(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetRemoveWarning(
+	ctx context.Context,
+	policyReceiver content.ComponentName,
+	result os.RemoteCallback,
+) error {
+	return w.impl.GetRemoveWarning(ctx, policyReceiver, result)
+}
+
+func (w *devicePolicyManagerStubWrapper) RemoveActiveAdmin(
+	ctx context.Context,
+	policyReceiver content.ComponentName,
+) error {
+	return w.impl.RemoveActiveAdmin(ctx, policyReceiver)
+}
+
+func (w *devicePolicyManagerStubWrapper) ForceRemoveActiveAdmin(
+	ctx context.Context,
+	policyReceiver content.ComponentName,
+) error {
+	return w.impl.ForceRemoveActiveAdmin(ctx, policyReceiver)
+}
+
+func (w *devicePolicyManagerStubWrapper) HasGrantedPolicy(
+	ctx context.Context,
+	policyReceiver content.ComponentName,
+	usesPolicy int32,
+) (bool, error) {
+	return w.impl.HasGrantedPolicy(ctx, policyReceiver, usesPolicy)
+}
+
+func (w *devicePolicyManagerStubWrapper) ReportPasswordChanged(
+	ctx context.Context,
+	metrics PasswordMetrics,
+) error {
+	return w.impl.ReportPasswordChanged(ctx, metrics)
+}
+
+func (w *devicePolicyManagerStubWrapper) ReportFailedPasswordAttempt(
+	ctx context.Context,
+	parent bool,
+) error {
+	return w.impl.ReportFailedPasswordAttempt(ctx, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) ReportSuccessfulPasswordAttempt(
+	ctx context.Context,
+) error {
+	return w.impl.ReportSuccessfulPasswordAttempt(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) ReportFailedBiometricAttempt(
+	ctx context.Context,
+) error {
+	return w.impl.ReportFailedBiometricAttempt(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) ReportSuccessfulBiometricAttempt(
+	ctx context.Context,
+) error {
+	return w.impl.ReportSuccessfulBiometricAttempt(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) ReportKeyguardDismissed(
+	ctx context.Context,
+) error {
+	return w.impl.ReportKeyguardDismissed(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) ReportKeyguardSecured(
+	ctx context.Context,
+) error {
+	return w.impl.ReportKeyguardSecured(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetDeviceOwner(
+	ctx context.Context,
+	who content.ComponentName,
+	setProfileOwnerOnCurrentUserIfNecessary bool,
+) (bool, error) {
+	return w.impl.SetDeviceOwner(ctx, who, setProfileOwnerOnCurrentUserIfNecessary)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDeviceOwnerComponent(
+	ctx context.Context,
+	callingUserOnly bool,
+) (content.ComponentName, error) {
+	return w.impl.GetDeviceOwnerComponent(ctx, callingUserOnly)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDeviceOwnerComponentOnUser(
+	ctx context.Context,
+) (content.ComponentName, error) {
+	return w.impl.GetDeviceOwnerComponentOnUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) HasDeviceOwner(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasDeviceOwner(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDeviceOwnerName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetDeviceOwnerName(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) ClearDeviceOwner(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ClearDeviceOwner(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDeviceOwnerUserId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDeviceOwnerUserId(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetProfileOwner(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.SetProfileOwner(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetProfileOwnerAsUser(
+	ctx context.Context,
+) (content.ComponentName, error) {
+	return w.impl.GetProfileOwnerAsUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetProfileOwnerOrDeviceOwnerSupervisionComponent(
+	ctx context.Context,
+	userHandle os.UserHandle,
+) (content.ComponentName, error) {
+	return w.impl.GetProfileOwnerOrDeviceOwnerSupervisionComponent(ctx, userHandle)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsSupervisionComponent(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.IsSupervisionComponent(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetProfileOwnerName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetProfileOwnerName(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetProfileEnabled(
+	ctx context.Context,
+	who content.ComponentName,
+) error {
+	return w.impl.SetProfileEnabled(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetProfileName(
+	ctx context.Context,
+	who content.ComponentName,
+	profileName string,
+) error {
+	return w.impl.SetProfileName(ctx, who, profileName)
+}
+
+func (w *devicePolicyManagerStubWrapper) ClearProfileOwner(
+	ctx context.Context,
+	who content.ComponentName,
+) error {
+	return w.impl.ClearProfileOwner(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) HasUserSetupCompleted(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasUserSetupCompleted(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsOrganizationOwnedDeviceWithManagedProfile(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsOrganizationOwnedDeviceWithManagedProfile(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) CheckDeviceIdentifierAccess(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	uid int32,
+) (bool, error) {
+	return w.impl.CheckDeviceIdentifierAccess(ctx, packageName, pid, uid)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetDeviceOwnerLockScreenInfo(
+	ctx context.Context,
+	who content.ComponentName,
+	deviceOwnerInfo interface{},
+) error {
+	return w.impl.SetDeviceOwnerLockScreenInfo(ctx, who, deviceOwnerInfo)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDeviceOwnerLockScreenInfo(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetDeviceOwnerLockScreenInfo(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPackagesSuspended(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageNames []string,
+	suspended bool,
+) ([]string, error) {
+	return w.impl.SetPackagesSuspended(ctx, admin, callerPackage, packageNames, suspended)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsPackageSuspended(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsPackageSuspended(ctx, admin, callerPackage, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) ListPolicyExemptApps(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.ListPolicyExemptApps(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) InstallCaCert(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	certBuffer []byte,
+) (bool, error) {
+	return w.impl.InstallCaCert(ctx, admin, callerPackage, certBuffer)
+}
+
+func (w *devicePolicyManagerStubWrapper) UninstallCaCerts(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	aliases []string,
+) error {
+	return w.impl.UninstallCaCerts(ctx, admin, callerPackage, aliases)
+}
+
+func (w *devicePolicyManagerStubWrapper) EnforceCanManageCaCerts(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+) error {
+	return w.impl.EnforceCanManageCaCerts(ctx, admin, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) ApproveCaCert(
+	ctx context.Context,
+	alias string,
+	approval bool,
+) (bool, error) {
+	return w.impl.ApproveCaCert(ctx, alias, approval)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsCaCertApproved(
+	ctx context.Context,
+	alias string,
+) (bool, error) {
+	return w.impl.IsCaCertApproved(ctx, alias)
+}
+
+func (w *devicePolicyManagerStubWrapper) InstallKeyPair(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackage string,
+	privKeyBuffer []byte,
+	certBuffer []byte,
+	certChainBuffer []byte,
+	alias string,
+	requestAccess bool,
+	isUserSelectable bool,
+) (bool, error) {
+	return w.impl.InstallKeyPair(ctx, who, callerPackage, privKeyBuffer, certBuffer, certChainBuffer, alias, requestAccess, isUserSelectable)
+}
+
+func (w *devicePolicyManagerStubWrapper) RemoveKeyPair(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackage string,
+	alias string,
+) (bool, error) {
+	return w.impl.RemoveKeyPair(ctx, who, callerPackage, alias)
+}
+
+func (w *devicePolicyManagerStubWrapper) HasKeyPair(
+	ctx context.Context,
+	callerPackage string,
+	alias string,
+) (bool, error) {
+	return w.impl.HasKeyPair(ctx, callerPackage, alias)
+}
+
+func (w *devicePolicyManagerStubWrapper) GenerateKeyPair(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackage string,
+	algorithm string,
+	keySpec keystore.ParcelableKeyGenParameterSpec,
+	idAttestationFlags int32,
+	attestationChain keymaster.KeymasterCertificateChain,
+) (bool, error) {
+	return w.impl.GenerateKeyPair(ctx, who, callerPackage, algorithm, keySpec, idAttestationFlags, attestationChain)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetKeyPairCertificate(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackage string,
+	alias string,
+	certBuffer []byte,
+	certChainBuffer []byte,
+	isUserSelectable bool,
+) (bool, error) {
+	return w.impl.SetKeyPairCertificate(ctx, who, callerPackage, alias, certBuffer, certChainBuffer, isUserSelectable)
+}
+
+func (w *devicePolicyManagerStubWrapper) ChoosePrivateKeyAlias(
+	ctx context.Context,
+	uid int32,
+	uri net.Uri,
+	alias string,
+	aliasCallback binder.IBinder,
+) error {
+	return w.impl.ChoosePrivateKeyAlias(ctx, uid, uri, alias, aliasCallback)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetDelegatedScopes(
+	ctx context.Context,
+	who content.ComponentName,
+	delegatePackage string,
+	scopes []string,
+) error {
+	return w.impl.SetDelegatedScopes(ctx, who, delegatePackage, scopes)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDelegatedScopes(
+	ctx context.Context,
+	who content.ComponentName,
+	delegatePackage string,
+) ([]string, error) {
+	return w.impl.GetDelegatedScopes(ctx, who, delegatePackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDelegatePackages(
+	ctx context.Context,
+	who content.ComponentName,
+	scope string,
+) ([]string, error) {
+	return w.impl.GetDelegatePackages(ctx, who, scope)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetCertInstallerPackage(
+	ctx context.Context,
+	who content.ComponentName,
+	installerPackage string,
+) error {
+	return w.impl.SetCertInstallerPackage(ctx, who, installerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCertInstallerPackage(
+	ctx context.Context,
+	who content.ComponentName,
+) (string, error) {
+	return w.impl.GetCertInstallerPackage(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAlwaysOnVpnPackage(
+	ctx context.Context,
+	who content.ComponentName,
+	vpnPackage string,
+	lockdown bool,
+	lockdownAllowlist []string,
+) (bool, error) {
+	return w.impl.SetAlwaysOnVpnPackage(ctx, who, vpnPackage, lockdown, lockdownAllowlist)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAlwaysOnVpnPackage(
+	ctx context.Context,
+	who content.ComponentName,
+) (string, error) {
+	return w.impl.GetAlwaysOnVpnPackage(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAlwaysOnVpnPackageForUser(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetAlwaysOnVpnPackageForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsAlwaysOnVpnLockdownEnabled(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.IsAlwaysOnVpnLockdownEnabled(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsAlwaysOnVpnLockdownEnabledForUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAlwaysOnVpnLockdownEnabledForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAlwaysOnVpnLockdownAllowlist(
+	ctx context.Context,
+	who content.ComponentName,
+) ([]string, error) {
+	return w.impl.GetAlwaysOnVpnLockdownAllowlist(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) AddPersistentPreferredActivity(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	filter content.IntentFilter,
+	activity content.ComponentName,
+) error {
+	return w.impl.AddPersistentPreferredActivity(ctx, admin, callerPackageName, filter, activity)
+}
+
+func (w *devicePolicyManagerStubWrapper) ClearPackagePersistentPreferredActivities(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	packageName string,
+) error {
+	return w.impl.ClearPackagePersistentPreferredActivities(ctx, admin, callerPackageName, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetDefaultSmsApplication(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	packageName string,
+	parent bool,
+) error {
+	return w.impl.SetDefaultSmsApplication(ctx, admin, callerPackageName, packageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetDefaultDialerApplication(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.SetDefaultDialerApplication(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetApplicationRestrictions(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackage string,
+	packageName string,
+	settings os.Bundle,
+	parent bool,
+) error {
+	return w.impl.SetApplicationRestrictions(ctx, who, callerPackage, packageName, settings, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetApplicationRestrictions(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackage string,
+	packageName string,
+	parent bool,
+) (os.Bundle, error) {
+	return w.impl.GetApplicationRestrictions(ctx, who, callerPackage, packageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetApplicationRestrictionsManagingPackage(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+) (bool, error) {
+	return w.impl.SetApplicationRestrictionsManagingPackage(ctx, admin, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetApplicationRestrictionsManagingPackage(
+	ctx context.Context,
+	admin content.ComponentName,
+) (string, error) {
+	return w.impl.GetApplicationRestrictionsManagingPackage(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsCallerApplicationRestrictionsManagingPackage(
+	ctx context.Context,
+	callerPackage string,
+) (bool, error) {
+	return w.impl.IsCallerApplicationRestrictionsManagingPackage(ctx, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetRestrictionsProvider(
+	ctx context.Context,
+	who content.ComponentName,
+	provider content.ComponentName,
+) error {
+	return w.impl.SetRestrictionsProvider(ctx, who, provider)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetRestrictionsProvider(
+	ctx context.Context,
+) (content.ComponentName, error) {
+	return w.impl.GetRestrictionsProvider(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetUserRestriction(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackage string,
+	key string,
+	enable bool,
+	parent bool,
+) error {
+	return w.impl.SetUserRestriction(ctx, who, callerPackage, key, enable, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetUserRestrictionForUser(
+	ctx context.Context,
+	systemEntity string,
+	key string,
+	enable bool,
+	targetUser int32,
+) error {
+	return w.impl.SetUserRestrictionForUser(ctx, systemEntity, key, enable, targetUser)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetUserRestrictionGlobally(
+	ctx context.Context,
+	callerPackage string,
+	key string,
+) error {
+	return w.impl.SetUserRestrictionGlobally(ctx, callerPackage, key)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetUserRestrictionGloballyFromSystem(
+	ctx context.Context,
+	systemEntity string,
+	key string,
+	enable bool,
+) error {
+	return w.impl.SetUserRestrictionGloballyFromSystem(ctx, systemEntity, key, enable)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetUserRestrictions(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackage string,
+	parent bool,
+) (os.Bundle, error) {
+	return w.impl.GetUserRestrictions(ctx, who, callerPackage, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetUserRestrictionsGlobally(
+	ctx context.Context,
+	callerPackage string,
+) (os.Bundle, error) {
+	return w.impl.GetUserRestrictionsGlobally(ctx, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) AddCrossProfileIntentFilter(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	filter content.IntentFilter,
+	flags int32,
+) error {
+	return w.impl.AddCrossProfileIntentFilter(ctx, admin, callerPackageName, filter, flags)
+}
+
+func (w *devicePolicyManagerStubWrapper) ClearCrossProfileIntentFilters(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+) error {
+	return w.impl.ClearCrossProfileIntentFilters(ctx, admin, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPermittedAccessibilityServices(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageList []string,
+) (bool, error) {
+	return w.impl.SetPermittedAccessibilityServices(ctx, admin, packageList)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPermittedAccessibilityServices(
+	ctx context.Context,
+	admin content.ComponentName,
+) ([]string, error) {
+	return w.impl.GetPermittedAccessibilityServices(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPermittedAccessibilityServicesForUser(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetPermittedAccessibilityServicesForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsAccessibilityServicePermittedByAdmin(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsAccessibilityServicePermittedByAdmin(ctx, admin, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPermittedInputMethods(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	packageList []string,
+	parent bool,
+) (bool, error) {
+	return w.impl.SetPermittedInputMethods(ctx, admin, callerPackageName, packageList, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPermittedInputMethods(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	parent bool,
+) ([]string, error) {
+	return w.impl.GetPermittedInputMethods(ctx, admin, callerPackageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPermittedInputMethodsAsUser(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetPermittedInputMethodsAsUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsInputMethodPermittedByAdmin(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+	parent bool,
+) (bool, error) {
+	return w.impl.IsInputMethodPermittedByAdmin(ctx, admin, packageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPermittedCrossProfileNotificationListeners(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageList []string,
+) (bool, error) {
+	return w.impl.SetPermittedCrossProfileNotificationListeners(ctx, admin, packageList)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPermittedCrossProfileNotificationListeners(
+	ctx context.Context,
+	admin content.ComponentName,
+) ([]string, error) {
+	return w.impl.GetPermittedCrossProfileNotificationListeners(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsNotificationListenerServicePermitted(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsNotificationListenerServicePermitted(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) CreateAdminSupportIntent(
+	ctx context.Context,
+	restriction string,
+) (content.Intent, error) {
+	return w.impl.CreateAdminSupportIntent(ctx, restriction)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetEnforcingAdminAndUserDetails(
+	ctx context.Context,
+	restriction string,
+) (os.Bundle, error) {
+	return w.impl.GetEnforcingAdminAndUserDetails(ctx, restriction)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetEnforcingAdmin(
+	ctx context.Context,
+	identifier string,
+) (EnforcingAdmin, error) {
+	return w.impl.GetEnforcingAdmin(ctx, identifier)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetEnforcingAdminsForRestriction(
+	ctx context.Context,
+	restriction string,
+) ([]EnforcingAdmin, error) {
+	return w.impl.GetEnforcingAdminsForRestriction(ctx, restriction)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetApplicationHidden(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageName string,
+	hidden bool,
+	parent bool,
+) (bool, error) {
+	return w.impl.SetApplicationHidden(ctx, admin, callerPackage, packageName, hidden, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsApplicationHidden(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageName string,
+	parent bool,
+) (bool, error) {
+	return w.impl.IsApplicationHidden(ctx, admin, callerPackage, packageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) CreateAndManageUser(
+	ctx context.Context,
+	who content.ComponentName,
+	name string,
+	profileOwner content.ComponentName,
+	adminExtras interface{},
+	flags int32,
+) (os.UserHandle, error) {
+	return w.impl.CreateAndManageUser(ctx, who, name, profileOwner, adminExtras, flags)
+}
+
+func (w *devicePolicyManagerStubWrapper) RemoveUser(
+	ctx context.Context,
+	who content.ComponentName,
+	userHandle os.UserHandle,
+) (bool, error) {
+	return w.impl.RemoveUser(ctx, who, userHandle)
+}
+
+func (w *devicePolicyManagerStubWrapper) SwitchUser(
+	ctx context.Context,
+	who content.ComponentName,
+	userHandle os.UserHandle,
+) (bool, error) {
+	return w.impl.SwitchUser(ctx, who, userHandle)
+}
+
+func (w *devicePolicyManagerStubWrapper) StartUserInBackground(
+	ctx context.Context,
+	who content.ComponentName,
+	userHandle os.UserHandle,
+) (int32, error) {
+	return w.impl.StartUserInBackground(ctx, who, userHandle)
+}
+
+func (w *devicePolicyManagerStubWrapper) StopUser(
+	ctx context.Context,
+	who content.ComponentName,
+	userHandle os.UserHandle,
+) (int32, error) {
+	return w.impl.StopUser(ctx, who, userHandle)
+}
+
+func (w *devicePolicyManagerStubWrapper) LogoutUser(
+	ctx context.Context,
+	who content.ComponentName,
+) (int32, error) {
+	return w.impl.LogoutUser(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) LogoutUserInternal(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.LogoutUserInternal(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetLogoutUserId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetLogoutUserId(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetSecondaryUsers(
+	ctx context.Context,
+	who content.ComponentName,
+) ([]os.UserHandle, error) {
+	return w.impl.GetSecondaryUsers(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) AcknowledgeNewUserDisclaimer(
+	ctx context.Context,
+) error {
+	return w.impl.AcknowledgeNewUserDisclaimer(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsNewUserDisclaimerAcknowledged(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsNewUserDisclaimerAcknowledged(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) EnableSystemApp(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageName string,
+) error {
+	return w.impl.EnableSystemApp(ctx, admin, callerPackage, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) EnableSystemAppWithIntent(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	intent content.Intent,
+) (int32, error) {
+	return w.impl.EnableSystemAppWithIntent(ctx, admin, callerPackage, intent)
+}
+
+func (w *devicePolicyManagerStubWrapper) InstallExistingPackage(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageName string,
+) (bool, error) {
+	return w.impl.InstallExistingPackage(ctx, admin, callerPackage, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAccountManagementDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	accountType string,
+	disabled bool,
+	parent bool,
+) error {
+	return w.impl.SetAccountManagementDisabled(ctx, who, callerPackageName, accountType, disabled, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAccountTypesWithManagementDisabled(
+	ctx context.Context,
+	callerPackageName string,
+) ([]string, error) {
+	return w.impl.GetAccountTypesWithManagementDisabled(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAccountTypesWithManagementDisabledAsUser(
+	ctx context.Context,
+	callerPackageName string,
+	parent bool,
+) ([]string, error) {
+	return w.impl.GetAccountTypesWithManagementDisabledAsUser(ctx, callerPackageName, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetSecondaryLockscreenEnabled(
+	ctx context.Context,
+	who content.ComponentName,
+	enabled bool,
+	options interface{},
+) error {
+	return w.impl.SetSecondaryLockscreenEnabled(ctx, who, enabled, options)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsSecondaryLockscreenEnabled(
+	ctx context.Context,
+	userHandle os.UserHandle,
+) (bool, error) {
+	return w.impl.IsSecondaryLockscreenEnabled(ctx, userHandle)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPreferentialNetworkServiceConfigs(
+	ctx context.Context,
+	preferentialNetworkServiceConfigs []PreferentialNetworkServiceConfig,
+) error {
+	return w.impl.SetPreferentialNetworkServiceConfigs(ctx, preferentialNetworkServiceConfigs)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPreferentialNetworkServiceConfigs(
+	ctx context.Context,
+) ([]PreferentialNetworkServiceConfig, error) {
+	return w.impl.GetPreferentialNetworkServiceConfigs(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetLockTaskPackages(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	packages []string,
+) error {
+	return w.impl.SetLockTaskPackages(ctx, who, callerPackageName, packages)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetLockTaskPackages(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+) ([]string, error) {
+	return w.impl.GetLockTaskPackages(ctx, who, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsLockTaskPermitted(
+	ctx context.Context,
+	pkg string,
+) (bool, error) {
+	return w.impl.IsLockTaskPermitted(ctx, pkg)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetLockTaskFeatures(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	flags int32,
+) error {
+	return w.impl.SetLockTaskFeatures(ctx, who, callerPackageName, flags)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetLockTaskFeatures(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+) (int32, error) {
+	return w.impl.GetLockTaskFeatures(ctx, who, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetGlobalSetting(
+	ctx context.Context,
+	who content.ComponentName,
+	setting string,
+	value string,
+) error {
+	return w.impl.SetGlobalSetting(ctx, who, setting, value)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetSystemSetting(
+	ctx context.Context,
+	who content.ComponentName,
+	setting string,
+	value string,
+	parent bool,
+) error {
+	return w.impl.SetSystemSetting(ctx, who, setting, value, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetSecureSetting(
+	ctx context.Context,
+	who content.ComponentName,
+	setting string,
+	value string,
+) error {
+	return w.impl.SetSecureSetting(ctx, who, setting, value)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetConfiguredNetworksLockdownState(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	lockdown bool,
+) error {
+	return w.impl.SetConfiguredNetworksLockdownState(ctx, who, callerPackageName, lockdown)
+}
+
+func (w *devicePolicyManagerStubWrapper) HasLockdownAdminConfiguredNetworks(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.HasLockdownAdminConfiguredNetworks(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetLocationEnabled(
+	ctx context.Context,
+	who content.ComponentName,
+	locationEnabled bool,
+) error {
+	return w.impl.SetLocationEnabled(ctx, who, locationEnabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetTime(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	millis int64,
+) (bool, error) {
+	return w.impl.SetTime(ctx, who, callerPackageName, millis)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetTimeZone(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	timeZone string,
+) (bool, error) {
+	return w.impl.SetTimeZone(ctx, who, callerPackageName, timeZone)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetMasterVolumeMuted(
+	ctx context.Context,
+	admin content.ComponentName,
+	on bool,
+) error {
+	return w.impl.SetMasterVolumeMuted(ctx, admin, on)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsMasterVolumeMuted(
+	ctx context.Context,
+	admin content.ComponentName,
+) (bool, error) {
+	return w.impl.IsMasterVolumeMuted(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) NotifyLockTaskModeChanged(
+	ctx context.Context,
+	isEnabled bool,
+	pkg string,
+) error {
+	return w.impl.NotifyLockTaskModeChanged(ctx, isEnabled, pkg)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetUninstallBlocked(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageName string,
+	uninstallBlocked bool,
+) error {
+	return w.impl.SetUninstallBlocked(ctx, admin, callerPackage, packageName, uninstallBlocked)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsUninstallBlocked(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsUninstallBlocked(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetCrossProfileCallerIdDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+	disabled bool,
+) error {
+	return w.impl.SetCrossProfileCallerIdDisabled(ctx, who, disabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCrossProfileCallerIdDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.GetCrossProfileCallerIdDisabled(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCrossProfileCallerIdDisabledForUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetCrossProfileCallerIdDisabledForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetCrossProfileContactsSearchDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+	disabled bool,
+) error {
+	return w.impl.SetCrossProfileContactsSearchDisabled(ctx, who, disabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCrossProfileContactsSearchDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.GetCrossProfileContactsSearchDisabled(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCrossProfileContactsSearchDisabledForUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetCrossProfileContactsSearchDisabledForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) StartManagedQuickContact(
+	ctx context.Context,
+	lookupKey string,
+	contactId int64,
+	isContactIdIgnored bool,
+	directoryId int64,
+	originalIntent content.Intent,
+) error {
+	return w.impl.StartManagedQuickContact(ctx, lookupKey, contactId, isContactIdIgnored, directoryId, originalIntent)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetManagedProfileCallerIdAccessPolicy(
+	ctx context.Context,
+	policy PackagePolicy,
+) error {
+	return w.impl.SetManagedProfileCallerIdAccessPolicy(ctx, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetManagedProfileCallerIdAccessPolicy(
+	ctx context.Context,
+) (PackagePolicy, error) {
+	return w.impl.GetManagedProfileCallerIdAccessPolicy(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) HasManagedProfileCallerIdAccess(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.HasManagedProfileCallerIdAccess(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetCredentialManagerPolicy(
+	ctx context.Context,
+	policy PackagePolicy,
+) error {
+	return w.impl.SetCredentialManagerPolicy(ctx, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCredentialManagerPolicy(
+	ctx context.Context,
+) (PackagePolicy, error) {
+	return w.impl.GetCredentialManagerPolicy(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetManagedProfileContactsAccessPolicy(
+	ctx context.Context,
+	policy PackagePolicy,
+) error {
+	return w.impl.SetManagedProfileContactsAccessPolicy(ctx, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetManagedProfileContactsAccessPolicy(
+	ctx context.Context,
+) (PackagePolicy, error) {
+	return w.impl.GetManagedProfileContactsAccessPolicy(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) HasManagedProfileContactsAccess(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.HasManagedProfileContactsAccess(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetBluetoothContactSharingDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+	disabled bool,
+) error {
+	return w.impl.SetBluetoothContactSharingDisabled(ctx, who, disabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetBluetoothContactSharingDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.GetBluetoothContactSharingDisabled(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetBluetoothContactSharingDisabledForUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetBluetoothContactSharingDisabledForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetTrustAgentConfiguration(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	agent content.ComponentName,
+	args interface{},
+	parent bool,
+) error {
+	return w.impl.SetTrustAgentConfiguration(ctx, admin, callerPackageName, agent, args, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetTrustAgentConfiguration(
+	ctx context.Context,
+	admin content.ComponentName,
+	agent content.ComponentName,
+	parent bool,
+) ([]interface{}, error) {
+	return w.impl.GetTrustAgentConfiguration(ctx, admin, agent, parent)
+}
+
+func (w *devicePolicyManagerStubWrapper) AddCrossProfileWidgetProvider(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	packageName string,
+) (bool, error) {
+	return w.impl.AddCrossProfileWidgetProvider(ctx, admin, callerPackageName, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) RemoveCrossProfileWidgetProvider(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	packageName string,
+) (bool, error) {
+	return w.impl.RemoveCrossProfileWidgetProvider(ctx, admin, callerPackageName, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCrossProfileWidgetProviders(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+) ([]string, error) {
+	return w.impl.GetCrossProfileWidgetProviders(ctx, admin, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAutoTimeRequired(
+	ctx context.Context,
+	who content.ComponentName,
+	required bool,
+) error {
+	return w.impl.SetAutoTimeRequired(ctx, who, required)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAutoTimeRequired(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetAutoTimeRequired(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAutoTimeEnabled(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	enabled bool,
+) error {
+	return w.impl.SetAutoTimeEnabled(ctx, who, callerPackageName, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAutoTimeEnabled(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+) (bool, error) {
+	return w.impl.GetAutoTimeEnabled(ctx, who, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAutoTimePolicy(
+	ctx context.Context,
+	callerPackageName string,
+	policy int32,
+) error {
+	return w.impl.SetAutoTimePolicy(ctx, callerPackageName, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAutoTimePolicy(
+	ctx context.Context,
+	callerPackageName string,
+) (int32, error) {
+	return w.impl.GetAutoTimePolicy(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAutoTimeZoneEnabled(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	enabled bool,
+) error {
+	return w.impl.SetAutoTimeZoneEnabled(ctx, who, callerPackageName, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAutoTimeZoneEnabled(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+) (bool, error) {
+	return w.impl.GetAutoTimeZoneEnabled(ctx, who, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAutoTimeZonePolicy(
+	ctx context.Context,
+	callerPackageName string,
+	policy int32,
+) error {
+	return w.impl.SetAutoTimeZonePolicy(ctx, callerPackageName, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAutoTimeZonePolicy(
+	ctx context.Context,
+	callerPackageName string,
+) (int32, error) {
+	return w.impl.GetAutoTimeZonePolicy(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetForceEphemeralUsers(
+	ctx context.Context,
+	who content.ComponentName,
+	forceEpehemeralUsers bool,
+) error {
+	return w.impl.SetForceEphemeralUsers(ctx, who, forceEpehemeralUsers)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetForceEphemeralUsers(
+	ctx context.Context,
+	who content.ComponentName,
+) (bool, error) {
+	return w.impl.GetForceEphemeralUsers(ctx, who)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsRemovingAdmin(
+	ctx context.Context,
+	adminReceiver content.ComponentName,
+) (bool, error) {
+	return w.impl.IsRemovingAdmin(ctx, adminReceiver)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetUserIcon(
+	ctx context.Context,
+	admin content.ComponentName,
+	icon graphics.Bitmap,
+) error {
+	return w.impl.SetUserIcon(ctx, admin, icon)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetSystemUpdatePolicy(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	policy SystemUpdatePolicy,
+) error {
+	return w.impl.SetSystemUpdatePolicy(ctx, who, callerPackageName, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetSystemUpdatePolicy(
+	ctx context.Context,
+) (SystemUpdatePolicy, error) {
+	return w.impl.GetSystemUpdatePolicy(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) ClearSystemUpdatePolicyFreezePeriodRecord(
+	ctx context.Context,
+) error {
+	return w.impl.ClearSystemUpdatePolicyFreezePeriodRecord(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetKeyguardDisabled(
+	ctx context.Context,
+	admin content.ComponentName,
+	disabled bool,
+) (bool, error) {
+	return w.impl.SetKeyguardDisabled(ctx, admin, disabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetStatusBarDisabled(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	disabled bool,
+) (bool, error) {
+	return w.impl.SetStatusBarDisabled(ctx, who, callerPackageName, disabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsStatusBarDisabled(
+	ctx context.Context,
+	callerPackage string,
+) (bool, error) {
+	return w.impl.IsStatusBarDisabled(ctx, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDoNotAskCredentialsOnBoot(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetDoNotAskCredentialsOnBoot(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) NotifyPendingSystemUpdate(
+	ctx context.Context,
+	info SystemUpdateInfo,
+) error {
+	return w.impl.NotifyPendingSystemUpdate(ctx, info)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPendingSystemUpdate(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+) (SystemUpdateInfo, error) {
+	return w.impl.GetPendingSystemUpdate(ctx, admin, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPermissionPolicy(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	policy int32,
+) error {
+	return w.impl.SetPermissionPolicy(ctx, admin, callerPackage, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPermissionPolicy(
+	ctx context.Context,
+	admin content.ComponentName,
+) (int32, error) {
+	return w.impl.GetPermissionPolicy(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPermissionGrantState(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageName string,
+	permission string,
+	grantState int32,
+	resultReceiver os.RemoteCallback,
+) error {
+	return w.impl.SetPermissionGrantState(ctx, admin, callerPackage, packageName, permission, grantState, resultReceiver)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPermissionGrantState(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageName string,
+	permission string,
+) (int32, error) {
+	return w.impl.GetPermissionGrantState(ctx, admin, callerPackage, packageName, permission)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsProvisioningAllowed(
+	ctx context.Context,
+	action string,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsProvisioningAllowed(ctx, action, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) CheckProvisioningPrecondition(
+	ctx context.Context,
+	action string,
+	packageName string,
+) (int32, error) {
+	return w.impl.CheckProvisioningPrecondition(ctx, action, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetKeepUninstalledPackages(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	packageList []string,
+) error {
+	return w.impl.SetKeepUninstalledPackages(ctx, admin, callerPackage, packageList)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetKeepUninstalledPackages(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+) ([]string, error) {
+	return w.impl.GetKeepUninstalledPackages(ctx, admin, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsManagedProfile(
+	ctx context.Context,
+	admin content.ComponentName,
+) (bool, error) {
+	return w.impl.IsManagedProfile(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetWifiMacAddress(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+) (string, error) {
+	return w.impl.GetWifiMacAddress(ctx, admin, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) Reboot(
+	ctx context.Context,
+	admin content.ComponentName,
+) error {
+	return w.impl.Reboot(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetShortSupportMessage(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	message interface{},
+) error {
+	return w.impl.SetShortSupportMessage(ctx, admin, callerPackageName, message)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetShortSupportMessage(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+) (interface{}, error) {
+	return w.impl.GetShortSupportMessage(ctx, admin, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetLongSupportMessage(
+	ctx context.Context,
+	admin content.ComponentName,
+	message interface{},
+) error {
+	return w.impl.SetLongSupportMessage(ctx, admin, message)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetLongSupportMessage(
+	ctx context.Context,
+	admin content.ComponentName,
+) (interface{}, error) {
+	return w.impl.GetLongSupportMessage(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetShortSupportMessageForUser(
+	ctx context.Context,
+	admin content.ComponentName,
+) (interface{}, error) {
+	return w.impl.GetShortSupportMessageForUser(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetLongSupportMessageForUser(
+	ctx context.Context,
+	admin content.ComponentName,
+) (interface{}, error) {
+	return w.impl.GetLongSupportMessageForUser(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetOrganizationColor(
+	ctx context.Context,
+	admin content.ComponentName,
+	color int32,
+) error {
+	return w.impl.SetOrganizationColor(ctx, admin, color)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetOrganizationColorForUser(
+	ctx context.Context,
+	color int32,
+) error {
+	return w.impl.SetOrganizationColorForUser(ctx, color)
+}
+
+func (w *devicePolicyManagerStubWrapper) ClearOrganizationIdForUser(
+	ctx context.Context,
+) error {
+	return w.impl.ClearOrganizationIdForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetOrganizationColor(
+	ctx context.Context,
+	admin content.ComponentName,
+) (int32, error) {
+	return w.impl.GetOrganizationColor(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetOrganizationColorForUser(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetOrganizationColorForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetOrganizationName(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	title interface{},
+) error {
+	return w.impl.SetOrganizationName(ctx, admin, callerPackageName, title)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetOrganizationName(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+) (interface{}, error) {
+	return w.impl.GetOrganizationName(ctx, admin, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDeviceOwnerOrganizationName(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetDeviceOwnerOrganizationName(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetOrganizationNameForUser(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetOrganizationNameForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetUserProvisioningState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserProvisioningState(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetUserProvisioningState(
+	ctx context.Context,
+	state int32,
+) error {
+	return w.impl.SetUserProvisioningState(ctx, state)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAffiliationIds(
+	ctx context.Context,
+	admin content.ComponentName,
+	ids []string,
+) error {
+	return w.impl.SetAffiliationIds(ctx, admin, ids)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAffiliationIds(
+	ctx context.Context,
+	admin content.ComponentName,
+) ([]string, error) {
+	return w.impl.GetAffiliationIds(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsCallingUserAffiliated(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCallingUserAffiliated(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsAffiliatedUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAffiliatedUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetSecurityLoggingEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+	enabled bool,
+) error {
+	return w.impl.SetSecurityLoggingEnabled(ctx, admin, packageName, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsSecurityLoggingEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsSecurityLoggingEnabled(ctx, admin, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) RetrieveSecurityLogs(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+) (pm.ParceledListSlice, error) {
+	return w.impl.RetrieveSecurityLogs(ctx, admin, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) RetrievePreRebootSecurityLogs(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+) (pm.ParceledListSlice, error) {
+	return w.impl.RetrievePreRebootSecurityLogs(ctx, admin, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) ForceNetworkLogs(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.ForceNetworkLogs(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) ForceSecurityLogs(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.ForceSecurityLogs(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAuditLogEnabled(
+	ctx context.Context,
+	callerPackage string,
+	enabled bool,
+) error {
+	return w.impl.SetAuditLogEnabled(ctx, callerPackage, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsAuditLogEnabled(
+	ctx context.Context,
+	callerPackage string,
+) (bool, error) {
+	return w.impl.IsAuditLogEnabled(ctx, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAuditLogEventsCallback(
+	ctx context.Context,
+	callerPackage string,
+	callback IAuditLogEventsCallback,
+) error {
+	return w.impl.SetAuditLogEventsCallback(ctx, callerPackage, callback)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsUninstallInQueue(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsUninstallInQueue(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) UninstallPackageWithActiveAdmins(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.UninstallPackageWithActiveAdmins(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsDeviceProvisioned(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDeviceProvisioned(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsDeviceProvisioningConfigApplied(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDeviceProvisioningConfigApplied(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetDeviceProvisioningConfigApplied(
+	ctx context.Context,
+) error {
+	return w.impl.SetDeviceProvisioningConfigApplied(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) ForceUpdateUserSetupComplete(
+	ctx context.Context,
+) error {
+	return w.impl.ForceUpdateUserSetupComplete(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetBackupServiceEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+	enabled bool,
+) error {
+	return w.impl.SetBackupServiceEnabled(ctx, admin, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsBackupServiceEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+) (bool, error) {
+	return w.impl.IsBackupServiceEnabled(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetNetworkLoggingEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+	enabled bool,
+) error {
+	return w.impl.SetNetworkLoggingEnabled(ctx, admin, packageName, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsNetworkLoggingEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsNetworkLoggingEnabled(ctx, admin, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) RetrieveNetworkLogs(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+	batchToken int64,
+) ([]NetworkEvent, error) {
+	return w.impl.RetrieveNetworkLogs(ctx, admin, packageName, batchToken)
+}
+
+func (w *devicePolicyManagerStubWrapper) BindDeviceAdminServiceAsUser(
+	ctx context.Context,
+	admin content.ComponentName,
+	caller app.IApplicationThread,
+	token binder.IBinder,
+	service content.Intent,
+	connection app.IServiceConnection,
+	flags int64,
+	targetUserId int32,
+) (bool, error) {
+	return w.impl.BindDeviceAdminServiceAsUser(ctx, admin, caller, token, service, connection, flags, targetUserId)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetBindDeviceAdminTargetUsers(
+	ctx context.Context,
+	admin content.ComponentName,
+) ([]os.UserHandle, error) {
+	return w.impl.GetBindDeviceAdminTargetUsers(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsEphemeralUser(
+	ctx context.Context,
+	admin content.ComponentName,
+) (bool, error) {
+	return w.impl.IsEphemeralUser(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetLastSecurityLogRetrievalTime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetLastSecurityLogRetrievalTime(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetLastBugReportRequestTime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetLastBugReportRequestTime(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetLastNetworkLogRetrievalTime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetLastNetworkLogRetrievalTime(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetResetPasswordToken(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	token []byte,
+) (bool, error) {
+	return w.impl.SetResetPasswordToken(ctx, admin, callerPackageName, token)
+}
+
+func (w *devicePolicyManagerStubWrapper) ClearResetPasswordToken(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+) (bool, error) {
+	return w.impl.ClearResetPasswordToken(ctx, admin, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsResetPasswordTokenActive(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+) (bool, error) {
+	return w.impl.IsResetPasswordTokenActive(ctx, admin, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) ResetPasswordWithToken(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	password string,
+	token []byte,
+	flags int32,
+) (bool, error) {
+	return w.impl.ResetPasswordWithToken(ctx, admin, callerPackageName, password, token, flags)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsCurrentInputMethodSetByOwner(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCurrentInputMethodSetByOwner(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetOwnerInstalledCaCerts(
+	ctx context.Context,
+	user os.UserHandle,
+) (pm.StringParceledListSlice, error) {
+	return w.impl.GetOwnerInstalledCaCerts(ctx, user)
+}
+
+func (w *devicePolicyManagerStubWrapper) ClearApplicationUserData(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+	callback pm.IPackageDataObserver,
+) error {
+	return w.impl.ClearApplicationUserData(ctx, admin, packageName, callback)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetLogoutEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+	enabled bool,
+) error {
+	return w.impl.SetLogoutEnabled(ctx, admin, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsLogoutEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLogoutEnabled(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDisallowedSystemApps(
+	ctx context.Context,
+	admin content.ComponentName,
+	provisioningAction string,
+) ([]string, error) {
+	return w.impl.GetDisallowedSystemApps(ctx, admin, provisioningAction)
+}
+
+func (w *devicePolicyManagerStubWrapper) TransferOwnership(
+	ctx context.Context,
+	admin content.ComponentName,
+	target content.ComponentName,
+	bundle interface{},
+) error {
+	return w.impl.TransferOwnership(ctx, admin, target, bundle)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetTransferOwnershipBundle(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetTransferOwnershipBundle(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetStartUserSessionMessage(
+	ctx context.Context,
+	admin content.ComponentName,
+	startUserSessionMessage interface{},
+) error {
+	return w.impl.SetStartUserSessionMessage(ctx, admin, startUserSessionMessage)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetEndUserSessionMessage(
+	ctx context.Context,
+	admin content.ComponentName,
+	endUserSessionMessage interface{},
+) error {
+	return w.impl.SetEndUserSessionMessage(ctx, admin, endUserSessionMessage)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetStartUserSessionMessage(
+	ctx context.Context,
+	admin content.ComponentName,
+) (interface{}, error) {
+	return w.impl.GetStartUserSessionMessage(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetEndUserSessionMessage(
+	ctx context.Context,
+	admin content.ComponentName,
+) (interface{}, error) {
+	return w.impl.GetEndUserSessionMessage(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetMeteredDataDisabledPackages(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageNames []string,
+) ([]string, error) {
+	return w.impl.SetMeteredDataDisabledPackages(ctx, admin, packageNames)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetMeteredDataDisabledPackages(
+	ctx context.Context,
+	admin content.ComponentName,
+) ([]string, error) {
+	return w.impl.GetMeteredDataDisabledPackages(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) AddOverrideApn(
+	ctx context.Context,
+	admin content.ComponentName,
+	apnSetting data.ApnSetting,
+) (int32, error) {
+	return w.impl.AddOverrideApn(ctx, admin, apnSetting)
+}
+
+func (w *devicePolicyManagerStubWrapper) UpdateOverrideApn(
+	ctx context.Context,
+	admin content.ComponentName,
+	apnId int32,
+	apnSetting data.ApnSetting,
+) (bool, error) {
+	return w.impl.UpdateOverrideApn(ctx, admin, apnId, apnSetting)
+}
+
+func (w *devicePolicyManagerStubWrapper) RemoveOverrideApn(
+	ctx context.Context,
+	admin content.ComponentName,
+	apnId int32,
+) (bool, error) {
+	return w.impl.RemoveOverrideApn(ctx, admin, apnId)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetOverrideApns(
+	ctx context.Context,
+	admin content.ComponentName,
+) ([]data.ApnSetting, error) {
+	return w.impl.GetOverrideApns(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetOverrideApnsEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+	enabled bool,
+) error {
+	return w.impl.SetOverrideApnsEnabled(ctx, admin, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsOverrideApnEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+) (bool, error) {
+	return w.impl.IsOverrideApnEnabled(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsMeteredDataDisabledPackageForUser(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsMeteredDataDisabledPackageForUser(ctx, admin, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetGlobalPrivateDns(
+	ctx context.Context,
+	admin content.ComponentName,
+	mode int32,
+	privateDnsHost string,
+) (int32, error) {
+	return w.impl.SetGlobalPrivateDns(ctx, admin, mode, privateDnsHost)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetGlobalPrivateDnsMode(
+	ctx context.Context,
+	admin content.ComponentName,
+) (int32, error) {
+	return w.impl.GetGlobalPrivateDnsMode(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetGlobalPrivateDnsHost(
+	ctx context.Context,
+	admin content.ComponentName,
+) (string, error) {
+	return w.impl.GetGlobalPrivateDnsHost(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetProfileOwnerOnOrganizationOwnedDevice(
+	ctx context.Context,
+	who content.ComponentName,
+	isProfileOwnerOnOrganizationOwnedDevice bool,
+) error {
+	return w.impl.SetProfileOwnerOnOrganizationOwnedDevice(ctx, who, isProfileOwnerOnOrganizationOwnedDevice)
+}
+
+func (w *devicePolicyManagerStubWrapper) InstallUpdateFromFile(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	updateFileDescriptor int32,
+	listener StartInstallingUpdateCallback,
+) error {
+	return w.impl.InstallUpdateFromFile(ctx, admin, callerPackageName, updateFileDescriptor, listener)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetCrossProfileCalendarPackages(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageNames []string,
+) error {
+	return w.impl.SetCrossProfileCalendarPackages(ctx, admin, packageNames)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCrossProfileCalendarPackages(
+	ctx context.Context,
+	admin content.ComponentName,
+) ([]string, error) {
+	return w.impl.GetCrossProfileCalendarPackages(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsPackageAllowedToAccessCalendarForUser(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsPackageAllowedToAccessCalendarForUser(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCrossProfileCalendarPackagesForUser(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetCrossProfileCalendarPackagesForUser(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetCrossProfilePackages(
+	ctx context.Context,
+	admin content.ComponentName,
+	packageNames []string,
+) error {
+	return w.impl.SetCrossProfilePackages(ctx, admin, packageNames)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetCrossProfilePackages(
+	ctx context.Context,
+	admin content.ComponentName,
+) ([]string, error) {
+	return w.impl.GetCrossProfilePackages(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAllCrossProfilePackages(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetAllCrossProfilePackages(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDefaultCrossProfilePackages(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetDefaultCrossProfilePackages(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsManagedKiosk(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsManagedKiosk(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsUnattendedManagedKiosk(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUnattendedManagedKiosk(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) StartViewCalendarEventInManagedProfile(
+	ctx context.Context,
+	packageName string,
+	eventId int64,
+	start int64,
+	end int64,
+	allDay bool,
+	flags int32,
+) (bool, error) {
+	return w.impl.StartViewCalendarEventInManagedProfile(ctx, packageName, eventId, start, end, allDay, flags)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetKeyGrantForApp(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackage string,
+	alias string,
+	packageName string,
+	hasGrant bool,
+) (bool, error) {
+	return w.impl.SetKeyGrantForApp(ctx, admin, callerPackage, alias, packageName, hasGrant)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetKeyPairGrants(
+	ctx context.Context,
+	callerPackage string,
+	alias string,
+) (ParcelableGranteeMap, error) {
+	return w.impl.GetKeyPairGrants(ctx, callerPackage, alias)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetKeyGrantToWifiAuth(
+	ctx context.Context,
+	callerPackage string,
+	alias string,
+	hasGrant bool,
+) (bool, error) {
+	return w.impl.SetKeyGrantToWifiAuth(ctx, callerPackage, alias, hasGrant)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsKeyPairGrantedToWifiAuth(
+	ctx context.Context,
+	callerPackage string,
+	alias string,
+) (bool, error) {
+	return w.impl.IsKeyPairGrantedToWifiAuth(ctx, callerPackage, alias)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetUserControlDisabledPackages(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	packages []string,
+) error {
+	return w.impl.SetUserControlDisabledPackages(ctx, admin, callerPackageName, packages)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetUserControlDisabledPackages(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+) ([]string, error) {
+	return w.impl.GetUserControlDisabledPackages(ctx, admin, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetCommonCriteriaModeEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+	callerPackageName string,
+	enabled bool,
+) error {
+	return w.impl.SetCommonCriteriaModeEnabled(ctx, admin, callerPackageName, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsCommonCriteriaModeEnabled(
+	ctx context.Context,
+	admin content.ComponentName,
+) (bool, error) {
+	return w.impl.IsCommonCriteriaModeEnabled(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPersonalAppsSuspendedReasons(
+	ctx context.Context,
+	admin content.ComponentName,
+) (int32, error) {
+	return w.impl.GetPersonalAppsSuspendedReasons(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetPersonalAppsSuspended(
+	ctx context.Context,
+	admin content.ComponentName,
+	suspended bool,
+) error {
+	return w.impl.SetPersonalAppsSuspended(ctx, admin, suspended)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetManagedProfileMaximumTimeOff(
+	ctx context.Context,
+	admin content.ComponentName,
+) (int64, error) {
+	return w.impl.GetManagedProfileMaximumTimeOff(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetManagedProfileMaximumTimeOff(
+	ctx context.Context,
+	admin content.ComponentName,
+	timeoutMs int64,
+) error {
+	return w.impl.SetManagedProfileMaximumTimeOff(ctx, admin, timeoutMs)
+}
+
+func (w *devicePolicyManagerStubWrapper) AcknowledgeDeviceCompliant(
+	ctx context.Context,
+) error {
+	return w.impl.AcknowledgeDeviceCompliant(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsComplianceAcknowledgementRequired(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsComplianceAcknowledgementRequired(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) CanProfileOwnerResetPasswordWhenLocked(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanProfileOwnerResetPasswordWhenLocked(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetNextOperationSafety(
+	ctx context.Context,
+	operation int32,
+	reason int32,
+) error {
+	return w.impl.SetNextOperationSafety(ctx, operation, reason)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsSafeOperation(
+	ctx context.Context,
+	reason int32,
+) (bool, error) {
+	return w.impl.IsSafeOperation(ctx, reason)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetEnrollmentSpecificId(
+	ctx context.Context,
+	callerPackage string,
+) (string, error) {
+	return w.impl.GetEnrollmentSpecificId(ctx, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetOrganizationIdForUser(
+	ctx context.Context,
+	callerPackage string,
+	enterpriseId string,
+) error {
+	return w.impl.SetOrganizationIdForUser(ctx, callerPackage, enterpriseId)
+}
+
+func (w *devicePolicyManagerStubWrapper) CreateAndProvisionManagedProfile(
+	ctx context.Context,
+	provisioningParams ManagedProfileProvisioningParams,
+	callerPackage string,
+) (os.UserHandle, error) {
+	return w.impl.CreateAndProvisionManagedProfile(ctx, provisioningParams, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) CreateManagedProfile(
+	ctx context.Context,
+	provisioningParams ManagedProfileProvisioningParams,
+	callerPackage string,
+) (os.UserHandle, error) {
+	return w.impl.CreateManagedProfile(ctx, provisioningParams, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) FinalizeCreateManagedProfile(
+	ctx context.Context,
+	provisioningParams ManagedProfileProvisioningParams,
+	managedProfileUser os.UserHandle,
+) error {
+	return w.impl.FinalizeCreateManagedProfile(ctx, provisioningParams, managedProfileUser)
+}
+
+func (w *devicePolicyManagerStubWrapper) ProvisionFullyManagedDevice(
+	ctx context.Context,
+	provisioningParams FullyManagedDeviceProvisioningParams,
+	callerPackage string,
+) error {
+	return w.impl.ProvisionFullyManagedDevice(ctx, provisioningParams, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) FinalizeWorkProfileProvisioning(
+	ctx context.Context,
+	managedProfileUser os.UserHandle,
+	migratedAccount accounts.Account,
+) error {
+	return w.impl.FinalizeWorkProfileProvisioning(ctx, managedProfileUser, migratedAccount)
+}
+
+func (w *devicePolicyManagerStubWrapper) RemoveManagedProfile(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.RemoveManagedProfile(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetDeviceOwnerType(
+	ctx context.Context,
+	admin content.ComponentName,
+	deviceOwnerType int32,
+) error {
+	return w.impl.SetDeviceOwnerType(ctx, admin, deviceOwnerType)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDeviceOwnerType(
+	ctx context.Context,
+	admin content.ComponentName,
+) (int32, error) {
+	return w.impl.GetDeviceOwnerType(ctx, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) ResetDefaultCrossProfileIntentFilters(
+	ctx context.Context,
+) error {
+	return w.impl.ResetDefaultCrossProfileIntentFilters(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) CanAdminGrantSensorsPermissions(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanAdminGrantSensorsPermissions(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetUsbDataSignalingEnabled(
+	ctx context.Context,
+	callerPackage string,
+	enabled bool,
+) error {
+	return w.impl.SetUsbDataSignalingEnabled(ctx, callerPackage, enabled)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsUsbDataSignalingEnabled(
+	ctx context.Context,
+	callerPackage string,
+) (bool, error) {
+	return w.impl.IsUsbDataSignalingEnabled(ctx, callerPackage)
+}
+
+func (w *devicePolicyManagerStubWrapper) CanUsbDataSignalingBeDisabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanUsbDataSignalingBeDisabled(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetMinimumRequiredWifiSecurityLevel(
+	ctx context.Context,
+	callerPackageName string,
+	level int32,
+) error {
+	return w.impl.SetMinimumRequiredWifiSecurityLevel(ctx, callerPackageName, level)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetMinimumRequiredWifiSecurityLevel(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMinimumRequiredWifiSecurityLevel(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetWifiSsidPolicy(
+	ctx context.Context,
+	callerPackageName string,
+	policy WifiSsidPolicy,
+) error {
+	return w.impl.SetWifiSsidPolicy(ctx, callerPackageName, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetWifiSsidPolicy(
+	ctx context.Context,
+	callerPackageName string,
+) (WifiSsidPolicy, error) {
+	return w.impl.GetWifiSsidPolicy(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsDevicePotentiallyStolen(
+	ctx context.Context,
+	callerPackageName string,
+) (bool, error) {
+	return w.impl.IsDevicePotentiallyStolen(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) ListForegroundAffiliatedUsers(
+	ctx context.Context,
+) ([]os.UserHandle, error) {
+	return w.impl.ListForegroundAffiliatedUsers(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetDrawables(
+	ctx context.Context,
+	drawables []DevicePolicyDrawableResource,
+) error {
+	return w.impl.SetDrawables(ctx, drawables)
+}
+
+func (w *devicePolicyManagerStubWrapper) ResetDrawables(
+	ctx context.Context,
+	drawableIds []string,
+) error {
+	return w.impl.ResetDrawables(ctx, drawableIds)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDrawable(
+	ctx context.Context,
+	drawableId string,
+	drawableStyle string,
+	drawableSource string,
+) (ParcelableResource, error) {
+	return w.impl.GetDrawable(ctx, drawableId, drawableStyle, drawableSource)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsDpcDownloaded(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDpcDownloaded(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetDpcDownloaded(
+	ctx context.Context,
+	downloaded bool,
+) error {
+	return w.impl.SetDpcDownloaded(ctx, downloaded)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetStrings(
+	ctx context.Context,
+	strings []DevicePolicyStringResource,
+) error {
+	return w.impl.SetStrings(ctx, strings)
+}
+
+func (w *devicePolicyManagerStubWrapper) ResetStrings(
+	ctx context.Context,
+	stringIds []string,
+) error {
+	return w.impl.ResetStrings(ctx, stringIds)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetString(
+	ctx context.Context,
+	stringId string,
+) (ParcelableResource, error) {
+	return w.impl.GetString(ctx, stringId)
+}
+
+func (w *devicePolicyManagerStubWrapper) ResetShouldAllowBypassingDevicePolicyManagementRoleQualificationState(
+	ctx context.Context,
+) error {
+	return w.impl.ResetShouldAllowBypassingDevicePolicyManagementRoleQualificationState(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) ShouldAllowBypassingDevicePolicyManagementRoleQualification(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ShouldAllowBypassingDevicePolicyManagementRoleQualification(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPolicyManagedProfiles(
+	ctx context.Context,
+	userHandle os.UserHandle,
+) ([]os.UserHandle, error) {
+	return w.impl.GetPolicyManagedProfiles(ctx, userHandle)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetApplicationExemptions(
+	ctx context.Context,
+	callerPackage string,
+	packageName string,
+	exemptions []int32,
+) error {
+	return w.impl.SetApplicationExemptions(ctx, callerPackage, packageName, exemptions)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetApplicationExemptions(
+	ctx context.Context,
+	packageName string,
+) ([]int32, error) {
+	return w.impl.GetApplicationExemptions(ctx, packageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetMtePolicy(
+	ctx context.Context,
+	flag int32,
+	callerPackageName string,
+) error {
+	return w.impl.SetMtePolicy(ctx, flag, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetMtePolicyBySystem(
+	ctx context.Context,
+	systemEntity string,
+	policy int32,
+) error {
+	return w.impl.SetMtePolicyBySystem(ctx, systemEntity, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetMtePolicy(
+	ctx context.Context,
+	callerPackageName string,
+) (int32, error) {
+	return w.impl.GetMtePolicy(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetManagedSubscriptionsPolicy(
+	ctx context.Context,
+	policy ManagedSubscriptionsPolicy,
+) error {
+	return w.impl.SetManagedSubscriptionsPolicy(ctx, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetManagedSubscriptionsPolicy(
+	ctx context.Context,
+) (ManagedSubscriptionsPolicy, error) {
+	return w.impl.GetManagedSubscriptionsPolicy(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetDevicePolicyState(
+	ctx context.Context,
+) (DevicePolicyState, error) {
+	return w.impl.GetDevicePolicyState(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) TriggerDevicePolicyEngineMigration(
+	ctx context.Context,
+	forceMigration bool,
+) (bool, error) {
+	return w.impl.TriggerDevicePolicyEngineMigration(ctx, forceMigration)
+}
+
+func (w *devicePolicyManagerStubWrapper) IsDeviceFinanced(
+	ctx context.Context,
+	callerPackageName string,
+) (bool, error) {
+	return w.impl.IsDeviceFinanced(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetFinancedDeviceKioskRoleHolder(
+	ctx context.Context,
+	callerPackageName string,
+) (string, error) {
+	return w.impl.GetFinancedDeviceKioskRoleHolder(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) CalculateHasIncompatibleAccounts(
+	ctx context.Context,
+) error {
+	return w.impl.CalculateHasIncompatibleAccounts(ctx)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetContentProtectionPolicy(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+	policy int32,
+) error {
+	return w.impl.SetContentProtectionPolicy(ctx, who, callerPackageName, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetContentProtectionPolicy(
+	ctx context.Context,
+	who content.ComponentName,
+	callerPackageName string,
+) (int32, error) {
+	return w.impl.GetContentProtectionPolicy(ctx, who, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetSubscriptionIds(
+	ctx context.Context,
+	callerPackageName string,
+) ([]int32, error) {
+	return w.impl.GetSubscriptionIds(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetMaxPolicyStorageLimit(
+	ctx context.Context,
+	callerPackageName string,
+	storageLimit int32,
+) error {
+	return w.impl.SetMaxPolicyStorageLimit(ctx, callerPackageName, storageLimit)
+}
+
+func (w *devicePolicyManagerStubWrapper) ForceSetMaxPolicyStorageLimit(
+	ctx context.Context,
+	callerPackageName string,
+	storageLimit int32,
+) error {
+	return w.impl.ForceSetMaxPolicyStorageLimit(ctx, callerPackageName, storageLimit)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetMaxPolicyStorageLimit(
+	ctx context.Context,
+	callerPackageName string,
+) (int32, error) {
+	return w.impl.GetMaxPolicyStorageLimit(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetPolicySizeForAdmin(
+	ctx context.Context,
+	callerPackageName string,
+	admin EnforcingAdmin,
+) (int32, error) {
+	return w.impl.GetPolicySizeForAdmin(ctx, callerPackageName, admin)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetHeadlessDeviceOwnerMode(
+	ctx context.Context,
+	callerPackageName string,
+) (int32, error) {
+	return w.impl.GetHeadlessDeviceOwnerMode(ctx, callerPackageName)
+}
+
+func (w *devicePolicyManagerStubWrapper) SetAppFunctionsPolicy(
+	ctx context.Context,
+	callerPackageName string,
+	policy int32,
+) error {
+	return w.impl.SetAppFunctionsPolicy(ctx, callerPackageName, policy)
+}
+
+func (w *devicePolicyManagerStubWrapper) GetAppFunctionsPolicy(
+	ctx context.Context,
+	callerPackageName string,
+) (int32, error) {
+	return w.impl.GetAppFunctionsPolicy(ctx, callerPackageName)
+}
+
+var _ IDevicePolicyManager = (*devicePolicyManagerStubWrapper)(nil)
+
+// NewDevicePolicyManagerStub creates a server-side IDevicePolicyManager wrapping the given
+// server implementation. The returned value satisfies IDevicePolicyManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDevicePolicyManagerStub(
+	impl IDevicePolicyManagerServer,
+) IDevicePolicyManager {
+	wrapper := &devicePolicyManagerStubWrapper{impl: impl}
+	stub := &DevicePolicyManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -460,3 +460,127 @@ func (s *FingerprintServiceReceiverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFingerprintServiceReceiverServer is the server-side interface that user implementations
+// provide to NewFingerprintServiceReceiverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFingerprintServiceReceiverServer interface {
+	OnEnrollResult(ctx context.Context, fp Fingerprint, remaining int32) error
+	OnAcquired(ctx context.Context, acquiredInfo int32, vendorCode int32) error
+	OnAuthenticationSucceeded(ctx context.Context, fp Fingerprint, isStrongBiometric bool) error
+	OnFingerprintDetected(ctx context.Context, sensorId int32, isStrongBiometric bool) error
+	OnAuthenticationFailed(ctx context.Context) error
+	OnError(ctx context.Context, error_ int32, vendorCode int32) error
+	OnRemoved(ctx context.Context, fp Fingerprint, remaining int32) error
+	OnChallengeGenerated(ctx context.Context, sensorId int32, challenge int64) error
+	OnUdfpsPointerDown(ctx context.Context, sensorId int32) error
+	OnUdfpsPointerUp(ctx context.Context, sensorId int32) error
+	OnUdfpsOverlayShown(ctx context.Context) error
+}
+
+type fingerprintServiceReceiverStubWrapper struct {
+	impl       IFingerprintServiceReceiverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnEnrollResult(
+	ctx context.Context,
+	fp Fingerprint,
+	remaining int32,
+) error {
+	return w.impl.OnEnrollResult(ctx, fp, remaining)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnAcquired(
+	ctx context.Context,
+	acquiredInfo int32,
+	vendorCode int32,
+) error {
+	return w.impl.OnAcquired(ctx, acquiredInfo, vendorCode)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnAuthenticationSucceeded(
+	ctx context.Context,
+	fp Fingerprint,
+	isStrongBiometric bool,
+) error {
+	return w.impl.OnAuthenticationSucceeded(ctx, fp, isStrongBiometric)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnFingerprintDetected(
+	ctx context.Context,
+	sensorId int32,
+	isStrongBiometric bool,
+) error {
+	return w.impl.OnFingerprintDetected(ctx, sensorId, isStrongBiometric)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnAuthenticationFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnAuthenticationFailed(ctx)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnError(
+	ctx context.Context,
+	error_ int32,
+	vendorCode int32,
+) error {
+	return w.impl.OnError(ctx, error_, vendorCode)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnRemoved(
+	ctx context.Context,
+	fp Fingerprint,
+	remaining int32,
+) error {
+	return w.impl.OnRemoved(ctx, fp, remaining)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnChallengeGenerated(
+	ctx context.Context,
+	sensorId int32,
+	challenge int64,
+) error {
+	return w.impl.OnChallengeGenerated(ctx, sensorId, challenge)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnUdfpsPointerDown(
+	ctx context.Context,
+	sensorId int32,
+) error {
+	return w.impl.OnUdfpsPointerDown(ctx, sensorId)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnUdfpsPointerUp(
+	ctx context.Context,
+	sensorId int32,
+) error {
+	return w.impl.OnUdfpsPointerUp(ctx, sensorId)
+}
+
+func (w *fingerprintServiceReceiverStubWrapper) OnUdfpsOverlayShown(
+	ctx context.Context,
+) error {
+	return w.impl.OnUdfpsOverlayShown(ctx)
+}
+
+var _ IFingerprintServiceReceiver = (*fingerprintServiceReceiverStubWrapper)(nil)
+
+// NewFingerprintServiceReceiverStub creates a server-side IFingerprintServiceReceiver wrapping the given
+// server implementation. The returned value satisfies IFingerprintServiceReceiver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFingerprintServiceReceiverStub(
+	impl IFingerprintServiceReceiverServer,
+) IFingerprintServiceReceiver {
+	wrapper := &fingerprintServiceReceiverStubWrapper{impl: impl}
+	stub := &FingerprintServiceReceiverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

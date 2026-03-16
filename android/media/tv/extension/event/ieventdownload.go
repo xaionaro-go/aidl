@@ -49,7 +49,7 @@ func (p *EventDownloadProxy) CreateSession(
 	if _err := eventDownloadParams.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEventDownload, "createSession")
 	if _err != nil {
@@ -120,4 +120,44 @@ func (s *EventDownloadStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IEventDownloadServer is the server-side interface that user implementations
+// provide to NewEventDownloadStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEventDownloadServer interface {
+	CreateSession(ctx context.Context, eventDownloadParams os.Bundle, listener IEventDownloadListener) (binder.IBinder, error)
+}
+
+type eventDownloadStubWrapper struct {
+	impl       IEventDownloadServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eventDownloadStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eventDownloadStubWrapper) CreateSession(
+	ctx context.Context,
+	eventDownloadParams os.Bundle,
+	listener IEventDownloadListener,
+) (binder.IBinder, error) {
+	return w.impl.CreateSession(ctx, eventDownloadParams, listener)
+}
+
+var _ IEventDownload = (*eventDownloadStubWrapper)(nil)
+
+// NewEventDownloadStub creates a server-side IEventDownload wrapping the given
+// server implementation. The returned value satisfies IEventDownload
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEventDownloadStub(
+	impl IEventDownloadServer,
+) IEventDownload {
+	wrapper := &eventDownloadStubWrapper{impl: impl}
+	stub := &EventDownloadStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

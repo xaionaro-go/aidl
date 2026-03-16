@@ -94,7 +94,7 @@ func (p *AugmentedAutofillServiceProxy) OnFillRequest(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAugmentedAutofillService)
 	_data.WriteInt32(sessionId)
-	_data.WriteStrongBinder(autofillManagerClient.Handle())
+	binder.WriteBinderToParcel(ctx, _data, autofillManagerClient, p.remote.Transport())
 	_data.WriteInt32(taskId)
 	_data.WriteInt32(1)
 	if _err := activityComponent.MarshalParcel(_data); _err != nil {
@@ -113,7 +113,7 @@ func (p *AugmentedAutofillServiceProxy) OnFillRequest(
 	if _err := inlineSuggestionsRequest.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAugmentedAutofillService, "onFillRequest")
 	if _err != nil {
@@ -258,4 +258,74 @@ func (s *AugmentedAutofillServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAugmentedAutofillServiceServer is the server-side interface that user implementations
+// provide to NewAugmentedAutofillServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAugmentedAutofillServiceServer interface {
+	OnConnected(ctx context.Context, debug bool, verbose bool) error
+	OnDisconnected(ctx context.Context) error
+	OnFillRequest(ctx context.Context, sessionId int32, autofillManagerClient binder.IBinder, taskId int32, activityComponent content.ComponentName, focusedId autofill.AutofillId, focusedValue autofill.AutofillValue, requestTime int64, inlineSuggestionsRequest inputmethod.InlineSuggestionsRequest, callback IFillCallback) error
+	OnDestroyAllFillWindowsRequest(ctx context.Context) error
+}
+
+type augmentedAutofillServiceStubWrapper struct {
+	impl       IAugmentedAutofillServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *augmentedAutofillServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *augmentedAutofillServiceStubWrapper) OnConnected(
+	ctx context.Context,
+	debug bool,
+	verbose bool,
+) error {
+	return w.impl.OnConnected(ctx, debug, verbose)
+}
+
+func (w *augmentedAutofillServiceStubWrapper) OnDisconnected(
+	ctx context.Context,
+) error {
+	return w.impl.OnDisconnected(ctx)
+}
+
+func (w *augmentedAutofillServiceStubWrapper) OnFillRequest(
+	ctx context.Context,
+	sessionId int32,
+	autofillManagerClient binder.IBinder,
+	taskId int32,
+	activityComponent content.ComponentName,
+	focusedId autofill.AutofillId,
+	focusedValue autofill.AutofillValue,
+	requestTime int64,
+	inlineSuggestionsRequest inputmethod.InlineSuggestionsRequest,
+	callback IFillCallback,
+) error {
+	return w.impl.OnFillRequest(ctx, sessionId, autofillManagerClient, taskId, activityComponent, focusedId, focusedValue, requestTime, inlineSuggestionsRequest, callback)
+}
+
+func (w *augmentedAutofillServiceStubWrapper) OnDestroyAllFillWindowsRequest(
+	ctx context.Context,
+) error {
+	return w.impl.OnDestroyAllFillWindowsRequest(ctx)
+}
+
+var _ IAugmentedAutofillService = (*augmentedAutofillServiceStubWrapper)(nil)
+
+// NewAugmentedAutofillServiceStub creates a server-side IAugmentedAutofillService wrapping the given
+// server implementation. The returned value satisfies IAugmentedAutofillService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAugmentedAutofillServiceStub(
+	impl IAugmentedAutofillServiceServer,
+) IAugmentedAutofillService {
+	wrapper := &augmentedAutofillServiceStubWrapper{impl: impl}
+	stub := &AugmentedAutofillServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

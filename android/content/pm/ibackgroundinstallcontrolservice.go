@@ -85,7 +85,7 @@ func (p *BackgroundInstallControlServiceProxy) RegisterBackgroundInstallCallback
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackgroundInstallControlService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackgroundInstallControlService, "registerBackgroundInstallCallback")
 	if _err != nil {
@@ -111,7 +111,7 @@ func (p *BackgroundInstallControlServiceProxy) UnregisterBackgroundInstallCallba
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackgroundInstallControlService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackgroundInstallControlService, "unregisterBackgroundInstallCallback")
 	if _err != nil {
@@ -201,4 +201,59 @@ func (s *BackgroundInstallControlServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBackgroundInstallControlServiceServer is the server-side interface that user implementations
+// provide to NewBackgroundInstallControlServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackgroundInstallControlServiceServer interface {
+	GetBackgroundInstalledPackages(ctx context.Context, flags int64) (ParceledListSlice, error)
+	RegisterBackgroundInstallCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
+	UnregisterBackgroundInstallCallback(ctx context.Context, callback ondeviceintelligence.IRemoteCallback) error
+}
+
+type backgroundInstallControlServiceStubWrapper struct {
+	impl       IBackgroundInstallControlServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backgroundInstallControlServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backgroundInstallControlServiceStubWrapper) GetBackgroundInstalledPackages(
+	ctx context.Context,
+	flags int64,
+) (ParceledListSlice, error) {
+	return w.impl.GetBackgroundInstalledPackages(ctx, flags)
+}
+
+func (w *backgroundInstallControlServiceStubWrapper) RegisterBackgroundInstallCallback(
+	ctx context.Context,
+	callback ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.RegisterBackgroundInstallCallback(ctx, callback)
+}
+
+func (w *backgroundInstallControlServiceStubWrapper) UnregisterBackgroundInstallCallback(
+	ctx context.Context,
+	callback ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.UnregisterBackgroundInstallCallback(ctx, callback)
+}
+
+var _ IBackgroundInstallControlService = (*backgroundInstallControlServiceStubWrapper)(nil)
+
+// NewBackgroundInstallControlServiceStub creates a server-side IBackgroundInstallControlService wrapping the given
+// server implementation. The returned value satisfies IBackgroundInstallControlService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackgroundInstallControlServiceStub(
+	impl IBackgroundInstallControlServiceServer,
+) IBackgroundInstallControlService {
+	wrapper := &backgroundInstallControlServiceStubWrapper{impl: impl}
+	stub := &BackgroundInstallControlServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

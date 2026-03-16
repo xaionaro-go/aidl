@@ -255,3 +255,76 @@ func (s *MediaRoute2ProviderServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaRoute2ProviderServiceCallbackServer is the server-side interface that user implementations
+// provide to NewMediaRoute2ProviderServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaRoute2ProviderServiceCallbackServer interface {
+	NotifyProviderUpdated(ctx context.Context, providerInfo MediaRoute2ProviderInfo) error
+	NotifySessionCreated(ctx context.Context, requestId int64, sessionInfo RoutingSessionInfo) error
+	NotifySessionsUpdated(ctx context.Context, sessionInfo []RoutingSessionInfo) error
+	NotifySessionReleased(ctx context.Context, sessionInfo RoutingSessionInfo) error
+	NotifyRequestFailed(ctx context.Context, requestId int64, reason int32) error
+}
+
+type mediaRoute2ProviderServiceCallbackStubWrapper struct {
+	impl       IMediaRoute2ProviderServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaRoute2ProviderServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaRoute2ProviderServiceCallbackStubWrapper) NotifyProviderUpdated(
+	ctx context.Context,
+	providerInfo MediaRoute2ProviderInfo,
+) error {
+	return w.impl.NotifyProviderUpdated(ctx, providerInfo)
+}
+
+func (w *mediaRoute2ProviderServiceCallbackStubWrapper) NotifySessionCreated(
+	ctx context.Context,
+	requestId int64,
+	sessionInfo RoutingSessionInfo,
+) error {
+	return w.impl.NotifySessionCreated(ctx, requestId, sessionInfo)
+}
+
+func (w *mediaRoute2ProviderServiceCallbackStubWrapper) NotifySessionsUpdated(
+	ctx context.Context,
+	sessionInfo []RoutingSessionInfo,
+) error {
+	return w.impl.NotifySessionsUpdated(ctx, sessionInfo)
+}
+
+func (w *mediaRoute2ProviderServiceCallbackStubWrapper) NotifySessionReleased(
+	ctx context.Context,
+	sessionInfo RoutingSessionInfo,
+) error {
+	return w.impl.NotifySessionReleased(ctx, sessionInfo)
+}
+
+func (w *mediaRoute2ProviderServiceCallbackStubWrapper) NotifyRequestFailed(
+	ctx context.Context,
+	requestId int64,
+	reason int32,
+) error {
+	return w.impl.NotifyRequestFailed(ctx, requestId, reason)
+}
+
+var _ IMediaRoute2ProviderServiceCallback = (*mediaRoute2ProviderServiceCallbackStubWrapper)(nil)
+
+// NewMediaRoute2ProviderServiceCallbackStub creates a server-side IMediaRoute2ProviderServiceCallback wrapping the given
+// server implementation. The returned value satisfies IMediaRoute2ProviderServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaRoute2ProviderServiceCallbackStub(
+	impl IMediaRoute2ProviderServiceCallbackServer,
+) IMediaRoute2ProviderServiceCallback {
+	wrapper := &mediaRoute2ProviderServiceCallbackStubWrapper{impl: impl}
+	stub := &MediaRoute2ProviderServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

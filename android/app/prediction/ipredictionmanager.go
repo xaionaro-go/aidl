@@ -70,7 +70,7 @@ func (p *PredictionManagerProxy) CreatePredictionSession(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPredictionManager, "createPredictionSession")
 	if _err != nil {
@@ -176,7 +176,7 @@ func (p *PredictionManagerProxy) SortAppTargets(
 	if _err := targets.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPredictionManager, "sortAppTargets")
 	if _err != nil {
@@ -207,7 +207,7 @@ func (p *PredictionManagerProxy) RegisterPredictionUpdates(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPredictionManager, "registerPredictionUpdates")
 	if _err != nil {
@@ -238,7 +238,7 @@ func (p *PredictionManagerProxy) UnregisterPredictionUpdates(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPredictionManager, "unregisterPredictionUpdates")
 	if _err != nil {
@@ -327,7 +327,7 @@ func (p *PredictionManagerProxy) RequestServiceFeatures(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPredictionManager, "requestServiceFeatures")
 	if _err != nil {
@@ -647,4 +647,117 @@ func (s *PredictionManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPredictionManagerServer is the server-side interface that user implementations
+// provide to NewPredictionManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPredictionManagerServer interface {
+	CreatePredictionSession(ctx context.Context, context_ AppPredictionContext, sessionId AppPredictionSessionId, token binder.IBinder) error
+	NotifyAppTargetEvent(ctx context.Context, sessionId AppPredictionSessionId, event AppTargetEvent) error
+	NotifyLaunchLocationShown(ctx context.Context, sessionId AppPredictionSessionId, launchLocation string, targetIds pm.ParceledListSlice) error
+	SortAppTargets(ctx context.Context, sessionId AppPredictionSessionId, targets pm.ParceledListSlice, callback IPredictionCallback) error
+	RegisterPredictionUpdates(ctx context.Context, sessionId AppPredictionSessionId, callback IPredictionCallback) error
+	UnregisterPredictionUpdates(ctx context.Context, sessionId AppPredictionSessionId, callback IPredictionCallback) error
+	RequestPredictionUpdate(ctx context.Context, sessionId AppPredictionSessionId) error
+	OnDestroyPredictionSession(ctx context.Context, sessionId AppPredictionSessionId) error
+	RequestServiceFeatures(ctx context.Context, sessionId AppPredictionSessionId, callback ondeviceintelligence.IRemoteCallback) error
+}
+
+type predictionManagerStubWrapper struct {
+	impl       IPredictionManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *predictionManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *predictionManagerStubWrapper) CreatePredictionSession(
+	ctx context.Context,
+	context_ AppPredictionContext,
+	sessionId AppPredictionSessionId,
+	token binder.IBinder,
+) error {
+	return w.impl.CreatePredictionSession(ctx, context_, sessionId, token)
+}
+
+func (w *predictionManagerStubWrapper) NotifyAppTargetEvent(
+	ctx context.Context,
+	sessionId AppPredictionSessionId,
+	event AppTargetEvent,
+) error {
+	return w.impl.NotifyAppTargetEvent(ctx, sessionId, event)
+}
+
+func (w *predictionManagerStubWrapper) NotifyLaunchLocationShown(
+	ctx context.Context,
+	sessionId AppPredictionSessionId,
+	launchLocation string,
+	targetIds pm.ParceledListSlice,
+) error {
+	return w.impl.NotifyLaunchLocationShown(ctx, sessionId, launchLocation, targetIds)
+}
+
+func (w *predictionManagerStubWrapper) SortAppTargets(
+	ctx context.Context,
+	sessionId AppPredictionSessionId,
+	targets pm.ParceledListSlice,
+	callback IPredictionCallback,
+) error {
+	return w.impl.SortAppTargets(ctx, sessionId, targets, callback)
+}
+
+func (w *predictionManagerStubWrapper) RegisterPredictionUpdates(
+	ctx context.Context,
+	sessionId AppPredictionSessionId,
+	callback IPredictionCallback,
+) error {
+	return w.impl.RegisterPredictionUpdates(ctx, sessionId, callback)
+}
+
+func (w *predictionManagerStubWrapper) UnregisterPredictionUpdates(
+	ctx context.Context,
+	sessionId AppPredictionSessionId,
+	callback IPredictionCallback,
+) error {
+	return w.impl.UnregisterPredictionUpdates(ctx, sessionId, callback)
+}
+
+func (w *predictionManagerStubWrapper) RequestPredictionUpdate(
+	ctx context.Context,
+	sessionId AppPredictionSessionId,
+) error {
+	return w.impl.RequestPredictionUpdate(ctx, sessionId)
+}
+
+func (w *predictionManagerStubWrapper) OnDestroyPredictionSession(
+	ctx context.Context,
+	sessionId AppPredictionSessionId,
+) error {
+	return w.impl.OnDestroyPredictionSession(ctx, sessionId)
+}
+
+func (w *predictionManagerStubWrapper) RequestServiceFeatures(
+	ctx context.Context,
+	sessionId AppPredictionSessionId,
+	callback ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.RequestServiceFeatures(ctx, sessionId, callback)
+}
+
+var _ IPredictionManager = (*predictionManagerStubWrapper)(nil)
+
+// NewPredictionManagerStub creates a server-side IPredictionManager wrapping the given
+// server implementation. The returned value satisfies IPredictionManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPredictionManagerStub(
+	impl IPredictionManagerServer,
+) IPredictionManager {
+	wrapper := &predictionManagerStubWrapper{impl: impl}
+	stub := &PredictionManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

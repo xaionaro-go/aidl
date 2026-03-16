@@ -96,3 +96,43 @@ func (s *PlaybackConfigDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPlaybackConfigDispatcherServer is the server-side interface that user implementations
+// provide to NewPlaybackConfigDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPlaybackConfigDispatcherServer interface {
+	DispatchPlaybackConfigChange(ctx context.Context, configs []AudioPlaybackConfiguration, flush bool) error
+}
+
+type playbackConfigDispatcherStubWrapper struct {
+	impl       IPlaybackConfigDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *playbackConfigDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *playbackConfigDispatcherStubWrapper) DispatchPlaybackConfigChange(
+	ctx context.Context,
+	configs []AudioPlaybackConfiguration,
+	flush bool,
+) error {
+	return w.impl.DispatchPlaybackConfigChange(ctx, configs, flush)
+}
+
+var _ IPlaybackConfigDispatcher = (*playbackConfigDispatcherStubWrapper)(nil)
+
+// NewPlaybackConfigDispatcherStub creates a server-side IPlaybackConfigDispatcher wrapping the given
+// server implementation. The returned value satisfies IPlaybackConfigDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPlaybackConfigDispatcherStub(
+	impl IPlaybackConfigDispatcherServer,
+) IPlaybackConfigDispatcher {
+	wrapper := &playbackConfigDispatcherStubWrapper{impl: impl}
+	stub := &PlaybackConfigDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

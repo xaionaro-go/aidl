@@ -44,7 +44,7 @@ func (p *BfsccTestAppCmdServiceProxy) ListenTo(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBfsccTestAppCmdService)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBfsccTestAppCmdService, "listenTo")
 	if _err != nil {
@@ -149,4 +149,50 @@ func (s *BfsccTestAppCmdServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBfsccTestAppCmdServiceServer is the server-side interface that user implementations
+// provide to NewBfsccTestAppCmdServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBfsccTestAppCmdServiceServer interface {
+	ListenTo(ctx context.Context, binder_ binder.IBinder) error
+	WaitAndConsumeNotifications(ctx context.Context) ([]bool, error)
+}
+
+type bfsccTestAppCmdServiceStubWrapper struct {
+	impl       IBfsccTestAppCmdServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bfsccTestAppCmdServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bfsccTestAppCmdServiceStubWrapper) ListenTo(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) error {
+	return w.impl.ListenTo(ctx, binder_)
+}
+
+func (w *bfsccTestAppCmdServiceStubWrapper) WaitAndConsumeNotifications(
+	ctx context.Context,
+) ([]bool, error) {
+	return w.impl.WaitAndConsumeNotifications(ctx)
+}
+
+var _ IBfsccTestAppCmdService = (*bfsccTestAppCmdServiceStubWrapper)(nil)
+
+// NewBfsccTestAppCmdServiceStub creates a server-side IBfsccTestAppCmdService wrapping the given
+// server implementation. The returned value satisfies IBfsccTestAppCmdService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBfsccTestAppCmdServiceStub(
+	impl IBfsccTestAppCmdServiceServer,
+) IBfsccTestAppCmdService {
+	wrapper := &bfsccTestAppCmdServiceStubWrapper{impl: impl}
+	stub := &BfsccTestAppCmdServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

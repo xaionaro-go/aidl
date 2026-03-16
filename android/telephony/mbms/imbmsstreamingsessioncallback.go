@@ -150,3 +150,58 @@ func (s *MbmsStreamingSessionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMbmsStreamingSessionCallbackServer is the server-side interface that user implementations
+// provide to NewMbmsStreamingSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMbmsStreamingSessionCallbackServer interface {
+	OnError(ctx context.Context, errorCode int32, message string) error
+	OnStreamingServicesUpdated(ctx context.Context, services []StreamingServiceInfo) error
+	OnMiddlewareReady(ctx context.Context) error
+}
+
+type mbmsStreamingSessionCallbackStubWrapper struct {
+	impl       IMbmsStreamingSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mbmsStreamingSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mbmsStreamingSessionCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorCode, message)
+}
+
+func (w *mbmsStreamingSessionCallbackStubWrapper) OnStreamingServicesUpdated(
+	ctx context.Context,
+	services []StreamingServiceInfo,
+) error {
+	return w.impl.OnStreamingServicesUpdated(ctx, services)
+}
+
+func (w *mbmsStreamingSessionCallbackStubWrapper) OnMiddlewareReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnMiddlewareReady(ctx)
+}
+
+var _ IMbmsStreamingSessionCallback = (*mbmsStreamingSessionCallbackStubWrapper)(nil)
+
+// NewMbmsStreamingSessionCallbackStub creates a server-side IMbmsStreamingSessionCallback wrapping the given
+// server implementation. The returned value satisfies IMbmsStreamingSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMbmsStreamingSessionCallbackStub(
+	impl IMbmsStreamingSessionCallbackServer,
+) IMbmsStreamingSessionCallback {
+	wrapper := &mbmsStreamingSessionCallbackStubWrapper{impl: impl}
+	stub := &MbmsStreamingSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

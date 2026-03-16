@@ -102,3 +102,42 @@ func (s *ScanSatSearchStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScanSatSearchServer is the server-side interface that user implementations
+// provide to NewScanSatSearchStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScanSatSearchServer interface {
+	SetCustomizedLnb(ctx context.Context, customizedLnb string) (int32, error)
+}
+
+type scanSatSearchStubWrapper struct {
+	impl       IScanSatSearchServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scanSatSearchStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scanSatSearchStubWrapper) SetCustomizedLnb(
+	ctx context.Context,
+	customizedLnb string,
+) (int32, error) {
+	return w.impl.SetCustomizedLnb(ctx, customizedLnb)
+}
+
+var _ IScanSatSearch = (*scanSatSearchStubWrapper)(nil)
+
+// NewScanSatSearchStub creates a server-side IScanSatSearch wrapping the given
+// server implementation. The returned value satisfies IScanSatSearch
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScanSatSearchStub(
+	impl IScanSatSearchServer,
+) IScanSatSearch {
+	wrapper := &scanSatSearchStubWrapper{impl: impl}
+	stub := &ScanSatSearchStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

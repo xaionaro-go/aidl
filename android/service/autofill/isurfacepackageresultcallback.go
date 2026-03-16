@@ -3,7 +3,6 @@ package autofill
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type ISurfacePackageResultCallback interface {
 	AsBinder() binder.IBinder
-	OnResult(ctx context.Context, result view.SurfaceControlViewHostSurfacePackage) error
+	OnResult(ctx context.Context, result interface{}) error
 }
 
 type SurfacePackageResultCallbackProxy struct {
@@ -39,14 +38,10 @@ var _ ISurfacePackageResultCallback = (*SurfacePackageResultCallbackProxy)(nil)
 
 func (p *SurfacePackageResultCallbackProxy) OnResult(
 	ctx context.Context,
-	result view.SurfaceControlViewHostSurfacePackage,
+	result interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfacePackageResultCallback)
-	_data.WriteInt32(1)
-	if _err := result.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorISurfacePackageResultCallback, "onResult")
 	if _err != nil {
@@ -75,22 +70,50 @@ func (s *SurfacePackageResultCallbackStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_result view.SurfaceControlViewHostSurfacePackage
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_result.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_result interface{}
 		_err := s.Impl.OnResult(ctx, _arg_result)
 		_ = _err
 		return nil, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISurfacePackageResultCallbackServer is the server-side interface that user implementations
+// provide to NewSurfacePackageResultCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISurfacePackageResultCallbackServer interface {
+	OnResult(ctx context.Context, result interface{}) error
+}
+
+type surfacePackageResultCallbackStubWrapper struct {
+	impl       ISurfacePackageResultCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *surfacePackageResultCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *surfacePackageResultCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	result interface{},
+) error {
+	return w.impl.OnResult(ctx, result)
+}
+
+var _ ISurfacePackageResultCallback = (*surfacePackageResultCallbackStubWrapper)(nil)
+
+// NewSurfacePackageResultCallbackStub creates a server-side ISurfacePackageResultCallback wrapping the given
+// server implementation. The returned value satisfies ISurfacePackageResultCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSurfacePackageResultCallbackStub(
+	impl ISurfacePackageResultCallbackServer,
+) ISurfacePackageResultCallback {
+	wrapper := &surfacePackageResultCallbackStubWrapper{impl: impl}
+	stub := &SurfacePackageResultCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

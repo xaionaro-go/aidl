@@ -96,3 +96,41 @@ func (s *WifiP2pIfaceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWifiP2pIfaceServer is the server-side interface that user implementations
+// provide to NewWifiP2pIfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiP2pIfaceServer interface {
+	GetName(ctx context.Context) (string, error)
+}
+
+type wifiP2pIfaceStubWrapper struct {
+	impl       IWifiP2pIfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiP2pIfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiP2pIfaceStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+var _ IWifiP2pIface = (*wifiP2pIfaceStubWrapper)(nil)
+
+// NewWifiP2pIfaceStub creates a server-side IWifiP2pIface wrapping the given
+// server implementation. The returned value satisfies IWifiP2pIface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiP2pIfaceStub(
+	impl IWifiP2pIfaceServer,
+) IWifiP2pIface {
+	wrapper := &wifiP2pIfaceStubWrapper{impl: impl}
+	stub := &WifiP2pIfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

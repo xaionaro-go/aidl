@@ -82,3 +82,42 @@ func (s *GameServiceControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGameServiceControllerServer is the server-side interface that user implementations
+// provide to NewGameServiceControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGameServiceControllerServer interface {
+	CreateGameSession(ctx context.Context, taskId int32) error
+}
+
+type gameServiceControllerStubWrapper struct {
+	impl       IGameServiceControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gameServiceControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gameServiceControllerStubWrapper) CreateGameSession(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.CreateGameSession(ctx, taskId)
+}
+
+var _ IGameServiceController = (*gameServiceControllerStubWrapper)(nil)
+
+// NewGameServiceControllerStub creates a server-side IGameServiceController wrapping the given
+// server implementation. The returned value satisfies IGameServiceController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGameServiceControllerStub(
+	impl IGameServiceControllerServer,
+) IGameServiceController {
+	wrapper := &gameServiceControllerStubWrapper{impl: impl}
+	stub := &GameServiceControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

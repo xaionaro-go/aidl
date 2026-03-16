@@ -79,7 +79,7 @@ func (p *AdvancedProtectionServiceProxy) RegisterAdvancedProtectionCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAdvancedProtectionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAdvancedProtectionService, "registerAdvancedProtectionCallback")
 	if _err != nil {
@@ -105,7 +105,7 @@ func (p *AdvancedProtectionServiceProxy) UnregisterAdvancedProtectionCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAdvancedProtectionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAdvancedProtectionService, "unregisterAdvancedProtectionCallback")
 	if _err != nil {
@@ -279,4 +279,73 @@ func (s *AdvancedProtectionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAdvancedProtectionServiceServer is the server-side interface that user implementations
+// provide to NewAdvancedProtectionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAdvancedProtectionServiceServer interface {
+	IsAdvancedProtectionEnabled(ctx context.Context) (bool, error)
+	RegisterAdvancedProtectionCallback(ctx context.Context, callback IAdvancedProtectionCallback) error
+	UnregisterAdvancedProtectionCallback(ctx context.Context, callback IAdvancedProtectionCallback) error
+	SetAdvancedProtectionEnabled(ctx context.Context, enabled bool) error
+	GetAdvancedProtectionFeatures(ctx context.Context) ([]AdvancedProtectionFeature, error)
+}
+
+type advancedProtectionServiceStubWrapper struct {
+	impl       IAdvancedProtectionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *advancedProtectionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *advancedProtectionServiceStubWrapper) IsAdvancedProtectionEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAdvancedProtectionEnabled(ctx)
+}
+
+func (w *advancedProtectionServiceStubWrapper) RegisterAdvancedProtectionCallback(
+	ctx context.Context,
+	callback IAdvancedProtectionCallback,
+) error {
+	return w.impl.RegisterAdvancedProtectionCallback(ctx, callback)
+}
+
+func (w *advancedProtectionServiceStubWrapper) UnregisterAdvancedProtectionCallback(
+	ctx context.Context,
+	callback IAdvancedProtectionCallback,
+) error {
+	return w.impl.UnregisterAdvancedProtectionCallback(ctx, callback)
+}
+
+func (w *advancedProtectionServiceStubWrapper) SetAdvancedProtectionEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetAdvancedProtectionEnabled(ctx, enabled)
+}
+
+func (w *advancedProtectionServiceStubWrapper) GetAdvancedProtectionFeatures(
+	ctx context.Context,
+) ([]AdvancedProtectionFeature, error) {
+	return w.impl.GetAdvancedProtectionFeatures(ctx)
+}
+
+var _ IAdvancedProtectionService = (*advancedProtectionServiceStubWrapper)(nil)
+
+// NewAdvancedProtectionServiceStub creates a server-side IAdvancedProtectionService wrapping the given
+// server implementation. The returned value satisfies IAdvancedProtectionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAdvancedProtectionServiceStub(
+	impl IAdvancedProtectionServiceServer,
+) IAdvancedProtectionService {
+	wrapper := &advancedProtectionServiceStubWrapper{impl: impl}
+	stub := &AdvancedProtectionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -46,7 +46,7 @@ func (p *InputFilterProxy) Install(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputFilter)
-	_data.WriteStrongBinder(host.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, host.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputFilter, "install")
 	if _err != nil {
@@ -151,4 +151,59 @@ func (s *InputFilterStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputFilterServer is the server-side interface that user implementations
+// provide to NewInputFilterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputFilterServer interface {
+	Install(ctx context.Context, host IInputFilterHost) error
+	Uninstall(ctx context.Context) error
+	FilterInputEvent(ctx context.Context, event InputEvent, policyFlags int32) error
+}
+
+type inputFilterStubWrapper struct {
+	impl       IInputFilterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputFilterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputFilterStubWrapper) Install(
+	ctx context.Context,
+	host IInputFilterHost,
+) error {
+	return w.impl.Install(ctx, host)
+}
+
+func (w *inputFilterStubWrapper) Uninstall(
+	ctx context.Context,
+) error {
+	return w.impl.Uninstall(ctx)
+}
+
+func (w *inputFilterStubWrapper) FilterInputEvent(
+	ctx context.Context,
+	event InputEvent,
+	policyFlags int32,
+) error {
+	return w.impl.FilterInputEvent(ctx, event, policyFlags)
+}
+
+var _ IInputFilter = (*inputFilterStubWrapper)(nil)
+
+// NewInputFilterStub creates a server-side IInputFilter wrapping the given
+// server implementation. The returned value satisfies IInputFilter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputFilterStub(
+	impl IInputFilterServer,
+) IInputFilter {
+	wrapper := &inputFilterStubWrapper{impl: impl}
+	stub := &InputFilterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

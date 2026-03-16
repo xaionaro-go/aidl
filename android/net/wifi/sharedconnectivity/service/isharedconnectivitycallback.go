@@ -300,3 +300,88 @@ func (s *SharedConnectivityCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISharedConnectivityCallbackServer is the server-side interface that user implementations
+// provide to NewSharedConnectivityCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISharedConnectivityCallbackServer interface {
+	OnHotspotNetworksUpdated(ctx context.Context, networks []app.HotspotNetwork) error
+	OnHotspotNetworkConnectionStatusChanged(ctx context.Context, status app.HotspotNetworkConnectionStatus) error
+	OnKnownNetworksUpdated(ctx context.Context, networks []app.KnownNetwork) error
+	OnKnownNetworkConnectionStatusChanged(ctx context.Context, status app.KnownNetworkConnectionStatus) error
+	OnSharedConnectivitySettingsChanged(ctx context.Context, state app.SharedConnectivitySettingsState) error
+	OnServiceConnected(ctx context.Context) error
+	OnServiceDisconnected(ctx context.Context) error
+}
+
+type sharedConnectivityCallbackStubWrapper struct {
+	impl       ISharedConnectivityCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sharedConnectivityCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sharedConnectivityCallbackStubWrapper) OnHotspotNetworksUpdated(
+	ctx context.Context,
+	networks []app.HotspotNetwork,
+) error {
+	return w.impl.OnHotspotNetworksUpdated(ctx, networks)
+}
+
+func (w *sharedConnectivityCallbackStubWrapper) OnHotspotNetworkConnectionStatusChanged(
+	ctx context.Context,
+	status app.HotspotNetworkConnectionStatus,
+) error {
+	return w.impl.OnHotspotNetworkConnectionStatusChanged(ctx, status)
+}
+
+func (w *sharedConnectivityCallbackStubWrapper) OnKnownNetworksUpdated(
+	ctx context.Context,
+	networks []app.KnownNetwork,
+) error {
+	return w.impl.OnKnownNetworksUpdated(ctx, networks)
+}
+
+func (w *sharedConnectivityCallbackStubWrapper) OnKnownNetworkConnectionStatusChanged(
+	ctx context.Context,
+	status app.KnownNetworkConnectionStatus,
+) error {
+	return w.impl.OnKnownNetworkConnectionStatusChanged(ctx, status)
+}
+
+func (w *sharedConnectivityCallbackStubWrapper) OnSharedConnectivitySettingsChanged(
+	ctx context.Context,
+	state app.SharedConnectivitySettingsState,
+) error {
+	return w.impl.OnSharedConnectivitySettingsChanged(ctx, state)
+}
+
+func (w *sharedConnectivityCallbackStubWrapper) OnServiceConnected(
+	ctx context.Context,
+) error {
+	return w.impl.OnServiceConnected(ctx)
+}
+
+func (w *sharedConnectivityCallbackStubWrapper) OnServiceDisconnected(
+	ctx context.Context,
+) error {
+	return w.impl.OnServiceDisconnected(ctx)
+}
+
+var _ ISharedConnectivityCallback = (*sharedConnectivityCallbackStubWrapper)(nil)
+
+// NewSharedConnectivityCallbackStub creates a server-side ISharedConnectivityCallback wrapping the given
+// server implementation. The returned value satisfies ISharedConnectivityCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSharedConnectivityCallbackStub(
+	impl ISharedConnectivityCallbackServer,
+) ISharedConnectivityCallback {
+	wrapper := &sharedConnectivityCallbackStubWrapper{impl: impl}
+	stub := &SharedConnectivityCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

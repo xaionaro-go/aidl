@@ -1034,7 +1034,7 @@ func (p *InputManagerProxy) RegisterInputDevicesChangedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerInputDevicesChangedListener")
 	if _err != nil {
@@ -1089,7 +1089,7 @@ func (p *InputManagerProxy) RegisterTabletModeChangedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerTabletModeChangedListener")
 	if _err != nil {
@@ -1151,7 +1151,7 @@ func (p *InputManagerProxy) Vibrate(
 	if _err := effect.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "vibrate")
 	if _err != nil {
@@ -1184,7 +1184,7 @@ func (p *InputManagerProxy) VibrateCombined(
 	if _err := vibration.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "vibrateCombined")
 	if _err != nil {
@@ -1212,7 +1212,7 @@ func (p *InputManagerProxy) CancelVibrate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "cancelVibrate")
 	if _err != nil {
@@ -1313,7 +1313,7 @@ func (p *InputManagerProxy) RegisterVibratorStateListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerVibratorStateListener")
 	if _err != nil {
@@ -1346,7 +1346,7 @@ func (p *InputManagerProxy) UnregisterVibratorStateListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterVibratorStateListener")
 	if _err != nil {
@@ -1424,7 +1424,7 @@ func (p *InputManagerProxy) SetPointerIcon(
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(deviceId)
 	_data.WriteInt32(pointerId)
-	_data.WriteStrongBinder(inputToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, inputToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "setPointerIcon")
 	if _err != nil {
@@ -1455,7 +1455,7 @@ func (p *InputManagerProxy) RequestPointerCapture(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(inputChannelToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, inputChannelToken, p.remote.Transport())
 	_data.WriteBool(enabled)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "requestPointerCapture")
@@ -1476,7 +1476,7 @@ func (p *InputManagerProxy) MonitorGestureInput(
 	var _result view.InputMonitor
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(name)
 	_data.WriteInt32(displayId)
 
@@ -1716,7 +1716,7 @@ func (p *InputManagerProxy) RegisterSensorListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerSensorListener")
 	if _err != nil {
@@ -1746,7 +1746,7 @@ func (p *InputManagerProxy) UnregisterSensorListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterSensorListener")
 	if _err != nil {
@@ -1970,7 +1970,7 @@ func (p *InputManagerProxy) SetLightStates(
 			}
 		}
 	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "setLightStates")
 	if _err != nil {
@@ -2000,7 +2000,7 @@ func (p *InputManagerProxy) OpenLightSession(
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
 	_data.WriteString16(opPkg)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "openLightSession")
 	if _err != nil {
@@ -2028,7 +2028,7 @@ func (p *InputManagerProxy) CloseLightSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "closeLightSession")
 	if _err != nil {
@@ -2080,7 +2080,7 @@ func (p *InputManagerProxy) RegisterBatteryListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerBatteryListener")
 	if _err != nil {
@@ -2108,7 +2108,7 @@ func (p *InputManagerProxy) UnregisterBatteryListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
 	_data.WriteInt32(deviceId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterBatteryListener")
 	if _err != nil {
@@ -2165,7 +2165,7 @@ func (p *InputManagerProxy) PilferPointers(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(inputChannelToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, inputChannelToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "pilferPointers")
 	if _err != nil {
@@ -2191,7 +2191,7 @@ func (p *InputManagerProxy) RegisterKeyboardBacklightListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerKeyboardBacklightListener")
 	if _err != nil {
@@ -2217,7 +2217,7 @@ func (p *InputManagerProxy) UnregisterKeyboardBacklightListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterKeyboardBacklightListener")
 	if _err != nil {
@@ -2279,7 +2279,7 @@ func (p *InputManagerProxy) RegisterStickyModifierStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerStickyModifierStateListener")
 	if _err != nil {
@@ -2305,7 +2305,7 @@ func (p *InputManagerProxy) UnregisterStickyModifierStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterStickyModifierStateListener")
 	if _err != nil {
@@ -2367,7 +2367,7 @@ func (p *InputManagerProxy) RegisterKeyGestureEventListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerKeyGestureEventListener")
 	if _err != nil {
@@ -2393,7 +2393,7 @@ func (p *InputManagerProxy) UnregisterKeyGestureEventListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterKeyGestureEventListener")
 	if _err != nil {
@@ -2419,7 +2419,7 @@ func (p *InputManagerProxy) RegisterKeyGestureHandler(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(handler.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, handler.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "registerKeyGestureHandler")
 	if _err != nil {
@@ -2445,7 +2445,7 @@ func (p *InputManagerProxy) UnregisterKeyGestureHandler(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputManager)
-	_data.WriteStrongBinder(handler.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, handler.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputManager, "unregisterKeyGestureHandler")
 	if _err != nil {
@@ -4262,4 +4262,681 @@ func (s *InputManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputManagerServer is the server-side interface that user implementations
+// provide to NewInputManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputManagerServer interface {
+	GetVelocityTrackerStrategy(ctx context.Context) (string, error)
+	GetInputDevice(ctx context.Context, deviceId int32) (view.InputDevice, error)
+	GetInputDeviceIds(ctx context.Context) ([]int32, error)
+	EnableInputDevice(ctx context.Context, deviceId int32) error
+	DisableInputDevice(ctx context.Context, deviceId int32) error
+	HasKeys(ctx context.Context, deviceId int32, sourceMask int32, keyCodes []int32, keyExists []bool) (bool, error)
+	GetKeyCodeForKeyLocation(ctx context.Context, deviceId int32, locationKeyCode int32) (int32, error)
+	GetKeyCharacterMap(ctx context.Context, layoutDescriptor string) (view.KeyCharacterMap, error)
+	GetMousePointerSpeed(ctx context.Context) (int32, error)
+	TryPointerSpeed(ctx context.Context, speed int32) error
+	InjectInputEvent(ctx context.Context, ev view.InputEvent, mode int32) (bool, error)
+	InjectInputEventToTarget(ctx context.Context, ev view.InputEvent, mode int32, targetUid int32) (bool, error)
+	VerifyInputEvent(ctx context.Context, ev view.InputEvent) (view.VerifiedInputEvent, error)
+	GetTouchCalibrationForInputDevice(ctx context.Context, inputDeviceDescriptor string, rotation int32) (TouchCalibration, error)
+	SetTouchCalibrationForInputDevice(ctx context.Context, inputDeviceDescriptor string, rotation int32, calibration TouchCalibration) error
+	GetKeyboardLayouts(ctx context.Context) ([]KeyboardLayout, error)
+	GetKeyboardLayout(ctx context.Context, keyboardLayoutDescriptor string) (KeyboardLayout, error)
+	GetKeyboardLayoutForInputDevice(ctx context.Context, identifier InputDeviceIdentifier, imeInfo inputmethod.InputMethodInfo, imeSubtype inputmethod.InputMethodSubtype) (KeyboardLayoutSelectionResult, error)
+	SetKeyboardLayoutForInputDevice(ctx context.Context, identifier InputDeviceIdentifier, imeInfo inputmethod.InputMethodInfo, imeSubtype inputmethod.InputMethodSubtype, keyboardLayoutDescriptor string) error
+	GetKeyboardLayoutListForInputDevice(ctx context.Context, identifier InputDeviceIdentifier, imeInfo inputmethod.InputMethodInfo, imeSubtype inputmethod.InputMethodSubtype) ([]KeyboardLayout, error)
+	RemapModifierKey(ctx context.Context, fromKey int32, toKey int32) error
+	ClearAllModifierKeyRemappings(ctx context.Context) error
+	GetModifierKeyRemapping(ctx context.Context) (map[interface{}]interface{}, error)
+	RegisterInputDevicesChangedListener(ctx context.Context, listener IInputDevicesChangedListener) error
+	IsInTabletMode(ctx context.Context) (int32, error)
+	RegisterTabletModeChangedListener(ctx context.Context, listener ITabletModeChangedListener) error
+	IsMicMuted(ctx context.Context) (int32, error)
+	Vibrate(ctx context.Context, deviceId int32, effect os.VibrationEffect, token binder.IBinder) error
+	VibrateCombined(ctx context.Context, deviceId int32, vibration os.CombinedVibration, token binder.IBinder) error
+	CancelVibrate(ctx context.Context, deviceId int32, token binder.IBinder) error
+	GetVibratorIds(ctx context.Context, deviceId int32) ([]int32, error)
+	IsVibrating(ctx context.Context, deviceId int32) (bool, error)
+	RegisterVibratorStateListener(ctx context.Context, deviceId int32, listener os.IVibratorStateListener) (bool, error)
+	UnregisterVibratorStateListener(ctx context.Context, deviceId int32, listener os.IVibratorStateListener) (bool, error)
+	GetBatteryState(ctx context.Context, deviceId int32) (IInputDeviceBatteryState, error)
+	SetPointerIcon(ctx context.Context, icon view.PointerIcon, displayId int32, deviceId int32, pointerId int32, inputToken binder.IBinder) (bool, error)
+	RequestPointerCapture(ctx context.Context, inputChannelToken binder.IBinder, enabled bool) error
+	MonitorGestureInput(ctx context.Context, token binder.IBinder, name string, displayId int32) (view.InputMonitor, error)
+	AddPortAssociation(ctx context.Context, inputPort string, displayPort int32) error
+	RemovePortAssociation(ctx context.Context, inputPort string) error
+	AddUniqueIdAssociationByDescriptor(ctx context.Context, inputDeviceDescriptor string, displayUniqueId string) error
+	RemoveUniqueIdAssociationByDescriptor(ctx context.Context, inputDeviceDescriptor string) error
+	AddUniqueIdAssociationByPort(ctx context.Context, inputPort string, displayUniqueId string) error
+	RemoveUniqueIdAssociationByPort(ctx context.Context, inputPort string) error
+	GetSensorList(ctx context.Context, deviceId int32) ([]InputSensorInfo, error)
+	RegisterSensorListener(ctx context.Context, listener IInputSensorEventListener) (bool, error)
+	UnregisterSensorListener(ctx context.Context, listener IInputSensorEventListener) error
+	EnableSensor(ctx context.Context, deviceId int32, sensorType int32, samplingPeriodUs int32, maxBatchReportLatencyUs int32) (bool, error)
+	DisableSensor(ctx context.Context, deviceId int32, sensorType int32) error
+	FlushSensor(ctx context.Context, deviceId int32, sensorType int32) (bool, error)
+	GetLights(ctx context.Context, deviceId int32) ([]lights.Light, error)
+	GetLightState(ctx context.Context, deviceId int32, lightId int32) (lights.LightState, error)
+	SetLightStates(ctx context.Context, deviceId int32, lightIds []int32, states []lights.LightState, token binder.IBinder) error
+	OpenLightSession(ctx context.Context, deviceId int32, opPkg string, token binder.IBinder) error
+	CloseLightSession(ctx context.Context, deviceId int32, token binder.IBinder) error
+	CancelCurrentTouch(ctx context.Context) error
+	RegisterBatteryListener(ctx context.Context, deviceId int32, listener IInputDeviceBatteryListener) error
+	UnregisterBatteryListener(ctx context.Context, deviceId int32, listener IInputDeviceBatteryListener) error
+	GetInputDeviceBluetoothAddress(ctx context.Context, deviceId int32) (string, error)
+	PilferPointers(ctx context.Context, inputChannelToken binder.IBinder) error
+	RegisterKeyboardBacklightListener(ctx context.Context, listener IKeyboardBacklightListener) error
+	UnregisterKeyboardBacklightListener(ctx context.Context, listener IKeyboardBacklightListener) error
+	GetHostUsiVersionFromDisplayConfig(ctx context.Context, displayId int32) (HostUsiVersion, error)
+	RegisterStickyModifierStateListener(ctx context.Context, listener IStickyModifierStateListener) error
+	UnregisterStickyModifierStateListener(ctx context.Context, listener IStickyModifierStateListener) error
+	GetKeyGlyphMap(ctx context.Context, deviceId int32) (KeyGlyphMap, error)
+	RegisterKeyGestureEventListener(ctx context.Context, listener IKeyGestureEventListener) error
+	UnregisterKeyGestureEventListener(ctx context.Context, listener IKeyGestureEventListener) error
+	RegisterKeyGestureHandler(ctx context.Context, handler IKeyGestureHandler) error
+	UnregisterKeyGestureHandler(ctx context.Context, handler IKeyGestureHandler) error
+	AddCustomInputGesture(ctx context.Context, data AidlInputGestureData) (int32, error)
+	RemoveCustomInputGesture(ctx context.Context, data AidlInputGestureData) (int32, error)
+	RemoveAllCustomInputGestures(ctx context.Context, tag int32) error
+	GetCustomInputGestures(ctx context.Context, tag int32) ([]AidlInputGestureData, error)
+	GetAppLaunchBookmarks(ctx context.Context) ([]AidlInputGestureData, error)
+	ResetLockedModifierState(ctx context.Context) error
+}
+
+type inputManagerStubWrapper struct {
+	impl       IInputManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputManagerStubWrapper) GetVelocityTrackerStrategy(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetVelocityTrackerStrategy(ctx)
+}
+
+func (w *inputManagerStubWrapper) GetInputDevice(
+	ctx context.Context,
+	deviceId int32,
+) (view.InputDevice, error) {
+	return w.impl.GetInputDevice(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) GetInputDeviceIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetInputDeviceIds(ctx)
+}
+
+func (w *inputManagerStubWrapper) EnableInputDevice(
+	ctx context.Context,
+	deviceId int32,
+) error {
+	return w.impl.EnableInputDevice(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) DisableInputDevice(
+	ctx context.Context,
+	deviceId int32,
+) error {
+	return w.impl.DisableInputDevice(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) HasKeys(
+	ctx context.Context,
+	deviceId int32,
+	sourceMask int32,
+	keyCodes []int32,
+	keyExists []bool,
+) (bool, error) {
+	return w.impl.HasKeys(ctx, deviceId, sourceMask, keyCodes, keyExists)
+}
+
+func (w *inputManagerStubWrapper) GetKeyCodeForKeyLocation(
+	ctx context.Context,
+	deviceId int32,
+	locationKeyCode int32,
+) (int32, error) {
+	return w.impl.GetKeyCodeForKeyLocation(ctx, deviceId, locationKeyCode)
+}
+
+func (w *inputManagerStubWrapper) GetKeyCharacterMap(
+	ctx context.Context,
+	layoutDescriptor string,
+) (view.KeyCharacterMap, error) {
+	return w.impl.GetKeyCharacterMap(ctx, layoutDescriptor)
+}
+
+func (w *inputManagerStubWrapper) GetMousePointerSpeed(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMousePointerSpeed(ctx)
+}
+
+func (w *inputManagerStubWrapper) TryPointerSpeed(
+	ctx context.Context,
+	speed int32,
+) error {
+	return w.impl.TryPointerSpeed(ctx, speed)
+}
+
+func (w *inputManagerStubWrapper) InjectInputEvent(
+	ctx context.Context,
+	ev view.InputEvent,
+	mode int32,
+) (bool, error) {
+	return w.impl.InjectInputEvent(ctx, ev, mode)
+}
+
+func (w *inputManagerStubWrapper) InjectInputEventToTarget(
+	ctx context.Context,
+	ev view.InputEvent,
+	mode int32,
+	targetUid int32,
+) (bool, error) {
+	return w.impl.InjectInputEventToTarget(ctx, ev, mode, targetUid)
+}
+
+func (w *inputManagerStubWrapper) VerifyInputEvent(
+	ctx context.Context,
+	ev view.InputEvent,
+) (view.VerifiedInputEvent, error) {
+	return w.impl.VerifyInputEvent(ctx, ev)
+}
+
+func (w *inputManagerStubWrapper) GetTouchCalibrationForInputDevice(
+	ctx context.Context,
+	inputDeviceDescriptor string,
+	rotation int32,
+) (TouchCalibration, error) {
+	return w.impl.GetTouchCalibrationForInputDevice(ctx, inputDeviceDescriptor, rotation)
+}
+
+func (w *inputManagerStubWrapper) SetTouchCalibrationForInputDevice(
+	ctx context.Context,
+	inputDeviceDescriptor string,
+	rotation int32,
+	calibration TouchCalibration,
+) error {
+	return w.impl.SetTouchCalibrationForInputDevice(ctx, inputDeviceDescriptor, rotation, calibration)
+}
+
+func (w *inputManagerStubWrapper) GetKeyboardLayouts(
+	ctx context.Context,
+) ([]KeyboardLayout, error) {
+	return w.impl.GetKeyboardLayouts(ctx)
+}
+
+func (w *inputManagerStubWrapper) GetKeyboardLayout(
+	ctx context.Context,
+	keyboardLayoutDescriptor string,
+) (KeyboardLayout, error) {
+	return w.impl.GetKeyboardLayout(ctx, keyboardLayoutDescriptor)
+}
+
+func (w *inputManagerStubWrapper) GetKeyboardLayoutForInputDevice(
+	ctx context.Context,
+	identifier InputDeviceIdentifier,
+	imeInfo inputmethod.InputMethodInfo,
+	imeSubtype inputmethod.InputMethodSubtype,
+) (KeyboardLayoutSelectionResult, error) {
+	return w.impl.GetKeyboardLayoutForInputDevice(ctx, identifier, imeInfo, imeSubtype)
+}
+
+func (w *inputManagerStubWrapper) SetKeyboardLayoutForInputDevice(
+	ctx context.Context,
+	identifier InputDeviceIdentifier,
+	imeInfo inputmethod.InputMethodInfo,
+	imeSubtype inputmethod.InputMethodSubtype,
+	keyboardLayoutDescriptor string,
+) error {
+	return w.impl.SetKeyboardLayoutForInputDevice(ctx, identifier, imeInfo, imeSubtype, keyboardLayoutDescriptor)
+}
+
+func (w *inputManagerStubWrapper) GetKeyboardLayoutListForInputDevice(
+	ctx context.Context,
+	identifier InputDeviceIdentifier,
+	imeInfo inputmethod.InputMethodInfo,
+	imeSubtype inputmethod.InputMethodSubtype,
+) ([]KeyboardLayout, error) {
+	return w.impl.GetKeyboardLayoutListForInputDevice(ctx, identifier, imeInfo, imeSubtype)
+}
+
+func (w *inputManagerStubWrapper) RemapModifierKey(
+	ctx context.Context,
+	fromKey int32,
+	toKey int32,
+) error {
+	return w.impl.RemapModifierKey(ctx, fromKey, toKey)
+}
+
+func (w *inputManagerStubWrapper) ClearAllModifierKeyRemappings(
+	ctx context.Context,
+) error {
+	return w.impl.ClearAllModifierKeyRemappings(ctx)
+}
+
+func (w *inputManagerStubWrapper) GetModifierKeyRemapping(
+	ctx context.Context,
+) (map[interface{}]interface{}, error) {
+	return w.impl.GetModifierKeyRemapping(ctx)
+}
+
+func (w *inputManagerStubWrapper) RegisterInputDevicesChangedListener(
+	ctx context.Context,
+	listener IInputDevicesChangedListener,
+) error {
+	return w.impl.RegisterInputDevicesChangedListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) IsInTabletMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.IsInTabletMode(ctx)
+}
+
+func (w *inputManagerStubWrapper) RegisterTabletModeChangedListener(
+	ctx context.Context,
+	listener ITabletModeChangedListener,
+) error {
+	return w.impl.RegisterTabletModeChangedListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) IsMicMuted(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.IsMicMuted(ctx)
+}
+
+func (w *inputManagerStubWrapper) Vibrate(
+	ctx context.Context,
+	deviceId int32,
+	effect os.VibrationEffect,
+	token binder.IBinder,
+) error {
+	return w.impl.Vibrate(ctx, deviceId, effect, token)
+}
+
+func (w *inputManagerStubWrapper) VibrateCombined(
+	ctx context.Context,
+	deviceId int32,
+	vibration os.CombinedVibration,
+	token binder.IBinder,
+) error {
+	return w.impl.VibrateCombined(ctx, deviceId, vibration, token)
+}
+
+func (w *inputManagerStubWrapper) CancelVibrate(
+	ctx context.Context,
+	deviceId int32,
+	token binder.IBinder,
+) error {
+	return w.impl.CancelVibrate(ctx, deviceId, token)
+}
+
+func (w *inputManagerStubWrapper) GetVibratorIds(
+	ctx context.Context,
+	deviceId int32,
+) ([]int32, error) {
+	return w.impl.GetVibratorIds(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) IsVibrating(
+	ctx context.Context,
+	deviceId int32,
+) (bool, error) {
+	return w.impl.IsVibrating(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) RegisterVibratorStateListener(
+	ctx context.Context,
+	deviceId int32,
+	listener os.IVibratorStateListener,
+) (bool, error) {
+	return w.impl.RegisterVibratorStateListener(ctx, deviceId, listener)
+}
+
+func (w *inputManagerStubWrapper) UnregisterVibratorStateListener(
+	ctx context.Context,
+	deviceId int32,
+	listener os.IVibratorStateListener,
+) (bool, error) {
+	return w.impl.UnregisterVibratorStateListener(ctx, deviceId, listener)
+}
+
+func (w *inputManagerStubWrapper) GetBatteryState(
+	ctx context.Context,
+	deviceId int32,
+) (IInputDeviceBatteryState, error) {
+	return w.impl.GetBatteryState(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) SetPointerIcon(
+	ctx context.Context,
+	icon view.PointerIcon,
+	displayId int32,
+	deviceId int32,
+	pointerId int32,
+	inputToken binder.IBinder,
+) (bool, error) {
+	return w.impl.SetPointerIcon(ctx, icon, displayId, deviceId, pointerId, inputToken)
+}
+
+func (w *inputManagerStubWrapper) RequestPointerCapture(
+	ctx context.Context,
+	inputChannelToken binder.IBinder,
+	enabled bool,
+) error {
+	return w.impl.RequestPointerCapture(ctx, inputChannelToken, enabled)
+}
+
+func (w *inputManagerStubWrapper) MonitorGestureInput(
+	ctx context.Context,
+	token binder.IBinder,
+	name string,
+	displayId int32,
+) (view.InputMonitor, error) {
+	return w.impl.MonitorGestureInput(ctx, token, name, displayId)
+}
+
+func (w *inputManagerStubWrapper) AddPortAssociation(
+	ctx context.Context,
+	inputPort string,
+	displayPort int32,
+) error {
+	return w.impl.AddPortAssociation(ctx, inputPort, displayPort)
+}
+
+func (w *inputManagerStubWrapper) RemovePortAssociation(
+	ctx context.Context,
+	inputPort string,
+) error {
+	return w.impl.RemovePortAssociation(ctx, inputPort)
+}
+
+func (w *inputManagerStubWrapper) AddUniqueIdAssociationByDescriptor(
+	ctx context.Context,
+	inputDeviceDescriptor string,
+	displayUniqueId string,
+) error {
+	return w.impl.AddUniqueIdAssociationByDescriptor(ctx, inputDeviceDescriptor, displayUniqueId)
+}
+
+func (w *inputManagerStubWrapper) RemoveUniqueIdAssociationByDescriptor(
+	ctx context.Context,
+	inputDeviceDescriptor string,
+) error {
+	return w.impl.RemoveUniqueIdAssociationByDescriptor(ctx, inputDeviceDescriptor)
+}
+
+func (w *inputManagerStubWrapper) AddUniqueIdAssociationByPort(
+	ctx context.Context,
+	inputPort string,
+	displayUniqueId string,
+) error {
+	return w.impl.AddUniqueIdAssociationByPort(ctx, inputPort, displayUniqueId)
+}
+
+func (w *inputManagerStubWrapper) RemoveUniqueIdAssociationByPort(
+	ctx context.Context,
+	inputPort string,
+) error {
+	return w.impl.RemoveUniqueIdAssociationByPort(ctx, inputPort)
+}
+
+func (w *inputManagerStubWrapper) GetSensorList(
+	ctx context.Context,
+	deviceId int32,
+) ([]InputSensorInfo, error) {
+	return w.impl.GetSensorList(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) RegisterSensorListener(
+	ctx context.Context,
+	listener IInputSensorEventListener,
+) (bool, error) {
+	return w.impl.RegisterSensorListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) UnregisterSensorListener(
+	ctx context.Context,
+	listener IInputSensorEventListener,
+) error {
+	return w.impl.UnregisterSensorListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) EnableSensor(
+	ctx context.Context,
+	deviceId int32,
+	sensorType int32,
+	samplingPeriodUs int32,
+	maxBatchReportLatencyUs int32,
+) (bool, error) {
+	return w.impl.EnableSensor(ctx, deviceId, sensorType, samplingPeriodUs, maxBatchReportLatencyUs)
+}
+
+func (w *inputManagerStubWrapper) DisableSensor(
+	ctx context.Context,
+	deviceId int32,
+	sensorType int32,
+) error {
+	return w.impl.DisableSensor(ctx, deviceId, sensorType)
+}
+
+func (w *inputManagerStubWrapper) FlushSensor(
+	ctx context.Context,
+	deviceId int32,
+	sensorType int32,
+) (bool, error) {
+	return w.impl.FlushSensor(ctx, deviceId, sensorType)
+}
+
+func (w *inputManagerStubWrapper) GetLights(
+	ctx context.Context,
+	deviceId int32,
+) ([]lights.Light, error) {
+	return w.impl.GetLights(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) GetLightState(
+	ctx context.Context,
+	deviceId int32,
+	lightId int32,
+) (lights.LightState, error) {
+	return w.impl.GetLightState(ctx, deviceId, lightId)
+}
+
+func (w *inputManagerStubWrapper) SetLightStates(
+	ctx context.Context,
+	deviceId int32,
+	lightIds []int32,
+	states []lights.LightState,
+	token binder.IBinder,
+) error {
+	return w.impl.SetLightStates(ctx, deviceId, lightIds, states, token)
+}
+
+func (w *inputManagerStubWrapper) OpenLightSession(
+	ctx context.Context,
+	deviceId int32,
+	opPkg string,
+	token binder.IBinder,
+) error {
+	return w.impl.OpenLightSession(ctx, deviceId, opPkg, token)
+}
+
+func (w *inputManagerStubWrapper) CloseLightSession(
+	ctx context.Context,
+	deviceId int32,
+	token binder.IBinder,
+) error {
+	return w.impl.CloseLightSession(ctx, deviceId, token)
+}
+
+func (w *inputManagerStubWrapper) CancelCurrentTouch(
+	ctx context.Context,
+) error {
+	return w.impl.CancelCurrentTouch(ctx)
+}
+
+func (w *inputManagerStubWrapper) RegisterBatteryListener(
+	ctx context.Context,
+	deviceId int32,
+	listener IInputDeviceBatteryListener,
+) error {
+	return w.impl.RegisterBatteryListener(ctx, deviceId, listener)
+}
+
+func (w *inputManagerStubWrapper) UnregisterBatteryListener(
+	ctx context.Context,
+	deviceId int32,
+	listener IInputDeviceBatteryListener,
+) error {
+	return w.impl.UnregisterBatteryListener(ctx, deviceId, listener)
+}
+
+func (w *inputManagerStubWrapper) GetInputDeviceBluetoothAddress(
+	ctx context.Context,
+	deviceId int32,
+) (string, error) {
+	return w.impl.GetInputDeviceBluetoothAddress(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) PilferPointers(
+	ctx context.Context,
+	inputChannelToken binder.IBinder,
+) error {
+	return w.impl.PilferPointers(ctx, inputChannelToken)
+}
+
+func (w *inputManagerStubWrapper) RegisterKeyboardBacklightListener(
+	ctx context.Context,
+	listener IKeyboardBacklightListener,
+) error {
+	return w.impl.RegisterKeyboardBacklightListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) UnregisterKeyboardBacklightListener(
+	ctx context.Context,
+	listener IKeyboardBacklightListener,
+) error {
+	return w.impl.UnregisterKeyboardBacklightListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) GetHostUsiVersionFromDisplayConfig(
+	ctx context.Context,
+	displayId int32,
+) (HostUsiVersion, error) {
+	return w.impl.GetHostUsiVersionFromDisplayConfig(ctx, displayId)
+}
+
+func (w *inputManagerStubWrapper) RegisterStickyModifierStateListener(
+	ctx context.Context,
+	listener IStickyModifierStateListener,
+) error {
+	return w.impl.RegisterStickyModifierStateListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) UnregisterStickyModifierStateListener(
+	ctx context.Context,
+	listener IStickyModifierStateListener,
+) error {
+	return w.impl.UnregisterStickyModifierStateListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) GetKeyGlyphMap(
+	ctx context.Context,
+	deviceId int32,
+) (KeyGlyphMap, error) {
+	return w.impl.GetKeyGlyphMap(ctx, deviceId)
+}
+
+func (w *inputManagerStubWrapper) RegisterKeyGestureEventListener(
+	ctx context.Context,
+	listener IKeyGestureEventListener,
+) error {
+	return w.impl.RegisterKeyGestureEventListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) UnregisterKeyGestureEventListener(
+	ctx context.Context,
+	listener IKeyGestureEventListener,
+) error {
+	return w.impl.UnregisterKeyGestureEventListener(ctx, listener)
+}
+
+func (w *inputManagerStubWrapper) RegisterKeyGestureHandler(
+	ctx context.Context,
+	handler IKeyGestureHandler,
+) error {
+	return w.impl.RegisterKeyGestureHandler(ctx, handler)
+}
+
+func (w *inputManagerStubWrapper) UnregisterKeyGestureHandler(
+	ctx context.Context,
+	handler IKeyGestureHandler,
+) error {
+	return w.impl.UnregisterKeyGestureHandler(ctx, handler)
+}
+
+func (w *inputManagerStubWrapper) AddCustomInputGesture(
+	ctx context.Context,
+	data AidlInputGestureData,
+) (int32, error) {
+	return w.impl.AddCustomInputGesture(ctx, data)
+}
+
+func (w *inputManagerStubWrapper) RemoveCustomInputGesture(
+	ctx context.Context,
+	data AidlInputGestureData,
+) (int32, error) {
+	return w.impl.RemoveCustomInputGesture(ctx, data)
+}
+
+func (w *inputManagerStubWrapper) RemoveAllCustomInputGestures(
+	ctx context.Context,
+	tag int32,
+) error {
+	return w.impl.RemoveAllCustomInputGestures(ctx, tag)
+}
+
+func (w *inputManagerStubWrapper) GetCustomInputGestures(
+	ctx context.Context,
+	tag int32,
+) ([]AidlInputGestureData, error) {
+	return w.impl.GetCustomInputGestures(ctx, tag)
+}
+
+func (w *inputManagerStubWrapper) GetAppLaunchBookmarks(
+	ctx context.Context,
+) ([]AidlInputGestureData, error) {
+	return w.impl.GetAppLaunchBookmarks(ctx)
+}
+
+func (w *inputManagerStubWrapper) ResetLockedModifierState(
+	ctx context.Context,
+) error {
+	return w.impl.ResetLockedModifierState(ctx)
+}
+
+var _ IInputManager = (*inputManagerStubWrapper)(nil)
+
+// NewInputManagerStub creates a server-side IInputManager wrapping the given
+// server implementation. The returned value satisfies IInputManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputManagerStub(
+	impl IInputManagerServer,
+) IInputManager {
+	wrapper := &inputManagerStubWrapper{impl: impl}
+	stub := &InputManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

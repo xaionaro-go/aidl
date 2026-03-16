@@ -837,3 +837,192 @@ func (s *RadioNetworkIndicationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioNetworkIndicationServer is the server-side interface that user implementations
+// provide to NewRadioNetworkIndicationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioNetworkIndicationServer interface {
+	BarringInfoChanged(ctx context.Context, type_ radio.RadioIndicationType, cellIdentity CellIdentity, barringInfos []BarringInfo) error
+	CdmaPrlChanged(ctx context.Context, type_ radio.RadioIndicationType, version int32) error
+	CellInfoList(ctx context.Context, type_ radio.RadioIndicationType, records []CellInfo) error
+	CurrentLinkCapacityEstimate(ctx context.Context, type_ radio.RadioIndicationType, lce LinkCapacityEstimate) error
+	CurrentPhysicalChannelConfigs(ctx context.Context, type_ radio.RadioIndicationType, configs []PhysicalChannelConfig) error
+	CurrentSignalStrength(ctx context.Context, type_ radio.RadioIndicationType, signalStrength SignalStrength) error
+	ImsNetworkStateChanged(ctx context.Context, type_ radio.RadioIndicationType) error
+	NetworkScanResult(ctx context.Context, type_ radio.RadioIndicationType, result NetworkScanResult) error
+	NetworkStateChanged(ctx context.Context, type_ radio.RadioIndicationType) error
+	NitzTimeReceived(ctx context.Context, type_ radio.RadioIndicationType, nitzTime string, receivedTimeMs int64, ageMs int64) error
+	RegistrationFailed(ctx context.Context, type_ radio.RadioIndicationType, cellIdentity CellIdentity, chosenPlmn string, domain int32, causeCode int32, additionalCauseCode int32) error
+	RestrictedStateChanged(ctx context.Context, type_ radio.RadioIndicationType, state PhoneRestrictedState) error
+	SuppSvcNotify(ctx context.Context, type_ radio.RadioIndicationType, suppSvc SuppSvcNotification) error
+	VoiceRadioTechChanged(ctx context.Context, type_ radio.RadioIndicationType, rat radio.RadioTechnology) error
+	EmergencyNetworkScanResult(ctx context.Context, type_ radio.RadioIndicationType, result EmergencyRegResult) error
+	CellularIdentifierDisclosed(ctx context.Context, type_ radio.RadioIndicationType, disclosure CellularIdentifierDisclosure) error
+	SecurityAlgorithmsUpdated(ctx context.Context, type_ radio.RadioIndicationType, securityAlgorithmUpdate SecurityAlgorithmUpdate) error
+}
+
+type radioNetworkIndicationStubWrapper struct {
+	impl       IRadioNetworkIndicationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioNetworkIndicationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioNetworkIndicationStubWrapper) BarringInfoChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	cellIdentity CellIdentity,
+	barringInfos []BarringInfo,
+) error {
+	return w.impl.BarringInfoChanged(ctx, type_, cellIdentity, barringInfos)
+}
+
+func (w *radioNetworkIndicationStubWrapper) CdmaPrlChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	version int32,
+) error {
+	return w.impl.CdmaPrlChanged(ctx, type_, version)
+}
+
+func (w *radioNetworkIndicationStubWrapper) CellInfoList(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	records []CellInfo,
+) error {
+	return w.impl.CellInfoList(ctx, type_, records)
+}
+
+func (w *radioNetworkIndicationStubWrapper) CurrentLinkCapacityEstimate(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	lce LinkCapacityEstimate,
+) error {
+	return w.impl.CurrentLinkCapacityEstimate(ctx, type_, lce)
+}
+
+func (w *radioNetworkIndicationStubWrapper) CurrentPhysicalChannelConfigs(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	configs []PhysicalChannelConfig,
+) error {
+	return w.impl.CurrentPhysicalChannelConfigs(ctx, type_, configs)
+}
+
+func (w *radioNetworkIndicationStubWrapper) CurrentSignalStrength(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	signalStrength SignalStrength,
+) error {
+	return w.impl.CurrentSignalStrength(ctx, type_, signalStrength)
+}
+
+func (w *radioNetworkIndicationStubWrapper) ImsNetworkStateChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.ImsNetworkStateChanged(ctx, type_)
+}
+
+func (w *radioNetworkIndicationStubWrapper) NetworkScanResult(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	result NetworkScanResult,
+) error {
+	return w.impl.NetworkScanResult(ctx, type_, result)
+}
+
+func (w *radioNetworkIndicationStubWrapper) NetworkStateChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+) error {
+	return w.impl.NetworkStateChanged(ctx, type_)
+}
+
+func (w *radioNetworkIndicationStubWrapper) NitzTimeReceived(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	nitzTime string,
+	receivedTimeMs int64,
+	ageMs int64,
+) error {
+	return w.impl.NitzTimeReceived(ctx, type_, nitzTime, receivedTimeMs, ageMs)
+}
+
+func (w *radioNetworkIndicationStubWrapper) RegistrationFailed(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	cellIdentity CellIdentity,
+	chosenPlmn string,
+	domain int32,
+	causeCode int32,
+	additionalCauseCode int32,
+) error {
+	return w.impl.RegistrationFailed(ctx, type_, cellIdentity, chosenPlmn, domain, causeCode, additionalCauseCode)
+}
+
+func (w *radioNetworkIndicationStubWrapper) RestrictedStateChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	state PhoneRestrictedState,
+) error {
+	return w.impl.RestrictedStateChanged(ctx, type_, state)
+}
+
+func (w *radioNetworkIndicationStubWrapper) SuppSvcNotify(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	suppSvc SuppSvcNotification,
+) error {
+	return w.impl.SuppSvcNotify(ctx, type_, suppSvc)
+}
+
+func (w *radioNetworkIndicationStubWrapper) VoiceRadioTechChanged(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	rat radio.RadioTechnology,
+) error {
+	return w.impl.VoiceRadioTechChanged(ctx, type_, rat)
+}
+
+func (w *radioNetworkIndicationStubWrapper) EmergencyNetworkScanResult(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	result EmergencyRegResult,
+) error {
+	return w.impl.EmergencyNetworkScanResult(ctx, type_, result)
+}
+
+func (w *radioNetworkIndicationStubWrapper) CellularIdentifierDisclosed(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	disclosure CellularIdentifierDisclosure,
+) error {
+	return w.impl.CellularIdentifierDisclosed(ctx, type_, disclosure)
+}
+
+func (w *radioNetworkIndicationStubWrapper) SecurityAlgorithmsUpdated(
+	ctx context.Context,
+	type_ radio.RadioIndicationType,
+	securityAlgorithmUpdate SecurityAlgorithmUpdate,
+) error {
+	return w.impl.SecurityAlgorithmsUpdated(ctx, type_, securityAlgorithmUpdate)
+}
+
+var _ IRadioNetworkIndication = (*radioNetworkIndicationStubWrapper)(nil)
+
+// NewRadioNetworkIndicationStub creates a server-side IRadioNetworkIndication wrapping the given
+// server implementation. The returned value satisfies IRadioNetworkIndication
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioNetworkIndicationStub(
+	impl IRadioNetworkIndicationServer,
+) IRadioNetworkIndication {
+	wrapper := &radioNetworkIndicationStubWrapper{impl: impl}
+	stub := &RadioNetworkIndicationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

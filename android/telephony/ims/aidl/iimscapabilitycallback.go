@@ -166,3 +166,62 @@ func (s *ImsCapabilityCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsCapabilityCallbackServer is the server-side interface that user implementations
+// provide to NewImsCapabilityCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsCapabilityCallbackServer interface {
+	OnQueryCapabilityConfiguration(ctx context.Context, capability int32, radioTech int32, enabled bool) error
+	OnChangeCapabilityConfigurationError(ctx context.Context, capability int32, radioTech int32, reason int32) error
+	OnCapabilitiesStatusChanged(ctx context.Context, config int32) error
+}
+
+type imsCapabilityCallbackStubWrapper struct {
+	impl       IImsCapabilityCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsCapabilityCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsCapabilityCallbackStubWrapper) OnQueryCapabilityConfiguration(
+	ctx context.Context,
+	capability int32,
+	radioTech int32,
+	enabled bool,
+) error {
+	return w.impl.OnQueryCapabilityConfiguration(ctx, capability, radioTech, enabled)
+}
+
+func (w *imsCapabilityCallbackStubWrapper) OnChangeCapabilityConfigurationError(
+	ctx context.Context,
+	capability int32,
+	radioTech int32,
+	reason int32,
+) error {
+	return w.impl.OnChangeCapabilityConfigurationError(ctx, capability, radioTech, reason)
+}
+
+func (w *imsCapabilityCallbackStubWrapper) OnCapabilitiesStatusChanged(
+	ctx context.Context,
+	config int32,
+) error {
+	return w.impl.OnCapabilitiesStatusChanged(ctx, config)
+}
+
+var _ IImsCapabilityCallback = (*imsCapabilityCallbackStubWrapper)(nil)
+
+// NewImsCapabilityCallbackStub creates a server-side IImsCapabilityCallback wrapping the given
+// server implementation. The returned value satisfies IImsCapabilityCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsCapabilityCallbackStub(
+	impl IImsCapabilityCallbackServer,
+) IImsCapabilityCallback {
+	wrapper := &imsCapabilityCallbackStubWrapper{impl: impl}
+	stub := &ImsCapabilityCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

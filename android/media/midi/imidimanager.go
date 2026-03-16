@@ -141,8 +141,8 @@ func (p *MidiManagerProxy) RegisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiManager)
-	_data.WriteStrongBinder(clientToken.Handle())
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiManager, "registerListener")
 	if _err != nil {
@@ -169,8 +169,8 @@ func (p *MidiManagerProxy) UnregisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiManager)
-	_data.WriteStrongBinder(clientToken.Handle())
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiManager, "unregisterListener")
 	if _err != nil {
@@ -198,8 +198,8 @@ func (p *MidiManagerProxy) OpenDevice(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiManager)
-	_data.WriteStrongBinder(clientToken.Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiManager, "openDevice")
 	if _err != nil {
@@ -227,12 +227,12 @@ func (p *MidiManagerProxy) OpenBluetoothDevice(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiManager)
-	_data.WriteStrongBinder(clientToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := bluetoothDevice.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiManager, "openBluetoothDevice")
 	if _err != nil {
@@ -259,8 +259,8 @@ func (p *MidiManagerProxy) CloseDevice(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiManager)
-	_data.WriteStrongBinder(clientToken.Handle())
-	_data.WriteStrongBinder(deviceToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, deviceToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiManager, "closeDevice")
 	if _err != nil {
@@ -294,7 +294,7 @@ func (p *MidiManagerProxy) RegisterDeviceServer(
 	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiManager)
-	_data.WriteStrongBinder(server.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, server.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(numInputPorts)
 	_data.WriteInt32(numOutputPorts)
 	if inputPortNames == nil {
@@ -344,7 +344,7 @@ func (p *MidiManagerProxy) UnregisterDeviceServer(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiManager)
-	_data.WriteStrongBinder(server.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, server.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiManager, "unregisterDeviceServer")
 	if _err != nil {
@@ -435,7 +435,7 @@ func (p *MidiManagerProxy) SetDeviceStatus(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiManager)
-	_data.WriteStrongBinder(server.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, server.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := status.MarshalParcel(_data); _err != nil {
 		return _err
@@ -467,7 +467,7 @@ func (p *MidiManagerProxy) UpdateTotalBytes(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiManager)
-	_data.WriteStrongBinder(server.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, server.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(inputBytes)
 	_data.WriteInt32(outputBytes)
 
@@ -794,4 +794,156 @@ func (s *MidiManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMidiManagerServer is the server-side interface that user implementations
+// provide to NewMidiManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMidiManagerServer interface {
+	GetDevices(ctx context.Context) ([]interface{}, error)
+	GetDevicesForTransport(ctx context.Context, transport int32) ([]interface{}, error)
+	RegisterListener(ctx context.Context, clientToken binder.IBinder, listener IMidiDeviceListener) error
+	UnregisterListener(ctx context.Context, clientToken binder.IBinder, listener IMidiDeviceListener) error
+	OpenDevice(ctx context.Context, clientToken binder.IBinder, device interface{}, callback IMidiDeviceOpenCallback) error
+	OpenBluetoothDevice(ctx context.Context, clientToken binder.IBinder, bluetoothDevice bluetooth.BluetoothDevice, callback IMidiDeviceOpenCallback) error
+	CloseDevice(ctx context.Context, clientToken binder.IBinder, deviceToken binder.IBinder) error
+	RegisterDeviceServer(ctx context.Context, server IMidiDeviceServer, numInputPorts int32, numOutputPorts int32, inputPortNames []string, outputPortNames []string, properties os.Bundle, type_ int32, defaultProtocol int32) (interface{}, error)
+	UnregisterDeviceServer(ctx context.Context, server IMidiDeviceServer) error
+	GetServiceDeviceInfo(ctx context.Context, packageName string, className string) (interface{}, error)
+	GetDeviceStatus(ctx context.Context, deviceInfo interface{}) (MidiDeviceStatus, error)
+	SetDeviceStatus(ctx context.Context, server IMidiDeviceServer, status MidiDeviceStatus) error
+	UpdateTotalBytes(ctx context.Context, server IMidiDeviceServer, inputBytes int32, outputBytes int32) error
+}
+
+type midiManagerStubWrapper struct {
+	impl       IMidiManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *midiManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *midiManagerStubWrapper) GetDevices(
+	ctx context.Context,
+) ([]interface{}, error) {
+	return w.impl.GetDevices(ctx)
+}
+
+func (w *midiManagerStubWrapper) GetDevicesForTransport(
+	ctx context.Context,
+	transport int32,
+) ([]interface{}, error) {
+	return w.impl.GetDevicesForTransport(ctx, transport)
+}
+
+func (w *midiManagerStubWrapper) RegisterListener(
+	ctx context.Context,
+	clientToken binder.IBinder,
+	listener IMidiDeviceListener,
+) error {
+	return w.impl.RegisterListener(ctx, clientToken, listener)
+}
+
+func (w *midiManagerStubWrapper) UnregisterListener(
+	ctx context.Context,
+	clientToken binder.IBinder,
+	listener IMidiDeviceListener,
+) error {
+	return w.impl.UnregisterListener(ctx, clientToken, listener)
+}
+
+func (w *midiManagerStubWrapper) OpenDevice(
+	ctx context.Context,
+	clientToken binder.IBinder,
+	device interface{},
+	callback IMidiDeviceOpenCallback,
+) error {
+	return w.impl.OpenDevice(ctx, clientToken, device, callback)
+}
+
+func (w *midiManagerStubWrapper) OpenBluetoothDevice(
+	ctx context.Context,
+	clientToken binder.IBinder,
+	bluetoothDevice bluetooth.BluetoothDevice,
+	callback IMidiDeviceOpenCallback,
+) error {
+	return w.impl.OpenBluetoothDevice(ctx, clientToken, bluetoothDevice, callback)
+}
+
+func (w *midiManagerStubWrapper) CloseDevice(
+	ctx context.Context,
+	clientToken binder.IBinder,
+	deviceToken binder.IBinder,
+) error {
+	return w.impl.CloseDevice(ctx, clientToken, deviceToken)
+}
+
+func (w *midiManagerStubWrapper) RegisterDeviceServer(
+	ctx context.Context,
+	server IMidiDeviceServer,
+	numInputPorts int32,
+	numOutputPorts int32,
+	inputPortNames []string,
+	outputPortNames []string,
+	properties os.Bundle,
+	type_ int32,
+	defaultProtocol int32,
+) (interface{}, error) {
+	return w.impl.RegisterDeviceServer(ctx, server, numInputPorts, numOutputPorts, inputPortNames, outputPortNames, properties, type_, defaultProtocol)
+}
+
+func (w *midiManagerStubWrapper) UnregisterDeviceServer(
+	ctx context.Context,
+	server IMidiDeviceServer,
+) error {
+	return w.impl.UnregisterDeviceServer(ctx, server)
+}
+
+func (w *midiManagerStubWrapper) GetServiceDeviceInfo(
+	ctx context.Context,
+	packageName string,
+	className string,
+) (interface{}, error) {
+	return w.impl.GetServiceDeviceInfo(ctx, packageName, className)
+}
+
+func (w *midiManagerStubWrapper) GetDeviceStatus(
+	ctx context.Context,
+	deviceInfo interface{},
+) (MidiDeviceStatus, error) {
+	return w.impl.GetDeviceStatus(ctx, deviceInfo)
+}
+
+func (w *midiManagerStubWrapper) SetDeviceStatus(
+	ctx context.Context,
+	server IMidiDeviceServer,
+	status MidiDeviceStatus,
+) error {
+	return w.impl.SetDeviceStatus(ctx, server, status)
+}
+
+func (w *midiManagerStubWrapper) UpdateTotalBytes(
+	ctx context.Context,
+	server IMidiDeviceServer,
+	inputBytes int32,
+	outputBytes int32,
+) error {
+	return w.impl.UpdateTotalBytes(ctx, server, inputBytes, outputBytes)
+}
+
+var _ IMidiManager = (*midiManagerStubWrapper)(nil)
+
+// NewMidiManagerStub creates a server-side IMidiManager wrapping the given
+// server implementation. The returned value satisfies IMidiManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMidiManagerStub(
+	impl IMidiManagerServer,
+) IMidiManager {
+	wrapper := &midiManagerStubWrapper{impl: impl}
+	stub := &MidiManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

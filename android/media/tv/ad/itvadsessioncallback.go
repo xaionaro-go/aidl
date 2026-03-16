@@ -57,7 +57,7 @@ func (p *TvAdSessionCallbackProxy) OnSessionCreated(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdSessionCallback)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvAdSessionCallback, "onSessionCreated")
 	if _err != nil {
@@ -326,4 +326,102 @@ func (s *TvAdSessionCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvAdSessionCallbackServer is the server-side interface that user implementations
+// provide to NewTvAdSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvAdSessionCallbackServer interface {
+	OnSessionCreated(ctx context.Context, session ITvAdSession) error
+	OnLayoutSurface(ctx context.Context, left int32, top int32, right int32, bottom int32) error
+	OnRequestCurrentVideoBounds(ctx context.Context) error
+	OnRequestCurrentChannelUri(ctx context.Context) error
+	OnRequestTrackInfoList(ctx context.Context) error
+	OnRequestCurrentTvInputId(ctx context.Context) error
+	OnRequestSigning(ctx context.Context, id string, algorithm string, alias string, data []byte) error
+	OnTvAdSessionData(ctx context.Context, type_ string, data os.Bundle) error
+}
+
+type tvAdSessionCallbackStubWrapper struct {
+	impl       ITvAdSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvAdSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvAdSessionCallbackStubWrapper) OnSessionCreated(
+	ctx context.Context,
+	session ITvAdSession,
+) error {
+	return w.impl.OnSessionCreated(ctx, session)
+}
+
+func (w *tvAdSessionCallbackStubWrapper) OnLayoutSurface(
+	ctx context.Context,
+	left int32,
+	top int32,
+	right int32,
+	bottom int32,
+) error {
+	return w.impl.OnLayoutSurface(ctx, left, top, right, bottom)
+}
+
+func (w *tvAdSessionCallbackStubWrapper) OnRequestCurrentVideoBounds(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestCurrentVideoBounds(ctx)
+}
+
+func (w *tvAdSessionCallbackStubWrapper) OnRequestCurrentChannelUri(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestCurrentChannelUri(ctx)
+}
+
+func (w *tvAdSessionCallbackStubWrapper) OnRequestTrackInfoList(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestTrackInfoList(ctx)
+}
+
+func (w *tvAdSessionCallbackStubWrapper) OnRequestCurrentTvInputId(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestCurrentTvInputId(ctx)
+}
+
+func (w *tvAdSessionCallbackStubWrapper) OnRequestSigning(
+	ctx context.Context,
+	id string,
+	algorithm string,
+	alias string,
+	data []byte,
+) error {
+	return w.impl.OnRequestSigning(ctx, id, algorithm, alias, data)
+}
+
+func (w *tvAdSessionCallbackStubWrapper) OnTvAdSessionData(
+	ctx context.Context,
+	type_ string,
+	data os.Bundle,
+) error {
+	return w.impl.OnTvAdSessionData(ctx, type_, data)
+}
+
+var _ ITvAdSessionCallback = (*tvAdSessionCallbackStubWrapper)(nil)
+
+// NewTvAdSessionCallbackStub creates a server-side ITvAdSessionCallback wrapping the given
+// server implementation. The returned value satisfies ITvAdSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvAdSessionCallbackStub(
+	impl ITvAdSessionCallbackServer,
+) ITvAdSessionCallback {
+	wrapper := &tvAdSessionCallbackStubWrapper{impl: impl}
+	stub := &TvAdSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

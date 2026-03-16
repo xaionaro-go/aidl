@@ -3,6 +3,7 @@ package location
 import (
 	"context"
 	"fmt"
+	app "github.com/xaionaro-go/binder/android/app"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
 	locationProvider "github.com/xaionaro-go/binder/android/location/provider"
 	"github.com/xaionaro-go/binder/binder"
@@ -84,13 +85,13 @@ type ILocationManager interface {
 	GetCurrentLocation(ctx context.Context, provider string, request LocationRequest, callback ILocationCallback, packageName string, listenerId string) (ondeviceintelligence.ICancellationSignal, error)
 	RegisterLocationListener(ctx context.Context, provider string, request LocationRequest, listener ILocationListener, packageName string, listenerId string) error
 	UnregisterLocationListener(ctx context.Context, listener ILocationListener) error
-	RegisterLocationPendingIntent(ctx context.Context, provider string, request LocationRequest, pendingIntent interface{}, packageName string) error
-	UnregisterLocationPendingIntent(ctx context.Context, pendingIntent interface{}) error
+	RegisterLocationPendingIntent(ctx context.Context, provider string, request LocationRequest, pendingIntent app.PendingIntent, packageName string) error
+	UnregisterLocationPendingIntent(ctx context.Context, pendingIntent app.PendingIntent) error
 	InjectLocation(ctx context.Context, location Location) error
 	RequestListenerFlush(ctx context.Context, provider string, listener ILocationListener, requestCode int32) error
-	RequestPendingIntentFlush(ctx context.Context, provider string, pendingIntent interface{}, requestCode int32) error
-	RequestGeofence(ctx context.Context, geofence Geofence, intent interface{}, packageName string) error
-	RemoveGeofence(ctx context.Context, intent interface{}) error
+	RequestPendingIntentFlush(ctx context.Context, provider string, pendingIntent app.PendingIntent, requestCode int32) error
+	RequestGeofence(ctx context.Context, geofence Geofence, intent app.PendingIntent, packageName string) error
+	RemoveGeofence(ctx context.Context, intent app.PendingIntent) error
 	IsGeocodeAvailable(ctx context.Context) (bool, error)
 	ReverseGeocode(ctx context.Context, request locationProvider.ReverseGeocodeRequest, callback locationProvider.IGeocodeCallback) error
 	ForwardGeocode(ctx context.Context, request locationProvider.ForwardGeocodeRequest, callback locationProvider.IGeocodeCallback) error
@@ -222,7 +223,7 @@ func (p *LocationManagerProxy) GetCurrentLocation(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
@@ -266,7 +267,7 @@ func (p *LocationManagerProxy) RegisterLocationListener(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
@@ -295,7 +296,7 @@ func (p *LocationManagerProxy) UnregisterLocationListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "unregisterLocationListener")
 	if _err != nil {
@@ -319,7 +320,7 @@ func (p *LocationManagerProxy) RegisterLocationPendingIntent(
 	ctx context.Context,
 	provider string,
 	request LocationRequest,
-	pendingIntent interface{},
+	pendingIntent app.PendingIntent,
 	packageName string,
 ) error {
 	_identity := p.remote.Identity()
@@ -328,6 +329,10 @@ func (p *LocationManagerProxy) RegisterLocationPendingIntent(
 	_data.WriteString16(provider)
 	_data.WriteInt32(1)
 	if _err := request.MarshalParcel(_data); _err != nil {
+		return _err
+	}
+	_data.WriteInt32(1)
+	if _err := pendingIntent.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteString16(packageName)
@@ -353,10 +358,14 @@ func (p *LocationManagerProxy) RegisterLocationPendingIntent(
 
 func (p *LocationManagerProxy) UnregisterLocationPendingIntent(
 	ctx context.Context,
-	pendingIntent interface{},
+	pendingIntent app.PendingIntent,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
+	_data.WriteInt32(1)
+	if _err := pendingIntent.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "unregisterLocationPendingIntent")
 	if _err != nil {
@@ -414,7 +423,7 @@ func (p *LocationManagerProxy) RequestListenerFlush(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(requestCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "requestListenerFlush")
@@ -438,12 +447,16 @@ func (p *LocationManagerProxy) RequestListenerFlush(
 func (p *LocationManagerProxy) RequestPendingIntentFlush(
 	ctx context.Context,
 	provider string,
-	pendingIntent interface{},
+	pendingIntent app.PendingIntent,
 	requestCode int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteString16(provider)
+	_data.WriteInt32(1)
+	if _err := pendingIntent.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt32(requestCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "requestPendingIntentFlush")
@@ -467,7 +480,7 @@ func (p *LocationManagerProxy) RequestPendingIntentFlush(
 func (p *LocationManagerProxy) RequestGeofence(
 	ctx context.Context,
 	geofence Geofence,
-	intent interface{},
+	intent app.PendingIntent,
 	packageName string,
 ) error {
 	_identity := p.remote.Identity()
@@ -475,6 +488,10 @@ func (p *LocationManagerProxy) RequestGeofence(
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteInt32(1)
 	if _err := geofence.MarshalParcel(_data); _err != nil {
+		return _err
+	}
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteString16(packageName)
@@ -500,10 +517,14 @@ func (p *LocationManagerProxy) RequestGeofence(
 
 func (p *LocationManagerProxy) RemoveGeofence(
 	ctx context.Context,
-	intent interface{},
+	intent app.PendingIntent,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
+	_data.WriteInt32(1)
+	if _err := intent.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeGeofence")
 	if _err != nil {
@@ -563,7 +584,7 @@ func (p *LocationManagerProxy) ReverseGeocode(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "reverseGeocode")
 	if _err != nil {
@@ -594,7 +615,7 @@ func (p *LocationManagerProxy) ForwardGeocode(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "forwardGeocode")
 	if _err != nil {
@@ -753,7 +774,7 @@ func (p *LocationManagerProxy) RegisterGnssStatusCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
@@ -782,7 +803,7 @@ func (p *LocationManagerProxy) UnregisterGnssStatusCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "unregisterGnssStatusCallback")
 	if _err != nil {
@@ -811,7 +832,7 @@ func (p *LocationManagerProxy) RegisterGnssNmeaCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
@@ -840,7 +861,7 @@ func (p *LocationManagerProxy) UnregisterGnssNmeaCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "unregisterGnssNmeaCallback")
 	if _err != nil {
@@ -874,7 +895,7 @@ func (p *LocationManagerProxy) AddGnssMeasurementsListener(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
@@ -903,7 +924,7 @@ func (p *LocationManagerProxy) RemoveGnssMeasurementsListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeGnssMeasurementsListener")
 	if _err != nil {
@@ -961,7 +982,7 @@ func (p *LocationManagerProxy) AddGnssNavigationMessageListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
@@ -990,7 +1011,7 @@ func (p *LocationManagerProxy) RemoveGnssNavigationMessageListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeGnssNavigationMessageListener")
 	if _err != nil {
@@ -1019,7 +1040,7 @@ func (p *LocationManagerProxy) AddGnssAntennaInfoListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
@@ -1048,7 +1069,7 @@ func (p *LocationManagerProxy) RemoveGnssAntennaInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeGnssAntennaInfoListener")
 	if _err != nil {
@@ -1074,7 +1095,7 @@ func (p *LocationManagerProxy) AddProviderRequestListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "addProviderRequestListener")
 	if _err != nil {
@@ -1100,7 +1121,7 @@ func (p *LocationManagerProxy) RemoveProviderRequestListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILocationManager, "removeProviderRequestListener")
 	if _err != nil {
@@ -1160,7 +1181,7 @@ func (p *LocationManagerProxy) StartGnssBatch(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILocationManager)
 	_data.WriteInt64(periodNanos)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(packageName)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(listenerId)
@@ -2278,7 +2299,18 @@ func (s *LocationManagerStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_pendingIntent interface{}
+		var _arg_pendingIntent app.PendingIntent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_pendingIntent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -2298,7 +2330,18 @@ func (s *LocationManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_pendingIntent interface{}
+		var _arg_pendingIntent app.PendingIntent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_pendingIntent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.UnregisterLocationPendingIntent(ctx, _arg_pendingIntent)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2362,7 +2405,18 @@ func (s *LocationManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_pendingIntent interface{}
+		var _arg_pendingIntent app.PendingIntent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_pendingIntent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_requestCode, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -2391,7 +2445,18 @@ func (s *LocationManagerStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_intent interface{}
+		var _arg_intent app.PendingIntent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -2411,7 +2476,18 @@ func (s *LocationManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent interface{}
+		var _arg_intent app.PendingIntent
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.RemoveGeofence(ctx, _arg_intent)
 		_reply := parcel.New()
 		if _err != nil {
@@ -3413,4 +3489,561 @@ func (s *LocationManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ILocationManagerServer is the server-side interface that user implementations
+// provide to NewLocationManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILocationManagerServer interface {
+	GetLastLocation(ctx context.Context, provider string, request LastLocationRequest, packageName string) (Location, error)
+	GetCurrentLocation(ctx context.Context, provider string, request LocationRequest, callback ILocationCallback, packageName string, listenerId string) (ondeviceintelligence.ICancellationSignal, error)
+	RegisterLocationListener(ctx context.Context, provider string, request LocationRequest, listener ILocationListener, packageName string, listenerId string) error
+	UnregisterLocationListener(ctx context.Context, listener ILocationListener) error
+	RegisterLocationPendingIntent(ctx context.Context, provider string, request LocationRequest, pendingIntent app.PendingIntent, packageName string) error
+	UnregisterLocationPendingIntent(ctx context.Context, pendingIntent app.PendingIntent) error
+	InjectLocation(ctx context.Context, location Location) error
+	RequestListenerFlush(ctx context.Context, provider string, listener ILocationListener, requestCode int32) error
+	RequestPendingIntentFlush(ctx context.Context, provider string, pendingIntent app.PendingIntent, requestCode int32) error
+	RequestGeofence(ctx context.Context, geofence Geofence, intent app.PendingIntent, packageName string) error
+	RemoveGeofence(ctx context.Context, intent app.PendingIntent) error
+	IsGeocodeAvailable(ctx context.Context) (bool, error)
+	ReverseGeocode(ctx context.Context, request locationProvider.ReverseGeocodeRequest, callback locationProvider.IGeocodeCallback) error
+	ForwardGeocode(ctx context.Context, request locationProvider.ForwardGeocodeRequest, callback locationProvider.IGeocodeCallback) error
+	GetGnssCapabilities(ctx context.Context) (GnssCapabilities, error)
+	GetGnssYearOfHardware(ctx context.Context) (int32, error)
+	GetGnssHardwareModelName(ctx context.Context) (string, error)
+	GetGnssAntennaInfos(ctx context.Context) ([]GnssAntennaInfo, error)
+	RegisterGnssStatusCallback(ctx context.Context, callback IGnssStatusListener, packageName string, listenerId string) error
+	UnregisterGnssStatusCallback(ctx context.Context, callback IGnssStatusListener) error
+	RegisterGnssNmeaCallback(ctx context.Context, callback IGnssNmeaListener, packageName string, listenerId string) error
+	UnregisterGnssNmeaCallback(ctx context.Context, callback IGnssNmeaListener) error
+	AddGnssMeasurementsListener(ctx context.Context, request GnssMeasurementRequest, listener IGnssMeasurementsListener, packageName string, listenerId string) error
+	RemoveGnssMeasurementsListener(ctx context.Context, listener IGnssMeasurementsListener) error
+	InjectGnssMeasurementCorrections(ctx context.Context, corrections GnssMeasurementCorrections) error
+	AddGnssNavigationMessageListener(ctx context.Context, listener IGnssNavigationMessageListener, packageName string, listenerId string) error
+	RemoveGnssNavigationMessageListener(ctx context.Context, listener IGnssNavigationMessageListener) error
+	AddGnssAntennaInfoListener(ctx context.Context, listener IGnssAntennaInfoListener, packageName string, listenerId string) error
+	RemoveGnssAntennaInfoListener(ctx context.Context, listener IGnssAntennaInfoListener) error
+	AddProviderRequestListener(ctx context.Context, listener locationProvider.IProviderRequestListener) error
+	RemoveProviderRequestListener(ctx context.Context, listener locationProvider.IProviderRequestListener) error
+	GetGnssBatchSize(ctx context.Context) (int32, error)
+	StartGnssBatch(ctx context.Context, periodNanos int64, listener ILocationListener, packageName string, listenerId string) error
+	FlushGnssBatch(ctx context.Context) error
+	StopGnssBatch(ctx context.Context) error
+	HasProvider(ctx context.Context, provider string) (bool, error)
+	GetAllProviders(ctx context.Context) ([]string, error)
+	GetProviders(ctx context.Context, criteria Criteria, enabledOnly bool) ([]string, error)
+	GetBestProvider(ctx context.Context, criteria Criteria, enabledOnly bool) (string, error)
+	GetProviderProperties(ctx context.Context, provider string) (locationProvider.ProviderProperties, error)
+	IsProviderPackage(ctx context.Context, provider string, packageName string) (bool, error)
+	GetProviderPackages(ctx context.Context, provider string) ([]string, error)
+	SetExtraLocationControllerPackage(ctx context.Context, packageName string) error
+	GetExtraLocationControllerPackage(ctx context.Context) (string, error)
+	SetExtraLocationControllerPackageEnabled(ctx context.Context, enabled bool) error
+	IsExtraLocationControllerPackageEnabled(ctx context.Context) (bool, error)
+	IsProviderEnabledForUser(ctx context.Context, provider string) (bool, error)
+	IsLocationEnabledForUser(ctx context.Context) (bool, error)
+	SetLocationEnabledForUser(ctx context.Context, enabled bool) error
+	IsAdasGnssLocationEnabledForUser(ctx context.Context) (bool, error)
+	SetAdasGnssLocationEnabledForUser(ctx context.Context, enabled bool) error
+	IsAutomotiveGnssSuspended(ctx context.Context) (bool, error)
+	SetAutomotiveGnssSuspended(ctx context.Context, suspended bool) error
+	AddTestProvider(ctx context.Context, name string, properties locationProvider.ProviderProperties, locationTags []string, packageName string) error
+	RemoveTestProvider(ctx context.Context, provider string, packageName string) error
+	SetTestProviderLocation(ctx context.Context, provider string, location Location, packageName string) error
+	SetTestProviderEnabled(ctx context.Context, provider string, enabled bool, packageName string) error
+	GetGnssTimeMillis(ctx context.Context) (LocationTime, error)
+	SendExtraCommand(ctx context.Context, provider string, command string, extras interface{}) error
+	GetBackgroundThrottlingWhitelist(ctx context.Context) ([]string, error)
+	GetIgnoreSettingsAllowlist(ctx context.Context) (interface{}, error)
+	GetAdasAllowlist(ctx context.Context) (interface{}, error)
+}
+
+type locationManagerStubWrapper struct {
+	impl       ILocationManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *locationManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *locationManagerStubWrapper) GetLastLocation(
+	ctx context.Context,
+	provider string,
+	request LastLocationRequest,
+	packageName string,
+) (Location, error) {
+	return w.impl.GetLastLocation(ctx, provider, request, packageName)
+}
+
+func (w *locationManagerStubWrapper) GetCurrentLocation(
+	ctx context.Context,
+	provider string,
+	request LocationRequest,
+	callback ILocationCallback,
+	packageName string,
+	listenerId string,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.GetCurrentLocation(ctx, provider, request, callback, packageName, listenerId)
+}
+
+func (w *locationManagerStubWrapper) RegisterLocationListener(
+	ctx context.Context,
+	provider string,
+	request LocationRequest,
+	listener ILocationListener,
+	packageName string,
+	listenerId string,
+) error {
+	return w.impl.RegisterLocationListener(ctx, provider, request, listener, packageName, listenerId)
+}
+
+func (w *locationManagerStubWrapper) UnregisterLocationListener(
+	ctx context.Context,
+	listener ILocationListener,
+) error {
+	return w.impl.UnregisterLocationListener(ctx, listener)
+}
+
+func (w *locationManagerStubWrapper) RegisterLocationPendingIntent(
+	ctx context.Context,
+	provider string,
+	request LocationRequest,
+	pendingIntent app.PendingIntent,
+	packageName string,
+) error {
+	return w.impl.RegisterLocationPendingIntent(ctx, provider, request, pendingIntent, packageName)
+}
+
+func (w *locationManagerStubWrapper) UnregisterLocationPendingIntent(
+	ctx context.Context,
+	pendingIntent app.PendingIntent,
+) error {
+	return w.impl.UnregisterLocationPendingIntent(ctx, pendingIntent)
+}
+
+func (w *locationManagerStubWrapper) InjectLocation(
+	ctx context.Context,
+	location Location,
+) error {
+	return w.impl.InjectLocation(ctx, location)
+}
+
+func (w *locationManagerStubWrapper) RequestListenerFlush(
+	ctx context.Context,
+	provider string,
+	listener ILocationListener,
+	requestCode int32,
+) error {
+	return w.impl.RequestListenerFlush(ctx, provider, listener, requestCode)
+}
+
+func (w *locationManagerStubWrapper) RequestPendingIntentFlush(
+	ctx context.Context,
+	provider string,
+	pendingIntent app.PendingIntent,
+	requestCode int32,
+) error {
+	return w.impl.RequestPendingIntentFlush(ctx, provider, pendingIntent, requestCode)
+}
+
+func (w *locationManagerStubWrapper) RequestGeofence(
+	ctx context.Context,
+	geofence Geofence,
+	intent app.PendingIntent,
+	packageName string,
+) error {
+	return w.impl.RequestGeofence(ctx, geofence, intent, packageName)
+}
+
+func (w *locationManagerStubWrapper) RemoveGeofence(
+	ctx context.Context,
+	intent app.PendingIntent,
+) error {
+	return w.impl.RemoveGeofence(ctx, intent)
+}
+
+func (w *locationManagerStubWrapper) IsGeocodeAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsGeocodeAvailable(ctx)
+}
+
+func (w *locationManagerStubWrapper) ReverseGeocode(
+	ctx context.Context,
+	request locationProvider.ReverseGeocodeRequest,
+	callback locationProvider.IGeocodeCallback,
+) error {
+	return w.impl.ReverseGeocode(ctx, request, callback)
+}
+
+func (w *locationManagerStubWrapper) ForwardGeocode(
+	ctx context.Context,
+	request locationProvider.ForwardGeocodeRequest,
+	callback locationProvider.IGeocodeCallback,
+) error {
+	return w.impl.ForwardGeocode(ctx, request, callback)
+}
+
+func (w *locationManagerStubWrapper) GetGnssCapabilities(
+	ctx context.Context,
+) (GnssCapabilities, error) {
+	return w.impl.GetGnssCapabilities(ctx)
+}
+
+func (w *locationManagerStubWrapper) GetGnssYearOfHardware(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetGnssYearOfHardware(ctx)
+}
+
+func (w *locationManagerStubWrapper) GetGnssHardwareModelName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetGnssHardwareModelName(ctx)
+}
+
+func (w *locationManagerStubWrapper) GetGnssAntennaInfos(
+	ctx context.Context,
+) ([]GnssAntennaInfo, error) {
+	return w.impl.GetGnssAntennaInfos(ctx)
+}
+
+func (w *locationManagerStubWrapper) RegisterGnssStatusCallback(
+	ctx context.Context,
+	callback IGnssStatusListener,
+	packageName string,
+	listenerId string,
+) error {
+	return w.impl.RegisterGnssStatusCallback(ctx, callback, packageName, listenerId)
+}
+
+func (w *locationManagerStubWrapper) UnregisterGnssStatusCallback(
+	ctx context.Context,
+	callback IGnssStatusListener,
+) error {
+	return w.impl.UnregisterGnssStatusCallback(ctx, callback)
+}
+
+func (w *locationManagerStubWrapper) RegisterGnssNmeaCallback(
+	ctx context.Context,
+	callback IGnssNmeaListener,
+	packageName string,
+	listenerId string,
+) error {
+	return w.impl.RegisterGnssNmeaCallback(ctx, callback, packageName, listenerId)
+}
+
+func (w *locationManagerStubWrapper) UnregisterGnssNmeaCallback(
+	ctx context.Context,
+	callback IGnssNmeaListener,
+) error {
+	return w.impl.UnregisterGnssNmeaCallback(ctx, callback)
+}
+
+func (w *locationManagerStubWrapper) AddGnssMeasurementsListener(
+	ctx context.Context,
+	request GnssMeasurementRequest,
+	listener IGnssMeasurementsListener,
+	packageName string,
+	listenerId string,
+) error {
+	return w.impl.AddGnssMeasurementsListener(ctx, request, listener, packageName, listenerId)
+}
+
+func (w *locationManagerStubWrapper) RemoveGnssMeasurementsListener(
+	ctx context.Context,
+	listener IGnssMeasurementsListener,
+) error {
+	return w.impl.RemoveGnssMeasurementsListener(ctx, listener)
+}
+
+func (w *locationManagerStubWrapper) InjectGnssMeasurementCorrections(
+	ctx context.Context,
+	corrections GnssMeasurementCorrections,
+) error {
+	return w.impl.InjectGnssMeasurementCorrections(ctx, corrections)
+}
+
+func (w *locationManagerStubWrapper) AddGnssNavigationMessageListener(
+	ctx context.Context,
+	listener IGnssNavigationMessageListener,
+	packageName string,
+	listenerId string,
+) error {
+	return w.impl.AddGnssNavigationMessageListener(ctx, listener, packageName, listenerId)
+}
+
+func (w *locationManagerStubWrapper) RemoveGnssNavigationMessageListener(
+	ctx context.Context,
+	listener IGnssNavigationMessageListener,
+) error {
+	return w.impl.RemoveGnssNavigationMessageListener(ctx, listener)
+}
+
+func (w *locationManagerStubWrapper) AddGnssAntennaInfoListener(
+	ctx context.Context,
+	listener IGnssAntennaInfoListener,
+	packageName string,
+	listenerId string,
+) error {
+	return w.impl.AddGnssAntennaInfoListener(ctx, listener, packageName, listenerId)
+}
+
+func (w *locationManagerStubWrapper) RemoveGnssAntennaInfoListener(
+	ctx context.Context,
+	listener IGnssAntennaInfoListener,
+) error {
+	return w.impl.RemoveGnssAntennaInfoListener(ctx, listener)
+}
+
+func (w *locationManagerStubWrapper) AddProviderRequestListener(
+	ctx context.Context,
+	listener locationProvider.IProviderRequestListener,
+) error {
+	return w.impl.AddProviderRequestListener(ctx, listener)
+}
+
+func (w *locationManagerStubWrapper) RemoveProviderRequestListener(
+	ctx context.Context,
+	listener locationProvider.IProviderRequestListener,
+) error {
+	return w.impl.RemoveProviderRequestListener(ctx, listener)
+}
+
+func (w *locationManagerStubWrapper) GetGnssBatchSize(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetGnssBatchSize(ctx)
+}
+
+func (w *locationManagerStubWrapper) StartGnssBatch(
+	ctx context.Context,
+	periodNanos int64,
+	listener ILocationListener,
+	packageName string,
+	listenerId string,
+) error {
+	return w.impl.StartGnssBatch(ctx, periodNanos, listener, packageName, listenerId)
+}
+
+func (w *locationManagerStubWrapper) FlushGnssBatch(
+	ctx context.Context,
+) error {
+	return w.impl.FlushGnssBatch(ctx)
+}
+
+func (w *locationManagerStubWrapper) StopGnssBatch(
+	ctx context.Context,
+) error {
+	return w.impl.StopGnssBatch(ctx)
+}
+
+func (w *locationManagerStubWrapper) HasProvider(
+	ctx context.Context,
+	provider string,
+) (bool, error) {
+	return w.impl.HasProvider(ctx, provider)
+}
+
+func (w *locationManagerStubWrapper) GetAllProviders(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetAllProviders(ctx)
+}
+
+func (w *locationManagerStubWrapper) GetProviders(
+	ctx context.Context,
+	criteria Criteria,
+	enabledOnly bool,
+) ([]string, error) {
+	return w.impl.GetProviders(ctx, criteria, enabledOnly)
+}
+
+func (w *locationManagerStubWrapper) GetBestProvider(
+	ctx context.Context,
+	criteria Criteria,
+	enabledOnly bool,
+) (string, error) {
+	return w.impl.GetBestProvider(ctx, criteria, enabledOnly)
+}
+
+func (w *locationManagerStubWrapper) GetProviderProperties(
+	ctx context.Context,
+	provider string,
+) (locationProvider.ProviderProperties, error) {
+	return w.impl.GetProviderProperties(ctx, provider)
+}
+
+func (w *locationManagerStubWrapper) IsProviderPackage(
+	ctx context.Context,
+	provider string,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsProviderPackage(ctx, provider, packageName)
+}
+
+func (w *locationManagerStubWrapper) GetProviderPackages(
+	ctx context.Context,
+	provider string,
+) ([]string, error) {
+	return w.impl.GetProviderPackages(ctx, provider)
+}
+
+func (w *locationManagerStubWrapper) SetExtraLocationControllerPackage(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.SetExtraLocationControllerPackage(ctx, packageName)
+}
+
+func (w *locationManagerStubWrapper) GetExtraLocationControllerPackage(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetExtraLocationControllerPackage(ctx)
+}
+
+func (w *locationManagerStubWrapper) SetExtraLocationControllerPackageEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetExtraLocationControllerPackageEnabled(ctx, enabled)
+}
+
+func (w *locationManagerStubWrapper) IsExtraLocationControllerPackageEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsExtraLocationControllerPackageEnabled(ctx)
+}
+
+func (w *locationManagerStubWrapper) IsProviderEnabledForUser(
+	ctx context.Context,
+	provider string,
+) (bool, error) {
+	return w.impl.IsProviderEnabledForUser(ctx, provider)
+}
+
+func (w *locationManagerStubWrapper) IsLocationEnabledForUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLocationEnabledForUser(ctx)
+}
+
+func (w *locationManagerStubWrapper) SetLocationEnabledForUser(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetLocationEnabledForUser(ctx, enabled)
+}
+
+func (w *locationManagerStubWrapper) IsAdasGnssLocationEnabledForUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAdasGnssLocationEnabledForUser(ctx)
+}
+
+func (w *locationManagerStubWrapper) SetAdasGnssLocationEnabledForUser(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetAdasGnssLocationEnabledForUser(ctx, enabled)
+}
+
+func (w *locationManagerStubWrapper) IsAutomotiveGnssSuspended(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAutomotiveGnssSuspended(ctx)
+}
+
+func (w *locationManagerStubWrapper) SetAutomotiveGnssSuspended(
+	ctx context.Context,
+	suspended bool,
+) error {
+	return w.impl.SetAutomotiveGnssSuspended(ctx, suspended)
+}
+
+func (w *locationManagerStubWrapper) AddTestProvider(
+	ctx context.Context,
+	name string,
+	properties locationProvider.ProviderProperties,
+	locationTags []string,
+	packageName string,
+) error {
+	return w.impl.AddTestProvider(ctx, name, properties, locationTags, packageName)
+}
+
+func (w *locationManagerStubWrapper) RemoveTestProvider(
+	ctx context.Context,
+	provider string,
+	packageName string,
+) error {
+	return w.impl.RemoveTestProvider(ctx, provider, packageName)
+}
+
+func (w *locationManagerStubWrapper) SetTestProviderLocation(
+	ctx context.Context,
+	provider string,
+	location Location,
+	packageName string,
+) error {
+	return w.impl.SetTestProviderLocation(ctx, provider, location, packageName)
+}
+
+func (w *locationManagerStubWrapper) SetTestProviderEnabled(
+	ctx context.Context,
+	provider string,
+	enabled bool,
+	packageName string,
+) error {
+	return w.impl.SetTestProviderEnabled(ctx, provider, enabled, packageName)
+}
+
+func (w *locationManagerStubWrapper) GetGnssTimeMillis(
+	ctx context.Context,
+) (LocationTime, error) {
+	return w.impl.GetGnssTimeMillis(ctx)
+}
+
+func (w *locationManagerStubWrapper) SendExtraCommand(
+	ctx context.Context,
+	provider string,
+	command string,
+	extras interface{},
+) error {
+	return w.impl.SendExtraCommand(ctx, provider, command, extras)
+}
+
+func (w *locationManagerStubWrapper) GetBackgroundThrottlingWhitelist(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetBackgroundThrottlingWhitelist(ctx)
+}
+
+func (w *locationManagerStubWrapper) GetIgnoreSettingsAllowlist(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetIgnoreSettingsAllowlist(ctx)
+}
+
+func (w *locationManagerStubWrapper) GetAdasAllowlist(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetAdasAllowlist(ctx)
+}
+
+var _ ILocationManager = (*locationManagerStubWrapper)(nil)
+
+// NewLocationManagerStub creates a server-side ILocationManager wrapping the given
+// server implementation. The returned value satisfies ILocationManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLocationManagerStub(
+	impl ILocationManagerServer,
+) ILocationManager {
+	wrapper := &locationManagerStubWrapper{impl: impl}
+	stub := &LocationManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

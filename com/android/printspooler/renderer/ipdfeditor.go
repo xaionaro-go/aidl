@@ -292,3 +292,73 @@ func (s *PdfEditorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPdfEditorServer is the server-side interface that user implementations
+// provide to NewPdfEditorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPdfEditorServer interface {
+	OpenDocument(ctx context.Context, source int32) (int32, error)
+	RemovePages(ctx context.Context, pages []print.PageRange) error
+	ApplyPrintAttributes(ctx context.Context, attributes print.PrintAttributes) error
+	Write(ctx context.Context, destination int32) error
+	CloseDocument(ctx context.Context) error
+}
+
+type pdfEditorStubWrapper struct {
+	impl       IPdfEditorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pdfEditorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pdfEditorStubWrapper) OpenDocument(
+	ctx context.Context,
+	source int32,
+) (int32, error) {
+	return w.impl.OpenDocument(ctx, source)
+}
+
+func (w *pdfEditorStubWrapper) RemovePages(
+	ctx context.Context,
+	pages []print.PageRange,
+) error {
+	return w.impl.RemovePages(ctx, pages)
+}
+
+func (w *pdfEditorStubWrapper) ApplyPrintAttributes(
+	ctx context.Context,
+	attributes print.PrintAttributes,
+) error {
+	return w.impl.ApplyPrintAttributes(ctx, attributes)
+}
+
+func (w *pdfEditorStubWrapper) Write(
+	ctx context.Context,
+	destination int32,
+) error {
+	return w.impl.Write(ctx, destination)
+}
+
+func (w *pdfEditorStubWrapper) CloseDocument(
+	ctx context.Context,
+) error {
+	return w.impl.CloseDocument(ctx)
+}
+
+var _ IPdfEditor = (*pdfEditorStubWrapper)(nil)
+
+// NewPdfEditorStub creates a server-side IPdfEditor wrapping the given
+// server implementation. The returned value satisfies IPdfEditor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPdfEditorStub(
+	impl IPdfEditorServer,
+) IPdfEditor {
+	wrapper := &pdfEditorStubWrapper{impl: impl}
+	stub := &PdfEditorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

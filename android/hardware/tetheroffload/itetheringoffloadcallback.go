@@ -124,3 +124,50 @@ func (s *TetheringOffloadCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITetheringOffloadCallbackServer is the server-side interface that user implementations
+// provide to NewTetheringOffloadCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITetheringOffloadCallbackServer interface {
+	OnEvent(ctx context.Context, event OffloadCallbackEvent) error
+	UpdateTimeout(ctx context.Context, params NatTimeoutUpdate) error
+}
+
+type tetheringOffloadCallbackStubWrapper struct {
+	impl       ITetheringOffloadCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tetheringOffloadCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tetheringOffloadCallbackStubWrapper) OnEvent(
+	ctx context.Context,
+	event OffloadCallbackEvent,
+) error {
+	return w.impl.OnEvent(ctx, event)
+}
+
+func (w *tetheringOffloadCallbackStubWrapper) UpdateTimeout(
+	ctx context.Context,
+	params NatTimeoutUpdate,
+) error {
+	return w.impl.UpdateTimeout(ctx, params)
+}
+
+var _ ITetheringOffloadCallback = (*tetheringOffloadCallbackStubWrapper)(nil)
+
+// NewTetheringOffloadCallbackStub creates a server-side ITetheringOffloadCallback wrapping the given
+// server implementation. The returned value satisfies ITetheringOffloadCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTetheringOffloadCallbackStub(
+	impl ITetheringOffloadCallbackServer,
+) ITetheringOffloadCallback {
+	wrapper := &tetheringOffloadCallbackStubWrapper{impl: impl}
+	stub := &TetheringOffloadCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -402,3 +402,116 @@ func (s *DataServiceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDataServiceCallbackServer is the server-side interface that user implementations
+// provide to NewDataServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataServiceCallbackServer interface {
+	OnSetupDataCallComplete(ctx context.Context, result int32, dataCallResponse DataCallResponse) error
+	OnDeactivateDataCallComplete(ctx context.Context, result int32) error
+	OnSetInitialAttachApnComplete(ctx context.Context, result int32) error
+	OnSetDataProfileComplete(ctx context.Context, result int32) error
+	OnRequestDataCallListComplete(ctx context.Context, result int32, dataCallList []DataCallResponse) error
+	OnDataCallListChanged(ctx context.Context, dataCallList []DataCallResponse) error
+	OnHandoverStarted(ctx context.Context, result int32) error
+	OnHandoverCancelled(ctx context.Context, result int32) error
+	OnApnUnthrottled(ctx context.Context, apn string) error
+	OnDataProfileUnthrottled(ctx context.Context, dp DataProfile) error
+}
+
+type dataServiceCallbackStubWrapper struct {
+	impl       IDataServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dataServiceCallbackStubWrapper) OnSetupDataCallComplete(
+	ctx context.Context,
+	result int32,
+	dataCallResponse DataCallResponse,
+) error {
+	return w.impl.OnSetupDataCallComplete(ctx, result, dataCallResponse)
+}
+
+func (w *dataServiceCallbackStubWrapper) OnDeactivateDataCallComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnDeactivateDataCallComplete(ctx, result)
+}
+
+func (w *dataServiceCallbackStubWrapper) OnSetInitialAttachApnComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnSetInitialAttachApnComplete(ctx, result)
+}
+
+func (w *dataServiceCallbackStubWrapper) OnSetDataProfileComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnSetDataProfileComplete(ctx, result)
+}
+
+func (w *dataServiceCallbackStubWrapper) OnRequestDataCallListComplete(
+	ctx context.Context,
+	result int32,
+	dataCallList []DataCallResponse,
+) error {
+	return w.impl.OnRequestDataCallListComplete(ctx, result, dataCallList)
+}
+
+func (w *dataServiceCallbackStubWrapper) OnDataCallListChanged(
+	ctx context.Context,
+	dataCallList []DataCallResponse,
+) error {
+	return w.impl.OnDataCallListChanged(ctx, dataCallList)
+}
+
+func (w *dataServiceCallbackStubWrapper) OnHandoverStarted(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnHandoverStarted(ctx, result)
+}
+
+func (w *dataServiceCallbackStubWrapper) OnHandoverCancelled(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnHandoverCancelled(ctx, result)
+}
+
+func (w *dataServiceCallbackStubWrapper) OnApnUnthrottled(
+	ctx context.Context,
+	apn string,
+) error {
+	return w.impl.OnApnUnthrottled(ctx, apn)
+}
+
+func (w *dataServiceCallbackStubWrapper) OnDataProfileUnthrottled(
+	ctx context.Context,
+	dp DataProfile,
+) error {
+	return w.impl.OnDataProfileUnthrottled(ctx, dp)
+}
+
+var _ IDataServiceCallback = (*dataServiceCallbackStubWrapper)(nil)
+
+// NewDataServiceCallbackStub creates a server-side IDataServiceCallback wrapping the given
+// server implementation. The returned value satisfies IDataServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataServiceCallbackStub(
+	impl IDataServiceCallbackServer,
+) IDataServiceCallback {
+	wrapper := &dataServiceCallbackStubWrapper{impl: impl}
+	stub := &DataServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

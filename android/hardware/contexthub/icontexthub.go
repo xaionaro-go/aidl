@@ -313,7 +313,7 @@ func (p *ContextHubProxy) RegisterCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContextHub)
 	_data.WriteInt32(contextHubId)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContextHub, "registerCallback")
 	if _err != nil {
@@ -686,7 +686,7 @@ func (p *ContextHubProxy) RegisterEndpointCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContextHub)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContextHub, "registerEndpointCallback")
 	if _err != nil {
@@ -1493,4 +1493,258 @@ func (s *ContextHubStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContextHubServer is the server-side interface that user implementations
+// provide to NewContextHubStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContextHubServer interface {
+	GetContextHubs(ctx context.Context) ([]ContextHubInfo, error)
+	LoadNanoapp(ctx context.Context, contextHubId int32, appBinary NanoappBinary, transactionId int32) error
+	UnloadNanoapp(ctx context.Context, contextHubId int32, appId int64, transactionId int32) error
+	DisableNanoapp(ctx context.Context, contextHubId int32, appId int64, transactionId int32) error
+	EnableNanoapp(ctx context.Context, contextHubId int32, appId int64, transactionId int32) error
+	OnSettingChanged(ctx context.Context, setting Setting, enabled bool) error
+	QueryNanoapps(ctx context.Context, contextHubId int32) error
+	RegisterCallback(ctx context.Context, contextHubId int32, cb IContextHubCallback) error
+	SendMessageToHub(ctx context.Context, contextHubId int32, message ContextHubMessage) error
+	OnHostEndpointConnected(ctx context.Context, hostEndpointInfo HostEndpointInfo) error
+	OnHostEndpointDisconnected(ctx context.Context, hostEndpointId uint16) error
+	GetPreloadedNanoappIds(ctx context.Context, contextHubId int32) ([]int64, error)
+	OnNanSessionStateChanged(ctx context.Context, update NanSessionStateUpdate) error
+	SetTestMode(ctx context.Context, enable bool) error
+	SendMessageDeliveryStatusToHub(ctx context.Context, contextHubId int32, messageDeliveryStatus MessageDeliveryStatus) error
+	GetHubs(ctx context.Context) ([]HubInfo, error)
+	GetEndpoints(ctx context.Context) ([]EndpointInfo, error)
+	RegisterEndpoint(ctx context.Context, endpoint EndpointInfo) error
+	UnregisterEndpoint(ctx context.Context, endpoint EndpointInfo) error
+	RegisterEndpointCallback(ctx context.Context, callback IEndpointCallback) error
+	RequestSessionIdRange(ctx context.Context, size int32) ([]int32, error)
+	OpenEndpointSession(ctx context.Context, sessionId int32, destination EndpointId, initiator EndpointId, serviceDescriptor string) error
+	SendMessageToEndpoint(ctx context.Context, sessionId int32, msg Message) error
+	SendMessageDeliveryStatusToEndpoint(ctx context.Context, sessionId int32, msgStatus MessageDeliveryStatus) error
+	CloseEndpointSession(ctx context.Context, sessionId int32, reason Reason) error
+	EndpointSessionOpenComplete(ctx context.Context, sessionId int32) error
+}
+
+type contextHubStubWrapper struct {
+	impl       IContextHubServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contextHubStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contextHubStubWrapper) GetContextHubs(
+	ctx context.Context,
+) ([]ContextHubInfo, error) {
+	return w.impl.GetContextHubs(ctx)
+}
+
+func (w *contextHubStubWrapper) LoadNanoapp(
+	ctx context.Context,
+	contextHubId int32,
+	appBinary NanoappBinary,
+	transactionId int32,
+) error {
+	return w.impl.LoadNanoapp(ctx, contextHubId, appBinary, transactionId)
+}
+
+func (w *contextHubStubWrapper) UnloadNanoapp(
+	ctx context.Context,
+	contextHubId int32,
+	appId int64,
+	transactionId int32,
+) error {
+	return w.impl.UnloadNanoapp(ctx, contextHubId, appId, transactionId)
+}
+
+func (w *contextHubStubWrapper) DisableNanoapp(
+	ctx context.Context,
+	contextHubId int32,
+	appId int64,
+	transactionId int32,
+) error {
+	return w.impl.DisableNanoapp(ctx, contextHubId, appId, transactionId)
+}
+
+func (w *contextHubStubWrapper) EnableNanoapp(
+	ctx context.Context,
+	contextHubId int32,
+	appId int64,
+	transactionId int32,
+) error {
+	return w.impl.EnableNanoapp(ctx, contextHubId, appId, transactionId)
+}
+
+func (w *contextHubStubWrapper) OnSettingChanged(
+	ctx context.Context,
+	setting Setting,
+	enabled bool,
+) error {
+	return w.impl.OnSettingChanged(ctx, setting, enabled)
+}
+
+func (w *contextHubStubWrapper) QueryNanoapps(
+	ctx context.Context,
+	contextHubId int32,
+) error {
+	return w.impl.QueryNanoapps(ctx, contextHubId)
+}
+
+func (w *contextHubStubWrapper) RegisterCallback(
+	ctx context.Context,
+	contextHubId int32,
+	cb IContextHubCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, contextHubId, cb)
+}
+
+func (w *contextHubStubWrapper) SendMessageToHub(
+	ctx context.Context,
+	contextHubId int32,
+	message ContextHubMessage,
+) error {
+	return w.impl.SendMessageToHub(ctx, contextHubId, message)
+}
+
+func (w *contextHubStubWrapper) OnHostEndpointConnected(
+	ctx context.Context,
+	hostEndpointInfo HostEndpointInfo,
+) error {
+	return w.impl.OnHostEndpointConnected(ctx, hostEndpointInfo)
+}
+
+func (w *contextHubStubWrapper) OnHostEndpointDisconnected(
+	ctx context.Context,
+	hostEndpointId uint16,
+) error {
+	return w.impl.OnHostEndpointDisconnected(ctx, hostEndpointId)
+}
+
+func (w *contextHubStubWrapper) GetPreloadedNanoappIds(
+	ctx context.Context,
+	contextHubId int32,
+) ([]int64, error) {
+	return w.impl.GetPreloadedNanoappIds(ctx, contextHubId)
+}
+
+func (w *contextHubStubWrapper) OnNanSessionStateChanged(
+	ctx context.Context,
+	update NanSessionStateUpdate,
+) error {
+	return w.impl.OnNanSessionStateChanged(ctx, update)
+}
+
+func (w *contextHubStubWrapper) SetTestMode(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetTestMode(ctx, enable)
+}
+
+func (w *contextHubStubWrapper) SendMessageDeliveryStatusToHub(
+	ctx context.Context,
+	contextHubId int32,
+	messageDeliveryStatus MessageDeliveryStatus,
+) error {
+	return w.impl.SendMessageDeliveryStatusToHub(ctx, contextHubId, messageDeliveryStatus)
+}
+
+func (w *contextHubStubWrapper) GetHubs(
+	ctx context.Context,
+) ([]HubInfo, error) {
+	return w.impl.GetHubs(ctx)
+}
+
+func (w *contextHubStubWrapper) GetEndpoints(
+	ctx context.Context,
+) ([]EndpointInfo, error) {
+	return w.impl.GetEndpoints(ctx)
+}
+
+func (w *contextHubStubWrapper) RegisterEndpoint(
+	ctx context.Context,
+	endpoint EndpointInfo,
+) error {
+	return w.impl.RegisterEndpoint(ctx, endpoint)
+}
+
+func (w *contextHubStubWrapper) UnregisterEndpoint(
+	ctx context.Context,
+	endpoint EndpointInfo,
+) error {
+	return w.impl.UnregisterEndpoint(ctx, endpoint)
+}
+
+func (w *contextHubStubWrapper) RegisterEndpointCallback(
+	ctx context.Context,
+	callback IEndpointCallback,
+) error {
+	return w.impl.RegisterEndpointCallback(ctx, callback)
+}
+
+func (w *contextHubStubWrapper) RequestSessionIdRange(
+	ctx context.Context,
+	size int32,
+) ([]int32, error) {
+	return w.impl.RequestSessionIdRange(ctx, size)
+}
+
+func (w *contextHubStubWrapper) OpenEndpointSession(
+	ctx context.Context,
+	sessionId int32,
+	destination EndpointId,
+	initiator EndpointId,
+	serviceDescriptor string,
+) error {
+	return w.impl.OpenEndpointSession(ctx, sessionId, destination, initiator, serviceDescriptor)
+}
+
+func (w *contextHubStubWrapper) SendMessageToEndpoint(
+	ctx context.Context,
+	sessionId int32,
+	msg Message,
+) error {
+	return w.impl.SendMessageToEndpoint(ctx, sessionId, msg)
+}
+
+func (w *contextHubStubWrapper) SendMessageDeliveryStatusToEndpoint(
+	ctx context.Context,
+	sessionId int32,
+	msgStatus MessageDeliveryStatus,
+) error {
+	return w.impl.SendMessageDeliveryStatusToEndpoint(ctx, sessionId, msgStatus)
+}
+
+func (w *contextHubStubWrapper) CloseEndpointSession(
+	ctx context.Context,
+	sessionId int32,
+	reason Reason,
+) error {
+	return w.impl.CloseEndpointSession(ctx, sessionId, reason)
+}
+
+func (w *contextHubStubWrapper) EndpointSessionOpenComplete(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.EndpointSessionOpenComplete(ctx, sessionId)
+}
+
+var _ IContextHub = (*contextHubStubWrapper)(nil)
+
+// NewContextHubStub creates a server-side IContextHub wrapping the given
+// server implementation. The returned value satisfies IContextHub
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContextHubStub(
+	impl IContextHubServer,
+) IContextHub {
+	wrapper := &contextHubStubWrapper{impl: impl}
+	stub := &ContextHubStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

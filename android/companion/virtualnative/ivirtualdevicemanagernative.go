@@ -180,3 +180,51 @@ func (s *VirtualDeviceManagerNativeStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVirtualDeviceManagerNativeServer is the server-side interface that user implementations
+// provide to NewVirtualDeviceManagerNativeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualDeviceManagerNativeServer interface {
+	GetDeviceIdsForUid(ctx context.Context, uid int32) ([]int32, error)
+	GetDevicePolicy(ctx context.Context, deviceId int32, policyType int32) (int32, error)
+}
+
+type virtualDeviceManagerNativeStubWrapper struct {
+	impl       IVirtualDeviceManagerNativeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualDeviceManagerNativeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualDeviceManagerNativeStubWrapper) GetDeviceIdsForUid(
+	ctx context.Context,
+	uid int32,
+) ([]int32, error) {
+	return w.impl.GetDeviceIdsForUid(ctx, uid)
+}
+
+func (w *virtualDeviceManagerNativeStubWrapper) GetDevicePolicy(
+	ctx context.Context,
+	deviceId int32,
+	policyType int32,
+) (int32, error) {
+	return w.impl.GetDevicePolicy(ctx, deviceId, policyType)
+}
+
+var _ IVirtualDeviceManagerNative = (*virtualDeviceManagerNativeStubWrapper)(nil)
+
+// NewVirtualDeviceManagerNativeStub creates a server-side IVirtualDeviceManagerNative wrapping the given
+// server implementation. The returned value satisfies IVirtualDeviceManagerNative
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualDeviceManagerNativeStub(
+	impl IVirtualDeviceManagerNativeServer,
+) IVirtualDeviceManagerNative {
+	wrapper := &virtualDeviceManagerNativeStubWrapper{impl: impl}
+	stub := &VirtualDeviceManagerNativeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -53,10 +53,10 @@ func (p *AttachEmbeddedWindowProxy) AttachEmbedded(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAttachEmbeddedWindow)
-	_data.WriteStrongBinder(hostToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, hostToken, p.remote.Transport())
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAttachEmbeddedWindow, "attachEmbedded")
 	if _err != nil {
@@ -256,4 +256,71 @@ func (s *AttachEmbeddedWindowStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAttachEmbeddedWindowServer is the server-side interface that user implementations
+// provide to NewAttachEmbeddedWindowStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAttachEmbeddedWindowServer interface {
+	AttachEmbedded(ctx context.Context, hostToken binder.IBinder, width int32, height int32, callback IAttachEmbeddedWindowCallback) error
+	Relayout(ctx context.Context, lp view.WindowManagerLayoutParams) error
+	AttachEmbeddedSurfaceControl(ctx context.Context, parentSurfaceControl view.SurfaceControl, displayId int32, inputTransferToken window.InputTransferToken) error
+	TearDownEmbeddedSurfaceControl(ctx context.Context) error
+}
+
+type attachEmbeddedWindowStubWrapper struct {
+	impl       IAttachEmbeddedWindowServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *attachEmbeddedWindowStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *attachEmbeddedWindowStubWrapper) AttachEmbedded(
+	ctx context.Context,
+	hostToken binder.IBinder,
+	width int32,
+	height int32,
+	callback IAttachEmbeddedWindowCallback,
+) error {
+	return w.impl.AttachEmbedded(ctx, hostToken, width, height, callback)
+}
+
+func (w *attachEmbeddedWindowStubWrapper) Relayout(
+	ctx context.Context,
+	lp view.WindowManagerLayoutParams,
+) error {
+	return w.impl.Relayout(ctx, lp)
+}
+
+func (w *attachEmbeddedWindowStubWrapper) AttachEmbeddedSurfaceControl(
+	ctx context.Context,
+	parentSurfaceControl view.SurfaceControl,
+	displayId int32,
+	inputTransferToken window.InputTransferToken,
+) error {
+	return w.impl.AttachEmbeddedSurfaceControl(ctx, parentSurfaceControl, displayId, inputTransferToken)
+}
+
+func (w *attachEmbeddedWindowStubWrapper) TearDownEmbeddedSurfaceControl(
+	ctx context.Context,
+) error {
+	return w.impl.TearDownEmbeddedSurfaceControl(ctx)
+}
+
+var _ IAttachEmbeddedWindow = (*attachEmbeddedWindowStubWrapper)(nil)
+
+// NewAttachEmbeddedWindowStub creates a server-side IAttachEmbeddedWindow wrapping the given
+// server implementation. The returned value satisfies IAttachEmbeddedWindow
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAttachEmbeddedWindowStub(
+	impl IAttachEmbeddedWindowServer,
+) IAttachEmbeddedWindow {
+	wrapper := &attachEmbeddedWindowStubWrapper{impl: impl}
+	stub := &AttachEmbeddedWindowStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

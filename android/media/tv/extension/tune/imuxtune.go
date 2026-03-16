@@ -110,3 +110,43 @@ func (s *MuxTuneStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMuxTuneServer is the server-side interface that user implementations
+// provide to NewMuxTuneStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMuxTuneServer interface {
+	CreateSession(ctx context.Context, broadcastType int32, clientToken string) (IMuxTuneSession, error)
+}
+
+type muxTuneStubWrapper struct {
+	impl       IMuxTuneServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *muxTuneStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *muxTuneStubWrapper) CreateSession(
+	ctx context.Context,
+	broadcastType int32,
+	clientToken string,
+) (IMuxTuneSession, error) {
+	return w.impl.CreateSession(ctx, broadcastType, clientToken)
+}
+
+var _ IMuxTune = (*muxTuneStubWrapper)(nil)
+
+// NewMuxTuneStub creates a server-side IMuxTune wrapping the given
+// server implementation. The returned value satisfies IMuxTune
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMuxTuneStub(
+	impl IMuxTuneServer,
+) IMuxTune {
+	wrapper := &muxTuneStubWrapper{impl: impl}
+	stub := &MuxTuneStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

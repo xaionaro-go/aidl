@@ -342,3 +342,82 @@ func (s *LocationProviderManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILocationProviderManagerServer is the server-side interface that user implementations
+// provide to NewLocationProviderManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILocationProviderManagerServer interface {
+	OnInitialize(ctx context.Context, allowed bool, properties ProviderProperties) error
+	OnSetAllowed(ctx context.Context, allowed bool) error
+	OnSetProperties(ctx context.Context, properties ProviderProperties) error
+	OnReportLocation(ctx context.Context, location interface{}) error
+	OnReportLocations(ctx context.Context, locations []interface{}) error
+	OnFlushComplete(ctx context.Context) error
+}
+
+type locationProviderManagerStubWrapper struct {
+	impl       ILocationProviderManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *locationProviderManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *locationProviderManagerStubWrapper) OnInitialize(
+	ctx context.Context,
+	allowed bool,
+	properties ProviderProperties,
+) error {
+	return w.impl.OnInitialize(ctx, allowed, properties)
+}
+
+func (w *locationProviderManagerStubWrapper) OnSetAllowed(
+	ctx context.Context,
+	allowed bool,
+) error {
+	return w.impl.OnSetAllowed(ctx, allowed)
+}
+
+func (w *locationProviderManagerStubWrapper) OnSetProperties(
+	ctx context.Context,
+	properties ProviderProperties,
+) error {
+	return w.impl.OnSetProperties(ctx, properties)
+}
+
+func (w *locationProviderManagerStubWrapper) OnReportLocation(
+	ctx context.Context,
+	location interface{},
+) error {
+	return w.impl.OnReportLocation(ctx, location)
+}
+
+func (w *locationProviderManagerStubWrapper) OnReportLocations(
+	ctx context.Context,
+	locations []interface{},
+) error {
+	return w.impl.OnReportLocations(ctx, locations)
+}
+
+func (w *locationProviderManagerStubWrapper) OnFlushComplete(
+	ctx context.Context,
+) error {
+	return w.impl.OnFlushComplete(ctx)
+}
+
+var _ ILocationProviderManager = (*locationProviderManagerStubWrapper)(nil)
+
+// NewLocationProviderManagerStub creates a server-side ILocationProviderManager wrapping the given
+// server implementation. The returned value satisfies ILocationProviderManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLocationProviderManagerStub(
+	impl ILocationProviderManagerServer,
+) ILocationProviderManager {
+	wrapper := &locationProviderManagerStubWrapper{impl: impl}
+	stub := &LocationProviderManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

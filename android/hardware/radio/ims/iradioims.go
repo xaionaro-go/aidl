@@ -172,8 +172,8 @@ func (p *RadioImsProxy) SetResponseFunctions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRadioIms)
-	_data.WriteStrongBinder(radioImsResponse.AsBinder().Handle())
-	_data.WriteStrongBinder(radioImsIndication.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, radioImsResponse.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, radioImsIndication.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioIms, "setResponseFunctions")
 	if _err != nil {
@@ -402,4 +402,112 @@ func (s *RadioImsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRadioImsServer is the server-side interface that user implementations
+// provide to NewRadioImsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioImsServer interface {
+	SetSrvccCallInfo(ctx context.Context, serial int32, srvccCalls []SrvccCall) error
+	UpdateImsRegistrationInfo(ctx context.Context, serial int32, imsRegistration ImsRegistration) error
+	StartImsTraffic(ctx context.Context, serial int32, token int32, imsTrafficType ImsTrafficType, accessNetworkType radio.AccessNetwork, trafficDirection imsImsCall.Direction) error
+	StopImsTraffic(ctx context.Context, serial int32, token int32) error
+	TriggerEpsFallback(ctx context.Context, serial int32, reason EpsFallbackReason) error
+	SetResponseFunctions(ctx context.Context, radioImsResponse IRadioImsResponse, radioImsIndication IRadioImsIndication) error
+	SendAnbrQuery(ctx context.Context, serial int32, mediaType ImsStreamType, direction ImsStreamDirection, bitsPerSecond int32) error
+	UpdateImsCallStatus(ctx context.Context, serial int32, imsCalls []ImsCall) error
+}
+
+type radioImsStubWrapper struct {
+	impl       IRadioImsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioImsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioImsStubWrapper) SetSrvccCallInfo(
+	ctx context.Context,
+	serial int32,
+	srvccCalls []SrvccCall,
+) error {
+	return w.impl.SetSrvccCallInfo(ctx, serial, srvccCalls)
+}
+
+func (w *radioImsStubWrapper) UpdateImsRegistrationInfo(
+	ctx context.Context,
+	serial int32,
+	imsRegistration ImsRegistration,
+) error {
+	return w.impl.UpdateImsRegistrationInfo(ctx, serial, imsRegistration)
+}
+
+func (w *radioImsStubWrapper) StartImsTraffic(
+	ctx context.Context,
+	serial int32,
+	token int32,
+	imsTrafficType ImsTrafficType,
+	accessNetworkType radio.AccessNetwork,
+	trafficDirection imsImsCall.Direction,
+) error {
+	return w.impl.StartImsTraffic(ctx, serial, token, imsTrafficType, accessNetworkType, trafficDirection)
+}
+
+func (w *radioImsStubWrapper) StopImsTraffic(
+	ctx context.Context,
+	serial int32,
+	token int32,
+) error {
+	return w.impl.StopImsTraffic(ctx, serial, token)
+}
+
+func (w *radioImsStubWrapper) TriggerEpsFallback(
+	ctx context.Context,
+	serial int32,
+	reason EpsFallbackReason,
+) error {
+	return w.impl.TriggerEpsFallback(ctx, serial, reason)
+}
+
+func (w *radioImsStubWrapper) SetResponseFunctions(
+	ctx context.Context,
+	radioImsResponse IRadioImsResponse,
+	radioImsIndication IRadioImsIndication,
+) error {
+	return w.impl.SetResponseFunctions(ctx, radioImsResponse, radioImsIndication)
+}
+
+func (w *radioImsStubWrapper) SendAnbrQuery(
+	ctx context.Context,
+	serial int32,
+	mediaType ImsStreamType,
+	direction ImsStreamDirection,
+	bitsPerSecond int32,
+) error {
+	return w.impl.SendAnbrQuery(ctx, serial, mediaType, direction, bitsPerSecond)
+}
+
+func (w *radioImsStubWrapper) UpdateImsCallStatus(
+	ctx context.Context,
+	serial int32,
+	imsCalls []ImsCall,
+) error {
+	return w.impl.UpdateImsCallStatus(ctx, serial, imsCalls)
+}
+
+var _ IRadioIms = (*radioImsStubWrapper)(nil)
+
+// NewRadioImsStub creates a server-side IRadioIms wrapping the given
+// server implementation. The returned value satisfies IRadioIms
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioImsStub(
+	impl IRadioImsServer,
+) IRadioIms {
+	wrapper := &radioImsStubWrapper{impl: impl}
+	stub := &RadioImsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

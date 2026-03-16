@@ -148,3 +148,47 @@ func (s *DownloadProgressListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDownloadProgressListenerServer is the server-side interface that user implementations
+// provide to NewDownloadProgressListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDownloadProgressListenerServer interface {
+	OnProgressUpdated(ctx context.Context, request DownloadRequest, fileInfo FileInfo, currentDownloadSize int32, fullDownloadSize int32, currentDecodedSize int32, fullDecodedSize int32) error
+}
+
+type downloadProgressListenerStubWrapper struct {
+	impl       IDownloadProgressListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *downloadProgressListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *downloadProgressListenerStubWrapper) OnProgressUpdated(
+	ctx context.Context,
+	request DownloadRequest,
+	fileInfo FileInfo,
+	currentDownloadSize int32,
+	fullDownloadSize int32,
+	currentDecodedSize int32,
+	fullDecodedSize int32,
+) error {
+	return w.impl.OnProgressUpdated(ctx, request, fileInfo, currentDownloadSize, fullDownloadSize, currentDecodedSize, fullDecodedSize)
+}
+
+var _ IDownloadProgressListener = (*downloadProgressListenerStubWrapper)(nil)
+
+// NewDownloadProgressListenerStub creates a server-side IDownloadProgressListener wrapping the given
+// server implementation. The returned value satisfies IDownloadProgressListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDownloadProgressListenerStub(
+	impl IDownloadProgressListenerServer,
+) IDownloadProgressListener {
+	wrapper := &downloadProgressListenerStubWrapper{impl: impl}
+	stub := &DownloadProgressListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

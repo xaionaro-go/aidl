@@ -129,7 +129,7 @@ func (p *CompanionDeviceManagerProxy) Associate(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(_identity.UserID)
 
@@ -602,7 +602,7 @@ func (p *CompanionDeviceManagerProxy) AddOnAssociationsChangedListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnAssociationsChangedListener")
@@ -630,7 +630,7 @@ func (p *CompanionDeviceManagerProxy) RemoveOnAssociationsChangedListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnAssociationsChangedListener")
@@ -657,7 +657,7 @@ func (p *CompanionDeviceManagerProxy) AddOnTransportsChangedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnTransportsChangedListener")
 	if _err != nil {
@@ -683,7 +683,7 @@ func (p *CompanionDeviceManagerProxy) RemoveOnTransportsChangedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnTransportsChangedListener")
 	if _err != nil {
@@ -755,7 +755,7 @@ func (p *CompanionDeviceManagerProxy) AddOnMessageReceivedListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(messageType)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "addOnMessageReceivedListener")
 	if _err != nil {
@@ -783,7 +783,7 @@ func (p *CompanionDeviceManagerProxy) RemoveOnMessageReceivedListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICompanionDeviceManager)
 	_data.WriteInt32(messageType)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "removeOnMessageReceivedListener")
 	if _err != nil {
@@ -940,7 +940,7 @@ func (p *CompanionDeviceManagerProxy) StartSystemDataTransfer(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(associationId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICompanionDeviceManager, "startSystemDataTransfer")
 	if _err != nil {
@@ -2285,4 +2285,371 @@ func (s *CompanionDeviceManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICompanionDeviceManagerServer is the server-side interface that user implementations
+// provide to NewCompanionDeviceManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICompanionDeviceManagerServer interface {
+	Associate(ctx context.Context, request AssociationRequest, callback IAssociationRequestCallback) error
+	GetAssociations(ctx context.Context) ([]AssociationInfo, error)
+	GetAllAssociationsForUser(ctx context.Context) ([]AssociationInfo, error)
+	LegacyDisassociate(ctx context.Context, deviceMacAddress string) error
+	Disassociate(ctx context.Context, associationId int32) error
+	HasNotificationAccess(ctx context.Context, component content.ComponentName) (bool, error)
+	RequestNotificationAccess(ctx context.Context, component content.ComponentName) (app.PendingIntent, error)
+	IsDeviceAssociatedForWifiConnection(ctx context.Context, packageName string, macAddress string) (bool, error)
+	LegacyStartObservingDevicePresence(ctx context.Context, deviceAddress string) error
+	LegacyStopObservingDevicePresence(ctx context.Context, deviceAddress string) error
+	StartObservingDevicePresence(ctx context.Context, request ObservingDevicePresenceRequest, packageName string) error
+	StopObservingDevicePresence(ctx context.Context, request ObservingDevicePresenceRequest, packageName string) error
+	CanPairWithoutPrompt(ctx context.Context, packageName string, deviceMacAddress string) (bool, error)
+	CreateAssociation(ctx context.Context, packageName string, macAddress string, certificate []byte) error
+	AddOnAssociationsChangedListener(ctx context.Context, listener IOnAssociationsChangedListener) error
+	RemoveOnAssociationsChangedListener(ctx context.Context, listener IOnAssociationsChangedListener) error
+	AddOnTransportsChangedListener(ctx context.Context, listener IOnTransportsChangedListener) error
+	RemoveOnTransportsChangedListener(ctx context.Context, listener IOnTransportsChangedListener) error
+	SendMessage(ctx context.Context, messageType int32, data []byte, associationIds []int32) error
+	AddOnMessageReceivedListener(ctx context.Context, messageType int32, listener IOnMessageReceivedListener) error
+	RemoveOnMessageReceivedListener(ctx context.Context, messageType int32, listener IOnMessageReceivedListener) error
+	NotifySelfManagedDeviceAppeared(ctx context.Context, associationId int32) error
+	NotifySelfManagedDeviceDisappeared(ctx context.Context, associationId int32) error
+	BuildPermissionTransferUserConsentIntent(ctx context.Context, associationId int32) (app.PendingIntent, error)
+	IsPermissionTransferUserConsented(ctx context.Context, associationId int32) (bool, error)
+	StartSystemDataTransfer(ctx context.Context, packageName string, associationId int32, callback ISystemDataTransferCallback) error
+	AttachSystemDataTransport(ctx context.Context, packageName string, associationId int32, fd int32) error
+	DetachSystemDataTransport(ctx context.Context, packageName string, associationId int32) error
+	IsCompanionApplicationBound(ctx context.Context, packageName string) (bool, error)
+	BuildAssociationCancellationIntent(ctx context.Context) (app.PendingIntent, error)
+	EnableSystemDataSync(ctx context.Context, associationId int32, flags int32) error
+	DisableSystemDataSync(ctx context.Context, associationId int32, flags int32) error
+	EnablePermissionsSync(ctx context.Context, associationId int32) error
+	DisablePermissionsSync(ctx context.Context, associationId int32) error
+	GetPermissionSyncRequest(ctx context.Context, associationId int32) (datatransfer.PermissionSyncRequest, error)
+	EnableSecureTransport(ctx context.Context, enabled bool) error
+	SetDeviceId(ctx context.Context, associationId int32, deviceId DeviceId) error
+	GetBackupPayload(ctx context.Context) ([]byte, error)
+	ApplyRestoredPayload(ctx context.Context, payload []byte) error
+	RemoveBond(ctx context.Context, associationId int32, packageName string) (bool, error)
+}
+
+type companionDeviceManagerStubWrapper struct {
+	impl       ICompanionDeviceManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *companionDeviceManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *companionDeviceManagerStubWrapper) Associate(
+	ctx context.Context,
+	request AssociationRequest,
+	callback IAssociationRequestCallback,
+) error {
+	return w.impl.Associate(ctx, request, callback)
+}
+
+func (w *companionDeviceManagerStubWrapper) GetAssociations(
+	ctx context.Context,
+) ([]AssociationInfo, error) {
+	return w.impl.GetAssociations(ctx)
+}
+
+func (w *companionDeviceManagerStubWrapper) GetAllAssociationsForUser(
+	ctx context.Context,
+) ([]AssociationInfo, error) {
+	return w.impl.GetAllAssociationsForUser(ctx)
+}
+
+func (w *companionDeviceManagerStubWrapper) LegacyDisassociate(
+	ctx context.Context,
+	deviceMacAddress string,
+) error {
+	return w.impl.LegacyDisassociate(ctx, deviceMacAddress)
+}
+
+func (w *companionDeviceManagerStubWrapper) Disassociate(
+	ctx context.Context,
+	associationId int32,
+) error {
+	return w.impl.Disassociate(ctx, associationId)
+}
+
+func (w *companionDeviceManagerStubWrapper) HasNotificationAccess(
+	ctx context.Context,
+	component content.ComponentName,
+) (bool, error) {
+	return w.impl.HasNotificationAccess(ctx, component)
+}
+
+func (w *companionDeviceManagerStubWrapper) RequestNotificationAccess(
+	ctx context.Context,
+	component content.ComponentName,
+) (app.PendingIntent, error) {
+	return w.impl.RequestNotificationAccess(ctx, component)
+}
+
+func (w *companionDeviceManagerStubWrapper) IsDeviceAssociatedForWifiConnection(
+	ctx context.Context,
+	packageName string,
+	macAddress string,
+) (bool, error) {
+	return w.impl.IsDeviceAssociatedForWifiConnection(ctx, packageName, macAddress)
+}
+
+func (w *companionDeviceManagerStubWrapper) LegacyStartObservingDevicePresence(
+	ctx context.Context,
+	deviceAddress string,
+) error {
+	return w.impl.LegacyStartObservingDevicePresence(ctx, deviceAddress)
+}
+
+func (w *companionDeviceManagerStubWrapper) LegacyStopObservingDevicePresence(
+	ctx context.Context,
+	deviceAddress string,
+) error {
+	return w.impl.LegacyStopObservingDevicePresence(ctx, deviceAddress)
+}
+
+func (w *companionDeviceManagerStubWrapper) StartObservingDevicePresence(
+	ctx context.Context,
+	request ObservingDevicePresenceRequest,
+	packageName string,
+) error {
+	return w.impl.StartObservingDevicePresence(ctx, request, packageName)
+}
+
+func (w *companionDeviceManagerStubWrapper) StopObservingDevicePresence(
+	ctx context.Context,
+	request ObservingDevicePresenceRequest,
+	packageName string,
+) error {
+	return w.impl.StopObservingDevicePresence(ctx, request, packageName)
+}
+
+func (w *companionDeviceManagerStubWrapper) CanPairWithoutPrompt(
+	ctx context.Context,
+	packageName string,
+	deviceMacAddress string,
+) (bool, error) {
+	return w.impl.CanPairWithoutPrompt(ctx, packageName, deviceMacAddress)
+}
+
+func (w *companionDeviceManagerStubWrapper) CreateAssociation(
+	ctx context.Context,
+	packageName string,
+	macAddress string,
+	certificate []byte,
+) error {
+	return w.impl.CreateAssociation(ctx, packageName, macAddress, certificate)
+}
+
+func (w *companionDeviceManagerStubWrapper) AddOnAssociationsChangedListener(
+	ctx context.Context,
+	listener IOnAssociationsChangedListener,
+) error {
+	return w.impl.AddOnAssociationsChangedListener(ctx, listener)
+}
+
+func (w *companionDeviceManagerStubWrapper) RemoveOnAssociationsChangedListener(
+	ctx context.Context,
+	listener IOnAssociationsChangedListener,
+) error {
+	return w.impl.RemoveOnAssociationsChangedListener(ctx, listener)
+}
+
+func (w *companionDeviceManagerStubWrapper) AddOnTransportsChangedListener(
+	ctx context.Context,
+	listener IOnTransportsChangedListener,
+) error {
+	return w.impl.AddOnTransportsChangedListener(ctx, listener)
+}
+
+func (w *companionDeviceManagerStubWrapper) RemoveOnTransportsChangedListener(
+	ctx context.Context,
+	listener IOnTransportsChangedListener,
+) error {
+	return w.impl.RemoveOnTransportsChangedListener(ctx, listener)
+}
+
+func (w *companionDeviceManagerStubWrapper) SendMessage(
+	ctx context.Context,
+	messageType int32,
+	data []byte,
+	associationIds []int32,
+) error {
+	return w.impl.SendMessage(ctx, messageType, data, associationIds)
+}
+
+func (w *companionDeviceManagerStubWrapper) AddOnMessageReceivedListener(
+	ctx context.Context,
+	messageType int32,
+	listener IOnMessageReceivedListener,
+) error {
+	return w.impl.AddOnMessageReceivedListener(ctx, messageType, listener)
+}
+
+func (w *companionDeviceManagerStubWrapper) RemoveOnMessageReceivedListener(
+	ctx context.Context,
+	messageType int32,
+	listener IOnMessageReceivedListener,
+) error {
+	return w.impl.RemoveOnMessageReceivedListener(ctx, messageType, listener)
+}
+
+func (w *companionDeviceManagerStubWrapper) NotifySelfManagedDeviceAppeared(
+	ctx context.Context,
+	associationId int32,
+) error {
+	return w.impl.NotifySelfManagedDeviceAppeared(ctx, associationId)
+}
+
+func (w *companionDeviceManagerStubWrapper) NotifySelfManagedDeviceDisappeared(
+	ctx context.Context,
+	associationId int32,
+) error {
+	return w.impl.NotifySelfManagedDeviceDisappeared(ctx, associationId)
+}
+
+func (w *companionDeviceManagerStubWrapper) BuildPermissionTransferUserConsentIntent(
+	ctx context.Context,
+	associationId int32,
+) (app.PendingIntent, error) {
+	return w.impl.BuildPermissionTransferUserConsentIntent(ctx, associationId)
+}
+
+func (w *companionDeviceManagerStubWrapper) IsPermissionTransferUserConsented(
+	ctx context.Context,
+	associationId int32,
+) (bool, error) {
+	return w.impl.IsPermissionTransferUserConsented(ctx, associationId)
+}
+
+func (w *companionDeviceManagerStubWrapper) StartSystemDataTransfer(
+	ctx context.Context,
+	packageName string,
+	associationId int32,
+	callback ISystemDataTransferCallback,
+) error {
+	return w.impl.StartSystemDataTransfer(ctx, packageName, associationId, callback)
+}
+
+func (w *companionDeviceManagerStubWrapper) AttachSystemDataTransport(
+	ctx context.Context,
+	packageName string,
+	associationId int32,
+	fd int32,
+) error {
+	return w.impl.AttachSystemDataTransport(ctx, packageName, associationId, fd)
+}
+
+func (w *companionDeviceManagerStubWrapper) DetachSystemDataTransport(
+	ctx context.Context,
+	packageName string,
+	associationId int32,
+) error {
+	return w.impl.DetachSystemDataTransport(ctx, packageName, associationId)
+}
+
+func (w *companionDeviceManagerStubWrapper) IsCompanionApplicationBound(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsCompanionApplicationBound(ctx, packageName)
+}
+
+func (w *companionDeviceManagerStubWrapper) BuildAssociationCancellationIntent(
+	ctx context.Context,
+) (app.PendingIntent, error) {
+	return w.impl.BuildAssociationCancellationIntent(ctx)
+}
+
+func (w *companionDeviceManagerStubWrapper) EnableSystemDataSync(
+	ctx context.Context,
+	associationId int32,
+	flags int32,
+) error {
+	return w.impl.EnableSystemDataSync(ctx, associationId, flags)
+}
+
+func (w *companionDeviceManagerStubWrapper) DisableSystemDataSync(
+	ctx context.Context,
+	associationId int32,
+	flags int32,
+) error {
+	return w.impl.DisableSystemDataSync(ctx, associationId, flags)
+}
+
+func (w *companionDeviceManagerStubWrapper) EnablePermissionsSync(
+	ctx context.Context,
+	associationId int32,
+) error {
+	return w.impl.EnablePermissionsSync(ctx, associationId)
+}
+
+func (w *companionDeviceManagerStubWrapper) DisablePermissionsSync(
+	ctx context.Context,
+	associationId int32,
+) error {
+	return w.impl.DisablePermissionsSync(ctx, associationId)
+}
+
+func (w *companionDeviceManagerStubWrapper) GetPermissionSyncRequest(
+	ctx context.Context,
+	associationId int32,
+) (datatransfer.PermissionSyncRequest, error) {
+	return w.impl.GetPermissionSyncRequest(ctx, associationId)
+}
+
+func (w *companionDeviceManagerStubWrapper) EnableSecureTransport(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.EnableSecureTransport(ctx, enabled)
+}
+
+func (w *companionDeviceManagerStubWrapper) SetDeviceId(
+	ctx context.Context,
+	associationId int32,
+	deviceId DeviceId,
+) error {
+	return w.impl.SetDeviceId(ctx, associationId, deviceId)
+}
+
+func (w *companionDeviceManagerStubWrapper) GetBackupPayload(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetBackupPayload(ctx)
+}
+
+func (w *companionDeviceManagerStubWrapper) ApplyRestoredPayload(
+	ctx context.Context,
+	payload []byte,
+) error {
+	return w.impl.ApplyRestoredPayload(ctx, payload)
+}
+
+func (w *companionDeviceManagerStubWrapper) RemoveBond(
+	ctx context.Context,
+	associationId int32,
+	packageName string,
+) (bool, error) {
+	return w.impl.RemoveBond(ctx, associationId, packageName)
+}
+
+var _ ICompanionDeviceManager = (*companionDeviceManagerStubWrapper)(nil)
+
+// NewCompanionDeviceManagerStub creates a server-side ICompanionDeviceManager wrapping the given
+// server implementation. The returned value satisfies ICompanionDeviceManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCompanionDeviceManagerStub(
+	impl ICompanionDeviceManagerServer,
+) ICompanionDeviceManager {
+	wrapper := &companionDeviceManagerStubWrapper{impl: impl}
+	stub := &CompanionDeviceManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

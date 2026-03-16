@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/xaionaro-go/binder/binder"
-	inputflingerIInputFilter "github.com/xaionaro-go/binder/com/android/server/inputflinger/IInputFilter"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -18,7 +17,7 @@ const (
 
 type IInputFlingerRust interface {
 	AsBinder() binder.IBinder
-	CreateInputFilter(ctx context.Context, callbacks inputflingerIInputFilter.IInputFilterCallbacks) (IInputFilter, error)
+	CreateInputFilter(ctx context.Context, callbacks interface{}) (IInputFilter, error)
 }
 
 type InputFlingerRustProxy struct {
@@ -39,12 +38,11 @@ var _ IInputFlingerRust = (*InputFlingerRustProxy)(nil)
 
 func (p *InputFlingerRustProxy) CreateInputFilter(
 	ctx context.Context,
-	callbacks inputflingerIInputFilter.IInputFilterCallbacks,
+	callbacks interface{},
 ) (IInputFilter, error) {
 	var _result IInputFilter
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputFlingerRust)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputFlingerRust, "createInputFilter")
 	if _err != nil {
@@ -87,9 +85,7 @@ func (s *InputFlingerRustStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_callbacks inputflingerIInputFilter.IInputFilterCallbacks
-		_ = _arg_callbacks
+		var _arg_callbacks interface{}
 		_result, _err := s.Impl.CreateInputFilter(ctx, _arg_callbacks)
 		_reply := parcel.New()
 		if _err != nil {
@@ -103,4 +99,43 @@ func (s *InputFlingerRustStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputFlingerRustServer is the server-side interface that user implementations
+// provide to NewInputFlingerRustStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputFlingerRustServer interface {
+	CreateInputFilter(ctx context.Context, callbacks interface{}) (IInputFilter, error)
+}
+
+type inputFlingerRustStubWrapper struct {
+	impl       IInputFlingerRustServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputFlingerRustStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputFlingerRustStubWrapper) CreateInputFilter(
+	ctx context.Context,
+	callbacks interface{},
+) (IInputFilter, error) {
+	return w.impl.CreateInputFilter(ctx, callbacks)
+}
+
+var _ IInputFlingerRust = (*inputFlingerRustStubWrapper)(nil)
+
+// NewInputFlingerRustStub creates a server-side IInputFlingerRust wrapping the given
+// server implementation. The returned value satisfies IInputFlingerRust
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputFlingerRustStub(
+	impl IInputFlingerRustServer,
+) IInputFlingerRust {
+	wrapper := &inputFlingerRustStubWrapper{impl: impl}
+	stub := &InputFlingerRustStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

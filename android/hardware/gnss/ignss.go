@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	gnssIGnss "github.com/xaionaro-go/binder/android/hardware/gnss/IGnss"
+	gnss_assistance "github.com/xaionaro-go/binder/android/hardware/gnss/gnss_assistance"
 	measurement_corrections "github.com/xaionaro-go/binder/android/hardware/gnss/measurement_corrections"
 	visibility_control "github.com/xaionaro-go/binder/android/hardware/gnss/visibility_control"
 	"github.com/xaionaro-go/binder/binder"
@@ -72,7 +73,7 @@ type IGnss interface {
 	StopSvStatus(ctx context.Context) error
 	StartNmea(ctx context.Context) error
 	StopNmea(ctx context.Context) error
-	GetExtensionGnssAssistanceInterface(ctx context.Context) (interface{}, error)
+	GetExtensionGnssAssistanceInterface(ctx context.Context) (gnss_assistance.IGnssAssistanceInterface, error)
 }
 
 const (
@@ -103,7 +104,7 @@ func (p *GnssProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnss)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGnss, "setCallback")
 	if _err != nil {
@@ -826,8 +827,8 @@ func (p *GnssProxy) StopNmea(
 
 func (p *GnssProxy) GetExtensionGnssAssistanceInterface(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (gnss_assistance.IGnssAssistanceInterface, error) {
+	var _result gnss_assistance.IGnssAssistanceInterface
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnss)
 
@@ -846,6 +847,11 @@ func (p *GnssProxy) GetExtensionGnssAssistanceInterface(
 		return _result, _err
 	}
 
+	_handle, _err := _reply.ReadStrongBinder()
+	if _err != nil {
+		return _result, _err
+	}
+	_result = gnss_assistance.NewGnssAssistanceInterfaceProxy(binder.NewProxyBinder(p.remote.Transport(), p.remote.Identity(), _handle))
 	return _result, nil
 }
 
@@ -1268,9 +1274,238 @@ func (s *GnssStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
+		// TODO: interface/IBinder return marshaling not yet supported in stubs
 		_ = _result
 		return _reply, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssServer is the server-side interface that user implementations
+// provide to NewGnssStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssServer interface {
+	SetCallback(ctx context.Context, callback IGnssCallback) error
+	Close(ctx context.Context) error
+	GetExtensionPsds(ctx context.Context) (IGnssPsds, error)
+	GetExtensionGnssConfiguration(ctx context.Context) (IGnssConfiguration, error)
+	GetExtensionGnssMeasurement(ctx context.Context) (IGnssMeasurementInterface, error)
+	GetExtensionGnssPowerIndication(ctx context.Context) (IGnssPowerIndication, error)
+	GetExtensionGnssBatching(ctx context.Context) (IGnssBatching, error)
+	GetExtensionGnssGeofence(ctx context.Context) (IGnssGeofence, error)
+	GetExtensionGnssNavigationMessage(ctx context.Context) (IGnssNavigationMessageInterface, error)
+	GetExtensionAGnss(ctx context.Context) (IAGnss, error)
+	GetExtensionAGnssRil(ctx context.Context) (IAGnssRil, error)
+	GetExtensionGnssDebug(ctx context.Context) (IGnssDebug, error)
+	GetExtensionGnssVisibilityControl(ctx context.Context) (visibility_control.IGnssVisibilityControl, error)
+	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
+	InjectTime(ctx context.Context, timeMs int64, timeReferenceMs int64, uncertaintyMs int32) error
+	InjectLocation(ctx context.Context, location GnssLocation) error
+	InjectBestLocation(ctx context.Context, location GnssLocation) error
+	DeleteAidingData(ctx context.Context, aidingDataFlags gnssIGnss.GnssAidingData) error
+	SetPositionMode(ctx context.Context, options gnssIGnss.PositionModeOptions) error
+	GetExtensionGnssAntennaInfo(ctx context.Context) (IGnssAntennaInfo, error)
+	GetExtensionMeasurementCorrections(ctx context.Context) (measurement_corrections.IMeasurementCorrectionsInterface, error)
+	StartSvStatus(ctx context.Context) error
+	StopSvStatus(ctx context.Context) error
+	StartNmea(ctx context.Context) error
+	StopNmea(ctx context.Context) error
+	GetExtensionGnssAssistanceInterface(ctx context.Context) (gnss_assistance.IGnssAssistanceInterface, error)
+}
+
+type gnssStubWrapper struct {
+	impl       IGnssServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IGnssCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *gnssStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionPsds(
+	ctx context.Context,
+) (IGnssPsds, error) {
+	return w.impl.GetExtensionPsds(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssConfiguration(
+	ctx context.Context,
+) (IGnssConfiguration, error) {
+	return w.impl.GetExtensionGnssConfiguration(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssMeasurement(
+	ctx context.Context,
+) (IGnssMeasurementInterface, error) {
+	return w.impl.GetExtensionGnssMeasurement(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssPowerIndication(
+	ctx context.Context,
+) (IGnssPowerIndication, error) {
+	return w.impl.GetExtensionGnssPowerIndication(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssBatching(
+	ctx context.Context,
+) (IGnssBatching, error) {
+	return w.impl.GetExtensionGnssBatching(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssGeofence(
+	ctx context.Context,
+) (IGnssGeofence, error) {
+	return w.impl.GetExtensionGnssGeofence(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssNavigationMessage(
+	ctx context.Context,
+) (IGnssNavigationMessageInterface, error) {
+	return w.impl.GetExtensionGnssNavigationMessage(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionAGnss(
+	ctx context.Context,
+) (IAGnss, error) {
+	return w.impl.GetExtensionAGnss(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionAGnssRil(
+	ctx context.Context,
+) (IAGnssRil, error) {
+	return w.impl.GetExtensionAGnssRil(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssDebug(
+	ctx context.Context,
+) (IGnssDebug, error) {
+	return w.impl.GetExtensionGnssDebug(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssVisibilityControl(
+	ctx context.Context,
+) (visibility_control.IGnssVisibilityControl, error) {
+	return w.impl.GetExtensionGnssVisibilityControl(ctx)
+}
+
+func (w *gnssStubWrapper) Start(
+	ctx context.Context,
+) error {
+	return w.impl.Start(ctx)
+}
+
+func (w *gnssStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *gnssStubWrapper) InjectTime(
+	ctx context.Context,
+	timeMs int64,
+	timeReferenceMs int64,
+	uncertaintyMs int32,
+) error {
+	return w.impl.InjectTime(ctx, timeMs, timeReferenceMs, uncertaintyMs)
+}
+
+func (w *gnssStubWrapper) InjectLocation(
+	ctx context.Context,
+	location GnssLocation,
+) error {
+	return w.impl.InjectLocation(ctx, location)
+}
+
+func (w *gnssStubWrapper) InjectBestLocation(
+	ctx context.Context,
+	location GnssLocation,
+) error {
+	return w.impl.InjectBestLocation(ctx, location)
+}
+
+func (w *gnssStubWrapper) DeleteAidingData(
+	ctx context.Context,
+	aidingDataFlags gnssIGnss.GnssAidingData,
+) error {
+	return w.impl.DeleteAidingData(ctx, aidingDataFlags)
+}
+
+func (w *gnssStubWrapper) SetPositionMode(
+	ctx context.Context,
+	options gnssIGnss.PositionModeOptions,
+) error {
+	return w.impl.SetPositionMode(ctx, options)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssAntennaInfo(
+	ctx context.Context,
+) (IGnssAntennaInfo, error) {
+	return w.impl.GetExtensionGnssAntennaInfo(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionMeasurementCorrections(
+	ctx context.Context,
+) (measurement_corrections.IMeasurementCorrectionsInterface, error) {
+	return w.impl.GetExtensionMeasurementCorrections(ctx)
+}
+
+func (w *gnssStubWrapper) StartSvStatus(
+	ctx context.Context,
+) error {
+	return w.impl.StartSvStatus(ctx)
+}
+
+func (w *gnssStubWrapper) StopSvStatus(
+	ctx context.Context,
+) error {
+	return w.impl.StopSvStatus(ctx)
+}
+
+func (w *gnssStubWrapper) StartNmea(
+	ctx context.Context,
+) error {
+	return w.impl.StartNmea(ctx)
+}
+
+func (w *gnssStubWrapper) StopNmea(
+	ctx context.Context,
+) error {
+	return w.impl.StopNmea(ctx)
+}
+
+func (w *gnssStubWrapper) GetExtensionGnssAssistanceInterface(
+	ctx context.Context,
+) (gnss_assistance.IGnssAssistanceInterface, error) {
+	return w.impl.GetExtensionGnssAssistanceInterface(ctx)
+}
+
+var _ IGnss = (*gnssStubWrapper)(nil)
+
+// NewGnssStub creates a server-side IGnss wrapping the given
+// server implementation. The returned value satisfies IGnss
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssStub(
+	impl IGnssServer,
+) IGnss {
+	wrapper := &gnssStubWrapper{impl: impl}
+	stub := &GnssStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

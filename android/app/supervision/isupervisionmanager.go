@@ -101,3 +101,41 @@ func (s *SupervisionManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISupervisionManagerServer is the server-side interface that user implementations
+// provide to NewSupervisionManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupervisionManagerServer interface {
+	IsSupervisionEnabledForUser(ctx context.Context) (bool, error)
+}
+
+type supervisionManagerStubWrapper struct {
+	impl       ISupervisionManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supervisionManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supervisionManagerStubWrapper) IsSupervisionEnabledForUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSupervisionEnabledForUser(ctx)
+}
+
+var _ ISupervisionManager = (*supervisionManagerStubWrapper)(nil)
+
+// NewSupervisionManagerStub creates a server-side ISupervisionManager wrapping the given
+// server implementation. The returned value satisfies ISupervisionManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupervisionManagerStub(
+	impl ISupervisionManagerServer,
+) ISupervisionManager {
+	wrapper := &supervisionManagerStubWrapper{impl: impl}
+	stub := &SupervisionManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

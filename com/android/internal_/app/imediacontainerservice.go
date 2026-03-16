@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	pm "github.com/xaionaro-go/binder/android/content/pm"
 	res "github.com/xaionaro-go/binder/android/content/res"
 	"github.com/xaionaro-go/binder/binder"
 	os "github.com/xaionaro-go/binder/com/android/internal_/os"
@@ -23,7 +24,7 @@ const (
 type IMediaContainerService interface {
 	AsBinder() binder.IBinder
 	CopyPackage(ctx context.Context, packagePath string, target os.IParcelFileDescriptorFactory) (int32, error)
-	GetMinimalPackageInfo(ctx context.Context, packagePath string, flags int32, abiOverride string) (interface{}, error)
+	GetMinimalPackageInfo(ctx context.Context, packagePath string, flags int32, abiOverride string) (pm.PackageInfoLite, error)
 	GetObbInfo(ctx context.Context, filename string) (res.ObbInfo, error)
 	CalculateInstalledSize(ctx context.Context, packagePath string, abiOverride string) (int64, error)
 }
@@ -53,7 +54,7 @@ func (p *MediaContainerServiceProxy) CopyPackage(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaContainerService)
 	_data.WriteString16(packagePath)
-	_data.WriteStrongBinder(target.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, target.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaContainerService, "copyPackage")
 	if _err != nil {
@@ -82,8 +83,8 @@ func (p *MediaContainerServiceProxy) GetMinimalPackageInfo(
 	packagePath string,
 	flags int32,
 	abiOverride string,
-) (interface{}, error) {
-	var _result interface{}
+) (pm.PackageInfoLite, error) {
+	var _result pm.PackageInfoLite
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaContainerService)
 	_data.WriteString16(packagePath)
@@ -105,6 +106,15 @@ func (p *MediaContainerServiceProxy) GetMinimalPackageInfo(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -234,7 +244,10 @@ func (s *MediaContainerServiceStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIMediaContainerServiceGetObbInfo:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -280,4 +293,71 @@ func (s *MediaContainerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaContainerServiceServer is the server-side interface that user implementations
+// provide to NewMediaContainerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaContainerServiceServer interface {
+	CopyPackage(ctx context.Context, packagePath string, target os.IParcelFileDescriptorFactory) (int32, error)
+	GetMinimalPackageInfo(ctx context.Context, packagePath string, flags int32, abiOverride string) (pm.PackageInfoLite, error)
+	GetObbInfo(ctx context.Context, filename string) (res.ObbInfo, error)
+	CalculateInstalledSize(ctx context.Context, packagePath string, abiOverride string) (int64, error)
+}
+
+type mediaContainerServiceStubWrapper struct {
+	impl       IMediaContainerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaContainerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaContainerServiceStubWrapper) CopyPackage(
+	ctx context.Context,
+	packagePath string,
+	target os.IParcelFileDescriptorFactory,
+) (int32, error) {
+	return w.impl.CopyPackage(ctx, packagePath, target)
+}
+
+func (w *mediaContainerServiceStubWrapper) GetMinimalPackageInfo(
+	ctx context.Context,
+	packagePath string,
+	flags int32,
+	abiOverride string,
+) (pm.PackageInfoLite, error) {
+	return w.impl.GetMinimalPackageInfo(ctx, packagePath, flags, abiOverride)
+}
+
+func (w *mediaContainerServiceStubWrapper) GetObbInfo(
+	ctx context.Context,
+	filename string,
+) (res.ObbInfo, error) {
+	return w.impl.GetObbInfo(ctx, filename)
+}
+
+func (w *mediaContainerServiceStubWrapper) CalculateInstalledSize(
+	ctx context.Context,
+	packagePath string,
+	abiOverride string,
+) (int64, error) {
+	return w.impl.CalculateInstalledSize(ctx, packagePath, abiOverride)
+}
+
+var _ IMediaContainerService = (*mediaContainerServiceStubWrapper)(nil)
+
+// NewMediaContainerServiceStub creates a server-side IMediaContainerService wrapping the given
+// server implementation. The returned value satisfies IMediaContainerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaContainerServiceStub(
+	impl IMediaContainerServiceServer,
+) IMediaContainerService {
+	wrapper := &mediaContainerServiceStubWrapper{impl: impl}
+	stub := &MediaContainerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

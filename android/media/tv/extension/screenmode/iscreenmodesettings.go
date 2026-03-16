@@ -202,3 +202,59 @@ func (s *ScreenModeSettingsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScreenModeSettingsServer is the server-side interface that user implementations
+// provide to NewScreenModeSettingsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScreenModeSettingsServer interface {
+	SetScreenModeSettings(ctx context.Context, sessionToken string, setting string) error
+	GetOverScanIndex(ctx context.Context, sessionToken string) (int32, error)
+	GetSupportApplyOverScan(ctx context.Context, sessionToken string) (bool, error)
+}
+
+type screenModeSettingsStubWrapper struct {
+	impl       IScreenModeSettingsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *screenModeSettingsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *screenModeSettingsStubWrapper) SetScreenModeSettings(
+	ctx context.Context,
+	sessionToken string,
+	setting string,
+) error {
+	return w.impl.SetScreenModeSettings(ctx, sessionToken, setting)
+}
+
+func (w *screenModeSettingsStubWrapper) GetOverScanIndex(
+	ctx context.Context,
+	sessionToken string,
+) (int32, error) {
+	return w.impl.GetOverScanIndex(ctx, sessionToken)
+}
+
+func (w *screenModeSettingsStubWrapper) GetSupportApplyOverScan(
+	ctx context.Context,
+	sessionToken string,
+) (bool, error) {
+	return w.impl.GetSupportApplyOverScan(ctx, sessionToken)
+}
+
+var _ IScreenModeSettings = (*screenModeSettingsStubWrapper)(nil)
+
+// NewScreenModeSettingsStub creates a server-side IScreenModeSettings wrapping the given
+// server implementation. The returned value satisfies IScreenModeSettings
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScreenModeSettingsStub(
+	impl IScreenModeSettingsServer,
+) IScreenModeSettings {
+	wrapper := &screenModeSettingsStubWrapper{impl: impl}
+	stub := &ScreenModeSettingsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

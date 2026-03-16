@@ -124,3 +124,50 @@ func (s *CallForwardingInfoCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICallForwardingInfoCallbackServer is the server-side interface that user implementations
+// provide to NewCallForwardingInfoCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallForwardingInfoCallbackServer interface {
+	OnCallForwardingInfoAvailable(ctx context.Context, info androidTelephony.CallForwardingInfo) error
+	OnError(ctx context.Context, error_ int32) error
+}
+
+type callForwardingInfoCallbackStubWrapper struct {
+	impl       ICallForwardingInfoCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callForwardingInfoCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callForwardingInfoCallbackStubWrapper) OnCallForwardingInfoAvailable(
+	ctx context.Context,
+	info androidTelephony.CallForwardingInfo,
+) error {
+	return w.impl.OnCallForwardingInfoAvailable(ctx, info)
+}
+
+func (w *callForwardingInfoCallbackStubWrapper) OnError(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.OnError(ctx, error_)
+}
+
+var _ ICallForwardingInfoCallback = (*callForwardingInfoCallbackStubWrapper)(nil)
+
+// NewCallForwardingInfoCallbackStub creates a server-side ICallForwardingInfoCallback wrapping the given
+// server implementation. The returned value satisfies ICallForwardingInfoCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallForwardingInfoCallbackStub(
+	impl ICallForwardingInfoCallbackServer,
+) ICallForwardingInfoCallback {
+	wrapper := &callForwardingInfoCallbackStubWrapper{impl: impl}
+	stub := &CallForwardingInfoCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -136,3 +136,53 @@ func (s *BootstrapAuthenticationCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBootstrapAuthenticationCallbackServer is the server-side interface that user implementations
+// provide to NewBootstrapAuthenticationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBootstrapAuthenticationCallbackServer interface {
+	OnKeysAvailable(ctx context.Context, token int32, gbaKey []byte, btId string) error
+	OnAuthenticationFailure(ctx context.Context, token int32, reason int32) error
+}
+
+type bootstrapAuthenticationCallbackStubWrapper struct {
+	impl       IBootstrapAuthenticationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bootstrapAuthenticationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bootstrapAuthenticationCallbackStubWrapper) OnKeysAvailable(
+	ctx context.Context,
+	token int32,
+	gbaKey []byte,
+	btId string,
+) error {
+	return w.impl.OnKeysAvailable(ctx, token, gbaKey, btId)
+}
+
+func (w *bootstrapAuthenticationCallbackStubWrapper) OnAuthenticationFailure(
+	ctx context.Context,
+	token int32,
+	reason int32,
+) error {
+	return w.impl.OnAuthenticationFailure(ctx, token, reason)
+}
+
+var _ IBootstrapAuthenticationCallback = (*bootstrapAuthenticationCallbackStubWrapper)(nil)
+
+// NewBootstrapAuthenticationCallbackStub creates a server-side IBootstrapAuthenticationCallback wrapping the given
+// server implementation. The returned value satisfies IBootstrapAuthenticationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBootstrapAuthenticationCallbackStub(
+	impl IBootstrapAuthenticationCallbackServer,
+) IBootstrapAuthenticationCallback {
+	wrapper := &bootstrapAuthenticationCallbackStubWrapper{impl: impl}
+	stub := &BootstrapAuthenticationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

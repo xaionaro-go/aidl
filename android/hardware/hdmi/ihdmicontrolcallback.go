@@ -82,3 +82,42 @@ func (s *HdmiControlCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiControlCallbackServer is the server-side interface that user implementations
+// provide to NewHdmiControlCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiControlCallbackServer interface {
+	OnComplete(ctx context.Context, result int32) error
+}
+
+type hdmiControlCallbackStubWrapper struct {
+	impl       IHdmiControlCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiControlCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiControlCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IHdmiControlCallback = (*hdmiControlCallbackStubWrapper)(nil)
+
+// NewHdmiControlCallbackStub creates a server-side IHdmiControlCallback wrapping the given
+// server implementation. The returned value satisfies IHdmiControlCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiControlCallbackStub(
+	impl IHdmiControlCallbackServer,
+) IHdmiControlCallback {
+	wrapper := &hdmiControlCallbackStubWrapper{impl: impl}
+	stub := &HdmiControlCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

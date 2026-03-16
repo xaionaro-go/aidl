@@ -266,3 +266,70 @@ func (s *BinderWorkSourceServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBinderWorkSourceServiceServer is the server-side interface that user implementations
+// provide to NewBinderWorkSourceServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderWorkSourceServiceServer interface {
+	GetIncomingWorkSourceUid(ctx context.Context) (int32, error)
+	GetBinderCallingUid(ctx context.Context) (int32, error)
+	GetThreadLocalWorkSourceUid(ctx context.Context) (int32, error)
+	SetWorkSourceProvider(ctx context.Context, uid int32) error
+	ClearWorkSourceProvider(ctx context.Context) error
+}
+
+type binderWorkSourceServiceStubWrapper struct {
+	impl       IBinderWorkSourceServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderWorkSourceServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderWorkSourceServiceStubWrapper) GetIncomingWorkSourceUid(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetIncomingWorkSourceUid(ctx)
+}
+
+func (w *binderWorkSourceServiceStubWrapper) GetBinderCallingUid(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetBinderCallingUid(ctx)
+}
+
+func (w *binderWorkSourceServiceStubWrapper) GetThreadLocalWorkSourceUid(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetThreadLocalWorkSourceUid(ctx)
+}
+
+func (w *binderWorkSourceServiceStubWrapper) SetWorkSourceProvider(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.SetWorkSourceProvider(ctx, uid)
+}
+
+func (w *binderWorkSourceServiceStubWrapper) ClearWorkSourceProvider(
+	ctx context.Context,
+) error {
+	return w.impl.ClearWorkSourceProvider(ctx)
+}
+
+var _ IBinderWorkSourceService = (*binderWorkSourceServiceStubWrapper)(nil)
+
+// NewBinderWorkSourceServiceStub creates a server-side IBinderWorkSourceService wrapping the given
+// server implementation. The returned value satisfies IBinderWorkSourceService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderWorkSourceServiceStub(
+	impl IBinderWorkSourceServiceServer,
+) IBinderWorkSourceService {
+	wrapper := &binderWorkSourceServiceStubWrapper{impl: impl}
+	stub := &BinderWorkSourceServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -124,3 +124,55 @@ func (s *StreamCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStreamCallbackServer is the server-side interface that user implementations
+// provide to NewStreamCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStreamCallbackServer interface {
+	OnTransferReady(ctx context.Context) error
+	OnError(ctx context.Context) error
+	OnDrainReady(ctx context.Context) error
+}
+
+type streamCallbackStubWrapper struct {
+	impl       IStreamCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *streamCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *streamCallbackStubWrapper) OnTransferReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnTransferReady(ctx)
+}
+
+func (w *streamCallbackStubWrapper) OnError(
+	ctx context.Context,
+) error {
+	return w.impl.OnError(ctx)
+}
+
+func (w *streamCallbackStubWrapper) OnDrainReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnDrainReady(ctx)
+}
+
+var _ IStreamCallback = (*streamCallbackStubWrapper)(nil)
+
+// NewStreamCallbackStub creates a server-side IStreamCallback wrapping the given
+// server implementation. The returned value satisfies IStreamCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStreamCallbackStub(
+	impl IStreamCallbackServer,
+) IStreamCallback {
+	wrapper := &streamCallbackStubWrapper{impl: impl}
+	stub := &StreamCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

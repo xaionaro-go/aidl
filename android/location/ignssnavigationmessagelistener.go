@@ -123,3 +123,50 @@ func (s *GnssNavigationMessageListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssNavigationMessageListenerServer is the server-side interface that user implementations
+// provide to NewGnssNavigationMessageListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssNavigationMessageListenerServer interface {
+	OnGnssNavigationMessageReceived(ctx context.Context, event GnssNavigationMessage) error
+	OnStatusChanged(ctx context.Context, status int32) error
+}
+
+type gnssNavigationMessageListenerStubWrapper struct {
+	impl       IGnssNavigationMessageListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssNavigationMessageListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssNavigationMessageListenerStubWrapper) OnGnssNavigationMessageReceived(
+	ctx context.Context,
+	event GnssNavigationMessage,
+) error {
+	return w.impl.OnGnssNavigationMessageReceived(ctx, event)
+}
+
+func (w *gnssNavigationMessageListenerStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnStatusChanged(ctx, status)
+}
+
+var _ IGnssNavigationMessageListener = (*gnssNavigationMessageListenerStubWrapper)(nil)
+
+// NewGnssNavigationMessageListenerStub creates a server-side IGnssNavigationMessageListener wrapping the given
+// server implementation. The returned value satisfies IGnssNavigationMessageListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssNavigationMessageListenerStub(
+	impl IGnssNavigationMessageListenerServer,
+) IGnssNavigationMessageListener {
+	wrapper := &gnssNavigationMessageListenerStubWrapper{impl: impl}
+	stub := &GnssNavigationMessageListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

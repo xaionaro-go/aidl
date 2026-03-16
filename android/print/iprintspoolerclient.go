@@ -200,3 +200,65 @@ func (s *PrintSpoolerClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPrintSpoolerClientServer is the server-side interface that user implementations
+// provide to NewPrintSpoolerClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrintSpoolerClientServer interface {
+	OnPrintJobQueued(ctx context.Context, printJob PrintJobInfo) error
+	OnAllPrintJobsForServiceHandled(ctx context.Context, printService content.ComponentName) error
+	OnAllPrintJobsHandled(ctx context.Context) error
+	OnPrintJobStateChanged(ctx context.Context, printJob PrintJobInfo) error
+}
+
+type printSpoolerClientStubWrapper struct {
+	impl       IPrintSpoolerClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *printSpoolerClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *printSpoolerClientStubWrapper) OnPrintJobQueued(
+	ctx context.Context,
+	printJob PrintJobInfo,
+) error {
+	return w.impl.OnPrintJobQueued(ctx, printJob)
+}
+
+func (w *printSpoolerClientStubWrapper) OnAllPrintJobsForServiceHandled(
+	ctx context.Context,
+	printService content.ComponentName,
+) error {
+	return w.impl.OnAllPrintJobsForServiceHandled(ctx, printService)
+}
+
+func (w *printSpoolerClientStubWrapper) OnAllPrintJobsHandled(
+	ctx context.Context,
+) error {
+	return w.impl.OnAllPrintJobsHandled(ctx)
+}
+
+func (w *printSpoolerClientStubWrapper) OnPrintJobStateChanged(
+	ctx context.Context,
+	printJob PrintJobInfo,
+) error {
+	return w.impl.OnPrintJobStateChanged(ctx, printJob)
+}
+
+var _ IPrintSpoolerClient = (*printSpoolerClientStubWrapper)(nil)
+
+// NewPrintSpoolerClientStub creates a server-side IPrintSpoolerClient wrapping the given
+// server implementation. The returned value satisfies IPrintSpoolerClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrintSpoolerClientStub(
+	impl IPrintSpoolerClientServer,
+) IPrintSpoolerClient {
+	wrapper := &printSpoolerClientStubWrapper{impl: impl}
+	stub := &PrintSpoolerClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

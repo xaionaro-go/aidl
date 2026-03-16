@@ -1,7 +1,6 @@
 package media
 
 import (
-	common "github.com/xaionaro-go/binder/android/media/audio/common"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -10,7 +9,7 @@ import (
 
 type CreateTrackRequest struct {
 	Attr                   AudioAttributes
-	Config                 common.AudioConfig
+	Config                 interface{}
 	ClientInfo             AudioClient
 	SharedBuffer           SharedFileRegion
 	NotificationsPerBuffer int32
@@ -33,9 +32,6 @@ func (s *CreateTrackRequest) MarshalParcel(
 	if _err := s.Attr.MarshalParcel(p); _err != nil {
 		return _err
 	}
-	if _err := s.Config.MarshalParcel(p); _err != nil {
-		return _err
-	}
 	if _err := s.ClientInfo.MarshalParcel(p); _err != nil {
 		return _err
 	}
@@ -44,7 +40,11 @@ func (s *CreateTrackRequest) MarshalParcel(
 	}
 	p.WriteInt32(s.NotificationsPerBuffer)
 	p.WriteFloat32(s.Speed)
-	p.WriteStrongBinder(s.AudioTrackCallback.AsBinder().Handle())
+	if s.AudioTrackCallback == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.AudioTrackCallback.AsBinder().Handle())
+	}
 	p.WriteString16(s.OpPackageName)
 	p.WriteInt32(s.Flags)
 	p.WriteInt64(s.FrameCount)
@@ -65,10 +65,6 @@ func (s *CreateTrackRequest) UnmarshalParcel(
 	}
 
 	if _err = s.Attr.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-
-	if _err = s.Config.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
 

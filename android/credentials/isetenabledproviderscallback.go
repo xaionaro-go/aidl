@@ -112,3 +112,50 @@ func (s *SetEnabledProvidersCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISetEnabledProvidersCallbackServer is the server-side interface that user implementations
+// provide to NewSetEnabledProvidersCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISetEnabledProvidersCallbackServer interface {
+	OnResponse(ctx context.Context) error
+	OnError(ctx context.Context, errorType string, message string) error
+}
+
+type setEnabledProvidersCallbackStubWrapper struct {
+	impl       ISetEnabledProvidersCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *setEnabledProvidersCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *setEnabledProvidersCallbackStubWrapper) OnResponse(
+	ctx context.Context,
+) error {
+	return w.impl.OnResponse(ctx)
+}
+
+func (w *setEnabledProvidersCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorType string,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorType, message)
+}
+
+var _ ISetEnabledProvidersCallback = (*setEnabledProvidersCallbackStubWrapper)(nil)
+
+// NewSetEnabledProvidersCallbackStub creates a server-side ISetEnabledProvidersCallback wrapping the given
+// server implementation. The returned value satisfies ISetEnabledProvidersCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSetEnabledProvidersCallbackStub(
+	impl ISetEnabledProvidersCallbackServer,
+) ISetEnabledProvidersCallback {
+	wrapper := &setEnabledProvidersCallbackStubWrapper{impl: impl}
+	stub := &SetEnabledProvidersCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

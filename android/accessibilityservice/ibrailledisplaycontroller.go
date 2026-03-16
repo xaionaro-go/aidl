@@ -49,7 +49,7 @@ func (p *BrailleDisplayControllerProxy) OnConnected(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBrailleDisplayController)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	if hidDescriptor == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -182,4 +182,67 @@ func (s *BrailleDisplayControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBrailleDisplayControllerServer is the server-side interface that user implementations
+// provide to NewBrailleDisplayControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBrailleDisplayControllerServer interface {
+	OnConnected(ctx context.Context, connection IBrailleDisplayConnection, hidDescriptor []byte) error
+	OnConnectionFailed(ctx context.Context, error_ int32) error
+	OnInput(ctx context.Context, input []byte) error
+	OnDisconnected(ctx context.Context) error
+}
+
+type brailleDisplayControllerStubWrapper struct {
+	impl       IBrailleDisplayControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *brailleDisplayControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *brailleDisplayControllerStubWrapper) OnConnected(
+	ctx context.Context,
+	connection IBrailleDisplayConnection,
+	hidDescriptor []byte,
+) error {
+	return w.impl.OnConnected(ctx, connection, hidDescriptor)
+}
+
+func (w *brailleDisplayControllerStubWrapper) OnConnectionFailed(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.OnConnectionFailed(ctx, error_)
+}
+
+func (w *brailleDisplayControllerStubWrapper) OnInput(
+	ctx context.Context,
+	input []byte,
+) error {
+	return w.impl.OnInput(ctx, input)
+}
+
+func (w *brailleDisplayControllerStubWrapper) OnDisconnected(
+	ctx context.Context,
+) error {
+	return w.impl.OnDisconnected(ctx)
+}
+
+var _ IBrailleDisplayController = (*brailleDisplayControllerStubWrapper)(nil)
+
+// NewBrailleDisplayControllerStub creates a server-side IBrailleDisplayController wrapping the given
+// server implementation. The returned value satisfies IBrailleDisplayController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBrailleDisplayControllerStub(
+	impl IBrailleDisplayControllerServer,
+) IBrailleDisplayController {
+	wrapper := &brailleDisplayControllerStubWrapper{impl: impl}
+	stub := &BrailleDisplayControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

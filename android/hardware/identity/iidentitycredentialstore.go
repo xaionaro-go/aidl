@@ -103,7 +103,7 @@ func (p *IdentityCredentialStoreProxy) CreateCredential(
 	var _result IWritableIdentityCredential
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIdentityCredentialStore)
-	_data.WriteString(docType)
+	_data.WriteString16(docType)
 	_data.WriteBool(testCredential)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIdentityCredentialStore, "createCredential")
@@ -266,7 +266,7 @@ func (s *IdentityCredentialStoreStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_docType, _err := _data.ReadString()
+		_arg_docType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -342,4 +342,75 @@ func (s *IdentityCredentialStoreStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IIdentityCredentialStoreServer is the server-side interface that user implementations
+// provide to NewIdentityCredentialStoreStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIdentityCredentialStoreServer interface {
+	GetHardwareInformation(ctx context.Context) (HardwareInformation, error)
+	CreateCredential(ctx context.Context, docType string, testCredential bool) (IWritableIdentityCredential, error)
+	GetCredential(ctx context.Context, cipherSuite CipherSuite, credentialData []byte) (IIdentityCredential, error)
+	CreatePresentationSession(ctx context.Context, cipherSuite CipherSuite) (IPresentationSession, error)
+	GetRemotelyProvisionedComponent(ctx context.Context) (keymint.IRemotelyProvisionedComponent, error)
+}
+
+type identityCredentialStoreStubWrapper struct {
+	impl       IIdentityCredentialStoreServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *identityCredentialStoreStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *identityCredentialStoreStubWrapper) GetHardwareInformation(
+	ctx context.Context,
+) (HardwareInformation, error) {
+	return w.impl.GetHardwareInformation(ctx)
+}
+
+func (w *identityCredentialStoreStubWrapper) CreateCredential(
+	ctx context.Context,
+	docType string,
+	testCredential bool,
+) (IWritableIdentityCredential, error) {
+	return w.impl.CreateCredential(ctx, docType, testCredential)
+}
+
+func (w *identityCredentialStoreStubWrapper) GetCredential(
+	ctx context.Context,
+	cipherSuite CipherSuite,
+	credentialData []byte,
+) (IIdentityCredential, error) {
+	return w.impl.GetCredential(ctx, cipherSuite, credentialData)
+}
+
+func (w *identityCredentialStoreStubWrapper) CreatePresentationSession(
+	ctx context.Context,
+	cipherSuite CipherSuite,
+) (IPresentationSession, error) {
+	return w.impl.CreatePresentationSession(ctx, cipherSuite)
+}
+
+func (w *identityCredentialStoreStubWrapper) GetRemotelyProvisionedComponent(
+	ctx context.Context,
+) (keymint.IRemotelyProvisionedComponent, error) {
+	return w.impl.GetRemotelyProvisionedComponent(ctx)
+}
+
+var _ IIdentityCredentialStore = (*identityCredentialStoreStubWrapper)(nil)
+
+// NewIdentityCredentialStoreStub creates a server-side IIdentityCredentialStore wrapping the given
+// server implementation. The returned value satisfies IIdentityCredentialStore
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIdentityCredentialStoreStub(
+	impl IIdentityCredentialStoreServer,
+) IIdentityCredentialStore {
+	wrapper := &identityCredentialStoreStubWrapper{impl: impl}
+	stub := &IdentityCredentialStoreStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

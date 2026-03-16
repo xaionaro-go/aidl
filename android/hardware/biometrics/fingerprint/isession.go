@@ -1181,3 +1181,209 @@ func (s *SessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISessionServer is the server-side interface that user implementations
+// provide to NewSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISessionServer interface {
+	GenerateChallenge(ctx context.Context) error
+	RevokeChallenge(ctx context.Context, challenge int64) error
+	Enroll(ctx context.Context, hat keymaster.HardwareAuthToken) (ondeviceintelligence.ICancellationSignal, error)
+	Authenticate(ctx context.Context, operationId int64) (ondeviceintelligence.ICancellationSignal, error)
+	DetectInteraction(ctx context.Context) (ondeviceintelligence.ICancellationSignal, error)
+	EnumerateEnrollments(ctx context.Context) error
+	RemoveEnrollments(ctx context.Context, enrollmentIds []int32) error
+	GetAuthenticatorId(ctx context.Context) error
+	InvalidateAuthenticatorId(ctx context.Context) error
+	ResetLockout(ctx context.Context, hat keymaster.HardwareAuthToken) error
+	Close(ctx context.Context) error
+	OnPointerDown(ctx context.Context, pointerId int32, x int32, y int32, minor float32, major float32) error
+	OnPointerUp(ctx context.Context, pointerId int32) error
+	OnUiReady(ctx context.Context) error
+	AuthenticateWithContext(ctx context.Context, operationId int64, context_ common.OperationContext) (ondeviceintelligence.ICancellationSignal, error)
+	EnrollWithContext(ctx context.Context, hat keymaster.HardwareAuthToken, context_ common.OperationContext) (ondeviceintelligence.ICancellationSignal, error)
+	DetectInteractionWithContext(ctx context.Context, context_ common.OperationContext) (ondeviceintelligence.ICancellationSignal, error)
+	OnPointerDownWithContext(ctx context.Context, context_ PointerContext) error
+	OnPointerUpWithContext(ctx context.Context, context_ PointerContext) error
+	OnContextChanged(ctx context.Context, context_ common.OperationContext) error
+	OnPointerCancelWithContext(ctx context.Context, context_ PointerContext) error
+	SetIgnoreDisplayTouches(ctx context.Context, shouldIgnore bool) error
+}
+
+type sessionStubWrapper struct {
+	impl       ISessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sessionStubWrapper) GenerateChallenge(
+	ctx context.Context,
+) error {
+	return w.impl.GenerateChallenge(ctx)
+}
+
+func (w *sessionStubWrapper) RevokeChallenge(
+	ctx context.Context,
+	challenge int64,
+) error {
+	return w.impl.RevokeChallenge(ctx, challenge)
+}
+
+func (w *sessionStubWrapper) Enroll(
+	ctx context.Context,
+	hat keymaster.HardwareAuthToken,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.Enroll(ctx, hat)
+}
+
+func (w *sessionStubWrapper) Authenticate(
+	ctx context.Context,
+	operationId int64,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.Authenticate(ctx, operationId)
+}
+
+func (w *sessionStubWrapper) DetectInteraction(
+	ctx context.Context,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.DetectInteraction(ctx)
+}
+
+func (w *sessionStubWrapper) EnumerateEnrollments(
+	ctx context.Context,
+) error {
+	return w.impl.EnumerateEnrollments(ctx)
+}
+
+func (w *sessionStubWrapper) RemoveEnrollments(
+	ctx context.Context,
+	enrollmentIds []int32,
+) error {
+	return w.impl.RemoveEnrollments(ctx, enrollmentIds)
+}
+
+func (w *sessionStubWrapper) GetAuthenticatorId(
+	ctx context.Context,
+) error {
+	return w.impl.GetAuthenticatorId(ctx)
+}
+
+func (w *sessionStubWrapper) InvalidateAuthenticatorId(
+	ctx context.Context,
+) error {
+	return w.impl.InvalidateAuthenticatorId(ctx)
+}
+
+func (w *sessionStubWrapper) ResetLockout(
+	ctx context.Context,
+	hat keymaster.HardwareAuthToken,
+) error {
+	return w.impl.ResetLockout(ctx, hat)
+}
+
+func (w *sessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *sessionStubWrapper) OnPointerDown(
+	ctx context.Context,
+	pointerId int32,
+	x int32,
+	y int32,
+	minor float32,
+	major float32,
+) error {
+	return w.impl.OnPointerDown(ctx, pointerId, x, y, minor, major)
+}
+
+func (w *sessionStubWrapper) OnPointerUp(
+	ctx context.Context,
+	pointerId int32,
+) error {
+	return w.impl.OnPointerUp(ctx, pointerId)
+}
+
+func (w *sessionStubWrapper) OnUiReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnUiReady(ctx)
+}
+
+func (w *sessionStubWrapper) AuthenticateWithContext(
+	ctx context.Context,
+	operationId int64,
+	context_ common.OperationContext,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.AuthenticateWithContext(ctx, operationId, context_)
+}
+
+func (w *sessionStubWrapper) EnrollWithContext(
+	ctx context.Context,
+	hat keymaster.HardwareAuthToken,
+	context_ common.OperationContext,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.EnrollWithContext(ctx, hat, context_)
+}
+
+func (w *sessionStubWrapper) DetectInteractionWithContext(
+	ctx context.Context,
+	context_ common.OperationContext,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.DetectInteractionWithContext(ctx, context_)
+}
+
+func (w *sessionStubWrapper) OnPointerDownWithContext(
+	ctx context.Context,
+	context_ PointerContext,
+) error {
+	return w.impl.OnPointerDownWithContext(ctx, context_)
+}
+
+func (w *sessionStubWrapper) OnPointerUpWithContext(
+	ctx context.Context,
+	context_ PointerContext,
+) error {
+	return w.impl.OnPointerUpWithContext(ctx, context_)
+}
+
+func (w *sessionStubWrapper) OnContextChanged(
+	ctx context.Context,
+	context_ common.OperationContext,
+) error {
+	return w.impl.OnContextChanged(ctx, context_)
+}
+
+func (w *sessionStubWrapper) OnPointerCancelWithContext(
+	ctx context.Context,
+	context_ PointerContext,
+) error {
+	return w.impl.OnPointerCancelWithContext(ctx, context_)
+}
+
+func (w *sessionStubWrapper) SetIgnoreDisplayTouches(
+	ctx context.Context,
+	shouldIgnore bool,
+) error {
+	return w.impl.SetIgnoreDisplayTouches(ctx, shouldIgnore)
+}
+
+var _ ISession = (*sessionStubWrapper)(nil)
+
+// NewSessionStub creates a server-side ISession wrapping the given
+// server implementation. The returned value satisfies ISession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSessionStub(
+	impl ISessionServer,
+) ISession {
+	wrapper := &sessionStubWrapper{impl: impl}
+	stub := &SessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

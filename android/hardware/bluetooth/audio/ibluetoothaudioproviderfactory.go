@@ -226,3 +226,58 @@ func (s *BluetoothAudioProviderFactoryStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothAudioProviderFactoryServer is the server-side interface that user implementations
+// provide to NewBluetoothAudioProviderFactoryStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothAudioProviderFactoryServer interface {
+	GetProviderCapabilities(ctx context.Context, sessionType SessionType) ([]AudioCapabilities, error)
+	OpenProvider(ctx context.Context, sessionType SessionType) (IBluetoothAudioProvider, error)
+	GetProviderInfo(ctx context.Context, sessionType SessionType) (pm.ProviderInfo, error)
+}
+
+type bluetoothAudioProviderFactoryStubWrapper struct {
+	impl       IBluetoothAudioProviderFactoryServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothAudioProviderFactoryStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothAudioProviderFactoryStubWrapper) GetProviderCapabilities(
+	ctx context.Context,
+	sessionType SessionType,
+) ([]AudioCapabilities, error) {
+	return w.impl.GetProviderCapabilities(ctx, sessionType)
+}
+
+func (w *bluetoothAudioProviderFactoryStubWrapper) OpenProvider(
+	ctx context.Context,
+	sessionType SessionType,
+) (IBluetoothAudioProvider, error) {
+	return w.impl.OpenProvider(ctx, sessionType)
+}
+
+func (w *bluetoothAudioProviderFactoryStubWrapper) GetProviderInfo(
+	ctx context.Context,
+	sessionType SessionType,
+) (pm.ProviderInfo, error) {
+	return w.impl.GetProviderInfo(ctx, sessionType)
+}
+
+var _ IBluetoothAudioProviderFactory = (*bluetoothAudioProviderFactoryStubWrapper)(nil)
+
+// NewBluetoothAudioProviderFactoryStub creates a server-side IBluetoothAudioProviderFactory wrapping the given
+// server implementation. The returned value satisfies IBluetoothAudioProviderFactory
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothAudioProviderFactoryStub(
+	impl IBluetoothAudioProviderFactoryServer,
+) IBluetoothAudioProviderFactory {
+	wrapper := &bluetoothAudioProviderFactoryStubWrapper{impl: impl}
+	stub := &BluetoothAudioProviderFactoryStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

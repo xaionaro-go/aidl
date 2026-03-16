@@ -102,7 +102,7 @@ func (p *InputSurfaceProxy) Connect(
 	var _result IInputSurfaceConnection
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInputSurface)
-	_data.WriteStrongBinder(sink.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, sink.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInputSurface, "connect")
 	if _err != nil {
@@ -188,4 +188,57 @@ func (s *InputSurfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInputSurfaceServer is the server-side interface that user implementations
+// provide to NewInputSurfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputSurfaceServer interface {
+	GetSurface(ctx context.Context) (interface{}, error)
+	GetConfigurable(ctx context.Context) (IConfigurable, error)
+	Connect(ctx context.Context, sink IInputSink) (IInputSurfaceConnection, error)
+}
+
+type inputSurfaceStubWrapper struct {
+	impl       IInputSurfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputSurfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputSurfaceStubWrapper) GetSurface(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetSurface(ctx)
+}
+
+func (w *inputSurfaceStubWrapper) GetConfigurable(
+	ctx context.Context,
+) (IConfigurable, error) {
+	return w.impl.GetConfigurable(ctx)
+}
+
+func (w *inputSurfaceStubWrapper) Connect(
+	ctx context.Context,
+	sink IInputSink,
+) (IInputSurfaceConnection, error) {
+	return w.impl.Connect(ctx, sink)
+}
+
+var _ IInputSurface = (*inputSurfaceStubWrapper)(nil)
+
+// NewInputSurfaceStub creates a server-side IInputSurface wrapping the given
+// server implementation. The returned value satisfies IInputSurface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputSurfaceStub(
+	impl IInputSurfaceServer,
+) IInputSurface {
+	wrapper := &inputSurfaceStubWrapper{impl: impl}
+	stub := &InputSurfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

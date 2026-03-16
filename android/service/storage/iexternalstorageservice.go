@@ -343,3 +343,88 @@ func (s *ExternalStorageServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IExternalStorageServiceServer is the server-side interface that user implementations
+// provide to NewExternalStorageServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IExternalStorageServiceServer interface {
+	StartSession(ctx context.Context, sessionId string, type_ int32, deviceFd int32, upperPath string, lowerPath string, callback os.RemoteCallback) error
+	EndSession(ctx context.Context, sessionId string, callback os.RemoteCallback) error
+	NotifyVolumeStateChanged(ctx context.Context, sessionId string, vol osStorage.StorageVolume, callback os.RemoteCallback) error
+	FreeCache(ctx context.Context, sessionId string, volumeUuid string, bytes int64, callback os.RemoteCallback) error
+	NotifyAnrDelayStarted(ctx context.Context, packageName string, uid int32, tid int32, reason int32) error
+}
+
+type externalStorageServiceStubWrapper struct {
+	impl       IExternalStorageServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *externalStorageServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *externalStorageServiceStubWrapper) StartSession(
+	ctx context.Context,
+	sessionId string,
+	type_ int32,
+	deviceFd int32,
+	upperPath string,
+	lowerPath string,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.StartSession(ctx, sessionId, type_, deviceFd, upperPath, lowerPath, callback)
+}
+
+func (w *externalStorageServiceStubWrapper) EndSession(
+	ctx context.Context,
+	sessionId string,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.EndSession(ctx, sessionId, callback)
+}
+
+func (w *externalStorageServiceStubWrapper) NotifyVolumeStateChanged(
+	ctx context.Context,
+	sessionId string,
+	vol osStorage.StorageVolume,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.NotifyVolumeStateChanged(ctx, sessionId, vol, callback)
+}
+
+func (w *externalStorageServiceStubWrapper) FreeCache(
+	ctx context.Context,
+	sessionId string,
+	volumeUuid string,
+	bytes int64,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.FreeCache(ctx, sessionId, volumeUuid, bytes, callback)
+}
+
+func (w *externalStorageServiceStubWrapper) NotifyAnrDelayStarted(
+	ctx context.Context,
+	packageName string,
+	uid int32,
+	tid int32,
+	reason int32,
+) error {
+	return w.impl.NotifyAnrDelayStarted(ctx, packageName, uid, tid, reason)
+}
+
+var _ IExternalStorageService = (*externalStorageServiceStubWrapper)(nil)
+
+// NewExternalStorageServiceStub creates a server-side IExternalStorageService wrapping the given
+// server implementation. The returned value satisfies IExternalStorageService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewExternalStorageServiceStub(
+	impl IExternalStorageServiceServer,
+) IExternalStorageService {
+	wrapper := &externalStorageServiceStubWrapper{impl: impl}
+	stub := &ExternalStorageServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

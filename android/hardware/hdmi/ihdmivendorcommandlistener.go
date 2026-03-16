@@ -142,3 +142,54 @@ func (s *HdmiVendorCommandListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiVendorCommandListenerServer is the server-side interface that user implementations
+// provide to NewHdmiVendorCommandListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiVendorCommandListenerServer interface {
+	OnReceived(ctx context.Context, logicalAddress int32, destAddress int32, operands []byte, hasVendorId bool) error
+	OnControlStateChanged(ctx context.Context, enabled bool, reason int32) error
+}
+
+type hdmiVendorCommandListenerStubWrapper struct {
+	impl       IHdmiVendorCommandListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiVendorCommandListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiVendorCommandListenerStubWrapper) OnReceived(
+	ctx context.Context,
+	logicalAddress int32,
+	destAddress int32,
+	operands []byte,
+	hasVendorId bool,
+) error {
+	return w.impl.OnReceived(ctx, logicalAddress, destAddress, operands, hasVendorId)
+}
+
+func (w *hdmiVendorCommandListenerStubWrapper) OnControlStateChanged(
+	ctx context.Context,
+	enabled bool,
+	reason int32,
+) error {
+	return w.impl.OnControlStateChanged(ctx, enabled, reason)
+}
+
+var _ IHdmiVendorCommandListener = (*hdmiVendorCommandListenerStubWrapper)(nil)
+
+// NewHdmiVendorCommandListenerStub creates a server-side IHdmiVendorCommandListener wrapping the given
+// server implementation. The returned value satisfies IHdmiVendorCommandListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiVendorCommandListenerStub(
+	impl IHdmiVendorCommandListenerServer,
+) IHdmiVendorCommandListener {
+	wrapper := &hdmiVendorCommandListenerStubWrapper{impl: impl}
+	stub := &HdmiVendorCommandListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

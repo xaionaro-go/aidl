@@ -123,7 +123,7 @@ func (p *TunerDvrProxy) AttachFilter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerDvr)
-	_data.WriteStrongBinder(filter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, filter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerDvr, "attachFilter")
 	if _err != nil {
@@ -149,7 +149,7 @@ func (p *TunerDvrProxy) DetachFilter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerDvr)
-	_data.WriteStrongBinder(filter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, filter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerDvr, "detachFilter")
 	if _err != nil {
@@ -442,4 +442,102 @@ func (s *TunerDvrStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITunerDvrServer is the server-side interface that user implementations
+// provide to NewTunerDvrStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerDvrServer interface {
+	GetQueueDesc(ctx context.Context) (fmq.MQDescriptor, error)
+	Configure(ctx context.Context, settings tvTuner.DvrSettings) error
+	AttachFilter(ctx context.Context, filter ITunerFilter) error
+	DetachFilter(ctx context.Context, filter ITunerFilter) error
+	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
+	Flush(ctx context.Context) error
+	Close(ctx context.Context) error
+	SetStatusCheckIntervalHint(ctx context.Context, milliseconds int64) error
+}
+
+type tunerDvrStubWrapper struct {
+	impl       ITunerDvrServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerDvrStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerDvrStubWrapper) GetQueueDesc(
+	ctx context.Context,
+) (fmq.MQDescriptor, error) {
+	return w.impl.GetQueueDesc(ctx)
+}
+
+func (w *tunerDvrStubWrapper) Configure(
+	ctx context.Context,
+	settings tvTuner.DvrSettings,
+) error {
+	return w.impl.Configure(ctx, settings)
+}
+
+func (w *tunerDvrStubWrapper) AttachFilter(
+	ctx context.Context,
+	filter ITunerFilter,
+) error {
+	return w.impl.AttachFilter(ctx, filter)
+}
+
+func (w *tunerDvrStubWrapper) DetachFilter(
+	ctx context.Context,
+	filter ITunerFilter,
+) error {
+	return w.impl.DetachFilter(ctx, filter)
+}
+
+func (w *tunerDvrStubWrapper) Start(
+	ctx context.Context,
+) error {
+	return w.impl.Start(ctx)
+}
+
+func (w *tunerDvrStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *tunerDvrStubWrapper) Flush(
+	ctx context.Context,
+) error {
+	return w.impl.Flush(ctx)
+}
+
+func (w *tunerDvrStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *tunerDvrStubWrapper) SetStatusCheckIntervalHint(
+	ctx context.Context,
+	milliseconds int64,
+) error {
+	return w.impl.SetStatusCheckIntervalHint(ctx, milliseconds)
+}
+
+var _ ITunerDvr = (*tunerDvrStubWrapper)(nil)
+
+// NewTunerDvrStub creates a server-side ITunerDvr wrapping the given
+// server implementation. The returned value satisfies ITunerDvr
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerDvrStub(
+	impl ITunerDvrServer,
+) ITunerDvr {
+	wrapper := &tunerDvrStubWrapper{impl: impl}
+	stub := &TunerDvrStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

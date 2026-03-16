@@ -90,3 +90,41 @@ func (s *InvalidationCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInvalidationCallbackServer is the server-side interface that user implementations
+// provide to NewInvalidationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInvalidationCallbackServer interface {
+	OnCompleted(ctx context.Context) error
+}
+
+type invalidationCallbackStubWrapper struct {
+	impl       IInvalidationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *invalidationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *invalidationCallbackStubWrapper) OnCompleted(
+	ctx context.Context,
+) error {
+	return w.impl.OnCompleted(ctx)
+}
+
+var _ IInvalidationCallback = (*invalidationCallbackStubWrapper)(nil)
+
+// NewInvalidationCallbackStub creates a server-side IInvalidationCallback wrapping the given
+// server implementation. The returned value satisfies IInvalidationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInvalidationCallbackStub(
+	impl IInvalidationCallbackServer,
+) IInvalidationCallback {
+	wrapper := &invalidationCallbackStubWrapper{impl: impl}
+	stub := &InvalidationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -66,7 +66,7 @@ func (p *FrontendProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFrontend)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFrontend, "setCallback")
 	if _err != nil {
@@ -685,4 +685,136 @@ func (s *FrontendStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFrontendServer is the server-side interface that user implementations
+// provide to NewFrontendStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFrontendServer interface {
+	SetCallback(ctx context.Context, callback IFrontendCallback) error
+	Tune(ctx context.Context, settings FrontendSettings) error
+	StopTune(ctx context.Context) error
+	Close(ctx context.Context) error
+	Scan(ctx context.Context, settings FrontendSettings, type_ FrontendScanType) error
+	StopScan(ctx context.Context) error
+	GetStatus(ctx context.Context, statusTypes []FrontendStatusType) ([]FrontendStatus, error)
+	SetLnb(ctx context.Context, lnbId int32) error
+	LinkCiCam(ctx context.Context, ciCamId int32) (int32, error)
+	UnlinkCiCam(ctx context.Context, ciCamId int32) error
+	GetHardwareInfo(ctx context.Context) (string, error)
+	RemoveOutputPid(ctx context.Context, pid int32) error
+	GetFrontendStatusReadiness(ctx context.Context, statusTypes []FrontendStatusType) ([]FrontendStatusReadiness, error)
+}
+
+type frontendStubWrapper struct {
+	impl       IFrontendServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *frontendStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *frontendStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IFrontendCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *frontendStubWrapper) Tune(
+	ctx context.Context,
+	settings FrontendSettings,
+) error {
+	return w.impl.Tune(ctx, settings)
+}
+
+func (w *frontendStubWrapper) StopTune(
+	ctx context.Context,
+) error {
+	return w.impl.StopTune(ctx)
+}
+
+func (w *frontendStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *frontendStubWrapper) Scan(
+	ctx context.Context,
+	settings FrontendSettings,
+	type_ FrontendScanType,
+) error {
+	return w.impl.Scan(ctx, settings, type_)
+}
+
+func (w *frontendStubWrapper) StopScan(
+	ctx context.Context,
+) error {
+	return w.impl.StopScan(ctx)
+}
+
+func (w *frontendStubWrapper) GetStatus(
+	ctx context.Context,
+	statusTypes []FrontendStatusType,
+) ([]FrontendStatus, error) {
+	return w.impl.GetStatus(ctx, statusTypes)
+}
+
+func (w *frontendStubWrapper) SetLnb(
+	ctx context.Context,
+	lnbId int32,
+) error {
+	return w.impl.SetLnb(ctx, lnbId)
+}
+
+func (w *frontendStubWrapper) LinkCiCam(
+	ctx context.Context,
+	ciCamId int32,
+) (int32, error) {
+	return w.impl.LinkCiCam(ctx, ciCamId)
+}
+
+func (w *frontendStubWrapper) UnlinkCiCam(
+	ctx context.Context,
+	ciCamId int32,
+) error {
+	return w.impl.UnlinkCiCam(ctx, ciCamId)
+}
+
+func (w *frontendStubWrapper) GetHardwareInfo(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetHardwareInfo(ctx)
+}
+
+func (w *frontendStubWrapper) RemoveOutputPid(
+	ctx context.Context,
+	pid int32,
+) error {
+	return w.impl.RemoveOutputPid(ctx, pid)
+}
+
+func (w *frontendStubWrapper) GetFrontendStatusReadiness(
+	ctx context.Context,
+	statusTypes []FrontendStatusType,
+) ([]FrontendStatusReadiness, error) {
+	return w.impl.GetFrontendStatusReadiness(ctx, statusTypes)
+}
+
+var _ IFrontend = (*frontendStubWrapper)(nil)
+
+// NewFrontendStub creates a server-side IFrontend wrapping the given
+// server implementation. The returned value satisfies IFrontend
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFrontendStub(
+	impl IFrontendServer,
+) IFrontend {
+	wrapper := &frontendStubWrapper{impl: impl}
+	stub := &FrontendStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

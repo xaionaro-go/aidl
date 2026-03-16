@@ -119,7 +119,7 @@ func (p *HdmiConnectionProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHdmiConnection)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHdmiConnection, "setCallback")
 	if _err != nil {
@@ -300,4 +300,75 @@ func (s *HdmiConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IHdmiConnectionServer is the server-side interface that user implementations
+// provide to NewHdmiConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiConnectionServer interface {
+	GetPortInfo(ctx context.Context) ([]HdmiPortInfo, error)
+	IsConnected(ctx context.Context, portId int32) (bool, error)
+	SetCallback(ctx context.Context, callback IHdmiConnectionCallback) error
+	SetHpdSignal(ctx context.Context, signal HpdSignal, portId int32) error
+	GetHpdSignal(ctx context.Context, portId int32) (HpdSignal, error)
+}
+
+type hdmiConnectionStubWrapper struct {
+	impl       IHdmiConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiConnectionStubWrapper) GetPortInfo(
+	ctx context.Context,
+) ([]HdmiPortInfo, error) {
+	return w.impl.GetPortInfo(ctx)
+}
+
+func (w *hdmiConnectionStubWrapper) IsConnected(
+	ctx context.Context,
+	portId int32,
+) (bool, error) {
+	return w.impl.IsConnected(ctx, portId)
+}
+
+func (w *hdmiConnectionStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IHdmiConnectionCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *hdmiConnectionStubWrapper) SetHpdSignal(
+	ctx context.Context,
+	signal HpdSignal,
+	portId int32,
+) error {
+	return w.impl.SetHpdSignal(ctx, signal, portId)
+}
+
+func (w *hdmiConnectionStubWrapper) GetHpdSignal(
+	ctx context.Context,
+	portId int32,
+) (HpdSignal, error) {
+	return w.impl.GetHpdSignal(ctx, portId)
+}
+
+var _ IHdmiConnection = (*hdmiConnectionStubWrapper)(nil)
+
+// NewHdmiConnectionStub creates a server-side IHdmiConnection wrapping the given
+// server implementation. The returned value satisfies IHdmiConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiConnectionStub(
+	impl IHdmiConnectionServer,
+) IHdmiConnection {
+	wrapper := &hdmiConnectionStubWrapper{impl: impl}
+	stub := &HdmiConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

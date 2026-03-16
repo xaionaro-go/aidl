@@ -64,7 +64,7 @@ func (p *ImsVideoCallProviderProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsVideoCallProvider)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsVideoCallProvider, "setCallback")
 	if _err != nil {
@@ -418,4 +418,123 @@ func (s *ImsVideoCallProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsVideoCallProviderServer is the server-side interface that user implementations
+// provide to NewImsVideoCallProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsVideoCallProviderServer interface {
+	SetCallback(ctx context.Context, callback IImsVideoCallCallback) error
+	SetCamera(ctx context.Context, cameraId string, uid int32) error
+	SetPreviewSurface(ctx context.Context, surface interface{}) error
+	SetDisplaySurface(ctx context.Context, surface interface{}) error
+	SetDeviceOrientation(ctx context.Context, rotation int32) error
+	SetZoom(ctx context.Context, value float32) error
+	SendSessionModifyRequest(ctx context.Context, fromProfile telecom.VideoProfile, toProfile telecom.VideoProfile) error
+	SendSessionModifyResponse(ctx context.Context, responseProfile telecom.VideoProfile) error
+	RequestCameraCapabilities(ctx context.Context) error
+	RequestCallDataUsage(ctx context.Context) error
+	SetPauseImage(ctx context.Context, uri net.Uri) error
+}
+
+type imsVideoCallProviderStubWrapper struct {
+	impl       IImsVideoCallProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsVideoCallProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsVideoCallProviderStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IImsVideoCallCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *imsVideoCallProviderStubWrapper) SetCamera(
+	ctx context.Context,
+	cameraId string,
+	uid int32,
+) error {
+	return w.impl.SetCamera(ctx, cameraId, uid)
+}
+
+func (w *imsVideoCallProviderStubWrapper) SetPreviewSurface(
+	ctx context.Context,
+	surface interface{},
+) error {
+	return w.impl.SetPreviewSurface(ctx, surface)
+}
+
+func (w *imsVideoCallProviderStubWrapper) SetDisplaySurface(
+	ctx context.Context,
+	surface interface{},
+) error {
+	return w.impl.SetDisplaySurface(ctx, surface)
+}
+
+func (w *imsVideoCallProviderStubWrapper) SetDeviceOrientation(
+	ctx context.Context,
+	rotation int32,
+) error {
+	return w.impl.SetDeviceOrientation(ctx, rotation)
+}
+
+func (w *imsVideoCallProviderStubWrapper) SetZoom(
+	ctx context.Context,
+	value float32,
+) error {
+	return w.impl.SetZoom(ctx, value)
+}
+
+func (w *imsVideoCallProviderStubWrapper) SendSessionModifyRequest(
+	ctx context.Context,
+	fromProfile telecom.VideoProfile,
+	toProfile telecom.VideoProfile,
+) error {
+	return w.impl.SendSessionModifyRequest(ctx, fromProfile, toProfile)
+}
+
+func (w *imsVideoCallProviderStubWrapper) SendSessionModifyResponse(
+	ctx context.Context,
+	responseProfile telecom.VideoProfile,
+) error {
+	return w.impl.SendSessionModifyResponse(ctx, responseProfile)
+}
+
+func (w *imsVideoCallProviderStubWrapper) RequestCameraCapabilities(
+	ctx context.Context,
+) error {
+	return w.impl.RequestCameraCapabilities(ctx)
+}
+
+func (w *imsVideoCallProviderStubWrapper) RequestCallDataUsage(
+	ctx context.Context,
+) error {
+	return w.impl.RequestCallDataUsage(ctx)
+}
+
+func (w *imsVideoCallProviderStubWrapper) SetPauseImage(
+	ctx context.Context,
+	uri net.Uri,
+) error {
+	return w.impl.SetPauseImage(ctx, uri)
+}
+
+var _ IImsVideoCallProvider = (*imsVideoCallProviderStubWrapper)(nil)
+
+// NewImsVideoCallProviderStub creates a server-side IImsVideoCallProvider wrapping the given
+// server implementation. The returned value satisfies IImsVideoCallProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsVideoCallProviderStub(
+	impl IImsVideoCallProviderServer,
+) IImsVideoCallProvider {
+	wrapper := &imsVideoCallProviderStubWrapper{impl: impl}
+	stub := &ImsVideoCallProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

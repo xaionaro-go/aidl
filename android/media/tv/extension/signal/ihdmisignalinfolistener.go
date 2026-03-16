@@ -112,3 +112,50 @@ func (s *HdmiSignalInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiSignalInfoListenerServer is the server-side interface that user implementations
+// provide to NewHdmiSignalInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiSignalInfoListenerServer interface {
+	OnSignalInfoChanged(ctx context.Context, sessionToken string) error
+	OnLowLatencyModeChanged(ctx context.Context, enable int32) error
+}
+
+type hdmiSignalInfoListenerStubWrapper struct {
+	impl       IHdmiSignalInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiSignalInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiSignalInfoListenerStubWrapper) OnSignalInfoChanged(
+	ctx context.Context,
+	sessionToken string,
+) error {
+	return w.impl.OnSignalInfoChanged(ctx, sessionToken)
+}
+
+func (w *hdmiSignalInfoListenerStubWrapper) OnLowLatencyModeChanged(
+	ctx context.Context,
+	enable int32,
+) error {
+	return w.impl.OnLowLatencyModeChanged(ctx, enable)
+}
+
+var _ IHdmiSignalInfoListener = (*hdmiSignalInfoListenerStubWrapper)(nil)
+
+// NewHdmiSignalInfoListenerStub creates a server-side IHdmiSignalInfoListener wrapping the given
+// server implementation. The returned value satisfies IHdmiSignalInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiSignalInfoListenerStub(
+	impl IHdmiSignalInfoListenerServer,
+) IHdmiSignalInfoListener {
+	wrapper := &hdmiSignalInfoListenerStubWrapper{impl: impl}
+	stub := &HdmiSignalInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

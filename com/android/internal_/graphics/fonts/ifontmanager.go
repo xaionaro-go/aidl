@@ -170,3 +170,50 @@ func (s *FontManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFontManagerServer is the server-side interface that user implementations
+// provide to NewFontManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFontManagerServer interface {
+	GetFontConfig(ctx context.Context) (text.FontConfig, error)
+	UpdateFontFamily(ctx context.Context, request []graphicsFonts.FontUpdateRequest, baseVersion int32) (int32, error)
+}
+
+type fontManagerStubWrapper struct {
+	impl       IFontManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fontManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fontManagerStubWrapper) GetFontConfig(
+	ctx context.Context,
+) (text.FontConfig, error) {
+	return w.impl.GetFontConfig(ctx)
+}
+
+func (w *fontManagerStubWrapper) UpdateFontFamily(
+	ctx context.Context,
+	request []graphicsFonts.FontUpdateRequest,
+	baseVersion int32,
+) (int32, error) {
+	return w.impl.UpdateFontFamily(ctx, request, baseVersion)
+}
+
+var _ IFontManager = (*fontManagerStubWrapper)(nil)
+
+// NewFontManagerStub creates a server-side IFontManager wrapping the given
+// server implementation. The returned value satisfies IFontManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFontManagerStub(
+	impl IFontManagerServer,
+) IFontManager {
+	wrapper := &fontManagerStubWrapper{impl: impl}
+	stub := &FontManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -82,3 +82,42 @@ func (s *SyncAdapterUnsyncableAccountCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISyncAdapterUnsyncableAccountCallbackServer is the server-side interface that user implementations
+// provide to NewSyncAdapterUnsyncableAccountCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISyncAdapterUnsyncableAccountCallbackServer interface {
+	OnUnsyncableAccountDone(ctx context.Context, isReady bool) error
+}
+
+type syncAdapterUnsyncableAccountCallbackStubWrapper struct {
+	impl       ISyncAdapterUnsyncableAccountCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *syncAdapterUnsyncableAccountCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *syncAdapterUnsyncableAccountCallbackStubWrapper) OnUnsyncableAccountDone(
+	ctx context.Context,
+	isReady bool,
+) error {
+	return w.impl.OnUnsyncableAccountDone(ctx, isReady)
+}
+
+var _ ISyncAdapterUnsyncableAccountCallback = (*syncAdapterUnsyncableAccountCallbackStubWrapper)(nil)
+
+// NewSyncAdapterUnsyncableAccountCallbackStub creates a server-side ISyncAdapterUnsyncableAccountCallback wrapping the given
+// server implementation. The returned value satisfies ISyncAdapterUnsyncableAccountCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSyncAdapterUnsyncableAccountCallbackStub(
+	impl ISyncAdapterUnsyncableAccountCallbackServer,
+) ISyncAdapterUnsyncableAccountCallback {
+	wrapper := &syncAdapterUnsyncableAccountCallbackStubWrapper{impl: impl}
+	stub := &SyncAdapterUnsyncableAccountCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

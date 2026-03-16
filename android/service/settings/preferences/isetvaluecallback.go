@@ -117,3 +117,49 @@ func (s *SetValueCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISetValueCallbackServer is the server-side interface that user implementations
+// provide to NewSetValueCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISetValueCallbackServer interface {
+	OnSuccess(ctx context.Context, result SetValueResult) error
+	OnFailure(ctx context.Context) error
+}
+
+type setValueCallbackStubWrapper struct {
+	impl       ISetValueCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *setValueCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *setValueCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result SetValueResult,
+) error {
+	return w.impl.OnSuccess(ctx, result)
+}
+
+func (w *setValueCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+) error {
+	return w.impl.OnFailure(ctx)
+}
+
+var _ ISetValueCallback = (*setValueCallbackStubWrapper)(nil)
+
+// NewSetValueCallbackStub creates a server-side ISetValueCallback wrapping the given
+// server implementation. The returned value satisfies ISetValueCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSetValueCallbackStub(
+	impl ISetValueCallbackServer,
+) ISetValueCallback {
+	wrapper := &setValueCallbackStubWrapper{impl: impl}
+	stub := &SetValueCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

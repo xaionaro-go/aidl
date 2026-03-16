@@ -93,3 +93,42 @@ func (s *SatelliteCapabilitiesConsumerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteCapabilitiesConsumerServer is the server-side interface that user implementations
+// provide to NewSatelliteCapabilitiesConsumerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteCapabilitiesConsumerServer interface {
+	Accept(ctx context.Context, result SatelliteCapabilities) error
+}
+
+type satelliteCapabilitiesConsumerStubWrapper struct {
+	impl       ISatelliteCapabilitiesConsumerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteCapabilitiesConsumerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteCapabilitiesConsumerStubWrapper) Accept(
+	ctx context.Context,
+	result SatelliteCapabilities,
+) error {
+	return w.impl.Accept(ctx, result)
+}
+
+var _ ISatelliteCapabilitiesConsumer = (*satelliteCapabilitiesConsumerStubWrapper)(nil)
+
+// NewSatelliteCapabilitiesConsumerStub creates a server-side ISatelliteCapabilitiesConsumer wrapping the given
+// server implementation. The returned value satisfies ISatelliteCapabilitiesConsumer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteCapabilitiesConsumerStub(
+	impl ISatelliteCapabilitiesConsumerServer,
+) ISatelliteCapabilitiesConsumer {
+	wrapper := &satelliteCapabilitiesConsumerStubWrapper{impl: impl}
+	stub := &SatelliteCapabilitiesConsumerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

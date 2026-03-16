@@ -99,3 +99,43 @@ func (s *ProviderRequestListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProviderRequestListenerServer is the server-side interface that user implementations
+// provide to NewProviderRequestListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProviderRequestListenerServer interface {
+	OnProviderRequestChanged(ctx context.Context, provider string, request ProviderRequest) error
+}
+
+type providerRequestListenerStubWrapper struct {
+	impl       IProviderRequestListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *providerRequestListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *providerRequestListenerStubWrapper) OnProviderRequestChanged(
+	ctx context.Context,
+	provider string,
+	request ProviderRequest,
+) error {
+	return w.impl.OnProviderRequestChanged(ctx, provider, request)
+}
+
+var _ IProviderRequestListener = (*providerRequestListenerStubWrapper)(nil)
+
+// NewProviderRequestListenerStub creates a server-side IProviderRequestListener wrapping the given
+// server implementation. The returned value satisfies IProviderRequestListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProviderRequestListenerStub(
+	impl IProviderRequestListenerServer,
+) IProviderRequestListener {
+	wrapper := &providerRequestListenerStubWrapper{impl: impl}
+	stub := &ProviderRequestListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

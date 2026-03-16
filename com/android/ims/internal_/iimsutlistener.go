@@ -61,7 +61,7 @@ func (p *ImsUtListenerProxy) UtConfigurationUpdated(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUtListener)
-	_data.WriteStrongBinder(ut.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, ut.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(id)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsUtListener, "utConfigurationUpdated")
@@ -81,7 +81,7 @@ func (p *ImsUtListenerProxy) UtConfigurationUpdateFailed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUtListener)
-	_data.WriteStrongBinder(ut.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, ut.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(id)
 	_data.WriteInt32(1)
 	if _err := error_.MarshalParcel(_data); _err != nil {
@@ -105,7 +105,7 @@ func (p *ImsUtListenerProxy) UtConfigurationQueried(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUtListener)
-	_data.WriteStrongBinder(ut.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, ut.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(id)
 	_data.WriteInt32(1)
 	if _err := ssInfo.MarshalParcel(_data); _err != nil {
@@ -129,7 +129,7 @@ func (p *ImsUtListenerProxy) UtConfigurationQueryFailed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUtListener)
-	_data.WriteStrongBinder(ut.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, ut.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(id)
 	_data.WriteInt32(1)
 	if _err := error_.MarshalParcel(_data); _err != nil {
@@ -175,7 +175,7 @@ func (p *ImsUtListenerProxy) UtConfigurationCallBarringQueried(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUtListener)
-	_data.WriteStrongBinder(ut.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, ut.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(id)
 	if cbInfo == nil {
 		_data.WriteInt32(-1)
@@ -205,7 +205,7 @@ func (p *ImsUtListenerProxy) UtConfigurationCallForwardQueried(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUtListener)
-	_data.WriteStrongBinder(ut.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, ut.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(id)
 	if cfInfo == nil {
 		_data.WriteInt32(-1)
@@ -235,7 +235,7 @@ func (p *ImsUtListenerProxy) UtConfigurationCallWaitingQueried(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsUtListener)
-	_data.WriteStrongBinder(ut.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, ut.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(id)
 	if cwInfo == nil {
 		_data.WriteInt32(-1)
@@ -479,4 +479,121 @@ func (s *ImsUtListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsUtListenerServer is the server-side interface that user implementations
+// provide to NewImsUtListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsUtListenerServer interface {
+	UtConfigurationUpdated(ctx context.Context, ut IImsUt, id int32) error
+	UtConfigurationUpdateFailed(ctx context.Context, ut IImsUt, id int32, error_ ims.ImsReasonInfo) error
+	UtConfigurationQueried(ctx context.Context, ut IImsUt, id int32, ssInfo os.Bundle) error
+	UtConfigurationQueryFailed(ctx context.Context, ut IImsUt, id int32, error_ ims.ImsReasonInfo) error
+	LineIdentificationSupplementaryServiceResponse(ctx context.Context, id int32, config ims.ImsSsInfo) error
+	UtConfigurationCallBarringQueried(ctx context.Context, ut IImsUt, id int32, cbInfo []ims.ImsSsInfo) error
+	UtConfigurationCallForwardQueried(ctx context.Context, ut IImsUt, id int32, cfInfo []ims.ImsCallForwardInfo) error
+	UtConfigurationCallWaitingQueried(ctx context.Context, ut IImsUt, id int32, cwInfo []ims.ImsSsInfo) error
+	OnSupplementaryServiceIndication(ctx context.Context, ssData ims.ImsSsData) error
+}
+
+type imsUtListenerStubWrapper struct {
+	impl       IImsUtListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsUtListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsUtListenerStubWrapper) UtConfigurationUpdated(
+	ctx context.Context,
+	ut IImsUt,
+	id int32,
+) error {
+	return w.impl.UtConfigurationUpdated(ctx, ut, id)
+}
+
+func (w *imsUtListenerStubWrapper) UtConfigurationUpdateFailed(
+	ctx context.Context,
+	ut IImsUt,
+	id int32,
+	error_ ims.ImsReasonInfo,
+) error {
+	return w.impl.UtConfigurationUpdateFailed(ctx, ut, id, error_)
+}
+
+func (w *imsUtListenerStubWrapper) UtConfigurationQueried(
+	ctx context.Context,
+	ut IImsUt,
+	id int32,
+	ssInfo os.Bundle,
+) error {
+	return w.impl.UtConfigurationQueried(ctx, ut, id, ssInfo)
+}
+
+func (w *imsUtListenerStubWrapper) UtConfigurationQueryFailed(
+	ctx context.Context,
+	ut IImsUt,
+	id int32,
+	error_ ims.ImsReasonInfo,
+) error {
+	return w.impl.UtConfigurationQueryFailed(ctx, ut, id, error_)
+}
+
+func (w *imsUtListenerStubWrapper) LineIdentificationSupplementaryServiceResponse(
+	ctx context.Context,
+	id int32,
+	config ims.ImsSsInfo,
+) error {
+	return w.impl.LineIdentificationSupplementaryServiceResponse(ctx, id, config)
+}
+
+func (w *imsUtListenerStubWrapper) UtConfigurationCallBarringQueried(
+	ctx context.Context,
+	ut IImsUt,
+	id int32,
+	cbInfo []ims.ImsSsInfo,
+) error {
+	return w.impl.UtConfigurationCallBarringQueried(ctx, ut, id, cbInfo)
+}
+
+func (w *imsUtListenerStubWrapper) UtConfigurationCallForwardQueried(
+	ctx context.Context,
+	ut IImsUt,
+	id int32,
+	cfInfo []ims.ImsCallForwardInfo,
+) error {
+	return w.impl.UtConfigurationCallForwardQueried(ctx, ut, id, cfInfo)
+}
+
+func (w *imsUtListenerStubWrapper) UtConfigurationCallWaitingQueried(
+	ctx context.Context,
+	ut IImsUt,
+	id int32,
+	cwInfo []ims.ImsSsInfo,
+) error {
+	return w.impl.UtConfigurationCallWaitingQueried(ctx, ut, id, cwInfo)
+}
+
+func (w *imsUtListenerStubWrapper) OnSupplementaryServiceIndication(
+	ctx context.Context,
+	ssData ims.ImsSsData,
+) error {
+	return w.impl.OnSupplementaryServiceIndication(ctx, ssData)
+}
+
+var _ IImsUtListener = (*imsUtListenerStubWrapper)(nil)
+
+// NewImsUtListenerStub creates a server-side IImsUtListener wrapping the given
+// server implementation. The returned value satisfies IImsUtListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsUtListenerStub(
+	impl IImsUtListenerServer,
+) IImsUtListener {
+	wrapper := &imsUtListenerStubWrapper{impl: impl}
+	stub := &ImsUtListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

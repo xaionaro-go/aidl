@@ -49,7 +49,7 @@ func (p *VirtualCameraServiceProxy) RegisterCamera(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualCameraService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := configuration.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -84,7 +84,7 @@ func (p *VirtualCameraServiceProxy) UnregisterCamera(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualCameraService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVirtualCameraService, "unregisterCamera")
 	if _err != nil {
@@ -111,7 +111,7 @@ func (p *VirtualCameraServiceProxy) GetCameraId(
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVirtualCameraService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVirtualCameraService, "getCameraId")
 	if _err != nil {
@@ -215,4 +215,61 @@ func (s *VirtualCameraServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVirtualCameraServiceServer is the server-side interface that user implementations
+// provide to NewVirtualCameraServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualCameraServiceServer interface {
+	RegisterCamera(ctx context.Context, token binder.IBinder, configuration VirtualCameraConfiguration, deviceId int32) (bool, error)
+	UnregisterCamera(ctx context.Context, token binder.IBinder) error
+	GetCameraId(ctx context.Context, token binder.IBinder) (string, error)
+}
+
+type virtualCameraServiceStubWrapper struct {
+	impl       IVirtualCameraServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualCameraServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualCameraServiceStubWrapper) RegisterCamera(
+	ctx context.Context,
+	token binder.IBinder,
+	configuration VirtualCameraConfiguration,
+	deviceId int32,
+) (bool, error) {
+	return w.impl.RegisterCamera(ctx, token, configuration, deviceId)
+}
+
+func (w *virtualCameraServiceStubWrapper) UnregisterCamera(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.UnregisterCamera(ctx, token)
+}
+
+func (w *virtualCameraServiceStubWrapper) GetCameraId(
+	ctx context.Context,
+	token binder.IBinder,
+) (string, error) {
+	return w.impl.GetCameraId(ctx, token)
+}
+
+var _ IVirtualCameraService = (*virtualCameraServiceStubWrapper)(nil)
+
+// NewVirtualCameraServiceStub creates a server-side IVirtualCameraService wrapping the given
+// server implementation. The returned value satisfies IVirtualCameraService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualCameraServiceStub(
+	impl IVirtualCameraServiceServer,
+) IVirtualCameraService {
+	wrapper := &virtualCameraServiceStubWrapper{impl: impl}
+	stub := &VirtualCameraServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

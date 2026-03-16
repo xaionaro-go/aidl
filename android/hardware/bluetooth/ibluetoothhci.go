@@ -76,7 +76,7 @@ func (p *BluetoothHciProxy) Initialize(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothHci)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothHci, "initialize")
 	if _err != nil {
@@ -332,4 +332,82 @@ func (s *BluetoothHciStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothHciServer is the server-side interface that user implementations
+// provide to NewBluetoothHciStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothHciServer interface {
+	Close(ctx context.Context) error
+	Initialize(ctx context.Context, callback IBluetoothHciCallbacks) error
+	SendAclData(ctx context.Context, data []byte) error
+	SendHciCommand(ctx context.Context, command []byte) error
+	SendIsoData(ctx context.Context, data []byte) error
+	SendScoData(ctx context.Context, data []byte) error
+}
+
+type bluetoothHciStubWrapper struct {
+	impl       IBluetoothHciServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothHciStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothHciStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *bluetoothHciStubWrapper) Initialize(
+	ctx context.Context,
+	callback IBluetoothHciCallbacks,
+) error {
+	return w.impl.Initialize(ctx, callback)
+}
+
+func (w *bluetoothHciStubWrapper) SendAclData(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.SendAclData(ctx, data)
+}
+
+func (w *bluetoothHciStubWrapper) SendHciCommand(
+	ctx context.Context,
+	command []byte,
+) error {
+	return w.impl.SendHciCommand(ctx, command)
+}
+
+func (w *bluetoothHciStubWrapper) SendIsoData(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.SendIsoData(ctx, data)
+}
+
+func (w *bluetoothHciStubWrapper) SendScoData(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.SendScoData(ctx, data)
+}
+
+var _ IBluetoothHci = (*bluetoothHciStubWrapper)(nil)
+
+// NewBluetoothHciStub creates a server-side IBluetoothHci wrapping the given
+// server implementation. The returned value satisfies IBluetoothHci
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothHciStub(
+	impl IBluetoothHciServer,
+) IBluetoothHci {
+	wrapper := &bluetoothHciStubWrapper{impl: impl}
+	stub := &BluetoothHciStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

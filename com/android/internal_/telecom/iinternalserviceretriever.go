@@ -98,3 +98,41 @@ func (s *InternalServiceRetrieverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInternalServiceRetrieverServer is the server-side interface that user implementations
+// provide to NewInternalServiceRetrieverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInternalServiceRetrieverServer interface {
+	GetDeviceIdleController(ctx context.Context) (IDeviceIdleControllerAdapter, error)
+}
+
+type internalServiceRetrieverStubWrapper struct {
+	impl       IInternalServiceRetrieverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *internalServiceRetrieverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *internalServiceRetrieverStubWrapper) GetDeviceIdleController(
+	ctx context.Context,
+) (IDeviceIdleControllerAdapter, error) {
+	return w.impl.GetDeviceIdleController(ctx)
+}
+
+var _ IInternalServiceRetriever = (*internalServiceRetrieverStubWrapper)(nil)
+
+// NewInternalServiceRetrieverStub creates a server-side IInternalServiceRetriever wrapping the given
+// server implementation. The returned value satisfies IInternalServiceRetriever
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInternalServiceRetrieverStub(
+	impl IInternalServiceRetrieverServer,
+) IInternalServiceRetriever {
+	wrapper := &internalServiceRetrieverStubWrapper{impl: impl}
+	stub := &InternalServiceRetrieverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -3,7 +3,6 @@ package policy
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -64,7 +63,7 @@ type IKeyguardService interface {
 	OnBootCompleted(ctx context.Context) error
 	StartKeyguardExitAnimation(ctx context.Context, startTime int64, fadeoutDuration int64) error
 	OnShortPowerPressedGoHome(ctx context.Context) error
-	DismissKeyguardToLaunch(ctx context.Context, intentToLaunch content.Intent) error
+	DismissKeyguardToLaunch(ctx context.Context, intentToLaunch interface{}) error
 	OnSystemKeyPressed(ctx context.Context, keycode int32) error
 	ShowDismissibleKeyguard(ctx context.Context) error
 }
@@ -110,7 +109,7 @@ func (p *KeyguardServiceProxy) AddStateMonitorCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardService, "addStateMonitorCallback")
 	if _err != nil {
@@ -127,7 +126,7 @@ func (p *KeyguardServiceProxy) VerifyUnlock(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardService, "verifyUnlock")
 	if _err != nil {
@@ -145,7 +144,7 @@ func (p *KeyguardServiceProxy) Dismiss(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardService, "dismiss")
 	if _err != nil {
@@ -262,7 +261,7 @@ func (p *KeyguardServiceProxy) OnScreenTurningOn(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardService, "onScreenTurningOn")
 	if _err != nil {
@@ -451,14 +450,10 @@ func (p *KeyguardServiceProxy) OnShortPowerPressedGoHome(
 
 func (p *KeyguardServiceProxy) DismissKeyguardToLaunch(
 	ctx context.Context,
-	intentToLaunch content.Intent,
+	intentToLaunch interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardService)
-	_data.WriteInt32(1)
-	if _err := intentToLaunch.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardService, "dismissKeyguardToLaunch")
 	if _err != nil {
@@ -734,18 +729,7 @@ func (s *KeyguardServiceStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intentToLaunch content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intentToLaunch.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intentToLaunch interface{}
 		_err := s.Impl.DismissKeyguardToLaunch(ctx, _arg_intentToLaunch)
 		_ = _err
 		return nil, nil
@@ -770,4 +754,229 @@ func (s *KeyguardServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IKeyguardServiceServer is the server-side interface that user implementations
+// provide to NewKeyguardServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyguardServiceServer interface {
+	SetOccluded(ctx context.Context, isOccluded bool, animate bool) error
+	AddStateMonitorCallback(ctx context.Context, callback IKeyguardStateCallback) error
+	VerifyUnlock(ctx context.Context, callback IKeyguardExitCallback) error
+	Dismiss(ctx context.Context, callback IKeyguardDismissCallback, message interface{}) error
+	OnDreamingStarted(ctx context.Context) error
+	OnDreamingStopped(ctx context.Context) error
+	OnStartedGoingToSleep(ctx context.Context, pmSleepReason int32) error
+	OnFinishedGoingToSleep(ctx context.Context, pmSleepReason int32, cameraGestureTriggered bool) error
+	OnStartedWakingUp(ctx context.Context, pmWakeReason int32, cameraGestureTriggered bool) error
+	OnFinishedWakingUp(ctx context.Context) error
+	OnScreenTurningOn(ctx context.Context, callback IKeyguardDrawnCallback) error
+	OnScreenTurnedOn(ctx context.Context) error
+	OnScreenTurningOff(ctx context.Context) error
+	OnScreenTurnedOff(ctx context.Context) error
+	SetKeyguardEnabled(ctx context.Context, enabled bool) error
+	OnSystemReady(ctx context.Context) error
+	DoKeyguardTimeout(ctx context.Context, options interface{}) error
+	SetSwitchingUser(ctx context.Context, switching bool) error
+	SetCurrentUser(ctx context.Context) error
+	OnBootCompleted(ctx context.Context) error
+	StartKeyguardExitAnimation(ctx context.Context, startTime int64, fadeoutDuration int64) error
+	OnShortPowerPressedGoHome(ctx context.Context) error
+	DismissKeyguardToLaunch(ctx context.Context, intentToLaunch interface{}) error
+	OnSystemKeyPressed(ctx context.Context, keycode int32) error
+	ShowDismissibleKeyguard(ctx context.Context) error
+}
+
+type keyguardServiceStubWrapper struct {
+	impl       IKeyguardServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyguardServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyguardServiceStubWrapper) SetOccluded(
+	ctx context.Context,
+	isOccluded bool,
+	animate bool,
+) error {
+	return w.impl.SetOccluded(ctx, isOccluded, animate)
+}
+
+func (w *keyguardServiceStubWrapper) AddStateMonitorCallback(
+	ctx context.Context,
+	callback IKeyguardStateCallback,
+) error {
+	return w.impl.AddStateMonitorCallback(ctx, callback)
+}
+
+func (w *keyguardServiceStubWrapper) VerifyUnlock(
+	ctx context.Context,
+	callback IKeyguardExitCallback,
+) error {
+	return w.impl.VerifyUnlock(ctx, callback)
+}
+
+func (w *keyguardServiceStubWrapper) Dismiss(
+	ctx context.Context,
+	callback IKeyguardDismissCallback,
+	message interface{},
+) error {
+	return w.impl.Dismiss(ctx, callback, message)
+}
+
+func (w *keyguardServiceStubWrapper) OnDreamingStarted(
+	ctx context.Context,
+) error {
+	return w.impl.OnDreamingStarted(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) OnDreamingStopped(
+	ctx context.Context,
+) error {
+	return w.impl.OnDreamingStopped(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) OnStartedGoingToSleep(
+	ctx context.Context,
+	pmSleepReason int32,
+) error {
+	return w.impl.OnStartedGoingToSleep(ctx, pmSleepReason)
+}
+
+func (w *keyguardServiceStubWrapper) OnFinishedGoingToSleep(
+	ctx context.Context,
+	pmSleepReason int32,
+	cameraGestureTriggered bool,
+) error {
+	return w.impl.OnFinishedGoingToSleep(ctx, pmSleepReason, cameraGestureTriggered)
+}
+
+func (w *keyguardServiceStubWrapper) OnStartedWakingUp(
+	ctx context.Context,
+	pmWakeReason int32,
+	cameraGestureTriggered bool,
+) error {
+	return w.impl.OnStartedWakingUp(ctx, pmWakeReason, cameraGestureTriggered)
+}
+
+func (w *keyguardServiceStubWrapper) OnFinishedWakingUp(
+	ctx context.Context,
+) error {
+	return w.impl.OnFinishedWakingUp(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) OnScreenTurningOn(
+	ctx context.Context,
+	callback IKeyguardDrawnCallback,
+) error {
+	return w.impl.OnScreenTurningOn(ctx, callback)
+}
+
+func (w *keyguardServiceStubWrapper) OnScreenTurnedOn(
+	ctx context.Context,
+) error {
+	return w.impl.OnScreenTurnedOn(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) OnScreenTurningOff(
+	ctx context.Context,
+) error {
+	return w.impl.OnScreenTurningOff(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) OnScreenTurnedOff(
+	ctx context.Context,
+) error {
+	return w.impl.OnScreenTurnedOff(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) SetKeyguardEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetKeyguardEnabled(ctx, enabled)
+}
+
+func (w *keyguardServiceStubWrapper) OnSystemReady(
+	ctx context.Context,
+) error {
+	return w.impl.OnSystemReady(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) DoKeyguardTimeout(
+	ctx context.Context,
+	options interface{},
+) error {
+	return w.impl.DoKeyguardTimeout(ctx, options)
+}
+
+func (w *keyguardServiceStubWrapper) SetSwitchingUser(
+	ctx context.Context,
+	switching bool,
+) error {
+	return w.impl.SetSwitchingUser(ctx, switching)
+}
+
+func (w *keyguardServiceStubWrapper) SetCurrentUser(
+	ctx context.Context,
+) error {
+	return w.impl.SetCurrentUser(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) OnBootCompleted(
+	ctx context.Context,
+) error {
+	return w.impl.OnBootCompleted(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) StartKeyguardExitAnimation(
+	ctx context.Context,
+	startTime int64,
+	fadeoutDuration int64,
+) error {
+	return w.impl.StartKeyguardExitAnimation(ctx, startTime, fadeoutDuration)
+}
+
+func (w *keyguardServiceStubWrapper) OnShortPowerPressedGoHome(
+	ctx context.Context,
+) error {
+	return w.impl.OnShortPowerPressedGoHome(ctx)
+}
+
+func (w *keyguardServiceStubWrapper) DismissKeyguardToLaunch(
+	ctx context.Context,
+	intentToLaunch interface{},
+) error {
+	return w.impl.DismissKeyguardToLaunch(ctx, intentToLaunch)
+}
+
+func (w *keyguardServiceStubWrapper) OnSystemKeyPressed(
+	ctx context.Context,
+	keycode int32,
+) error {
+	return w.impl.OnSystemKeyPressed(ctx, keycode)
+}
+
+func (w *keyguardServiceStubWrapper) ShowDismissibleKeyguard(
+	ctx context.Context,
+) error {
+	return w.impl.ShowDismissibleKeyguard(ctx)
+}
+
+var _ IKeyguardService = (*keyguardServiceStubWrapper)(nil)
+
+// NewKeyguardServiceStub creates a server-side IKeyguardService wrapping the given
+// server implementation. The returned value satisfies IKeyguardService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyguardServiceStub(
+	impl IKeyguardServiceServer,
+) IKeyguardService {
+	wrapper := &keyguardServiceStubWrapper{impl: impl}
+	stub := &KeyguardServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

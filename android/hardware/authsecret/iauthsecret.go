@@ -88,3 +88,42 @@ func (s *AuthSecretStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAuthSecretServer is the server-side interface that user implementations
+// provide to NewAuthSecretStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAuthSecretServer interface {
+	SetPrimaryUserCredential(ctx context.Context, secret []byte) error
+}
+
+type authSecretStubWrapper struct {
+	impl       IAuthSecretServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *authSecretStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *authSecretStubWrapper) SetPrimaryUserCredential(
+	ctx context.Context,
+	secret []byte,
+) error {
+	return w.impl.SetPrimaryUserCredential(ctx, secret)
+}
+
+var _ IAuthSecret = (*authSecretStubWrapper)(nil)
+
+// NewAuthSecretStub creates a server-side IAuthSecret wrapping the given
+// server implementation. The returned value satisfies IAuthSecret
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAuthSecretStub(
+	impl IAuthSecretServer,
+) IAuthSecret {
+	wrapper := &authSecretStubWrapper{impl: impl}
+	stub := &AuthSecretStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

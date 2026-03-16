@@ -637,3 +637,121 @@ func (s *Idmap2Stub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IIdmap2Server is the server-side interface that user implementations
+// provide to NewIdmap2Stub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIdmap2Server interface {
+	GetIdmapPath(ctx context.Context, overlayApkPath string) (string, error)
+	RemoveIdmap(ctx context.Context, overlayApkPath string) (bool, error)
+	VerifyIdmap(ctx context.Context, targetApkPath string, overlayApkPath string, overlayName string, fulfilledPolicies int32, enforceOverlayable bool) (bool, error)
+	CreateIdmap(ctx context.Context, targetApkPath string, overlayApkPath string, overlayName string, fulfilledPolicies int32, enforceOverlayable bool) (string, error)
+	CreateFabricatedOverlay(ctx context.Context, overlay FabricatedOverlayInternal) (FabricatedOverlayInfo, error)
+	DeleteFabricatedOverlay(ctx context.Context, path string) (bool, error)
+	AcquireFabricatedOverlayIterator(ctx context.Context) (int32, error)
+	ReleaseFabricatedOverlayIterator(ctx context.Context, iteratorId int32) error
+	NextFabricatedOverlayInfos(ctx context.Context, iteratorId int32) ([]FabricatedOverlayInfo, error)
+	DumpIdmap(ctx context.Context, overlayApkPath string) (string, error)
+}
+
+type idmap2StubWrapper struct {
+	impl       IIdmap2Server
+	stubBinder *binder.StubBinder
+}
+
+func (w *idmap2StubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *idmap2StubWrapper) GetIdmapPath(
+	ctx context.Context,
+	overlayApkPath string,
+) (string, error) {
+	return w.impl.GetIdmapPath(ctx, overlayApkPath)
+}
+
+func (w *idmap2StubWrapper) RemoveIdmap(
+	ctx context.Context,
+	overlayApkPath string,
+) (bool, error) {
+	return w.impl.RemoveIdmap(ctx, overlayApkPath)
+}
+
+func (w *idmap2StubWrapper) VerifyIdmap(
+	ctx context.Context,
+	targetApkPath string,
+	overlayApkPath string,
+	overlayName string,
+	fulfilledPolicies int32,
+	enforceOverlayable bool,
+) (bool, error) {
+	return w.impl.VerifyIdmap(ctx, targetApkPath, overlayApkPath, overlayName, fulfilledPolicies, enforceOverlayable)
+}
+
+func (w *idmap2StubWrapper) CreateIdmap(
+	ctx context.Context,
+	targetApkPath string,
+	overlayApkPath string,
+	overlayName string,
+	fulfilledPolicies int32,
+	enforceOverlayable bool,
+) (string, error) {
+	return w.impl.CreateIdmap(ctx, targetApkPath, overlayApkPath, overlayName, fulfilledPolicies, enforceOverlayable)
+}
+
+func (w *idmap2StubWrapper) CreateFabricatedOverlay(
+	ctx context.Context,
+	overlay FabricatedOverlayInternal,
+) (FabricatedOverlayInfo, error) {
+	return w.impl.CreateFabricatedOverlay(ctx, overlay)
+}
+
+func (w *idmap2StubWrapper) DeleteFabricatedOverlay(
+	ctx context.Context,
+	path string,
+) (bool, error) {
+	return w.impl.DeleteFabricatedOverlay(ctx, path)
+}
+
+func (w *idmap2StubWrapper) AcquireFabricatedOverlayIterator(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.AcquireFabricatedOverlayIterator(ctx)
+}
+
+func (w *idmap2StubWrapper) ReleaseFabricatedOverlayIterator(
+	ctx context.Context,
+	iteratorId int32,
+) error {
+	return w.impl.ReleaseFabricatedOverlayIterator(ctx, iteratorId)
+}
+
+func (w *idmap2StubWrapper) NextFabricatedOverlayInfos(
+	ctx context.Context,
+	iteratorId int32,
+) ([]FabricatedOverlayInfo, error) {
+	return w.impl.NextFabricatedOverlayInfos(ctx, iteratorId)
+}
+
+func (w *idmap2StubWrapper) DumpIdmap(
+	ctx context.Context,
+	overlayApkPath string,
+) (string, error) {
+	return w.impl.DumpIdmap(ctx, overlayApkPath)
+}
+
+var _ IIdmap2 = (*idmap2StubWrapper)(nil)
+
+// NewIdmap2Stub creates a server-side IIdmap2 wrapping the given
+// server implementation. The returned value satisfies IIdmap2
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIdmap2Stub(
+	impl IIdmap2Server,
+) IIdmap2 {
+	wrapper := &idmap2StubWrapper{impl: impl}
+	stub := &Idmap2Stub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

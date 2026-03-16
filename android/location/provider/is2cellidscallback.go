@@ -112,3 +112,49 @@ func (s *S2CellIdsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IS2CellIdsCallbackServer is the server-side interface that user implementations
+// provide to NewS2CellIdsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IS2CellIdsCallbackServer interface {
+	OnResult(ctx context.Context, s2CellIds []int64) error
+	OnError(ctx context.Context) error
+}
+
+type s2CellIdsCallbackStubWrapper struct {
+	impl       IS2CellIdsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *s2CellIdsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *s2CellIdsCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	s2CellIds []int64,
+) error {
+	return w.impl.OnResult(ctx, s2CellIds)
+}
+
+func (w *s2CellIdsCallbackStubWrapper) OnError(
+	ctx context.Context,
+) error {
+	return w.impl.OnError(ctx)
+}
+
+var _ IS2CellIdsCallback = (*s2CellIdsCallbackStubWrapper)(nil)
+
+// NewS2CellIdsCallbackStub creates a server-side IS2CellIdsCallback wrapping the given
+// server implementation. The returned value satisfies IS2CellIdsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewS2CellIdsCallbackStub(
+	impl IS2CellIdsCallbackServer,
+) IS2CellIdsCallback {
+	wrapper := &s2CellIdsCallbackStubWrapper{impl: impl}
+	stub := &S2CellIdsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

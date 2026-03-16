@@ -69,7 +69,7 @@ func (p *IncidentCompanionProxy) AuthorizeReport(
 	_data.WriteString16(receiverClass)
 	_data.WriteString16(reportId)
 	_data.WriteInt32(flags)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncidentCompanion, "authorizeReport")
 	if _err != nil {
@@ -86,7 +86,7 @@ func (p *IncidentCompanionProxy) CancelAuthorization(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIncidentCompanion)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIncidentCompanion, "cancelAuthorization")
 	if _err != nil {
@@ -540,4 +540,123 @@ func (s *IncidentCompanionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IIncidentCompanionServer is the server-side interface that user implementations
+// provide to NewIncidentCompanionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIncidentCompanionServer interface {
+	AuthorizeReport(ctx context.Context, receiverClass string, reportId string, flags int32, callback IIncidentAuthListener) error
+	CancelAuthorization(ctx context.Context, callback IIncidentAuthListener) error
+	SendReportReadyBroadcast(ctx context.Context, pkg string, cls string) error
+	GetPendingReports(ctx context.Context) ([]string, error)
+	ApproveReport(ctx context.Context, uri string) error
+	DenyReport(ctx context.Context, uri string) error
+	GetIncidentReportList(ctx context.Context, pkg string, cls string) ([]string, error)
+	GetIncidentReport(ctx context.Context, pkg string, cls string, id string) (interface{}, error)
+	DeleteIncidentReports(ctx context.Context, pkg string, cls string, id string) error
+	DeleteAllIncidentReports(ctx context.Context, pkg string) error
+}
+
+type incidentCompanionStubWrapper struct {
+	impl       IIncidentCompanionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *incidentCompanionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *incidentCompanionStubWrapper) AuthorizeReport(
+	ctx context.Context,
+	receiverClass string,
+	reportId string,
+	flags int32,
+	callback IIncidentAuthListener,
+) error {
+	return w.impl.AuthorizeReport(ctx, receiverClass, reportId, flags, callback)
+}
+
+func (w *incidentCompanionStubWrapper) CancelAuthorization(
+	ctx context.Context,
+	callback IIncidentAuthListener,
+) error {
+	return w.impl.CancelAuthorization(ctx, callback)
+}
+
+func (w *incidentCompanionStubWrapper) SendReportReadyBroadcast(
+	ctx context.Context,
+	pkg string,
+	cls string,
+) error {
+	return w.impl.SendReportReadyBroadcast(ctx, pkg, cls)
+}
+
+func (w *incidentCompanionStubWrapper) GetPendingReports(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetPendingReports(ctx)
+}
+
+func (w *incidentCompanionStubWrapper) ApproveReport(
+	ctx context.Context,
+	uri string,
+) error {
+	return w.impl.ApproveReport(ctx, uri)
+}
+
+func (w *incidentCompanionStubWrapper) DenyReport(
+	ctx context.Context,
+	uri string,
+) error {
+	return w.impl.DenyReport(ctx, uri)
+}
+
+func (w *incidentCompanionStubWrapper) GetIncidentReportList(
+	ctx context.Context,
+	pkg string,
+	cls string,
+) ([]string, error) {
+	return w.impl.GetIncidentReportList(ctx, pkg, cls)
+}
+
+func (w *incidentCompanionStubWrapper) GetIncidentReport(
+	ctx context.Context,
+	pkg string,
+	cls string,
+	id string,
+) (interface{}, error) {
+	return w.impl.GetIncidentReport(ctx, pkg, cls, id)
+}
+
+func (w *incidentCompanionStubWrapper) DeleteIncidentReports(
+	ctx context.Context,
+	pkg string,
+	cls string,
+	id string,
+) error {
+	return w.impl.DeleteIncidentReports(ctx, pkg, cls, id)
+}
+
+func (w *incidentCompanionStubWrapper) DeleteAllIncidentReports(
+	ctx context.Context,
+	pkg string,
+) error {
+	return w.impl.DeleteAllIncidentReports(ctx, pkg)
+}
+
+var _ IIncidentCompanion = (*incidentCompanionStubWrapper)(nil)
+
+// NewIncidentCompanionStub creates a server-side IIncidentCompanion wrapping the given
+// server implementation. The returned value satisfies IIncidentCompanion
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIncidentCompanionStub(
+	impl IIncidentCompanionServer,
+) IIncidentCompanion {
+	wrapper := &incidentCompanionStubWrapper{impl: impl}
+	stub := &IncidentCompanionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

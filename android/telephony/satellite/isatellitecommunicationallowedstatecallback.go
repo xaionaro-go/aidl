@@ -123,3 +123,50 @@ func (s *SatelliteCommunicationAllowedStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteCommunicationAllowedStateCallbackServer is the server-side interface that user implementations
+// provide to NewSatelliteCommunicationAllowedStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteCommunicationAllowedStateCallbackServer interface {
+	OnSatelliteCommunicationAllowedStateChanged(ctx context.Context, isAllowed bool) error
+	OnSatelliteAccessConfigurationChanged(ctx context.Context, satelliteAccessConfiguration SatelliteAccessConfiguration) error
+}
+
+type satelliteCommunicationAllowedStateCallbackStubWrapper struct {
+	impl       ISatelliteCommunicationAllowedStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteCommunicationAllowedStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteCommunicationAllowedStateCallbackStubWrapper) OnSatelliteCommunicationAllowedStateChanged(
+	ctx context.Context,
+	isAllowed bool,
+) error {
+	return w.impl.OnSatelliteCommunicationAllowedStateChanged(ctx, isAllowed)
+}
+
+func (w *satelliteCommunicationAllowedStateCallbackStubWrapper) OnSatelliteAccessConfigurationChanged(
+	ctx context.Context,
+	satelliteAccessConfiguration SatelliteAccessConfiguration,
+) error {
+	return w.impl.OnSatelliteAccessConfigurationChanged(ctx, satelliteAccessConfiguration)
+}
+
+var _ ISatelliteCommunicationAllowedStateCallback = (*satelliteCommunicationAllowedStateCallbackStubWrapper)(nil)
+
+// NewSatelliteCommunicationAllowedStateCallbackStub creates a server-side ISatelliteCommunicationAllowedStateCallback wrapping the given
+// server implementation. The returned value satisfies ISatelliteCommunicationAllowedStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteCommunicationAllowedStateCallbackStub(
+	impl ISatelliteCommunicationAllowedStateCallbackServer,
+) ISatelliteCommunicationAllowedStateCallback {
+	wrapper := &satelliteCommunicationAllowedStateCallbackStubWrapper{impl: impl}
+	stub := &SatelliteCommunicationAllowedStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

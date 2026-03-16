@@ -327,3 +327,72 @@ func (s *AppIntegrityManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppIntegrityManagerServer is the server-side interface that user implementations
+// provide to NewAppIntegrityManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppIntegrityManagerServer interface {
+	UpdateRuleSet(ctx context.Context, version string, rules pm.ParceledListSlice, statusReceiver content.IntentSender) error
+	GetCurrentRuleSetVersion(ctx context.Context) (string, error)
+	GetCurrentRuleSetProvider(ctx context.Context) (string, error)
+	GetCurrentRules(ctx context.Context) (pm.ParceledListSlice, error)
+	GetWhitelistedRuleProviders(ctx context.Context) ([]string, error)
+}
+
+type appIntegrityManagerStubWrapper struct {
+	impl       IAppIntegrityManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appIntegrityManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appIntegrityManagerStubWrapper) UpdateRuleSet(
+	ctx context.Context,
+	version string,
+	rules pm.ParceledListSlice,
+	statusReceiver content.IntentSender,
+) error {
+	return w.impl.UpdateRuleSet(ctx, version, rules, statusReceiver)
+}
+
+func (w *appIntegrityManagerStubWrapper) GetCurrentRuleSetVersion(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCurrentRuleSetVersion(ctx)
+}
+
+func (w *appIntegrityManagerStubWrapper) GetCurrentRuleSetProvider(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCurrentRuleSetProvider(ctx)
+}
+
+func (w *appIntegrityManagerStubWrapper) GetCurrentRules(
+	ctx context.Context,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetCurrentRules(ctx)
+}
+
+func (w *appIntegrityManagerStubWrapper) GetWhitelistedRuleProviders(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetWhitelistedRuleProviders(ctx)
+}
+
+var _ IAppIntegrityManager = (*appIntegrityManagerStubWrapper)(nil)
+
+// NewAppIntegrityManagerStub creates a server-side IAppIntegrityManager wrapping the given
+// server implementation. The returned value satisfies IAppIntegrityManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppIntegrityManagerStub(
+	impl IAppIntegrityManagerServer,
+) IAppIntegrityManager {
+	wrapper := &appIntegrityManagerStubWrapper{impl: impl}
+	stub := &AppIntegrityManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

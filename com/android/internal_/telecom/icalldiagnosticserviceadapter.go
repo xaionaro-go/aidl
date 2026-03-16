@@ -200,3 +200,72 @@ func (s *CallDiagnosticServiceAdapterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICallDiagnosticServiceAdapterServer is the server-side interface that user implementations
+// provide to NewCallDiagnosticServiceAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallDiagnosticServiceAdapterServer interface {
+	DisplayDiagnosticMessage(ctx context.Context, callId string, messageId int32, message interface{}) error
+	ClearDiagnosticMessage(ctx context.Context, callId string, messageId int32) error
+	SendDeviceToDeviceMessage(ctx context.Context, callId string, message int32, value int32) error
+	OverrideDisconnectMessage(ctx context.Context, callId string, message interface{}) error
+}
+
+type callDiagnosticServiceAdapterStubWrapper struct {
+	impl       ICallDiagnosticServiceAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callDiagnosticServiceAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callDiagnosticServiceAdapterStubWrapper) DisplayDiagnosticMessage(
+	ctx context.Context,
+	callId string,
+	messageId int32,
+	message interface{},
+) error {
+	return w.impl.DisplayDiagnosticMessage(ctx, callId, messageId, message)
+}
+
+func (w *callDiagnosticServiceAdapterStubWrapper) ClearDiagnosticMessage(
+	ctx context.Context,
+	callId string,
+	messageId int32,
+) error {
+	return w.impl.ClearDiagnosticMessage(ctx, callId, messageId)
+}
+
+func (w *callDiagnosticServiceAdapterStubWrapper) SendDeviceToDeviceMessage(
+	ctx context.Context,
+	callId string,
+	message int32,
+	value int32,
+) error {
+	return w.impl.SendDeviceToDeviceMessage(ctx, callId, message, value)
+}
+
+func (w *callDiagnosticServiceAdapterStubWrapper) OverrideDisconnectMessage(
+	ctx context.Context,
+	callId string,
+	message interface{},
+) error {
+	return w.impl.OverrideDisconnectMessage(ctx, callId, message)
+}
+
+var _ ICallDiagnosticServiceAdapter = (*callDiagnosticServiceAdapterStubWrapper)(nil)
+
+// NewCallDiagnosticServiceAdapterStub creates a server-side ICallDiagnosticServiceAdapter wrapping the given
+// server implementation. The returned value satisfies ICallDiagnosticServiceAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallDiagnosticServiceAdapterStub(
+	impl ICallDiagnosticServiceAdapterServer,
+) ICallDiagnosticServiceAdapter {
+	wrapper := &callDiagnosticServiceAdapterStubWrapper{impl: impl}
+	stub := &CallDiagnosticServiceAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

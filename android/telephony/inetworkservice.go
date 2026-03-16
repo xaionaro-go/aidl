@@ -88,7 +88,7 @@ func (p *NetworkServiceProxy) RequestNetworkRegistrationInfo(
 	_data.WriteInterfaceToken(DescriptorINetworkService)
 	_data.WriteInt32(slotId)
 	_data.WriteInt32(domain)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkService, "requestNetworkRegistrationInfo")
 	if _err != nil {
@@ -107,7 +107,7 @@ func (p *NetworkServiceProxy) RegisterForNetworkRegistrationInfoChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkService, "registerForNetworkRegistrationInfoChanged")
 	if _err != nil {
@@ -126,7 +126,7 @@ func (p *NetworkServiceProxy) UnregisterForNetworkRegistrationInfoChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkService, "unregisterForNetworkRegistrationInfoChanged")
 	if _err != nil {
@@ -222,4 +222,79 @@ func (s *NetworkServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// INetworkServiceServer is the server-side interface that user implementations
+// provide to NewNetworkServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkServiceServer interface {
+	CreateNetworkServiceProvider(ctx context.Context, slotId int32) error
+	RemoveNetworkServiceProvider(ctx context.Context, slotId int32) error
+	RequestNetworkRegistrationInfo(ctx context.Context, slotId int32, domain int32, callback INetworkServiceCallback) error
+	RegisterForNetworkRegistrationInfoChanged(ctx context.Context, slotId int32, callback INetworkServiceCallback) error
+	UnregisterForNetworkRegistrationInfoChanged(ctx context.Context, slotId int32, callback INetworkServiceCallback) error
+}
+
+type networkServiceStubWrapper struct {
+	impl       INetworkServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkServiceStubWrapper) CreateNetworkServiceProvider(
+	ctx context.Context,
+	slotId int32,
+) error {
+	return w.impl.CreateNetworkServiceProvider(ctx, slotId)
+}
+
+func (w *networkServiceStubWrapper) RemoveNetworkServiceProvider(
+	ctx context.Context,
+	slotId int32,
+) error {
+	return w.impl.RemoveNetworkServiceProvider(ctx, slotId)
+}
+
+func (w *networkServiceStubWrapper) RequestNetworkRegistrationInfo(
+	ctx context.Context,
+	slotId int32,
+	domain int32,
+	callback INetworkServiceCallback,
+) error {
+	return w.impl.RequestNetworkRegistrationInfo(ctx, slotId, domain, callback)
+}
+
+func (w *networkServiceStubWrapper) RegisterForNetworkRegistrationInfoChanged(
+	ctx context.Context,
+	slotId int32,
+	callback INetworkServiceCallback,
+) error {
+	return w.impl.RegisterForNetworkRegistrationInfoChanged(ctx, slotId, callback)
+}
+
+func (w *networkServiceStubWrapper) UnregisterForNetworkRegistrationInfoChanged(
+	ctx context.Context,
+	slotId int32,
+	callback INetworkServiceCallback,
+) error {
+	return w.impl.UnregisterForNetworkRegistrationInfoChanged(ctx, slotId, callback)
+}
+
+var _ INetworkService = (*networkServiceStubWrapper)(nil)
+
+// NewNetworkServiceStub creates a server-side INetworkService wrapping the given
+// server implementation. The returned value satisfies INetworkService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkServiceStub(
+	impl INetworkServiceServer,
+) INetworkService {
+	wrapper := &networkServiceStubWrapper{impl: impl}
+	stub := &NetworkServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

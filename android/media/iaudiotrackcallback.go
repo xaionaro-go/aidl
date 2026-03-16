@@ -88,3 +88,42 @@ func (s *AudioTrackCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioTrackCallbackServer is the server-side interface that user implementations
+// provide to NewAudioTrackCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioTrackCallbackServer interface {
+	OnCodecFormatChanged(ctx context.Context, audioMetadata []byte) error
+}
+
+type audioTrackCallbackStubWrapper struct {
+	impl       IAudioTrackCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioTrackCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioTrackCallbackStubWrapper) OnCodecFormatChanged(
+	ctx context.Context,
+	audioMetadata []byte,
+) error {
+	return w.impl.OnCodecFormatChanged(ctx, audioMetadata)
+}
+
+var _ IAudioTrackCallback = (*audioTrackCallbackStubWrapper)(nil)
+
+// NewAudioTrackCallbackStub creates a server-side IAudioTrackCallback wrapping the given
+// server implementation. The returned value satisfies IAudioTrackCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioTrackCallbackStub(
+	impl IAudioTrackCallbackServer,
+) IAudioTrackCallback {
+	wrapper := &audioTrackCallbackStubWrapper{impl: impl}
+	stub := &AudioTrackCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -94,3 +94,42 @@ func (s *LcnV2ChannelListListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILcnV2ChannelListListenerServer is the server-side interface that user implementations
+// provide to NewLcnV2ChannelListListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILcnV2ChannelListListenerServer interface {
+	OnDetectLcnV2ChannelList(ctx context.Context, detectLcnV2ChannelList os.Bundle) error
+}
+
+type lcnV2ChannelListListenerStubWrapper struct {
+	impl       ILcnV2ChannelListListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *lcnV2ChannelListListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *lcnV2ChannelListListenerStubWrapper) OnDetectLcnV2ChannelList(
+	ctx context.Context,
+	detectLcnV2ChannelList os.Bundle,
+) error {
+	return w.impl.OnDetectLcnV2ChannelList(ctx, detectLcnV2ChannelList)
+}
+
+var _ ILcnV2ChannelListListener = (*lcnV2ChannelListListenerStubWrapper)(nil)
+
+// NewLcnV2ChannelListListenerStub creates a server-side ILcnV2ChannelListListener wrapping the given
+// server implementation. The returned value satisfies ILcnV2ChannelListListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLcnV2ChannelListListenerStub(
+	impl ILcnV2ChannelListListenerServer,
+) ILcnV2ChannelListListener {
+	wrapper := &lcnV2ChannelListListenerStubWrapper{impl: impl}
+	stub := &LcnV2ChannelListListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -164,3 +164,50 @@ func (s *ServiceListExportSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IServiceListExportSessionServer is the server-side interface that user implementations
+// provide to NewServiceListExportSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListExportSessionServer interface {
+	ExportServiceList(ctx context.Context, pfd int32, exportParams os.Bundle) (int32, error)
+	Release(ctx context.Context) (int32, error)
+}
+
+type serviceListExportSessionStubWrapper struct {
+	impl       IServiceListExportSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListExportSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListExportSessionStubWrapper) ExportServiceList(
+	ctx context.Context,
+	pfd int32,
+	exportParams os.Bundle,
+) (int32, error) {
+	return w.impl.ExportServiceList(ctx, pfd, exportParams)
+}
+
+func (w *serviceListExportSessionStubWrapper) Release(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Release(ctx)
+}
+
+var _ IServiceListExportSession = (*serviceListExportSessionStubWrapper)(nil)
+
+// NewServiceListExportSessionStub creates a server-side IServiceListExportSession wrapping the given
+// server implementation. The returned value satisfies IServiceListExportSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListExportSessionStub(
+	impl IServiceListExportSessionServer,
+) IServiceListExportSession {
+	wrapper := &serviceListExportSessionStubWrapper{impl: impl}
+	stub := &ServiceListExportSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

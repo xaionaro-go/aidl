@@ -138,3 +138,44 @@ func (s *SplitSelectListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISplitSelectListenerServer is the server-side interface that user implementations
+// provide to NewSplitSelectListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISplitSelectListenerServer interface {
+	OnRequestSplitSelect(ctx context.Context, taskInfo app.ActivityManagerRunningTaskInfo, splitPosition int32, taskBounds graphics.Rect) (bool, error)
+}
+
+type splitSelectListenerStubWrapper struct {
+	impl       ISplitSelectListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *splitSelectListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *splitSelectListenerStubWrapper) OnRequestSplitSelect(
+	ctx context.Context,
+	taskInfo app.ActivityManagerRunningTaskInfo,
+	splitPosition int32,
+	taskBounds graphics.Rect,
+) (bool, error) {
+	return w.impl.OnRequestSplitSelect(ctx, taskInfo, splitPosition, taskBounds)
+}
+
+var _ ISplitSelectListener = (*splitSelectListenerStubWrapper)(nil)
+
+// NewSplitSelectListenerStub creates a server-side ISplitSelectListener wrapping the given
+// server implementation. The returned value satisfies ISplitSelectListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSplitSelectListenerStub(
+	impl ISplitSelectListenerServer,
+) ISplitSelectListener {
+	wrapper := &splitSelectListenerStubWrapper{impl: impl}
+	stub := &SplitSelectListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

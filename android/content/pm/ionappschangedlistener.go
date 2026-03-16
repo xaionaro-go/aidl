@@ -442,3 +442,128 @@ func (s *OnAppsChangedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnAppsChangedListenerServer is the server-side interface that user implementations
+// provide to NewOnAppsChangedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnAppsChangedListenerServer interface {
+	OnPackageRemoved(ctx context.Context, user interface{}, packageName string) error
+	OnPackageAdded(ctx context.Context, user interface{}, packageName string) error
+	OnPackageChanged(ctx context.Context, user interface{}, packageName string) error
+	OnPackagesAvailable(ctx context.Context, user interface{}, packageNames []string, replacing bool) error
+	OnPackagesUnavailable(ctx context.Context, user interface{}, packageNames []string, replacing bool) error
+	OnPackagesSuspended(ctx context.Context, user interface{}, packageNames []string, launcherExtras interface{}) error
+	OnPackagesUnsuspended(ctx context.Context, user interface{}, packageNames []string) error
+	OnShortcutChanged(ctx context.Context, user interface{}, packageName string, shortcuts ParceledListSlice) error
+	OnPackageLoadingProgressChanged(ctx context.Context, user interface{}, packageName string, progress float32) error
+	OnUserConfigChanged(ctx context.Context, launcherUserInfo LauncherUserInfo) error
+}
+
+type onAppsChangedListenerStubWrapper struct {
+	impl       IOnAppsChangedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onAppsChangedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnPackageRemoved(
+	ctx context.Context,
+	user interface{},
+	packageName string,
+) error {
+	return w.impl.OnPackageRemoved(ctx, user, packageName)
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnPackageAdded(
+	ctx context.Context,
+	user interface{},
+	packageName string,
+) error {
+	return w.impl.OnPackageAdded(ctx, user, packageName)
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnPackageChanged(
+	ctx context.Context,
+	user interface{},
+	packageName string,
+) error {
+	return w.impl.OnPackageChanged(ctx, user, packageName)
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnPackagesAvailable(
+	ctx context.Context,
+	user interface{},
+	packageNames []string,
+	replacing bool,
+) error {
+	return w.impl.OnPackagesAvailable(ctx, user, packageNames, replacing)
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnPackagesUnavailable(
+	ctx context.Context,
+	user interface{},
+	packageNames []string,
+	replacing bool,
+) error {
+	return w.impl.OnPackagesUnavailable(ctx, user, packageNames, replacing)
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnPackagesSuspended(
+	ctx context.Context,
+	user interface{},
+	packageNames []string,
+	launcherExtras interface{},
+) error {
+	return w.impl.OnPackagesSuspended(ctx, user, packageNames, launcherExtras)
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnPackagesUnsuspended(
+	ctx context.Context,
+	user interface{},
+	packageNames []string,
+) error {
+	return w.impl.OnPackagesUnsuspended(ctx, user, packageNames)
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnShortcutChanged(
+	ctx context.Context,
+	user interface{},
+	packageName string,
+	shortcuts ParceledListSlice,
+) error {
+	return w.impl.OnShortcutChanged(ctx, user, packageName, shortcuts)
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnPackageLoadingProgressChanged(
+	ctx context.Context,
+	user interface{},
+	packageName string,
+	progress float32,
+) error {
+	return w.impl.OnPackageLoadingProgressChanged(ctx, user, packageName, progress)
+}
+
+func (w *onAppsChangedListenerStubWrapper) OnUserConfigChanged(
+	ctx context.Context,
+	launcherUserInfo LauncherUserInfo,
+) error {
+	return w.impl.OnUserConfigChanged(ctx, launcherUserInfo)
+}
+
+var _ IOnAppsChangedListener = (*onAppsChangedListenerStubWrapper)(nil)
+
+// NewOnAppsChangedListenerStub creates a server-side IOnAppsChangedListener wrapping the given
+// server implementation. The returned value satisfies IOnAppsChangedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnAppsChangedListenerStub(
+	impl IOnAppsChangedListenerServer,
+) IOnAppsChangedListener {
+	wrapper := &onAppsChangedListenerStubWrapper{impl: impl}
+	stub := &OnAppsChangedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

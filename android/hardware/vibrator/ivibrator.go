@@ -171,7 +171,7 @@ func (p *VibratorProxy) On(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 	_data.WriteInt32(timeoutMs)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "on")
 	if _err != nil {
@@ -202,7 +202,7 @@ func (p *VibratorProxy) Perform(
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 	_data.WriteInt32(int32(effect))
 	_data.WritePaddedByte(byte(strength))
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "perform")
 	if _err != nil {
@@ -464,7 +464,7 @@ func (p *VibratorProxy) Compose(
 			}
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "compose")
 	if _err != nil {
@@ -850,7 +850,7 @@ func (p *VibratorProxy) ComposePwle(
 			}
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "composePwle")
 	if _err != nil {
@@ -881,7 +881,7 @@ func (p *VibratorProxy) PerformVendorEffect(
 	if _err := vendorEffect.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "performVendorEffect")
 	if _err != nil {
@@ -1037,7 +1037,7 @@ func (p *VibratorProxy) ComposePwleV2(
 	if _err := composite.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibrator, "composePwleV2")
 	if _err != nil {
@@ -1553,4 +1553,265 @@ func (s *VibratorStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVibratorServer is the server-side interface that user implementations
+// provide to NewVibratorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVibratorServer interface {
+	GetCapabilities(ctx context.Context) (int32, error)
+	Off(ctx context.Context) error
+	On(ctx context.Context, timeoutMs int32, callback IVibratorCallback) error
+	Perform(ctx context.Context, effect Effect, strength EffectStrength, callback IVibratorCallback) (int32, error)
+	GetSupportedEffects(ctx context.Context) ([]Effect, error)
+	SetAmplitude(ctx context.Context, amplitude float32) error
+	SetExternalControl(ctx context.Context, enabled bool) error
+	GetCompositionDelayMax(ctx context.Context) (int32, error)
+	GetCompositionSizeMax(ctx context.Context) (int32, error)
+	GetSupportedPrimitives(ctx context.Context) ([]CompositePrimitive, error)
+	GetPrimitiveDuration(ctx context.Context, primitive CompositePrimitive) (int32, error)
+	Compose(ctx context.Context, composite []CompositeEffect, callback IVibratorCallback) error
+	GetSupportedAlwaysOnEffects(ctx context.Context) ([]Effect, error)
+	AlwaysOnEnable(ctx context.Context, id int32, effect Effect, strength EffectStrength) error
+	AlwaysOnDisable(ctx context.Context, id int32) error
+	GetResonantFrequency(ctx context.Context) (float32, error)
+	GetQFactor(ctx context.Context) (float32, error)
+	GetFrequencyResolution(ctx context.Context) (float32, error)
+	GetFrequencyMinimum(ctx context.Context) (float32, error)
+	GetBandwidthAmplitudeMap(ctx context.Context) ([]float32, error)
+	GetPwlePrimitiveDurationMax(ctx context.Context) (int32, error)
+	GetPwleCompositionSizeMax(ctx context.Context) (int32, error)
+	GetSupportedBraking(ctx context.Context) ([]Braking, error)
+	ComposePwle(ctx context.Context, composite []PrimitivePwle, callback IVibratorCallback) error
+	PerformVendorEffect(ctx context.Context, vendorEffect VendorEffect, callback IVibratorCallback) error
+	GetFrequencyToOutputAccelerationMap(ctx context.Context) ([]FrequencyAccelerationMapEntry, error)
+	GetPwleV2PrimitiveDurationMaxMillis(ctx context.Context) (int32, error)
+	GetPwleV2CompositionSizeMax(ctx context.Context) (int32, error)
+	GetPwleV2PrimitiveDurationMinMillis(ctx context.Context) (int32, error)
+	ComposePwleV2(ctx context.Context, composite CompositePwleV2, callback IVibratorCallback) error
+}
+
+type vibratorStubWrapper struct {
+	impl       IVibratorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vibratorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vibratorStubWrapper) GetCapabilities(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCapabilities(ctx)
+}
+
+func (w *vibratorStubWrapper) Off(
+	ctx context.Context,
+) error {
+	return w.impl.Off(ctx)
+}
+
+func (w *vibratorStubWrapper) On(
+	ctx context.Context,
+	timeoutMs int32,
+	callback IVibratorCallback,
+) error {
+	return w.impl.On(ctx, timeoutMs, callback)
+}
+
+func (w *vibratorStubWrapper) Perform(
+	ctx context.Context,
+	effect Effect,
+	strength EffectStrength,
+	callback IVibratorCallback,
+) (int32, error) {
+	return w.impl.Perform(ctx, effect, strength, callback)
+}
+
+func (w *vibratorStubWrapper) GetSupportedEffects(
+	ctx context.Context,
+) ([]Effect, error) {
+	return w.impl.GetSupportedEffects(ctx)
+}
+
+func (w *vibratorStubWrapper) SetAmplitude(
+	ctx context.Context,
+	amplitude float32,
+) error {
+	return w.impl.SetAmplitude(ctx, amplitude)
+}
+
+func (w *vibratorStubWrapper) SetExternalControl(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetExternalControl(ctx, enabled)
+}
+
+func (w *vibratorStubWrapper) GetCompositionDelayMax(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCompositionDelayMax(ctx)
+}
+
+func (w *vibratorStubWrapper) GetCompositionSizeMax(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCompositionSizeMax(ctx)
+}
+
+func (w *vibratorStubWrapper) GetSupportedPrimitives(
+	ctx context.Context,
+) ([]CompositePrimitive, error) {
+	return w.impl.GetSupportedPrimitives(ctx)
+}
+
+func (w *vibratorStubWrapper) GetPrimitiveDuration(
+	ctx context.Context,
+	primitive CompositePrimitive,
+) (int32, error) {
+	return w.impl.GetPrimitiveDuration(ctx, primitive)
+}
+
+func (w *vibratorStubWrapper) Compose(
+	ctx context.Context,
+	composite []CompositeEffect,
+	callback IVibratorCallback,
+) error {
+	return w.impl.Compose(ctx, composite, callback)
+}
+
+func (w *vibratorStubWrapper) GetSupportedAlwaysOnEffects(
+	ctx context.Context,
+) ([]Effect, error) {
+	return w.impl.GetSupportedAlwaysOnEffects(ctx)
+}
+
+func (w *vibratorStubWrapper) AlwaysOnEnable(
+	ctx context.Context,
+	id int32,
+	effect Effect,
+	strength EffectStrength,
+) error {
+	return w.impl.AlwaysOnEnable(ctx, id, effect, strength)
+}
+
+func (w *vibratorStubWrapper) AlwaysOnDisable(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.AlwaysOnDisable(ctx, id)
+}
+
+func (w *vibratorStubWrapper) GetResonantFrequency(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetResonantFrequency(ctx)
+}
+
+func (w *vibratorStubWrapper) GetQFactor(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetQFactor(ctx)
+}
+
+func (w *vibratorStubWrapper) GetFrequencyResolution(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetFrequencyResolution(ctx)
+}
+
+func (w *vibratorStubWrapper) GetFrequencyMinimum(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetFrequencyMinimum(ctx)
+}
+
+func (w *vibratorStubWrapper) GetBandwidthAmplitudeMap(
+	ctx context.Context,
+) ([]float32, error) {
+	return w.impl.GetBandwidthAmplitudeMap(ctx)
+}
+
+func (w *vibratorStubWrapper) GetPwlePrimitiveDurationMax(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPwlePrimitiveDurationMax(ctx)
+}
+
+func (w *vibratorStubWrapper) GetPwleCompositionSizeMax(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPwleCompositionSizeMax(ctx)
+}
+
+func (w *vibratorStubWrapper) GetSupportedBraking(
+	ctx context.Context,
+) ([]Braking, error) {
+	return w.impl.GetSupportedBraking(ctx)
+}
+
+func (w *vibratorStubWrapper) ComposePwle(
+	ctx context.Context,
+	composite []PrimitivePwle,
+	callback IVibratorCallback,
+) error {
+	return w.impl.ComposePwle(ctx, composite, callback)
+}
+
+func (w *vibratorStubWrapper) PerformVendorEffect(
+	ctx context.Context,
+	vendorEffect VendorEffect,
+	callback IVibratorCallback,
+) error {
+	return w.impl.PerformVendorEffect(ctx, vendorEffect, callback)
+}
+
+func (w *vibratorStubWrapper) GetFrequencyToOutputAccelerationMap(
+	ctx context.Context,
+) ([]FrequencyAccelerationMapEntry, error) {
+	return w.impl.GetFrequencyToOutputAccelerationMap(ctx)
+}
+
+func (w *vibratorStubWrapper) GetPwleV2PrimitiveDurationMaxMillis(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPwleV2PrimitiveDurationMaxMillis(ctx)
+}
+
+func (w *vibratorStubWrapper) GetPwleV2CompositionSizeMax(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPwleV2CompositionSizeMax(ctx)
+}
+
+func (w *vibratorStubWrapper) GetPwleV2PrimitiveDurationMinMillis(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPwleV2PrimitiveDurationMinMillis(ctx)
+}
+
+func (w *vibratorStubWrapper) ComposePwleV2(
+	ctx context.Context,
+	composite CompositePwleV2,
+	callback IVibratorCallback,
+) error {
+	return w.impl.ComposePwleV2(ctx, composite, callback)
+}
+
+var _ IVibrator = (*vibratorStubWrapper)(nil)
+
+// NewVibratorStub creates a server-side IVibrator wrapping the given
+// server implementation. The returned value satisfies IVibrator
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVibratorStub(
+	impl IVibratorServer,
+) IVibrator {
+	wrapper := &vibratorStubWrapper{impl: impl}
+	stub := &VibratorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

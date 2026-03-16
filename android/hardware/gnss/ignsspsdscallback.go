@@ -97,3 +97,42 @@ func (s *GnssPsdsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssPsdsCallbackServer is the server-side interface that user implementations
+// provide to NewGnssPsdsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssPsdsCallbackServer interface {
+	DownloadRequestCb(ctx context.Context, psdsType PsdsType) error
+}
+
+type gnssPsdsCallbackStubWrapper struct {
+	impl       IGnssPsdsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssPsdsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssPsdsCallbackStubWrapper) DownloadRequestCb(
+	ctx context.Context,
+	psdsType PsdsType,
+) error {
+	return w.impl.DownloadRequestCb(ctx, psdsType)
+}
+
+var _ IGnssPsdsCallback = (*gnssPsdsCallbackStubWrapper)(nil)
+
+// NewGnssPsdsCallbackStub creates a server-side IGnssPsdsCallback wrapping the given
+// server implementation. The returned value satisfies IGnssPsdsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssPsdsCallbackStub(
+	impl IGnssPsdsCallbackServer,
+) IGnssPsdsCallback {
+	wrapper := &gnssPsdsCallbackStubWrapper{impl: impl}
+	stub := &GnssPsdsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -94,3 +94,42 @@ func (s *WwanSelectorResultCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWwanSelectorResultCallbackServer is the server-side interface that user implementations
+// provide to NewWwanSelectorResultCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWwanSelectorResultCallbackServer interface {
+	OnComplete(ctx context.Context, result androidTelephony.EmergencyRegistrationResult) error
+}
+
+type wwanSelectorResultCallbackStubWrapper struct {
+	impl       IWwanSelectorResultCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wwanSelectorResultCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wwanSelectorResultCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result androidTelephony.EmergencyRegistrationResult,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IWwanSelectorResultCallback = (*wwanSelectorResultCallbackStubWrapper)(nil)
+
+// NewWwanSelectorResultCallbackStub creates a server-side IWwanSelectorResultCallback wrapping the given
+// server implementation. The returned value satisfies IWwanSelectorResultCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWwanSelectorResultCallbackStub(
+	impl IWwanSelectorResultCallbackServer,
+) IWwanSelectorResultCallback {
+	wrapper := &wwanSelectorResultCallbackStubWrapper{impl: impl}
+	stub := &WwanSelectorResultCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

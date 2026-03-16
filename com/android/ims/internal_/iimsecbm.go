@@ -44,7 +44,7 @@ func (p *ImsEcbmProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsEcbm)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsEcbm, "setListener")
 	if _err != nil {
@@ -132,4 +132,50 @@ func (s *ImsEcbmStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsEcbmServer is the server-side interface that user implementations
+// provide to NewImsEcbmStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsEcbmServer interface {
+	SetListener(ctx context.Context, listener IImsEcbmListener) error
+	ExitEmergencyCallbackMode(ctx context.Context) error
+}
+
+type imsEcbmStubWrapper struct {
+	impl       IImsEcbmServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsEcbmStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsEcbmStubWrapper) SetListener(
+	ctx context.Context,
+	listener IImsEcbmListener,
+) error {
+	return w.impl.SetListener(ctx, listener)
+}
+
+func (w *imsEcbmStubWrapper) ExitEmergencyCallbackMode(
+	ctx context.Context,
+) error {
+	return w.impl.ExitEmergencyCallbackMode(ctx)
+}
+
+var _ IImsEcbm = (*imsEcbmStubWrapper)(nil)
+
+// NewImsEcbmStub creates a server-side IImsEcbm wrapping the given
+// server implementation. The returned value satisfies IImsEcbm
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsEcbmStub(
+	impl IImsEcbmServer,
+) IImsEcbm {
+	wrapper := &imsEcbmStubWrapper{impl: impl}
+	stub := &ImsEcbmStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

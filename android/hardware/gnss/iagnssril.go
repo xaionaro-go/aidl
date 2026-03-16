@@ -56,7 +56,7 @@ func (p *AGnssRilProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAGnssRil)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAGnssRil, "setCallback")
 	if _err != nil {
@@ -113,7 +113,7 @@ func (p *AGnssRilProxy) SetSetId(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAGnssRil)
 	_data.WriteInt32(int32(type_))
-	_data.WriteString(setid)
+	_data.WriteString16(setid)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAGnssRil, "setSetId")
 	if _err != nil {
@@ -259,7 +259,7 @@ func (s *AGnssRilStub) OnTransaction(
 			return nil, _err
 		}
 		_arg_type_ := gnssIAGnssRil.SetIdType(_raw_type_)
-		_arg_setid, _err := _data.ReadString()
+		_arg_setid, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -317,4 +317,77 @@ func (s *AGnssRilStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAGnssRilServer is the server-side interface that user implementations
+// provide to NewAGnssRilStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAGnssRilServer interface {
+	SetCallback(ctx context.Context, callback IAGnssRilCallback) error
+	SetRefLocation(ctx context.Context, agnssReflocation gnssIAGnssRil.AGnssRefLocation) error
+	SetSetId(ctx context.Context, type_ gnssIAGnssRil.SetIdType, setid string) error
+	UpdateNetworkState(ctx context.Context, attributes gnssIAGnssRil.NetworkAttributes) error
+	InjectNiSuplMessageData(ctx context.Context, msgData []byte, slotIndex int32) error
+}
+
+type aGnssRilStubWrapper struct {
+	impl       IAGnssRilServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aGnssRilStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aGnssRilStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IAGnssRilCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *aGnssRilStubWrapper) SetRefLocation(
+	ctx context.Context,
+	agnssReflocation gnssIAGnssRil.AGnssRefLocation,
+) error {
+	return w.impl.SetRefLocation(ctx, agnssReflocation)
+}
+
+func (w *aGnssRilStubWrapper) SetSetId(
+	ctx context.Context,
+	type_ gnssIAGnssRil.SetIdType,
+	setid string,
+) error {
+	return w.impl.SetSetId(ctx, type_, setid)
+}
+
+func (w *aGnssRilStubWrapper) UpdateNetworkState(
+	ctx context.Context,
+	attributes gnssIAGnssRil.NetworkAttributes,
+) error {
+	return w.impl.UpdateNetworkState(ctx, attributes)
+}
+
+func (w *aGnssRilStubWrapper) InjectNiSuplMessageData(
+	ctx context.Context,
+	msgData []byte,
+	slotIndex int32,
+) error {
+	return w.impl.InjectNiSuplMessageData(ctx, msgData, slotIndex)
+}
+
+var _ IAGnssRil = (*aGnssRilStubWrapper)(nil)
+
+// NewAGnssRilStub creates a server-side IAGnssRil wrapping the given
+// server implementation. The returned value satisfies IAGnssRil
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAGnssRilStub(
+	impl IAGnssRilServer,
+) IAGnssRil {
+	wrapper := &aGnssRilStubWrapper{impl: impl}
+	stub := &AGnssRilStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

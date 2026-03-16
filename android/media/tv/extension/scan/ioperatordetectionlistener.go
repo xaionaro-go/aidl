@@ -91,3 +91,42 @@ func (s *OperatorDetectionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOperatorDetectionListenerServer is the server-side interface that user implementations
+// provide to NewOperatorDetectionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOperatorDetectionListenerServer interface {
+	OnDetectOperatorDetectionList(ctx context.Context, detectOperatorDetectionList []os.Bundle) error
+}
+
+type operatorDetectionListenerStubWrapper struct {
+	impl       IOperatorDetectionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *operatorDetectionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *operatorDetectionListenerStubWrapper) OnDetectOperatorDetectionList(
+	ctx context.Context,
+	detectOperatorDetectionList []os.Bundle,
+) error {
+	return w.impl.OnDetectOperatorDetectionList(ctx, detectOperatorDetectionList)
+}
+
+var _ IOperatorDetectionListener = (*operatorDetectionListenerStubWrapper)(nil)
+
+// NewOperatorDetectionListenerStub creates a server-side IOperatorDetectionListener wrapping the given
+// server implementation. The returned value satisfies IOperatorDetectionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOperatorDetectionListenerStub(
+	impl IOperatorDetectionListenerServer,
+) IOperatorDetectionListener {
+	wrapper := &operatorDetectionListenerStubWrapper{impl: impl}
+	stub := &OperatorDetectionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -99,3 +99,43 @@ func (s *InputFilterHostStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputFilterHostServer is the server-side interface that user implementations
+// provide to NewInputFilterHostStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputFilterHostServer interface {
+	SendInputEvent(ctx context.Context, event InputEvent, policyFlags int32) error
+}
+
+type inputFilterHostStubWrapper struct {
+	impl       IInputFilterHostServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputFilterHostStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputFilterHostStubWrapper) SendInputEvent(
+	ctx context.Context,
+	event InputEvent,
+	policyFlags int32,
+) error {
+	return w.impl.SendInputEvent(ctx, event, policyFlags)
+}
+
+var _ IInputFilterHost = (*inputFilterHostStubWrapper)(nil)
+
+// NewInputFilterHostStub creates a server-side IInputFilterHost wrapping the given
+// server implementation. The returned value satisfies IInputFilterHost
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputFilterHostStub(
+	impl IInputFilterHostServer,
+) IInputFilterHost {
+	wrapper := &inputFilterHostStubWrapper{impl: impl}
+	stub := &InputFilterHostStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

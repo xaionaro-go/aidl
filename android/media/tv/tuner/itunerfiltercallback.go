@@ -150,3 +150,50 @@ func (s *TunerFilterCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITunerFilterCallbackServer is the server-side interface that user implementations
+// provide to NewTunerFilterCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerFilterCallbackServer interface {
+	OnFilterStatus(ctx context.Context, status tvTuner.DemuxFilterStatus) error
+	OnFilterEvent(ctx context.Context, events []tvTuner.DemuxFilterEvent) error
+}
+
+type tunerFilterCallbackStubWrapper struct {
+	impl       ITunerFilterCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerFilterCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerFilterCallbackStubWrapper) OnFilterStatus(
+	ctx context.Context,
+	status tvTuner.DemuxFilterStatus,
+) error {
+	return w.impl.OnFilterStatus(ctx, status)
+}
+
+func (w *tunerFilterCallbackStubWrapper) OnFilterEvent(
+	ctx context.Context,
+	events []tvTuner.DemuxFilterEvent,
+) error {
+	return w.impl.OnFilterEvent(ctx, events)
+}
+
+var _ ITunerFilterCallback = (*tunerFilterCallbackStubWrapper)(nil)
+
+// NewTunerFilterCallbackStub creates a server-side ITunerFilterCallback wrapping the given
+// server implementation. The returned value satisfies ITunerFilterCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerFilterCallbackStub(
+	impl ITunerFilterCallbackServer,
+) ITunerFilterCallback {
+	wrapper := &tunerFilterCallbackStubWrapper{impl: impl}
+	stub := &TunerFilterCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

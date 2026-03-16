@@ -136,3 +136,50 @@ func (s *BubblesListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBubblesListenerServer is the server-side interface that user implementations
+// provide to NewBubblesListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBubblesListenerServer interface {
+	OnBubbleStateChange(ctx context.Context, update os.Bundle) error
+	AnimateBubbleBarLocation(ctx context.Context, location sharedBubbles.BubbleBarLocation) error
+}
+
+type bubblesListenerStubWrapper struct {
+	impl       IBubblesListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bubblesListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bubblesListenerStubWrapper) OnBubbleStateChange(
+	ctx context.Context,
+	update os.Bundle,
+) error {
+	return w.impl.OnBubbleStateChange(ctx, update)
+}
+
+func (w *bubblesListenerStubWrapper) AnimateBubbleBarLocation(
+	ctx context.Context,
+	location sharedBubbles.BubbleBarLocation,
+) error {
+	return w.impl.AnimateBubbleBarLocation(ctx, location)
+}
+
+var _ IBubblesListener = (*bubblesListenerStubWrapper)(nil)
+
+// NewBubblesListenerStub creates a server-side IBubblesListener wrapping the given
+// server implementation. The returned value satisfies IBubblesListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBubblesListenerStub(
+	impl IBubblesListenerServer,
+) IBubblesListener {
+	wrapper := &bubblesListenerStubWrapper{impl: impl}
+	stub := &BubblesListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

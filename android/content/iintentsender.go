@@ -3,6 +3,7 @@ package content
 import (
 	"context"
 	"fmt"
+	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -17,7 +18,7 @@ const (
 
 type IIntentSender interface {
 	AsBinder() binder.IBinder
-	Send(ctx context.Context, code int32, intent Intent, resolvedType string, whitelistToken binder.IBinder, finishedReceiver IIntentReceiver, requiredPermission string, options interface{}) error
+	Send(ctx context.Context, code int32, intent Intent, resolvedType string, whitelistToken binder.IBinder, finishedReceiver IIntentReceiver, requiredPermission string, options os.Bundle) error
 }
 
 type IntentSenderProxy struct {
@@ -44,7 +45,7 @@ func (p *IntentSenderProxy) Send(
 	whitelistToken binder.IBinder,
 	finishedReceiver IIntentReceiver,
 	requiredPermission string,
-	options interface{},
+	options os.Bundle,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIntentSender)
@@ -54,9 +55,13 @@ func (p *IntentSenderProxy) Send(
 		return _err
 	}
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(whitelistToken.Handle())
-	_data.WriteStrongBinder(finishedReceiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, whitelistToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, finishedReceiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(requiredPermission)
+	_data.WriteInt32(1)
+	if _err := options.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIIntentSender, "send")
 	if _err != nil {
@@ -115,11 +120,67 @@ func (s *IntentSenderStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options interface{}
+		var _arg_options os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.Send(ctx, _arg_code, _arg_intent, _arg_resolvedType, _arg_whitelistToken, _arg_finishedReceiver, _arg_requiredPermission, _arg_options)
 		_ = _err
 		return nil, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IIntentSenderServer is the server-side interface that user implementations
+// provide to NewIntentSenderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIntentSenderServer interface {
+	Send(ctx context.Context, code int32, intent Intent, resolvedType string, whitelistToken binder.IBinder, finishedReceiver IIntentReceiver, requiredPermission string, options os.Bundle) error
+}
+
+type intentSenderStubWrapper struct {
+	impl       IIntentSenderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *intentSenderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *intentSenderStubWrapper) Send(
+	ctx context.Context,
+	code int32,
+	intent Intent,
+	resolvedType string,
+	whitelistToken binder.IBinder,
+	finishedReceiver IIntentReceiver,
+	requiredPermission string,
+	options os.Bundle,
+) error {
+	return w.impl.Send(ctx, code, intent, resolvedType, whitelistToken, finishedReceiver, requiredPermission, options)
+}
+
+var _ IIntentSender = (*intentSenderStubWrapper)(nil)
+
+// NewIntentSenderStub creates a server-side IIntentSender wrapping the given
+// server implementation. The returned value satisfies IIntentSender
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIntentSenderStub(
+	impl IIntentSenderServer,
+) IIntentSender {
+	wrapper := &intentSenderStubWrapper{impl: impl}
+	stub := &IntentSenderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -55,7 +55,7 @@ func (p *ResolverRankerServiceProxy) Predict(
 			}
 		}
 	}
-	_data.WriteStrongBinder(result.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, result.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIResolverRankerService, "predict")
 	if _err != nil {
@@ -138,4 +138,53 @@ func (s *ResolverRankerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IResolverRankerServiceServer is the server-side interface that user implementations
+// provide to NewResolverRankerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResolverRankerServiceServer interface {
+	Predict(ctx context.Context, targets []ResolverTarget, result IResolverRankerResult) error
+	Train(ctx context.Context, targets []ResolverTarget, selectedPosition int32) error
+}
+
+type resolverRankerServiceStubWrapper struct {
+	impl       IResolverRankerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resolverRankerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resolverRankerServiceStubWrapper) Predict(
+	ctx context.Context,
+	targets []ResolverTarget,
+	result IResolverRankerResult,
+) error {
+	return w.impl.Predict(ctx, targets, result)
+}
+
+func (w *resolverRankerServiceStubWrapper) Train(
+	ctx context.Context,
+	targets []ResolverTarget,
+	selectedPosition int32,
+) error {
+	return w.impl.Train(ctx, targets, selectedPosition)
+}
+
+var _ IResolverRankerService = (*resolverRankerServiceStubWrapper)(nil)
+
+// NewResolverRankerServiceStub creates a server-side IResolverRankerService wrapping the given
+// server implementation. The returned value satisfies IResolverRankerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResolverRankerServiceStub(
+	impl IResolverRankerServiceServer,
+) IResolverRankerService {
+	wrapper := &resolverRankerServiceStubWrapper{impl: impl}
+	stub := &ResolverRankerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

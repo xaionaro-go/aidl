@@ -80,7 +80,7 @@ func (p *AlarmManagerProxy) Set(
 	if _err := operation.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteString16(listenerTag)
 	_data.WriteInt32(1)
 	if _err := alarmClock.MarshalParcel(_data); _err != nil {
@@ -173,7 +173,7 @@ func (p *AlarmManagerProxy) Remove(
 	if _err := operation.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAlarmManager, "remove")
 	if _err != nil {
@@ -619,4 +619,122 @@ func (s *AlarmManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAlarmManagerServer is the server-side interface that user implementations
+// provide to NewAlarmManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAlarmManagerServer interface {
+	Set(ctx context.Context, type_ int32, triggerAtTime int64, windowLength int64, interval int64, flags int32, operation PendingIntent, listener IAlarmListener, listenerTag string, workSource interface{}, alarmClock AlarmManagerAlarmClockInfo) error
+	SetTime(ctx context.Context, millis int64) (bool, error)
+	SetTimeZone(ctx context.Context, zone string) error
+	Remove(ctx context.Context, operation PendingIntent, listener IAlarmListener) error
+	RemoveAll(ctx context.Context, packageName string) error
+	GetNextWakeFromIdleTime(ctx context.Context) (int64, error)
+	GetNextAlarmClock(ctx context.Context) (AlarmManagerAlarmClockInfo, error)
+	CanScheduleExactAlarms(ctx context.Context, packageName string) (bool, error)
+	HasScheduleExactAlarm(ctx context.Context, packageName string) (bool, error)
+	GetConfigVersion(ctx context.Context) (int32, error)
+}
+
+type alarmManagerStubWrapper struct {
+	impl       IAlarmManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *alarmManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *alarmManagerStubWrapper) Set(
+	ctx context.Context,
+	type_ int32,
+	triggerAtTime int64,
+	windowLength int64,
+	interval int64,
+	flags int32,
+	operation PendingIntent,
+	listener IAlarmListener,
+	listenerTag string,
+	workSource interface{},
+	alarmClock AlarmManagerAlarmClockInfo,
+) error {
+	return w.impl.Set(ctx, type_, triggerAtTime, windowLength, interval, flags, operation, listener, listenerTag, workSource, alarmClock)
+}
+
+func (w *alarmManagerStubWrapper) SetTime(
+	ctx context.Context,
+	millis int64,
+) (bool, error) {
+	return w.impl.SetTime(ctx, millis)
+}
+
+func (w *alarmManagerStubWrapper) SetTimeZone(
+	ctx context.Context,
+	zone string,
+) error {
+	return w.impl.SetTimeZone(ctx, zone)
+}
+
+func (w *alarmManagerStubWrapper) Remove(
+	ctx context.Context,
+	operation PendingIntent,
+	listener IAlarmListener,
+) error {
+	return w.impl.Remove(ctx, operation, listener)
+}
+
+func (w *alarmManagerStubWrapper) RemoveAll(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.RemoveAll(ctx, packageName)
+}
+
+func (w *alarmManagerStubWrapper) GetNextWakeFromIdleTime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetNextWakeFromIdleTime(ctx)
+}
+
+func (w *alarmManagerStubWrapper) GetNextAlarmClock(
+	ctx context.Context,
+) (AlarmManagerAlarmClockInfo, error) {
+	return w.impl.GetNextAlarmClock(ctx)
+}
+
+func (w *alarmManagerStubWrapper) CanScheduleExactAlarms(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.CanScheduleExactAlarms(ctx, packageName)
+}
+
+func (w *alarmManagerStubWrapper) HasScheduleExactAlarm(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.HasScheduleExactAlarm(ctx, packageName)
+}
+
+func (w *alarmManagerStubWrapper) GetConfigVersion(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetConfigVersion(ctx)
+}
+
+var _ IAlarmManager = (*alarmManagerStubWrapper)(nil)
+
+// NewAlarmManagerStub creates a server-side IAlarmManager wrapping the given
+// server implementation. The returned value satisfies IAlarmManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAlarmManagerStub(
+	impl IAlarmManagerServer,
+) IAlarmManager {
+	wrapper := &alarmManagerStubWrapper{impl: impl}
+	stub := &AlarmManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

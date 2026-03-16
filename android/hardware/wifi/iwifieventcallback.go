@@ -162,3 +162,64 @@ func (s *WifiEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWifiEventCallbackServer is the server-side interface that user implementations
+// provide to NewWifiEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiEventCallbackServer interface {
+	OnFailure(ctx context.Context, status WifiStatusCode) error
+	OnStart(ctx context.Context) error
+	OnStop(ctx context.Context) error
+	OnSubsystemRestart(ctx context.Context, status WifiStatusCode) error
+}
+
+type wifiEventCallbackStubWrapper struct {
+	impl       IWifiEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiEventCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	status WifiStatusCode,
+) error {
+	return w.impl.OnFailure(ctx, status)
+}
+
+func (w *wifiEventCallbackStubWrapper) OnStart(
+	ctx context.Context,
+) error {
+	return w.impl.OnStart(ctx)
+}
+
+func (w *wifiEventCallbackStubWrapper) OnStop(
+	ctx context.Context,
+) error {
+	return w.impl.OnStop(ctx)
+}
+
+func (w *wifiEventCallbackStubWrapper) OnSubsystemRestart(
+	ctx context.Context,
+	status WifiStatusCode,
+) error {
+	return w.impl.OnSubsystemRestart(ctx, status)
+}
+
+var _ IWifiEventCallback = (*wifiEventCallbackStubWrapper)(nil)
+
+// NewWifiEventCallbackStub creates a server-side IWifiEventCallback wrapping the given
+// server implementation. The returned value satisfies IWifiEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiEventCallbackStub(
+	impl IWifiEventCallbackServer,
+) IWifiEventCallback {
+	wrapper := &wifiEventCallbackStubWrapper{impl: impl}
+	stub := &WifiEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

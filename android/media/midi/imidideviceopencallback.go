@@ -43,8 +43,8 @@ func (p *MidiDeviceOpenCallbackProxy) OnDeviceOpened(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceOpenCallback)
-	_data.WriteStrongBinder(server.AsBinder().Handle())
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, server.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceOpenCallback, "onDeviceOpened")
 	if _err != nil {
@@ -85,4 +85,44 @@ func (s *MidiDeviceOpenCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMidiDeviceOpenCallbackServer is the server-side interface that user implementations
+// provide to NewMidiDeviceOpenCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMidiDeviceOpenCallbackServer interface {
+	OnDeviceOpened(ctx context.Context, server IMidiDeviceServer, token binder.IBinder) error
+}
+
+type midiDeviceOpenCallbackStubWrapper struct {
+	impl       IMidiDeviceOpenCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *midiDeviceOpenCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *midiDeviceOpenCallbackStubWrapper) OnDeviceOpened(
+	ctx context.Context,
+	server IMidiDeviceServer,
+	token binder.IBinder,
+) error {
+	return w.impl.OnDeviceOpened(ctx, server, token)
+}
+
+var _ IMidiDeviceOpenCallback = (*midiDeviceOpenCallbackStubWrapper)(nil)
+
+// NewMidiDeviceOpenCallbackStub creates a server-side IMidiDeviceOpenCallback wrapping the given
+// server implementation. The returned value satisfies IMidiDeviceOpenCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMidiDeviceOpenCallbackStub(
+	impl IMidiDeviceOpenCallbackServer,
+) IMidiDeviceOpenCallback {
+	wrapper := &midiDeviceOpenCallbackStubWrapper{impl: impl}
+	stub := &MidiDeviceOpenCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

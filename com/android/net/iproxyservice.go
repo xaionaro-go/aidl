@@ -138,3 +138,51 @@ func (s *ProxyServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProxyServiceServer is the server-side interface that user implementations
+// provide to NewProxyServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProxyServiceServer interface {
+	ResolvePacFile(ctx context.Context, host string, url string) (string, error)
+	SetPacFile(ctx context.Context, scriptContents string) error
+}
+
+type proxyServiceStubWrapper struct {
+	impl       IProxyServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *proxyServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *proxyServiceStubWrapper) ResolvePacFile(
+	ctx context.Context,
+	host string,
+	url string,
+) (string, error) {
+	return w.impl.ResolvePacFile(ctx, host, url)
+}
+
+func (w *proxyServiceStubWrapper) SetPacFile(
+	ctx context.Context,
+	scriptContents string,
+) error {
+	return w.impl.SetPacFile(ctx, scriptContents)
+}
+
+var _ IProxyService = (*proxyServiceStubWrapper)(nil)
+
+// NewProxyServiceStub creates a server-side IProxyService wrapping the given
+// server implementation. The returned value satisfies IProxyService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProxyServiceStub(
+	impl IProxyServiceServer,
+) IProxyService {
+	wrapper := &proxyServiceStubWrapper{impl: impl}
+	stub := &ProxyServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

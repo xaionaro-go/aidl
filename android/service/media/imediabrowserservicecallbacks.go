@@ -231,3 +231,68 @@ func (s *MediaBrowserServiceCallbacksStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaBrowserServiceCallbacksServer is the server-side interface that user implementations
+// provide to NewMediaBrowserServiceCallbacksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaBrowserServiceCallbacksServer interface {
+	OnConnect(ctx context.Context, root string, session mediaSession.MediaSessionToken, extras os.Bundle) error
+	OnConnectFailed(ctx context.Context) error
+	OnLoadChildren(ctx context.Context, mediaId string, list pm.ParceledListSlice, options os.Bundle) error
+	OnDisconnect(ctx context.Context) error
+}
+
+type mediaBrowserServiceCallbacksStubWrapper struct {
+	impl       IMediaBrowserServiceCallbacksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaBrowserServiceCallbacksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaBrowserServiceCallbacksStubWrapper) OnConnect(
+	ctx context.Context,
+	root string,
+	session mediaSession.MediaSessionToken,
+	extras os.Bundle,
+) error {
+	return w.impl.OnConnect(ctx, root, session, extras)
+}
+
+func (w *mediaBrowserServiceCallbacksStubWrapper) OnConnectFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnConnectFailed(ctx)
+}
+
+func (w *mediaBrowserServiceCallbacksStubWrapper) OnLoadChildren(
+	ctx context.Context,
+	mediaId string,
+	list pm.ParceledListSlice,
+	options os.Bundle,
+) error {
+	return w.impl.OnLoadChildren(ctx, mediaId, list, options)
+}
+
+func (w *mediaBrowserServiceCallbacksStubWrapper) OnDisconnect(
+	ctx context.Context,
+) error {
+	return w.impl.OnDisconnect(ctx)
+}
+
+var _ IMediaBrowserServiceCallbacks = (*mediaBrowserServiceCallbacksStubWrapper)(nil)
+
+// NewMediaBrowserServiceCallbacksStub creates a server-side IMediaBrowserServiceCallbacks wrapping the given
+// server implementation. The returned value satisfies IMediaBrowserServiceCallbacks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaBrowserServiceCallbacksStub(
+	impl IMediaBrowserServiceCallbacksServer,
+) IMediaBrowserServiceCallbacks {
+	wrapper := &mediaBrowserServiceCallbacksStubWrapper{impl: impl}
+	stub := &MediaBrowserServiceCallbacksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

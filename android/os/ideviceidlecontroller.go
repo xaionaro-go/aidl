@@ -1246,3 +1246,209 @@ func (s *DeviceIdleControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDeviceIdleControllerServer is the server-side interface that user implementations
+// provide to NewDeviceIdleControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceIdleControllerServer interface {
+	AddPowerSaveWhitelistApp(ctx context.Context, name string) error
+	AddPowerSaveWhitelistApps(ctx context.Context, packageNames []string) (int32, error)
+	RemovePowerSaveWhitelistApp(ctx context.Context, name string) error
+	RemoveSystemPowerWhitelistApp(ctx context.Context, name string) error
+	RestoreSystemPowerWhitelistApp(ctx context.Context, name string) error
+	GetRemovedSystemPowerWhitelistApps(ctx context.Context) ([]string, error)
+	GetSystemPowerWhitelistExceptIdle(ctx context.Context) ([]string, error)
+	GetSystemPowerWhitelist(ctx context.Context) ([]string, error)
+	GetUserPowerWhitelist(ctx context.Context) ([]string, error)
+	GetFullPowerWhitelistExceptIdle(ctx context.Context) ([]string, error)
+	GetFullPowerWhitelist(ctx context.Context) ([]string, error)
+	GetAppIdWhitelistExceptIdle(ctx context.Context) ([]int32, error)
+	GetAppIdWhitelist(ctx context.Context) ([]int32, error)
+	GetAppIdUserWhitelist(ctx context.Context) ([]int32, error)
+	GetAppIdTempWhitelist(ctx context.Context) ([]int32, error)
+	IsPowerSaveWhitelistExceptIdleApp(ctx context.Context, name string) (bool, error)
+	IsPowerSaveWhitelistApp(ctx context.Context, name string) (bool, error)
+	AddPowerSaveTempWhitelistApp(ctx context.Context, name string, duration int64, reasonCode int32, reason string) error
+	AddPowerSaveTempWhitelistAppForMms(ctx context.Context, name string, reasonCode int32, reason string) (int64, error)
+	AddPowerSaveTempWhitelistAppForSms(ctx context.Context, name string, reasonCode int32, reason string) (int64, error)
+	WhitelistAppTemporarily(ctx context.Context, name string, reasonCode int32, reason string) (int64, error)
+	ExitIdle(ctx context.Context, reason string) error
+}
+
+type deviceIdleControllerStubWrapper struct {
+	impl       IDeviceIdleControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceIdleControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceIdleControllerStubWrapper) AddPowerSaveWhitelistApp(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.AddPowerSaveWhitelistApp(ctx, name)
+}
+
+func (w *deviceIdleControllerStubWrapper) AddPowerSaveWhitelistApps(
+	ctx context.Context,
+	packageNames []string,
+) (int32, error) {
+	return w.impl.AddPowerSaveWhitelistApps(ctx, packageNames)
+}
+
+func (w *deviceIdleControllerStubWrapper) RemovePowerSaveWhitelistApp(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.RemovePowerSaveWhitelistApp(ctx, name)
+}
+
+func (w *deviceIdleControllerStubWrapper) RemoveSystemPowerWhitelistApp(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.RemoveSystemPowerWhitelistApp(ctx, name)
+}
+
+func (w *deviceIdleControllerStubWrapper) RestoreSystemPowerWhitelistApp(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.RestoreSystemPowerWhitelistApp(ctx, name)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetRemovedSystemPowerWhitelistApps(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetRemovedSystemPowerWhitelistApps(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetSystemPowerWhitelistExceptIdle(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetSystemPowerWhitelistExceptIdle(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetSystemPowerWhitelist(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetSystemPowerWhitelist(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetUserPowerWhitelist(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetUserPowerWhitelist(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetFullPowerWhitelistExceptIdle(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetFullPowerWhitelistExceptIdle(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetFullPowerWhitelist(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetFullPowerWhitelist(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetAppIdWhitelistExceptIdle(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAppIdWhitelistExceptIdle(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetAppIdWhitelist(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAppIdWhitelist(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetAppIdUserWhitelist(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAppIdUserWhitelist(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) GetAppIdTempWhitelist(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAppIdTempWhitelist(ctx)
+}
+
+func (w *deviceIdleControllerStubWrapper) IsPowerSaveWhitelistExceptIdleApp(
+	ctx context.Context,
+	name string,
+) (bool, error) {
+	return w.impl.IsPowerSaveWhitelistExceptIdleApp(ctx, name)
+}
+
+func (w *deviceIdleControllerStubWrapper) IsPowerSaveWhitelistApp(
+	ctx context.Context,
+	name string,
+) (bool, error) {
+	return w.impl.IsPowerSaveWhitelistApp(ctx, name)
+}
+
+func (w *deviceIdleControllerStubWrapper) AddPowerSaveTempWhitelistApp(
+	ctx context.Context,
+	name string,
+	duration int64,
+	reasonCode int32,
+	reason string,
+) error {
+	return w.impl.AddPowerSaveTempWhitelistApp(ctx, name, duration, reasonCode, reason)
+}
+
+func (w *deviceIdleControllerStubWrapper) AddPowerSaveTempWhitelistAppForMms(
+	ctx context.Context,
+	name string,
+	reasonCode int32,
+	reason string,
+) (int64, error) {
+	return w.impl.AddPowerSaveTempWhitelistAppForMms(ctx, name, reasonCode, reason)
+}
+
+func (w *deviceIdleControllerStubWrapper) AddPowerSaveTempWhitelistAppForSms(
+	ctx context.Context,
+	name string,
+	reasonCode int32,
+	reason string,
+) (int64, error) {
+	return w.impl.AddPowerSaveTempWhitelistAppForSms(ctx, name, reasonCode, reason)
+}
+
+func (w *deviceIdleControllerStubWrapper) WhitelistAppTemporarily(
+	ctx context.Context,
+	name string,
+	reasonCode int32,
+	reason string,
+) (int64, error) {
+	return w.impl.WhitelistAppTemporarily(ctx, name, reasonCode, reason)
+}
+
+func (w *deviceIdleControllerStubWrapper) ExitIdle(
+	ctx context.Context,
+	reason string,
+) error {
+	return w.impl.ExitIdle(ctx, reason)
+}
+
+var _ IDeviceIdleController = (*deviceIdleControllerStubWrapper)(nil)
+
+// NewDeviceIdleControllerStub creates a server-side IDeviceIdleController wrapping the given
+// server implementation. The returned value satisfies IDeviceIdleController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceIdleControllerStub(
+	impl IDeviceIdleControllerServer,
+) IDeviceIdleController {
+	wrapper := &deviceIdleControllerStubWrapper{impl: impl}
+	stub := &DeviceIdleControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

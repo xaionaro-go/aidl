@@ -100,3 +100,43 @@ func (s *AudioSignalInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioSignalInfoListenerServer is the server-side interface that user implementations
+// provide to NewAudioSignalInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioSignalInfoListenerServer interface {
+	OnAudioSignalInfoChanged(ctx context.Context, sessionToken string, changedSignalInfo os.Bundle) error
+}
+
+type audioSignalInfoListenerStubWrapper struct {
+	impl       IAudioSignalInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioSignalInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioSignalInfoListenerStubWrapper) OnAudioSignalInfoChanged(
+	ctx context.Context,
+	sessionToken string,
+	changedSignalInfo os.Bundle,
+) error {
+	return w.impl.OnAudioSignalInfoChanged(ctx, sessionToken, changedSignalInfo)
+}
+
+var _ IAudioSignalInfoListener = (*audioSignalInfoListenerStubWrapper)(nil)
+
+// NewAudioSignalInfoListenerStub creates a server-side IAudioSignalInfoListener wrapping the given
+// server implementation. The returned value satisfies IAudioSignalInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioSignalInfoListenerStub(
+	impl IAudioSignalInfoListenerServer,
+) IAudioSignalInfoListener {
+	wrapper := &audioSignalInfoListenerStubWrapper{impl: impl}
+	stub := &AudioSignalInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

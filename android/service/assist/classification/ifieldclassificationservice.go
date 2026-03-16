@@ -85,7 +85,7 @@ func (p *FieldClassificationServiceProxy) OnFieldClassificationRequest(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFieldClassificationService, "onFieldClassificationRequest")
 	if _err != nil {
@@ -157,4 +157,60 @@ func (s *FieldClassificationServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFieldClassificationServiceServer is the server-side interface that user implementations
+// provide to NewFieldClassificationServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFieldClassificationServiceServer interface {
+	OnConnected(ctx context.Context, debug bool, verbose bool) error
+	OnDisconnected(ctx context.Context) error
+	OnFieldClassificationRequest(ctx context.Context, request FieldClassificationRequest, callback IFieldClassificationCallback) error
+}
+
+type fieldClassificationServiceStubWrapper struct {
+	impl       IFieldClassificationServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fieldClassificationServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fieldClassificationServiceStubWrapper) OnConnected(
+	ctx context.Context,
+	debug bool,
+	verbose bool,
+) error {
+	return w.impl.OnConnected(ctx, debug, verbose)
+}
+
+func (w *fieldClassificationServiceStubWrapper) OnDisconnected(
+	ctx context.Context,
+) error {
+	return w.impl.OnDisconnected(ctx)
+}
+
+func (w *fieldClassificationServiceStubWrapper) OnFieldClassificationRequest(
+	ctx context.Context,
+	request FieldClassificationRequest,
+	callback IFieldClassificationCallback,
+) error {
+	return w.impl.OnFieldClassificationRequest(ctx, request, callback)
+}
+
+var _ IFieldClassificationService = (*fieldClassificationServiceStubWrapper)(nil)
+
+// NewFieldClassificationServiceStub creates a server-side IFieldClassificationService wrapping the given
+// server implementation. The returned value satisfies IFieldClassificationService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFieldClassificationServiceStub(
+	impl IFieldClassificationServiceServer,
+) IFieldClassificationService {
+	wrapper := &fieldClassificationServiceStubWrapper{impl: impl}
+	stub := &FieldClassificationServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

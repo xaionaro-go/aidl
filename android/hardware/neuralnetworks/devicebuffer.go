@@ -18,7 +18,11 @@ func (s *DeviceBuffer) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Buffer.AsBinder().Handle())
+	if s.Buffer == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Buffer.AsBinder().Handle())
+	}
 	p.WriteInt32(s.Token)
 
 	parcel.WriteParcelableFooter(p, _headerPos)

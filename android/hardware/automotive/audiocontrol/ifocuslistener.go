@@ -233,3 +233,72 @@ func (s *FocusListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFocusListenerServer is the server-side interface that user implementations
+// provide to NewFocusListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFocusListenerServer interface {
+	AbandonAudioFocus(ctx context.Context, usage string, zoneId int32) error
+	RequestAudioFocus(ctx context.Context, usage string, zoneId int32, focusGain AudioFocusChange) error
+	AbandonAudioFocusWithMetaData(ctx context.Context, playbackMetaData common.PlaybackTrackMetadata, zoneId int32) error
+	RequestAudioFocusWithMetaData(ctx context.Context, playbackMetaData common.PlaybackTrackMetadata, zoneId int32, focusGain AudioFocusChange) error
+}
+
+type focusListenerStubWrapper struct {
+	impl       IFocusListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *focusListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *focusListenerStubWrapper) AbandonAudioFocus(
+	ctx context.Context,
+	usage string,
+	zoneId int32,
+) error {
+	return w.impl.AbandonAudioFocus(ctx, usage, zoneId)
+}
+
+func (w *focusListenerStubWrapper) RequestAudioFocus(
+	ctx context.Context,
+	usage string,
+	zoneId int32,
+	focusGain AudioFocusChange,
+) error {
+	return w.impl.RequestAudioFocus(ctx, usage, zoneId, focusGain)
+}
+
+func (w *focusListenerStubWrapper) AbandonAudioFocusWithMetaData(
+	ctx context.Context,
+	playbackMetaData common.PlaybackTrackMetadata,
+	zoneId int32,
+) error {
+	return w.impl.AbandonAudioFocusWithMetaData(ctx, playbackMetaData, zoneId)
+}
+
+func (w *focusListenerStubWrapper) RequestAudioFocusWithMetaData(
+	ctx context.Context,
+	playbackMetaData common.PlaybackTrackMetadata,
+	zoneId int32,
+	focusGain AudioFocusChange,
+) error {
+	return w.impl.RequestAudioFocusWithMetaData(ctx, playbackMetaData, zoneId, focusGain)
+}
+
+var _ IFocusListener = (*focusListenerStubWrapper)(nil)
+
+// NewFocusListenerStub creates a server-side IFocusListener wrapping the given
+// server implementation. The returned value satisfies IFocusListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFocusListenerStub(
+	impl IFocusListenerServer,
+) IFocusListener {
+	wrapper := &focusListenerStubWrapper{impl: impl}
+	stub := &FocusListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

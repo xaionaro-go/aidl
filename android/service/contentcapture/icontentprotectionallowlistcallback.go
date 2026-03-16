@@ -88,3 +88,42 @@ func (s *ContentProtectionAllowlistCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IContentProtectionAllowlistCallbackServer is the server-side interface that user implementations
+// provide to NewContentProtectionAllowlistCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentProtectionAllowlistCallbackServer interface {
+	SetAllowlist(ctx context.Context, packages []string) error
+}
+
+type contentProtectionAllowlistCallbackStubWrapper struct {
+	impl       IContentProtectionAllowlistCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentProtectionAllowlistCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentProtectionAllowlistCallbackStubWrapper) SetAllowlist(
+	ctx context.Context,
+	packages []string,
+) error {
+	return w.impl.SetAllowlist(ctx, packages)
+}
+
+var _ IContentProtectionAllowlistCallback = (*contentProtectionAllowlistCallbackStubWrapper)(nil)
+
+// NewContentProtectionAllowlistCallbackStub creates a server-side IContentProtectionAllowlistCallback wrapping the given
+// server implementation. The returned value satisfies IContentProtectionAllowlistCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentProtectionAllowlistCallbackStub(
+	impl IContentProtectionAllowlistCallbackServer,
+) IContentProtectionAllowlistCallback {
+	wrapper := &contentProtectionAllowlistCallbackStubWrapper{impl: impl}
+	stub := &ContentProtectionAllowlistCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

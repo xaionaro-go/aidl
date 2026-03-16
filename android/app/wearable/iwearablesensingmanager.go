@@ -99,7 +99,7 @@ func (p *WearableSensingManagerProxy) ProvideConnection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWearableSensingManager)
 	_data.WriteFileDescriptor(parcelFileDescriptor)
-	_data.WriteStrongBinder(wearableSensingCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, wearableSensingCallback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := statusCallback.MarshalParcel(_data); _err != nil {
 		return _err
@@ -134,7 +134,7 @@ func (p *WearableSensingManagerProxy) ProvideConcurrentConnection(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWearableSensingManager)
 	_data.WriteFileDescriptor(parcelFileDescriptor)
-	_data.WriteStrongBinder(wearableSensingCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, wearableSensingCallback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := statusCallback.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -816,4 +816,145 @@ func (s *WearableSensingManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWearableSensingManagerServer is the server-side interface that user implementations
+// provide to NewWearableSensingManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWearableSensingManagerServer interface {
+	GetAvailableConnectionCount(ctx context.Context) (int32, error)
+	ProvideConnection(ctx context.Context, parcelFileDescriptor int32, wearableSensingCallback IWearableSensingCallback, statusCallback os.RemoteCallback) error
+	ProvideConcurrentConnection(ctx context.Context, parcelFileDescriptor int32, metadata interface{}, wearableSensingCallback IWearableSensingCallback, statusCallback os.RemoteCallback) (int32, error)
+	RemoveConnection(ctx context.Context, connectionId int32) (bool, error)
+	RemoveAllConnections(ctx context.Context) error
+	ProvideReadOnlyParcelFileDescriptor(ctx context.Context, parcelFileDescriptor int32, metadata interface{}, statusCallback os.RemoteCallback) error
+	ProvideDataStream(ctx context.Context, parcelFileDescriptor int32, wearableSensingCallback *IWearableSensingCallback, statusCallback os.RemoteCallback) error
+	ProvideData(ctx context.Context, data interface{}, sharedMemory os.SharedMemory, callback os.RemoteCallback) error
+	RegisterDataRequestObserver(ctx context.Context, dataType int32, dataRequestPendingIntent app.PendingIntent, statusCallback os.RemoteCallback) error
+	UnregisterDataRequestObserver(ctx context.Context, dataType int32, dataRequestPendingIntent app.PendingIntent, statusCallback os.RemoteCallback) error
+	StartHotwordRecognition(ctx context.Context, targetVisComponentName content.ComponentName, statusCallback os.RemoteCallback) error
+	StopHotwordRecognition(ctx context.Context, statusCallback os.RemoteCallback) error
+}
+
+type wearableSensingManagerStubWrapper struct {
+	impl       IWearableSensingManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wearableSensingManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wearableSensingManagerStubWrapper) GetAvailableConnectionCount(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAvailableConnectionCount(ctx)
+}
+
+func (w *wearableSensingManagerStubWrapper) ProvideConnection(
+	ctx context.Context,
+	parcelFileDescriptor int32,
+	wearableSensingCallback IWearableSensingCallback,
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.ProvideConnection(ctx, parcelFileDescriptor, wearableSensingCallback, statusCallback)
+}
+
+func (w *wearableSensingManagerStubWrapper) ProvideConcurrentConnection(
+	ctx context.Context,
+	parcelFileDescriptor int32,
+	metadata interface{},
+	wearableSensingCallback IWearableSensingCallback,
+	statusCallback os.RemoteCallback,
+) (int32, error) {
+	return w.impl.ProvideConcurrentConnection(ctx, parcelFileDescriptor, metadata, wearableSensingCallback, statusCallback)
+}
+
+func (w *wearableSensingManagerStubWrapper) RemoveConnection(
+	ctx context.Context,
+	connectionId int32,
+) (bool, error) {
+	return w.impl.RemoveConnection(ctx, connectionId)
+}
+
+func (w *wearableSensingManagerStubWrapper) RemoveAllConnections(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveAllConnections(ctx)
+}
+
+func (w *wearableSensingManagerStubWrapper) ProvideReadOnlyParcelFileDescriptor(
+	ctx context.Context,
+	parcelFileDescriptor int32,
+	metadata interface{},
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.ProvideReadOnlyParcelFileDescriptor(ctx, parcelFileDescriptor, metadata, statusCallback)
+}
+
+func (w *wearableSensingManagerStubWrapper) ProvideDataStream(
+	ctx context.Context,
+	parcelFileDescriptor int32,
+	wearableSensingCallback *IWearableSensingCallback,
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.ProvideDataStream(ctx, parcelFileDescriptor, wearableSensingCallback, statusCallback)
+}
+
+func (w *wearableSensingManagerStubWrapper) ProvideData(
+	ctx context.Context,
+	data interface{},
+	sharedMemory os.SharedMemory,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.ProvideData(ctx, data, sharedMemory, callback)
+}
+
+func (w *wearableSensingManagerStubWrapper) RegisterDataRequestObserver(
+	ctx context.Context,
+	dataType int32,
+	dataRequestPendingIntent app.PendingIntent,
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.RegisterDataRequestObserver(ctx, dataType, dataRequestPendingIntent, statusCallback)
+}
+
+func (w *wearableSensingManagerStubWrapper) UnregisterDataRequestObserver(
+	ctx context.Context,
+	dataType int32,
+	dataRequestPendingIntent app.PendingIntent,
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.UnregisterDataRequestObserver(ctx, dataType, dataRequestPendingIntent, statusCallback)
+}
+
+func (w *wearableSensingManagerStubWrapper) StartHotwordRecognition(
+	ctx context.Context,
+	targetVisComponentName content.ComponentName,
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.StartHotwordRecognition(ctx, targetVisComponentName, statusCallback)
+}
+
+func (w *wearableSensingManagerStubWrapper) StopHotwordRecognition(
+	ctx context.Context,
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.StopHotwordRecognition(ctx, statusCallback)
+}
+
+var _ IWearableSensingManager = (*wearableSensingManagerStubWrapper)(nil)
+
+// NewWearableSensingManagerStub creates a server-side IWearableSensingManager wrapping the given
+// server implementation. The returned value satisfies IWearableSensingManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWearableSensingManagerStub(
+	impl IWearableSensingManagerServer,
+) IWearableSensingManager {
+	wrapper := &wearableSensingManagerStubWrapper{impl: impl}
+	stub := &WearableSensingManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

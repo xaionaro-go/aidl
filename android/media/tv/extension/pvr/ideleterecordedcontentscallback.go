@@ -100,3 +100,43 @@ func (s *DeleteRecordedContentsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDeleteRecordedContentsCallbackServer is the server-side interface that user implementations
+// provide to NewDeleteRecordedContentsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeleteRecordedContentsCallbackServer interface {
+	OnRecordedContentsDeleted(ctx context.Context, contentUri []string, result []int32) error
+}
+
+type deleteRecordedContentsCallbackStubWrapper struct {
+	impl       IDeleteRecordedContentsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deleteRecordedContentsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deleteRecordedContentsCallbackStubWrapper) OnRecordedContentsDeleted(
+	ctx context.Context,
+	contentUri []string,
+	result []int32,
+) error {
+	return w.impl.OnRecordedContentsDeleted(ctx, contentUri, result)
+}
+
+var _ IDeleteRecordedContentsCallback = (*deleteRecordedContentsCallbackStubWrapper)(nil)
+
+// NewDeleteRecordedContentsCallbackStub creates a server-side IDeleteRecordedContentsCallback wrapping the given
+// server implementation. The returned value satisfies IDeleteRecordedContentsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeleteRecordedContentsCallbackStub(
+	impl IDeleteRecordedContentsCallbackServer,
+) IDeleteRecordedContentsCallback {
+	wrapper := &deleteRecordedContentsCallbackStubWrapper{impl: impl}
+	stub := &DeleteRecordedContentsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

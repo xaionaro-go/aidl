@@ -189,7 +189,7 @@ func (p *BroadcastRadioProxy) SetTunerCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBroadcastRadio)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBroadcastRadio, "setTunerCallback")
 	if _err != nil {
@@ -597,7 +597,7 @@ func (p *BroadcastRadioProxy) RegisterAnnouncementListener(
 	var _result ICloseHandle
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBroadcastRadio)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	if enabled == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -943,4 +943,169 @@ func (s *BroadcastRadioStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBroadcastRadioServer is the server-side interface that user implementations
+// provide to NewBroadcastRadioStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBroadcastRadioServer interface {
+	GetProperties(ctx context.Context) (Properties, error)
+	GetAmFmRegionConfig(ctx context.Context, full bool) (AmFmRegionConfig, error)
+	GetDabRegionConfig(ctx context.Context) ([]DabTableEntry, error)
+	SetTunerCallback(ctx context.Context, callback ITunerCallback) error
+	UnsetTunerCallback(ctx context.Context) error
+	Tune(ctx context.Context, program ProgramSelector) error
+	Seek(ctx context.Context, directionUp bool, skipSubChannel bool) error
+	Step(ctx context.Context, directionUp bool) error
+	Cancel(ctx context.Context) error
+	StartProgramListUpdates(ctx context.Context, filter ProgramFilter) error
+	StopProgramListUpdates(ctx context.Context) error
+	IsConfigFlagSet(ctx context.Context, flag ConfigFlag) (bool, error)
+	SetConfigFlag(ctx context.Context, flag ConfigFlag, value bool) error
+	SetParameters(ctx context.Context, parameters []VendorKeyValue) ([]VendorKeyValue, error)
+	GetParameters(ctx context.Context, keys []string) ([]VendorKeyValue, error)
+	GetImage(ctx context.Context, id int32) ([]byte, error)
+	RegisterAnnouncementListener(ctx context.Context, listener IAnnouncementListener, enabled []AnnouncementType) (ICloseHandle, error)
+}
+
+type broadcastRadioStubWrapper struct {
+	impl       IBroadcastRadioServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *broadcastRadioStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *broadcastRadioStubWrapper) GetProperties(
+	ctx context.Context,
+) (Properties, error) {
+	return w.impl.GetProperties(ctx)
+}
+
+func (w *broadcastRadioStubWrapper) GetAmFmRegionConfig(
+	ctx context.Context,
+	full bool,
+) (AmFmRegionConfig, error) {
+	return w.impl.GetAmFmRegionConfig(ctx, full)
+}
+
+func (w *broadcastRadioStubWrapper) GetDabRegionConfig(
+	ctx context.Context,
+) ([]DabTableEntry, error) {
+	return w.impl.GetDabRegionConfig(ctx)
+}
+
+func (w *broadcastRadioStubWrapper) SetTunerCallback(
+	ctx context.Context,
+	callback ITunerCallback,
+) error {
+	return w.impl.SetTunerCallback(ctx, callback)
+}
+
+func (w *broadcastRadioStubWrapper) UnsetTunerCallback(
+	ctx context.Context,
+) error {
+	return w.impl.UnsetTunerCallback(ctx)
+}
+
+func (w *broadcastRadioStubWrapper) Tune(
+	ctx context.Context,
+	program ProgramSelector,
+) error {
+	return w.impl.Tune(ctx, program)
+}
+
+func (w *broadcastRadioStubWrapper) Seek(
+	ctx context.Context,
+	directionUp bool,
+	skipSubChannel bool,
+) error {
+	return w.impl.Seek(ctx, directionUp, skipSubChannel)
+}
+
+func (w *broadcastRadioStubWrapper) Step(
+	ctx context.Context,
+	directionUp bool,
+) error {
+	return w.impl.Step(ctx, directionUp)
+}
+
+func (w *broadcastRadioStubWrapper) Cancel(
+	ctx context.Context,
+) error {
+	return w.impl.Cancel(ctx)
+}
+
+func (w *broadcastRadioStubWrapper) StartProgramListUpdates(
+	ctx context.Context,
+	filter ProgramFilter,
+) error {
+	return w.impl.StartProgramListUpdates(ctx, filter)
+}
+
+func (w *broadcastRadioStubWrapper) StopProgramListUpdates(
+	ctx context.Context,
+) error {
+	return w.impl.StopProgramListUpdates(ctx)
+}
+
+func (w *broadcastRadioStubWrapper) IsConfigFlagSet(
+	ctx context.Context,
+	flag ConfigFlag,
+) (bool, error) {
+	return w.impl.IsConfigFlagSet(ctx, flag)
+}
+
+func (w *broadcastRadioStubWrapper) SetConfigFlag(
+	ctx context.Context,
+	flag ConfigFlag,
+	value bool,
+) error {
+	return w.impl.SetConfigFlag(ctx, flag, value)
+}
+
+func (w *broadcastRadioStubWrapper) SetParameters(
+	ctx context.Context,
+	parameters []VendorKeyValue,
+) ([]VendorKeyValue, error) {
+	return w.impl.SetParameters(ctx, parameters)
+}
+
+func (w *broadcastRadioStubWrapper) GetParameters(
+	ctx context.Context,
+	keys []string,
+) ([]VendorKeyValue, error) {
+	return w.impl.GetParameters(ctx, keys)
+}
+
+func (w *broadcastRadioStubWrapper) GetImage(
+	ctx context.Context,
+	id int32,
+) ([]byte, error) {
+	return w.impl.GetImage(ctx, id)
+}
+
+func (w *broadcastRadioStubWrapper) RegisterAnnouncementListener(
+	ctx context.Context,
+	listener IAnnouncementListener,
+	enabled []AnnouncementType,
+) (ICloseHandle, error) {
+	return w.impl.RegisterAnnouncementListener(ctx, listener, enabled)
+}
+
+var _ IBroadcastRadio = (*broadcastRadioStubWrapper)(nil)
+
+// NewBroadcastRadioStub creates a server-side IBroadcastRadio wrapping the given
+// server implementation. The returned value satisfies IBroadcastRadio
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBroadcastRadioStub(
+	impl IBroadcastRadioServer,
+) IBroadcastRadio {
+	wrapper := &broadcastRadioStubWrapper{impl: impl}
+	stub := &BroadcastRadioStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -134,3 +134,50 @@ func (s *ExecuteAppFunctionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IExecuteAppFunctionCallbackServer is the server-side interface that user implementations
+// provide to NewExecuteAppFunctionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IExecuteAppFunctionCallbackServer interface {
+	OnSuccess(ctx context.Context, result ExecuteAppFunctionResponse) error
+	OnError(ctx context.Context, exception AppFunctionException) error
+}
+
+type executeAppFunctionCallbackStubWrapper struct {
+	impl       IExecuteAppFunctionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *executeAppFunctionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *executeAppFunctionCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result ExecuteAppFunctionResponse,
+) error {
+	return w.impl.OnSuccess(ctx, result)
+}
+
+func (w *executeAppFunctionCallbackStubWrapper) OnError(
+	ctx context.Context,
+	exception AppFunctionException,
+) error {
+	return w.impl.OnError(ctx, exception)
+}
+
+var _ IExecuteAppFunctionCallback = (*executeAppFunctionCallbackStubWrapper)(nil)
+
+// NewExecuteAppFunctionCallbackStub creates a server-side IExecuteAppFunctionCallback wrapping the given
+// server implementation. The returned value satisfies IExecuteAppFunctionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewExecuteAppFunctionCallbackStub(
+	impl IExecuteAppFunctionCallbackServer,
+) IExecuteAppFunctionCallback {
+	wrapper := &executeAppFunctionCallbackStubWrapper{impl: impl}
+	stub := &ExecuteAppFunctionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

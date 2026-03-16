@@ -243,3 +243,57 @@ func (s *HardwarePropertiesManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHardwarePropertiesManagerServer is the server-side interface that user implementations
+// provide to NewHardwarePropertiesManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHardwarePropertiesManagerServer interface {
+	GetDeviceTemperatures(ctx context.Context, type_ int32, source int32) ([]float32, error)
+	GetCpuUsages(ctx context.Context) ([]CpuUsageInfo, error)
+	GetFanSpeeds(ctx context.Context) ([]float32, error)
+}
+
+type hardwarePropertiesManagerStubWrapper struct {
+	impl       IHardwarePropertiesManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hardwarePropertiesManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hardwarePropertiesManagerStubWrapper) GetDeviceTemperatures(
+	ctx context.Context,
+	type_ int32,
+	source int32,
+) ([]float32, error) {
+	return w.impl.GetDeviceTemperatures(ctx, type_, source)
+}
+
+func (w *hardwarePropertiesManagerStubWrapper) GetCpuUsages(
+	ctx context.Context,
+) ([]CpuUsageInfo, error) {
+	return w.impl.GetCpuUsages(ctx)
+}
+
+func (w *hardwarePropertiesManagerStubWrapper) GetFanSpeeds(
+	ctx context.Context,
+) ([]float32, error) {
+	return w.impl.GetFanSpeeds(ctx)
+}
+
+var _ IHardwarePropertiesManager = (*hardwarePropertiesManagerStubWrapper)(nil)
+
+// NewHardwarePropertiesManagerStub creates a server-side IHardwarePropertiesManager wrapping the given
+// server implementation. The returned value satisfies IHardwarePropertiesManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHardwarePropertiesManagerStub(
+	impl IHardwarePropertiesManagerServer,
+) IHardwarePropertiesManager {
+	wrapper := &hardwarePropertiesManagerStubWrapper{impl: impl}
+	stub := &HardwarePropertiesManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -106,3 +106,49 @@ func (s *BluetoothPanCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothPanCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothPanCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothPanCallbackServer interface {
+	OnAvailable(ctx context.Context, iface string) error
+	OnUnavailable(ctx context.Context) error
+}
+
+type bluetoothPanCallbackStubWrapper struct {
+	impl       IBluetoothPanCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothPanCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothPanCallbackStubWrapper) OnAvailable(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.OnAvailable(ctx, iface)
+}
+
+func (w *bluetoothPanCallbackStubWrapper) OnUnavailable(
+	ctx context.Context,
+) error {
+	return w.impl.OnUnavailable(ctx)
+}
+
+var _ IBluetoothPanCallback = (*bluetoothPanCallbackStubWrapper)(nil)
+
+// NewBluetoothPanCallbackStub creates a server-side IBluetoothPanCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothPanCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothPanCallbackStub(
+	impl IBluetoothPanCallbackServer,
+) IBluetoothPanCallback {
+	wrapper := &bluetoothPanCallbackStubWrapper{impl: impl}
+	stub := &BluetoothPanCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

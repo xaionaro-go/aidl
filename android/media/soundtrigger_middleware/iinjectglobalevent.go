@@ -63,7 +63,7 @@ func (p *InjectGlobalEventProxy) SetResourceContention(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInjectGlobalEvent)
 	_data.WriteBool(isContended)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInjectGlobalEvent, "setResourceContention")
 	if _err != nil {
@@ -134,4 +134,58 @@ func (s *InjectGlobalEventStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInjectGlobalEventServer is the server-side interface that user implementations
+// provide to NewInjectGlobalEventStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInjectGlobalEventServer interface {
+	TriggerRestart(ctx context.Context) error
+	SetResourceContention(ctx context.Context, isContended bool, callback IAcknowledgeEvent) error
+	TriggerOnResourcesAvailable(ctx context.Context) error
+}
+
+type injectGlobalEventStubWrapper struct {
+	impl       IInjectGlobalEventServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *injectGlobalEventStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *injectGlobalEventStubWrapper) TriggerRestart(
+	ctx context.Context,
+) error {
+	return w.impl.TriggerRestart(ctx)
+}
+
+func (w *injectGlobalEventStubWrapper) SetResourceContention(
+	ctx context.Context,
+	isContended bool,
+	callback IAcknowledgeEvent,
+) error {
+	return w.impl.SetResourceContention(ctx, isContended, callback)
+}
+
+func (w *injectGlobalEventStubWrapper) TriggerOnResourcesAvailable(
+	ctx context.Context,
+) error {
+	return w.impl.TriggerOnResourcesAvailable(ctx)
+}
+
+var _ IInjectGlobalEvent = (*injectGlobalEventStubWrapper)(nil)
+
+// NewInjectGlobalEventStub creates a server-side IInjectGlobalEvent wrapping the given
+// server implementation. The returned value satisfies IInjectGlobalEvent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInjectGlobalEventStub(
+	impl IInjectGlobalEventServer,
+) IInjectGlobalEvent {
+	wrapper := &injectGlobalEventStubWrapper{impl: impl}
+	stub := &InjectGlobalEventStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

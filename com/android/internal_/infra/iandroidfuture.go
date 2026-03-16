@@ -93,3 +93,42 @@ func (s *AndroidFutureStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAndroidFutureServer is the server-side interface that user implementations
+// provide to NewAndroidFutureStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAndroidFutureServer interface {
+	Complete(ctx context.Context, resultContainer AndroidFuture) error
+}
+
+type androidFutureStubWrapper struct {
+	impl       IAndroidFutureServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *androidFutureStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *androidFutureStubWrapper) Complete(
+	ctx context.Context,
+	resultContainer AndroidFuture,
+) error {
+	return w.impl.Complete(ctx, resultContainer)
+}
+
+var _ IAndroidFuture = (*androidFutureStubWrapper)(nil)
+
+// NewAndroidFutureStub creates a server-side IAndroidFuture wrapping the given
+// server implementation. The returned value satisfies IAndroidFuture
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAndroidFutureStub(
+	impl IAndroidFutureServer,
+) IAndroidFuture {
+	wrapper := &androidFutureStubWrapper{impl: impl}
+	stub := &AndroidFutureStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

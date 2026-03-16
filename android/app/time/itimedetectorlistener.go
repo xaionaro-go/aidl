@@ -76,3 +76,41 @@ func (s *TimeDetectorListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITimeDetectorListenerServer is the server-side interface that user implementations
+// provide to NewTimeDetectorListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITimeDetectorListenerServer interface {
+	OnChange(ctx context.Context) error
+}
+
+type timeDetectorListenerStubWrapper struct {
+	impl       ITimeDetectorListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *timeDetectorListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *timeDetectorListenerStubWrapper) OnChange(
+	ctx context.Context,
+) error {
+	return w.impl.OnChange(ctx)
+}
+
+var _ ITimeDetectorListener = (*timeDetectorListenerStubWrapper)(nil)
+
+// NewTimeDetectorListenerStub creates a server-side ITimeDetectorListener wrapping the given
+// server implementation. The returned value satisfies ITimeDetectorListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTimeDetectorListenerStub(
+	impl ITimeDetectorListenerServer,
+) ITimeDetectorListener {
+	wrapper := &timeDetectorListenerStubWrapper{impl: impl}
+	stub := &TimeDetectorListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

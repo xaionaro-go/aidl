@@ -118,3 +118,44 @@ func (s *CallScreeningAdapterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICallScreeningAdapterServer is the server-side interface that user implementations
+// provide to NewCallScreeningAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallScreeningAdapterServer interface {
+	OnScreeningResponse(ctx context.Context, callId string, componentName content.ComponentName, response androidTelecom.CallScreeningServiceParcelableCallResponse) error
+}
+
+type callScreeningAdapterStubWrapper struct {
+	impl       ICallScreeningAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callScreeningAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callScreeningAdapterStubWrapper) OnScreeningResponse(
+	ctx context.Context,
+	callId string,
+	componentName content.ComponentName,
+	response androidTelecom.CallScreeningServiceParcelableCallResponse,
+) error {
+	return w.impl.OnScreeningResponse(ctx, callId, componentName, response)
+}
+
+var _ ICallScreeningAdapter = (*callScreeningAdapterStubWrapper)(nil)
+
+// NewCallScreeningAdapterStub creates a server-side ICallScreeningAdapter wrapping the given
+// server implementation. The returned value satisfies ICallScreeningAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallScreeningAdapterStub(
+	impl ICallScreeningAdapterServer,
+) ICallScreeningAdapter {
+	wrapper := &callScreeningAdapterStubWrapper{impl: impl}
+	stub := &CallScreeningAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

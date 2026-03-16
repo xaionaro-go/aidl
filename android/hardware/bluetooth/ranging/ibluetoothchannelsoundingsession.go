@@ -515,3 +515,103 @@ func (s *BluetoothChannelSoundingSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothChannelSoundingSessionServer is the server-side interface that user implementations
+// provide to NewBluetoothChannelSoundingSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothChannelSoundingSessionServer interface {
+	GetVendorSpecificReplies(ctx context.Context) ([]VendorSpecificData, error)
+	GetSupportedResultTypes(ctx context.Context) ([]ResultType, error)
+	IsAbortedProcedureRequired(ctx context.Context) (bool, error)
+	WriteRawData(ctx context.Context, rawData ChannelSoudingRawData) error
+	Close(ctx context.Context, reason Reason) error
+	WriteProcedureData(ctx context.Context, procedureData ChannelSoundingProcedureData) error
+	UpdateChannelSoundingConfig(ctx context.Context, conifg Config) error
+	UpdateProcedureEnableConfig(ctx context.Context, procedureEnableConfig ProcedureEnableConfig) error
+	UpdateBleConnInterval(ctx context.Context, bleConnInterval int32) error
+}
+
+type bluetoothChannelSoundingSessionStubWrapper struct {
+	impl       IBluetoothChannelSoundingSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) GetVendorSpecificReplies(
+	ctx context.Context,
+) ([]VendorSpecificData, error) {
+	return w.impl.GetVendorSpecificReplies(ctx)
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) GetSupportedResultTypes(
+	ctx context.Context,
+) ([]ResultType, error) {
+	return w.impl.GetSupportedResultTypes(ctx)
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) IsAbortedProcedureRequired(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAbortedProcedureRequired(ctx)
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) WriteRawData(
+	ctx context.Context,
+	rawData ChannelSoudingRawData,
+) error {
+	return w.impl.WriteRawData(ctx, rawData)
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) Close(
+	ctx context.Context,
+	reason Reason,
+) error {
+	return w.impl.Close(ctx, reason)
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) WriteProcedureData(
+	ctx context.Context,
+	procedureData ChannelSoundingProcedureData,
+) error {
+	return w.impl.WriteProcedureData(ctx, procedureData)
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) UpdateChannelSoundingConfig(
+	ctx context.Context,
+	conifg Config,
+) error {
+	return w.impl.UpdateChannelSoundingConfig(ctx, conifg)
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) UpdateProcedureEnableConfig(
+	ctx context.Context,
+	procedureEnableConfig ProcedureEnableConfig,
+) error {
+	return w.impl.UpdateProcedureEnableConfig(ctx, procedureEnableConfig)
+}
+
+func (w *bluetoothChannelSoundingSessionStubWrapper) UpdateBleConnInterval(
+	ctx context.Context,
+	bleConnInterval int32,
+) error {
+	return w.impl.UpdateBleConnInterval(ctx, bleConnInterval)
+}
+
+var _ IBluetoothChannelSoundingSession = (*bluetoothChannelSoundingSessionStubWrapper)(nil)
+
+// NewBluetoothChannelSoundingSessionStub creates a server-side IBluetoothChannelSoundingSession wrapping the given
+// server implementation. The returned value satisfies IBluetoothChannelSoundingSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothChannelSoundingSessionStub(
+	impl IBluetoothChannelSoundingSessionServer,
+) IBluetoothChannelSoundingSession {
+	wrapper := &bluetoothChannelSoundingSessionStubWrapper{impl: impl}
+	stub := &BluetoothChannelSoundingSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

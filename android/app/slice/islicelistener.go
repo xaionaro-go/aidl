@@ -93,3 +93,42 @@ func (s *SliceListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISliceListenerServer is the server-side interface that user implementations
+// provide to NewSliceListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISliceListenerServer interface {
+	OnSliceUpdated(ctx context.Context, s_ Slice) error
+}
+
+type sliceListenerStubWrapper struct {
+	impl       ISliceListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sliceListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sliceListenerStubWrapper) OnSliceUpdated(
+	ctx context.Context,
+	s_ Slice,
+) error {
+	return w.impl.OnSliceUpdated(ctx, s_)
+}
+
+var _ ISliceListener = (*sliceListenerStubWrapper)(nil)
+
+// NewSliceListenerStub creates a server-side ISliceListener wrapping the given
+// server implementation. The returned value satisfies ISliceListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSliceListenerStub(
+	impl ISliceListenerServer,
+) ISliceListener {
+	wrapper := &sliceListenerStubWrapper{impl: impl}
+	stub := &SliceListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

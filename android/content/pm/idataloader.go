@@ -62,7 +62,7 @@ func (p *DataLoaderProxy) Create(
 	if _err := control.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDataLoader, "create")
 	if _err != nil {
@@ -148,7 +148,7 @@ func (p *DataLoaderProxy) PrepareImage(
 	} else {
 		_data.WriteInt32(int32(len(removedFiles)))
 		for _, _item := range removedFiles {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 
@@ -266,4 +266,80 @@ func (s *DataLoaderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDataLoaderServer is the server-side interface that user implementations
+// provide to NewDataLoaderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataLoaderServer interface {
+	Create(ctx context.Context, id int32, params DataLoaderParamsParcel, control FileSystemControlParcel, listener IDataLoaderStatusListener) error
+	Start(ctx context.Context, id int32) error
+	Stop(ctx context.Context, id int32) error
+	Destroy(ctx context.Context, id int32) error
+	PrepareImage(ctx context.Context, id int32, addedFiles []InstallationFileParcel, removedFiles []string) error
+}
+
+type dataLoaderStubWrapper struct {
+	impl       IDataLoaderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataLoaderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dataLoaderStubWrapper) Create(
+	ctx context.Context,
+	id int32,
+	params DataLoaderParamsParcel,
+	control FileSystemControlParcel,
+	listener IDataLoaderStatusListener,
+) error {
+	return w.impl.Create(ctx, id, params, control, listener)
+}
+
+func (w *dataLoaderStubWrapper) Start(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.Start(ctx, id)
+}
+
+func (w *dataLoaderStubWrapper) Stop(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.Stop(ctx, id)
+}
+
+func (w *dataLoaderStubWrapper) Destroy(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.Destroy(ctx, id)
+}
+
+func (w *dataLoaderStubWrapper) PrepareImage(
+	ctx context.Context,
+	id int32,
+	addedFiles []InstallationFileParcel,
+	removedFiles []string,
+) error {
+	return w.impl.PrepareImage(ctx, id, addedFiles, removedFiles)
+}
+
+var _ IDataLoader = (*dataLoaderStubWrapper)(nil)
+
+// NewDataLoaderStub creates a server-side IDataLoader wrapping the given
+// server implementation. The returned value satisfies IDataLoader
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataLoaderStub(
+	impl IDataLoaderServer,
+) IDataLoader {
+	wrapper := &dataLoaderStubWrapper{impl: impl}
+	stub := &DataLoaderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

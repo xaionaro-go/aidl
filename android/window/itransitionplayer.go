@@ -3,7 +3,6 @@ package window
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -19,7 +18,7 @@ const (
 
 type ITransitionPlayer interface {
 	AsBinder() binder.IBinder
-	OnTransitionReady(ctx context.Context, transitionToken binder.IBinder, info TransitionInfo, t view.SurfaceControlTransaction, finishT view.SurfaceControlTransaction) error
+	OnTransitionReady(ctx context.Context, transitionToken binder.IBinder, info TransitionInfo, t interface{}, finishT interface{}) error
 	RequestStartTransition(ctx context.Context, transitionToken binder.IBinder, request TransitionRequestInfo) error
 }
 
@@ -43,22 +42,14 @@ func (p *TransitionPlayerProxy) OnTransitionReady(
 	ctx context.Context,
 	transitionToken binder.IBinder,
 	info TransitionInfo,
-	t view.SurfaceControlTransaction,
-	finishT view.SurfaceControlTransaction,
+	t interface{},
+	finishT interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransitionPlayer)
-	_data.WriteStrongBinder(transitionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, transitionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := info.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := t.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := finishT.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 
@@ -78,7 +69,7 @@ func (p *TransitionPlayerProxy) RequestStartTransition(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransitionPlayer)
-	_data.WriteStrongBinder(transitionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, transitionToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
@@ -126,30 +117,8 @@ func (s *TransitionPlayerStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_t view.SurfaceControlTransaction
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_t.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
-		var _arg_finishT view.SurfaceControlTransaction
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_finishT.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_t interface{}
+		var _arg_finishT interface{}
 		_err := s.Impl.OnTransitionReady(ctx, _arg_transitionToken, _arg_info, _arg_t, _arg_finishT)
 		_ = _err
 		return nil, nil
@@ -178,4 +147,55 @@ func (s *TransitionPlayerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITransitionPlayerServer is the server-side interface that user implementations
+// provide to NewTransitionPlayerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITransitionPlayerServer interface {
+	OnTransitionReady(ctx context.Context, transitionToken binder.IBinder, info TransitionInfo, t interface{}, finishT interface{}) error
+	RequestStartTransition(ctx context.Context, transitionToken binder.IBinder, request TransitionRequestInfo) error
+}
+
+type transitionPlayerStubWrapper struct {
+	impl       ITransitionPlayerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transitionPlayerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transitionPlayerStubWrapper) OnTransitionReady(
+	ctx context.Context,
+	transitionToken binder.IBinder,
+	info TransitionInfo,
+	t interface{},
+	finishT interface{},
+) error {
+	return w.impl.OnTransitionReady(ctx, transitionToken, info, t, finishT)
+}
+
+func (w *transitionPlayerStubWrapper) RequestStartTransition(
+	ctx context.Context,
+	transitionToken binder.IBinder,
+	request TransitionRequestInfo,
+) error {
+	return w.impl.RequestStartTransition(ctx, transitionToken, request)
+}
+
+var _ ITransitionPlayer = (*transitionPlayerStubWrapper)(nil)
+
+// NewTransitionPlayerStub creates a server-side ITransitionPlayer wrapping the given
+// server implementation. The returned value satisfies ITransitionPlayer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTransitionPlayerStub(
+	impl ITransitionPlayerServer,
+) ITransitionPlayer {
+	wrapper := &transitionPlayerStubWrapper{impl: impl}
+	stub := &TransitionPlayerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

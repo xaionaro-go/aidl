@@ -131,3 +131,52 @@ func (s *TokenInfoCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITokenInfoCallbackServer is the server-side interface that user implementations
+// provide to NewTokenInfoCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITokenInfoCallbackServer interface {
+	OnSuccess(ctx context.Context, tokenInfo TokenInfo) error
+	OnFailure(ctx context.Context, errorCode int32, errorMessage string, errorParams interface{}) error
+}
+
+type tokenInfoCallbackStubWrapper struct {
+	impl       ITokenInfoCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tokenInfoCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tokenInfoCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	tokenInfo TokenInfo,
+) error {
+	return w.impl.OnSuccess(ctx, tokenInfo)
+}
+
+func (w *tokenInfoCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+	errorCode int32,
+	errorMessage string,
+	errorParams interface{},
+) error {
+	return w.impl.OnFailure(ctx, errorCode, errorMessage, errorParams)
+}
+
+var _ ITokenInfoCallback = (*tokenInfoCallbackStubWrapper)(nil)
+
+// NewTokenInfoCallbackStub creates a server-side ITokenInfoCallback wrapping the given
+// server implementation. The returned value satisfies ITokenInfoCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTokenInfoCallbackStub(
+	impl ITokenInfoCallbackServer,
+) ITokenInfoCallback {
+	wrapper := &tokenInfoCallbackStubWrapper{impl: impl}
+	stub := &TokenInfoCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

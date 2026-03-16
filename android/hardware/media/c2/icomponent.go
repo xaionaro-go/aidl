@@ -385,7 +385,7 @@ func (p *ComponentProxy) ConnectToInputSurface(
 	var _result IInputSurfaceConnection
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIComponent)
-	_data.WriteStrongBinder(inputSurface.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, inputSurface.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIComponent, "connectToInputSurface")
 	if _err != nil {
@@ -670,4 +670,132 @@ func (s *ComponentStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IComponentServer is the server-side interface that user implementations
+// provide to NewComponentStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IComponentServer interface {
+	ConfigureVideoTunnel(ctx context.Context, avSyncHwId int32) (common.NativeHandle, error)
+	CreateBlockPool(ctx context.Context, allocator c2IComponent.BlockPoolAllocator) (c2IComponent.BlockPool, error)
+	DestroyBlockPool(ctx context.Context, blockPoolId int64) error
+	Drain(ctx context.Context, withEos bool) error
+	Flush(ctx context.Context) (WorkBundle, error)
+	GetInterface(ctx context.Context) (IComponentInterface, error)
+	Queue(ctx context.Context, workBundle WorkBundle) error
+	Release(ctx context.Context) error
+	Reset(ctx context.Context) error
+	Start(ctx context.Context) error
+	Stop(ctx context.Context) error
+	ConnectToInputSurface(ctx context.Context, inputSurface IInputSurface) (IInputSurfaceConnection, error)
+	AsInputSink(ctx context.Context) (IInputSink, error)
+}
+
+type componentStubWrapper struct {
+	impl       IComponentServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *componentStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *componentStubWrapper) ConfigureVideoTunnel(
+	ctx context.Context,
+	avSyncHwId int32,
+) (common.NativeHandle, error) {
+	return w.impl.ConfigureVideoTunnel(ctx, avSyncHwId)
+}
+
+func (w *componentStubWrapper) CreateBlockPool(
+	ctx context.Context,
+	allocator c2IComponent.BlockPoolAllocator,
+) (c2IComponent.BlockPool, error) {
+	return w.impl.CreateBlockPool(ctx, allocator)
+}
+
+func (w *componentStubWrapper) DestroyBlockPool(
+	ctx context.Context,
+	blockPoolId int64,
+) error {
+	return w.impl.DestroyBlockPool(ctx, blockPoolId)
+}
+
+func (w *componentStubWrapper) Drain(
+	ctx context.Context,
+	withEos bool,
+) error {
+	return w.impl.Drain(ctx, withEos)
+}
+
+func (w *componentStubWrapper) Flush(
+	ctx context.Context,
+) (WorkBundle, error) {
+	return w.impl.Flush(ctx)
+}
+
+func (w *componentStubWrapper) GetInterface(
+	ctx context.Context,
+) (IComponentInterface, error) {
+	return w.impl.GetInterface(ctx)
+}
+
+func (w *componentStubWrapper) Queue(
+	ctx context.Context,
+	workBundle WorkBundle,
+) error {
+	return w.impl.Queue(ctx, workBundle)
+}
+
+func (w *componentStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+func (w *componentStubWrapper) Reset(
+	ctx context.Context,
+) error {
+	return w.impl.Reset(ctx)
+}
+
+func (w *componentStubWrapper) Start(
+	ctx context.Context,
+) error {
+	return w.impl.Start(ctx)
+}
+
+func (w *componentStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *componentStubWrapper) ConnectToInputSurface(
+	ctx context.Context,
+	inputSurface IInputSurface,
+) (IInputSurfaceConnection, error) {
+	return w.impl.ConnectToInputSurface(ctx, inputSurface)
+}
+
+func (w *componentStubWrapper) AsInputSink(
+	ctx context.Context,
+) (IInputSink, error) {
+	return w.impl.AsInputSink(ctx)
+}
+
+var _ IComponent = (*componentStubWrapper)(nil)
+
+// NewComponentStub creates a server-side IComponent wrapping the given
+// server implementation. The returned value satisfies IComponent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewComponentStub(
+	impl IComponentServer,
+) IComponent {
+	wrapper := &componentStubWrapper{impl: impl}
+	stub := &ComponentStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

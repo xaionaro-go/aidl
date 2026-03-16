@@ -120,7 +120,7 @@ func (p *TargetRegionProxy) SetListener(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITargetRegion)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITargetRegion, "setListener")
 	if _err != nil {
@@ -216,4 +216,58 @@ func (s *TargetRegionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITargetRegionServer is the server-side interface that user implementations
+// provide to NewTargetRegionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITargetRegionServer interface {
+	GetTargetRegions(ctx context.Context) ([]os.Bundle, error)
+	SetTargetRegion(ctx context.Context, targetRegionSettings os.Bundle) (int32, error)
+	SetListener(ctx context.Context, listener ITargetRegionListener) (int32, error)
+}
+
+type targetRegionStubWrapper struct {
+	impl       ITargetRegionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *targetRegionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *targetRegionStubWrapper) GetTargetRegions(
+	ctx context.Context,
+) ([]os.Bundle, error) {
+	return w.impl.GetTargetRegions(ctx)
+}
+
+func (w *targetRegionStubWrapper) SetTargetRegion(
+	ctx context.Context,
+	targetRegionSettings os.Bundle,
+) (int32, error) {
+	return w.impl.SetTargetRegion(ctx, targetRegionSettings)
+}
+
+func (w *targetRegionStubWrapper) SetListener(
+	ctx context.Context,
+	listener ITargetRegionListener,
+) (int32, error) {
+	return w.impl.SetListener(ctx, listener)
+}
+
+var _ ITargetRegion = (*targetRegionStubWrapper)(nil)
+
+// NewTargetRegionStub creates a server-side ITargetRegion wrapping the given
+// server implementation. The returned value satisfies ITargetRegion
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTargetRegionStub(
+	impl ITargetRegionServer,
+) ITargetRegion {
+	wrapper := &targetRegionStubWrapper{impl: impl}
+	stub := &TargetRegionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

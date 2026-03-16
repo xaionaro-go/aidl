@@ -47,7 +47,7 @@ func (p *ContentControlServiceProxy) AddCamDrmInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentControlService, "addCamDrmInfoListener")
 	if _err != nil {
@@ -73,7 +73,7 @@ func (p *ContentControlServiceProxy) RemoveCamDrmInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentControlService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentControlService, "removeCamDrmInfoListener")
 	if _err != nil {
@@ -193,4 +193,60 @@ func (s *ContentControlServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContentControlServiceServer is the server-side interface that user implementations
+// provide to NewContentControlServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentControlServiceServer interface {
+	AddCamDrmInfoListener(ctx context.Context, listener ICamDrmInfoListener) error
+	RemoveCamDrmInfoListener(ctx context.Context, listener ICamDrmInfoListener) error
+	GetCamDrmInfo(ctx context.Context, slotId int32, camDrmInfo os.Bundle) (int32, error)
+}
+
+type contentControlServiceStubWrapper struct {
+	impl       IContentControlServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentControlServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentControlServiceStubWrapper) AddCamDrmInfoListener(
+	ctx context.Context,
+	listener ICamDrmInfoListener,
+) error {
+	return w.impl.AddCamDrmInfoListener(ctx, listener)
+}
+
+func (w *contentControlServiceStubWrapper) RemoveCamDrmInfoListener(
+	ctx context.Context,
+	listener ICamDrmInfoListener,
+) error {
+	return w.impl.RemoveCamDrmInfoListener(ctx, listener)
+}
+
+func (w *contentControlServiceStubWrapper) GetCamDrmInfo(
+	ctx context.Context,
+	slotId int32,
+	camDrmInfo os.Bundle,
+) (int32, error) {
+	return w.impl.GetCamDrmInfo(ctx, slotId, camDrmInfo)
+}
+
+var _ IContentControlService = (*contentControlServiceStubWrapper)(nil)
+
+// NewContentControlServiceStub creates a server-side IContentControlService wrapping the given
+// server implementation. The returned value satisfies IContentControlService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentControlServiceStub(
+	impl IContentControlServiceServer,
+) IContentControlService {
+	wrapper := &contentControlServiceStubWrapper{impl: impl}
+	stub := &ContentControlServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -139,8 +139,8 @@ func (p *TextServicesManagerProxy) GetSpellCheckerService(
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(sciId)
 	_data.WriteString16(locale)
-	_data.WriteStrongBinder(tsListener.AsBinder().Handle())
-	_data.WriteStrongBinder(scListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tsListener.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, scListener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := bundle.MarshalParcel(_data); _err != nil {
 		return _err
@@ -164,7 +164,7 @@ func (p *TextServicesManagerProxy) FinishSpellCheckerService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextServicesManager)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextServicesManager, "finishSpellCheckerService")
 	if _err != nil {
@@ -395,4 +395,86 @@ func (s *TextServicesManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITextServicesManagerServer is the server-side interface that user implementations
+// provide to NewTextServicesManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITextServicesManagerServer interface {
+	GetCurrentSpellChecker(ctx context.Context, locale string) (viewTextservice.SpellCheckerInfo, error)
+	GetCurrentSpellCheckerSubtype(ctx context.Context, allowImplicitlySelectedSubtype bool) (viewTextservice.SpellCheckerSubtype, error)
+	GetSpellCheckerService(ctx context.Context, sciId string, locale string, tsListener ITextServicesSessionListener, scListener ISpellCheckerSessionListener, bundle os.Bundle, supportedAttributes int32) error
+	FinishSpellCheckerService(ctx context.Context, listener ISpellCheckerSessionListener) error
+	IsSpellCheckerEnabled(ctx context.Context) (bool, error)
+	GetEnabledSpellCheckers(ctx context.Context) ([]viewTextservice.SpellCheckerInfo, error)
+}
+
+type textServicesManagerStubWrapper struct {
+	impl       ITextServicesManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *textServicesManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *textServicesManagerStubWrapper) GetCurrentSpellChecker(
+	ctx context.Context,
+	locale string,
+) (viewTextservice.SpellCheckerInfo, error) {
+	return w.impl.GetCurrentSpellChecker(ctx, locale)
+}
+
+func (w *textServicesManagerStubWrapper) GetCurrentSpellCheckerSubtype(
+	ctx context.Context,
+	allowImplicitlySelectedSubtype bool,
+) (viewTextservice.SpellCheckerSubtype, error) {
+	return w.impl.GetCurrentSpellCheckerSubtype(ctx, allowImplicitlySelectedSubtype)
+}
+
+func (w *textServicesManagerStubWrapper) GetSpellCheckerService(
+	ctx context.Context,
+	sciId string,
+	locale string,
+	tsListener ITextServicesSessionListener,
+	scListener ISpellCheckerSessionListener,
+	bundle os.Bundle,
+	supportedAttributes int32,
+) error {
+	return w.impl.GetSpellCheckerService(ctx, sciId, locale, tsListener, scListener, bundle, supportedAttributes)
+}
+
+func (w *textServicesManagerStubWrapper) FinishSpellCheckerService(
+	ctx context.Context,
+	listener ISpellCheckerSessionListener,
+) error {
+	return w.impl.FinishSpellCheckerService(ctx, listener)
+}
+
+func (w *textServicesManagerStubWrapper) IsSpellCheckerEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSpellCheckerEnabled(ctx)
+}
+
+func (w *textServicesManagerStubWrapper) GetEnabledSpellCheckers(
+	ctx context.Context,
+) ([]viewTextservice.SpellCheckerInfo, error) {
+	return w.impl.GetEnabledSpellCheckers(ctx)
+}
+
+var _ ITextServicesManager = (*textServicesManagerStubWrapper)(nil)
+
+// NewTextServicesManagerStub creates a server-side ITextServicesManager wrapping the given
+// server implementation. The returned value satisfies ITextServicesManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTextServicesManagerStub(
+	impl ITextServicesManagerServer,
+) ITextServicesManager {
+	wrapper := &textServicesManagerStubWrapper{impl: impl}
+	stub := &TextServicesManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

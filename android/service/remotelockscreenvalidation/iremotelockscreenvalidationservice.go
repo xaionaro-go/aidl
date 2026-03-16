@@ -51,7 +51,7 @@ func (p *RemoteLockscreenValidationServiceProxy) ValidateLockscreenGuess(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteLockscreenValidationService, "validateLockscreenGuess")
 	if _err != nil {
@@ -106,4 +106,44 @@ func (s *RemoteLockscreenValidationServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRemoteLockscreenValidationServiceServer is the server-side interface that user implementations
+// provide to NewRemoteLockscreenValidationServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteLockscreenValidationServiceServer interface {
+	ValidateLockscreenGuess(ctx context.Context, guess []byte, callback IRemoteLockscreenValidationCallback) error
+}
+
+type remoteLockscreenValidationServiceStubWrapper struct {
+	impl       IRemoteLockscreenValidationServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteLockscreenValidationServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteLockscreenValidationServiceStubWrapper) ValidateLockscreenGuess(
+	ctx context.Context,
+	guess []byte,
+	callback IRemoteLockscreenValidationCallback,
+) error {
+	return w.impl.ValidateLockscreenGuess(ctx, guess, callback)
+}
+
+var _ IRemoteLockscreenValidationService = (*remoteLockscreenValidationServiceStubWrapper)(nil)
+
+// NewRemoteLockscreenValidationServiceStub creates a server-side IRemoteLockscreenValidationService wrapping the given
+// server implementation. The returned value satisfies IRemoteLockscreenValidationService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteLockscreenValidationServiceStub(
+	impl IRemoteLockscreenValidationServiceServer,
+) IRemoteLockscreenValidationService {
+	wrapper := &remoteLockscreenValidationServiceStubWrapper{impl: impl}
+	stub := &RemoteLockscreenValidationServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

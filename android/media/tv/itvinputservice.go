@@ -67,7 +67,7 @@ func (p *TvInputServiceProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputService, "registerCallback")
 	if _err != nil {
@@ -84,7 +84,7 @@ func (p *TvInputServiceProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITvInputService, "unregisterCallback")
 	if _err != nil {
@@ -109,7 +109,7 @@ func (p *TvInputServiceProxy) CreateSession(
 	if _err := channel.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(inputId)
 	_data.WriteString16(sessionId)
 	_data.WriteInt32(1)
@@ -134,7 +134,7 @@ func (p *TvInputServiceProxy) CreateRecordingSession(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvInputService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(inputId)
 	_data.WriteString16(sessionId)
 
@@ -590,4 +590,136 @@ func (s *TvInputServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvInputServiceServer is the server-side interface that user implementations
+// provide to NewTvInputServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInputServiceServer interface {
+	RegisterCallback(ctx context.Context, callback ITvInputServiceCallback) error
+	UnregisterCallback(ctx context.Context, callback ITvInputServiceCallback) error
+	CreateSession(ctx context.Context, channel view.InputChannel, callback ITvInputSessionCallback, inputId string, sessionId string, tvAppAttributionSource content.AttributionSource) error
+	CreateRecordingSession(ctx context.Context, callback ITvInputSessionCallback, inputId string, sessionId string) error
+	GetAvailableExtensionInterfaceNames(ctx context.Context) ([]string, error)
+	GetExtensionInterface(ctx context.Context, name string) (binder.IBinder, error)
+	GetExtensionInterfacePermission(ctx context.Context, name string) (string, error)
+	NotifyHardwareAdded(ctx context.Context, hardwareInfo TvInputHardwareInfo) error
+	NotifyHardwareRemoved(ctx context.Context, hardwareInfo TvInputHardwareInfo) error
+	NotifyHdmiDeviceAdded(ctx context.Context, deviceInfo hdmi.HdmiDeviceInfo) error
+	NotifyHdmiDeviceRemoved(ctx context.Context, deviceInfo hdmi.HdmiDeviceInfo) error
+	NotifyHdmiDeviceUpdated(ctx context.Context, deviceInfo hdmi.HdmiDeviceInfo) error
+}
+
+type tvInputServiceStubWrapper struct {
+	impl       ITvInputServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInputServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInputServiceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ITvInputServiceCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *tvInputServiceStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback ITvInputServiceCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+func (w *tvInputServiceStubWrapper) CreateSession(
+	ctx context.Context,
+	channel view.InputChannel,
+	callback ITvInputSessionCallback,
+	inputId string,
+	sessionId string,
+	tvAppAttributionSource content.AttributionSource,
+) error {
+	return w.impl.CreateSession(ctx, channel, callback, inputId, sessionId, tvAppAttributionSource)
+}
+
+func (w *tvInputServiceStubWrapper) CreateRecordingSession(
+	ctx context.Context,
+	callback ITvInputSessionCallback,
+	inputId string,
+	sessionId string,
+) error {
+	return w.impl.CreateRecordingSession(ctx, callback, inputId, sessionId)
+}
+
+func (w *tvInputServiceStubWrapper) GetAvailableExtensionInterfaceNames(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetAvailableExtensionInterfaceNames(ctx)
+}
+
+func (w *tvInputServiceStubWrapper) GetExtensionInterface(
+	ctx context.Context,
+	name string,
+) (binder.IBinder, error) {
+	return w.impl.GetExtensionInterface(ctx, name)
+}
+
+func (w *tvInputServiceStubWrapper) GetExtensionInterfacePermission(
+	ctx context.Context,
+	name string,
+) (string, error) {
+	return w.impl.GetExtensionInterfacePermission(ctx, name)
+}
+
+func (w *tvInputServiceStubWrapper) NotifyHardwareAdded(
+	ctx context.Context,
+	hardwareInfo TvInputHardwareInfo,
+) error {
+	return w.impl.NotifyHardwareAdded(ctx, hardwareInfo)
+}
+
+func (w *tvInputServiceStubWrapper) NotifyHardwareRemoved(
+	ctx context.Context,
+	hardwareInfo TvInputHardwareInfo,
+) error {
+	return w.impl.NotifyHardwareRemoved(ctx, hardwareInfo)
+}
+
+func (w *tvInputServiceStubWrapper) NotifyHdmiDeviceAdded(
+	ctx context.Context,
+	deviceInfo hdmi.HdmiDeviceInfo,
+) error {
+	return w.impl.NotifyHdmiDeviceAdded(ctx, deviceInfo)
+}
+
+func (w *tvInputServiceStubWrapper) NotifyHdmiDeviceRemoved(
+	ctx context.Context,
+	deviceInfo hdmi.HdmiDeviceInfo,
+) error {
+	return w.impl.NotifyHdmiDeviceRemoved(ctx, deviceInfo)
+}
+
+func (w *tvInputServiceStubWrapper) NotifyHdmiDeviceUpdated(
+	ctx context.Context,
+	deviceInfo hdmi.HdmiDeviceInfo,
+) error {
+	return w.impl.NotifyHdmiDeviceUpdated(ctx, deviceInfo)
+}
+
+var _ ITvInputService = (*tvInputServiceStubWrapper)(nil)
+
+// NewTvInputServiceStub creates a server-side ITvInputService wrapping the given
+// server implementation. The returned value satisfies ITvInputService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInputServiceStub(
+	impl ITvInputServiceServer,
+) ITvInputService {
+	wrapper := &tvInputServiceStubWrapper{impl: impl}
+	stub := &TvInputServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

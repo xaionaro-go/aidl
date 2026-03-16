@@ -49,3 +49,34 @@ func (s *MediaExtractorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaExtractorServer is the server-side interface that user implementations
+// provide to NewMediaExtractorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaExtractorServer interface {
+}
+
+type mediaExtractorStubWrapper struct {
+	impl       IMediaExtractorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaExtractorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IMediaExtractor = (*mediaExtractorStubWrapper)(nil)
+
+// NewMediaExtractorStub creates a server-side IMediaExtractor wrapping the given
+// server implementation. The returned value satisfies IMediaExtractor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaExtractorStub(
+	impl IMediaExtractorServer,
+) IMediaExtractor {
+	wrapper := &mediaExtractorStubWrapper{impl: impl}
+	stub := &MediaExtractorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

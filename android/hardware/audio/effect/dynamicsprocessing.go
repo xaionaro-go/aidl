@@ -2,7 +2,6 @@ package effect
 
 import (
 	"fmt"
-	effectDynamicsProcessing "github.com/xaionaro-go/binder/android/hardware/audio/effect/DynamicsProcessing"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -24,15 +23,15 @@ const (
 type DynamicsProcessing struct {
 	Tag                int32
 	Vendor             VendorExtension
-	EngineArchitecture effectDynamicsProcessing.EngineArchitecture
-	PreEq              []effectDynamicsProcessing.ChannelConfig
-	PostEq             []effectDynamicsProcessing.ChannelConfig
-	PreEqBand          []effectDynamicsProcessing.EqBandConfig
-	PostEqBand         []effectDynamicsProcessing.EqBandConfig
-	Mbc                []effectDynamicsProcessing.ChannelConfig
-	MbcBand            []effectDynamicsProcessing.MbcBandConfig
-	Limiter            []effectDynamicsProcessing.LimiterConfig
-	InputGain          []effectDynamicsProcessing.InputGain
+	EngineArchitecture interface{}
+	PreEq              []interface{}
+	PostEq             []interface{}
+	PreEqBand          []interface{}
+	PostEqBand         []interface{}
+	Mbc                []interface{}
+	MbcBand            []interface{}
+	Limiter            []interface{}
+	InputGain          []interface{}
 }
 
 var _ parcel.Parcelable = (*DynamicsProcessing)(nil)
@@ -52,136 +51,136 @@ func (u *DynamicsProcessing) SetVendor(
 	u.Vendor = v
 }
 
-func (u *DynamicsProcessing) GetEngineArchitecture() (effectDynamicsProcessing.EngineArchitecture, bool) {
+func (u *DynamicsProcessing) GetEngineArchitecture() (interface{}, bool) {
 	if u.Tag != DynamicsProcessingTagEngineArchitecture {
-		var _zero effectDynamicsProcessing.EngineArchitecture
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.EngineArchitecture, true
 }
 
 func (u *DynamicsProcessing) SetEngineArchitecture(
-	v effectDynamicsProcessing.EngineArchitecture,
+	v interface{},
 ) {
 	u.Tag = DynamicsProcessingTagEngineArchitecture
 	u.EngineArchitecture = v
 }
 
-func (u *DynamicsProcessing) GetPreEq() ([]effectDynamicsProcessing.ChannelConfig, bool) {
+func (u *DynamicsProcessing) GetPreEq() ([]interface{}, bool) {
 	if u.Tag != DynamicsProcessingTagPreEq {
-		var _zero []effectDynamicsProcessing.ChannelConfig
+		var _zero []interface{}
 		return _zero, false
 	}
 	return u.PreEq, true
 }
 
 func (u *DynamicsProcessing) SetPreEq(
-	v []effectDynamicsProcessing.ChannelConfig,
+	v []interface{},
 ) {
 	u.Tag = DynamicsProcessingTagPreEq
 	u.PreEq = v
 }
 
-func (u *DynamicsProcessing) GetPostEq() ([]effectDynamicsProcessing.ChannelConfig, bool) {
+func (u *DynamicsProcessing) GetPostEq() ([]interface{}, bool) {
 	if u.Tag != DynamicsProcessingTagPostEq {
-		var _zero []effectDynamicsProcessing.ChannelConfig
+		var _zero []interface{}
 		return _zero, false
 	}
 	return u.PostEq, true
 }
 
 func (u *DynamicsProcessing) SetPostEq(
-	v []effectDynamicsProcessing.ChannelConfig,
+	v []interface{},
 ) {
 	u.Tag = DynamicsProcessingTagPostEq
 	u.PostEq = v
 }
 
-func (u *DynamicsProcessing) GetPreEqBand() ([]effectDynamicsProcessing.EqBandConfig, bool) {
+func (u *DynamicsProcessing) GetPreEqBand() ([]interface{}, bool) {
 	if u.Tag != DynamicsProcessingTagPreEqBand {
-		var _zero []effectDynamicsProcessing.EqBandConfig
+		var _zero []interface{}
 		return _zero, false
 	}
 	return u.PreEqBand, true
 }
 
 func (u *DynamicsProcessing) SetPreEqBand(
-	v []effectDynamicsProcessing.EqBandConfig,
+	v []interface{},
 ) {
 	u.Tag = DynamicsProcessingTagPreEqBand
 	u.PreEqBand = v
 }
 
-func (u *DynamicsProcessing) GetPostEqBand() ([]effectDynamicsProcessing.EqBandConfig, bool) {
+func (u *DynamicsProcessing) GetPostEqBand() ([]interface{}, bool) {
 	if u.Tag != DynamicsProcessingTagPostEqBand {
-		var _zero []effectDynamicsProcessing.EqBandConfig
+		var _zero []interface{}
 		return _zero, false
 	}
 	return u.PostEqBand, true
 }
 
 func (u *DynamicsProcessing) SetPostEqBand(
-	v []effectDynamicsProcessing.EqBandConfig,
+	v []interface{},
 ) {
 	u.Tag = DynamicsProcessingTagPostEqBand
 	u.PostEqBand = v
 }
 
-func (u *DynamicsProcessing) GetMbc() ([]effectDynamicsProcessing.ChannelConfig, bool) {
+func (u *DynamicsProcessing) GetMbc() ([]interface{}, bool) {
 	if u.Tag != DynamicsProcessingTagMbc {
-		var _zero []effectDynamicsProcessing.ChannelConfig
+		var _zero []interface{}
 		return _zero, false
 	}
 	return u.Mbc, true
 }
 
 func (u *DynamicsProcessing) SetMbc(
-	v []effectDynamicsProcessing.ChannelConfig,
+	v []interface{},
 ) {
 	u.Tag = DynamicsProcessingTagMbc
 	u.Mbc = v
 }
 
-func (u *DynamicsProcessing) GetMbcBand() ([]effectDynamicsProcessing.MbcBandConfig, bool) {
+func (u *DynamicsProcessing) GetMbcBand() ([]interface{}, bool) {
 	if u.Tag != DynamicsProcessingTagMbcBand {
-		var _zero []effectDynamicsProcessing.MbcBandConfig
+		var _zero []interface{}
 		return _zero, false
 	}
 	return u.MbcBand, true
 }
 
 func (u *DynamicsProcessing) SetMbcBand(
-	v []effectDynamicsProcessing.MbcBandConfig,
+	v []interface{},
 ) {
 	u.Tag = DynamicsProcessingTagMbcBand
 	u.MbcBand = v
 }
 
-func (u *DynamicsProcessing) GetLimiter() ([]effectDynamicsProcessing.LimiterConfig, bool) {
+func (u *DynamicsProcessing) GetLimiter() ([]interface{}, bool) {
 	if u.Tag != DynamicsProcessingTagLimiter {
-		var _zero []effectDynamicsProcessing.LimiterConfig
+		var _zero []interface{}
 		return _zero, false
 	}
 	return u.Limiter, true
 }
 
 func (u *DynamicsProcessing) SetLimiter(
-	v []effectDynamicsProcessing.LimiterConfig,
+	v []interface{},
 ) {
 	u.Tag = DynamicsProcessingTagLimiter
 	u.Limiter = v
 }
 
-func (u *DynamicsProcessing) GetInputGain() ([]effectDynamicsProcessing.InputGain, bool) {
+func (u *DynamicsProcessing) GetInputGain() ([]interface{}, bool) {
 	if u.Tag != DynamicsProcessingTagInputGain {
-		var _zero []effectDynamicsProcessing.InputGain
+		var _zero []interface{}
 		return _zero, false
 	}
 	return u.InputGain, true
 }
 
 func (u *DynamicsProcessing) SetInputGain(
-	v []effectDynamicsProcessing.InputGain,
+	v []interface{},
 ) {
 	u.Tag = DynamicsProcessingTagInputGain
 	u.InputGain = v
@@ -199,96 +198,53 @@ func (u *DynamicsProcessing) MarshalParcel(
 			return _err
 		}
 	case DynamicsProcessingTagEngineArchitecture:
-		if _err := u.EngineArchitecture.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	case DynamicsProcessingTagPreEq:
 		if u.PreEq == nil {
 			p.WriteInt32(-1)
 		} else {
 			p.WriteInt32(int32(len(u.PreEq)))
-			for _, _item := range u.PreEq {
-				if _err := _item.MarshalParcel(p); _err != nil {
-					return _err
-				}
-			}
 		}
 	case DynamicsProcessingTagPostEq:
 		if u.PostEq == nil {
 			p.WriteInt32(-1)
 		} else {
 			p.WriteInt32(int32(len(u.PostEq)))
-			for _, _item := range u.PostEq {
-				if _err := _item.MarshalParcel(p); _err != nil {
-					return _err
-				}
-			}
 		}
 	case DynamicsProcessingTagPreEqBand:
 		if u.PreEqBand == nil {
 			p.WriteInt32(-1)
 		} else {
 			p.WriteInt32(int32(len(u.PreEqBand)))
-			for _, _item := range u.PreEqBand {
-				if _err := _item.MarshalParcel(p); _err != nil {
-					return _err
-				}
-			}
 		}
 	case DynamicsProcessingTagPostEqBand:
 		if u.PostEqBand == nil {
 			p.WriteInt32(-1)
 		} else {
 			p.WriteInt32(int32(len(u.PostEqBand)))
-			for _, _item := range u.PostEqBand {
-				if _err := _item.MarshalParcel(p); _err != nil {
-					return _err
-				}
-			}
 		}
 	case DynamicsProcessingTagMbc:
 		if u.Mbc == nil {
 			p.WriteInt32(-1)
 		} else {
 			p.WriteInt32(int32(len(u.Mbc)))
-			for _, _item := range u.Mbc {
-				if _err := _item.MarshalParcel(p); _err != nil {
-					return _err
-				}
-			}
 		}
 	case DynamicsProcessingTagMbcBand:
 		if u.MbcBand == nil {
 			p.WriteInt32(-1)
 		} else {
 			p.WriteInt32(int32(len(u.MbcBand)))
-			for _, _item := range u.MbcBand {
-				if _err := _item.MarshalParcel(p); _err != nil {
-					return _err
-				}
-			}
 		}
 	case DynamicsProcessingTagLimiter:
 		if u.Limiter == nil {
 			p.WriteInt32(-1)
 		} else {
 			p.WriteInt32(int32(len(u.Limiter)))
-			for _, _item := range u.Limiter {
-				if _err := _item.MarshalParcel(p); _err != nil {
-					return _err
-				}
-			}
 		}
 	case DynamicsProcessingTagInputGain:
 		if u.InputGain == nil {
 			p.WriteInt32(-1)
 		} else {
 			p.WriteInt32(int32(len(u.InputGain)))
-			for _, _item := range u.InputGain {
-				if _err := _item.MarshalParcel(p); _err != nil {
-					return _err
-				}
-			}
 		}
 	default:
 		return fmt.Errorf("unknown union tag %d for DynamicsProcessing", u.Tag)
@@ -317,9 +273,6 @@ func (u *DynamicsProcessing) UnmarshalParcel(
 			return _err
 		}
 	case DynamicsProcessingTagEngineArchitecture:
-		if _err = u.EngineArchitecture.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	case DynamicsProcessingTagPreEq:
 
 		var _count0 int32
@@ -328,11 +281,8 @@ func (u *DynamicsProcessing) UnmarshalParcel(
 			return _err
 		}
 		if _count0 >= 0 {
-			u.PreEq = make([]effectDynamicsProcessing.ChannelConfig, _count0)
+			u.PreEq = make([]interface{}, _count0)
 			for _i := int32(0); _i < _count0; _i++ {
-				if _err = u.PreEq[_i].UnmarshalParcel(p); _err != nil {
-					return _err
-				}
 			}
 		}
 	case DynamicsProcessingTagPostEq:
@@ -343,11 +293,8 @@ func (u *DynamicsProcessing) UnmarshalParcel(
 			return _err
 		}
 		if _count1 >= 0 {
-			u.PostEq = make([]effectDynamicsProcessing.ChannelConfig, _count1)
+			u.PostEq = make([]interface{}, _count1)
 			for _i := int32(0); _i < _count1; _i++ {
-				if _err = u.PostEq[_i].UnmarshalParcel(p); _err != nil {
-					return _err
-				}
 			}
 		}
 	case DynamicsProcessingTagPreEqBand:
@@ -358,11 +305,8 @@ func (u *DynamicsProcessing) UnmarshalParcel(
 			return _err
 		}
 		if _count2 >= 0 {
-			u.PreEqBand = make([]effectDynamicsProcessing.EqBandConfig, _count2)
+			u.PreEqBand = make([]interface{}, _count2)
 			for _i := int32(0); _i < _count2; _i++ {
-				if _err = u.PreEqBand[_i].UnmarshalParcel(p); _err != nil {
-					return _err
-				}
 			}
 		}
 	case DynamicsProcessingTagPostEqBand:
@@ -373,11 +317,8 @@ func (u *DynamicsProcessing) UnmarshalParcel(
 			return _err
 		}
 		if _count3 >= 0 {
-			u.PostEqBand = make([]effectDynamicsProcessing.EqBandConfig, _count3)
+			u.PostEqBand = make([]interface{}, _count3)
 			for _i := int32(0); _i < _count3; _i++ {
-				if _err = u.PostEqBand[_i].UnmarshalParcel(p); _err != nil {
-					return _err
-				}
 			}
 		}
 	case DynamicsProcessingTagMbc:
@@ -388,11 +329,8 @@ func (u *DynamicsProcessing) UnmarshalParcel(
 			return _err
 		}
 		if _count4 >= 0 {
-			u.Mbc = make([]effectDynamicsProcessing.ChannelConfig, _count4)
+			u.Mbc = make([]interface{}, _count4)
 			for _i := int32(0); _i < _count4; _i++ {
-				if _err = u.Mbc[_i].UnmarshalParcel(p); _err != nil {
-					return _err
-				}
 			}
 		}
 	case DynamicsProcessingTagMbcBand:
@@ -403,11 +341,8 @@ func (u *DynamicsProcessing) UnmarshalParcel(
 			return _err
 		}
 		if _count5 >= 0 {
-			u.MbcBand = make([]effectDynamicsProcessing.MbcBandConfig, _count5)
+			u.MbcBand = make([]interface{}, _count5)
 			for _i := int32(0); _i < _count5; _i++ {
-				if _err = u.MbcBand[_i].UnmarshalParcel(p); _err != nil {
-					return _err
-				}
 			}
 		}
 	case DynamicsProcessingTagLimiter:
@@ -418,11 +353,8 @@ func (u *DynamicsProcessing) UnmarshalParcel(
 			return _err
 		}
 		if _count6 >= 0 {
-			u.Limiter = make([]effectDynamicsProcessing.LimiterConfig, _count6)
+			u.Limiter = make([]interface{}, _count6)
 			for _i := int32(0); _i < _count6; _i++ {
-				if _err = u.Limiter[_i].UnmarshalParcel(p); _err != nil {
-					return _err
-				}
 			}
 		}
 	case DynamicsProcessingTagInputGain:
@@ -433,11 +365,8 @@ func (u *DynamicsProcessing) UnmarshalParcel(
 			return _err
 		}
 		if _count7 >= 0 {
-			u.InputGain = make([]effectDynamicsProcessing.InputGain, _count7)
+			u.InputGain = make([]interface{}, _count7)
 			for _i := int32(0); _i < _count7; _i++ {
-				if _err = u.InputGain[_i].UnmarshalParcel(p); _err != nil {
-					return _err
-				}
 			}
 		}
 	default:

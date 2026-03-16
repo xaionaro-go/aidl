@@ -88,3 +88,43 @@ func (s *StorageLoadingProgressListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStorageLoadingProgressListenerServer is the server-side interface that user implementations
+// provide to NewStorageLoadingProgressListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStorageLoadingProgressListenerServer interface {
+	OnStorageLoadingProgressChanged(ctx context.Context, storageId int32, progress float32) error
+}
+
+type storageLoadingProgressListenerStubWrapper struct {
+	impl       IStorageLoadingProgressListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *storageLoadingProgressListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *storageLoadingProgressListenerStubWrapper) OnStorageLoadingProgressChanged(
+	ctx context.Context,
+	storageId int32,
+	progress float32,
+) error {
+	return w.impl.OnStorageLoadingProgressChanged(ctx, storageId, progress)
+}
+
+var _ IStorageLoadingProgressListener = (*storageLoadingProgressListenerStubWrapper)(nil)
+
+// NewStorageLoadingProgressListenerStub creates a server-side IStorageLoadingProgressListener wrapping the given
+// server implementation. The returned value satisfies IStorageLoadingProgressListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStorageLoadingProgressListenerStub(
+	impl IStorageLoadingProgressListenerServer,
+) IStorageLoadingProgressListener {
+	wrapper := &storageLoadingProgressListenerStubWrapper{impl: impl}
+	stub := &StorageLoadingProgressListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

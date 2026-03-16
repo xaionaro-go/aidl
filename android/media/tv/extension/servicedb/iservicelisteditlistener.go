@@ -88,3 +88,43 @@ func (s *ServiceListEditListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IServiceListEditListenerServer is the server-side interface that user implementations
+// provide to NewServiceListEditListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListEditListenerServer interface {
+	OnCompleted(ctx context.Context, requestId int32, result int32) error
+}
+
+type serviceListEditListenerStubWrapper struct {
+	impl       IServiceListEditListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListEditListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListEditListenerStubWrapper) OnCompleted(
+	ctx context.Context,
+	requestId int32,
+	result int32,
+) error {
+	return w.impl.OnCompleted(ctx, requestId, result)
+}
+
+var _ IServiceListEditListener = (*serviceListEditListenerStubWrapper)(nil)
+
+// NewServiceListEditListenerStub creates a server-side IServiceListEditListener wrapping the given
+// server implementation. The returned value satisfies IServiceListEditListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListEditListenerStub(
+	impl IServiceListEditListenerServer,
+) IServiceListEditListener {
+	wrapper := &serviceListEditListenerStubWrapper{impl: impl}
+	stub := &ServiceListEditListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

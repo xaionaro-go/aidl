@@ -93,3 +93,42 @@ func (s *GeofenceHardwareMonitorCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGeofenceHardwareMonitorCallbackServer is the server-side interface that user implementations
+// provide to NewGeofenceHardwareMonitorCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGeofenceHardwareMonitorCallbackServer interface {
+	OnMonitoringSystemChange(ctx context.Context, event GeofenceHardwareMonitorEvent) error
+}
+
+type geofenceHardwareMonitorCallbackStubWrapper struct {
+	impl       IGeofenceHardwareMonitorCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *geofenceHardwareMonitorCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *geofenceHardwareMonitorCallbackStubWrapper) OnMonitoringSystemChange(
+	ctx context.Context,
+	event GeofenceHardwareMonitorEvent,
+) error {
+	return w.impl.OnMonitoringSystemChange(ctx, event)
+}
+
+var _ IGeofenceHardwareMonitorCallback = (*geofenceHardwareMonitorCallbackStubWrapper)(nil)
+
+// NewGeofenceHardwareMonitorCallbackStub creates a server-side IGeofenceHardwareMonitorCallback wrapping the given
+// server implementation. The returned value satisfies IGeofenceHardwareMonitorCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGeofenceHardwareMonitorCallbackStub(
+	impl IGeofenceHardwareMonitorCallbackServer,
+) IGeofenceHardwareMonitorCallback {
+	wrapper := &geofenceHardwareMonitorCallbackStubWrapper{impl: impl}
+	stub := &GeofenceHardwareMonitorCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

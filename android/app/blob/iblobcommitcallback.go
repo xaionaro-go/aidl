@@ -82,3 +82,42 @@ func (s *BlobCommitCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBlobCommitCallbackServer is the server-side interface that user implementations
+// provide to NewBlobCommitCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBlobCommitCallbackServer interface {
+	OnResult(ctx context.Context, result int32) error
+}
+
+type blobCommitCallbackStubWrapper struct {
+	impl       IBlobCommitCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *blobCommitCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *blobCommitCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnResult(ctx, result)
+}
+
+var _ IBlobCommitCallback = (*blobCommitCallbackStubWrapper)(nil)
+
+// NewBlobCommitCallbackStub creates a server-side IBlobCommitCallback wrapping the given
+// server implementation. The returned value satisfies IBlobCommitCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBlobCommitCallbackStub(
+	impl IBlobCommitCallbackServer,
+) IBlobCommitCallback {
+	wrapper := &blobCommitCallbackStubWrapper{impl: impl}
+	stub := &BlobCommitCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -93,3 +93,43 @@ func (s *BufferOwnerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBufferOwnerServer is the server-side interface that user implementations
+// provide to NewBufferOwnerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBufferOwnerServer interface {
+	OnBufferReleased(ctx context.Context, bufferId int64, releaseFence *int32) error
+}
+
+type bufferOwnerStubWrapper struct {
+	impl       IBufferOwnerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bufferOwnerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bufferOwnerStubWrapper) OnBufferReleased(
+	ctx context.Context,
+	bufferId int64,
+	releaseFence *int32,
+) error {
+	return w.impl.OnBufferReleased(ctx, bufferId, releaseFence)
+}
+
+var _ IBufferOwner = (*bufferOwnerStubWrapper)(nil)
+
+// NewBufferOwnerStub creates a server-side IBufferOwner wrapping the given
+// server implementation. The returned value satisfies IBufferOwner
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBufferOwnerStub(
+	impl IBufferOwnerServer,
+) IBufferOwner {
+	wrapper := &bufferOwnerStubWrapper{impl: impl}
+	stub := &BufferOwnerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

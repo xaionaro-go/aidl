@@ -50,8 +50,8 @@ func (p *BackAnimationProxy) SetBackToLauncherCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBackAnimation)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteStrongBinder(runner.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, runner.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBackAnimation, "setBackToLauncherCallback")
 	if _err != nil {
@@ -195,4 +195,59 @@ func (s *BackAnimationStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBackAnimationServer is the server-side interface that user implementations
+// provide to NewBackAnimationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackAnimationServer interface {
+	SetBackToLauncherCallback(ctx context.Context, callback window.IOnBackInvokedCallback, runner view.IRemoteAnimationRunner) error
+	ClearBackToLauncherCallback(ctx context.Context) error
+	CustomizeStatusBarAppearance(ctx context.Context, appearance internalView.AppearanceRegion) error
+}
+
+type backAnimationStubWrapper struct {
+	impl       IBackAnimationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backAnimationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backAnimationStubWrapper) SetBackToLauncherCallback(
+	ctx context.Context,
+	callback window.IOnBackInvokedCallback,
+	runner view.IRemoteAnimationRunner,
+) error {
+	return w.impl.SetBackToLauncherCallback(ctx, callback, runner)
+}
+
+func (w *backAnimationStubWrapper) ClearBackToLauncherCallback(
+	ctx context.Context,
+) error {
+	return w.impl.ClearBackToLauncherCallback(ctx)
+}
+
+func (w *backAnimationStubWrapper) CustomizeStatusBarAppearance(
+	ctx context.Context,
+	appearance internalView.AppearanceRegion,
+) error {
+	return w.impl.CustomizeStatusBarAppearance(ctx, appearance)
+}
+
+var _ IBackAnimation = (*backAnimationStubWrapper)(nil)
+
+// NewBackAnimationStub creates a server-side IBackAnimation wrapping the given
+// server implementation. The returned value satisfies IBackAnimation
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackAnimationStub(
+	impl IBackAnimationServer,
+) IBackAnimation {
+	wrapper := &backAnimationStubWrapper{impl: impl}
+	stub := &BackAnimationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

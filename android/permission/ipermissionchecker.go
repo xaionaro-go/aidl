@@ -308,3 +308,70 @@ func (s *PermissionCheckerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPermissionCheckerServer is the server-side interface that user implementations
+// provide to NewPermissionCheckerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPermissionCheckerServer interface {
+	CheckPermission(ctx context.Context, permission string, attributionSource content.AttributionSourceState, message string, forDataDelivery bool, startDataDelivery bool, fromDatasource bool, attributedOp int32) (int32, error)
+	FinishDataDelivery(ctx context.Context, op int32, attributionSource content.AttributionSourceState, fromDatasource bool) error
+	CheckOp(ctx context.Context, op int32, attributionSource content.AttributionSourceState, message string, forDataDelivery bool, startDataDelivery bool) (int32, error)
+}
+
+type permissionCheckerStubWrapper struct {
+	impl       IPermissionCheckerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *permissionCheckerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *permissionCheckerStubWrapper) CheckPermission(
+	ctx context.Context,
+	permission string,
+	attributionSource content.AttributionSourceState,
+	message string,
+	forDataDelivery bool,
+	startDataDelivery bool,
+	fromDatasource bool,
+	attributedOp int32,
+) (int32, error) {
+	return w.impl.CheckPermission(ctx, permission, attributionSource, message, forDataDelivery, startDataDelivery, fromDatasource, attributedOp)
+}
+
+func (w *permissionCheckerStubWrapper) FinishDataDelivery(
+	ctx context.Context,
+	op int32,
+	attributionSource content.AttributionSourceState,
+	fromDatasource bool,
+) error {
+	return w.impl.FinishDataDelivery(ctx, op, attributionSource, fromDatasource)
+}
+
+func (w *permissionCheckerStubWrapper) CheckOp(
+	ctx context.Context,
+	op int32,
+	attributionSource content.AttributionSourceState,
+	message string,
+	forDataDelivery bool,
+	startDataDelivery bool,
+) (int32, error) {
+	return w.impl.CheckOp(ctx, op, attributionSource, message, forDataDelivery, startDataDelivery)
+}
+
+var _ IPermissionChecker = (*permissionCheckerStubWrapper)(nil)
+
+// NewPermissionCheckerStub creates a server-side IPermissionChecker wrapping the given
+// server implementation. The returned value satisfies IPermissionChecker
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPermissionCheckerStub(
+	impl IPermissionCheckerServer,
+) IPermissionChecker {
+	wrapper := &permissionCheckerStubWrapper{impl: impl}
+	stub := &PermissionCheckerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -88,3 +88,43 @@ func (s *HdmiConnectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiConnectionCallbackServer is the server-side interface that user implementations
+// provide to NewHdmiConnectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiConnectionCallbackServer interface {
+	OnHotplugEvent(ctx context.Context, connected bool, portId int32) error
+}
+
+type hdmiConnectionCallbackStubWrapper struct {
+	impl       IHdmiConnectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiConnectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiConnectionCallbackStubWrapper) OnHotplugEvent(
+	ctx context.Context,
+	connected bool,
+	portId int32,
+) error {
+	return w.impl.OnHotplugEvent(ctx, connected, portId)
+}
+
+var _ IHdmiConnectionCallback = (*hdmiConnectionCallbackStubWrapper)(nil)
+
+// NewHdmiConnectionCallbackStub creates a server-side IHdmiConnectionCallback wrapping the given
+// server implementation. The returned value satisfies IHdmiConnectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiConnectionCallbackStub(
+	impl IHdmiConnectionCallbackServer,
+) IHdmiConnectionCallback {
+	wrapper := &hdmiConnectionCallbackStubWrapper{impl: impl}
+	stub := &HdmiConnectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

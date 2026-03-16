@@ -120,7 +120,7 @@ func (p *ImsRcsFeatureProxy) AddCapabilityCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "addCapabilityCallback")
 	if _err != nil {
@@ -137,7 +137,7 @@ func (p *ImsRcsFeatureProxy) RemoveCapabilityCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "removeCapabilityCallback")
 	if _err != nil {
@@ -159,7 +159,7 @@ func (p *ImsRcsFeatureProxy) ChangeCapabilitiesConfiguration(
 	if _err := r.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "changeCapabilitiesConfiguration")
 	if _err != nil {
@@ -180,7 +180,7 @@ func (p *ImsRcsFeatureProxy) QueryCapabilityConfiguration(
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
 	_data.WriteInt32(capability)
 	_data.WriteInt32(radioTech)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "queryCapabilityConfiguration")
 	if _err != nil {
@@ -197,7 +197,7 @@ func (p *ImsRcsFeatureProxy) SetCapabilityExchangeEventListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "setCapabilityExchangeEventListener")
 	if _err != nil {
@@ -216,7 +216,7 @@ func (p *ImsRcsFeatureProxy) PublishCapabilities(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsRcsFeature)
 	_data.WriteString16(pidfXml)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "publishCapabilities")
 	if _err != nil {
@@ -244,7 +244,7 @@ func (p *ImsRcsFeatureProxy) SubscribeForCapabilities(
 			}
 		}
 	}
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "subscribeForCapabilities")
 	if _err != nil {
@@ -275,7 +275,7 @@ func (p *ImsRcsFeatureProxy) SendOptionsCapabilityRequest(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsRcsFeature, "sendOptionsCapabilityRequest")
 	if _err != nil {
@@ -451,4 +451,120 @@ func (s *ImsRcsFeatureStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsRcsFeatureServer is the server-side interface that user implementations
+// provide to NewImsRcsFeatureStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsRcsFeatureServer interface {
+	QueryCapabilityStatus(ctx context.Context) (int32, error)
+	GetFeatureState(ctx context.Context) (int32, error)
+	AddCapabilityCallback(ctx context.Context, c IImsCapabilityCallback) error
+	RemoveCapabilityCallback(ctx context.Context, c IImsCapabilityCallback) error
+	ChangeCapabilitiesConfiguration(ctx context.Context, r feature.CapabilityChangeRequest, c IImsCapabilityCallback) error
+	QueryCapabilityConfiguration(ctx context.Context, capability int32, radioTech int32, c IImsCapabilityCallback) error
+	SetCapabilityExchangeEventListener(ctx context.Context, listener ICapabilityExchangeEventListener) error
+	PublishCapabilities(ctx context.Context, pidfXml string, cb IPublishResponseCallback) error
+	SubscribeForCapabilities(ctx context.Context, uris []net.Uri, cb ISubscribeResponseCallback) error
+	SendOptionsCapabilityRequest(ctx context.Context, contactUri net.Uri, myCapabilities []string, cb IOptionsResponseCallback) error
+}
+
+type imsRcsFeatureStubWrapper struct {
+	impl       IImsRcsFeatureServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsRcsFeatureStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsRcsFeatureStubWrapper) QueryCapabilityStatus(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.QueryCapabilityStatus(ctx)
+}
+
+func (w *imsRcsFeatureStubWrapper) GetFeatureState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetFeatureState(ctx)
+}
+
+func (w *imsRcsFeatureStubWrapper) AddCapabilityCallback(
+	ctx context.Context,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.AddCapabilityCallback(ctx, c)
+}
+
+func (w *imsRcsFeatureStubWrapper) RemoveCapabilityCallback(
+	ctx context.Context,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.RemoveCapabilityCallback(ctx, c)
+}
+
+func (w *imsRcsFeatureStubWrapper) ChangeCapabilitiesConfiguration(
+	ctx context.Context,
+	r feature.CapabilityChangeRequest,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.ChangeCapabilitiesConfiguration(ctx, r, c)
+}
+
+func (w *imsRcsFeatureStubWrapper) QueryCapabilityConfiguration(
+	ctx context.Context,
+	capability int32,
+	radioTech int32,
+	c IImsCapabilityCallback,
+) error {
+	return w.impl.QueryCapabilityConfiguration(ctx, capability, radioTech, c)
+}
+
+func (w *imsRcsFeatureStubWrapper) SetCapabilityExchangeEventListener(
+	ctx context.Context,
+	listener ICapabilityExchangeEventListener,
+) error {
+	return w.impl.SetCapabilityExchangeEventListener(ctx, listener)
+}
+
+func (w *imsRcsFeatureStubWrapper) PublishCapabilities(
+	ctx context.Context,
+	pidfXml string,
+	cb IPublishResponseCallback,
+) error {
+	return w.impl.PublishCapabilities(ctx, pidfXml, cb)
+}
+
+func (w *imsRcsFeatureStubWrapper) SubscribeForCapabilities(
+	ctx context.Context,
+	uris []net.Uri,
+	cb ISubscribeResponseCallback,
+) error {
+	return w.impl.SubscribeForCapabilities(ctx, uris, cb)
+}
+
+func (w *imsRcsFeatureStubWrapper) SendOptionsCapabilityRequest(
+	ctx context.Context,
+	contactUri net.Uri,
+	myCapabilities []string,
+	cb IOptionsResponseCallback,
+) error {
+	return w.impl.SendOptionsCapabilityRequest(ctx, contactUri, myCapabilities, cb)
+}
+
+var _ IImsRcsFeature = (*imsRcsFeatureStubWrapper)(nil)
+
+// NewImsRcsFeatureStub creates a server-side IImsRcsFeature wrapping the given
+// server implementation. The returned value satisfies IImsRcsFeature
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsRcsFeatureStub(
+	impl IImsRcsFeatureServer,
+) IImsRcsFeature {
+	wrapper := &imsRcsFeatureStubWrapper{impl: impl}
+	stub := &ImsRcsFeatureStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

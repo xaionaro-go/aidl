@@ -49,3 +49,34 @@ func (s *DeviceAdminServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDeviceAdminServiceServer is the server-side interface that user implementations
+// provide to NewDeviceAdminServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceAdminServiceServer interface {
+}
+
+type deviceAdminServiceStubWrapper struct {
+	impl       IDeviceAdminServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceAdminServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IDeviceAdminService = (*deviceAdminServiceStubWrapper)(nil)
+
+// NewDeviceAdminServiceStub creates a server-side IDeviceAdminService wrapping the given
+// server implementation. The returned value satisfies IDeviceAdminService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceAdminServiceStub(
+	impl IDeviceAdminServiceServer,
+) IDeviceAdminService {
+	wrapper := &deviceAdminServiceStubWrapper{impl: impl}
+	stub := &DeviceAdminServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

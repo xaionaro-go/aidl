@@ -120,7 +120,7 @@ func (p *LcnV2ChannelListProxy) SetListener(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILcnV2ChannelList)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILcnV2ChannelList, "setListener")
 	if _err != nil {
@@ -216,4 +216,58 @@ func (s *LcnV2ChannelListStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ILcnV2ChannelListServer is the server-side interface that user implementations
+// provide to NewLcnV2ChannelListStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILcnV2ChannelListServer interface {
+	GetLcnV2ChannelLists(ctx context.Context) ([]os.Bundle, error)
+	SetLcnV2ChannelList(ctx context.Context, lcnV2ChannelListSettings os.Bundle) (int32, error)
+	SetListener(ctx context.Context, listener ILcnV2ChannelListListener) (int32, error)
+}
+
+type lcnV2ChannelListStubWrapper struct {
+	impl       ILcnV2ChannelListServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *lcnV2ChannelListStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *lcnV2ChannelListStubWrapper) GetLcnV2ChannelLists(
+	ctx context.Context,
+) ([]os.Bundle, error) {
+	return w.impl.GetLcnV2ChannelLists(ctx)
+}
+
+func (w *lcnV2ChannelListStubWrapper) SetLcnV2ChannelList(
+	ctx context.Context,
+	lcnV2ChannelListSettings os.Bundle,
+) (int32, error) {
+	return w.impl.SetLcnV2ChannelList(ctx, lcnV2ChannelListSettings)
+}
+
+func (w *lcnV2ChannelListStubWrapper) SetListener(
+	ctx context.Context,
+	listener ILcnV2ChannelListListener,
+) (int32, error) {
+	return w.impl.SetListener(ctx, listener)
+}
+
+var _ ILcnV2ChannelList = (*lcnV2ChannelListStubWrapper)(nil)
+
+// NewLcnV2ChannelListStub creates a server-side ILcnV2ChannelList wrapping the given
+// server implementation. The returned value satisfies ILcnV2ChannelList
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLcnV2ChannelListStub(
+	impl ILcnV2ChannelListServer,
+) ILcnV2ChannelList {
+	wrapper := &lcnV2ChannelListStubWrapper{impl: impl}
+	stub := &LcnV2ChannelListStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

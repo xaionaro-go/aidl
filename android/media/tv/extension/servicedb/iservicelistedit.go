@@ -86,7 +86,7 @@ func (p *ServiceListEditProxy) Open(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIServiceListEdit)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIServiceListEdit, "open")
 	if _err != nil {
@@ -1409,4 +1409,223 @@ func (s *ServiceListEditStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IServiceListEditServer is the server-side interface that user implementations
+// provide to NewServiceListEditStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListEditServer interface {
+	Open(ctx context.Context, listener IServiceListEditListener) (int32, error)
+	Close(ctx context.Context) (int32, error)
+	Commit(ctx context.Context) (int32, error)
+	UserEditCommit(ctx context.Context) (int32, error)
+	GetServiceInfoFromDatabase(ctx context.Context, serviceInfoId string, keys []string) (os.Bundle, error)
+	GetServiceInfoListFromDatabase(ctx context.Context, serviceListId string, keys []string) (os.Bundle, error)
+	GetServiceInfoIdsFromDatabase(ctx context.Context, inServiceListId string) ([]string, error)
+	UpdateServiceInfoFromDatabase(ctx context.Context, updateServiceInfo os.Bundle) (int32, error)
+	UpdateServiceInfoByListFromDatabase(ctx context.Context, updateServiceInfoList []os.Bundle) (int32, error)
+	RemoveServiceInfoFromDatabase(ctx context.Context, serviceInfoId string) (int32, error)
+	RemoveServiceInfoByListFromDatabase(ctx context.Context, serviceInfoIdList []string) (int32, error)
+	GetServiceListChannelIds(ctx context.Context) ([]string, error)
+	GetServiceListInfoByChannelId(ctx context.Context, serviceListChannelId string, keys []string) (os.Bundle, error)
+	GetTransportStreamInfoList(ctx context.Context, serviceListId string, keys []string) (os.Bundle, error)
+	GetTransportStreamInfoListForce(ctx context.Context, serviceListId string, keys []string) (os.Bundle, error)
+	GetNetworkInfoList(ctx context.Context, serviceListId string, keys []string) (os.Bundle, error)
+	GetSatelliteInfoList(ctx context.Context, serviceListId string, keys []string) (os.Bundle, error)
+	ToRecordInfoByType(ctx context.Context, recordInfoBundle os.Bundle, recordType string) (string, error)
+	PutRecordIdList(ctx context.Context, serviceListId string, recordIdListBundle os.Bundle, optType int32) (int32, error)
+	AddPredefinedServiceListInfo(ctx context.Context, broadcastType int32, serviceListType string, serviceListPrefix string, countryCode string, operatorId int32) (string, error)
+	AddPredefinedChannelList(ctx context.Context, serviceListId string, predefinedListBundle []os.Bundle) (int32, error)
+	AddPredefinedSatInfo(ctx context.Context, serviceListId string, predefinedSatInfoBundle os.Bundle) (int32, error)
+}
+
+type serviceListEditStubWrapper struct {
+	impl       IServiceListEditServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListEditStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListEditStubWrapper) Open(
+	ctx context.Context,
+	listener IServiceListEditListener,
+) (int32, error) {
+	return w.impl.Open(ctx, listener)
+}
+
+func (w *serviceListEditStubWrapper) Close(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Close(ctx)
+}
+
+func (w *serviceListEditStubWrapper) Commit(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Commit(ctx)
+}
+
+func (w *serviceListEditStubWrapper) UserEditCommit(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.UserEditCommit(ctx)
+}
+
+func (w *serviceListEditStubWrapper) GetServiceInfoFromDatabase(
+	ctx context.Context,
+	serviceInfoId string,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetServiceInfoFromDatabase(ctx, serviceInfoId, keys)
+}
+
+func (w *serviceListEditStubWrapper) GetServiceInfoListFromDatabase(
+	ctx context.Context,
+	serviceListId string,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetServiceInfoListFromDatabase(ctx, serviceListId, keys)
+}
+
+func (w *serviceListEditStubWrapper) GetServiceInfoIdsFromDatabase(
+	ctx context.Context,
+	inServiceListId string,
+) ([]string, error) {
+	return w.impl.GetServiceInfoIdsFromDatabase(ctx, inServiceListId)
+}
+
+func (w *serviceListEditStubWrapper) UpdateServiceInfoFromDatabase(
+	ctx context.Context,
+	updateServiceInfo os.Bundle,
+) (int32, error) {
+	return w.impl.UpdateServiceInfoFromDatabase(ctx, updateServiceInfo)
+}
+
+func (w *serviceListEditStubWrapper) UpdateServiceInfoByListFromDatabase(
+	ctx context.Context,
+	updateServiceInfoList []os.Bundle,
+) (int32, error) {
+	return w.impl.UpdateServiceInfoByListFromDatabase(ctx, updateServiceInfoList)
+}
+
+func (w *serviceListEditStubWrapper) RemoveServiceInfoFromDatabase(
+	ctx context.Context,
+	serviceInfoId string,
+) (int32, error) {
+	return w.impl.RemoveServiceInfoFromDatabase(ctx, serviceInfoId)
+}
+
+func (w *serviceListEditStubWrapper) RemoveServiceInfoByListFromDatabase(
+	ctx context.Context,
+	serviceInfoIdList []string,
+) (int32, error) {
+	return w.impl.RemoveServiceInfoByListFromDatabase(ctx, serviceInfoIdList)
+}
+
+func (w *serviceListEditStubWrapper) GetServiceListChannelIds(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetServiceListChannelIds(ctx)
+}
+
+func (w *serviceListEditStubWrapper) GetServiceListInfoByChannelId(
+	ctx context.Context,
+	serviceListChannelId string,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetServiceListInfoByChannelId(ctx, serviceListChannelId, keys)
+}
+
+func (w *serviceListEditStubWrapper) GetTransportStreamInfoList(
+	ctx context.Context,
+	serviceListId string,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetTransportStreamInfoList(ctx, serviceListId, keys)
+}
+
+func (w *serviceListEditStubWrapper) GetTransportStreamInfoListForce(
+	ctx context.Context,
+	serviceListId string,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetTransportStreamInfoListForce(ctx, serviceListId, keys)
+}
+
+func (w *serviceListEditStubWrapper) GetNetworkInfoList(
+	ctx context.Context,
+	serviceListId string,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetNetworkInfoList(ctx, serviceListId, keys)
+}
+
+func (w *serviceListEditStubWrapper) GetSatelliteInfoList(
+	ctx context.Context,
+	serviceListId string,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetSatelliteInfoList(ctx, serviceListId, keys)
+}
+
+func (w *serviceListEditStubWrapper) ToRecordInfoByType(
+	ctx context.Context,
+	recordInfoBundle os.Bundle,
+	recordType string,
+) (string, error) {
+	return w.impl.ToRecordInfoByType(ctx, recordInfoBundle, recordType)
+}
+
+func (w *serviceListEditStubWrapper) PutRecordIdList(
+	ctx context.Context,
+	serviceListId string,
+	recordIdListBundle os.Bundle,
+	optType int32,
+) (int32, error) {
+	return w.impl.PutRecordIdList(ctx, serviceListId, recordIdListBundle, optType)
+}
+
+func (w *serviceListEditStubWrapper) AddPredefinedServiceListInfo(
+	ctx context.Context,
+	broadcastType int32,
+	serviceListType string,
+	serviceListPrefix string,
+	countryCode string,
+	operatorId int32,
+) (string, error) {
+	return w.impl.AddPredefinedServiceListInfo(ctx, broadcastType, serviceListType, serviceListPrefix, countryCode, operatorId)
+}
+
+func (w *serviceListEditStubWrapper) AddPredefinedChannelList(
+	ctx context.Context,
+	serviceListId string,
+	predefinedListBundle []os.Bundle,
+) (int32, error) {
+	return w.impl.AddPredefinedChannelList(ctx, serviceListId, predefinedListBundle)
+}
+
+func (w *serviceListEditStubWrapper) AddPredefinedSatInfo(
+	ctx context.Context,
+	serviceListId string,
+	predefinedSatInfoBundle os.Bundle,
+) (int32, error) {
+	return w.impl.AddPredefinedSatInfo(ctx, serviceListId, predefinedSatInfoBundle)
+}
+
+var _ IServiceListEdit = (*serviceListEditStubWrapper)(nil)
+
+// NewServiceListEditStub creates a server-side IServiceListEdit wrapping the given
+// server implementation. The returned value satisfies IServiceListEdit
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListEditStub(
+	impl IServiceListEditServer,
+) IServiceListEdit {
+	wrapper := &serviceListEditStubWrapper{impl: impl}
+	stub := &ServiceListEditStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

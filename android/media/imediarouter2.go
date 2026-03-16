@@ -341,3 +341,86 @@ func (s *MediaRouter2Stub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaRouter2Server is the server-side interface that user implementations
+// provide to NewMediaRouter2Stub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaRouter2Server interface {
+	NotifyRouterRegistered(ctx context.Context, currentRoutes []MediaRoute2Info, currentSystemSessionInfo RoutingSessionInfo) error
+	NotifyRoutesUpdated(ctx context.Context, routes []MediaRoute2Info) error
+	NotifySessionCreated(ctx context.Context, requestId int32, sessionInfo *RoutingSessionInfo) error
+	NotifySessionInfoChanged(ctx context.Context, sessionInfo RoutingSessionInfo) error
+	NotifySessionReleased(ctx context.Context, sessionInfo RoutingSessionInfo) error
+	RequestCreateSessionByManager(ctx context.Context, uniqueRequestId int64, oldSession RoutingSessionInfo, route MediaRoute2Info) error
+}
+
+type mediaRouter2StubWrapper struct {
+	impl       IMediaRouter2Server
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaRouter2StubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaRouter2StubWrapper) NotifyRouterRegistered(
+	ctx context.Context,
+	currentRoutes []MediaRoute2Info,
+	currentSystemSessionInfo RoutingSessionInfo,
+) error {
+	return w.impl.NotifyRouterRegistered(ctx, currentRoutes, currentSystemSessionInfo)
+}
+
+func (w *mediaRouter2StubWrapper) NotifyRoutesUpdated(
+	ctx context.Context,
+	routes []MediaRoute2Info,
+) error {
+	return w.impl.NotifyRoutesUpdated(ctx, routes)
+}
+
+func (w *mediaRouter2StubWrapper) NotifySessionCreated(
+	ctx context.Context,
+	requestId int32,
+	sessionInfo *RoutingSessionInfo,
+) error {
+	return w.impl.NotifySessionCreated(ctx, requestId, sessionInfo)
+}
+
+func (w *mediaRouter2StubWrapper) NotifySessionInfoChanged(
+	ctx context.Context,
+	sessionInfo RoutingSessionInfo,
+) error {
+	return w.impl.NotifySessionInfoChanged(ctx, sessionInfo)
+}
+
+func (w *mediaRouter2StubWrapper) NotifySessionReleased(
+	ctx context.Context,
+	sessionInfo RoutingSessionInfo,
+) error {
+	return w.impl.NotifySessionReleased(ctx, sessionInfo)
+}
+
+func (w *mediaRouter2StubWrapper) RequestCreateSessionByManager(
+	ctx context.Context,
+	uniqueRequestId int64,
+	oldSession RoutingSessionInfo,
+	route MediaRoute2Info,
+) error {
+	return w.impl.RequestCreateSessionByManager(ctx, uniqueRequestId, oldSession, route)
+}
+
+var _ IMediaRouter2 = (*mediaRouter2StubWrapper)(nil)
+
+// NewMediaRouter2Stub creates a server-side IMediaRouter2 wrapping the given
+// server implementation. The returned value satisfies IMediaRouter2
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaRouter2Stub(
+	impl IMediaRouter2Server,
+) IMediaRouter2 {
+	wrapper := &mediaRouter2StubWrapper{impl: impl}
+	stub := &MediaRouter2Stub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -93,3 +93,42 @@ func (s *CountryListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICountryListenerServer is the server-side interface that user implementations
+// provide to NewCountryListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICountryListenerServer interface {
+	OnCountryDetected(ctx context.Context, country Country) error
+}
+
+type countryListenerStubWrapper struct {
+	impl       ICountryListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *countryListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *countryListenerStubWrapper) OnCountryDetected(
+	ctx context.Context,
+	country Country,
+) error {
+	return w.impl.OnCountryDetected(ctx, country)
+}
+
+var _ ICountryListener = (*countryListenerStubWrapper)(nil)
+
+// NewCountryListenerStub creates a server-side ICountryListener wrapping the given
+// server implementation. The returned value satisfies ICountryListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCountryListenerStub(
+	impl ICountryListenerServer,
+) ICountryListener {
+	wrapper := &countryListenerStubWrapper{impl: impl}
+	stub := &CountryListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

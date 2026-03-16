@@ -74,6 +74,10 @@ func GenerateInterface(
 	stubName := deriveStubName(interfaceName)
 	writeStubType(f, interfaceName, stubName, descriptorConst, decl, opts, typeRef)
 
+	// Server-side helper: constructor returning a full interface
+	// implementation backed by a StubBinder for binder registration.
+	writeStubConstructor(f, interfaceName, stubName, decl, typeRef)
+
 	return f.Bytes()
 }
 
@@ -178,6 +182,107 @@ func writeStubType(
 	f.P("\t}")
 	f.P("}")
 	f.P("")
+}
+
+// writeStubConstructor generates a server-side constructor that creates a
+// StubBinder from a user-provided implementation. It generates:
+//   - An IXxxServer interface (like IXxx but without AsBinder)
+//   - A private wrapper type satisfying IXxx by delegating methods to
+//     the server impl and providing AsBinder via an embedded StubBinder
+//   - A NewXxxStub(impl) constructor returning *binder.StubBinder
+func writeStubConstructor(
+	f *GoFile,
+	interfaceName string,
+	stubName string,
+	decl *parser.InterfaceDecl,
+	typeRef *TypeRefResolver,
+) {
+	serverIntfName := interfaceName + "Server"
+	wrapperName := unexport(stubName) + "Wrapper"
+
+	// Server interface: same as the full interface minus AsBinder().
+	f.P("// %s is the server-side interface that user implementations", serverIntfName)
+	f.P("// provide to New%s. It contains only the business methods,", stubName)
+	f.P("// without AsBinder (which is provided by the stub itself).")
+	f.P("type %s interface {", serverIntfName)
+	for _, m := range decl.Methods {
+		f.P("\t%s", methodSignature(m, typeRef))
+	}
+	f.P("}")
+	f.P("")
+
+	// Private wrapper: satisfies the full interface by embedding the
+	// server impl and holding a *binder.StubBinder.
+	f.P("type %s struct {", wrapperName)
+	f.P("\timpl %s", serverIntfName)
+	f.P("\tstubBinder *binder.StubBinder")
+	f.P("}")
+	f.P("")
+
+	f.P("func (w *%s) AsBinder() binder.IBinder {", wrapperName)
+	f.P("\treturn w.stubBinder")
+	f.P("}")
+	f.P("")
+
+	// Delegate each method to the impl.
+	for _, m := range decl.Methods {
+		goName := AIDLToGoName(m.MethodName)
+		hasReturn := m.ReturnType != nil && m.ReturnType.Name != "void"
+		regular, _ := classifyParams(m.Params)
+
+		// Method signature.
+		f.P("func (w *%s) %s(", wrapperName, goName)
+		f.P("\tctx context.Context,")
+		for _, param := range regular {
+			goType := resolveTypeRef(typeRef, param.Type)
+			f.P("\t%s %s,", sanitizeGoIdent(param.ParamName), goType)
+		}
+		if hasReturn {
+			goRetType := resolveTypeRef(typeRef, m.ReturnType)
+			f.P(") (%s, error) {", goRetType)
+		} else {
+			f.P(") error {")
+		}
+
+		// Build call args.
+		var args []string
+		args = append(args, "ctx")
+		for _, param := range regular {
+			args = append(args, sanitizeGoIdent(param.ParamName))
+		}
+
+		f.P("\treturn w.impl.%s(%s)", goName, strings.Join(args, ", "))
+		f.P("}")
+		f.P("")
+	}
+
+	// Interface compliance assertion for the wrapper.
+	f.P("var _ %s = (*%s)(nil)", interfaceName, wrapperName)
+	f.P("")
+
+	// Constructor: NewXxxStub(impl) IXxx.
+	f.P("// New%s creates a server-side %s wrapping the given", stubName, interfaceName)
+	f.P("// server implementation. The returned value satisfies %s", interfaceName)
+	f.P("// and can be passed to proxy methods; its AsBinder() returns a")
+	f.P("// *binder.StubBinder that is auto-registered with the binder")
+	f.P("// driver on first use.")
+	f.P("func New%s(", stubName)
+	f.P("\timpl %s,", serverIntfName)
+	f.P(") %s {", interfaceName)
+	f.P("\twrapper := &%s{impl: impl}", wrapperName)
+	f.P("\tstub := &%s{Impl: wrapper}", stubName)
+	f.P("\twrapper.stubBinder = binder.NewStubBinder(stub)")
+	f.P("\treturn wrapper")
+	f.P("}")
+	f.P("")
+}
+
+// unexport returns the identifier with the first letter lowercased.
+func unexport(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToLower(s[:1]) + s[1:]
 }
 
 // writeStubCase writes a single case in the OnTransaction switch for a method.
@@ -734,6 +839,18 @@ func writeParamToParcel(
 			f.P("\t}")
 			return
 		}
+	}
+
+	// Interface and IBinder parameters use WriteBinderToParcel to support
+	// both remote proxies (BINDER_TYPE_HANDLE) and local stubs
+	// (BINDER_TYPE_BINDER) transparently.
+	if info.IsInterface {
+		f.P("\tbinder.WriteBinderToParcel(ctx, _data, %s.AsBinder(), p.remote.Transport())", varName)
+		return
+	}
+	if info.IsIBinder {
+		f.P("\tbinder.WriteBinderToParcel(ctx, _data, %s, p.remote.Transport())", varName)
+		return
 	}
 
 	writeExpr := fmt.Sprintf(info.WriteExpr, varName)

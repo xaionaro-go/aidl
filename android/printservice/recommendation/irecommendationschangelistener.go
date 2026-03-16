@@ -76,3 +76,41 @@ func (s *RecommendationsChangeListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRecommendationsChangeListenerServer is the server-side interface that user implementations
+// provide to NewRecommendationsChangeListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecommendationsChangeListenerServer interface {
+	OnRecommendationsChanged(ctx context.Context) error
+}
+
+type recommendationsChangeListenerStubWrapper struct {
+	impl       IRecommendationsChangeListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recommendationsChangeListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recommendationsChangeListenerStubWrapper) OnRecommendationsChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnRecommendationsChanged(ctx)
+}
+
+var _ IRecommendationsChangeListener = (*recommendationsChangeListenerStubWrapper)(nil)
+
+// NewRecommendationsChangeListenerStub creates a server-side IRecommendationsChangeListener wrapping the given
+// server implementation. The returned value satisfies IRecommendationsChangeListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecommendationsChangeListenerStub(
+	impl IRecommendationsChangeListenerServer,
+) IRecommendationsChangeListener {
+	wrapper := &recommendationsChangeListenerStubWrapper{impl: impl}
+	stub := &RecommendationsChangeListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

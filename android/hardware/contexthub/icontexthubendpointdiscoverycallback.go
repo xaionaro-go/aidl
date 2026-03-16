@@ -134,3 +134,51 @@ func (s *ContextHubEndpointDiscoveryCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IContextHubEndpointDiscoveryCallbackServer is the server-side interface that user implementations
+// provide to NewContextHubEndpointDiscoveryCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContextHubEndpointDiscoveryCallbackServer interface {
+	OnEndpointsStarted(ctx context.Context, hubEndpointInfoList []HubEndpointInfo) error
+	OnEndpointsStopped(ctx context.Context, hubEndpointInfoList []HubEndpointInfo, reason int32) error
+}
+
+type contextHubEndpointDiscoveryCallbackStubWrapper struct {
+	impl       IContextHubEndpointDiscoveryCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contextHubEndpointDiscoveryCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contextHubEndpointDiscoveryCallbackStubWrapper) OnEndpointsStarted(
+	ctx context.Context,
+	hubEndpointInfoList []HubEndpointInfo,
+) error {
+	return w.impl.OnEndpointsStarted(ctx, hubEndpointInfoList)
+}
+
+func (w *contextHubEndpointDiscoveryCallbackStubWrapper) OnEndpointsStopped(
+	ctx context.Context,
+	hubEndpointInfoList []HubEndpointInfo,
+	reason int32,
+) error {
+	return w.impl.OnEndpointsStopped(ctx, hubEndpointInfoList, reason)
+}
+
+var _ IContextHubEndpointDiscoveryCallback = (*contextHubEndpointDiscoveryCallbackStubWrapper)(nil)
+
+// NewContextHubEndpointDiscoveryCallbackStub creates a server-side IContextHubEndpointDiscoveryCallback wrapping the given
+// server implementation. The returned value satisfies IContextHubEndpointDiscoveryCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContextHubEndpointDiscoveryCallbackStub(
+	impl IContextHubEndpointDiscoveryCallbackServer,
+) IContextHubEndpointDiscoveryCallback {
+	wrapper := &contextHubEndpointDiscoveryCallbackStubWrapper{impl: impl}
+	stub := &ContextHubEndpointDiscoveryCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

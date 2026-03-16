@@ -82,3 +82,42 @@ func (s *EuiccServiceDumpResultCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEuiccServiceDumpResultCallbackServer is the server-side interface that user implementations
+// provide to NewEuiccServiceDumpResultCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEuiccServiceDumpResultCallbackServer interface {
+	OnComplete(ctx context.Context, logs string) error
+}
+
+type euiccServiceDumpResultCallbackStubWrapper struct {
+	impl       IEuiccServiceDumpResultCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *euiccServiceDumpResultCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *euiccServiceDumpResultCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	logs string,
+) error {
+	return w.impl.OnComplete(ctx, logs)
+}
+
+var _ IEuiccServiceDumpResultCallback = (*euiccServiceDumpResultCallbackStubWrapper)(nil)
+
+// NewEuiccServiceDumpResultCallbackStub creates a server-side IEuiccServiceDumpResultCallback wrapping the given
+// server implementation. The returned value satisfies IEuiccServiceDumpResultCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEuiccServiceDumpResultCallbackStub(
+	impl IEuiccServiceDumpResultCallbackServer,
+) IEuiccServiceDumpResultCallback {
+	wrapper := &euiccServiceDumpResultCallbackStubWrapper{impl: impl}
+	stub := &EuiccServiceDumpResultCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

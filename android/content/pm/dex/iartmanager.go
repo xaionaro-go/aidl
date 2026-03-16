@@ -51,7 +51,7 @@ func (p *ArtManagerProxy) SnapshotRuntimeProfile(
 	_data.WriteInt32(profileType)
 	_data.WriteString16(packageName)
 	_data.WriteString16(codePath)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIArtManager, "snapshotRuntimeProfile")
@@ -172,4 +172,54 @@ func (s *ArtManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IArtManagerServer is the server-side interface that user implementations
+// provide to NewArtManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IArtManagerServer interface {
+	SnapshotRuntimeProfile(ctx context.Context, profileType int32, packageName string, codePath string, callback ISnapshotRuntimeProfileCallback) error
+	IsRuntimeProfilingEnabled(ctx context.Context, profileType int32) (bool, error)
+}
+
+type artManagerStubWrapper struct {
+	impl       IArtManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *artManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *artManagerStubWrapper) SnapshotRuntimeProfile(
+	ctx context.Context,
+	profileType int32,
+	packageName string,
+	codePath string,
+	callback ISnapshotRuntimeProfileCallback,
+) error {
+	return w.impl.SnapshotRuntimeProfile(ctx, profileType, packageName, codePath, callback)
+}
+
+func (w *artManagerStubWrapper) IsRuntimeProfilingEnabled(
+	ctx context.Context,
+	profileType int32,
+) (bool, error) {
+	return w.impl.IsRuntimeProfilingEnabled(ctx, profileType)
+}
+
+var _ IArtManager = (*artManagerStubWrapper)(nil)
+
+// NewArtManagerStub creates a server-side IArtManager wrapping the given
+// server implementation. The returned value satisfies IArtManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewArtManagerStub(
+	impl IArtManagerServer,
+) IArtManager {
+	wrapper := &artManagerStubWrapper{impl: impl}
+	stub := &ArtManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

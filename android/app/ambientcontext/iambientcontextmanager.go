@@ -98,7 +98,7 @@ func (p *AmbientContextManagerProxy) RegisterObserverWithCallback(
 		return _err
 	}
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAmbientContextManager, "registerObserverWithCallback")
 	if _err != nil {
@@ -378,4 +378,79 @@ func (s *AmbientContextManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAmbientContextManagerServer is the server-side interface that user implementations
+// provide to NewAmbientContextManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAmbientContextManagerServer interface {
+	RegisterObserver(ctx context.Context, request AmbientContextEventRequest, resultPendingIntent app.PendingIntent, statusCallback os.RemoteCallback) error
+	RegisterObserverWithCallback(ctx context.Context, request AmbientContextEventRequest, packageName string, observer IAmbientContextObserver) error
+	UnregisterObserver(ctx context.Context) error
+	QueryServiceStatus(ctx context.Context, eventTypes []int32, statusCallback os.RemoteCallback) error
+	StartConsentActivity(ctx context.Context, eventTypes []int32) error
+}
+
+type ambientContextManagerStubWrapper struct {
+	impl       IAmbientContextManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ambientContextManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ambientContextManagerStubWrapper) RegisterObserver(
+	ctx context.Context,
+	request AmbientContextEventRequest,
+	resultPendingIntent app.PendingIntent,
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.RegisterObserver(ctx, request, resultPendingIntent, statusCallback)
+}
+
+func (w *ambientContextManagerStubWrapper) RegisterObserverWithCallback(
+	ctx context.Context,
+	request AmbientContextEventRequest,
+	packageName string,
+	observer IAmbientContextObserver,
+) error {
+	return w.impl.RegisterObserverWithCallback(ctx, request, packageName, observer)
+}
+
+func (w *ambientContextManagerStubWrapper) UnregisterObserver(
+	ctx context.Context,
+) error {
+	return w.impl.UnregisterObserver(ctx)
+}
+
+func (w *ambientContextManagerStubWrapper) QueryServiceStatus(
+	ctx context.Context,
+	eventTypes []int32,
+	statusCallback os.RemoteCallback,
+) error {
+	return w.impl.QueryServiceStatus(ctx, eventTypes, statusCallback)
+}
+
+func (w *ambientContextManagerStubWrapper) StartConsentActivity(
+	ctx context.Context,
+	eventTypes []int32,
+) error {
+	return w.impl.StartConsentActivity(ctx, eventTypes)
+}
+
+var _ IAmbientContextManager = (*ambientContextManagerStubWrapper)(nil)
+
+// NewAmbientContextManagerStub creates a server-side IAmbientContextManager wrapping the given
+// server implementation. The returned value satisfies IAmbientContextManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAmbientContextManagerStub(
+	impl IAmbientContextManagerServer,
+) IAmbientContextManager {
+	wrapper := &ambientContextManagerStubWrapper{impl: impl}
+	stub := &AmbientContextManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -53,7 +53,7 @@ func (p *ChooserTargetServiceProxy) GetChooserTargets(
 	if _err := matchedFilter.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(result.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, result.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIChooserTargetService, "getChooserTargets")
 	if _err != nil {
@@ -115,4 +115,45 @@ func (s *ChooserTargetServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IChooserTargetServiceServer is the server-side interface that user implementations
+// provide to NewChooserTargetServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IChooserTargetServiceServer interface {
+	GetChooserTargets(ctx context.Context, targetComponentName content.ComponentName, matchedFilter content.IntentFilter, result IChooserTargetResult) error
+}
+
+type chooserTargetServiceStubWrapper struct {
+	impl       IChooserTargetServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *chooserTargetServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *chooserTargetServiceStubWrapper) GetChooserTargets(
+	ctx context.Context,
+	targetComponentName content.ComponentName,
+	matchedFilter content.IntentFilter,
+	result IChooserTargetResult,
+) error {
+	return w.impl.GetChooserTargets(ctx, targetComponentName, matchedFilter, result)
+}
+
+var _ IChooserTargetService = (*chooserTargetServiceStubWrapper)(nil)
+
+// NewChooserTargetServiceStub creates a server-side IChooserTargetService wrapping the given
+// server implementation. The returned value satisfies IChooserTargetService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewChooserTargetServiceStub(
+	impl IChooserTargetServiceServer,
+) IChooserTargetService {
+	wrapper := &chooserTargetServiceStubWrapper{impl: impl}
+	stub := &ChooserTargetServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -542,7 +542,7 @@ func (p *InstalldProxy) GetAppSize(
 	} else {
 		_data.WriteInt32(int32(len(packageNames)))
 		for _, _item := range packageNames {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 	_data.WriteInt32(_identity.UserID)
@@ -561,7 +561,7 @@ func (p *InstalldProxy) GetAppSize(
 	} else {
 		_data.WriteInt32(int32(len(codePaths)))
 		for _, _item := range codePaths {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 
@@ -720,7 +720,7 @@ func (p *InstalldProxy) GetAppCrates(
 	} else {
 		_data.WriteInt32(int32(len(packageNames)))
 		for _, _item := range packageNames {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 	_data.WriteInt32(_identity.UserID)
@@ -1482,7 +1482,7 @@ func (p *InstalldProxy) ReconcileSecondaryDexFile(
 	} else {
 		_data.WriteInt32(int32(len(isas)))
 		for _, _item := range isas {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 	_data.WriteString16(volume_uuid)
@@ -1667,7 +1667,7 @@ func (p *InstalldProxy) SnapshotAppData(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteString(packageName)
+	_data.WriteString16(packageName)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(snapshotId)
 	_data.WriteInt32(storageFlags)
@@ -1707,7 +1707,7 @@ func (p *InstalldProxy) RestoreAppDataSnapshot(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
 	_data.WriteString16(uuid)
-	_data.WriteString(packageName)
+	_data.WriteString16(packageName)
 	_data.WriteInt32(appId)
 	_data.WriteString16(seInfo)
 	_data.WriteInt32(user)
@@ -1991,7 +1991,7 @@ func (p *InstalldProxy) EnableFsverity(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
-	_data.WriteStrongBinder(authToken.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, authToken.AsBinder(), p.remote.Transport())
 	_data.WriteString16(filePath)
 	_data.WriteString16(packageName)
 
@@ -3140,7 +3140,7 @@ func (s *InstalldStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_packageName, _err := _data.ReadString()
+		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -3172,7 +3172,7 @@ func (s *InstalldStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_packageName, _err := _data.ReadString()
+		_arg_packageName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -3406,4 +3406,563 @@ func (s *InstalldStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInstalldServer is the server-side interface that user implementations
+// provide to NewInstalldStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInstalldServer interface {
+	CreateUserData(ctx context.Context, uuid string, userSerial int32, flags int32) error
+	DestroyUserData(ctx context.Context, uuid string, flags int32) error
+	SetFirstBoot(ctx context.Context) error
+	CreateAppData(ctx context.Context, args CreateAppDataArgs) (CreateAppDataResult, error)
+	CreateAppDataBatched(ctx context.Context, args []CreateAppDataArgs) ([]CreateAppDataResult, error)
+	ReconcileSdkData(ctx context.Context, args ReconcileSdkDataArgs) error
+	RestoreconAppData(ctx context.Context, uuid string, packageName string, flags int32, appId int32, seInfo string) error
+	MigrateAppData(ctx context.Context, uuid string, packageName string, flags int32) error
+	ClearAppData(ctx context.Context, uuid string, packageName string, flags int32, ceDataInode int64) error
+	DestroyAppData(ctx context.Context, uuid string, packageName string, flags int32, ceDataInode int64) error
+	FixupAppData(ctx context.Context, uuid string, flags int32) error
+	GetAppSize(ctx context.Context, uuid string, packageNames []string, flags int32, appId int32, ceDataInodes []int64, codePaths []string) ([]int64, error)
+	GetUserSize(ctx context.Context, uuid string, flags int32, appIds []int32) ([]int64, error)
+	GetExternalSize(ctx context.Context, uuid string, flags int32, appIds []int32) ([]int64, error)
+	GetAppCrates(ctx context.Context, uuid string, packageNames []string) ([]storage.CrateMetadata, error)
+	GetUserCrates(ctx context.Context, uuid string) ([]storage.CrateMetadata, error)
+	SetAppQuota(ctx context.Context, uuid string, appId int32, cacheQuota int64) error
+	MoveCompleteApp(ctx context.Context, fromUuid string, toUuid string, packageName string, appId int32, seInfo string, targetSdkVersion int32, fromCodePath string) error
+	Dexopt(ctx context.Context, apkPath string, uid int32, packageName string, instructionSet string, dexoptNeeded int32, outputPath string, dexFlags int32, compilerFilter string, uuid string, sharedLibraries string, seInfo string, downgrade bool, targetSdkVersion int32, profileName string, dexMetadataPath string, compilationReason string) (bool, error)
+	ControlDexOptBlocking(ctx context.Context, block bool) error
+	Rmdex(ctx context.Context, codePath string, instructionSet string) error
+	MergeProfiles(ctx context.Context, uid int32, packageName string, profileName string) (int32, error)
+	DumpProfiles(ctx context.Context, uid int32, packageName string, profileName string, codePath string, dumpClassesAndMethods bool) (bool, error)
+	CopySystemProfile(ctx context.Context, systemProfile string, uid int32, packageName string, profileName string) (bool, error)
+	ClearAppProfiles(ctx context.Context, packageName string, profileName string) error
+	DestroyAppProfiles(ctx context.Context, packageName string) error
+	DeleteReferenceProfile(ctx context.Context, packageName string, profileName string) error
+	CreateProfileSnapshot(ctx context.Context, appId int32, packageName string, profileName string, classpath string) (bool, error)
+	DestroyProfileSnapshot(ctx context.Context, packageName string, profileName string) error
+	RmPackageDir(ctx context.Context, packageName string, packageDir string) error
+	FreeCache(ctx context.Context, uuid string, targetFreeBytes int64, flags int32) error
+	LinkNativeLibraryDirectory(ctx context.Context, uuid string, packageName string, nativeLibPath32 string) error
+	CreateOatDir(ctx context.Context, packageName string, oatDir string, instructionSet string) error
+	LinkFile(ctx context.Context, packageName string, relativePath string, fromBase string, toBase string) error
+	MoveAb(ctx context.Context, packageName string, apkPath string, instructionSet string, outputPath string) error
+	DeleteOdex(ctx context.Context, packageName string, apkPath string, instructionSet string, outputPath string) (int64, error)
+	ReconcileSecondaryDexFile(ctx context.Context, dexPath string, pkgName string, uid int32, isas []string, volume_uuid string, storage_flag int32) (bool, error)
+	HashSecondaryDexFile(ctx context.Context, dexPath string, pkgName string, uid int32, volumeUuid string, storageFlag int32) ([]byte, error)
+	InvalidateMounts(ctx context.Context) error
+	IsQuotaSupported(ctx context.Context, uuid string) (bool, error)
+	PrepareAppProfile(ctx context.Context, packageName string, appId int32, profileName string, codePath string, dexMetadata string) (bool, error)
+	SnapshotAppData(ctx context.Context, uuid string, packageName string, snapshotId int32, storageFlags int32) (int64, error)
+	RestoreAppDataSnapshot(ctx context.Context, uuid string, packageName string, appId int32, seInfo string, user int32, snapshotId int32, storageflags int32) error
+	DestroyAppDataSnapshot(ctx context.Context, uuid string, packageName string, ceSnapshotInode int64, snapshotId int32, storageFlags int32) error
+	DestroyCeSnapshotsNotSpecified(ctx context.Context, uuid string, retainSnapshotIds []int32) error
+	TryMountDataMirror(ctx context.Context, volumeUuid string) error
+	OnPrivateVolumeRemoved(ctx context.Context, volumeUuid string) error
+	MigrateLegacyObbData(ctx context.Context) error
+	CleanupInvalidPackageDirs(ctx context.Context, uuid string, flags int32) error
+	GetOdexVisibility(ctx context.Context, packageName string, apkPath string, instructionSet string, outputPath string) (int32, error)
+	CreateFsveritySetupAuthToken(ctx context.Context, authFd int32, uid int32) (osIInstalld.IFsveritySetupAuthToken, error)
+	EnableFsverity(ctx context.Context, authToken osIInstalld.IFsveritySetupAuthToken, filePath string, packageName string) (int32, error)
+}
+
+type installdStubWrapper struct {
+	impl       IInstalldServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *installdStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *installdStubWrapper) CreateUserData(
+	ctx context.Context,
+	uuid string,
+	userSerial int32,
+	flags int32,
+) error {
+	return w.impl.CreateUserData(ctx, uuid, userSerial, flags)
+}
+
+func (w *installdStubWrapper) DestroyUserData(
+	ctx context.Context,
+	uuid string,
+	flags int32,
+) error {
+	return w.impl.DestroyUserData(ctx, uuid, flags)
+}
+
+func (w *installdStubWrapper) SetFirstBoot(
+	ctx context.Context,
+) error {
+	return w.impl.SetFirstBoot(ctx)
+}
+
+func (w *installdStubWrapper) CreateAppData(
+	ctx context.Context,
+	args CreateAppDataArgs,
+) (CreateAppDataResult, error) {
+	return w.impl.CreateAppData(ctx, args)
+}
+
+func (w *installdStubWrapper) CreateAppDataBatched(
+	ctx context.Context,
+	args []CreateAppDataArgs,
+) ([]CreateAppDataResult, error) {
+	return w.impl.CreateAppDataBatched(ctx, args)
+}
+
+func (w *installdStubWrapper) ReconcileSdkData(
+	ctx context.Context,
+	args ReconcileSdkDataArgs,
+) error {
+	return w.impl.ReconcileSdkData(ctx, args)
+}
+
+func (w *installdStubWrapper) RestoreconAppData(
+	ctx context.Context,
+	uuid string,
+	packageName string,
+	flags int32,
+	appId int32,
+	seInfo string,
+) error {
+	return w.impl.RestoreconAppData(ctx, uuid, packageName, flags, appId, seInfo)
+}
+
+func (w *installdStubWrapper) MigrateAppData(
+	ctx context.Context,
+	uuid string,
+	packageName string,
+	flags int32,
+) error {
+	return w.impl.MigrateAppData(ctx, uuid, packageName, flags)
+}
+
+func (w *installdStubWrapper) ClearAppData(
+	ctx context.Context,
+	uuid string,
+	packageName string,
+	flags int32,
+	ceDataInode int64,
+) error {
+	return w.impl.ClearAppData(ctx, uuid, packageName, flags, ceDataInode)
+}
+
+func (w *installdStubWrapper) DestroyAppData(
+	ctx context.Context,
+	uuid string,
+	packageName string,
+	flags int32,
+	ceDataInode int64,
+) error {
+	return w.impl.DestroyAppData(ctx, uuid, packageName, flags, ceDataInode)
+}
+
+func (w *installdStubWrapper) FixupAppData(
+	ctx context.Context,
+	uuid string,
+	flags int32,
+) error {
+	return w.impl.FixupAppData(ctx, uuid, flags)
+}
+
+func (w *installdStubWrapper) GetAppSize(
+	ctx context.Context,
+	uuid string,
+	packageNames []string,
+	flags int32,
+	appId int32,
+	ceDataInodes []int64,
+	codePaths []string,
+) ([]int64, error) {
+	return w.impl.GetAppSize(ctx, uuid, packageNames, flags, appId, ceDataInodes, codePaths)
+}
+
+func (w *installdStubWrapper) GetUserSize(
+	ctx context.Context,
+	uuid string,
+	flags int32,
+	appIds []int32,
+) ([]int64, error) {
+	return w.impl.GetUserSize(ctx, uuid, flags, appIds)
+}
+
+func (w *installdStubWrapper) GetExternalSize(
+	ctx context.Context,
+	uuid string,
+	flags int32,
+	appIds []int32,
+) ([]int64, error) {
+	return w.impl.GetExternalSize(ctx, uuid, flags, appIds)
+}
+
+func (w *installdStubWrapper) GetAppCrates(
+	ctx context.Context,
+	uuid string,
+	packageNames []string,
+) ([]storage.CrateMetadata, error) {
+	return w.impl.GetAppCrates(ctx, uuid, packageNames)
+}
+
+func (w *installdStubWrapper) GetUserCrates(
+	ctx context.Context,
+	uuid string,
+) ([]storage.CrateMetadata, error) {
+	return w.impl.GetUserCrates(ctx, uuid)
+}
+
+func (w *installdStubWrapper) SetAppQuota(
+	ctx context.Context,
+	uuid string,
+	appId int32,
+	cacheQuota int64,
+) error {
+	return w.impl.SetAppQuota(ctx, uuid, appId, cacheQuota)
+}
+
+func (w *installdStubWrapper) MoveCompleteApp(
+	ctx context.Context,
+	fromUuid string,
+	toUuid string,
+	packageName string,
+	appId int32,
+	seInfo string,
+	targetSdkVersion int32,
+	fromCodePath string,
+) error {
+	return w.impl.MoveCompleteApp(ctx, fromUuid, toUuid, packageName, appId, seInfo, targetSdkVersion, fromCodePath)
+}
+
+func (w *installdStubWrapper) Dexopt(
+	ctx context.Context,
+	apkPath string,
+	uid int32,
+	packageName string,
+	instructionSet string,
+	dexoptNeeded int32,
+	outputPath string,
+	dexFlags int32,
+	compilerFilter string,
+	uuid string,
+	sharedLibraries string,
+	seInfo string,
+	downgrade bool,
+	targetSdkVersion int32,
+	profileName string,
+	dexMetadataPath string,
+	compilationReason string,
+) (bool, error) {
+	return w.impl.Dexopt(ctx, apkPath, uid, packageName, instructionSet, dexoptNeeded, outputPath, dexFlags, compilerFilter, uuid, sharedLibraries, seInfo, downgrade, targetSdkVersion, profileName, dexMetadataPath, compilationReason)
+}
+
+func (w *installdStubWrapper) ControlDexOptBlocking(
+	ctx context.Context,
+	block bool,
+) error {
+	return w.impl.ControlDexOptBlocking(ctx, block)
+}
+
+func (w *installdStubWrapper) Rmdex(
+	ctx context.Context,
+	codePath string,
+	instructionSet string,
+) error {
+	return w.impl.Rmdex(ctx, codePath, instructionSet)
+}
+
+func (w *installdStubWrapper) MergeProfiles(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+	profileName string,
+) (int32, error) {
+	return w.impl.MergeProfiles(ctx, uid, packageName, profileName)
+}
+
+func (w *installdStubWrapper) DumpProfiles(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+	profileName string,
+	codePath string,
+	dumpClassesAndMethods bool,
+) (bool, error) {
+	return w.impl.DumpProfiles(ctx, uid, packageName, profileName, codePath, dumpClassesAndMethods)
+}
+
+func (w *installdStubWrapper) CopySystemProfile(
+	ctx context.Context,
+	systemProfile string,
+	uid int32,
+	packageName string,
+	profileName string,
+) (bool, error) {
+	return w.impl.CopySystemProfile(ctx, systemProfile, uid, packageName, profileName)
+}
+
+func (w *installdStubWrapper) ClearAppProfiles(
+	ctx context.Context,
+	packageName string,
+	profileName string,
+) error {
+	return w.impl.ClearAppProfiles(ctx, packageName, profileName)
+}
+
+func (w *installdStubWrapper) DestroyAppProfiles(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.DestroyAppProfiles(ctx, packageName)
+}
+
+func (w *installdStubWrapper) DeleteReferenceProfile(
+	ctx context.Context,
+	packageName string,
+	profileName string,
+) error {
+	return w.impl.DeleteReferenceProfile(ctx, packageName, profileName)
+}
+
+func (w *installdStubWrapper) CreateProfileSnapshot(
+	ctx context.Context,
+	appId int32,
+	packageName string,
+	profileName string,
+	classpath string,
+) (bool, error) {
+	return w.impl.CreateProfileSnapshot(ctx, appId, packageName, profileName, classpath)
+}
+
+func (w *installdStubWrapper) DestroyProfileSnapshot(
+	ctx context.Context,
+	packageName string,
+	profileName string,
+) error {
+	return w.impl.DestroyProfileSnapshot(ctx, packageName, profileName)
+}
+
+func (w *installdStubWrapper) RmPackageDir(
+	ctx context.Context,
+	packageName string,
+	packageDir string,
+) error {
+	return w.impl.RmPackageDir(ctx, packageName, packageDir)
+}
+
+func (w *installdStubWrapper) FreeCache(
+	ctx context.Context,
+	uuid string,
+	targetFreeBytes int64,
+	flags int32,
+) error {
+	return w.impl.FreeCache(ctx, uuid, targetFreeBytes, flags)
+}
+
+func (w *installdStubWrapper) LinkNativeLibraryDirectory(
+	ctx context.Context,
+	uuid string,
+	packageName string,
+	nativeLibPath32 string,
+) error {
+	return w.impl.LinkNativeLibraryDirectory(ctx, uuid, packageName, nativeLibPath32)
+}
+
+func (w *installdStubWrapper) CreateOatDir(
+	ctx context.Context,
+	packageName string,
+	oatDir string,
+	instructionSet string,
+) error {
+	return w.impl.CreateOatDir(ctx, packageName, oatDir, instructionSet)
+}
+
+func (w *installdStubWrapper) LinkFile(
+	ctx context.Context,
+	packageName string,
+	relativePath string,
+	fromBase string,
+	toBase string,
+) error {
+	return w.impl.LinkFile(ctx, packageName, relativePath, fromBase, toBase)
+}
+
+func (w *installdStubWrapper) MoveAb(
+	ctx context.Context,
+	packageName string,
+	apkPath string,
+	instructionSet string,
+	outputPath string,
+) error {
+	return w.impl.MoveAb(ctx, packageName, apkPath, instructionSet, outputPath)
+}
+
+func (w *installdStubWrapper) DeleteOdex(
+	ctx context.Context,
+	packageName string,
+	apkPath string,
+	instructionSet string,
+	outputPath string,
+) (int64, error) {
+	return w.impl.DeleteOdex(ctx, packageName, apkPath, instructionSet, outputPath)
+}
+
+func (w *installdStubWrapper) ReconcileSecondaryDexFile(
+	ctx context.Context,
+	dexPath string,
+	pkgName string,
+	uid int32,
+	isas []string,
+	volume_uuid string,
+	storage_flag int32,
+) (bool, error) {
+	return w.impl.ReconcileSecondaryDexFile(ctx, dexPath, pkgName, uid, isas, volume_uuid, storage_flag)
+}
+
+func (w *installdStubWrapper) HashSecondaryDexFile(
+	ctx context.Context,
+	dexPath string,
+	pkgName string,
+	uid int32,
+	volumeUuid string,
+	storageFlag int32,
+) ([]byte, error) {
+	return w.impl.HashSecondaryDexFile(ctx, dexPath, pkgName, uid, volumeUuid, storageFlag)
+}
+
+func (w *installdStubWrapper) InvalidateMounts(
+	ctx context.Context,
+) error {
+	return w.impl.InvalidateMounts(ctx)
+}
+
+func (w *installdStubWrapper) IsQuotaSupported(
+	ctx context.Context,
+	uuid string,
+) (bool, error) {
+	return w.impl.IsQuotaSupported(ctx, uuid)
+}
+
+func (w *installdStubWrapper) PrepareAppProfile(
+	ctx context.Context,
+	packageName string,
+	appId int32,
+	profileName string,
+	codePath string,
+	dexMetadata string,
+) (bool, error) {
+	return w.impl.PrepareAppProfile(ctx, packageName, appId, profileName, codePath, dexMetadata)
+}
+
+func (w *installdStubWrapper) SnapshotAppData(
+	ctx context.Context,
+	uuid string,
+	packageName string,
+	snapshotId int32,
+	storageFlags int32,
+) (int64, error) {
+	return w.impl.SnapshotAppData(ctx, uuid, packageName, snapshotId, storageFlags)
+}
+
+func (w *installdStubWrapper) RestoreAppDataSnapshot(
+	ctx context.Context,
+	uuid string,
+	packageName string,
+	appId int32,
+	seInfo string,
+	user int32,
+	snapshotId int32,
+	storageflags int32,
+) error {
+	return w.impl.RestoreAppDataSnapshot(ctx, uuid, packageName, appId, seInfo, user, snapshotId, storageflags)
+}
+
+func (w *installdStubWrapper) DestroyAppDataSnapshot(
+	ctx context.Context,
+	uuid string,
+	packageName string,
+	ceSnapshotInode int64,
+	snapshotId int32,
+	storageFlags int32,
+) error {
+	return w.impl.DestroyAppDataSnapshot(ctx, uuid, packageName, ceSnapshotInode, snapshotId, storageFlags)
+}
+
+func (w *installdStubWrapper) DestroyCeSnapshotsNotSpecified(
+	ctx context.Context,
+	uuid string,
+	retainSnapshotIds []int32,
+) error {
+	return w.impl.DestroyCeSnapshotsNotSpecified(ctx, uuid, retainSnapshotIds)
+}
+
+func (w *installdStubWrapper) TryMountDataMirror(
+	ctx context.Context,
+	volumeUuid string,
+) error {
+	return w.impl.TryMountDataMirror(ctx, volumeUuid)
+}
+
+func (w *installdStubWrapper) OnPrivateVolumeRemoved(
+	ctx context.Context,
+	volumeUuid string,
+) error {
+	return w.impl.OnPrivateVolumeRemoved(ctx, volumeUuid)
+}
+
+func (w *installdStubWrapper) MigrateLegacyObbData(
+	ctx context.Context,
+) error {
+	return w.impl.MigrateLegacyObbData(ctx)
+}
+
+func (w *installdStubWrapper) CleanupInvalidPackageDirs(
+	ctx context.Context,
+	uuid string,
+	flags int32,
+) error {
+	return w.impl.CleanupInvalidPackageDirs(ctx, uuid, flags)
+}
+
+func (w *installdStubWrapper) GetOdexVisibility(
+	ctx context.Context,
+	packageName string,
+	apkPath string,
+	instructionSet string,
+	outputPath string,
+) (int32, error) {
+	return w.impl.GetOdexVisibility(ctx, packageName, apkPath, instructionSet, outputPath)
+}
+
+func (w *installdStubWrapper) CreateFsveritySetupAuthToken(
+	ctx context.Context,
+	authFd int32,
+	uid int32,
+) (osIInstalld.IFsveritySetupAuthToken, error) {
+	return w.impl.CreateFsveritySetupAuthToken(ctx, authFd, uid)
+}
+
+func (w *installdStubWrapper) EnableFsverity(
+	ctx context.Context,
+	authToken osIInstalld.IFsveritySetupAuthToken,
+	filePath string,
+	packageName string,
+) (int32, error) {
+	return w.impl.EnableFsverity(ctx, authToken, filePath, packageName)
+}
+
+var _ IInstalld = (*installdStubWrapper)(nil)
+
+// NewInstalldStub creates a server-side IInstalld wrapping the given
+// server implementation. The returned value satisfies IInstalld
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInstalldStub(
+	impl IInstalldServer,
+) IInstalld {
+	wrapper := &installdStubWrapper{impl: impl}
+	stub := &InstalldStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

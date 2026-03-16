@@ -571,3 +571,112 @@ func (s *LegacyPermissionManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILegacyPermissionManagerServer is the server-side interface that user implementations
+// provide to NewLegacyPermissionManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILegacyPermissionManagerServer interface {
+	CheckDeviceIdentifierAccess(ctx context.Context, packageName string, message string, pid int32, uid int32) (int32, error)
+	CheckPhoneNumberAccess(ctx context.Context, packageName string, message string, pid int32, uid int32) (int32, error)
+	GrantDefaultPermissionsToEnabledCarrierApps(ctx context.Context, packageNames []string) error
+	GrantDefaultPermissionsToEnabledImsServices(ctx context.Context, packageNames []string) error
+	GrantDefaultPermissionsToEnabledTelephonyDataServices(ctx context.Context, packageNames []string) error
+	RevokeDefaultPermissionsFromDisabledTelephonyDataServices(ctx context.Context, packageNames []string) error
+	GrantDefaultPermissionsToActiveLuiApp(ctx context.Context, packageName string) error
+	RevokeDefaultPermissionsFromLuiApps(ctx context.Context, packageNames []string) error
+	GrantDefaultPermissionsToCarrierServiceApp(ctx context.Context, packageName string) error
+}
+
+type legacyPermissionManagerStubWrapper struct {
+	impl       ILegacyPermissionManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *legacyPermissionManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *legacyPermissionManagerStubWrapper) CheckDeviceIdentifierAccess(
+	ctx context.Context,
+	packageName string,
+	message string,
+	pid int32,
+	uid int32,
+) (int32, error) {
+	return w.impl.CheckDeviceIdentifierAccess(ctx, packageName, message, pid, uid)
+}
+
+func (w *legacyPermissionManagerStubWrapper) CheckPhoneNumberAccess(
+	ctx context.Context,
+	packageName string,
+	message string,
+	pid int32,
+	uid int32,
+) (int32, error) {
+	return w.impl.CheckPhoneNumberAccess(ctx, packageName, message, pid, uid)
+}
+
+func (w *legacyPermissionManagerStubWrapper) GrantDefaultPermissionsToEnabledCarrierApps(
+	ctx context.Context,
+	packageNames []string,
+) error {
+	return w.impl.GrantDefaultPermissionsToEnabledCarrierApps(ctx, packageNames)
+}
+
+func (w *legacyPermissionManagerStubWrapper) GrantDefaultPermissionsToEnabledImsServices(
+	ctx context.Context,
+	packageNames []string,
+) error {
+	return w.impl.GrantDefaultPermissionsToEnabledImsServices(ctx, packageNames)
+}
+
+func (w *legacyPermissionManagerStubWrapper) GrantDefaultPermissionsToEnabledTelephonyDataServices(
+	ctx context.Context,
+	packageNames []string,
+) error {
+	return w.impl.GrantDefaultPermissionsToEnabledTelephonyDataServices(ctx, packageNames)
+}
+
+func (w *legacyPermissionManagerStubWrapper) RevokeDefaultPermissionsFromDisabledTelephonyDataServices(
+	ctx context.Context,
+	packageNames []string,
+) error {
+	return w.impl.RevokeDefaultPermissionsFromDisabledTelephonyDataServices(ctx, packageNames)
+}
+
+func (w *legacyPermissionManagerStubWrapper) GrantDefaultPermissionsToActiveLuiApp(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.GrantDefaultPermissionsToActiveLuiApp(ctx, packageName)
+}
+
+func (w *legacyPermissionManagerStubWrapper) RevokeDefaultPermissionsFromLuiApps(
+	ctx context.Context,
+	packageNames []string,
+) error {
+	return w.impl.RevokeDefaultPermissionsFromLuiApps(ctx, packageNames)
+}
+
+func (w *legacyPermissionManagerStubWrapper) GrantDefaultPermissionsToCarrierServiceApp(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.GrantDefaultPermissionsToCarrierServiceApp(ctx, packageName)
+}
+
+var _ ILegacyPermissionManager = (*legacyPermissionManagerStubWrapper)(nil)
+
+// NewLegacyPermissionManagerStub creates a server-side ILegacyPermissionManager wrapping the given
+// server implementation. The returned value satisfies ILegacyPermissionManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLegacyPermissionManagerStub(
+	impl ILegacyPermissionManagerServer,
+) ILegacyPermissionManager {
+	wrapper := &legacyPermissionManagerStubWrapper{impl: impl}
+	stub := &LegacyPermissionManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

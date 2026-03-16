@@ -86,7 +86,7 @@ func (p *MediaQualityProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setCallback")
 	if _err != nil {
@@ -478,7 +478,7 @@ func (p *MediaQualityProxy) SetPictureProfileAdjustmentListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setPictureProfileAdjustmentListener")
 	if _err != nil {
@@ -563,7 +563,7 @@ func (p *MediaQualityProxy) SetSoundProfileAdjustmentListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaQuality)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaQuality, "setSoundProfileAdjustmentListener")
 	if _err != nil {
@@ -1161,4 +1161,212 @@ func (s *MediaQualityStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaQualityServer is the server-side interface that user implementations
+// provide to NewMediaQualityStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaQualityServer interface {
+	SetCallback(ctx context.Context, callback IMediaQualityCallback) error
+	SetAmbientBacklightDetector(ctx context.Context, settings AmbientBacklightSettings) error
+	SetAmbientBacklightDetectionEnabled(ctx context.Context, enabled bool) error
+	GetAmbientBacklightDetectionEnabled(ctx context.Context) (bool, error)
+	IsAutoPqSupported(ctx context.Context) (bool, error)
+	GetAutoPqEnabled(ctx context.Context) (bool, error)
+	SetAutoPqEnabled(ctx context.Context, enable bool) error
+	IsAutoSrSupported(ctx context.Context) (bool, error)
+	GetAutoSrEnabled(ctx context.Context) (bool, error)
+	SetAutoSrEnabled(ctx context.Context, enable bool) error
+	IsAutoAqSupported(ctx context.Context) (bool, error)
+	GetAutoAqEnabled(ctx context.Context) (bool, error)
+	SetAutoAqEnabled(ctx context.Context, enable bool) error
+	GetPictureProfileListener(ctx context.Context) (IPictureProfileChangedListener, error)
+	SetPictureProfileAdjustmentListener(ctx context.Context, listener IPictureProfileAdjustmentListener) error
+	SendDefaultPictureParameters(ctx context.Context, pictureParameters PictureParameters) error
+	GetSoundProfileListener(ctx context.Context) (ISoundProfileChangedListener, error)
+	SetSoundProfileAdjustmentListener(ctx context.Context, listener ISoundProfileAdjustmentListener) error
+	SendDefaultSoundParameters(ctx context.Context, soundParameters SoundParameters) error
+	GetParamCaps(ctx context.Context, paramNames []ParameterName, caps []ParamCapability) error
+	GetVendorParamCaps(ctx context.Context, names []VendorParameterIdentifier, caps []VendorParamCapability) error
+	SendPictureParameters(ctx context.Context, pictureParameters PictureParameters) error
+	SendSoundParameters(ctx context.Context, soundParameters SoundParameters) error
+}
+
+type mediaQualityStubWrapper struct {
+	impl       IMediaQualityServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaQualityStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaQualityStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IMediaQualityCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *mediaQualityStubWrapper) SetAmbientBacklightDetector(
+	ctx context.Context,
+	settings AmbientBacklightSettings,
+) error {
+	return w.impl.SetAmbientBacklightDetector(ctx, settings)
+}
+
+func (w *mediaQualityStubWrapper) SetAmbientBacklightDetectionEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetAmbientBacklightDetectionEnabled(ctx, enabled)
+}
+
+func (w *mediaQualityStubWrapper) GetAmbientBacklightDetectionEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetAmbientBacklightDetectionEnabled(ctx)
+}
+
+func (w *mediaQualityStubWrapper) IsAutoPqSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAutoPqSupported(ctx)
+}
+
+func (w *mediaQualityStubWrapper) GetAutoPqEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetAutoPqEnabled(ctx)
+}
+
+func (w *mediaQualityStubWrapper) SetAutoPqEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetAutoPqEnabled(ctx, enable)
+}
+
+func (w *mediaQualityStubWrapper) IsAutoSrSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAutoSrSupported(ctx)
+}
+
+func (w *mediaQualityStubWrapper) GetAutoSrEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetAutoSrEnabled(ctx)
+}
+
+func (w *mediaQualityStubWrapper) SetAutoSrEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetAutoSrEnabled(ctx, enable)
+}
+
+func (w *mediaQualityStubWrapper) IsAutoAqSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAutoAqSupported(ctx)
+}
+
+func (w *mediaQualityStubWrapper) GetAutoAqEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetAutoAqEnabled(ctx)
+}
+
+func (w *mediaQualityStubWrapper) SetAutoAqEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetAutoAqEnabled(ctx, enable)
+}
+
+func (w *mediaQualityStubWrapper) GetPictureProfileListener(
+	ctx context.Context,
+) (IPictureProfileChangedListener, error) {
+	return w.impl.GetPictureProfileListener(ctx)
+}
+
+func (w *mediaQualityStubWrapper) SetPictureProfileAdjustmentListener(
+	ctx context.Context,
+	listener IPictureProfileAdjustmentListener,
+) error {
+	return w.impl.SetPictureProfileAdjustmentListener(ctx, listener)
+}
+
+func (w *mediaQualityStubWrapper) SendDefaultPictureParameters(
+	ctx context.Context,
+	pictureParameters PictureParameters,
+) error {
+	return w.impl.SendDefaultPictureParameters(ctx, pictureParameters)
+}
+
+func (w *mediaQualityStubWrapper) GetSoundProfileListener(
+	ctx context.Context,
+) (ISoundProfileChangedListener, error) {
+	return w.impl.GetSoundProfileListener(ctx)
+}
+
+func (w *mediaQualityStubWrapper) SetSoundProfileAdjustmentListener(
+	ctx context.Context,
+	listener ISoundProfileAdjustmentListener,
+) error {
+	return w.impl.SetSoundProfileAdjustmentListener(ctx, listener)
+}
+
+func (w *mediaQualityStubWrapper) SendDefaultSoundParameters(
+	ctx context.Context,
+	soundParameters SoundParameters,
+) error {
+	return w.impl.SendDefaultSoundParameters(ctx, soundParameters)
+}
+
+func (w *mediaQualityStubWrapper) GetParamCaps(
+	ctx context.Context,
+	paramNames []ParameterName,
+	caps []ParamCapability,
+) error {
+	return w.impl.GetParamCaps(ctx, paramNames, caps)
+}
+
+func (w *mediaQualityStubWrapper) GetVendorParamCaps(
+	ctx context.Context,
+	names []VendorParameterIdentifier,
+	caps []VendorParamCapability,
+) error {
+	return w.impl.GetVendorParamCaps(ctx, names, caps)
+}
+
+func (w *mediaQualityStubWrapper) SendPictureParameters(
+	ctx context.Context,
+	pictureParameters PictureParameters,
+) error {
+	return w.impl.SendPictureParameters(ctx, pictureParameters)
+}
+
+func (w *mediaQualityStubWrapper) SendSoundParameters(
+	ctx context.Context,
+	soundParameters SoundParameters,
+) error {
+	return w.impl.SendSoundParameters(ctx, soundParameters)
+}
+
+var _ IMediaQuality = (*mediaQualityStubWrapper)(nil)
+
+// NewMediaQualityStub creates a server-side IMediaQuality wrapping the given
+// server implementation. The returned value satisfies IMediaQuality
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaQualityStub(
+	impl IMediaQualityServer,
+) IMediaQuality {
+	wrapper := &mediaQualityStubWrapper{impl: impl}
+	stub := &MediaQualityStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

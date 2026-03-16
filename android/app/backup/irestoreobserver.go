@@ -186,3 +186,67 @@ func (s *RestoreObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRestoreObserverServer is the server-side interface that user implementations
+// provide to NewRestoreObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRestoreObserverServer interface {
+	RestoreSetsAvailable(ctx context.Context, result []RestoreSet) error
+	RestoreStarting(ctx context.Context, numPackages int32) error
+	OnUpdate(ctx context.Context, nowBeingRestored int32, curentPackage string) error
+	RestoreFinished(ctx context.Context, error_ int32) error
+}
+
+type restoreObserverStubWrapper struct {
+	impl       IRestoreObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *restoreObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *restoreObserverStubWrapper) RestoreSetsAvailable(
+	ctx context.Context,
+	result []RestoreSet,
+) error {
+	return w.impl.RestoreSetsAvailable(ctx, result)
+}
+
+func (w *restoreObserverStubWrapper) RestoreStarting(
+	ctx context.Context,
+	numPackages int32,
+) error {
+	return w.impl.RestoreStarting(ctx, numPackages)
+}
+
+func (w *restoreObserverStubWrapper) OnUpdate(
+	ctx context.Context,
+	nowBeingRestored int32,
+	curentPackage string,
+) error {
+	return w.impl.OnUpdate(ctx, nowBeingRestored, curentPackage)
+}
+
+func (w *restoreObserverStubWrapper) RestoreFinished(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.RestoreFinished(ctx, error_)
+}
+
+var _ IRestoreObserver = (*restoreObserverStubWrapper)(nil)
+
+// NewRestoreObserverStub creates a server-side IRestoreObserver wrapping the given
+// server implementation. The returned value satisfies IRestoreObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRestoreObserverStub(
+	impl IRestoreObserverServer,
+) IRestoreObserver {
+	wrapper := &restoreObserverStubWrapper{impl: impl}
+	stub := &RestoreObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

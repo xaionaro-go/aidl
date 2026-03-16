@@ -43,7 +43,7 @@ func (p *CancellationCallbackProxy) SendCancellationTransport(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICancellationCallback)
-	_data.WriteStrongBinder(cancellationTransport.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellationTransport.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICancellationCallback, "sendCancellationTransport")
 	if _err != nil {
@@ -81,4 +81,43 @@ func (s *CancellationCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICancellationCallbackServer is the server-side interface that user implementations
+// provide to NewCancellationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICancellationCallbackServer interface {
+	SendCancellationTransport(ctx context.Context, cancellationTransport ondeviceintelligence.ICancellationSignal) error
+}
+
+type cancellationCallbackStubWrapper struct {
+	impl       ICancellationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cancellationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cancellationCallbackStubWrapper) SendCancellationTransport(
+	ctx context.Context,
+	cancellationTransport ondeviceintelligence.ICancellationSignal,
+) error {
+	return w.impl.SendCancellationTransport(ctx, cancellationTransport)
+}
+
+var _ ICancellationCallback = (*cancellationCallbackStubWrapper)(nil)
+
+// NewCancellationCallbackStub creates a server-side ICancellationCallback wrapping the given
+// server implementation. The returned value satisfies ICancellationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCancellationCallbackStub(
+	impl ICancellationCallbackServer,
+) ICancellationCallback {
+	wrapper := &cancellationCallbackStubWrapper{impl: impl}
+	stub := &CancellationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

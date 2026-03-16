@@ -82,3 +82,42 @@ func (s *FingerprintClientActiveCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFingerprintClientActiveCallbackServer is the server-side interface that user implementations
+// provide to NewFingerprintClientActiveCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFingerprintClientActiveCallbackServer interface {
+	OnClientActiveChanged(ctx context.Context, isActive bool) error
+}
+
+type fingerprintClientActiveCallbackStubWrapper struct {
+	impl       IFingerprintClientActiveCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fingerprintClientActiveCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fingerprintClientActiveCallbackStubWrapper) OnClientActiveChanged(
+	ctx context.Context,
+	isActive bool,
+) error {
+	return w.impl.OnClientActiveChanged(ctx, isActive)
+}
+
+var _ IFingerprintClientActiveCallback = (*fingerprintClientActiveCallbackStubWrapper)(nil)
+
+// NewFingerprintClientActiveCallbackStub creates a server-side IFingerprintClientActiveCallback wrapping the given
+// server implementation. The returned value satisfies IFingerprintClientActiveCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFingerprintClientActiveCallbackStub(
+	impl IFingerprintClientActiveCallbackServer,
+) IFingerprintClientActiveCallback {
+	wrapper := &fingerprintClientActiveCallbackStubWrapper{impl: impl}
+	stub := &FingerprintClientActiveCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

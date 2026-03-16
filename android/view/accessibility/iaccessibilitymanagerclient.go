@@ -178,3 +178,67 @@ func (s *AccessibilityManagerClientStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAccessibilityManagerClientServer is the server-side interface that user implementations
+// provide to NewAccessibilityManagerClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccessibilityManagerClientServer interface {
+	SetState(ctx context.Context, stateFlags int32) error
+	NotifyServicesStateChanged(ctx context.Context, updatedUiTimeout int64) error
+	SetRelevantEventTypes(ctx context.Context, eventTypes int32) error
+	SetFocusAppearance(ctx context.Context, strokeWidth int32, color int32) error
+}
+
+type accessibilityManagerClientStubWrapper struct {
+	impl       IAccessibilityManagerClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accessibilityManagerClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accessibilityManagerClientStubWrapper) SetState(
+	ctx context.Context,
+	stateFlags int32,
+) error {
+	return w.impl.SetState(ctx, stateFlags)
+}
+
+func (w *accessibilityManagerClientStubWrapper) NotifyServicesStateChanged(
+	ctx context.Context,
+	updatedUiTimeout int64,
+) error {
+	return w.impl.NotifyServicesStateChanged(ctx, updatedUiTimeout)
+}
+
+func (w *accessibilityManagerClientStubWrapper) SetRelevantEventTypes(
+	ctx context.Context,
+	eventTypes int32,
+) error {
+	return w.impl.SetRelevantEventTypes(ctx, eventTypes)
+}
+
+func (w *accessibilityManagerClientStubWrapper) SetFocusAppearance(
+	ctx context.Context,
+	strokeWidth int32,
+	color int32,
+) error {
+	return w.impl.SetFocusAppearance(ctx, strokeWidth, color)
+}
+
+var _ IAccessibilityManagerClient = (*accessibilityManagerClientStubWrapper)(nil)
+
+// NewAccessibilityManagerClientStub creates a server-side IAccessibilityManagerClient wrapping the given
+// server implementation. The returned value satisfies IAccessibilityManagerClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccessibilityManagerClientStub(
+	impl IAccessibilityManagerClientServer,
+) IAccessibilityManagerClient {
+	wrapper := &accessibilityManagerClientStubWrapper{impl: impl}
+	stub := &AccessibilityManagerClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

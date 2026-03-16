@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	accounts "github.com/xaionaro-go/binder/android/accounts"
+	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -21,7 +22,7 @@ const (
 type ISyncAdapter interface {
 	AsBinder() binder.IBinder
 	OnUnsyncableAccount(ctx context.Context, cb ISyncAdapterUnsyncableAccountCallback) error
-	StartSync(ctx context.Context, syncContext ISyncContext, authority string, account accounts.Account, extras interface{}) error
+	StartSync(ctx context.Context, syncContext ISyncContext, authority string, account accounts.Account, extras os.Bundle) error
 	CancelSync(ctx context.Context, syncContext ISyncContext) error
 }
 
@@ -47,7 +48,7 @@ func (p *SyncAdapterProxy) OnUnsyncableAccount(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISyncAdapter)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISyncAdapter, "onUnsyncableAccount")
 	if _err != nil {
@@ -63,14 +64,18 @@ func (p *SyncAdapterProxy) StartSync(
 	syncContext ISyncContext,
 	authority string,
 	account accounts.Account,
-	extras interface{},
+	extras os.Bundle,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISyncAdapter)
-	_data.WriteStrongBinder(syncContext.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, syncContext.AsBinder(), p.remote.Transport())
 	_data.WriteString16(authority)
 	_data.WriteInt32(1)
 	if _err := account.MarshalParcel(_data); _err != nil {
+		return _err
+	}
+	_data.WriteInt32(1)
+	if _err := extras.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 
@@ -89,7 +94,7 @@ func (p *SyncAdapterProxy) CancelSync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISyncAdapter)
-	_data.WriteStrongBinder(syncContext.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, syncContext.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISyncAdapter, "cancelSync")
 	if _err != nil {
@@ -147,7 +152,18 @@ func (s *SyncAdapterStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_extras interface{}
+		var _arg_extras os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.StartSync(ctx, _arg_syncContext, _arg_authority, _arg_account, _arg_extras)
 		_ = _err
 		return nil, nil
@@ -164,4 +180,62 @@ func (s *SyncAdapterStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISyncAdapterServer is the server-side interface that user implementations
+// provide to NewSyncAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISyncAdapterServer interface {
+	OnUnsyncableAccount(ctx context.Context, cb ISyncAdapterUnsyncableAccountCallback) error
+	StartSync(ctx context.Context, syncContext ISyncContext, authority string, account accounts.Account, extras os.Bundle) error
+	CancelSync(ctx context.Context, syncContext ISyncContext) error
+}
+
+type syncAdapterStubWrapper struct {
+	impl       ISyncAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *syncAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *syncAdapterStubWrapper) OnUnsyncableAccount(
+	ctx context.Context,
+	cb ISyncAdapterUnsyncableAccountCallback,
+) error {
+	return w.impl.OnUnsyncableAccount(ctx, cb)
+}
+
+func (w *syncAdapterStubWrapper) StartSync(
+	ctx context.Context,
+	syncContext ISyncContext,
+	authority string,
+	account accounts.Account,
+	extras os.Bundle,
+) error {
+	return w.impl.StartSync(ctx, syncContext, authority, account, extras)
+}
+
+func (w *syncAdapterStubWrapper) CancelSync(
+	ctx context.Context,
+	syncContext ISyncContext,
+) error {
+	return w.impl.CancelSync(ctx, syncContext)
+}
+
+var _ ISyncAdapter = (*syncAdapterStubWrapper)(nil)
+
+// NewSyncAdapterStub creates a server-side ISyncAdapter wrapping the given
+// server implementation. The returned value satisfies ISyncAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSyncAdapterStub(
+	impl ISyncAdapterServer,
+) ISyncAdapter {
+	wrapper := &syncAdapterStubWrapper{impl: impl}
+	stub := &SyncAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

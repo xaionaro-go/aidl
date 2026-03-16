@@ -53,7 +53,7 @@ func (p *TunerLnbProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerLnb)
-	_data.WriteStrongBinder(tunerLnbCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tunerLnbCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerLnb, "setCallback")
 	if _err != nil {
@@ -318,4 +318,82 @@ func (s *TunerLnbStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITunerLnbServer is the server-side interface that user implementations
+// provide to NewTunerLnbStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerLnbServer interface {
+	SetCallback(ctx context.Context, tunerLnbCallback ITunerLnbCallback) error
+	SetVoltage(ctx context.Context, voltage tvTuner.LnbVoltage) error
+	SetTone(ctx context.Context, tone tvTuner.LnbTone) error
+	SetSatellitePosition(ctx context.Context, position tvTuner.LnbPosition) error
+	SendDiseqcMessage(ctx context.Context, diseqcMessage []byte) error
+	Close(ctx context.Context) error
+}
+
+type tunerLnbStubWrapper struct {
+	impl       ITunerLnbServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerLnbStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerLnbStubWrapper) SetCallback(
+	ctx context.Context,
+	tunerLnbCallback ITunerLnbCallback,
+) error {
+	return w.impl.SetCallback(ctx, tunerLnbCallback)
+}
+
+func (w *tunerLnbStubWrapper) SetVoltage(
+	ctx context.Context,
+	voltage tvTuner.LnbVoltage,
+) error {
+	return w.impl.SetVoltage(ctx, voltage)
+}
+
+func (w *tunerLnbStubWrapper) SetTone(
+	ctx context.Context,
+	tone tvTuner.LnbTone,
+) error {
+	return w.impl.SetTone(ctx, tone)
+}
+
+func (w *tunerLnbStubWrapper) SetSatellitePosition(
+	ctx context.Context,
+	position tvTuner.LnbPosition,
+) error {
+	return w.impl.SetSatellitePosition(ctx, position)
+}
+
+func (w *tunerLnbStubWrapper) SendDiseqcMessage(
+	ctx context.Context,
+	diseqcMessage []byte,
+) error {
+	return w.impl.SendDiseqcMessage(ctx, diseqcMessage)
+}
+
+func (w *tunerLnbStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ ITunerLnb = (*tunerLnbStubWrapper)(nil)
+
+// NewTunerLnbStub creates a server-side ITunerLnb wrapping the given
+// server implementation. The returned value satisfies ITunerLnb
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerLnbStub(
+	impl ITunerLnbServer,
+) ITunerLnb {
+	wrapper := &tunerLnbStubWrapper{impl: impl}
+	stub := &TunerLnbStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

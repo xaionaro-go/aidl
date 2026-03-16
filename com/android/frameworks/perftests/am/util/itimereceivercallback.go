@@ -102,3 +102,43 @@ func (s *TimeReceiverCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITimeReceiverCallbackServer is the server-side interface that user implementations
+// provide to NewTimeReceiverCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITimeReceiverCallbackServer interface {
+	SendTime(ctx context.Context, type_ string, timeNs int64) error
+}
+
+type timeReceiverCallbackStubWrapper struct {
+	impl       ITimeReceiverCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *timeReceiverCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *timeReceiverCallbackStubWrapper) SendTime(
+	ctx context.Context,
+	type_ string,
+	timeNs int64,
+) error {
+	return w.impl.SendTime(ctx, type_, timeNs)
+}
+
+var _ ITimeReceiverCallback = (*timeReceiverCallbackStubWrapper)(nil)
+
+// NewTimeReceiverCallbackStub creates a server-side ITimeReceiverCallback wrapping the given
+// server implementation. The returned value satisfies ITimeReceiverCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTimeReceiverCallbackStub(
+	impl ITimeReceiverCallbackServer,
+) ITimeReceiverCallback {
+	wrapper := &timeReceiverCallbackStubWrapper{impl: impl}
+	stub := &TimeReceiverCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -653,8 +653,8 @@ func (p *RadioSimProxy) SetResponseFunctions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRadioSim)
-	_data.WriteStrongBinder(radioSimResponse.AsBinder().Handle())
-	_data.WriteStrongBinder(radioSimIndication.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, radioSimResponse.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, radioSimIndication.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRadioSim, "setResponseFunctions")
 	if _err != nil {
@@ -1545,4 +1545,380 @@ func (s *RadioSimStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRadioSimServer is the server-side interface that user implementations
+// provide to NewRadioSimStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioSimServer interface {
+	AreUiccApplicationsEnabled(ctx context.Context, serial int32) error
+	ChangeIccPin2ForApp(ctx context.Context, serial int32, oldPin2 string, newPin2 string, aid string) error
+	ChangeIccPinForApp(ctx context.Context, serial int32, oldPin string, newPin string, aid string) error
+	EnableUiccApplications(ctx context.Context, serial int32, enable bool) error
+	GetAllowedCarriers(ctx context.Context, serial int32) error
+	GetCdmaSubscription(ctx context.Context, serial int32) error
+	GetCdmaSubscriptionSource(ctx context.Context, serial int32) error
+	GetFacilityLockForApp(ctx context.Context, serial int32, facility string, password string, serviceClass int32, appId string) error
+	GetIccCardStatus(ctx context.Context, serial int32) error
+	GetImsiForApp(ctx context.Context, serial int32, aid string) error
+	GetSimPhonebookCapacity(ctx context.Context, serial int32) error
+	GetSimPhonebookRecords(ctx context.Context, serial int32) error
+	IccCloseLogicalChannel(ctx context.Context, serial int32, channelId int32) error
+	IccIoForApp(ctx context.Context, serial int32, iccIo IccIo) error
+	IccOpenLogicalChannel(ctx context.Context, serial int32, aid string, p2 int32) error
+	IccTransmitApduBasicChannel(ctx context.Context, serial int32, message SimApdu) error
+	IccTransmitApduLogicalChannel(ctx context.Context, serial int32, message SimApdu) error
+	ReportStkServiceIsRunning(ctx context.Context, serial int32) error
+	RequestIccSimAuthentication(ctx context.Context, serial int32, authContext int32, authData string, aid string) error
+	ResponseAcknowledgement(ctx context.Context) error
+	SendEnvelope(ctx context.Context, serial int32, contents string) error
+	SendEnvelopeWithStatus(ctx context.Context, serial int32, contents string) error
+	SendTerminalResponseToSim(ctx context.Context, serial int32, contents string) error
+	SetAllowedCarriers(ctx context.Context, serial int32, carriers CarrierRestrictions, multiSimPolicy SimLockMultiSimPolicy) error
+	SetCarrierInfoForImsiEncryption(ctx context.Context, serial int32, imsiEncryptionInfo ImsiEncryptionInfo) error
+	SetCdmaSubscriptionSource(ctx context.Context, serial int32, cdmaSub CdmaSubscriptionSource) error
+	SetFacilityLockForApp(ctx context.Context, serial int32, facility string, lockState bool, password string, serviceClass int32, appId string) error
+	SetResponseFunctions(ctx context.Context, radioSimResponse IRadioSimResponse, radioSimIndication IRadioSimIndication) error
+	SetSimCardPower(ctx context.Context, serial int32, powerUp CardPowerState) error
+	SetUiccSubscription(ctx context.Context, serial int32, uiccSub SelectUiccSub) error
+	SupplyIccPin2ForApp(ctx context.Context, serial int32, pin2 string, aid string) error
+	SupplyIccPinForApp(ctx context.Context, serial int32, pin string, aid string) error
+	SupplyIccPuk2ForApp(ctx context.Context, serial int32, puk2 string, pin2 string, aid string) error
+	SupplyIccPukForApp(ctx context.Context, serial int32, puk string, pin string, aid string) error
+	SupplySimDepersonalization(ctx context.Context, serial int32, persoType PersoSubstate, controlKey string) error
+	UpdateSimPhonebookRecords(ctx context.Context, serial int32, recordInfo PhonebookRecordInfo) error
+	IccCloseLogicalChannelWithSessionInfo(ctx context.Context, serial int32, sessionInfo SessionInfo) error
+}
+
+type radioSimStubWrapper struct {
+	impl       IRadioSimServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioSimStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioSimStubWrapper) AreUiccApplicationsEnabled(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.AreUiccApplicationsEnabled(ctx, serial)
+}
+
+func (w *radioSimStubWrapper) ChangeIccPin2ForApp(
+	ctx context.Context,
+	serial int32,
+	oldPin2 string,
+	newPin2 string,
+	aid string,
+) error {
+	return w.impl.ChangeIccPin2ForApp(ctx, serial, oldPin2, newPin2, aid)
+}
+
+func (w *radioSimStubWrapper) ChangeIccPinForApp(
+	ctx context.Context,
+	serial int32,
+	oldPin string,
+	newPin string,
+	aid string,
+) error {
+	return w.impl.ChangeIccPinForApp(ctx, serial, oldPin, newPin, aid)
+}
+
+func (w *radioSimStubWrapper) EnableUiccApplications(
+	ctx context.Context,
+	serial int32,
+	enable bool,
+) error {
+	return w.impl.EnableUiccApplications(ctx, serial, enable)
+}
+
+func (w *radioSimStubWrapper) GetAllowedCarriers(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetAllowedCarriers(ctx, serial)
+}
+
+func (w *radioSimStubWrapper) GetCdmaSubscription(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetCdmaSubscription(ctx, serial)
+}
+
+func (w *radioSimStubWrapper) GetCdmaSubscriptionSource(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetCdmaSubscriptionSource(ctx, serial)
+}
+
+func (w *radioSimStubWrapper) GetFacilityLockForApp(
+	ctx context.Context,
+	serial int32,
+	facility string,
+	password string,
+	serviceClass int32,
+	appId string,
+) error {
+	return w.impl.GetFacilityLockForApp(ctx, serial, facility, password, serviceClass, appId)
+}
+
+func (w *radioSimStubWrapper) GetIccCardStatus(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetIccCardStatus(ctx, serial)
+}
+
+func (w *radioSimStubWrapper) GetImsiForApp(
+	ctx context.Context,
+	serial int32,
+	aid string,
+) error {
+	return w.impl.GetImsiForApp(ctx, serial, aid)
+}
+
+func (w *radioSimStubWrapper) GetSimPhonebookCapacity(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetSimPhonebookCapacity(ctx, serial)
+}
+
+func (w *radioSimStubWrapper) GetSimPhonebookRecords(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.GetSimPhonebookRecords(ctx, serial)
+}
+
+func (w *radioSimStubWrapper) IccCloseLogicalChannel(
+	ctx context.Context,
+	serial int32,
+	channelId int32,
+) error {
+	return w.impl.IccCloseLogicalChannel(ctx, serial, channelId)
+}
+
+func (w *radioSimStubWrapper) IccIoForApp(
+	ctx context.Context,
+	serial int32,
+	iccIo IccIo,
+) error {
+	return w.impl.IccIoForApp(ctx, serial, iccIo)
+}
+
+func (w *radioSimStubWrapper) IccOpenLogicalChannel(
+	ctx context.Context,
+	serial int32,
+	aid string,
+	p2 int32,
+) error {
+	return w.impl.IccOpenLogicalChannel(ctx, serial, aid, p2)
+}
+
+func (w *radioSimStubWrapper) IccTransmitApduBasicChannel(
+	ctx context.Context,
+	serial int32,
+	message SimApdu,
+) error {
+	return w.impl.IccTransmitApduBasicChannel(ctx, serial, message)
+}
+
+func (w *radioSimStubWrapper) IccTransmitApduLogicalChannel(
+	ctx context.Context,
+	serial int32,
+	message SimApdu,
+) error {
+	return w.impl.IccTransmitApduLogicalChannel(ctx, serial, message)
+}
+
+func (w *radioSimStubWrapper) ReportStkServiceIsRunning(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.ReportStkServiceIsRunning(ctx, serial)
+}
+
+func (w *radioSimStubWrapper) RequestIccSimAuthentication(
+	ctx context.Context,
+	serial int32,
+	authContext int32,
+	authData string,
+	aid string,
+) error {
+	return w.impl.RequestIccSimAuthentication(ctx, serial, authContext, authData, aid)
+}
+
+func (w *radioSimStubWrapper) ResponseAcknowledgement(
+	ctx context.Context,
+) error {
+	return w.impl.ResponseAcknowledgement(ctx)
+}
+
+func (w *radioSimStubWrapper) SendEnvelope(
+	ctx context.Context,
+	serial int32,
+	contents string,
+) error {
+	return w.impl.SendEnvelope(ctx, serial, contents)
+}
+
+func (w *radioSimStubWrapper) SendEnvelopeWithStatus(
+	ctx context.Context,
+	serial int32,
+	contents string,
+) error {
+	return w.impl.SendEnvelopeWithStatus(ctx, serial, contents)
+}
+
+func (w *radioSimStubWrapper) SendTerminalResponseToSim(
+	ctx context.Context,
+	serial int32,
+	contents string,
+) error {
+	return w.impl.SendTerminalResponseToSim(ctx, serial, contents)
+}
+
+func (w *radioSimStubWrapper) SetAllowedCarriers(
+	ctx context.Context,
+	serial int32,
+	carriers CarrierRestrictions,
+	multiSimPolicy SimLockMultiSimPolicy,
+) error {
+	return w.impl.SetAllowedCarriers(ctx, serial, carriers, multiSimPolicy)
+}
+
+func (w *radioSimStubWrapper) SetCarrierInfoForImsiEncryption(
+	ctx context.Context,
+	serial int32,
+	imsiEncryptionInfo ImsiEncryptionInfo,
+) error {
+	return w.impl.SetCarrierInfoForImsiEncryption(ctx, serial, imsiEncryptionInfo)
+}
+
+func (w *radioSimStubWrapper) SetCdmaSubscriptionSource(
+	ctx context.Context,
+	serial int32,
+	cdmaSub CdmaSubscriptionSource,
+) error {
+	return w.impl.SetCdmaSubscriptionSource(ctx, serial, cdmaSub)
+}
+
+func (w *radioSimStubWrapper) SetFacilityLockForApp(
+	ctx context.Context,
+	serial int32,
+	facility string,
+	lockState bool,
+	password string,
+	serviceClass int32,
+	appId string,
+) error {
+	return w.impl.SetFacilityLockForApp(ctx, serial, facility, lockState, password, serviceClass, appId)
+}
+
+func (w *radioSimStubWrapper) SetResponseFunctions(
+	ctx context.Context,
+	radioSimResponse IRadioSimResponse,
+	radioSimIndication IRadioSimIndication,
+) error {
+	return w.impl.SetResponseFunctions(ctx, radioSimResponse, radioSimIndication)
+}
+
+func (w *radioSimStubWrapper) SetSimCardPower(
+	ctx context.Context,
+	serial int32,
+	powerUp CardPowerState,
+) error {
+	return w.impl.SetSimCardPower(ctx, serial, powerUp)
+}
+
+func (w *radioSimStubWrapper) SetUiccSubscription(
+	ctx context.Context,
+	serial int32,
+	uiccSub SelectUiccSub,
+) error {
+	return w.impl.SetUiccSubscription(ctx, serial, uiccSub)
+}
+
+func (w *radioSimStubWrapper) SupplyIccPin2ForApp(
+	ctx context.Context,
+	serial int32,
+	pin2 string,
+	aid string,
+) error {
+	return w.impl.SupplyIccPin2ForApp(ctx, serial, pin2, aid)
+}
+
+func (w *radioSimStubWrapper) SupplyIccPinForApp(
+	ctx context.Context,
+	serial int32,
+	pin string,
+	aid string,
+) error {
+	return w.impl.SupplyIccPinForApp(ctx, serial, pin, aid)
+}
+
+func (w *radioSimStubWrapper) SupplyIccPuk2ForApp(
+	ctx context.Context,
+	serial int32,
+	puk2 string,
+	pin2 string,
+	aid string,
+) error {
+	return w.impl.SupplyIccPuk2ForApp(ctx, serial, puk2, pin2, aid)
+}
+
+func (w *radioSimStubWrapper) SupplyIccPukForApp(
+	ctx context.Context,
+	serial int32,
+	puk string,
+	pin string,
+	aid string,
+) error {
+	return w.impl.SupplyIccPukForApp(ctx, serial, puk, pin, aid)
+}
+
+func (w *radioSimStubWrapper) SupplySimDepersonalization(
+	ctx context.Context,
+	serial int32,
+	persoType PersoSubstate,
+	controlKey string,
+) error {
+	return w.impl.SupplySimDepersonalization(ctx, serial, persoType, controlKey)
+}
+
+func (w *radioSimStubWrapper) UpdateSimPhonebookRecords(
+	ctx context.Context,
+	serial int32,
+	recordInfo PhonebookRecordInfo,
+) error {
+	return w.impl.UpdateSimPhonebookRecords(ctx, serial, recordInfo)
+}
+
+func (w *radioSimStubWrapper) IccCloseLogicalChannelWithSessionInfo(
+	ctx context.Context,
+	serial int32,
+	sessionInfo SessionInfo,
+) error {
+	return w.impl.IccCloseLogicalChannelWithSessionInfo(ctx, serial, sessionInfo)
+}
+
+var _ IRadioSim = (*radioSimStubWrapper)(nil)
+
+// NewRadioSimStub creates a server-side IRadioSim wrapping the given
+// server implementation. The returned value satisfies IRadioSim
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioSimStub(
+	impl IRadioSimServer,
+) IRadioSim {
+	wrapper := &radioSimStubWrapper{impl: impl}
+	stub := &RadioSimStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

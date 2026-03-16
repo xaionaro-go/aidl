@@ -114,7 +114,7 @@ func (p *DescramblerProxy) AddPid(
 	if _err := pid.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(optionalSourceFilter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, optionalSourceFilter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDescrambler, "addPid")
 	if _err != nil {
@@ -145,7 +145,7 @@ func (p *DescramblerProxy) RemovePid(
 	if _err := pid.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(optionalSourceFilter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, optionalSourceFilter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDescrambler, "removePid")
 	if _err != nil {
@@ -303,4 +303,76 @@ func (s *DescramblerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDescramblerServer is the server-side interface that user implementations
+// provide to NewDescramblerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDescramblerServer interface {
+	SetDemuxSource(ctx context.Context, demuxId int32) error
+	SetKeyToken(ctx context.Context, keyToken []byte) error
+	AddPid(ctx context.Context, pid DemuxPid, optionalSourceFilter IFilter) error
+	RemovePid(ctx context.Context, pid DemuxPid, optionalSourceFilter IFilter) error
+	Close(ctx context.Context) error
+}
+
+type descramblerStubWrapper struct {
+	impl       IDescramblerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *descramblerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *descramblerStubWrapper) SetDemuxSource(
+	ctx context.Context,
+	demuxId int32,
+) error {
+	return w.impl.SetDemuxSource(ctx, demuxId)
+}
+
+func (w *descramblerStubWrapper) SetKeyToken(
+	ctx context.Context,
+	keyToken []byte,
+) error {
+	return w.impl.SetKeyToken(ctx, keyToken)
+}
+
+func (w *descramblerStubWrapper) AddPid(
+	ctx context.Context,
+	pid DemuxPid,
+	optionalSourceFilter IFilter,
+) error {
+	return w.impl.AddPid(ctx, pid, optionalSourceFilter)
+}
+
+func (w *descramblerStubWrapper) RemovePid(
+	ctx context.Context,
+	pid DemuxPid,
+	optionalSourceFilter IFilter,
+) error {
+	return w.impl.RemovePid(ctx, pid, optionalSourceFilter)
+}
+
+func (w *descramblerStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ IDescrambler = (*descramblerStubWrapper)(nil)
+
+// NewDescramblerStub creates a server-side IDescrambler wrapping the given
+// server implementation. The returned value satisfies IDescrambler
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDescramblerStub(
+	impl IDescramblerServer,
+) IDescrambler {
+	wrapper := &descramblerStubWrapper{impl: impl}
+	stub := &DescramblerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

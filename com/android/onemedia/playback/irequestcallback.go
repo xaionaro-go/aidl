@@ -94,3 +94,42 @@ func (s *RequestCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRequestCallbackServer is the server-side interface that user implementations
+// provide to NewRequestCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRequestCallbackServer interface {
+	OnResult(ctx context.Context, result os.Bundle) error
+}
+
+type requestCallbackStubWrapper struct {
+	impl       IRequestCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *requestCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *requestCallbackStubWrapper) OnResult(
+	ctx context.Context,
+	result os.Bundle,
+) error {
+	return w.impl.OnResult(ctx, result)
+}
+
+var _ IRequestCallback = (*requestCallbackStubWrapper)(nil)
+
+// NewRequestCallbackStub creates a server-side IRequestCallback wrapping the given
+// server implementation. The returned value satisfies IRequestCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRequestCallbackStub(
+	impl IRequestCallbackServer,
+) IRequestCallback {
+	wrapper := &requestCallbackStubWrapper{impl: impl}
+	stub := &RequestCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

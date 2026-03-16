@@ -92,7 +92,7 @@ func (p *EuiccServiceProxy) DownloadSubscription(
 	if _err := resolvedBundle.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "downloadSubscription")
 	if _err != nil {
@@ -122,7 +122,7 @@ func (p *EuiccServiceProxy) GetDownloadableSubscriptionMetadata(
 	}
 	_data.WriteBool(switchAfterDownload)
 	_data.WriteBool(forceDeactivateSim)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getDownloadableSubscriptionMetadata")
 	if _err != nil {
@@ -141,7 +141,7 @@ func (p *EuiccServiceProxy) GetEid(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getEid")
 	if _err != nil {
@@ -160,7 +160,7 @@ func (p *EuiccServiceProxy) GetOtaStatus(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getOtaStatus")
 	if _err != nil {
@@ -179,7 +179,7 @@ func (p *EuiccServiceProxy) StartOtaIfNecessary(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(statusChangedCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, statusChangedCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "startOtaIfNecessary")
 	if _err != nil {
@@ -198,7 +198,7 @@ func (p *EuiccServiceProxy) GetEuiccProfileInfoList(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getEuiccProfileInfoList")
 	if _err != nil {
@@ -219,7 +219,7 @@ func (p *EuiccServiceProxy) GetDefaultDownloadableSubscriptionList(
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
 	_data.WriteBool(forceDeactivateSim)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getDefaultDownloadableSubscriptionList")
 	if _err != nil {
@@ -238,7 +238,7 @@ func (p *EuiccServiceProxy) GetEuiccInfo(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getEuiccInfo")
 	if _err != nil {
@@ -259,7 +259,7 @@ func (p *EuiccServiceProxy) DeleteSubscription(
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
 	_data.WriteString16(iccid)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "deleteSubscription")
 	if _err != nil {
@@ -285,7 +285,7 @@ func (p *EuiccServiceProxy) SwitchToSubscription(
 	_data.WriteInt32(portIndex)
 	_data.WriteString16(iccid)
 	_data.WriteBool(forceDeactivateSim)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteBool(useLegacyApi)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "switchToSubscription")
@@ -309,7 +309,7 @@ func (p *EuiccServiceProxy) UpdateSubscriptionNickname(
 	_data.WriteInt32(slotId)
 	_data.WriteString16(iccid)
 	_data.WriteString16(nickname)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "updateSubscriptionNickname")
 	if _err != nil {
@@ -328,7 +328,7 @@ func (p *EuiccServiceProxy) EraseSubscriptions(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "eraseSubscriptions")
 	if _err != nil {
@@ -349,7 +349,7 @@ func (p *EuiccServiceProxy) EraseSubscriptionsWithOptions(
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotIndex)
 	_data.WriteInt32(options)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "eraseSubscriptionsWithOptions")
 	if _err != nil {
@@ -368,7 +368,7 @@ func (p *EuiccServiceProxy) RetainSubscriptionsForFactoryReset(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "retainSubscriptionsForFactoryReset")
 	if _err != nil {
@@ -385,7 +385,7 @@ func (p *EuiccServiceProxy) Dump(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "dump")
 	if _err != nil {
@@ -404,7 +404,7 @@ func (p *EuiccServiceProxy) GetAvailableMemoryInBytes(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEuiccService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEuiccService, "getAvailableMemoryInBytes")
 	if _err != nil {
@@ -748,4 +748,196 @@ func (s *EuiccServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IEuiccServiceServer is the server-side interface that user implementations
+// provide to NewEuiccServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEuiccServiceServer interface {
+	DownloadSubscription(ctx context.Context, slotId int32, portIndex int32, subscription telephonyEuicc.DownloadableSubscription, switchAfterDownload bool, forceDeactivateSim bool, resolvedBundle os.Bundle, callback IDownloadSubscriptionCallback) error
+	GetDownloadableSubscriptionMetadata(ctx context.Context, slotId int32, portIndex int32, subscription telephonyEuicc.DownloadableSubscription, switchAfterDownload bool, forceDeactivateSim bool, callback IGetDownloadableSubscriptionMetadataCallback) error
+	GetEid(ctx context.Context, slotId int32, callback IGetEidCallback) error
+	GetOtaStatus(ctx context.Context, slotId int32, callback IGetOtaStatusCallback) error
+	StartOtaIfNecessary(ctx context.Context, slotId int32, statusChangedCallback IOtaStatusChangedCallback) error
+	GetEuiccProfileInfoList(ctx context.Context, slotId int32, callback IGetEuiccProfileInfoListCallback) error
+	GetDefaultDownloadableSubscriptionList(ctx context.Context, slotId int32, forceDeactivateSim bool, callback IGetDefaultDownloadableSubscriptionListCallback) error
+	GetEuiccInfo(ctx context.Context, slotId int32, callback IGetEuiccInfoCallback) error
+	DeleteSubscription(ctx context.Context, slotId int32, iccid string, callback IDeleteSubscriptionCallback) error
+	SwitchToSubscription(ctx context.Context, slotId int32, portIndex int32, iccid string, forceDeactivateSim bool, callback ISwitchToSubscriptionCallback, useLegacyApi bool) error
+	UpdateSubscriptionNickname(ctx context.Context, slotId int32, iccid string, nickname string, callback IUpdateSubscriptionNicknameCallback) error
+	EraseSubscriptions(ctx context.Context, slotId int32, callback IEraseSubscriptionsCallback) error
+	EraseSubscriptionsWithOptions(ctx context.Context, slotIndex int32, options int32, callback IEraseSubscriptionsCallback) error
+	RetainSubscriptionsForFactoryReset(ctx context.Context, slotId int32, callback IRetainSubscriptionsForFactoryResetCallback) error
+	Dump(ctx context.Context, callback IEuiccServiceDumpResultCallback) error
+	GetAvailableMemoryInBytes(ctx context.Context, slotId int32, callback IGetAvailableMemoryInBytesCallback) error
+}
+
+type euiccServiceStubWrapper struct {
+	impl       IEuiccServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *euiccServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *euiccServiceStubWrapper) DownloadSubscription(
+	ctx context.Context,
+	slotId int32,
+	portIndex int32,
+	subscription telephonyEuicc.DownloadableSubscription,
+	switchAfterDownload bool,
+	forceDeactivateSim bool,
+	resolvedBundle os.Bundle,
+	callback IDownloadSubscriptionCallback,
+) error {
+	return w.impl.DownloadSubscription(ctx, slotId, portIndex, subscription, switchAfterDownload, forceDeactivateSim, resolvedBundle, callback)
+}
+
+func (w *euiccServiceStubWrapper) GetDownloadableSubscriptionMetadata(
+	ctx context.Context,
+	slotId int32,
+	portIndex int32,
+	subscription telephonyEuicc.DownloadableSubscription,
+	switchAfterDownload bool,
+	forceDeactivateSim bool,
+	callback IGetDownloadableSubscriptionMetadataCallback,
+) error {
+	return w.impl.GetDownloadableSubscriptionMetadata(ctx, slotId, portIndex, subscription, switchAfterDownload, forceDeactivateSim, callback)
+}
+
+func (w *euiccServiceStubWrapper) GetEid(
+	ctx context.Context,
+	slotId int32,
+	callback IGetEidCallback,
+) error {
+	return w.impl.GetEid(ctx, slotId, callback)
+}
+
+func (w *euiccServiceStubWrapper) GetOtaStatus(
+	ctx context.Context,
+	slotId int32,
+	callback IGetOtaStatusCallback,
+) error {
+	return w.impl.GetOtaStatus(ctx, slotId, callback)
+}
+
+func (w *euiccServiceStubWrapper) StartOtaIfNecessary(
+	ctx context.Context,
+	slotId int32,
+	statusChangedCallback IOtaStatusChangedCallback,
+) error {
+	return w.impl.StartOtaIfNecessary(ctx, slotId, statusChangedCallback)
+}
+
+func (w *euiccServiceStubWrapper) GetEuiccProfileInfoList(
+	ctx context.Context,
+	slotId int32,
+	callback IGetEuiccProfileInfoListCallback,
+) error {
+	return w.impl.GetEuiccProfileInfoList(ctx, slotId, callback)
+}
+
+func (w *euiccServiceStubWrapper) GetDefaultDownloadableSubscriptionList(
+	ctx context.Context,
+	slotId int32,
+	forceDeactivateSim bool,
+	callback IGetDefaultDownloadableSubscriptionListCallback,
+) error {
+	return w.impl.GetDefaultDownloadableSubscriptionList(ctx, slotId, forceDeactivateSim, callback)
+}
+
+func (w *euiccServiceStubWrapper) GetEuiccInfo(
+	ctx context.Context,
+	slotId int32,
+	callback IGetEuiccInfoCallback,
+) error {
+	return w.impl.GetEuiccInfo(ctx, slotId, callback)
+}
+
+func (w *euiccServiceStubWrapper) DeleteSubscription(
+	ctx context.Context,
+	slotId int32,
+	iccid string,
+	callback IDeleteSubscriptionCallback,
+) error {
+	return w.impl.DeleteSubscription(ctx, slotId, iccid, callback)
+}
+
+func (w *euiccServiceStubWrapper) SwitchToSubscription(
+	ctx context.Context,
+	slotId int32,
+	portIndex int32,
+	iccid string,
+	forceDeactivateSim bool,
+	callback ISwitchToSubscriptionCallback,
+	useLegacyApi bool,
+) error {
+	return w.impl.SwitchToSubscription(ctx, slotId, portIndex, iccid, forceDeactivateSim, callback, useLegacyApi)
+}
+
+func (w *euiccServiceStubWrapper) UpdateSubscriptionNickname(
+	ctx context.Context,
+	slotId int32,
+	iccid string,
+	nickname string,
+	callback IUpdateSubscriptionNicknameCallback,
+) error {
+	return w.impl.UpdateSubscriptionNickname(ctx, slotId, iccid, nickname, callback)
+}
+
+func (w *euiccServiceStubWrapper) EraseSubscriptions(
+	ctx context.Context,
+	slotId int32,
+	callback IEraseSubscriptionsCallback,
+) error {
+	return w.impl.EraseSubscriptions(ctx, slotId, callback)
+}
+
+func (w *euiccServiceStubWrapper) EraseSubscriptionsWithOptions(
+	ctx context.Context,
+	slotIndex int32,
+	options int32,
+	callback IEraseSubscriptionsCallback,
+) error {
+	return w.impl.EraseSubscriptionsWithOptions(ctx, slotIndex, options, callback)
+}
+
+func (w *euiccServiceStubWrapper) RetainSubscriptionsForFactoryReset(
+	ctx context.Context,
+	slotId int32,
+	callback IRetainSubscriptionsForFactoryResetCallback,
+) error {
+	return w.impl.RetainSubscriptionsForFactoryReset(ctx, slotId, callback)
+}
+
+func (w *euiccServiceStubWrapper) Dump(
+	ctx context.Context,
+	callback IEuiccServiceDumpResultCallback,
+) error {
+	return w.impl.Dump(ctx, callback)
+}
+
+func (w *euiccServiceStubWrapper) GetAvailableMemoryInBytes(
+	ctx context.Context,
+	slotId int32,
+	callback IGetAvailableMemoryInBytesCallback,
+) error {
+	return w.impl.GetAvailableMemoryInBytes(ctx, slotId, callback)
+}
+
+var _ IEuiccService = (*euiccServiceStubWrapper)(nil)
+
+// NewEuiccServiceStub creates a server-side IEuiccService wrapping the given
+// server implementation. The returned value satisfies IEuiccService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEuiccServiceStub(
+	impl IEuiccServiceServer,
+) IEuiccService {
+	wrapper := &euiccServiceStubWrapper{impl: impl}
+	stub := &EuiccServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

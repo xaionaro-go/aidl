@@ -128,7 +128,7 @@ func (p *StorageSessionProxy) OpenFile(
 	var _result IFile
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageSession)
-	_data.WriteString(filePath)
+	_data.WriteString16(filePath)
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -163,7 +163,7 @@ func (p *StorageSessionProxy) DeleteFile(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageSession)
-	_data.WriteString(filePath)
+	_data.WriteString16(filePath)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "deleteFile")
 	if _err != nil {
@@ -191,8 +191,8 @@ func (p *StorageSessionProxy) RenameFile(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageSession)
-	_data.WriteString(currentPath)
-	_data.WriteString(destPath)
+	_data.WriteString16(currentPath)
+	_data.WriteString16(destPath)
 	_data.WriteInt32(int32(destCreateMode))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "renameFile")
@@ -220,7 +220,7 @@ func (p *StorageSessionProxy) OpenDir(
 	var _result IDir
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageSession)
-	_data.WriteString(path)
+	_data.WriteString16(path)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageSession, "openDir")
 	if _err != nil {
@@ -299,7 +299,7 @@ func (s *StorageSessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_filePath, _err := _data.ReadString()
+		_arg_filePath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -329,7 +329,7 @@ func (s *StorageSessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_filePath, _err := _data.ReadString()
+		_arg_filePath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -345,11 +345,11 @@ func (s *StorageSessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_currentPath, _err := _data.ReadString()
+		_arg_currentPath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_destPath, _err := _data.ReadString()
+		_arg_destPath, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -370,7 +370,7 @@ func (s *StorageSessionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_path, _err := _data.ReadString()
+		_arg_path, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -387,4 +387,91 @@ func (s *StorageSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IStorageSessionServer is the server-side interface that user implementations
+// provide to NewStorageSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStorageSessionServer interface {
+	CommitChanges(ctx context.Context) error
+	StageChangesForCommitOnAbUpdateComplete(ctx context.Context) error
+	AbandonChanges(ctx context.Context) error
+	OpenFile(ctx context.Context, filePath string, options OpenOptions) (IFile, error)
+	DeleteFile(ctx context.Context, filePath string) error
+	RenameFile(ctx context.Context, currentPath string, destPath string, destCreateMode CreationMode) error
+	OpenDir(ctx context.Context, path string) (IDir, error)
+}
+
+type storageSessionStubWrapper struct {
+	impl       IStorageSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *storageSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *storageSessionStubWrapper) CommitChanges(
+	ctx context.Context,
+) error {
+	return w.impl.CommitChanges(ctx)
+}
+
+func (w *storageSessionStubWrapper) StageChangesForCommitOnAbUpdateComplete(
+	ctx context.Context,
+) error {
+	return w.impl.StageChangesForCommitOnAbUpdateComplete(ctx)
+}
+
+func (w *storageSessionStubWrapper) AbandonChanges(
+	ctx context.Context,
+) error {
+	return w.impl.AbandonChanges(ctx)
+}
+
+func (w *storageSessionStubWrapper) OpenFile(
+	ctx context.Context,
+	filePath string,
+	options OpenOptions,
+) (IFile, error) {
+	return w.impl.OpenFile(ctx, filePath, options)
+}
+
+func (w *storageSessionStubWrapper) DeleteFile(
+	ctx context.Context,
+	filePath string,
+) error {
+	return w.impl.DeleteFile(ctx, filePath)
+}
+
+func (w *storageSessionStubWrapper) RenameFile(
+	ctx context.Context,
+	currentPath string,
+	destPath string,
+	destCreateMode CreationMode,
+) error {
+	return w.impl.RenameFile(ctx, currentPath, destPath, destCreateMode)
+}
+
+func (w *storageSessionStubWrapper) OpenDir(
+	ctx context.Context,
+	path string,
+) (IDir, error) {
+	return w.impl.OpenDir(ctx, path)
+}
+
+var _ IStorageSession = (*storageSessionStubWrapper)(nil)
+
+// NewStorageSessionStub creates a server-side IStorageSession wrapping the given
+// server implementation. The returned value satisfies IStorageSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStorageSessionStub(
+	impl IStorageSessionServer,
+) IStorageSession {
+	wrapper := &storageSessionStubWrapper{impl: impl}
+	stub := &StorageSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

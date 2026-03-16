@@ -82,3 +82,42 @@ func (s *StreamingCallAdapterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStreamingCallAdapterServer is the server-side interface that user implementations
+// provide to NewStreamingCallAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStreamingCallAdapterServer interface {
+	SetStreamingState(ctx context.Context, state int32) error
+}
+
+type streamingCallAdapterStubWrapper struct {
+	impl       IStreamingCallAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *streamingCallAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *streamingCallAdapterStubWrapper) SetStreamingState(
+	ctx context.Context,
+	state int32,
+) error {
+	return w.impl.SetStreamingState(ctx, state)
+}
+
+var _ IStreamingCallAdapter = (*streamingCallAdapterStubWrapper)(nil)
+
+// NewStreamingCallAdapterStub creates a server-side IStreamingCallAdapter wrapping the given
+// server implementation. The returned value satisfies IStreamingCallAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStreamingCallAdapterStub(
+	impl IStreamingCallAdapterServer,
+) IStreamingCallAdapter {
+	wrapper := &streamingCallAdapterStubWrapper{impl: impl}
+	stub := &StreamingCallAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

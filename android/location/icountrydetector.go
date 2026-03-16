@@ -80,7 +80,7 @@ func (p *CountryDetectorProxy) AddCountryListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICountryDetector)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICountryDetector, "addCountryListener")
 	if _err != nil {
@@ -106,7 +106,7 @@ func (p *CountryDetectorProxy) RemoveCountryListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICountryDetector)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICountryDetector, "removeCountryListener")
 	if _err != nil {
@@ -189,4 +189,58 @@ func (s *CountryDetectorStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICountryDetectorServer is the server-side interface that user implementations
+// provide to NewCountryDetectorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICountryDetectorServer interface {
+	DetectCountry(ctx context.Context) (Country, error)
+	AddCountryListener(ctx context.Context, listener ICountryListener) error
+	RemoveCountryListener(ctx context.Context, listener ICountryListener) error
+}
+
+type countryDetectorStubWrapper struct {
+	impl       ICountryDetectorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *countryDetectorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *countryDetectorStubWrapper) DetectCountry(
+	ctx context.Context,
+) (Country, error) {
+	return w.impl.DetectCountry(ctx)
+}
+
+func (w *countryDetectorStubWrapper) AddCountryListener(
+	ctx context.Context,
+	listener ICountryListener,
+) error {
+	return w.impl.AddCountryListener(ctx, listener)
+}
+
+func (w *countryDetectorStubWrapper) RemoveCountryListener(
+	ctx context.Context,
+	listener ICountryListener,
+) error {
+	return w.impl.RemoveCountryListener(ctx, listener)
+}
+
+var _ ICountryDetector = (*countryDetectorStubWrapper)(nil)
+
+// NewCountryDetectorStub creates a server-side ICountryDetector wrapping the given
+// server implementation. The returned value satisfies ICountryDetector
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCountryDetectorStub(
+	impl ICountryDetectorServer,
+) ICountryDetector {
+	wrapper := &countryDetectorStubWrapper{impl: impl}
+	stub := &CountryDetectorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

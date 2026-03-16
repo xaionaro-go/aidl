@@ -76,3 +76,41 @@ func (s *VcnUnderlyingNetworkPolicyListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVcnUnderlyingNetworkPolicyListenerServer is the server-side interface that user implementations
+// provide to NewVcnUnderlyingNetworkPolicyListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVcnUnderlyingNetworkPolicyListenerServer interface {
+	OnPolicyChanged(ctx context.Context) error
+}
+
+type vcnUnderlyingNetworkPolicyListenerStubWrapper struct {
+	impl       IVcnUnderlyingNetworkPolicyListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vcnUnderlyingNetworkPolicyListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vcnUnderlyingNetworkPolicyListenerStubWrapper) OnPolicyChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnPolicyChanged(ctx)
+}
+
+var _ IVcnUnderlyingNetworkPolicyListener = (*vcnUnderlyingNetworkPolicyListenerStubWrapper)(nil)
+
+// NewVcnUnderlyingNetworkPolicyListenerStub creates a server-side IVcnUnderlyingNetworkPolicyListener wrapping the given
+// server implementation. The returned value satisfies IVcnUnderlyingNetworkPolicyListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVcnUnderlyingNetworkPolicyListenerStub(
+	impl IVcnUnderlyingNetworkPolicyListenerServer,
+) IVcnUnderlyingNetworkPolicyListener {
+	wrapper := &vcnUnderlyingNetworkPolicyListenerStubWrapper{impl: impl}
+	stub := &VcnUnderlyingNetworkPolicyListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

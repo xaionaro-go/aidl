@@ -44,7 +44,7 @@ func (p *TransientNotificationProxy) Show(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransientNotification)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITransientNotification, "show")
 	if _err != nil {
@@ -104,4 +104,50 @@ func (s *TransientNotificationStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITransientNotificationServer is the server-side interface that user implementations
+// provide to NewTransientNotificationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITransientNotificationServer interface {
+	Show(ctx context.Context, windowToken binder.IBinder) error
+	Hide(ctx context.Context) error
+}
+
+type transientNotificationStubWrapper struct {
+	impl       ITransientNotificationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transientNotificationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transientNotificationStubWrapper) Show(
+	ctx context.Context,
+	windowToken binder.IBinder,
+) error {
+	return w.impl.Show(ctx, windowToken)
+}
+
+func (w *transientNotificationStubWrapper) Hide(
+	ctx context.Context,
+) error {
+	return w.impl.Hide(ctx)
+}
+
+var _ ITransientNotification = (*transientNotificationStubWrapper)(nil)
+
+// NewTransientNotificationStub creates a server-side ITransientNotification wrapping the given
+// server implementation. The returned value satisfies ITransientNotification
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTransientNotificationStub(
+	impl ITransientNotificationServer,
+) ITransientNotification {
+	wrapper := &transientNotificationStubWrapper{impl: impl}
+	stub := &TransientNotificationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

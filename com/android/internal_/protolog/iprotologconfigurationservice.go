@@ -44,8 +44,8 @@ func (p *ProtoLogConfigurationServiceProxy) RegisterClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIProtoLogConfigurationService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
-	_data.WriteStrongBinder(args.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, args.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIProtoLogConfigurationService, "registerClient")
 	if _err != nil {
@@ -100,4 +100,44 @@ func (s *ProtoLogConfigurationServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IProtoLogConfigurationServiceServer is the server-side interface that user implementations
+// provide to NewProtoLogConfigurationServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProtoLogConfigurationServiceServer interface {
+	RegisterClient(ctx context.Context, client IProtoLogClient, args protologIProtoLogConfigurationService.IRegisterClientArgs) error
+}
+
+type protoLogConfigurationServiceStubWrapper struct {
+	impl       IProtoLogConfigurationServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *protoLogConfigurationServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *protoLogConfigurationServiceStubWrapper) RegisterClient(
+	ctx context.Context,
+	client IProtoLogClient,
+	args protologIProtoLogConfigurationService.IRegisterClientArgs,
+) error {
+	return w.impl.RegisterClient(ctx, client, args)
+}
+
+var _ IProtoLogConfigurationService = (*protoLogConfigurationServiceStubWrapper)(nil)
+
+// NewProtoLogConfigurationServiceStub creates a server-side IProtoLogConfigurationService wrapping the given
+// server implementation. The returned value satisfies IProtoLogConfigurationService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProtoLogConfigurationServiceStub(
+	impl IProtoLogConfigurationServiceServer,
+) IProtoLogConfigurationService {
+	wrapper := &protoLogConfigurationServiceStubWrapper{impl: impl}
+	stub := &ProtoLogConfigurationServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

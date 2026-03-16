@@ -340,3 +340,90 @@ func (s *AuthenticationStateListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// AuthenticationStateListenerServer is the server-side interface that user implementations
+// provide to NewAuthenticationStateListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type AuthenticationStateListenerServer interface {
+	OnAuthenticationAcquired(ctx context.Context, authInfo events.AuthenticationAcquiredInfo) error
+	OnAuthenticationError(ctx context.Context, authInfo events.AuthenticationErrorInfo) error
+	OnAuthenticationFailed(ctx context.Context, authInfo events.AuthenticationFailedInfo) error
+	OnAuthenticationHelp(ctx context.Context, authInfo events.AuthenticationHelpInfo) error
+	OnAuthenticationStarted(ctx context.Context, authInfo events.AuthenticationStartedInfo) error
+	OnAuthenticationStopped(ctx context.Context, authInfo events.AuthenticationStoppedInfo) error
+	OnAuthenticationSucceeded(ctx context.Context, authInfo events.AuthenticationSucceededInfo) error
+}
+
+type authenticationStateListenerStubWrapper struct {
+	impl       AuthenticationStateListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *authenticationStateListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *authenticationStateListenerStubWrapper) OnAuthenticationAcquired(
+	ctx context.Context,
+	authInfo events.AuthenticationAcquiredInfo,
+) error {
+	return w.impl.OnAuthenticationAcquired(ctx, authInfo)
+}
+
+func (w *authenticationStateListenerStubWrapper) OnAuthenticationError(
+	ctx context.Context,
+	authInfo events.AuthenticationErrorInfo,
+) error {
+	return w.impl.OnAuthenticationError(ctx, authInfo)
+}
+
+func (w *authenticationStateListenerStubWrapper) OnAuthenticationFailed(
+	ctx context.Context,
+	authInfo events.AuthenticationFailedInfo,
+) error {
+	return w.impl.OnAuthenticationFailed(ctx, authInfo)
+}
+
+func (w *authenticationStateListenerStubWrapper) OnAuthenticationHelp(
+	ctx context.Context,
+	authInfo events.AuthenticationHelpInfo,
+) error {
+	return w.impl.OnAuthenticationHelp(ctx, authInfo)
+}
+
+func (w *authenticationStateListenerStubWrapper) OnAuthenticationStarted(
+	ctx context.Context,
+	authInfo events.AuthenticationStartedInfo,
+) error {
+	return w.impl.OnAuthenticationStarted(ctx, authInfo)
+}
+
+func (w *authenticationStateListenerStubWrapper) OnAuthenticationStopped(
+	ctx context.Context,
+	authInfo events.AuthenticationStoppedInfo,
+) error {
+	return w.impl.OnAuthenticationStopped(ctx, authInfo)
+}
+
+func (w *authenticationStateListenerStubWrapper) OnAuthenticationSucceeded(
+	ctx context.Context,
+	authInfo events.AuthenticationSucceededInfo,
+) error {
+	return w.impl.OnAuthenticationSucceeded(ctx, authInfo)
+}
+
+var _ AuthenticationStateListener = (*authenticationStateListenerStubWrapper)(nil)
+
+// NewAuthenticationStateListenerStub creates a server-side AuthenticationStateListener wrapping the given
+// server implementation. The returned value satisfies AuthenticationStateListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAuthenticationStateListenerStub(
+	impl AuthenticationStateListenerServer,
+) AuthenticationStateListener {
+	wrapper := &authenticationStateListenerStubWrapper{impl: impl}
+	stub := &AuthenticationStateListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

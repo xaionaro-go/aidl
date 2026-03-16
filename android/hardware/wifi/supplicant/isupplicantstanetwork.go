@@ -1564,7 +1564,7 @@ func (p *SupplicantStaNetworkProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISupplicantStaNetwork, "registerCallback")
 	if _err != nil {
@@ -4535,4 +4535,770 @@ func (s *SupplicantStaNetworkStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISupplicantStaNetworkServer is the server-side interface that user implementations
+// provide to NewSupplicantStaNetworkStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupplicantStaNetworkServer interface {
+	Disable(ctx context.Context) error
+	Enable(ctx context.Context, noConnect bool) error
+	EnableSaePkOnlyMode(ctx context.Context, enable bool) error
+	EnableSuiteBEapOpenSslCiphers(ctx context.Context) error
+	EnableTlsSuiteBEapPhase1Param(ctx context.Context, enable bool) error
+	GetAuthAlg(ctx context.Context) (AuthAlgMask, error)
+	GetBssid(ctx context.Context) ([]byte, error)
+	GetEapAltSubjectMatch(ctx context.Context) (string, error)
+	GetEapAnonymousIdentity(ctx context.Context) ([]byte, error)
+	GetEapCACert(ctx context.Context) (string, error)
+	GetEapCAPath(ctx context.Context) (string, error)
+	GetEapClientCert(ctx context.Context) (string, error)
+	GetEapDomainSuffixMatch(ctx context.Context) (string, error)
+	GetEapEngine(ctx context.Context) (bool, error)
+	GetEapEngineId(ctx context.Context) (string, error)
+	GetEapIdentity(ctx context.Context) ([]byte, error)
+	GetEapMethod(ctx context.Context) (EapMethod, error)
+	GetEapPassword(ctx context.Context) ([]byte, error)
+	GetEapPhase2Method(ctx context.Context) (EapPhase2Method, error)
+	GetEapPrivateKeyId(ctx context.Context) (string, error)
+	GetEapSubjectMatch(ctx context.Context) (string, error)
+	GetEdmg(ctx context.Context) (bool, error)
+	GetGroupCipher(ctx context.Context) (GroupCipherMask, error)
+	GetGroupMgmtCipher(ctx context.Context) (GroupMgmtCipherMask, error)
+	GetId(ctx context.Context) (int32, error)
+	GetIdStr(ctx context.Context) (string, error)
+	GetInterfaceName(ctx context.Context) (string, error)
+	GetKeyMgmt(ctx context.Context) (KeyMgmtMask, error)
+	GetOcsp(ctx context.Context) (OcspType, error)
+	GetPairwiseCipher(ctx context.Context) (PairwiseCipherMask, error)
+	GetProto(ctx context.Context) (ProtoMask, error)
+	GetPsk(ctx context.Context) ([]byte, error)
+	GetPskPassphrase(ctx context.Context) (string, error)
+	GetRequirePmf(ctx context.Context) (bool, error)
+	GetSaePassword(ctx context.Context) (string, error)
+	GetSaePasswordId(ctx context.Context) (string, error)
+	GetScanSsid(ctx context.Context) (bool, error)
+	GetSsid(ctx context.Context) ([]byte, error)
+	GetType(ctx context.Context) (IfaceType, error)
+	GetWapiCertSuite(ctx context.Context) (string, error)
+	GetWepKey(ctx context.Context, keyIdx int32) ([]byte, error)
+	GetWepTxKeyIdx(ctx context.Context) (int32, error)
+	GetWpsNfcConfigurationToken(ctx context.Context) ([]byte, error)
+	RegisterCallback(ctx context.Context, callback ISupplicantStaNetworkCallback) error
+	Select(ctx context.Context) error
+	SendNetworkEapIdentityResponse(ctx context.Context, identity []byte, encryptedIdentity []byte) error
+	SendNetworkEapSimGsmAuthFailure(ctx context.Context) error
+	SendNetworkEapSimGsmAuthResponse(ctx context.Context, params []NetworkResponseEapSimGsmAuthParams) error
+	SendNetworkEapSimUmtsAuthFailure(ctx context.Context) error
+	SendNetworkEapSimUmtsAuthResponse(ctx context.Context, params NetworkResponseEapSimUmtsAuthParams) error
+	SendNetworkEapSimUmtsAutsResponse(ctx context.Context, auts []byte) error
+	SetAuthAlg(ctx context.Context, authAlgMask AuthAlgMask) error
+	SetBssid(ctx context.Context, bssid []byte) error
+	SetDppKeys(ctx context.Context, keys DppConnectionKeys) error
+	SetEapAltSubjectMatch(ctx context.Context, match string) error
+	SetEapAnonymousIdentity(ctx context.Context, identity []byte) error
+	SetEapCACert(ctx context.Context, path string) error
+	SetEapCAPath(ctx context.Context, path string) error
+	SetEapClientCert(ctx context.Context, path string) error
+	SetEapDomainSuffixMatch(ctx context.Context, match string) error
+	SetEapEncryptedImsiIdentity(ctx context.Context, identity []byte) error
+	SetEapEngine(ctx context.Context, enable bool) error
+	SetEapEngineID(ctx context.Context, id string) error
+	SetEapErp(ctx context.Context, enable bool) error
+	SetEapIdentity(ctx context.Context, identity []byte) error
+	SetEapMethod(ctx context.Context, method EapMethod) error
+	SetEapPassword(ctx context.Context, password []byte) error
+	SetEapPhase2Method(ctx context.Context, method EapPhase2Method) error
+	SetEapPrivateKeyId(ctx context.Context, id string) error
+	SetEapSubjectMatch(ctx context.Context, match string) error
+	SetEdmg(ctx context.Context, enable bool) error
+	SetGroupCipher(ctx context.Context, groupCipherMask GroupCipherMask) error
+	SetGroupMgmtCipher(ctx context.Context, groupMgmtCipherMask GroupMgmtCipherMask) error
+	SetIdStr(ctx context.Context, idStr string) error
+	SetKeyMgmt(ctx context.Context, keyMgmtMask KeyMgmtMask) error
+	SetOcsp(ctx context.Context, ocspType OcspType) error
+	SetPairwiseCipher(ctx context.Context, pairwiseCipherMask PairwiseCipherMask) error
+	SetPmkCache(ctx context.Context, serializedEntry []byte) error
+	SetProactiveKeyCaching(ctx context.Context, enable bool) error
+	SetProto(ctx context.Context, protoMask ProtoMask) error
+	SetPsk(ctx context.Context, psk []byte) error
+	SetPskPassphrase(ctx context.Context, psk string) error
+	SetRequirePmf(ctx context.Context, enable bool) error
+	SetSaeH2eMode(ctx context.Context, mode SaeH2eMode) error
+	SetSaePassword(ctx context.Context, saePassword string) error
+	SetSaePasswordId(ctx context.Context, saePasswordId string) error
+	SetScanSsid(ctx context.Context, enable bool) error
+	SetSsid(ctx context.Context, ssid []byte) error
+	SetUpdateIdentifier(ctx context.Context, id int32) error
+	SetWapiCertSuite(ctx context.Context, suite string) error
+	SetWepKey(ctx context.Context, keyIdx int32, wepKey []byte) error
+	SetWepTxKeyIdx(ctx context.Context, keyIdx int32) error
+	SetRoamingConsortiumSelection(ctx context.Context, selectedRcoi []byte) error
+	SetMinimumTlsVersionEapPhase1Param(ctx context.Context, tlsVersion TlsVersion) error
+	SetStrictConservativePeerMode(ctx context.Context, enable bool) error
+	DisableEht(ctx context.Context) error
+	SetVendorData(ctx context.Context, vendorData []common.OuiKeyedData) error
+}
+
+type supplicantStaNetworkStubWrapper struct {
+	impl       ISupplicantStaNetworkServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supplicantStaNetworkStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supplicantStaNetworkStubWrapper) Disable(
+	ctx context.Context,
+) error {
+	return w.impl.Disable(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) Enable(
+	ctx context.Context,
+	noConnect bool,
+) error {
+	return w.impl.Enable(ctx, noConnect)
+}
+
+func (w *supplicantStaNetworkStubWrapper) EnableSaePkOnlyMode(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.EnableSaePkOnlyMode(ctx, enable)
+}
+
+func (w *supplicantStaNetworkStubWrapper) EnableSuiteBEapOpenSslCiphers(
+	ctx context.Context,
+) error {
+	return w.impl.EnableSuiteBEapOpenSslCiphers(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) EnableTlsSuiteBEapPhase1Param(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.EnableTlsSuiteBEapPhase1Param(ctx, enable)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetAuthAlg(
+	ctx context.Context,
+) (AuthAlgMask, error) {
+	return w.impl.GetAuthAlg(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetBssid(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetBssid(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapAltSubjectMatch(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetEapAltSubjectMatch(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapAnonymousIdentity(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetEapAnonymousIdentity(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapCACert(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetEapCACert(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapCAPath(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetEapCAPath(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapClientCert(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetEapClientCert(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapDomainSuffixMatch(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetEapDomainSuffixMatch(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapEngine(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetEapEngine(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapEngineId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetEapEngineId(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapIdentity(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetEapIdentity(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapMethod(
+	ctx context.Context,
+) (EapMethod, error) {
+	return w.impl.GetEapMethod(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapPassword(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetEapPassword(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapPhase2Method(
+	ctx context.Context,
+) (EapPhase2Method, error) {
+	return w.impl.GetEapPhase2Method(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapPrivateKeyId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetEapPrivateKeyId(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEapSubjectMatch(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetEapSubjectMatch(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetEdmg(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetEdmg(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetGroupCipher(
+	ctx context.Context,
+) (GroupCipherMask, error) {
+	return w.impl.GetGroupCipher(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetGroupMgmtCipher(
+	ctx context.Context,
+) (GroupMgmtCipherMask, error) {
+	return w.impl.GetGroupMgmtCipher(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetId(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetIdStr(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetIdStr(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetInterfaceName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetInterfaceName(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetKeyMgmt(
+	ctx context.Context,
+) (KeyMgmtMask, error) {
+	return w.impl.GetKeyMgmt(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetOcsp(
+	ctx context.Context,
+) (OcspType, error) {
+	return w.impl.GetOcsp(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetPairwiseCipher(
+	ctx context.Context,
+) (PairwiseCipherMask, error) {
+	return w.impl.GetPairwiseCipher(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetProto(
+	ctx context.Context,
+) (ProtoMask, error) {
+	return w.impl.GetProto(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetPsk(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetPsk(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetPskPassphrase(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetPskPassphrase(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetRequirePmf(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetRequirePmf(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetSaePassword(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSaePassword(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetSaePasswordId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSaePasswordId(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetScanSsid(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetScanSsid(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetSsid(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetSsid(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetType(
+	ctx context.Context,
+) (IfaceType, error) {
+	return w.impl.GetType(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetWapiCertSuite(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetWapiCertSuite(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetWepKey(
+	ctx context.Context,
+	keyIdx int32,
+) ([]byte, error) {
+	return w.impl.GetWepKey(ctx, keyIdx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetWepTxKeyIdx(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetWepTxKeyIdx(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) GetWpsNfcConfigurationToken(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetWpsNfcConfigurationToken(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ISupplicantStaNetworkCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *supplicantStaNetworkStubWrapper) Select(
+	ctx context.Context,
+) error {
+	return w.impl.Select(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SendNetworkEapIdentityResponse(
+	ctx context.Context,
+	identity []byte,
+	encryptedIdentity []byte,
+) error {
+	return w.impl.SendNetworkEapIdentityResponse(ctx, identity, encryptedIdentity)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SendNetworkEapSimGsmAuthFailure(
+	ctx context.Context,
+) error {
+	return w.impl.SendNetworkEapSimGsmAuthFailure(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SendNetworkEapSimGsmAuthResponse(
+	ctx context.Context,
+	params []NetworkResponseEapSimGsmAuthParams,
+) error {
+	return w.impl.SendNetworkEapSimGsmAuthResponse(ctx, params)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SendNetworkEapSimUmtsAuthFailure(
+	ctx context.Context,
+) error {
+	return w.impl.SendNetworkEapSimUmtsAuthFailure(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SendNetworkEapSimUmtsAuthResponse(
+	ctx context.Context,
+	params NetworkResponseEapSimUmtsAuthParams,
+) error {
+	return w.impl.SendNetworkEapSimUmtsAuthResponse(ctx, params)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SendNetworkEapSimUmtsAutsResponse(
+	ctx context.Context,
+	auts []byte,
+) error {
+	return w.impl.SendNetworkEapSimUmtsAutsResponse(ctx, auts)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetAuthAlg(
+	ctx context.Context,
+	authAlgMask AuthAlgMask,
+) error {
+	return w.impl.SetAuthAlg(ctx, authAlgMask)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetBssid(
+	ctx context.Context,
+	bssid []byte,
+) error {
+	return w.impl.SetBssid(ctx, bssid)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetDppKeys(
+	ctx context.Context,
+	keys DppConnectionKeys,
+) error {
+	return w.impl.SetDppKeys(ctx, keys)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapAltSubjectMatch(
+	ctx context.Context,
+	match string,
+) error {
+	return w.impl.SetEapAltSubjectMatch(ctx, match)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapAnonymousIdentity(
+	ctx context.Context,
+	identity []byte,
+) error {
+	return w.impl.SetEapAnonymousIdentity(ctx, identity)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapCACert(
+	ctx context.Context,
+	path string,
+) error {
+	return w.impl.SetEapCACert(ctx, path)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapCAPath(
+	ctx context.Context,
+	path string,
+) error {
+	return w.impl.SetEapCAPath(ctx, path)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapClientCert(
+	ctx context.Context,
+	path string,
+) error {
+	return w.impl.SetEapClientCert(ctx, path)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapDomainSuffixMatch(
+	ctx context.Context,
+	match string,
+) error {
+	return w.impl.SetEapDomainSuffixMatch(ctx, match)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapEncryptedImsiIdentity(
+	ctx context.Context,
+	identity []byte,
+) error {
+	return w.impl.SetEapEncryptedImsiIdentity(ctx, identity)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapEngine(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetEapEngine(ctx, enable)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapEngineID(
+	ctx context.Context,
+	id string,
+) error {
+	return w.impl.SetEapEngineID(ctx, id)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapErp(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetEapErp(ctx, enable)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapIdentity(
+	ctx context.Context,
+	identity []byte,
+) error {
+	return w.impl.SetEapIdentity(ctx, identity)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapMethod(
+	ctx context.Context,
+	method EapMethod,
+) error {
+	return w.impl.SetEapMethod(ctx, method)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapPassword(
+	ctx context.Context,
+	password []byte,
+) error {
+	return w.impl.SetEapPassword(ctx, password)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapPhase2Method(
+	ctx context.Context,
+	method EapPhase2Method,
+) error {
+	return w.impl.SetEapPhase2Method(ctx, method)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapPrivateKeyId(
+	ctx context.Context,
+	id string,
+) error {
+	return w.impl.SetEapPrivateKeyId(ctx, id)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEapSubjectMatch(
+	ctx context.Context,
+	match string,
+) error {
+	return w.impl.SetEapSubjectMatch(ctx, match)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetEdmg(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetEdmg(ctx, enable)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetGroupCipher(
+	ctx context.Context,
+	groupCipherMask GroupCipherMask,
+) error {
+	return w.impl.SetGroupCipher(ctx, groupCipherMask)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetGroupMgmtCipher(
+	ctx context.Context,
+	groupMgmtCipherMask GroupMgmtCipherMask,
+) error {
+	return w.impl.SetGroupMgmtCipher(ctx, groupMgmtCipherMask)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetIdStr(
+	ctx context.Context,
+	idStr string,
+) error {
+	return w.impl.SetIdStr(ctx, idStr)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetKeyMgmt(
+	ctx context.Context,
+	keyMgmtMask KeyMgmtMask,
+) error {
+	return w.impl.SetKeyMgmt(ctx, keyMgmtMask)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetOcsp(
+	ctx context.Context,
+	ocspType OcspType,
+) error {
+	return w.impl.SetOcsp(ctx, ocspType)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetPairwiseCipher(
+	ctx context.Context,
+	pairwiseCipherMask PairwiseCipherMask,
+) error {
+	return w.impl.SetPairwiseCipher(ctx, pairwiseCipherMask)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetPmkCache(
+	ctx context.Context,
+	serializedEntry []byte,
+) error {
+	return w.impl.SetPmkCache(ctx, serializedEntry)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetProactiveKeyCaching(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetProactiveKeyCaching(ctx, enable)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetProto(
+	ctx context.Context,
+	protoMask ProtoMask,
+) error {
+	return w.impl.SetProto(ctx, protoMask)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetPsk(
+	ctx context.Context,
+	psk []byte,
+) error {
+	return w.impl.SetPsk(ctx, psk)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetPskPassphrase(
+	ctx context.Context,
+	psk string,
+) error {
+	return w.impl.SetPskPassphrase(ctx, psk)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetRequirePmf(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetRequirePmf(ctx, enable)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetSaeH2eMode(
+	ctx context.Context,
+	mode SaeH2eMode,
+) error {
+	return w.impl.SetSaeH2eMode(ctx, mode)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetSaePassword(
+	ctx context.Context,
+	saePassword string,
+) error {
+	return w.impl.SetSaePassword(ctx, saePassword)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetSaePasswordId(
+	ctx context.Context,
+	saePasswordId string,
+) error {
+	return w.impl.SetSaePasswordId(ctx, saePasswordId)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetScanSsid(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetScanSsid(ctx, enable)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetSsid(
+	ctx context.Context,
+	ssid []byte,
+) error {
+	return w.impl.SetSsid(ctx, ssid)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetUpdateIdentifier(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.SetUpdateIdentifier(ctx, id)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetWapiCertSuite(
+	ctx context.Context,
+	suite string,
+) error {
+	return w.impl.SetWapiCertSuite(ctx, suite)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetWepKey(
+	ctx context.Context,
+	keyIdx int32,
+	wepKey []byte,
+) error {
+	return w.impl.SetWepKey(ctx, keyIdx, wepKey)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetWepTxKeyIdx(
+	ctx context.Context,
+	keyIdx int32,
+) error {
+	return w.impl.SetWepTxKeyIdx(ctx, keyIdx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetRoamingConsortiumSelection(
+	ctx context.Context,
+	selectedRcoi []byte,
+) error {
+	return w.impl.SetRoamingConsortiumSelection(ctx, selectedRcoi)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetMinimumTlsVersionEapPhase1Param(
+	ctx context.Context,
+	tlsVersion TlsVersion,
+) error {
+	return w.impl.SetMinimumTlsVersionEapPhase1Param(ctx, tlsVersion)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetStrictConservativePeerMode(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetStrictConservativePeerMode(ctx, enable)
+}
+
+func (w *supplicantStaNetworkStubWrapper) DisableEht(
+	ctx context.Context,
+) error {
+	return w.impl.DisableEht(ctx)
+}
+
+func (w *supplicantStaNetworkStubWrapper) SetVendorData(
+	ctx context.Context,
+	vendorData []common.OuiKeyedData,
+) error {
+	return w.impl.SetVendorData(ctx, vendorData)
+}
+
+var _ ISupplicantStaNetwork = (*supplicantStaNetworkStubWrapper)(nil)
+
+// NewSupplicantStaNetworkStub creates a server-side ISupplicantStaNetwork wrapping the given
+// server implementation. The returned value satisfies ISupplicantStaNetwork
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupplicantStaNetworkStub(
+	impl ISupplicantStaNetworkServer,
+) ISupplicantStaNetwork {
+	wrapper := &supplicantStaNetworkStubWrapper{impl: impl}
+	stub := &SupplicantStaNetworkStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

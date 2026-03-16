@@ -87,7 +87,7 @@ func (p *FaceProxy) CreateSession(
 	_data.WriteInterfaceToken(DescriptorIFace)
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFace, "createSession")
 	if _err != nil {
@@ -167,4 +167,51 @@ func (s *FaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFaceServer is the server-side interface that user implementations
+// provide to NewFaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFaceServer interface {
+	GetSensorProps(ctx context.Context) ([]SensorProps, error)
+	CreateSession(ctx context.Context, sensorId int32, cb ISessionCallback) (ISession, error)
+}
+
+type faceStubWrapper struct {
+	impl       IFaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *faceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *faceStubWrapper) GetSensorProps(
+	ctx context.Context,
+) ([]SensorProps, error) {
+	return w.impl.GetSensorProps(ctx)
+}
+
+func (w *faceStubWrapper) CreateSession(
+	ctx context.Context,
+	sensorId int32,
+	cb ISessionCallback,
+) (ISession, error) {
+	return w.impl.CreateSession(ctx, sensorId, cb)
+}
+
+var _ IFace = (*faceStubWrapper)(nil)
+
+// NewFaceStub creates a server-side IFace wrapping the given
+// server implementation. The returned value satisfies IFace
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFaceStub(
+	impl IFaceServer,
+) IFace {
+	wrapper := &faceStubWrapper{impl: impl}
+	stub := &FaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

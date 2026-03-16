@@ -501,7 +501,7 @@ func (p *WificondProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWificond)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWificond, "RegisterCallback")
 	if _err != nil {
@@ -518,7 +518,7 @@ func (p *WificondProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWificond)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWificond, "UnregisterCallback")
 	if _err != nil {
@@ -535,7 +535,7 @@ func (p *WificondProxy) RegisterWificondEventCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWificond)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWificond, "registerWificondEventCallback")
 	if _err != nil {
@@ -552,7 +552,7 @@ func (p *WificondProxy) UnregisterWificondEventCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWificond)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWificond, "unregisterWificondEventCallback")
 	if _err != nil {
@@ -866,4 +866,170 @@ func (s *WificondStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWificondServer is the server-side interface that user implementations
+// provide to NewWificondStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWificondServer interface {
+	CreateApInterface(ctx context.Context, iface_name string) (IApInterface, error)
+	CreateClientInterface(ctx context.Context, iface_name string) (IClientInterface, error)
+	TearDownApInterface(ctx context.Context, iface_name string) (bool, error)
+	TearDownClientInterface(ctx context.Context, iface_name string) (bool, error)
+	TearDownInterfaces(ctx context.Context) error
+	GetClientInterfaces(ctx context.Context) ([]binder.IBinder, error)
+	GetApInterfaces(ctx context.Context) ([]binder.IBinder, error)
+	GetAvailable2gChannels(ctx context.Context) ([]int32, error)
+	GetAvailable5gNonDFSChannels(ctx context.Context) ([]int32, error)
+	GetAvailableDFSChannels(ctx context.Context) ([]int32, error)
+	GetAvailable6gChannels(ctx context.Context) ([]int32, error)
+	GetAvailable60gChannels(ctx context.Context) ([]int32, error)
+	RegisterCallback(ctx context.Context, callback IInterfaceEventCallback) error
+	UnregisterCallback(ctx context.Context, callback IInterfaceEventCallback) error
+	RegisterWificondEventCallback(ctx context.Context, callback IWificondEventCallback) error
+	UnregisterWificondEventCallback(ctx context.Context, callback IWificondEventCallback) error
+	GetDeviceWiphyCapabilities(ctx context.Context, iface_name string) (interface{}, error)
+	NotifyCountryCodeChanged(ctx context.Context) error
+}
+
+type wificondStubWrapper struct {
+	impl       IWificondServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wificondStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wificondStubWrapper) CreateApInterface(
+	ctx context.Context,
+	iface_name string,
+) (IApInterface, error) {
+	return w.impl.CreateApInterface(ctx, iface_name)
+}
+
+func (w *wificondStubWrapper) CreateClientInterface(
+	ctx context.Context,
+	iface_name string,
+) (IClientInterface, error) {
+	return w.impl.CreateClientInterface(ctx, iface_name)
+}
+
+func (w *wificondStubWrapper) TearDownApInterface(
+	ctx context.Context,
+	iface_name string,
+) (bool, error) {
+	return w.impl.TearDownApInterface(ctx, iface_name)
+}
+
+func (w *wificondStubWrapper) TearDownClientInterface(
+	ctx context.Context,
+	iface_name string,
+) (bool, error) {
+	return w.impl.TearDownClientInterface(ctx, iface_name)
+}
+
+func (w *wificondStubWrapper) TearDownInterfaces(
+	ctx context.Context,
+) error {
+	return w.impl.TearDownInterfaces(ctx)
+}
+
+func (w *wificondStubWrapper) GetClientInterfaces(
+	ctx context.Context,
+) ([]binder.IBinder, error) {
+	return w.impl.GetClientInterfaces(ctx)
+}
+
+func (w *wificondStubWrapper) GetApInterfaces(
+	ctx context.Context,
+) ([]binder.IBinder, error) {
+	return w.impl.GetApInterfaces(ctx)
+}
+
+func (w *wificondStubWrapper) GetAvailable2gChannels(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAvailable2gChannels(ctx)
+}
+
+func (w *wificondStubWrapper) GetAvailable5gNonDFSChannels(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAvailable5gNonDFSChannels(ctx)
+}
+
+func (w *wificondStubWrapper) GetAvailableDFSChannels(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAvailableDFSChannels(ctx)
+}
+
+func (w *wificondStubWrapper) GetAvailable6gChannels(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAvailable6gChannels(ctx)
+}
+
+func (w *wificondStubWrapper) GetAvailable60gChannels(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetAvailable60gChannels(ctx)
+}
+
+func (w *wificondStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IInterfaceEventCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *wificondStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback IInterfaceEventCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+func (w *wificondStubWrapper) RegisterWificondEventCallback(
+	ctx context.Context,
+	callback IWificondEventCallback,
+) error {
+	return w.impl.RegisterWificondEventCallback(ctx, callback)
+}
+
+func (w *wificondStubWrapper) UnregisterWificondEventCallback(
+	ctx context.Context,
+	callback IWificondEventCallback,
+) error {
+	return w.impl.UnregisterWificondEventCallback(ctx, callback)
+}
+
+func (w *wificondStubWrapper) GetDeviceWiphyCapabilities(
+	ctx context.Context,
+	iface_name string,
+) (interface{}, error) {
+	return w.impl.GetDeviceWiphyCapabilities(ctx, iface_name)
+}
+
+func (w *wificondStubWrapper) NotifyCountryCodeChanged(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyCountryCodeChanged(ctx)
+}
+
+var _ IWificond = (*wificondStubWrapper)(nil)
+
+// NewWificondStub creates a server-side IWificond wrapping the given
+// server implementation. The returned value satisfies IWificond
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWificondStub(
+	impl IWificondServer,
+) IWificond {
+	wrapper := &wificondStubWrapper{impl: impl}
+	stub := &WificondStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

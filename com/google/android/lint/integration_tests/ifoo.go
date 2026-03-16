@@ -90,3 +90,41 @@ func (s *FooStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFooServer is the server-side interface that user implementations
+// provide to NewFooStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFooServer interface {
+	Method(ctx context.Context) error
+}
+
+type fooStubWrapper struct {
+	impl       IFooServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fooStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fooStubWrapper) Method(
+	ctx context.Context,
+) error {
+	return w.impl.Method(ctx)
+}
+
+var _ IFoo = (*fooStubWrapper)(nil)
+
+// NewFooStub creates a server-side IFoo wrapping the given
+// server implementation. The returned value satisfies IFoo
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFooStub(
+	impl IFooServer,
+) IFoo {
+	wrapper := &fooStubWrapper{impl: impl}
+	stub := &FooStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

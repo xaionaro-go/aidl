@@ -76,3 +76,41 @@ func (s *InjectModelEventStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInjectModelEventServer is the server-side interface that user implementations
+// provide to NewInjectModelEventStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInjectModelEventServer interface {
+	TriggerUnloadModel(ctx context.Context) error
+}
+
+type injectModelEventStubWrapper struct {
+	impl       IInjectModelEventServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *injectModelEventStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *injectModelEventStubWrapper) TriggerUnloadModel(
+	ctx context.Context,
+) error {
+	return w.impl.TriggerUnloadModel(ctx)
+}
+
+var _ IInjectModelEvent = (*injectModelEventStubWrapper)(nil)
+
+// NewInjectModelEventStub creates a server-side IInjectModelEvent wrapping the given
+// server implementation. The returned value satisfies IInjectModelEvent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInjectModelEventStub(
+	impl IInjectModelEventServer,
+) IInjectModelEvent {
+	wrapper := &injectModelEventStubWrapper{impl: impl}
+	stub := &InjectModelEventStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

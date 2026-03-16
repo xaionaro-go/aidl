@@ -48,7 +48,7 @@ func (p *AccessibilityEmbeddedConnectionProxy) AssociateEmbeddedHierarchy(
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccessibilityEmbeddedConnection)
-	_data.WriteStrongBinder(hostToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, hostToken, p.remote.Transport())
 	_data.WriteInt32(sourceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityEmbeddedConnection, "associateEmbeddedHierarchy")
@@ -182,4 +182,59 @@ func (s *AccessibilityEmbeddedConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAccessibilityEmbeddedConnectionServer is the server-side interface that user implementations
+// provide to NewAccessibilityEmbeddedConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccessibilityEmbeddedConnectionServer interface {
+	AssociateEmbeddedHierarchy(ctx context.Context, hostToken binder.IBinder, sourceId int32) (binder.IBinder, error)
+	DisassociateEmbeddedHierarchy(ctx context.Context) error
+	SetWindowMatrix(ctx context.Context, matrixValues []float32) error
+}
+
+type accessibilityEmbeddedConnectionStubWrapper struct {
+	impl       IAccessibilityEmbeddedConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accessibilityEmbeddedConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accessibilityEmbeddedConnectionStubWrapper) AssociateEmbeddedHierarchy(
+	ctx context.Context,
+	hostToken binder.IBinder,
+	sourceId int32,
+) (binder.IBinder, error) {
+	return w.impl.AssociateEmbeddedHierarchy(ctx, hostToken, sourceId)
+}
+
+func (w *accessibilityEmbeddedConnectionStubWrapper) DisassociateEmbeddedHierarchy(
+	ctx context.Context,
+) error {
+	return w.impl.DisassociateEmbeddedHierarchy(ctx)
+}
+
+func (w *accessibilityEmbeddedConnectionStubWrapper) SetWindowMatrix(
+	ctx context.Context,
+	matrixValues []float32,
+) error {
+	return w.impl.SetWindowMatrix(ctx, matrixValues)
+}
+
+var _ IAccessibilityEmbeddedConnection = (*accessibilityEmbeddedConnectionStubWrapper)(nil)
+
+// NewAccessibilityEmbeddedConnectionStub creates a server-side IAccessibilityEmbeddedConnection wrapping the given
+// server implementation. The returned value satisfies IAccessibilityEmbeddedConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccessibilityEmbeddedConnectionStub(
+	impl IAccessibilityEmbeddedConnectionServer,
+) IAccessibilityEmbeddedConnection {
+	wrapper := &accessibilityEmbeddedConnectionStubWrapper{impl: impl}
+	stub := &AccessibilityEmbeddedConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

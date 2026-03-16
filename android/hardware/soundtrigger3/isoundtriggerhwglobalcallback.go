@@ -90,3 +90,41 @@ func (s *SoundTriggerHwGlobalCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundTriggerHwGlobalCallbackServer is the server-side interface that user implementations
+// provide to NewSoundTriggerHwGlobalCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundTriggerHwGlobalCallbackServer interface {
+	OnResourcesAvailable(ctx context.Context) error
+}
+
+type soundTriggerHwGlobalCallbackStubWrapper struct {
+	impl       ISoundTriggerHwGlobalCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundTriggerHwGlobalCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundTriggerHwGlobalCallbackStubWrapper) OnResourcesAvailable(
+	ctx context.Context,
+) error {
+	return w.impl.OnResourcesAvailable(ctx)
+}
+
+var _ ISoundTriggerHwGlobalCallback = (*soundTriggerHwGlobalCallbackStubWrapper)(nil)
+
+// NewSoundTriggerHwGlobalCallbackStub creates a server-side ISoundTriggerHwGlobalCallback wrapping the given
+// server implementation. The returned value satisfies ISoundTriggerHwGlobalCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundTriggerHwGlobalCallbackStub(
+	impl ISoundTriggerHwGlobalCallbackServer,
+) ISoundTriggerHwGlobalCallback {
+	wrapper := &soundTriggerHwGlobalCallbackStubWrapper{impl: impl}
+	stub := &SoundTriggerHwGlobalCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

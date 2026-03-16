@@ -94,7 +94,7 @@ func (p *EventMonitorProxy) AddPresentEventInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "addPresentEventInfoListener")
 	if _err != nil {
@@ -120,7 +120,7 @@ func (p *EventMonitorProxy) RemovePresentEventInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "removePresentEventInfoListener")
 	if _err != nil {
@@ -182,7 +182,7 @@ func (p *EventMonitorProxy) AddFollowingEventInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "addFollowingEventInfoListener")
 	if _err != nil {
@@ -208,7 +208,7 @@ func (p *EventMonitorProxy) RemoveFollowingEventInfoListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEventMonitor)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIEventMonitor, "removeFollowingEventInfoListener")
 	if _err != nil {
@@ -451,4 +451,99 @@ func (s *EventMonitorStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IEventMonitorServer is the server-side interface that user implementations
+// provide to NewEventMonitorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEventMonitorServer interface {
+	GetPresentEventInfo(ctx context.Context, channelDbId int64) (os.Bundle, error)
+	AddPresentEventInfoListener(ctx context.Context, listener IEventMonitorListener) error
+	RemovePresentEventInfoListener(ctx context.Context, listener IEventMonitorListener) error
+	GetFollowingEventInfo(ctx context.Context, channelDbId int64) (os.Bundle, error)
+	AddFollowingEventInfoListener(ctx context.Context, listener IEventMonitorListener) error
+	RemoveFollowingEventInfoListener(ctx context.Context, listener IEventMonitorListener) error
+	GetSdtGuidanceInfo(ctx context.Context, channelDbId int64) (os.Bundle, error)
+	SetBgmTuneChannelInfo(ctx context.Context, tuneChannelInfos []net.Uri) error
+}
+
+type eventMonitorStubWrapper struct {
+	impl       IEventMonitorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eventMonitorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eventMonitorStubWrapper) GetPresentEventInfo(
+	ctx context.Context,
+	channelDbId int64,
+) (os.Bundle, error) {
+	return w.impl.GetPresentEventInfo(ctx, channelDbId)
+}
+
+func (w *eventMonitorStubWrapper) AddPresentEventInfoListener(
+	ctx context.Context,
+	listener IEventMonitorListener,
+) error {
+	return w.impl.AddPresentEventInfoListener(ctx, listener)
+}
+
+func (w *eventMonitorStubWrapper) RemovePresentEventInfoListener(
+	ctx context.Context,
+	listener IEventMonitorListener,
+) error {
+	return w.impl.RemovePresentEventInfoListener(ctx, listener)
+}
+
+func (w *eventMonitorStubWrapper) GetFollowingEventInfo(
+	ctx context.Context,
+	channelDbId int64,
+) (os.Bundle, error) {
+	return w.impl.GetFollowingEventInfo(ctx, channelDbId)
+}
+
+func (w *eventMonitorStubWrapper) AddFollowingEventInfoListener(
+	ctx context.Context,
+	listener IEventMonitorListener,
+) error {
+	return w.impl.AddFollowingEventInfoListener(ctx, listener)
+}
+
+func (w *eventMonitorStubWrapper) RemoveFollowingEventInfoListener(
+	ctx context.Context,
+	listener IEventMonitorListener,
+) error {
+	return w.impl.RemoveFollowingEventInfoListener(ctx, listener)
+}
+
+func (w *eventMonitorStubWrapper) GetSdtGuidanceInfo(
+	ctx context.Context,
+	channelDbId int64,
+) (os.Bundle, error) {
+	return w.impl.GetSdtGuidanceInfo(ctx, channelDbId)
+}
+
+func (w *eventMonitorStubWrapper) SetBgmTuneChannelInfo(
+	ctx context.Context,
+	tuneChannelInfos []net.Uri,
+) error {
+	return w.impl.SetBgmTuneChannelInfo(ctx, tuneChannelInfos)
+}
+
+var _ IEventMonitor = (*eventMonitorStubWrapper)(nil)
+
+// NewEventMonitorStub creates a server-side IEventMonitor wrapping the given
+// server implementation. The returned value satisfies IEventMonitor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEventMonitorStub(
+	impl IEventMonitorServer,
+) IEventMonitor {
+	wrapper := &eventMonitorStubWrapper{impl: impl}
+	stub := &EventMonitorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

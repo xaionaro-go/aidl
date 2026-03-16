@@ -44,7 +44,7 @@ func (p *StorageProxy) GarbageCollect(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorage)
 	_data.WriteInt64(timeoutSeconds)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorage, "garbageCollect")
 	if _err != nil {
@@ -86,4 +86,44 @@ func (s *StorageStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IStorageServer is the server-side interface that user implementations
+// provide to NewStorageStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStorageServer interface {
+	GarbageCollect(ctx context.Context, timeoutSeconds int64, callback IGarbageCollectCallback) error
+}
+
+type storageStubWrapper struct {
+	impl       IStorageServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *storageStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *storageStubWrapper) GarbageCollect(
+	ctx context.Context,
+	timeoutSeconds int64,
+	callback IGarbageCollectCallback,
+) error {
+	return w.impl.GarbageCollect(ctx, timeoutSeconds, callback)
+}
+
+var _ IStorage = (*storageStubWrapper)(nil)
+
+// NewStorageStub creates a server-side IStorage wrapping the given
+// server implementation. The returned value satisfies IStorage
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStorageStub(
+	impl IStorageServer,
+) IStorage {
+	wrapper := &storageStubWrapper{impl: impl}
+	stub := &StorageStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

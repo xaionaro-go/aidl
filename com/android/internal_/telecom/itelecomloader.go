@@ -44,7 +44,7 @@ func (p *TelecomLoaderProxy) CreateTelecomService(
 	var _result ITelecomService
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITelecomLoader)
-	_data.WriteStrongBinder(retriever.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, retriever.AsBinder(), p.remote.Transport())
 	_data.WriteString16(sysUiName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITelecomLoader, "createTelecomService")
@@ -108,4 +108,44 @@ func (s *TelecomLoaderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITelecomLoaderServer is the server-side interface that user implementations
+// provide to NewTelecomLoaderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITelecomLoaderServer interface {
+	CreateTelecomService(ctx context.Context, retriever IInternalServiceRetriever, sysUiName string) (ITelecomService, error)
+}
+
+type telecomLoaderStubWrapper struct {
+	impl       ITelecomLoaderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *telecomLoaderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *telecomLoaderStubWrapper) CreateTelecomService(
+	ctx context.Context,
+	retriever IInternalServiceRetriever,
+	sysUiName string,
+) (ITelecomService, error) {
+	return w.impl.CreateTelecomService(ctx, retriever, sysUiName)
+}
+
+var _ ITelecomLoader = (*telecomLoaderStubWrapper)(nil)
+
+// NewTelecomLoaderStub creates a server-side ITelecomLoader wrapping the given
+// server implementation. The returned value satisfies ITelecomLoader
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTelecomLoaderStub(
+	impl ITelecomLoaderServer,
+) ITelecomLoader {
+	wrapper := &telecomLoaderStubWrapper{impl: impl}
+	stub := &TelecomLoaderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

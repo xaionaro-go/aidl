@@ -214,7 +214,7 @@ func (p *TrustManagerProxy) RegisterTrustListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteStrongBinder(trustListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, trustListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "registerTrustListener")
 	if _err != nil {
@@ -240,7 +240,7 @@ func (p *TrustManagerProxy) UnregisterTrustListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteStrongBinder(trustListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, trustListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "unregisterTrustListener")
 	if _err != nil {
@@ -538,7 +538,7 @@ func (p *TrustManagerProxy) RegisterDeviceLockedStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "registerDeviceLockedStateListener")
@@ -565,7 +565,7 @@ func (p *TrustManagerProxy) UnregisterDeviceLockedStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITrustManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITrustManager, "unregisterDeviceLockedStateListener")
 	if _err != nil {
@@ -924,4 +924,175 @@ func (s *TrustManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITrustManagerServer is the server-side interface that user implementations
+// provide to NewTrustManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITrustManagerServer interface {
+	ReportUnlockAttempt(ctx context.Context, successful bool) error
+	ReportUserRequestedUnlock(ctx context.Context, dismissKeyguard bool) error
+	ReportUserMayRequestUnlock(ctx context.Context) error
+	ReportUnlockLockout(ctx context.Context, timeoutMs int32) error
+	ReportEnabledTrustAgentsChanged(ctx context.Context) error
+	RegisterTrustListener(ctx context.Context, trustListener ITrustListener) error
+	UnregisterTrustListener(ctx context.Context, trustListener ITrustListener) error
+	ReportKeyguardShowingChanged(ctx context.Context) error
+	SetDeviceLockedForUser(ctx context.Context, locked bool) error
+	IsDeviceLocked(ctx context.Context, deviceId int32) (bool, error)
+	IsDeviceSecure(ctx context.Context, deviceId int32) (bool, error)
+	IsTrustUsuallyManaged(ctx context.Context) (bool, error)
+	UnlockedByBiometricForUser(ctx context.Context, source biometrics.BiometricSourceType) error
+	ClearAllBiometricRecognized(ctx context.Context, target biometrics.BiometricSourceType, unlockedUser int32) error
+	IsActiveUnlockRunning(ctx context.Context) (bool, error)
+	IsInSignificantPlace(ctx context.Context) (bool, error)
+	RegisterDeviceLockedStateListener(ctx context.Context, listener policy.IDeviceLockedStateListener, deviceId int32) error
+	UnregisterDeviceLockedStateListener(ctx context.Context, listener policy.IDeviceLockedStateListener) error
+}
+
+type trustManagerStubWrapper struct {
+	impl       ITrustManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *trustManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *trustManagerStubWrapper) ReportUnlockAttempt(
+	ctx context.Context,
+	successful bool,
+) error {
+	return w.impl.ReportUnlockAttempt(ctx, successful)
+}
+
+func (w *trustManagerStubWrapper) ReportUserRequestedUnlock(
+	ctx context.Context,
+	dismissKeyguard bool,
+) error {
+	return w.impl.ReportUserRequestedUnlock(ctx, dismissKeyguard)
+}
+
+func (w *trustManagerStubWrapper) ReportUserMayRequestUnlock(
+	ctx context.Context,
+) error {
+	return w.impl.ReportUserMayRequestUnlock(ctx)
+}
+
+func (w *trustManagerStubWrapper) ReportUnlockLockout(
+	ctx context.Context,
+	timeoutMs int32,
+) error {
+	return w.impl.ReportUnlockLockout(ctx, timeoutMs)
+}
+
+func (w *trustManagerStubWrapper) ReportEnabledTrustAgentsChanged(
+	ctx context.Context,
+) error {
+	return w.impl.ReportEnabledTrustAgentsChanged(ctx)
+}
+
+func (w *trustManagerStubWrapper) RegisterTrustListener(
+	ctx context.Context,
+	trustListener ITrustListener,
+) error {
+	return w.impl.RegisterTrustListener(ctx, trustListener)
+}
+
+func (w *trustManagerStubWrapper) UnregisterTrustListener(
+	ctx context.Context,
+	trustListener ITrustListener,
+) error {
+	return w.impl.UnregisterTrustListener(ctx, trustListener)
+}
+
+func (w *trustManagerStubWrapper) ReportKeyguardShowingChanged(
+	ctx context.Context,
+) error {
+	return w.impl.ReportKeyguardShowingChanged(ctx)
+}
+
+func (w *trustManagerStubWrapper) SetDeviceLockedForUser(
+	ctx context.Context,
+	locked bool,
+) error {
+	return w.impl.SetDeviceLockedForUser(ctx, locked)
+}
+
+func (w *trustManagerStubWrapper) IsDeviceLocked(
+	ctx context.Context,
+	deviceId int32,
+) (bool, error) {
+	return w.impl.IsDeviceLocked(ctx, deviceId)
+}
+
+func (w *trustManagerStubWrapper) IsDeviceSecure(
+	ctx context.Context,
+	deviceId int32,
+) (bool, error) {
+	return w.impl.IsDeviceSecure(ctx, deviceId)
+}
+
+func (w *trustManagerStubWrapper) IsTrustUsuallyManaged(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsTrustUsuallyManaged(ctx)
+}
+
+func (w *trustManagerStubWrapper) UnlockedByBiometricForUser(
+	ctx context.Context,
+	source biometrics.BiometricSourceType,
+) error {
+	return w.impl.UnlockedByBiometricForUser(ctx, source)
+}
+
+func (w *trustManagerStubWrapper) ClearAllBiometricRecognized(
+	ctx context.Context,
+	target biometrics.BiometricSourceType,
+	unlockedUser int32,
+) error {
+	return w.impl.ClearAllBiometricRecognized(ctx, target, unlockedUser)
+}
+
+func (w *trustManagerStubWrapper) IsActiveUnlockRunning(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsActiveUnlockRunning(ctx)
+}
+
+func (w *trustManagerStubWrapper) IsInSignificantPlace(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInSignificantPlace(ctx)
+}
+
+func (w *trustManagerStubWrapper) RegisterDeviceLockedStateListener(
+	ctx context.Context,
+	listener policy.IDeviceLockedStateListener,
+	deviceId int32,
+) error {
+	return w.impl.RegisterDeviceLockedStateListener(ctx, listener, deviceId)
+}
+
+func (w *trustManagerStubWrapper) UnregisterDeviceLockedStateListener(
+	ctx context.Context,
+	listener policy.IDeviceLockedStateListener,
+) error {
+	return w.impl.UnregisterDeviceLockedStateListener(ctx, listener)
+}
+
+var _ ITrustManager = (*trustManagerStubWrapper)(nil)
+
+// NewTrustManagerStub creates a server-side ITrustManager wrapping the given
+// server implementation. The returned value satisfies ITrustManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTrustManagerStub(
+	impl ITrustManagerServer,
+) ITrustManager {
+	wrapper := &trustManagerStubWrapper{impl: impl}
+	stub := &TrustManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

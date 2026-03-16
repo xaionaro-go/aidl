@@ -1097,7 +1097,7 @@ func (p *SupplicantStaIfaceProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISupplicantStaIface, "registerCallback")
 	if _err != nil {
@@ -3681,4 +3681,621 @@ func (s *SupplicantStaIfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISupplicantStaIfaceServer is the server-side interface that user implementations
+// provide to NewSupplicantStaIfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISupplicantStaIfaceServer interface {
+	AddDppPeerUri(ctx context.Context, uri string) (int32, error)
+	AddExtRadioWork(ctx context.Context, name string, freqInMhz int32, timeoutInSec int32) (int32, error)
+	AddNetwork(ctx context.Context) (ISupplicantStaNetwork, error)
+	AddRxFilter(ctx context.Context, type_ RxFilterType) error
+	CancelWps(ctx context.Context) error
+	Disconnect(ctx context.Context) error
+	EnableAutoReconnect(ctx context.Context, enable bool) error
+	FilsHlpAddRequest(ctx context.Context, dst_mac []byte, pkt []byte) error
+	FilsHlpFlushRequest(ctx context.Context) error
+	GenerateDppBootstrapInfoForResponder(ctx context.Context, macAddress []byte, deviceInfo string, curve DppCurve) (DppResponderBootstrapInfo, error)
+	GenerateSelfDppConfiguration(ctx context.Context, ssid string, privEcKey []byte) error
+	GetConnectionCapabilities(ctx context.Context) (ConnectionCapabilities, error)
+	GetConnectionMloLinksInfo(ctx context.Context) (MloLinksInfo, error)
+	GetKeyMgmtCapabilities(ctx context.Context) (KeyMgmtMask, error)
+	GetMacAddress(ctx context.Context) ([]byte, error)
+	GetName(ctx context.Context) (string, error)
+	GetNetwork(ctx context.Context, id int32) (ISupplicantStaNetwork, error)
+	GetType(ctx context.Context) (IfaceType, error)
+	GetWpaDriverCapabilities(ctx context.Context) (WpaDriverCapabilitiesMask, error)
+	InitiateAnqpQuery(ctx context.Context, macAddress []byte, infoElements []AnqpInfoId, subTypes []Hs20AnqpSubtypes) error
+	InitiateHs20IconQuery(ctx context.Context, macAddress []byte, fileName string) error
+	InitiateTdlsDiscover(ctx context.Context, macAddress []byte) error
+	InitiateTdlsSetup(ctx context.Context, macAddress []byte) error
+	InitiateTdlsTeardown(ctx context.Context, macAddress []byte) error
+	InitiateVenueUrlAnqpQuery(ctx context.Context, macAddress []byte) error
+	ListNetworks(ctx context.Context) ([]int32, error)
+	Reassociate(ctx context.Context) error
+	Reconnect(ctx context.Context) error
+	RegisterCallback(ctx context.Context, callback ISupplicantStaIfaceCallback) error
+	SetQosPolicyFeatureEnabled(ctx context.Context, enable bool) error
+	SendQosPolicyResponse(ctx context.Context, qosPolicyRequestId int32, morePolicies bool, qosPolicyStatusList []QosPolicyStatus) error
+	RemoveAllQosPolicies(ctx context.Context) error
+	RemoveDppUri(ctx context.Context, id int32) error
+	RemoveExtRadioWork(ctx context.Context, id int32) error
+	RemoveNetwork(ctx context.Context, id int32) error
+	RemoveRxFilter(ctx context.Context, type_ RxFilterType) error
+	SetBtCoexistenceMode(ctx context.Context, mode BtCoexistenceMode) error
+	SetBtCoexistenceScanModeEnabled(ctx context.Context, enable bool) error
+	SetCountryCode(ctx context.Context, code []byte) error
+	SetExternalSim(ctx context.Context, useExternalSim bool) error
+	SetMboCellularDataStatus(ctx context.Context, available bool) error
+	SetPowerSave(ctx context.Context, enable bool) error
+	SetSuspendModeEnabled(ctx context.Context, enable bool) error
+	SetWpsConfigMethods(ctx context.Context, configMethods WpsConfigMethods) error
+	SetWpsDeviceName(ctx context.Context, name string) error
+	SetWpsDeviceType(ctx context.Context, type_ []byte) error
+	SetWpsManufacturer(ctx context.Context, manufacturer string) error
+	SetWpsModelName(ctx context.Context, modelName string) error
+	SetWpsModelNumber(ctx context.Context, modelNumber string) error
+	SetWpsSerialNumber(ctx context.Context, serialNumber string) error
+	StartDppConfiguratorInitiator(ctx context.Context, peerBootstrapId int32, ownBootstrapId int32, ssid string, password string, psk string, netRole DppNetRole, securityAkm DppAkm, privEcKey []byte) ([]byte, error)
+	StartDppEnrolleeInitiator(ctx context.Context, peerBootstrapId int32, ownBootstrapId int32) error
+	StartDppEnrolleeResponder(ctx context.Context, listenChannel int32) error
+	StartRxFilter(ctx context.Context) error
+	StartWpsPbc(ctx context.Context, bssid []byte) error
+	StartWpsPinDisplay(ctx context.Context, bssid []byte) (string, error)
+	StartWpsPinKeypad(ctx context.Context, pin string) error
+	StartWpsRegistrar(ctx context.Context, bssid []byte, pin string) error
+	StopDppInitiator(ctx context.Context) error
+	StopDppResponder(ctx context.Context, ownBootstrapId int32) error
+	StopRxFilter(ctx context.Context) error
+	GetSignalPollResults(ctx context.Context) ([]SignalPollResult, error)
+	AddQosPolicyRequestForScs(ctx context.Context, qosPolicyData []QosPolicyScsData) ([]QosPolicyScsRequestStatus, error)
+	RemoveQosPolicyForScs(ctx context.Context, scsPolicyIds []byte) ([]QosPolicyScsRequestStatus, error)
+	ConfigureMscs(ctx context.Context, params MscsParams) error
+	DisableMscs(ctx context.Context) error
+	GetUsdCapabilities(ctx context.Context) (UsdCapabilities, error)
+	StartUsdPublish(ctx context.Context, cmdId int32, usdPublishConfig UsdPublishConfig) error
+	StartUsdSubscribe(ctx context.Context, cmdId int32, usdSubscribeConfig UsdSubscribeConfig) error
+	UpdateUsdPublish(ctx context.Context, publishId int32, serviceSpecificInfo []byte) error
+	CancelUsdPublish(ctx context.Context, publishId int32) error
+	CancelUsdSubscribe(ctx context.Context, subscribeId int32) error
+	SendUsdMessage(ctx context.Context, messageInfo UsdMessageInfo) error
+}
+
+type supplicantStaIfaceStubWrapper struct {
+	impl       ISupplicantStaIfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *supplicantStaIfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *supplicantStaIfaceStubWrapper) AddDppPeerUri(
+	ctx context.Context,
+	uri string,
+) (int32, error) {
+	return w.impl.AddDppPeerUri(ctx, uri)
+}
+
+func (w *supplicantStaIfaceStubWrapper) AddExtRadioWork(
+	ctx context.Context,
+	name string,
+	freqInMhz int32,
+	timeoutInSec int32,
+) (int32, error) {
+	return w.impl.AddExtRadioWork(ctx, name, freqInMhz, timeoutInSec)
+}
+
+func (w *supplicantStaIfaceStubWrapper) AddNetwork(
+	ctx context.Context,
+) (ISupplicantStaNetwork, error) {
+	return w.impl.AddNetwork(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) AddRxFilter(
+	ctx context.Context,
+	type_ RxFilterType,
+) error {
+	return w.impl.AddRxFilter(ctx, type_)
+}
+
+func (w *supplicantStaIfaceStubWrapper) CancelWps(
+	ctx context.Context,
+) error {
+	return w.impl.CancelWps(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) Disconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnect(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) EnableAutoReconnect(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.EnableAutoReconnect(ctx, enable)
+}
+
+func (w *supplicantStaIfaceStubWrapper) FilsHlpAddRequest(
+	ctx context.Context,
+	dst_mac []byte,
+	pkt []byte,
+) error {
+	return w.impl.FilsHlpAddRequest(ctx, dst_mac, pkt)
+}
+
+func (w *supplicantStaIfaceStubWrapper) FilsHlpFlushRequest(
+	ctx context.Context,
+) error {
+	return w.impl.FilsHlpFlushRequest(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GenerateDppBootstrapInfoForResponder(
+	ctx context.Context,
+	macAddress []byte,
+	deviceInfo string,
+	curve DppCurve,
+) (DppResponderBootstrapInfo, error) {
+	return w.impl.GenerateDppBootstrapInfoForResponder(ctx, macAddress, deviceInfo, curve)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GenerateSelfDppConfiguration(
+	ctx context.Context,
+	ssid string,
+	privEcKey []byte,
+) error {
+	return w.impl.GenerateSelfDppConfiguration(ctx, ssid, privEcKey)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetConnectionCapabilities(
+	ctx context.Context,
+) (ConnectionCapabilities, error) {
+	return w.impl.GetConnectionCapabilities(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetConnectionMloLinksInfo(
+	ctx context.Context,
+) (MloLinksInfo, error) {
+	return w.impl.GetConnectionMloLinksInfo(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetKeyMgmtCapabilities(
+	ctx context.Context,
+) (KeyMgmtMask, error) {
+	return w.impl.GetKeyMgmtCapabilities(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetMacAddress(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetMacAddress(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetNetwork(
+	ctx context.Context,
+	id int32,
+) (ISupplicantStaNetwork, error) {
+	return w.impl.GetNetwork(ctx, id)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetType(
+	ctx context.Context,
+) (IfaceType, error) {
+	return w.impl.GetType(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetWpaDriverCapabilities(
+	ctx context.Context,
+) (WpaDriverCapabilitiesMask, error) {
+	return w.impl.GetWpaDriverCapabilities(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) InitiateAnqpQuery(
+	ctx context.Context,
+	macAddress []byte,
+	infoElements []AnqpInfoId,
+	subTypes []Hs20AnqpSubtypes,
+) error {
+	return w.impl.InitiateAnqpQuery(ctx, macAddress, infoElements, subTypes)
+}
+
+func (w *supplicantStaIfaceStubWrapper) InitiateHs20IconQuery(
+	ctx context.Context,
+	macAddress []byte,
+	fileName string,
+) error {
+	return w.impl.InitiateHs20IconQuery(ctx, macAddress, fileName)
+}
+
+func (w *supplicantStaIfaceStubWrapper) InitiateTdlsDiscover(
+	ctx context.Context,
+	macAddress []byte,
+) error {
+	return w.impl.InitiateTdlsDiscover(ctx, macAddress)
+}
+
+func (w *supplicantStaIfaceStubWrapper) InitiateTdlsSetup(
+	ctx context.Context,
+	macAddress []byte,
+) error {
+	return w.impl.InitiateTdlsSetup(ctx, macAddress)
+}
+
+func (w *supplicantStaIfaceStubWrapper) InitiateTdlsTeardown(
+	ctx context.Context,
+	macAddress []byte,
+) error {
+	return w.impl.InitiateTdlsTeardown(ctx, macAddress)
+}
+
+func (w *supplicantStaIfaceStubWrapper) InitiateVenueUrlAnqpQuery(
+	ctx context.Context,
+	macAddress []byte,
+) error {
+	return w.impl.InitiateVenueUrlAnqpQuery(ctx, macAddress)
+}
+
+func (w *supplicantStaIfaceStubWrapper) ListNetworks(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.ListNetworks(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) Reassociate(
+	ctx context.Context,
+) error {
+	return w.impl.Reassociate(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) Reconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Reconnect(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ISupplicantStaIfaceCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetQosPolicyFeatureEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetQosPolicyFeatureEnabled(ctx, enable)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SendQosPolicyResponse(
+	ctx context.Context,
+	qosPolicyRequestId int32,
+	morePolicies bool,
+	qosPolicyStatusList []QosPolicyStatus,
+) error {
+	return w.impl.SendQosPolicyResponse(ctx, qosPolicyRequestId, morePolicies, qosPolicyStatusList)
+}
+
+func (w *supplicantStaIfaceStubWrapper) RemoveAllQosPolicies(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveAllQosPolicies(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) RemoveDppUri(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.RemoveDppUri(ctx, id)
+}
+
+func (w *supplicantStaIfaceStubWrapper) RemoveExtRadioWork(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.RemoveExtRadioWork(ctx, id)
+}
+
+func (w *supplicantStaIfaceStubWrapper) RemoveNetwork(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.RemoveNetwork(ctx, id)
+}
+
+func (w *supplicantStaIfaceStubWrapper) RemoveRxFilter(
+	ctx context.Context,
+	type_ RxFilterType,
+) error {
+	return w.impl.RemoveRxFilter(ctx, type_)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetBtCoexistenceMode(
+	ctx context.Context,
+	mode BtCoexistenceMode,
+) error {
+	return w.impl.SetBtCoexistenceMode(ctx, mode)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetBtCoexistenceScanModeEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetBtCoexistenceScanModeEnabled(ctx, enable)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetCountryCode(
+	ctx context.Context,
+	code []byte,
+) error {
+	return w.impl.SetCountryCode(ctx, code)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetExternalSim(
+	ctx context.Context,
+	useExternalSim bool,
+) error {
+	return w.impl.SetExternalSim(ctx, useExternalSim)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetMboCellularDataStatus(
+	ctx context.Context,
+	available bool,
+) error {
+	return w.impl.SetMboCellularDataStatus(ctx, available)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetPowerSave(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetPowerSave(ctx, enable)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetSuspendModeEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetSuspendModeEnabled(ctx, enable)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetWpsConfigMethods(
+	ctx context.Context,
+	configMethods WpsConfigMethods,
+) error {
+	return w.impl.SetWpsConfigMethods(ctx, configMethods)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetWpsDeviceName(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.SetWpsDeviceName(ctx, name)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetWpsDeviceType(
+	ctx context.Context,
+	type_ []byte,
+) error {
+	return w.impl.SetWpsDeviceType(ctx, type_)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetWpsManufacturer(
+	ctx context.Context,
+	manufacturer string,
+) error {
+	return w.impl.SetWpsManufacturer(ctx, manufacturer)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetWpsModelName(
+	ctx context.Context,
+	modelName string,
+) error {
+	return w.impl.SetWpsModelName(ctx, modelName)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetWpsModelNumber(
+	ctx context.Context,
+	modelNumber string,
+) error {
+	return w.impl.SetWpsModelNumber(ctx, modelNumber)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SetWpsSerialNumber(
+	ctx context.Context,
+	serialNumber string,
+) error {
+	return w.impl.SetWpsSerialNumber(ctx, serialNumber)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartDppConfiguratorInitiator(
+	ctx context.Context,
+	peerBootstrapId int32,
+	ownBootstrapId int32,
+	ssid string,
+	password string,
+	psk string,
+	netRole DppNetRole,
+	securityAkm DppAkm,
+	privEcKey []byte,
+) ([]byte, error) {
+	return w.impl.StartDppConfiguratorInitiator(ctx, peerBootstrapId, ownBootstrapId, ssid, password, psk, netRole, securityAkm, privEcKey)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartDppEnrolleeInitiator(
+	ctx context.Context,
+	peerBootstrapId int32,
+	ownBootstrapId int32,
+) error {
+	return w.impl.StartDppEnrolleeInitiator(ctx, peerBootstrapId, ownBootstrapId)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartDppEnrolleeResponder(
+	ctx context.Context,
+	listenChannel int32,
+) error {
+	return w.impl.StartDppEnrolleeResponder(ctx, listenChannel)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartRxFilter(
+	ctx context.Context,
+) error {
+	return w.impl.StartRxFilter(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartWpsPbc(
+	ctx context.Context,
+	bssid []byte,
+) error {
+	return w.impl.StartWpsPbc(ctx, bssid)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartWpsPinDisplay(
+	ctx context.Context,
+	bssid []byte,
+) (string, error) {
+	return w.impl.StartWpsPinDisplay(ctx, bssid)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartWpsPinKeypad(
+	ctx context.Context,
+	pin string,
+) error {
+	return w.impl.StartWpsPinKeypad(ctx, pin)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartWpsRegistrar(
+	ctx context.Context,
+	bssid []byte,
+	pin string,
+) error {
+	return w.impl.StartWpsRegistrar(ctx, bssid, pin)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StopDppInitiator(
+	ctx context.Context,
+) error {
+	return w.impl.StopDppInitiator(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StopDppResponder(
+	ctx context.Context,
+	ownBootstrapId int32,
+) error {
+	return w.impl.StopDppResponder(ctx, ownBootstrapId)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StopRxFilter(
+	ctx context.Context,
+) error {
+	return w.impl.StopRxFilter(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetSignalPollResults(
+	ctx context.Context,
+) ([]SignalPollResult, error) {
+	return w.impl.GetSignalPollResults(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) AddQosPolicyRequestForScs(
+	ctx context.Context,
+	qosPolicyData []QosPolicyScsData,
+) ([]QosPolicyScsRequestStatus, error) {
+	return w.impl.AddQosPolicyRequestForScs(ctx, qosPolicyData)
+}
+
+func (w *supplicantStaIfaceStubWrapper) RemoveQosPolicyForScs(
+	ctx context.Context,
+	scsPolicyIds []byte,
+) ([]QosPolicyScsRequestStatus, error) {
+	return w.impl.RemoveQosPolicyForScs(ctx, scsPolicyIds)
+}
+
+func (w *supplicantStaIfaceStubWrapper) ConfigureMscs(
+	ctx context.Context,
+	params MscsParams,
+) error {
+	return w.impl.ConfigureMscs(ctx, params)
+}
+
+func (w *supplicantStaIfaceStubWrapper) DisableMscs(
+	ctx context.Context,
+) error {
+	return w.impl.DisableMscs(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) GetUsdCapabilities(
+	ctx context.Context,
+) (UsdCapabilities, error) {
+	return w.impl.GetUsdCapabilities(ctx)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartUsdPublish(
+	ctx context.Context,
+	cmdId int32,
+	usdPublishConfig UsdPublishConfig,
+) error {
+	return w.impl.StartUsdPublish(ctx, cmdId, usdPublishConfig)
+}
+
+func (w *supplicantStaIfaceStubWrapper) StartUsdSubscribe(
+	ctx context.Context,
+	cmdId int32,
+	usdSubscribeConfig UsdSubscribeConfig,
+) error {
+	return w.impl.StartUsdSubscribe(ctx, cmdId, usdSubscribeConfig)
+}
+
+func (w *supplicantStaIfaceStubWrapper) UpdateUsdPublish(
+	ctx context.Context,
+	publishId int32,
+	serviceSpecificInfo []byte,
+) error {
+	return w.impl.UpdateUsdPublish(ctx, publishId, serviceSpecificInfo)
+}
+
+func (w *supplicantStaIfaceStubWrapper) CancelUsdPublish(
+	ctx context.Context,
+	publishId int32,
+) error {
+	return w.impl.CancelUsdPublish(ctx, publishId)
+}
+
+func (w *supplicantStaIfaceStubWrapper) CancelUsdSubscribe(
+	ctx context.Context,
+	subscribeId int32,
+) error {
+	return w.impl.CancelUsdSubscribe(ctx, subscribeId)
+}
+
+func (w *supplicantStaIfaceStubWrapper) SendUsdMessage(
+	ctx context.Context,
+	messageInfo UsdMessageInfo,
+) error {
+	return w.impl.SendUsdMessage(ctx, messageInfo)
+}
+
+var _ ISupplicantStaIface = (*supplicantStaIfaceStubWrapper)(nil)
+
+// NewSupplicantStaIfaceStub creates a server-side ISupplicantStaIface wrapping the given
+// server implementation. The returned value satisfies ISupplicantStaIface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSupplicantStaIfaceStub(
+	impl ISupplicantStaIfaceServer,
+) ISupplicantStaIface {
+	wrapper := &supplicantStaIfaceStubWrapper{impl: impl}
+	stub := &SupplicantStaIfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

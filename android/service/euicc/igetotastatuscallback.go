@@ -82,3 +82,42 @@ func (s *GetOtaStatusCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetOtaStatusCallbackServer is the server-side interface that user implementations
+// provide to NewGetOtaStatusCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetOtaStatusCallbackServer interface {
+	OnSuccess(ctx context.Context, status int32) error
+}
+
+type getOtaStatusCallbackStubWrapper struct {
+	impl       IGetOtaStatusCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getOtaStatusCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getOtaStatusCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnSuccess(ctx, status)
+}
+
+var _ IGetOtaStatusCallback = (*getOtaStatusCallbackStubWrapper)(nil)
+
+// NewGetOtaStatusCallbackStub creates a server-side IGetOtaStatusCallback wrapping the given
+// server implementation. The returned value satisfies IGetOtaStatusCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetOtaStatusCallbackStub(
+	impl IGetOtaStatusCallbackServer,
+) IGetOtaStatusCallback {
+	wrapper := &getOtaStatusCallbackStubWrapper{impl: impl}
+	stub := &GetOtaStatusCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

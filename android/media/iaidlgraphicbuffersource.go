@@ -64,7 +64,7 @@ func (p *AidlGraphicBufferSourceProxy) Configure(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAidlGraphicBufferSource)
-	_data.WriteStrongBinder(node.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, node.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(int32(dataSpace))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAidlGraphicBufferSource, "configure")
@@ -559,4 +559,124 @@ func (s *AidlGraphicBufferSourceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAidlGraphicBufferSourceServer is the server-side interface that user implementations
+// provide to NewAidlGraphicBufferSourceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAidlGraphicBufferSourceServer interface {
+	Configure(ctx context.Context, node IAidlNode, dataSpace common.Dataspace) error
+	SetSuspend(ctx context.Context, suspend bool, suspendTimeUs int64) error
+	SetRepeatPreviousFrameDelayUs(ctx context.Context, repeatAfterUs int64) error
+	SetMaxFps(ctx context.Context, maxFps float32) error
+	SetTimeLapseConfig(ctx context.Context, fps float64, captureFps float64) error
+	SetStartTimeUs(ctx context.Context, startTimeUs int64) error
+	SetStopTimeUs(ctx context.Context, stopTimeUs int64) error
+	GetStopTimeOffsetUs(ctx context.Context) (int64, error)
+	SetColorAspects(ctx context.Context, aspects AidlColorAspects) error
+	SetTimeOffsetUs(ctx context.Context, timeOffsetsUs int64) error
+	SignalEndOfInputStream(ctx context.Context) error
+}
+
+type aidlGraphicBufferSourceStubWrapper struct {
+	impl       IAidlGraphicBufferSourceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) Configure(
+	ctx context.Context,
+	node IAidlNode,
+	dataSpace common.Dataspace,
+) error {
+	return w.impl.Configure(ctx, node, dataSpace)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) SetSuspend(
+	ctx context.Context,
+	suspend bool,
+	suspendTimeUs int64,
+) error {
+	return w.impl.SetSuspend(ctx, suspend, suspendTimeUs)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) SetRepeatPreviousFrameDelayUs(
+	ctx context.Context,
+	repeatAfterUs int64,
+) error {
+	return w.impl.SetRepeatPreviousFrameDelayUs(ctx, repeatAfterUs)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) SetMaxFps(
+	ctx context.Context,
+	maxFps float32,
+) error {
+	return w.impl.SetMaxFps(ctx, maxFps)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) SetTimeLapseConfig(
+	ctx context.Context,
+	fps float64,
+	captureFps float64,
+) error {
+	return w.impl.SetTimeLapseConfig(ctx, fps, captureFps)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) SetStartTimeUs(
+	ctx context.Context,
+	startTimeUs int64,
+) error {
+	return w.impl.SetStartTimeUs(ctx, startTimeUs)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) SetStopTimeUs(
+	ctx context.Context,
+	stopTimeUs int64,
+) error {
+	return w.impl.SetStopTimeUs(ctx, stopTimeUs)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) GetStopTimeOffsetUs(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetStopTimeOffsetUs(ctx)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) SetColorAspects(
+	ctx context.Context,
+	aspects AidlColorAspects,
+) error {
+	return w.impl.SetColorAspects(ctx, aspects)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) SetTimeOffsetUs(
+	ctx context.Context,
+	timeOffsetsUs int64,
+) error {
+	return w.impl.SetTimeOffsetUs(ctx, timeOffsetsUs)
+}
+
+func (w *aidlGraphicBufferSourceStubWrapper) SignalEndOfInputStream(
+	ctx context.Context,
+) error {
+	return w.impl.SignalEndOfInputStream(ctx)
+}
+
+var _ IAidlGraphicBufferSource = (*aidlGraphicBufferSourceStubWrapper)(nil)
+
+// NewAidlGraphicBufferSourceStub creates a server-side IAidlGraphicBufferSource wrapping the given
+// server implementation. The returned value satisfies IAidlGraphicBufferSource
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAidlGraphicBufferSourceStub(
+	impl IAidlGraphicBufferSourceServer,
+) IAidlGraphicBufferSource {
+	wrapper := &aidlGraphicBufferSourceStubWrapper{impl: impl}
+	stub := &AidlGraphicBufferSourceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

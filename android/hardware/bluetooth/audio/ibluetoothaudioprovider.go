@@ -107,7 +107,7 @@ func (p *BluetoothAudioProviderProxy) StartSession(
 	var _result fmq.MQDescriptor
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
-	_data.WriteStrongBinder(hostIf.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, hostIf.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := audioConfig.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -1160,4 +1160,179 @@ func (s *BluetoothAudioProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothAudioProviderServer is the server-side interface that user implementations
+// provide to NewBluetoothAudioProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothAudioProviderServer interface {
+	EndSession(ctx context.Context) error
+	StartSession(ctx context.Context, hostIf IBluetoothAudioPort, audioConfig AudioConfiguration, supportedLatencyModes []LatencyMode) (fmq.MQDescriptor, error)
+	StreamStarted(ctx context.Context, status BluetoothAudioStatus) error
+	StreamSuspended(ctx context.Context, status BluetoothAudioStatus) error
+	UpdateAudioConfiguration(ctx context.Context, audioConfig AudioConfiguration) error
+	SetLowLatencyModeAllowed(ctx context.Context, allowed bool) error
+	ParseA2dpConfiguration(ctx context.Context, codecId CodecId, configuration []byte, codecParameters CodecParameters) (A2dpStatus, error)
+	GetA2dpConfiguration(ctx context.Context, remoteA2dpCapabilities []A2dpRemoteCapabilities, hint A2dpConfigurationHint) (A2dpConfiguration, error)
+	SetCodecPriority(ctx context.Context, codecId CodecId, priority int32) error
+	GetLeAudioAseConfiguration(ctx context.Context, remoteSinkAudioCapabilities []audioIBluetoothAudioProvider.LeAudioDeviceCapabilities, remoteSourceAudioCapabilities []audioIBluetoothAudioProvider.LeAudioDeviceCapabilities, requirements []audioIBluetoothAudioProvider.LeAudioConfigurationRequirement) ([]audioIBluetoothAudioProvider.LeAudioAseConfigurationSetting, error)
+	GetLeAudioAseQosConfiguration(ctx context.Context, qosRequirement audioIBluetoothAudioProvider.LeAudioAseQosConfigurationRequirement) (audioIBluetoothAudioProvider.LeAudioAseQosConfigurationPair, error)
+	GetLeAudioAseDatapathConfiguration(ctx context.Context, sinkConfig *audioIBluetoothAudioProvider.StreamConfig, sourceConfig *audioIBluetoothAudioProvider.StreamConfig) (audioIBluetoothAudioProvider.LeAudioDataPathConfigurationPair, error)
+	OnSinkAseMetadataChanged(ctx context.Context, state audioIBluetoothAudioProvider.AseState, cigId int32, cisId int32, metadata []MetadataLtv) error
+	OnSourceAseMetadataChanged(ctx context.Context, state audioIBluetoothAudioProvider.AseState, cigId int32, cisId int32, metadata []MetadataLtv) error
+	GetLeAudioBroadcastConfiguration(ctx context.Context, remoteSinkAudioCapabilities []audioIBluetoothAudioProvider.LeAudioDeviceCapabilities, requirement audioIBluetoothAudioProvider.LeAudioBroadcastConfigurationRequirement) (audioIBluetoothAudioProvider.LeAudioBroadcastConfigurationSetting, error)
+	GetLeAudioBroadcastDatapathConfiguration(ctx context.Context, audioContext AudioContext, streamMap []audioLeAudioBroadcastConfiguration.BroadcastStreamMap) (audioIBluetoothAudioProvider.LeAudioDataPathConfiguration, error)
+}
+
+type bluetoothAudioProviderStubWrapper struct {
+	impl       IBluetoothAudioProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothAudioProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothAudioProviderStubWrapper) EndSession(
+	ctx context.Context,
+) error {
+	return w.impl.EndSession(ctx)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) StartSession(
+	ctx context.Context,
+	hostIf IBluetoothAudioPort,
+	audioConfig AudioConfiguration,
+	supportedLatencyModes []LatencyMode,
+) (fmq.MQDescriptor, error) {
+	return w.impl.StartSession(ctx, hostIf, audioConfig, supportedLatencyModes)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) StreamStarted(
+	ctx context.Context,
+	status BluetoothAudioStatus,
+) error {
+	return w.impl.StreamStarted(ctx, status)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) StreamSuspended(
+	ctx context.Context,
+	status BluetoothAudioStatus,
+) error {
+	return w.impl.StreamSuspended(ctx, status)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) UpdateAudioConfiguration(
+	ctx context.Context,
+	audioConfig AudioConfiguration,
+) error {
+	return w.impl.UpdateAudioConfiguration(ctx, audioConfig)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) SetLowLatencyModeAllowed(
+	ctx context.Context,
+	allowed bool,
+) error {
+	return w.impl.SetLowLatencyModeAllowed(ctx, allowed)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) ParseA2dpConfiguration(
+	ctx context.Context,
+	codecId CodecId,
+	configuration []byte,
+	codecParameters CodecParameters,
+) (A2dpStatus, error) {
+	return w.impl.ParseA2dpConfiguration(ctx, codecId, configuration, codecParameters)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) GetA2dpConfiguration(
+	ctx context.Context,
+	remoteA2dpCapabilities []A2dpRemoteCapabilities,
+	hint A2dpConfigurationHint,
+) (A2dpConfiguration, error) {
+	return w.impl.GetA2dpConfiguration(ctx, remoteA2dpCapabilities, hint)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) SetCodecPriority(
+	ctx context.Context,
+	codecId CodecId,
+	priority int32,
+) error {
+	return w.impl.SetCodecPriority(ctx, codecId, priority)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) GetLeAudioAseConfiguration(
+	ctx context.Context,
+	remoteSinkAudioCapabilities []audioIBluetoothAudioProvider.LeAudioDeviceCapabilities,
+	remoteSourceAudioCapabilities []audioIBluetoothAudioProvider.LeAudioDeviceCapabilities,
+	requirements []audioIBluetoothAudioProvider.LeAudioConfigurationRequirement,
+) ([]audioIBluetoothAudioProvider.LeAudioAseConfigurationSetting, error) {
+	return w.impl.GetLeAudioAseConfiguration(ctx, remoteSinkAudioCapabilities, remoteSourceAudioCapabilities, requirements)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) GetLeAudioAseQosConfiguration(
+	ctx context.Context,
+	qosRequirement audioIBluetoothAudioProvider.LeAudioAseQosConfigurationRequirement,
+) (audioIBluetoothAudioProvider.LeAudioAseQosConfigurationPair, error) {
+	return w.impl.GetLeAudioAseQosConfiguration(ctx, qosRequirement)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) GetLeAudioAseDatapathConfiguration(
+	ctx context.Context,
+	sinkConfig *audioIBluetoothAudioProvider.StreamConfig,
+	sourceConfig *audioIBluetoothAudioProvider.StreamConfig,
+) (audioIBluetoothAudioProvider.LeAudioDataPathConfigurationPair, error) {
+	return w.impl.GetLeAudioAseDatapathConfiguration(ctx, sinkConfig, sourceConfig)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) OnSinkAseMetadataChanged(
+	ctx context.Context,
+	state audioIBluetoothAudioProvider.AseState,
+	cigId int32,
+	cisId int32,
+	metadata []MetadataLtv,
+) error {
+	return w.impl.OnSinkAseMetadataChanged(ctx, state, cigId, cisId, metadata)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) OnSourceAseMetadataChanged(
+	ctx context.Context,
+	state audioIBluetoothAudioProvider.AseState,
+	cigId int32,
+	cisId int32,
+	metadata []MetadataLtv,
+) error {
+	return w.impl.OnSourceAseMetadataChanged(ctx, state, cigId, cisId, metadata)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) GetLeAudioBroadcastConfiguration(
+	ctx context.Context,
+	remoteSinkAudioCapabilities []audioIBluetoothAudioProvider.LeAudioDeviceCapabilities,
+	requirement audioIBluetoothAudioProvider.LeAudioBroadcastConfigurationRequirement,
+) (audioIBluetoothAudioProvider.LeAudioBroadcastConfigurationSetting, error) {
+	return w.impl.GetLeAudioBroadcastConfiguration(ctx, remoteSinkAudioCapabilities, requirement)
+}
+
+func (w *bluetoothAudioProviderStubWrapper) GetLeAudioBroadcastDatapathConfiguration(
+	ctx context.Context,
+	audioContext AudioContext,
+	streamMap []audioLeAudioBroadcastConfiguration.BroadcastStreamMap,
+) (audioIBluetoothAudioProvider.LeAudioDataPathConfiguration, error) {
+	return w.impl.GetLeAudioBroadcastDatapathConfiguration(ctx, audioContext, streamMap)
+}
+
+var _ IBluetoothAudioProvider = (*bluetoothAudioProviderStubWrapper)(nil)
+
+// NewBluetoothAudioProviderStub creates a server-side IBluetoothAudioProvider wrapping the given
+// server implementation. The returned value satisfies IBluetoothAudioProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothAudioProviderStub(
+	impl IBluetoothAudioProviderServer,
+) IBluetoothAudioProvider {
+	wrapper := &bluetoothAudioProviderStubWrapper{impl: impl}
+	stub := &BluetoothAudioProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

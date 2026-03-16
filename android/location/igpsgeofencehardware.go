@@ -344,3 +344,81 @@ func (s *GpsGeofenceHardwareStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGpsGeofenceHardwareServer is the server-side interface that user implementations
+// provide to NewGpsGeofenceHardwareStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGpsGeofenceHardwareServer interface {
+	IsHardwareGeofenceSupported(ctx context.Context) (bool, error)
+	AddCircularHardwareGeofence(ctx context.Context, geofenceId int32, latitude float64, longitude float64, radius float64, lastTransition int32, monitorTransition int32, notificationResponsiveness int32, unknownTimer int32) (bool, error)
+	RemoveHardwareGeofence(ctx context.Context, geofenceId int32) (bool, error)
+	PauseHardwareGeofence(ctx context.Context, geofenceId int32) (bool, error)
+	ResumeHardwareGeofence(ctx context.Context, geofenceId int32, monitorTransition int32) (bool, error)
+}
+
+type gpsGeofenceHardwareStubWrapper struct {
+	impl       IGpsGeofenceHardwareServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gpsGeofenceHardwareStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gpsGeofenceHardwareStubWrapper) IsHardwareGeofenceSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHardwareGeofenceSupported(ctx)
+}
+
+func (w *gpsGeofenceHardwareStubWrapper) AddCircularHardwareGeofence(
+	ctx context.Context,
+	geofenceId int32,
+	latitude float64,
+	longitude float64,
+	radius float64,
+	lastTransition int32,
+	monitorTransition int32,
+	notificationResponsiveness int32,
+	unknownTimer int32,
+) (bool, error) {
+	return w.impl.AddCircularHardwareGeofence(ctx, geofenceId, latitude, longitude, radius, lastTransition, monitorTransition, notificationResponsiveness, unknownTimer)
+}
+
+func (w *gpsGeofenceHardwareStubWrapper) RemoveHardwareGeofence(
+	ctx context.Context,
+	geofenceId int32,
+) (bool, error) {
+	return w.impl.RemoveHardwareGeofence(ctx, geofenceId)
+}
+
+func (w *gpsGeofenceHardwareStubWrapper) PauseHardwareGeofence(
+	ctx context.Context,
+	geofenceId int32,
+) (bool, error) {
+	return w.impl.PauseHardwareGeofence(ctx, geofenceId)
+}
+
+func (w *gpsGeofenceHardwareStubWrapper) ResumeHardwareGeofence(
+	ctx context.Context,
+	geofenceId int32,
+	monitorTransition int32,
+) (bool, error) {
+	return w.impl.ResumeHardwareGeofence(ctx, geofenceId, monitorTransition)
+}
+
+var _ IGpsGeofenceHardware = (*gpsGeofenceHardwareStubWrapper)(nil)
+
+// NewGpsGeofenceHardwareStub creates a server-side IGpsGeofenceHardware wrapping the given
+// server implementation. The returned value satisfies IGpsGeofenceHardware
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGpsGeofenceHardwareStub(
+	impl IGpsGeofenceHardwareServer,
+) IGpsGeofenceHardware {
+	wrapper := &gpsGeofenceHardwareStubWrapper{impl: impl}
+	stub := &GpsGeofenceHardwareStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

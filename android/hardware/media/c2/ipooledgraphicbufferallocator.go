@@ -172,3 +172,50 @@ func (s *PooledGraphicBufferAllocatorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPooledGraphicBufferAllocatorServer is the server-side interface that user implementations
+// provide to NewPooledGraphicBufferAllocatorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPooledGraphicBufferAllocatorServer interface {
+	Allocate(ctx context.Context, desc c2IGraphicBufferAllocator.Description) (c2IGraphicBufferAllocator.Allocation, error)
+	Deallocate(ctx context.Context, id int32) (bool, error)
+}
+
+type pooledGraphicBufferAllocatorStubWrapper struct {
+	impl       IPooledGraphicBufferAllocatorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pooledGraphicBufferAllocatorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pooledGraphicBufferAllocatorStubWrapper) Allocate(
+	ctx context.Context,
+	desc c2IGraphicBufferAllocator.Description,
+) (c2IGraphicBufferAllocator.Allocation, error) {
+	return w.impl.Allocate(ctx, desc)
+}
+
+func (w *pooledGraphicBufferAllocatorStubWrapper) Deallocate(
+	ctx context.Context,
+	id int32,
+) (bool, error) {
+	return w.impl.Deallocate(ctx, id)
+}
+
+var _ IPooledGraphicBufferAllocator = (*pooledGraphicBufferAllocatorStubWrapper)(nil)
+
+// NewPooledGraphicBufferAllocatorStub creates a server-side IPooledGraphicBufferAllocator wrapping the given
+// server implementation. The returned value satisfies IPooledGraphicBufferAllocator
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPooledGraphicBufferAllocatorStub(
+	impl IPooledGraphicBufferAllocatorServer,
+) IPooledGraphicBufferAllocator {
+	wrapper := &pooledGraphicBufferAllocatorStubWrapper{impl: impl}
+	stub := &PooledGraphicBufferAllocatorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

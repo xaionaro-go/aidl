@@ -57,8 +57,8 @@ func (p *WallpaperServiceProxy) Attach(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperService)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(windowType)
 	_data.WriteBool(isPreview)
 	_data.WriteInt32(reqWidth)
@@ -93,7 +93,7 @@ func (p *WallpaperServiceProxy) Detach(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWallpaperService)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWallpaperService, "detach")
 	if _err != nil {
@@ -204,4 +204,61 @@ func (s *WallpaperServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWallpaperServiceServer is the server-side interface that user implementations
+// provide to NewWallpaperServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWallpaperServiceServer interface {
+	Attach(ctx context.Context, connection IWallpaperConnection, windowToken binder.IBinder, windowType int32, isPreview bool, reqWidth int32, reqHeight int32, padding graphics.Rect, displayId int32, which int32, info app.WallpaperInfo, description appWallpaper.WallpaperDescription) error
+	Detach(ctx context.Context, windowToken binder.IBinder) error
+}
+
+type wallpaperServiceStubWrapper struct {
+	impl       IWallpaperServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wallpaperServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wallpaperServiceStubWrapper) Attach(
+	ctx context.Context,
+	connection IWallpaperConnection,
+	windowToken binder.IBinder,
+	windowType int32,
+	isPreview bool,
+	reqWidth int32,
+	reqHeight int32,
+	padding graphics.Rect,
+	displayId int32,
+	which int32,
+	info app.WallpaperInfo,
+	description appWallpaper.WallpaperDescription,
+) error {
+	return w.impl.Attach(ctx, connection, windowToken, windowType, isPreview, reqWidth, reqHeight, padding, displayId, which, info, description)
+}
+
+func (w *wallpaperServiceStubWrapper) Detach(
+	ctx context.Context,
+	windowToken binder.IBinder,
+) error {
+	return w.impl.Detach(ctx, windowToken)
+}
+
+var _ IWallpaperService = (*wallpaperServiceStubWrapper)(nil)
+
+// NewWallpaperServiceStub creates a server-side IWallpaperService wrapping the given
+// server implementation. The returned value satisfies IWallpaperService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWallpaperServiceStub(
+	impl IWallpaperServiceServer,
+) IWallpaperService {
+	wrapper := &wallpaperServiceStubWrapper{impl: impl}
+	stub := &WallpaperServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

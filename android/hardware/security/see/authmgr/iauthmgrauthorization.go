@@ -293,3 +293,63 @@ func (s *AuthMgrAuthorizationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAuthMgrAuthorizationServer is the server-side interface that user implementations
+// provide to NewAuthMgrAuthorizationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAuthMgrAuthorizationServer interface {
+	InitAuthentication(ctx context.Context, diceCertChain ExplicitKeyDiceCertChain, instanceIdentifier []byte) ([]byte, error)
+	CompleteAuthentication(ctx context.Context, signedConnectionRequest SignedConnectionRequest, dicePolicy DicePolicy) error
+	AuthorizeAndConnectClientToTrustedService(ctx context.Context, clientID []byte, serviceName string, token []byte, clientDiceArtifacts DiceLeafArtifacts) error
+}
+
+type authMgrAuthorizationStubWrapper struct {
+	impl       IAuthMgrAuthorizationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *authMgrAuthorizationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *authMgrAuthorizationStubWrapper) InitAuthentication(
+	ctx context.Context,
+	diceCertChain ExplicitKeyDiceCertChain,
+	instanceIdentifier []byte,
+) ([]byte, error) {
+	return w.impl.InitAuthentication(ctx, diceCertChain, instanceIdentifier)
+}
+
+func (w *authMgrAuthorizationStubWrapper) CompleteAuthentication(
+	ctx context.Context,
+	signedConnectionRequest SignedConnectionRequest,
+	dicePolicy DicePolicy,
+) error {
+	return w.impl.CompleteAuthentication(ctx, signedConnectionRequest, dicePolicy)
+}
+
+func (w *authMgrAuthorizationStubWrapper) AuthorizeAndConnectClientToTrustedService(
+	ctx context.Context,
+	clientID []byte,
+	serviceName string,
+	token []byte,
+	clientDiceArtifacts DiceLeafArtifacts,
+) error {
+	return w.impl.AuthorizeAndConnectClientToTrustedService(ctx, clientID, serviceName, token, clientDiceArtifacts)
+}
+
+var _ IAuthMgrAuthorization = (*authMgrAuthorizationStubWrapper)(nil)
+
+// NewAuthMgrAuthorizationStub creates a server-side IAuthMgrAuthorization wrapping the given
+// server implementation. The returned value satisfies IAuthMgrAuthorization
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAuthMgrAuthorizationStub(
+	impl IAuthMgrAuthorizationServer,
+) IAuthMgrAuthorization {
+	wrapper := &authMgrAuthorizationStubWrapper{impl: impl}
+	stub := &AuthMgrAuthorizationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

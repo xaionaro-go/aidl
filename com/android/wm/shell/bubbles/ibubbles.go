@@ -71,7 +71,7 @@ func (p *BubblesProxy) RegisterBubbleListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBubbles)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBubbles, "registerBubbleListener")
 	if _err != nil {
@@ -88,7 +88,7 @@ func (p *BubblesProxy) UnregisterBubbleListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBubbles)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBubbles, "unregisterBubbleListener")
 	if _err != nil {
@@ -528,4 +528,149 @@ func (s *BubblesStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBubblesServer is the server-side interface that user implementations
+// provide to NewBubblesStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBubblesServer interface {
+	RegisterBubbleListener(ctx context.Context, listener IBubblesListener) error
+	UnregisterBubbleListener(ctx context.Context, listener IBubblesListener) error
+	ShowBubble(ctx context.Context, key string, topOnScreen int32) error
+	DragBubbleToDismiss(ctx context.Context, key string, timestamp int64) error
+	RemoveAllBubbles(ctx context.Context) error
+	CollapseBubbles(ctx context.Context) error
+	StartBubbleDrag(ctx context.Context, key string) error
+	ShowUserEducation(ctx context.Context, positionX int32, positionY int32) error
+	SetBubbleBarLocation(ctx context.Context, location sharedBubbles.BubbleBarLocation, source int32) error
+	UpdateBubbleBarTopOnScreen(ctx context.Context, topOnScreen int32) error
+	StopBubbleDrag(ctx context.Context, location sharedBubbles.BubbleBarLocation, topOnScreen int32) error
+	ShowShortcutBubble(ctx context.Context, info pm.ShortcutInfo) error
+	ShowAppBubble(ctx context.Context, intent content.Intent) error
+	ShowExpandedView(ctx context.Context) error
+}
+
+type bubblesStubWrapper struct {
+	impl       IBubblesServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bubblesStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bubblesStubWrapper) RegisterBubbleListener(
+	ctx context.Context,
+	listener IBubblesListener,
+) error {
+	return w.impl.RegisterBubbleListener(ctx, listener)
+}
+
+func (w *bubblesStubWrapper) UnregisterBubbleListener(
+	ctx context.Context,
+	listener IBubblesListener,
+) error {
+	return w.impl.UnregisterBubbleListener(ctx, listener)
+}
+
+func (w *bubblesStubWrapper) ShowBubble(
+	ctx context.Context,
+	key string,
+	topOnScreen int32,
+) error {
+	return w.impl.ShowBubble(ctx, key, topOnScreen)
+}
+
+func (w *bubblesStubWrapper) DragBubbleToDismiss(
+	ctx context.Context,
+	key string,
+	timestamp int64,
+) error {
+	return w.impl.DragBubbleToDismiss(ctx, key, timestamp)
+}
+
+func (w *bubblesStubWrapper) RemoveAllBubbles(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveAllBubbles(ctx)
+}
+
+func (w *bubblesStubWrapper) CollapseBubbles(
+	ctx context.Context,
+) error {
+	return w.impl.CollapseBubbles(ctx)
+}
+
+func (w *bubblesStubWrapper) StartBubbleDrag(
+	ctx context.Context,
+	key string,
+) error {
+	return w.impl.StartBubbleDrag(ctx, key)
+}
+
+func (w *bubblesStubWrapper) ShowUserEducation(
+	ctx context.Context,
+	positionX int32,
+	positionY int32,
+) error {
+	return w.impl.ShowUserEducation(ctx, positionX, positionY)
+}
+
+func (w *bubblesStubWrapper) SetBubbleBarLocation(
+	ctx context.Context,
+	location sharedBubbles.BubbleBarLocation,
+	source int32,
+) error {
+	return w.impl.SetBubbleBarLocation(ctx, location, source)
+}
+
+func (w *bubblesStubWrapper) UpdateBubbleBarTopOnScreen(
+	ctx context.Context,
+	topOnScreen int32,
+) error {
+	return w.impl.UpdateBubbleBarTopOnScreen(ctx, topOnScreen)
+}
+
+func (w *bubblesStubWrapper) StopBubbleDrag(
+	ctx context.Context,
+	location sharedBubbles.BubbleBarLocation,
+	topOnScreen int32,
+) error {
+	return w.impl.StopBubbleDrag(ctx, location, topOnScreen)
+}
+
+func (w *bubblesStubWrapper) ShowShortcutBubble(
+	ctx context.Context,
+	info pm.ShortcutInfo,
+) error {
+	return w.impl.ShowShortcutBubble(ctx, info)
+}
+
+func (w *bubblesStubWrapper) ShowAppBubble(
+	ctx context.Context,
+	intent content.Intent,
+) error {
+	return w.impl.ShowAppBubble(ctx, intent)
+}
+
+func (w *bubblesStubWrapper) ShowExpandedView(
+	ctx context.Context,
+) error {
+	return w.impl.ShowExpandedView(ctx)
+}
+
+var _ IBubbles = (*bubblesStubWrapper)(nil)
+
+// NewBubblesStub creates a server-side IBubbles wrapping the given
+// server implementation. The returned value satisfies IBubbles
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBubblesStub(
+	impl IBubblesServer,
+) IBubbles {
+	wrapper := &bubblesStubWrapper{impl: impl}
+	stub := &BubblesStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

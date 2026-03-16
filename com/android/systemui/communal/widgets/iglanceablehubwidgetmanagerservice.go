@@ -59,7 +59,7 @@ func (p *GlanceableHubWidgetManagerServiceProxy) AddWidgetsListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGlanceableHubWidgetManagerService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGlanceableHubWidgetManagerService, "addWidgetsListener")
 	if _err != nil {
@@ -76,7 +76,7 @@ func (p *GlanceableHubWidgetManagerServiceProxy) RemoveWidgetsListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGlanceableHubWidgetManagerService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGlanceableHubWidgetManagerService, "removeWidgetsListener")
 	if _err != nil {
@@ -95,7 +95,7 @@ func (p *GlanceableHubWidgetManagerServiceProxy) SetAppWidgetHostListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGlanceableHubWidgetManagerService)
 	_data.WriteInt32(appWidgetId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGlanceableHubWidgetManagerService, "setAppWidgetHostListener")
 	if _err != nil {
@@ -124,7 +124,7 @@ func (p *GlanceableHubWidgetManagerServiceProxy) AddWidget(
 		return _err
 	}
 	_data.WriteInt32(rank)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGlanceableHubWidgetManagerService, "addWidget")
 	if _err != nil {
@@ -412,4 +412,107 @@ func (s *GlanceableHubWidgetManagerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGlanceableHubWidgetManagerServiceServer is the server-side interface that user implementations
+// provide to NewGlanceableHubWidgetManagerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGlanceableHubWidgetManagerServiceServer interface {
+	AddWidgetsListener(ctx context.Context, listener widgetsIGlanceableHubWidgetManagerService.IGlanceableHubWidgetsListener) error
+	RemoveWidgetsListener(ctx context.Context, listener widgetsIGlanceableHubWidgetManagerService.IGlanceableHubWidgetsListener) error
+	SetAppWidgetHostListener(ctx context.Context, appWidgetId int32, listener widgetsIGlanceableHubWidgetManagerService.IAppWidgetHostListener) error
+	AddWidget(ctx context.Context, provider content.ComponentName, user os.UserHandle, rank int32, callback widgetsIGlanceableHubWidgetManagerService.IConfigureWidgetCallback) error
+	DeleteWidget(ctx context.Context, appWidgetId int32) error
+	UpdateWidgetOrder(ctx context.Context, appWidgetIds []int32, ranks []int32) error
+	ResizeWidget(ctx context.Context, appWidgetId int32, spanY int32, appWidgetIds []int32, ranks []int32) error
+	GetIntentSenderForConfigureActivity(ctx context.Context, appWidgetId int32) (content.IntentSender, error)
+}
+
+type glanceableHubWidgetManagerServiceStubWrapper struct {
+	impl       IGlanceableHubWidgetManagerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *glanceableHubWidgetManagerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *glanceableHubWidgetManagerServiceStubWrapper) AddWidgetsListener(
+	ctx context.Context,
+	listener widgetsIGlanceableHubWidgetManagerService.IGlanceableHubWidgetsListener,
+) error {
+	return w.impl.AddWidgetsListener(ctx, listener)
+}
+
+func (w *glanceableHubWidgetManagerServiceStubWrapper) RemoveWidgetsListener(
+	ctx context.Context,
+	listener widgetsIGlanceableHubWidgetManagerService.IGlanceableHubWidgetsListener,
+) error {
+	return w.impl.RemoveWidgetsListener(ctx, listener)
+}
+
+func (w *glanceableHubWidgetManagerServiceStubWrapper) SetAppWidgetHostListener(
+	ctx context.Context,
+	appWidgetId int32,
+	listener widgetsIGlanceableHubWidgetManagerService.IAppWidgetHostListener,
+) error {
+	return w.impl.SetAppWidgetHostListener(ctx, appWidgetId, listener)
+}
+
+func (w *glanceableHubWidgetManagerServiceStubWrapper) AddWidget(
+	ctx context.Context,
+	provider content.ComponentName,
+	user os.UserHandle,
+	rank int32,
+	callback widgetsIGlanceableHubWidgetManagerService.IConfigureWidgetCallback,
+) error {
+	return w.impl.AddWidget(ctx, provider, user, rank, callback)
+}
+
+func (w *glanceableHubWidgetManagerServiceStubWrapper) DeleteWidget(
+	ctx context.Context,
+	appWidgetId int32,
+) error {
+	return w.impl.DeleteWidget(ctx, appWidgetId)
+}
+
+func (w *glanceableHubWidgetManagerServiceStubWrapper) UpdateWidgetOrder(
+	ctx context.Context,
+	appWidgetIds []int32,
+	ranks []int32,
+) error {
+	return w.impl.UpdateWidgetOrder(ctx, appWidgetIds, ranks)
+}
+
+func (w *glanceableHubWidgetManagerServiceStubWrapper) ResizeWidget(
+	ctx context.Context,
+	appWidgetId int32,
+	spanY int32,
+	appWidgetIds []int32,
+	ranks []int32,
+) error {
+	return w.impl.ResizeWidget(ctx, appWidgetId, spanY, appWidgetIds, ranks)
+}
+
+func (w *glanceableHubWidgetManagerServiceStubWrapper) GetIntentSenderForConfigureActivity(
+	ctx context.Context,
+	appWidgetId int32,
+) (content.IntentSender, error) {
+	return w.impl.GetIntentSenderForConfigureActivity(ctx, appWidgetId)
+}
+
+var _ IGlanceableHubWidgetManagerService = (*glanceableHubWidgetManagerServiceStubWrapper)(nil)
+
+// NewGlanceableHubWidgetManagerServiceStub creates a server-side IGlanceableHubWidgetManagerService wrapping the given
+// server implementation. The returned value satisfies IGlanceableHubWidgetManagerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGlanceableHubWidgetManagerServiceStub(
+	impl IGlanceableHubWidgetManagerServiceServer,
+) IGlanceableHubWidgetManagerService {
+	wrapper := &glanceableHubWidgetManagerServiceStubWrapper{impl: impl}
+	stub := &GlanceableHubWidgetManagerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

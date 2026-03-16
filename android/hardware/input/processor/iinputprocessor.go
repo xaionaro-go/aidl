@@ -197,3 +197,57 @@ func (s *InputProcessorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputProcessorServer is the server-side interface that user implementations
+// provide to NewInputProcessorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputProcessorServer interface {
+	Classify(ctx context.Context, event common.MotionEvent) (common.Classification, error)
+	Reset(ctx context.Context) error
+	ResetDevice(ctx context.Context, deviceId int32) error
+}
+
+type inputProcessorStubWrapper struct {
+	impl       IInputProcessorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputProcessorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputProcessorStubWrapper) Classify(
+	ctx context.Context,
+	event common.MotionEvent,
+) (common.Classification, error) {
+	return w.impl.Classify(ctx, event)
+}
+
+func (w *inputProcessorStubWrapper) Reset(
+	ctx context.Context,
+) error {
+	return w.impl.Reset(ctx)
+}
+
+func (w *inputProcessorStubWrapper) ResetDevice(
+	ctx context.Context,
+	deviceId int32,
+) error {
+	return w.impl.ResetDevice(ctx, deviceId)
+}
+
+var _ IInputProcessor = (*inputProcessorStubWrapper)(nil)
+
+// NewInputProcessorStub creates a server-side IInputProcessor wrapping the given
+// server implementation. The returned value satisfies IInputProcessor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputProcessorStub(
+	impl IInputProcessorServer,
+) IInputProcessor {
+	wrapper := &inputProcessorStubWrapper{impl: impl}
+	stub := &InputProcessorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

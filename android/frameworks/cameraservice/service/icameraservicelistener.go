@@ -132,3 +132,53 @@ func (s *CameraServiceListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraServiceListenerServer is the server-side interface that user implementations
+// provide to NewCameraServiceListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraServiceListenerServer interface {
+	OnPhysicalCameraStatusChanged(ctx context.Context, status CameraDeviceStatus, cameraId string, physicalCameraId string) error
+	OnStatusChanged(ctx context.Context, status CameraDeviceStatus, cameraId string) error
+}
+
+type cameraServiceListenerStubWrapper struct {
+	impl       ICameraServiceListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraServiceListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraServiceListenerStubWrapper) OnPhysicalCameraStatusChanged(
+	ctx context.Context,
+	status CameraDeviceStatus,
+	cameraId string,
+	physicalCameraId string,
+) error {
+	return w.impl.OnPhysicalCameraStatusChanged(ctx, status, cameraId, physicalCameraId)
+}
+
+func (w *cameraServiceListenerStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	status CameraDeviceStatus,
+	cameraId string,
+) error {
+	return w.impl.OnStatusChanged(ctx, status, cameraId)
+}
+
+var _ ICameraServiceListener = (*cameraServiceListenerStubWrapper)(nil)
+
+// NewCameraServiceListenerStub creates a server-side ICameraServiceListener wrapping the given
+// server implementation. The returned value satisfies ICameraServiceListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraServiceListenerStub(
+	impl ICameraServiceListenerServer,
+) ICameraServiceListener {
+	wrapper := &cameraServiceListenerStubWrapper{impl: impl}
+	stub := &CameraServiceListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

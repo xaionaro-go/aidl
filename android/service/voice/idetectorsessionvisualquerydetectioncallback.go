@@ -242,3 +242,80 @@ func (s *DetectorSessionVisualQueryDetectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDetectorSessionVisualQueryDetectionCallbackServer is the server-side interface that user implementations
+// provide to NewDetectorSessionVisualQueryDetectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDetectorSessionVisualQueryDetectionCallbackServer interface {
+	OnAttentionGained(ctx context.Context, attentionResult VisualQueryAttentionResult) error
+	OnAttentionLost(ctx context.Context, interactionIntention int32) error
+	OnQueryDetected(ctx context.Context, partialQuery string) error
+	OnResultDetected(ctx context.Context, partialResult VisualQueryDetectedResult) error
+	OnQueryFinished(ctx context.Context) error
+	OnQueryRejected(ctx context.Context) error
+}
+
+type detectorSessionVisualQueryDetectionCallbackStubWrapper struct {
+	impl       IDetectorSessionVisualQueryDetectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *detectorSessionVisualQueryDetectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *detectorSessionVisualQueryDetectionCallbackStubWrapper) OnAttentionGained(
+	ctx context.Context,
+	attentionResult VisualQueryAttentionResult,
+) error {
+	return w.impl.OnAttentionGained(ctx, attentionResult)
+}
+
+func (w *detectorSessionVisualQueryDetectionCallbackStubWrapper) OnAttentionLost(
+	ctx context.Context,
+	interactionIntention int32,
+) error {
+	return w.impl.OnAttentionLost(ctx, interactionIntention)
+}
+
+func (w *detectorSessionVisualQueryDetectionCallbackStubWrapper) OnQueryDetected(
+	ctx context.Context,
+	partialQuery string,
+) error {
+	return w.impl.OnQueryDetected(ctx, partialQuery)
+}
+
+func (w *detectorSessionVisualQueryDetectionCallbackStubWrapper) OnResultDetected(
+	ctx context.Context,
+	partialResult VisualQueryDetectedResult,
+) error {
+	return w.impl.OnResultDetected(ctx, partialResult)
+}
+
+func (w *detectorSessionVisualQueryDetectionCallbackStubWrapper) OnQueryFinished(
+	ctx context.Context,
+) error {
+	return w.impl.OnQueryFinished(ctx)
+}
+
+func (w *detectorSessionVisualQueryDetectionCallbackStubWrapper) OnQueryRejected(
+	ctx context.Context,
+) error {
+	return w.impl.OnQueryRejected(ctx)
+}
+
+var _ IDetectorSessionVisualQueryDetectionCallback = (*detectorSessionVisualQueryDetectionCallbackStubWrapper)(nil)
+
+// NewDetectorSessionVisualQueryDetectionCallbackStub creates a server-side IDetectorSessionVisualQueryDetectionCallback wrapping the given
+// server implementation. The returned value satisfies IDetectorSessionVisualQueryDetectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDetectorSessionVisualQueryDetectionCallbackStub(
+	impl IDetectorSessionVisualQueryDetectionCallbackServer,
+) IDetectorSessionVisualQueryDetectionCallback {
+	wrapper := &detectorSessionVisualQueryDetectionCallbackStubWrapper{impl: impl}
+	stub := &DetectorSessionVisualQueryDetectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

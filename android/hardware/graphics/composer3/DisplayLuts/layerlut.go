@@ -1,6 +1,7 @@
 package DisplayLuts
 
 import (
+	composer3 "github.com/xaionaro-go/binder/android/hardware/graphics/composer3"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,7 +9,7 @@ import (
 
 type LayerLut struct {
 	Layer int64
-	Luts  interface{}
+	Luts  composer3.Luts
 }
 
 var _ parcel.Parcelable = (*LayerLut)(nil)
@@ -18,6 +19,9 @@ func (s *LayerLut) MarshalParcel(
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteInt64(s.Layer)
+	if _err := s.Luts.MarshalParcel(p); _err != nil {
+		return _err
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -33,6 +37,10 @@ func (s *LayerLut) UnmarshalParcel(
 
 	s.Layer, _err = p.ReadInt64()
 	if _err != nil {
+		return _err
+	}
+
+	if _err = s.Luts.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
 

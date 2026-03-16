@@ -287,3 +287,84 @@ func (s *TunerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITunerCallbackServer is the server-side interface that user implementations
+// provide to NewTunerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerCallbackServer interface {
+	OnTuneFailed(ctx context.Context, result Result, selector ProgramSelector) error
+	OnCurrentProgramInfoChanged(ctx context.Context, info ProgramInfo) error
+	OnProgramListUpdated(ctx context.Context, chunk ProgramListChunk) error
+	OnAntennaStateChange(ctx context.Context, connected bool) error
+	OnConfigFlagUpdated(ctx context.Context, flag ConfigFlag, value bool) error
+	OnParametersUpdated(ctx context.Context, parameters []VendorKeyValue) error
+}
+
+type tunerCallbackStubWrapper struct {
+	impl       ITunerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerCallbackStubWrapper) OnTuneFailed(
+	ctx context.Context,
+	result Result,
+	selector ProgramSelector,
+) error {
+	return w.impl.OnTuneFailed(ctx, result, selector)
+}
+
+func (w *tunerCallbackStubWrapper) OnCurrentProgramInfoChanged(
+	ctx context.Context,
+	info ProgramInfo,
+) error {
+	return w.impl.OnCurrentProgramInfoChanged(ctx, info)
+}
+
+func (w *tunerCallbackStubWrapper) OnProgramListUpdated(
+	ctx context.Context,
+	chunk ProgramListChunk,
+) error {
+	return w.impl.OnProgramListUpdated(ctx, chunk)
+}
+
+func (w *tunerCallbackStubWrapper) OnAntennaStateChange(
+	ctx context.Context,
+	connected bool,
+) error {
+	return w.impl.OnAntennaStateChange(ctx, connected)
+}
+
+func (w *tunerCallbackStubWrapper) OnConfigFlagUpdated(
+	ctx context.Context,
+	flag ConfigFlag,
+	value bool,
+) error {
+	return w.impl.OnConfigFlagUpdated(ctx, flag, value)
+}
+
+func (w *tunerCallbackStubWrapper) OnParametersUpdated(
+	ctx context.Context,
+	parameters []VendorKeyValue,
+) error {
+	return w.impl.OnParametersUpdated(ctx, parameters)
+}
+
+var _ ITunerCallback = (*tunerCallbackStubWrapper)(nil)
+
+// NewTunerCallbackStub creates a server-side ITunerCallback wrapping the given
+// server implementation. The returned value satisfies ITunerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerCallbackStub(
+	impl ITunerCallbackServer,
+) ITunerCallback {
+	wrapper := &tunerCallbackStubWrapper{impl: impl}
+	stub := &TunerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

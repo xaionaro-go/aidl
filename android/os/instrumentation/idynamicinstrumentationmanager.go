@@ -52,7 +52,7 @@ func (p *DynamicInstrumentationManagerProxy) GetExecutableMethodFileOffsets(
 	if _err := methodDescriptor.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDynamicInstrumentationManager, "getExecutableMethodFileOffsets")
 	if _err != nil {
@@ -128,4 +128,45 @@ func (s *DynamicInstrumentationManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDynamicInstrumentationManagerServer is the server-side interface that user implementations
+// provide to NewDynamicInstrumentationManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDynamicInstrumentationManagerServer interface {
+	GetExecutableMethodFileOffsets(ctx context.Context, targetProcess TargetProcess, methodDescriptor MethodDescriptor, callback IOffsetCallback) error
+}
+
+type dynamicInstrumentationManagerStubWrapper struct {
+	impl       IDynamicInstrumentationManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dynamicInstrumentationManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dynamicInstrumentationManagerStubWrapper) GetExecutableMethodFileOffsets(
+	ctx context.Context,
+	targetProcess TargetProcess,
+	methodDescriptor MethodDescriptor,
+	callback IOffsetCallback,
+) error {
+	return w.impl.GetExecutableMethodFileOffsets(ctx, targetProcess, methodDescriptor, callback)
+}
+
+var _ IDynamicInstrumentationManager = (*dynamicInstrumentationManagerStubWrapper)(nil)
+
+// NewDynamicInstrumentationManagerStub creates a server-side IDynamicInstrumentationManager wrapping the given
+// server implementation. The returned value satisfies IDynamicInstrumentationManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDynamicInstrumentationManagerStub(
+	impl IDynamicInstrumentationManagerServer,
+) IDynamicInstrumentationManager {
+	wrapper := &dynamicInstrumentationManagerStubWrapper{impl: impl}
+	stub := &DynamicInstrumentationManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -214,3 +214,72 @@ func (s *BiometricSensorReceiverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBiometricSensorReceiverServer is the server-side interface that user implementations
+// provide to NewBiometricSensorReceiverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBiometricSensorReceiverServer interface {
+	OnAuthenticationSucceeded(ctx context.Context, sensorId int32, token []byte) error
+	OnAuthenticationFailed(ctx context.Context, sensorId int32) error
+	OnError(ctx context.Context, sensorId int32, cookie int32, error_ int32, vendorCode int32) error
+	OnAcquired(ctx context.Context, sensorId int32, acquiredInfo int32, vendorCode int32) error
+}
+
+type biometricSensorReceiverStubWrapper struct {
+	impl       IBiometricSensorReceiverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *biometricSensorReceiverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *biometricSensorReceiverStubWrapper) OnAuthenticationSucceeded(
+	ctx context.Context,
+	sensorId int32,
+	token []byte,
+) error {
+	return w.impl.OnAuthenticationSucceeded(ctx, sensorId, token)
+}
+
+func (w *biometricSensorReceiverStubWrapper) OnAuthenticationFailed(
+	ctx context.Context,
+	sensorId int32,
+) error {
+	return w.impl.OnAuthenticationFailed(ctx, sensorId)
+}
+
+func (w *biometricSensorReceiverStubWrapper) OnError(
+	ctx context.Context,
+	sensorId int32,
+	cookie int32,
+	error_ int32,
+	vendorCode int32,
+) error {
+	return w.impl.OnError(ctx, sensorId, cookie, error_, vendorCode)
+}
+
+func (w *biometricSensorReceiverStubWrapper) OnAcquired(
+	ctx context.Context,
+	sensorId int32,
+	acquiredInfo int32,
+	vendorCode int32,
+) error {
+	return w.impl.OnAcquired(ctx, sensorId, acquiredInfo, vendorCode)
+}
+
+var _ IBiometricSensorReceiver = (*biometricSensorReceiverStubWrapper)(nil)
+
+// NewBiometricSensorReceiverStub creates a server-side IBiometricSensorReceiver wrapping the given
+// server implementation. The returned value satisfies IBiometricSensorReceiver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBiometricSensorReceiverStub(
+	impl IBiometricSensorReceiverServer,
+) IBiometricSensorReceiver {
+	wrapper := &biometricSensorReceiverStubWrapper{impl: impl}
+	stub := &BiometricSensorReceiverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

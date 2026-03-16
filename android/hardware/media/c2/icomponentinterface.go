@@ -98,3 +98,41 @@ func (s *ComponentInterfaceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IComponentInterfaceServer is the server-side interface that user implementations
+// provide to NewComponentInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IComponentInterfaceServer interface {
+	GetConfigurable(ctx context.Context) (IConfigurable, error)
+}
+
+type componentInterfaceStubWrapper struct {
+	impl       IComponentInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *componentInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *componentInterfaceStubWrapper) GetConfigurable(
+	ctx context.Context,
+) (IConfigurable, error) {
+	return w.impl.GetConfigurable(ctx)
+}
+
+var _ IComponentInterface = (*componentInterfaceStubWrapper)(nil)
+
+// NewComponentInterfaceStub creates a server-side IComponentInterface wrapping the given
+// server implementation. The returned value satisfies IComponentInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewComponentInterfaceStub(
+	impl IComponentInterfaceServer,
+) IComponentInterface {
+	wrapper := &componentInterfaceStubWrapper{impl: impl}
+	stub := &ComponentInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

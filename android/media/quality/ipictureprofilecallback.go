@@ -273,3 +273,79 @@ func (s *PictureProfileCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPictureProfileCallbackServer is the server-side interface that user implementations
+// provide to NewPictureProfileCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPictureProfileCallbackServer interface {
+	OnPictureProfileAdded(ctx context.Context, id string, p_ PictureProfile) error
+	OnPictureProfileUpdated(ctx context.Context, id string, p_ PictureProfile) error
+	OnPictureProfileRemoved(ctx context.Context, id string, p_ PictureProfile) error
+	OnParamCapabilitiesChanged(ctx context.Context, id string, caps []ParamCapability) error
+	OnError(ctx context.Context, id string, err int32) error
+}
+
+type pictureProfileCallbackStubWrapper struct {
+	impl       IPictureProfileCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pictureProfileCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pictureProfileCallbackStubWrapper) OnPictureProfileAdded(
+	ctx context.Context,
+	id string,
+	p_ PictureProfile,
+) error {
+	return w.impl.OnPictureProfileAdded(ctx, id, p_)
+}
+
+func (w *pictureProfileCallbackStubWrapper) OnPictureProfileUpdated(
+	ctx context.Context,
+	id string,
+	p_ PictureProfile,
+) error {
+	return w.impl.OnPictureProfileUpdated(ctx, id, p_)
+}
+
+func (w *pictureProfileCallbackStubWrapper) OnPictureProfileRemoved(
+	ctx context.Context,
+	id string,
+	p_ PictureProfile,
+) error {
+	return w.impl.OnPictureProfileRemoved(ctx, id, p_)
+}
+
+func (w *pictureProfileCallbackStubWrapper) OnParamCapabilitiesChanged(
+	ctx context.Context,
+	id string,
+	caps []ParamCapability,
+) error {
+	return w.impl.OnParamCapabilitiesChanged(ctx, id, caps)
+}
+
+func (w *pictureProfileCallbackStubWrapper) OnError(
+	ctx context.Context,
+	id string,
+	err int32,
+) error {
+	return w.impl.OnError(ctx, id, err)
+}
+
+var _ IPictureProfileCallback = (*pictureProfileCallbackStubWrapper)(nil)
+
+// NewPictureProfileCallbackStub creates a server-side IPictureProfileCallback wrapping the given
+// server implementation. The returned value satisfies IPictureProfileCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPictureProfileCallbackStub(
+	impl IPictureProfileCallbackServer,
+) IPictureProfileCallback {
+	wrapper := &pictureProfileCallbackStubWrapper{impl: impl}
+	stub := &PictureProfileCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

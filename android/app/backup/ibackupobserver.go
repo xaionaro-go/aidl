@@ -165,3 +165,60 @@ func (s *BackupObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBackupObserverServer is the server-side interface that user implementations
+// provide to NewBackupObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackupObserverServer interface {
+	OnUpdate(ctx context.Context, currentPackage string, backupProgress BackupProgress) error
+	OnResult(ctx context.Context, target string, status int32) error
+	BackupFinished(ctx context.Context, status int32) error
+}
+
+type backupObserverStubWrapper struct {
+	impl       IBackupObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backupObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backupObserverStubWrapper) OnUpdate(
+	ctx context.Context,
+	currentPackage string,
+	backupProgress BackupProgress,
+) error {
+	return w.impl.OnUpdate(ctx, currentPackage, backupProgress)
+}
+
+func (w *backupObserverStubWrapper) OnResult(
+	ctx context.Context,
+	target string,
+	status int32,
+) error {
+	return w.impl.OnResult(ctx, target, status)
+}
+
+func (w *backupObserverStubWrapper) BackupFinished(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.BackupFinished(ctx, status)
+}
+
+var _ IBackupObserver = (*backupObserverStubWrapper)(nil)
+
+// NewBackupObserverStub creates a server-side IBackupObserver wrapping the given
+// server implementation. The returned value satisfies IBackupObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackupObserverStub(
+	impl IBackupObserverServer,
+) IBackupObserver {
+	wrapper := &backupObserverStubWrapper{impl: impl}
+	stub := &BackupObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

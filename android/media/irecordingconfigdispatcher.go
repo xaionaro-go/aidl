@@ -90,3 +90,42 @@ func (s *RecordingConfigDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRecordingConfigDispatcherServer is the server-side interface that user implementations
+// provide to NewRecordingConfigDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecordingConfigDispatcherServer interface {
+	DispatchRecordingConfigChange(ctx context.Context, configs []AudioRecordingConfiguration) error
+}
+
+type recordingConfigDispatcherStubWrapper struct {
+	impl       IRecordingConfigDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recordingConfigDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recordingConfigDispatcherStubWrapper) DispatchRecordingConfigChange(
+	ctx context.Context,
+	configs []AudioRecordingConfiguration,
+) error {
+	return w.impl.DispatchRecordingConfigChange(ctx, configs)
+}
+
+var _ IRecordingConfigDispatcher = (*recordingConfigDispatcherStubWrapper)(nil)
+
+// NewRecordingConfigDispatcherStub creates a server-side IRecordingConfigDispatcher wrapping the given
+// server implementation. The returned value satisfies IRecordingConfigDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecordingConfigDispatcherStub(
+	impl IRecordingConfigDispatcherServer,
+) IRecordingConfigDispatcher {
+	wrapper := &recordingConfigDispatcherStubWrapper{impl: impl}
+	stub := &RecordingConfigDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

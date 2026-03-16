@@ -130,3 +130,44 @@ func (s *DownloadStatusListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDownloadStatusListenerServer is the server-side interface that user implementations
+// provide to NewDownloadStatusListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDownloadStatusListenerServer interface {
+	OnStatusUpdated(ctx context.Context, request DownloadRequest, fileInfo FileInfo, status int32) error
+}
+
+type downloadStatusListenerStubWrapper struct {
+	impl       IDownloadStatusListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *downloadStatusListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *downloadStatusListenerStubWrapper) OnStatusUpdated(
+	ctx context.Context,
+	request DownloadRequest,
+	fileInfo FileInfo,
+	status int32,
+) error {
+	return w.impl.OnStatusUpdated(ctx, request, fileInfo, status)
+}
+
+var _ IDownloadStatusListener = (*downloadStatusListenerStubWrapper)(nil)
+
+// NewDownloadStatusListenerStub creates a server-side IDownloadStatusListener wrapping the given
+// server implementation. The returned value satisfies IDownloadStatusListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDownloadStatusListenerStub(
+	impl IDownloadStatusListenerServer,
+) IDownloadStatusListener {
+	wrapper := &downloadStatusListenerStubWrapper{impl: impl}
+	stub := &DownloadStatusListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

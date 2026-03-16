@@ -50,8 +50,8 @@ func (p *AppFunctionServiceProxy) ExecuteAppFunction(
 		return _err
 	}
 	_data.WriteString16(_identity.PackageName)
-	_data.WriteStrongBinder(cancellationCallback.AsBinder().Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cancellationCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppFunctionService, "executeAppFunction")
 	if _err != nil {
@@ -107,4 +107,45 @@ func (s *AppFunctionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAppFunctionServiceServer is the server-side interface that user implementations
+// provide to NewAppFunctionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppFunctionServiceServer interface {
+	ExecuteAppFunction(ctx context.Context, request ExecuteAppFunctionRequest, cancellationCallback ICancellationCallback, callback IExecuteAppFunctionCallback) error
+}
+
+type appFunctionServiceStubWrapper struct {
+	impl       IAppFunctionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appFunctionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appFunctionServiceStubWrapper) ExecuteAppFunction(
+	ctx context.Context,
+	request ExecuteAppFunctionRequest,
+	cancellationCallback ICancellationCallback,
+	callback IExecuteAppFunctionCallback,
+) error {
+	return w.impl.ExecuteAppFunction(ctx, request, cancellationCallback, callback)
+}
+
+var _ IAppFunctionService = (*appFunctionServiceStubWrapper)(nil)
+
+// NewAppFunctionServiceStub creates a server-side IAppFunctionService wrapping the given
+// server implementation. The returned value satisfies IAppFunctionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppFunctionServiceStub(
+	impl IAppFunctionServiceServer,
+) IAppFunctionService {
+	wrapper := &appFunctionServiceStubWrapper{impl: impl}
+	stub := &AppFunctionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -82,3 +82,42 @@ func (s *SetDefaultSmdpAddressCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISetDefaultSmdpAddressCallbackServer is the server-side interface that user implementations
+// provide to NewSetDefaultSmdpAddressCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISetDefaultSmdpAddressCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32) error
+}
+
+type setDefaultSmdpAddressCallbackStubWrapper struct {
+	impl       ISetDefaultSmdpAddressCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *setDefaultSmdpAddressCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *setDefaultSmdpAddressCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+) error {
+	return w.impl.OnComplete(ctx, resultCode)
+}
+
+var _ ISetDefaultSmdpAddressCallback = (*setDefaultSmdpAddressCallbackStubWrapper)(nil)
+
+// NewSetDefaultSmdpAddressCallbackStub creates a server-side ISetDefaultSmdpAddressCallback wrapping the given
+// server implementation. The returned value satisfies ISetDefaultSmdpAddressCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSetDefaultSmdpAddressCallbackStub(
+	impl ISetDefaultSmdpAddressCallbackServer,
+) ISetDefaultSmdpAddressCallback {
+	wrapper := &setDefaultSmdpAddressCallbackStubWrapper{impl: impl}
+	stub := &SetDefaultSmdpAddressCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

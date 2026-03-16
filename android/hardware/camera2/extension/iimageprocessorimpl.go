@@ -130,3 +130,44 @@ func (s *ImageProcessorImplStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImageProcessorImplServer is the server-side interface that user implementations
+// provide to NewImageProcessorImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImageProcessorImplServer interface {
+	OnNextImageAvailable(ctx context.Context, outputConfigId OutputConfigId, image ParcelImage, physicalCameraId string) error
+}
+
+type imageProcessorImplStubWrapper struct {
+	impl       IImageProcessorImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imageProcessorImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imageProcessorImplStubWrapper) OnNextImageAvailable(
+	ctx context.Context,
+	outputConfigId OutputConfigId,
+	image ParcelImage,
+	physicalCameraId string,
+) error {
+	return w.impl.OnNextImageAvailable(ctx, outputConfigId, image, physicalCameraId)
+}
+
+var _ IImageProcessorImpl = (*imageProcessorImplStubWrapper)(nil)
+
+// NewImageProcessorImplStub creates a server-side IImageProcessorImpl wrapping the given
+// server implementation. The returned value satisfies IImageProcessorImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImageProcessorImplStub(
+	impl IImageProcessorImplServer,
+) IImageProcessorImpl {
+	wrapper := &imageProcessorImplStubWrapper{impl: impl}
+	stub := &ImageProcessorImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

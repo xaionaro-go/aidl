@@ -131,3 +131,50 @@ func (s *BatteryPropertiesRegistrarStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBatteryPropertiesRegistrarServer is the server-side interface that user implementations
+// provide to NewBatteryPropertiesRegistrarStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBatteryPropertiesRegistrarServer interface {
+	GetProperty(ctx context.Context, id int32, prop BatteryProperty) (int32, error)
+	ScheduleUpdate(ctx context.Context) error
+}
+
+type batteryPropertiesRegistrarStubWrapper struct {
+	impl       IBatteryPropertiesRegistrarServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *batteryPropertiesRegistrarStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *batteryPropertiesRegistrarStubWrapper) GetProperty(
+	ctx context.Context,
+	id int32,
+	prop BatteryProperty,
+) (int32, error) {
+	return w.impl.GetProperty(ctx, id, prop)
+}
+
+func (w *batteryPropertiesRegistrarStubWrapper) ScheduleUpdate(
+	ctx context.Context,
+) error {
+	return w.impl.ScheduleUpdate(ctx)
+}
+
+var _ IBatteryPropertiesRegistrar = (*batteryPropertiesRegistrarStubWrapper)(nil)
+
+// NewBatteryPropertiesRegistrarStub creates a server-side IBatteryPropertiesRegistrar wrapping the given
+// server implementation. The returned value satisfies IBatteryPropertiesRegistrar
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBatteryPropertiesRegistrarStub(
+	impl IBatteryPropertiesRegistrarServer,
+) IBatteryPropertiesRegistrar {
+	wrapper := &batteryPropertiesRegistrarStubWrapper{impl: impl}
+	stub := &BatteryPropertiesRegistrarStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

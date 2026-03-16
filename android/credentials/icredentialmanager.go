@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -38,7 +37,7 @@ type ICredentialManager interface {
 	SetEnabledProviders(ctx context.Context, primaryProviders []string, providers []string, callback ISetEnabledProvidersCallback) error
 	RegisterCredentialDescription(ctx context.Context, request RegisterCredentialDescriptionRequest) error
 	UnregisterCredentialDescription(ctx context.Context, request UnregisterCredentialDescriptionRequest) error
-	IsEnabledCredentialProviderService(ctx context.Context, componentName content.ComponentName) (bool, error)
+	IsEnabledCredentialProviderService(ctx context.Context, componentName interface{}) (bool, error)
 	GetCredentialProviderServices(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
 	GetCredentialProviderServicesForTesting(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
 	IsServiceEnabled(ctx context.Context) (bool, error)
@@ -73,7 +72,7 @@ func (p *CredentialManagerProxy) ExecuteGetCredential(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "executeGetCredential")
@@ -113,8 +112,8 @@ func (p *CredentialManagerProxy) ExecutePrepareGetCredential(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(prepareGetCredentialCallback.AsBinder().Handle())
-	_data.WriteStrongBinder(getCredentialCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, prepareGetCredentialCallback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, getCredentialCallback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "executePrepareGetCredential")
@@ -153,7 +152,7 @@ func (p *CredentialManagerProxy) ExecuteCreateCredential(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "executeCreateCredential")
@@ -193,8 +192,8 @@ func (p *CredentialManagerProxy) GetCandidateCredentials(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
-	_data.WriteStrongBinder(clientCallback.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, clientCallback, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "getCandidateCredentials")
@@ -233,7 +232,7 @@ func (p *CredentialManagerProxy) ClearCredentialState(
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "clearCredentialState")
@@ -285,7 +284,7 @@ func (p *CredentialManagerProxy) SetEnabledProviders(
 		}
 	}
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "setEnabledProviders")
 	if _err != nil {
@@ -369,16 +368,12 @@ func (p *CredentialManagerProxy) UnregisterCredentialDescription(
 
 func (p *CredentialManagerProxy) IsEnabledCredentialProviderService(
 	ctx context.Context,
-	componentName content.ComponentName,
+	componentName interface{},
 ) (bool, error) {
 	var _result bool
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICredentialManager)
-	_data.WriteInt32(1)
-	if _err := componentName.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorICredentialManager, "isEnabledCredentialProviderService")
@@ -776,18 +771,7 @@ func (s *CredentialManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_componentName content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_componentName.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_componentName interface{}
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
@@ -855,4 +839,139 @@ func (s *CredentialManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICredentialManagerServer is the server-side interface that user implementations
+// provide to NewCredentialManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICredentialManagerServer interface {
+	ExecuteGetCredential(ctx context.Context, request GetCredentialRequest, callback IGetCredentialCallback) (ondeviceintelligence.ICancellationSignal, error)
+	ExecutePrepareGetCredential(ctx context.Context, request GetCredentialRequest, prepareGetCredentialCallback IPrepareGetCredentialCallback, getCredentialCallback IGetCredentialCallback) (ondeviceintelligence.ICancellationSignal, error)
+	ExecuteCreateCredential(ctx context.Context, request CreateCredentialRequest, callback ICreateCredentialCallback) (ondeviceintelligence.ICancellationSignal, error)
+	GetCandidateCredentials(ctx context.Context, request GetCredentialRequest, callback IGetCandidateCredentialsCallback, clientCallback binder.IBinder) (ondeviceintelligence.ICancellationSignal, error)
+	ClearCredentialState(ctx context.Context, request ClearCredentialStateRequest, callback IClearCredentialStateCallback) (ondeviceintelligence.ICancellationSignal, error)
+	SetEnabledProviders(ctx context.Context, primaryProviders []string, providers []string, callback ISetEnabledProvidersCallback) error
+	RegisterCredentialDescription(ctx context.Context, request RegisterCredentialDescriptionRequest) error
+	UnregisterCredentialDescription(ctx context.Context, request UnregisterCredentialDescriptionRequest) error
+	IsEnabledCredentialProviderService(ctx context.Context, componentName interface{}) (bool, error)
+	GetCredentialProviderServices(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
+	GetCredentialProviderServicesForTesting(ctx context.Context, providerFilter int32) ([]CredentialProviderInfo, error)
+	IsServiceEnabled(ctx context.Context) (bool, error)
+}
+
+type credentialManagerStubWrapper struct {
+	impl       ICredentialManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *credentialManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *credentialManagerStubWrapper) ExecuteGetCredential(
+	ctx context.Context,
+	request GetCredentialRequest,
+	callback IGetCredentialCallback,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.ExecuteGetCredential(ctx, request, callback)
+}
+
+func (w *credentialManagerStubWrapper) ExecutePrepareGetCredential(
+	ctx context.Context,
+	request GetCredentialRequest,
+	prepareGetCredentialCallback IPrepareGetCredentialCallback,
+	getCredentialCallback IGetCredentialCallback,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.ExecutePrepareGetCredential(ctx, request, prepareGetCredentialCallback, getCredentialCallback)
+}
+
+func (w *credentialManagerStubWrapper) ExecuteCreateCredential(
+	ctx context.Context,
+	request CreateCredentialRequest,
+	callback ICreateCredentialCallback,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.ExecuteCreateCredential(ctx, request, callback)
+}
+
+func (w *credentialManagerStubWrapper) GetCandidateCredentials(
+	ctx context.Context,
+	request GetCredentialRequest,
+	callback IGetCandidateCredentialsCallback,
+	clientCallback binder.IBinder,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.GetCandidateCredentials(ctx, request, callback, clientCallback)
+}
+
+func (w *credentialManagerStubWrapper) ClearCredentialState(
+	ctx context.Context,
+	request ClearCredentialStateRequest,
+	callback IClearCredentialStateCallback,
+) (ondeviceintelligence.ICancellationSignal, error) {
+	return w.impl.ClearCredentialState(ctx, request, callback)
+}
+
+func (w *credentialManagerStubWrapper) SetEnabledProviders(
+	ctx context.Context,
+	primaryProviders []string,
+	providers []string,
+	callback ISetEnabledProvidersCallback,
+) error {
+	return w.impl.SetEnabledProviders(ctx, primaryProviders, providers, callback)
+}
+
+func (w *credentialManagerStubWrapper) RegisterCredentialDescription(
+	ctx context.Context,
+	request RegisterCredentialDescriptionRequest,
+) error {
+	return w.impl.RegisterCredentialDescription(ctx, request)
+}
+
+func (w *credentialManagerStubWrapper) UnregisterCredentialDescription(
+	ctx context.Context,
+	request UnregisterCredentialDescriptionRequest,
+) error {
+	return w.impl.UnregisterCredentialDescription(ctx, request)
+}
+
+func (w *credentialManagerStubWrapper) IsEnabledCredentialProviderService(
+	ctx context.Context,
+	componentName interface{},
+) (bool, error) {
+	return w.impl.IsEnabledCredentialProviderService(ctx, componentName)
+}
+
+func (w *credentialManagerStubWrapper) GetCredentialProviderServices(
+	ctx context.Context,
+	providerFilter int32,
+) ([]CredentialProviderInfo, error) {
+	return w.impl.GetCredentialProviderServices(ctx, providerFilter)
+}
+
+func (w *credentialManagerStubWrapper) GetCredentialProviderServicesForTesting(
+	ctx context.Context,
+	providerFilter int32,
+) ([]CredentialProviderInfo, error) {
+	return w.impl.GetCredentialProviderServicesForTesting(ctx, providerFilter)
+}
+
+func (w *credentialManagerStubWrapper) IsServiceEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsServiceEnabled(ctx)
+}
+
+var _ ICredentialManager = (*credentialManagerStubWrapper)(nil)
+
+// NewCredentialManagerStub creates a server-side ICredentialManager wrapping the given
+// server implementation. The returned value satisfies ICredentialManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCredentialManagerStub(
+	impl ICredentialManagerServer,
+) ICredentialManager {
+	wrapper := &credentialManagerStubWrapper{impl: impl}
+	stub := &CredentialManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -172,3 +172,66 @@ func (s *SatelliteModemStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteModemStateCallbackServer is the server-side interface that user implementations
+// provide to NewSatelliteModemStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteModemStateCallbackServer interface {
+	OnSatelliteModemStateChanged(ctx context.Context, state int32) error
+	OnEmergencyModeChanged(ctx context.Context, isEmergency bool) error
+	OnRegistrationFailure(ctx context.Context, causeCode int32) error
+	OnTerrestrialNetworkAvailableChanged(ctx context.Context, isAvailable bool) error
+}
+
+type satelliteModemStateCallbackStubWrapper struct {
+	impl       ISatelliteModemStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteModemStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteModemStateCallbackStubWrapper) OnSatelliteModemStateChanged(
+	ctx context.Context,
+	state int32,
+) error {
+	return w.impl.OnSatelliteModemStateChanged(ctx, state)
+}
+
+func (w *satelliteModemStateCallbackStubWrapper) OnEmergencyModeChanged(
+	ctx context.Context,
+	isEmergency bool,
+) error {
+	return w.impl.OnEmergencyModeChanged(ctx, isEmergency)
+}
+
+func (w *satelliteModemStateCallbackStubWrapper) OnRegistrationFailure(
+	ctx context.Context,
+	causeCode int32,
+) error {
+	return w.impl.OnRegistrationFailure(ctx, causeCode)
+}
+
+func (w *satelliteModemStateCallbackStubWrapper) OnTerrestrialNetworkAvailableChanged(
+	ctx context.Context,
+	isAvailable bool,
+) error {
+	return w.impl.OnTerrestrialNetworkAvailableChanged(ctx, isAvailable)
+}
+
+var _ ISatelliteModemStateCallback = (*satelliteModemStateCallbackStubWrapper)(nil)
+
+// NewSatelliteModemStateCallbackStub creates a server-side ISatelliteModemStateCallback wrapping the given
+// server implementation. The returned value satisfies ISatelliteModemStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteModemStateCallbackStub(
+	impl ISatelliteModemStateCallbackServer,
+) ISatelliteModemStateCallback {
+	wrapper := &satelliteModemStateCallbackStubWrapper{impl: impl}
+	stub := &SatelliteModemStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

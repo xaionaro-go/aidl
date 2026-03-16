@@ -3,10 +3,12 @@ package view
 import (
 	"context"
 	"fmt"
+	os "github.com/xaionaro-go/binder/android/os"
 	util "github.com/xaionaro-go/binder/android/util"
 	inputmethod "github.com/xaionaro-go/binder/android/view/inputmethod"
+	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
-	os "github.com/xaionaro-go/binder/com/android/internal_/os"
+	internalOs "github.com/xaionaro-go/binder/com/android/internal_/os"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -36,7 +38,7 @@ const (
 type IWindow interface {
 	AsBinder() binder.IBinder
 	ExecuteCommand(ctx context.Context, command string, parameters string, descriptor int32) error
-	Resized(ctx context.Context, frames interface{}, reportDraw bool, newMergedConfiguration util.MergedConfiguration, insetsState InsetsState, forceLayout bool, alwaysConsumeSystemBars bool, displayId int32, syncSeqId int32, dragResizing bool, activityWindowInfo *interface{}) error
+	Resized(ctx context.Context, frames window.ClientWindowFrames, reportDraw bool, newMergedConfiguration util.MergedConfiguration, insetsState InsetsState, forceLayout bool, alwaysConsumeSystemBars bool, displayId int32, syncSeqId int32, dragResizing bool, activityWindowInfo *window.ActivityWindowInfo) error
 	InsetsControlChanged(ctx context.Context, insetsState InsetsState, activeControls InsetsSourceControlArray) error
 	ShowInsets(ctx context.Context, types int32, fromIme bool, statsToken *inputmethod.ImeTrackerToken) error
 	HideInsets(ctx context.Context, types int32, fromIme bool, statsToken *inputmethod.ImeTrackerToken) error
@@ -45,10 +47,10 @@ type IWindow interface {
 	DispatchGetNewSurface(ctx context.Context) error
 	CloseSystemDialogs(ctx context.Context, reason string) error
 	DispatchWallpaperOffsets(ctx context.Context, x float32, y float32, xStep float32, yStep float32, zoom float32, sync bool) error
-	DispatchWallpaperCommand(ctx context.Context, action string, x int32, y int32, z int32, extras interface{}, sync bool) error
+	DispatchWallpaperCommand(ctx context.Context, action string, x int32, y int32, z int32, extras os.Bundle, sync bool) error
 	DispatchDragEvent(ctx context.Context, event DragEvent) error
 	DispatchWindowShown(ctx context.Context) error
-	RequestAppKeyboardShortcuts(ctx context.Context, receiver os.IResultReceiver, deviceId int32) error
+	RequestAppKeyboardShortcuts(ctx context.Context, receiver internalOs.IResultReceiver, deviceId int32) error
 	RequestScrollCapture(ctx context.Context, callbacks IScrollCaptureResponseListener) error
 	DumpWindow(ctx context.Context, pfd int32) error
 }
@@ -92,7 +94,7 @@ func (p *WindowProxy) ExecuteCommand(
 
 func (p *WindowProxy) Resized(
 	ctx context.Context,
-	frames interface{},
+	frames window.ClientWindowFrames,
 	reportDraw bool,
 	newMergedConfiguration util.MergedConfiguration,
 	insetsState InsetsState,
@@ -101,10 +103,14 @@ func (p *WindowProxy) Resized(
 	displayId int32,
 	syncSeqId int32,
 	dragResizing bool,
-	activityWindowInfo *interface{},
+	activityWindowInfo *window.ActivityWindowInfo,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindow)
+	_data.WriteInt32(1)
+	if _err := frames.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteBool(reportDraw)
 	_data.WriteInt32(1)
 	if _err := newMergedConfiguration.MarshalParcel(_data); _err != nil {
@@ -119,6 +125,13 @@ func (p *WindowProxy) Resized(
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(syncSeqId)
 	_data.WriteBool(dragResizing)
+	if activityWindowInfo != nil {
+		if _err := (*activityWindowInfo).MarshalParcel(_data); _err != nil {
+			return _err
+		}
+	} else {
+		_data.WriteInt32(-1)
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "resized")
 	if _err != nil {
@@ -309,7 +322,7 @@ func (p *WindowProxy) DispatchWallpaperCommand(
 	x int32,
 	y int32,
 	z int32,
-	extras interface{},
+	extras os.Bundle,
 	sync bool,
 ) error {
 	_data := parcel.New()
@@ -318,6 +331,10 @@ func (p *WindowProxy) DispatchWallpaperCommand(
 	_data.WriteInt32(x)
 	_data.WriteInt32(y)
 	_data.WriteInt32(z)
+	_data.WriteInt32(1)
+	if _err := extras.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteBool(sync)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "dispatchWallpaperCommand")
@@ -366,12 +383,12 @@ func (p *WindowProxy) DispatchWindowShown(
 
 func (p *WindowProxy) RequestAppKeyboardShortcuts(
 	ctx context.Context,
-	receiver os.IResultReceiver,
+	receiver internalOs.IResultReceiver,
 	deviceId int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindow)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "requestAppKeyboardShortcuts")
@@ -389,7 +406,7 @@ func (p *WindowProxy) RequestScrollCapture(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindow)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindow, "requestScrollCapture")
 	if _err != nil {
@@ -454,7 +471,18 @@ func (s *WindowStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_frames interface{}
+		var _arg_frames window.ClientWindowFrames
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_frames.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_reportDraw, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -503,7 +531,18 @@ func (s *WindowStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_activityWindowInfo *interface{}
+		var _arg_activityWindowInfo *window.ActivityWindowInfo
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_activityWindowInfo.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.Resized(ctx, _arg_frames, _arg_reportDraw, _arg_newMergedConfiguration, _arg_insetsState, _arg_forceLayout, _arg_alwaysConsumeSystemBars, _arg_displayId, _arg_syncSeqId, _arg_dragResizing, _arg_activityWindowInfo)
 		_ = _err
 		return nil, nil
@@ -687,7 +726,18 @@ func (s *WindowStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras interface{}
+		var _arg_extras os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_sync, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -726,7 +776,7 @@ func (s *WindowStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_receiver os.IResultReceiver
+		var _arg_receiver internalOs.IResultReceiver
 		_ = _arg_receiver
 		_arg_deviceId, _err := _data.ReadInt32()
 		if _err != nil {
@@ -759,4 +809,189 @@ func (s *WindowStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWindowServer is the server-side interface that user implementations
+// provide to NewWindowStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowServer interface {
+	ExecuteCommand(ctx context.Context, command string, parameters string, descriptor int32) error
+	Resized(ctx context.Context, frames window.ClientWindowFrames, reportDraw bool, newMergedConfiguration util.MergedConfiguration, insetsState InsetsState, forceLayout bool, alwaysConsumeSystemBars bool, displayId int32, syncSeqId int32, dragResizing bool, activityWindowInfo *window.ActivityWindowInfo) error
+	InsetsControlChanged(ctx context.Context, insetsState InsetsState, activeControls InsetsSourceControlArray) error
+	ShowInsets(ctx context.Context, types int32, fromIme bool, statsToken *inputmethod.ImeTrackerToken) error
+	HideInsets(ctx context.Context, types int32, fromIme bool, statsToken *inputmethod.ImeTrackerToken) error
+	Moved(ctx context.Context, newX int32, newY int32) error
+	DispatchAppVisibility(ctx context.Context, visible bool) error
+	DispatchGetNewSurface(ctx context.Context) error
+	CloseSystemDialogs(ctx context.Context, reason string) error
+	DispatchWallpaperOffsets(ctx context.Context, x float32, y float32, xStep float32, yStep float32, zoom float32, sync bool) error
+	DispatchWallpaperCommand(ctx context.Context, action string, x int32, y int32, z int32, extras os.Bundle, sync bool) error
+	DispatchDragEvent(ctx context.Context, event DragEvent) error
+	DispatchWindowShown(ctx context.Context) error
+	RequestAppKeyboardShortcuts(ctx context.Context, receiver internalOs.IResultReceiver, deviceId int32) error
+	RequestScrollCapture(ctx context.Context, callbacks IScrollCaptureResponseListener) error
+	DumpWindow(ctx context.Context, pfd int32) error
+}
+
+type windowStubWrapper struct {
+	impl       IWindowServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *windowStubWrapper) ExecuteCommand(
+	ctx context.Context,
+	command string,
+	parameters string,
+	descriptor int32,
+) error {
+	return w.impl.ExecuteCommand(ctx, command, parameters, descriptor)
+}
+
+func (w *windowStubWrapper) Resized(
+	ctx context.Context,
+	frames window.ClientWindowFrames,
+	reportDraw bool,
+	newMergedConfiguration util.MergedConfiguration,
+	insetsState InsetsState,
+	forceLayout bool,
+	alwaysConsumeSystemBars bool,
+	displayId int32,
+	syncSeqId int32,
+	dragResizing bool,
+	activityWindowInfo *window.ActivityWindowInfo,
+) error {
+	return w.impl.Resized(ctx, frames, reportDraw, newMergedConfiguration, insetsState, forceLayout, alwaysConsumeSystemBars, displayId, syncSeqId, dragResizing, activityWindowInfo)
+}
+
+func (w *windowStubWrapper) InsetsControlChanged(
+	ctx context.Context,
+	insetsState InsetsState,
+	activeControls InsetsSourceControlArray,
+) error {
+	return w.impl.InsetsControlChanged(ctx, insetsState, activeControls)
+}
+
+func (w *windowStubWrapper) ShowInsets(
+	ctx context.Context,
+	types int32,
+	fromIme bool,
+	statsToken *inputmethod.ImeTrackerToken,
+) error {
+	return w.impl.ShowInsets(ctx, types, fromIme, statsToken)
+}
+
+func (w *windowStubWrapper) HideInsets(
+	ctx context.Context,
+	types int32,
+	fromIme bool,
+	statsToken *inputmethod.ImeTrackerToken,
+) error {
+	return w.impl.HideInsets(ctx, types, fromIme, statsToken)
+}
+
+func (w *windowStubWrapper) Moved(
+	ctx context.Context,
+	newX int32,
+	newY int32,
+) error {
+	return w.impl.Moved(ctx, newX, newY)
+}
+
+func (w *windowStubWrapper) DispatchAppVisibility(
+	ctx context.Context,
+	visible bool,
+) error {
+	return w.impl.DispatchAppVisibility(ctx, visible)
+}
+
+func (w *windowStubWrapper) DispatchGetNewSurface(
+	ctx context.Context,
+) error {
+	return w.impl.DispatchGetNewSurface(ctx)
+}
+
+func (w *windowStubWrapper) CloseSystemDialogs(
+	ctx context.Context,
+	reason string,
+) error {
+	return w.impl.CloseSystemDialogs(ctx, reason)
+}
+
+func (w *windowStubWrapper) DispatchWallpaperOffsets(
+	ctx context.Context,
+	x float32,
+	y float32,
+	xStep float32,
+	yStep float32,
+	zoom float32,
+	sync bool,
+) error {
+	return w.impl.DispatchWallpaperOffsets(ctx, x, y, xStep, yStep, zoom, sync)
+}
+
+func (w *windowStubWrapper) DispatchWallpaperCommand(
+	ctx context.Context,
+	action string,
+	x int32,
+	y int32,
+	z int32,
+	extras os.Bundle,
+	sync bool,
+) error {
+	return w.impl.DispatchWallpaperCommand(ctx, action, x, y, z, extras, sync)
+}
+
+func (w *windowStubWrapper) DispatchDragEvent(
+	ctx context.Context,
+	event DragEvent,
+) error {
+	return w.impl.DispatchDragEvent(ctx, event)
+}
+
+func (w *windowStubWrapper) DispatchWindowShown(
+	ctx context.Context,
+) error {
+	return w.impl.DispatchWindowShown(ctx)
+}
+
+func (w *windowStubWrapper) RequestAppKeyboardShortcuts(
+	ctx context.Context,
+	receiver internalOs.IResultReceiver,
+	deviceId int32,
+) error {
+	return w.impl.RequestAppKeyboardShortcuts(ctx, receiver, deviceId)
+}
+
+func (w *windowStubWrapper) RequestScrollCapture(
+	ctx context.Context,
+	callbacks IScrollCaptureResponseListener,
+) error {
+	return w.impl.RequestScrollCapture(ctx, callbacks)
+}
+
+func (w *windowStubWrapper) DumpWindow(
+	ctx context.Context,
+	pfd int32,
+) error {
+	return w.impl.DumpWindow(ctx, pfd)
+}
+
+var _ IWindow = (*windowStubWrapper)(nil)
+
+// NewWindowStub creates a server-side IWindow wrapping the given
+// server implementation. The returned value satisfies IWindow
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowStub(
+	impl IWindowServer,
+) IWindow {
+	wrapper := &windowStubWrapper{impl: impl}
+	stub := &WindowStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -44,7 +44,7 @@ func (p *RecognitionServiceManagerCallbackProxy) OnSuccess(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecognitionServiceManagerCallback)
-	_data.WriteStrongBinder(service.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, service.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecognitionServiceManagerCallback, "onSuccess")
 	if _err != nil {
@@ -110,4 +110,51 @@ func (s *RecognitionServiceManagerCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRecognitionServiceManagerCallbackServer is the server-side interface that user implementations
+// provide to NewRecognitionServiceManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecognitionServiceManagerCallbackServer interface {
+	OnSuccess(ctx context.Context, service IRecognitionService) error
+	OnError(ctx context.Context, errorCode int32) error
+}
+
+type recognitionServiceManagerCallbackStubWrapper struct {
+	impl       IRecognitionServiceManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recognitionServiceManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recognitionServiceManagerCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	service IRecognitionService,
+) error {
+	return w.impl.OnSuccess(ctx, service)
+}
+
+func (w *recognitionServiceManagerCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+) error {
+	return w.impl.OnError(ctx, errorCode)
+}
+
+var _ IRecognitionServiceManagerCallback = (*recognitionServiceManagerCallbackStubWrapper)(nil)
+
+// NewRecognitionServiceManagerCallbackStub creates a server-side IRecognitionServiceManagerCallback wrapping the given
+// server implementation. The returned value satisfies IRecognitionServiceManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecognitionServiceManagerCallbackStub(
+	impl IRecognitionServiceManagerCallbackServer,
+) IRecognitionServiceManagerCallback {
+	wrapper := &recognitionServiceManagerCallbackStubWrapper{impl: impl}
+	stub := &RecognitionServiceManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

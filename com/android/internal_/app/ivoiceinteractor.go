@@ -62,7 +62,7 @@ func (p *VoiceInteractorProxy) StartConfirmation(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
 	_data.WriteString16(_identity.PackageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractor, "startConfirmation")
 	if _err != nil {
@@ -99,7 +99,7 @@ func (p *VoiceInteractorProxy) StartPickOption(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
 	_data.WriteString16(_identity.PackageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	if options == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -140,7 +140,7 @@ func (p *VoiceInteractorProxy) StartCompleteVoice(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
 	_data.WriteString16(_identity.PackageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractor, "startCompleteVoice")
 	if _err != nil {
@@ -176,7 +176,7 @@ func (p *VoiceInteractorProxy) StartAbortVoice(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
 	_data.WriteString16(_identity.PackageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractor, "startAbortVoice")
 	if _err != nil {
@@ -212,7 +212,7 @@ func (p *VoiceInteractorProxy) StartCommand(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
 	_data.WriteString16(_identity.PackageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(command)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractor, "startCommand")
@@ -296,7 +296,7 @@ func (p *VoiceInteractorProxy) NotifyDirectActionsChanged(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
 	_data.WriteInt32(taskId)
-	_data.WriteStrongBinder(assistToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, assistToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractor, "notifyDirectActionsChanged")
 	if _err != nil {
@@ -322,7 +322,7 @@ func (p *VoiceInteractorProxy) SetKillCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractor)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVoiceInteractor, "setKillCallback")
 	if _err != nil {
@@ -529,4 +529,111 @@ func (s *VoiceInteractorStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVoiceInteractorServer is the server-side interface that user implementations
+// provide to NewVoiceInteractorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceInteractorServer interface {
+	StartConfirmation(ctx context.Context, callback IVoiceInteractorCallback, prompt interface{}, extras interface{}) (IVoiceInteractorRequest, error)
+	StartPickOption(ctx context.Context, callback IVoiceInteractorCallback, prompt interface{}, options []interface{}, extras interface{}) (IVoiceInteractorRequest, error)
+	StartCompleteVoice(ctx context.Context, callback IVoiceInteractorCallback, prompt interface{}, extras interface{}) (IVoiceInteractorRequest, error)
+	StartAbortVoice(ctx context.Context, callback IVoiceInteractorCallback, prompt interface{}, extras interface{}) (IVoiceInteractorRequest, error)
+	StartCommand(ctx context.Context, callback IVoiceInteractorCallback, command string, extras interface{}) (IVoiceInteractorRequest, error)
+	SupportsCommands(ctx context.Context, commands []string) ([]bool, error)
+	NotifyDirectActionsChanged(ctx context.Context, taskId int32, assistToken binder.IBinder) error
+	SetKillCallback(ctx context.Context, callback ondeviceintelligence.ICancellationSignal) error
+}
+
+type voiceInteractorStubWrapper struct {
+	impl       IVoiceInteractorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceInteractorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceInteractorStubWrapper) StartConfirmation(
+	ctx context.Context,
+	callback IVoiceInteractorCallback,
+	prompt interface{},
+	extras interface{},
+) (IVoiceInteractorRequest, error) {
+	return w.impl.StartConfirmation(ctx, callback, prompt, extras)
+}
+
+func (w *voiceInteractorStubWrapper) StartPickOption(
+	ctx context.Context,
+	callback IVoiceInteractorCallback,
+	prompt interface{},
+	options []interface{},
+	extras interface{},
+) (IVoiceInteractorRequest, error) {
+	return w.impl.StartPickOption(ctx, callback, prompt, options, extras)
+}
+
+func (w *voiceInteractorStubWrapper) StartCompleteVoice(
+	ctx context.Context,
+	callback IVoiceInteractorCallback,
+	prompt interface{},
+	extras interface{},
+) (IVoiceInteractorRequest, error) {
+	return w.impl.StartCompleteVoice(ctx, callback, prompt, extras)
+}
+
+func (w *voiceInteractorStubWrapper) StartAbortVoice(
+	ctx context.Context,
+	callback IVoiceInteractorCallback,
+	prompt interface{},
+	extras interface{},
+) (IVoiceInteractorRequest, error) {
+	return w.impl.StartAbortVoice(ctx, callback, prompt, extras)
+}
+
+func (w *voiceInteractorStubWrapper) StartCommand(
+	ctx context.Context,
+	callback IVoiceInteractorCallback,
+	command string,
+	extras interface{},
+) (IVoiceInteractorRequest, error) {
+	return w.impl.StartCommand(ctx, callback, command, extras)
+}
+
+func (w *voiceInteractorStubWrapper) SupportsCommands(
+	ctx context.Context,
+	commands []string,
+) ([]bool, error) {
+	return w.impl.SupportsCommands(ctx, commands)
+}
+
+func (w *voiceInteractorStubWrapper) NotifyDirectActionsChanged(
+	ctx context.Context,
+	taskId int32,
+	assistToken binder.IBinder,
+) error {
+	return w.impl.NotifyDirectActionsChanged(ctx, taskId, assistToken)
+}
+
+func (w *voiceInteractorStubWrapper) SetKillCallback(
+	ctx context.Context,
+	callback ondeviceintelligence.ICancellationSignal,
+) error {
+	return w.impl.SetKillCallback(ctx, callback)
+}
+
+var _ IVoiceInteractor = (*voiceInteractorStubWrapper)(nil)
+
+// NewVoiceInteractorStub creates a server-side IVoiceInteractor wrapping the given
+// server implementation. The returned value satisfies IVoiceInteractor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceInteractorStub(
+	impl IVoiceInteractorServer,
+) IVoiceInteractor {
+	wrapper := &voiceInteractorStubWrapper{impl: impl}
+	stub := &VoiceInteractorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

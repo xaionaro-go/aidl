@@ -46,7 +46,7 @@ func (p *ClientManagerProxy) RegisterSender(
 	var _result bufferpool2IClientManager.Registration
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClientManager)
-	_data.WriteStrongBinder(bufferPool.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, bufferPool.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClientManager, "registerSender")
 	if _err != nil {
@@ -82,7 +82,7 @@ func (p *ClientManagerProxy) RegisterPassiveSender(
 	var _result bufferpool2IClientManager.Registration
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIClientManager)
-	_data.WriteStrongBinder(bufferPool.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, bufferPool.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIClientManager, "registerPassiveSender")
 	if _err != nil {
@@ -166,4 +166,51 @@ func (s *ClientManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IClientManagerServer is the server-side interface that user implementations
+// provide to NewClientManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IClientManagerServer interface {
+	RegisterSender(ctx context.Context, bufferPool IAccessor) (bufferpool2IClientManager.Registration, error)
+	RegisterPassiveSender(ctx context.Context, bufferPool IAccessor) (bufferpool2IClientManager.Registration, error)
+}
+
+type clientManagerStubWrapper struct {
+	impl       IClientManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *clientManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *clientManagerStubWrapper) RegisterSender(
+	ctx context.Context,
+	bufferPool IAccessor,
+) (bufferpool2IClientManager.Registration, error) {
+	return w.impl.RegisterSender(ctx, bufferPool)
+}
+
+func (w *clientManagerStubWrapper) RegisterPassiveSender(
+	ctx context.Context,
+	bufferPool IAccessor,
+) (bufferpool2IClientManager.Registration, error) {
+	return w.impl.RegisterPassiveSender(ctx, bufferPool)
+}
+
+var _ IClientManager = (*clientManagerStubWrapper)(nil)
+
+// NewClientManagerStub creates a server-side IClientManager wrapping the given
+// server implementation. The returned value satisfies IClientManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewClientManagerStub(
+	impl IClientManagerServer,
+) IClientManager {
+	wrapper := &clientManagerStubWrapper{impl: impl}
+	stub := &ClientManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

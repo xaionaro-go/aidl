@@ -82,3 +82,42 @@ func (s *UsbOperationInternalStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUsbOperationInternalServer is the server-side interface that user implementations
+// provide to NewUsbOperationInternalStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUsbOperationInternalServer interface {
+	OnOperationComplete(ctx context.Context, status int32) error
+}
+
+type usbOperationInternalStubWrapper struct {
+	impl       IUsbOperationInternalServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *usbOperationInternalStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *usbOperationInternalStubWrapper) OnOperationComplete(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnOperationComplete(ctx, status)
+}
+
+var _ IUsbOperationInternal = (*usbOperationInternalStubWrapper)(nil)
+
+// NewUsbOperationInternalStub creates a server-side IUsbOperationInternal wrapping the given
+// server implementation. The returned value satisfies IUsbOperationInternal
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUsbOperationInternalStub(
+	impl IUsbOperationInternalServer,
+) IUsbOperationInternal {
+	wrapper := &usbOperationInternalStubWrapper{impl: impl}
+	stub := &UsbOperationInternalStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

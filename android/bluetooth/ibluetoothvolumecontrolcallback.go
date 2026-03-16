@@ -258,3 +258,73 @@ func (s *BluetoothVolumeControlCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothVolumeControlCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothVolumeControlCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothVolumeControlCallbackServer interface {
+	OnVolumeOffsetChanged(ctx context.Context, device BluetoothDevice, instanceId int32, volumeOffset int32) error
+	OnVolumeOffsetAudioLocationChanged(ctx context.Context, device BluetoothDevice, instanceId int32, audioLocation int32) error
+	OnVolumeOffsetAudioDescriptionChanged(ctx context.Context, device BluetoothDevice, instanceId int32, audioDescription string) error
+	OnDeviceVolumeChanged(ctx context.Context, device BluetoothDevice, volume int32) error
+}
+
+type bluetoothVolumeControlCallbackStubWrapper struct {
+	impl       IBluetoothVolumeControlCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothVolumeControlCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothVolumeControlCallbackStubWrapper) OnVolumeOffsetChanged(
+	ctx context.Context,
+	device BluetoothDevice,
+	instanceId int32,
+	volumeOffset int32,
+) error {
+	return w.impl.OnVolumeOffsetChanged(ctx, device, instanceId, volumeOffset)
+}
+
+func (w *bluetoothVolumeControlCallbackStubWrapper) OnVolumeOffsetAudioLocationChanged(
+	ctx context.Context,
+	device BluetoothDevice,
+	instanceId int32,
+	audioLocation int32,
+) error {
+	return w.impl.OnVolumeOffsetAudioLocationChanged(ctx, device, instanceId, audioLocation)
+}
+
+func (w *bluetoothVolumeControlCallbackStubWrapper) OnVolumeOffsetAudioDescriptionChanged(
+	ctx context.Context,
+	device BluetoothDevice,
+	instanceId int32,
+	audioDescription string,
+) error {
+	return w.impl.OnVolumeOffsetAudioDescriptionChanged(ctx, device, instanceId, audioDescription)
+}
+
+func (w *bluetoothVolumeControlCallbackStubWrapper) OnDeviceVolumeChanged(
+	ctx context.Context,
+	device BluetoothDevice,
+	volume int32,
+) error {
+	return w.impl.OnDeviceVolumeChanged(ctx, device, volume)
+}
+
+var _ IBluetoothVolumeControlCallback = (*bluetoothVolumeControlCallbackStubWrapper)(nil)
+
+// NewBluetoothVolumeControlCallbackStub creates a server-side IBluetoothVolumeControlCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothVolumeControlCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothVolumeControlCallbackStub(
+	impl IBluetoothVolumeControlCallbackServer,
+) IBluetoothVolumeControlCallback {
+	wrapper := &bluetoothVolumeControlCallbackStubWrapper{impl: impl}
+	stub := &BluetoothVolumeControlCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

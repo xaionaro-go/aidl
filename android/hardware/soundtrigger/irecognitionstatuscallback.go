@@ -290,3 +290,94 @@ func (s *RecognitionStatusCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRecognitionStatusCallbackServer is the server-side interface that user implementations
+// provide to NewRecognitionStatusCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecognitionStatusCallbackServer interface {
+	OnKeyphraseDetected(ctx context.Context, recognitionEvent SoundTriggerKeyphraseRecognitionEvent) error
+	OnGenericSoundTriggerDetected(ctx context.Context, recognitionEvent SoundTriggerGenericRecognitionEvent) error
+	OnRecognitionPaused(ctx context.Context) error
+	OnRecognitionResumed(ctx context.Context) error
+	OnPreempted(ctx context.Context) error
+	OnModuleDied(ctx context.Context) error
+	OnResumeFailed(ctx context.Context, status int32) error
+	OnPauseFailed(ctx context.Context, status int32) error
+}
+
+type recognitionStatusCallbackStubWrapper struct {
+	impl       IRecognitionStatusCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recognitionStatusCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recognitionStatusCallbackStubWrapper) OnKeyphraseDetected(
+	ctx context.Context,
+	recognitionEvent SoundTriggerKeyphraseRecognitionEvent,
+) error {
+	return w.impl.OnKeyphraseDetected(ctx, recognitionEvent)
+}
+
+func (w *recognitionStatusCallbackStubWrapper) OnGenericSoundTriggerDetected(
+	ctx context.Context,
+	recognitionEvent SoundTriggerGenericRecognitionEvent,
+) error {
+	return w.impl.OnGenericSoundTriggerDetected(ctx, recognitionEvent)
+}
+
+func (w *recognitionStatusCallbackStubWrapper) OnRecognitionPaused(
+	ctx context.Context,
+) error {
+	return w.impl.OnRecognitionPaused(ctx)
+}
+
+func (w *recognitionStatusCallbackStubWrapper) OnRecognitionResumed(
+	ctx context.Context,
+) error {
+	return w.impl.OnRecognitionResumed(ctx)
+}
+
+func (w *recognitionStatusCallbackStubWrapper) OnPreempted(
+	ctx context.Context,
+) error {
+	return w.impl.OnPreempted(ctx)
+}
+
+func (w *recognitionStatusCallbackStubWrapper) OnModuleDied(
+	ctx context.Context,
+) error {
+	return w.impl.OnModuleDied(ctx)
+}
+
+func (w *recognitionStatusCallbackStubWrapper) OnResumeFailed(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnResumeFailed(ctx, status)
+}
+
+func (w *recognitionStatusCallbackStubWrapper) OnPauseFailed(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnPauseFailed(ctx, status)
+}
+
+var _ IRecognitionStatusCallback = (*recognitionStatusCallbackStubWrapper)(nil)
+
+// NewRecognitionStatusCallbackStub creates a server-side IRecognitionStatusCallback wrapping the given
+// server implementation. The returned value satisfies IRecognitionStatusCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecognitionStatusCallbackStub(
+	impl IRecognitionStatusCallbackServer,
+) IRecognitionStatusCallback {
+	wrapper := &recognitionStatusCallbackStubWrapper{impl: impl}
+	stub := &RecognitionStatusCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -90,3 +90,42 @@ func (s *AnnouncementListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAnnouncementListenerServer is the server-side interface that user implementations
+// provide to NewAnnouncementListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAnnouncementListenerServer interface {
+	OnListUpdated(ctx context.Context, activeAnnouncements []Announcement) error
+}
+
+type announcementListenerStubWrapper struct {
+	impl       IAnnouncementListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *announcementListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *announcementListenerStubWrapper) OnListUpdated(
+	ctx context.Context,
+	activeAnnouncements []Announcement,
+) error {
+	return w.impl.OnListUpdated(ctx, activeAnnouncements)
+}
+
+var _ IAnnouncementListener = (*announcementListenerStubWrapper)(nil)
+
+// NewAnnouncementListenerStub creates a server-side IAnnouncementListener wrapping the given
+// server implementation. The returned value satisfies IAnnouncementListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAnnouncementListenerStub(
+	impl IAnnouncementListenerServer,
+) IAnnouncementListener {
+	wrapper := &announcementListenerStubWrapper{impl: impl}
+	stub := &AnnouncementListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -341,3 +341,82 @@ func (s *DropBoxManagerServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDropBoxManagerServiceServer is the server-side interface that user implementations
+// provide to NewDropBoxManagerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDropBoxManagerServiceServer interface {
+	AddData(ctx context.Context, tag string, data []byte, flags int32) error
+	AddFile(ctx context.Context, tag string, fd int32, flags int32) error
+	IsTagEnabled(ctx context.Context, tag string) (bool, error)
+	GetNextEntry(ctx context.Context, tag string, millis int64, packageName string) (interface{}, error)
+	GetNextEntryWithAttribution(ctx context.Context, tag string, millis int64, packageName string) (interface{}, error)
+}
+
+type dropBoxManagerServiceStubWrapper struct {
+	impl       IDropBoxManagerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dropBoxManagerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dropBoxManagerServiceStubWrapper) AddData(
+	ctx context.Context,
+	tag string,
+	data []byte,
+	flags int32,
+) error {
+	return w.impl.AddData(ctx, tag, data, flags)
+}
+
+func (w *dropBoxManagerServiceStubWrapper) AddFile(
+	ctx context.Context,
+	tag string,
+	fd int32,
+	flags int32,
+) error {
+	return w.impl.AddFile(ctx, tag, fd, flags)
+}
+
+func (w *dropBoxManagerServiceStubWrapper) IsTagEnabled(
+	ctx context.Context,
+	tag string,
+) (bool, error) {
+	return w.impl.IsTagEnabled(ctx, tag)
+}
+
+func (w *dropBoxManagerServiceStubWrapper) GetNextEntry(
+	ctx context.Context,
+	tag string,
+	millis int64,
+	packageName string,
+) (interface{}, error) {
+	return w.impl.GetNextEntry(ctx, tag, millis, packageName)
+}
+
+func (w *dropBoxManagerServiceStubWrapper) GetNextEntryWithAttribution(
+	ctx context.Context,
+	tag string,
+	millis int64,
+	packageName string,
+) (interface{}, error) {
+	return w.impl.GetNextEntryWithAttribution(ctx, tag, millis, packageName)
+}
+
+var _ IDropBoxManagerService = (*dropBoxManagerServiceStubWrapper)(nil)
+
+// NewDropBoxManagerServiceStub creates a server-side IDropBoxManagerService wrapping the given
+// server implementation. The returned value satisfies IDropBoxManagerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDropBoxManagerServiceStub(
+	impl IDropBoxManagerServiceServer,
+) IDropBoxManagerService {
+	wrapper := &dropBoxManagerServiceStubWrapper{impl: impl}
+	stub := &DropBoxManagerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

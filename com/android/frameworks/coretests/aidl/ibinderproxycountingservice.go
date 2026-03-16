@@ -44,7 +44,7 @@ func (p *BinderProxyCountingServiceProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderProxyCountingService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderProxyCountingService, "registerCallback")
 	if _err != nil {
@@ -70,7 +70,7 @@ func (p *BinderProxyCountingServiceProxy) UnregisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderProxyCountingService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderProxyCountingService, "unregisterCallback")
 	if _err != nil {
@@ -137,4 +137,51 @@ func (s *BinderProxyCountingServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBinderProxyCountingServiceServer is the server-side interface that user implementations
+// provide to NewBinderProxyCountingServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderProxyCountingServiceServer interface {
+	RegisterCallback(ctx context.Context, callback ITestRemoteCallback) error
+	UnregisterCallback(ctx context.Context, callback ITestRemoteCallback) error
+}
+
+type binderProxyCountingServiceStubWrapper struct {
+	impl       IBinderProxyCountingServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderProxyCountingServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderProxyCountingServiceStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback ITestRemoteCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *binderProxyCountingServiceStubWrapper) UnregisterCallback(
+	ctx context.Context,
+	callback ITestRemoteCallback,
+) error {
+	return w.impl.UnregisterCallback(ctx, callback)
+}
+
+var _ IBinderProxyCountingService = (*binderProxyCountingServiceStubWrapper)(nil)
+
+// NewBinderProxyCountingServiceStub creates a server-side IBinderProxyCountingService wrapping the given
+// server implementation. The returned value satisfies IBinderProxyCountingService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderProxyCountingServiceStub(
+	impl IBinderProxyCountingServiceServer,
+) IBinderProxyCountingService {
+	wrapper := &binderProxyCountingServiceStubWrapper{impl: impl}
+	stub := &BinderProxyCountingServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

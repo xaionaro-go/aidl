@@ -83,7 +83,7 @@ func (p *BinderNdkUnitTestProxy) TakeInterface(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBinderNdkUnitTest)
-	_data.WriteStrongBinder(test.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, test.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBinderNdkUnitTest, "takeInterface")
 	if _err != nil {
@@ -308,4 +308,80 @@ func (s *BinderNdkUnitTestStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBinderNdkUnitTestServer is the server-side interface that user implementations
+// provide to NewBinderNdkUnitTestStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBinderNdkUnitTestServer interface {
+	RepeatInt(ctx context.Context, a int32) (int32, error)
+	TakeInterface(ctx context.Context, test IEmpty) error
+	ForceFlushCommands(ctx context.Context) error
+	GetsRequestedSid(ctx context.Context) (bool, error)
+	ForcePersist(ctx context.Context, persist bool) error
+	SetCustomActiveServicesCallback(ctx context.Context) error
+}
+
+type binderNdkUnitTestStubWrapper struct {
+	impl       IBinderNdkUnitTestServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *binderNdkUnitTestStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *binderNdkUnitTestStubWrapper) RepeatInt(
+	ctx context.Context,
+	a int32,
+) (int32, error) {
+	return w.impl.RepeatInt(ctx, a)
+}
+
+func (w *binderNdkUnitTestStubWrapper) TakeInterface(
+	ctx context.Context,
+	test IEmpty,
+) error {
+	return w.impl.TakeInterface(ctx, test)
+}
+
+func (w *binderNdkUnitTestStubWrapper) ForceFlushCommands(
+	ctx context.Context,
+) error {
+	return w.impl.ForceFlushCommands(ctx)
+}
+
+func (w *binderNdkUnitTestStubWrapper) GetsRequestedSid(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetsRequestedSid(ctx)
+}
+
+func (w *binderNdkUnitTestStubWrapper) ForcePersist(
+	ctx context.Context,
+	persist bool,
+) error {
+	return w.impl.ForcePersist(ctx, persist)
+}
+
+func (w *binderNdkUnitTestStubWrapper) SetCustomActiveServicesCallback(
+	ctx context.Context,
+) error {
+	return w.impl.SetCustomActiveServicesCallback(ctx)
+}
+
+var _ IBinderNdkUnitTest = (*binderNdkUnitTestStubWrapper)(nil)
+
+// NewBinderNdkUnitTestStub creates a server-side IBinderNdkUnitTest wrapping the given
+// server implementation. The returned value satisfies IBinderNdkUnitTest
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBinderNdkUnitTestStub(
+	impl IBinderNdkUnitTestServer,
+) IBinderNdkUnitTest {
+	wrapper := &binderNdkUnitTestStubWrapper{impl: impl}
+	stub := &BinderNdkUnitTestStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

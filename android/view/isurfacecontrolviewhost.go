@@ -5,6 +5,7 @@ import (
 	"fmt"
 	res "github.com/xaionaro-go/binder/android/content/res"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
+	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -26,7 +27,7 @@ type ISurfaceControlViewHost interface {
 	OnConfigurationChanged(ctx context.Context, newConfig res.Configuration) error
 	OnDispatchDetachedFromWindow(ctx context.Context) error
 	OnInsetsChanged(ctx context.Context, state InsetsState, insetFrame graphics.Rect) error
-	GetSurfaceSyncGroup(ctx context.Context) (interface{}, error)
+	GetSurfaceSyncGroup(ctx context.Context) (window.ISurfaceSyncGroup, error)
 	AttachParentInterface(ctx context.Context, parentInterface *ISurfaceControlViewHostParent) error
 }
 
@@ -108,8 +109,8 @@ func (p *SurfaceControlViewHostProxy) OnInsetsChanged(
 
 func (p *SurfaceControlViewHostProxy) GetSurfaceSyncGroup(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (window.ISurfaceSyncGroup, error) {
+	var _result window.ISurfaceSyncGroup
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISurfaceControlViewHost)
 
@@ -128,6 +129,11 @@ func (p *SurfaceControlViewHostProxy) GetSurfaceSyncGroup(
 		return _result, _err
 	}
 
+	_handle, _err := _reply.ReadStrongBinder()
+	if _err != nil {
+		return _result, _err
+	}
+	_result = window.NewSurfaceSyncGroupProxy(binder.NewProxyBinder(p.remote.Transport(), p.remote.Identity(), _handle))
 	return _result, nil
 }
 
@@ -234,6 +240,7 @@ func (s *SurfaceControlViewHostStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
+		// TODO: interface/IBinder return marshaling not yet supported in stubs
 		_ = _result
 		return _reply, nil
 	case TransactionISurfaceControlViewHostAttachParentInterface:
@@ -249,4 +256,74 @@ func (s *SurfaceControlViewHostStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISurfaceControlViewHostServer is the server-side interface that user implementations
+// provide to NewSurfaceControlViewHostStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISurfaceControlViewHostServer interface {
+	OnConfigurationChanged(ctx context.Context, newConfig res.Configuration) error
+	OnDispatchDetachedFromWindow(ctx context.Context) error
+	OnInsetsChanged(ctx context.Context, state InsetsState, insetFrame graphics.Rect) error
+	GetSurfaceSyncGroup(ctx context.Context) (window.ISurfaceSyncGroup, error)
+	AttachParentInterface(ctx context.Context, parentInterface *ISurfaceControlViewHostParent) error
+}
+
+type surfaceControlViewHostStubWrapper struct {
+	impl       ISurfaceControlViewHostServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *surfaceControlViewHostStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *surfaceControlViewHostStubWrapper) OnConfigurationChanged(
+	ctx context.Context,
+	newConfig res.Configuration,
+) error {
+	return w.impl.OnConfigurationChanged(ctx, newConfig)
+}
+
+func (w *surfaceControlViewHostStubWrapper) OnDispatchDetachedFromWindow(
+	ctx context.Context,
+) error {
+	return w.impl.OnDispatchDetachedFromWindow(ctx)
+}
+
+func (w *surfaceControlViewHostStubWrapper) OnInsetsChanged(
+	ctx context.Context,
+	state InsetsState,
+	insetFrame graphics.Rect,
+) error {
+	return w.impl.OnInsetsChanged(ctx, state, insetFrame)
+}
+
+func (w *surfaceControlViewHostStubWrapper) GetSurfaceSyncGroup(
+	ctx context.Context,
+) (window.ISurfaceSyncGroup, error) {
+	return w.impl.GetSurfaceSyncGroup(ctx)
+}
+
+func (w *surfaceControlViewHostStubWrapper) AttachParentInterface(
+	ctx context.Context,
+	parentInterface *ISurfaceControlViewHostParent,
+) error {
+	return w.impl.AttachParentInterface(ctx, parentInterface)
+}
+
+var _ ISurfaceControlViewHost = (*surfaceControlViewHostStubWrapper)(nil)
+
+// NewSurfaceControlViewHostStub creates a server-side ISurfaceControlViewHost wrapping the given
+// server implementation. The returned value satisfies ISurfaceControlViewHost
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSurfaceControlViewHostStub(
+	impl ISurfaceControlViewHostServer,
+) ISurfaceControlViewHost {
+	wrapper := &surfaceControlViewHostStubWrapper{impl: impl}
+	stub := &SurfaceControlViewHostStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

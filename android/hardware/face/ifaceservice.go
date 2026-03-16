@@ -113,7 +113,7 @@ func (p *FaceServiceProxy) CreateTestSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteInt32(sensorId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "createTestSession")
@@ -270,9 +270,9 @@ func (p *FaceServiceProxy) Authenticate(
 	var _result int64
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt64(operationId)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -309,8 +309,8 @@ func (p *FaceServiceProxy) DetectFace(
 	var _result int64
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -352,9 +352,9 @@ func (p *FaceServiceProxy) PrepareForAuthentication(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteBool(requireConfirmation)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt64(operationId)
-	_data.WriteStrongBinder(sensorReceiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, sensorReceiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _err
@@ -417,7 +417,7 @@ func (p *FaceServiceProxy) CancelAuthentication(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
@@ -447,7 +447,7 @@ func (p *FaceServiceProxy) CancelFaceDetect(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
@@ -479,7 +479,7 @@ func (p *FaceServiceProxy) CancelAuthenticationFromService(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteInt32(sensorId)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt64(requestId)
 
@@ -516,7 +516,7 @@ func (p *FaceServiceProxy) Enroll(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	if hardwareAuthToken == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -525,7 +525,7 @@ func (p *FaceServiceProxy) Enroll(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	if disabledFeatures == nil {
 		_data.WriteInt32(-1)
@@ -575,7 +575,7 @@ func (p *FaceServiceProxy) EnrollRemotely(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	if hardwareAuthToken == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -584,7 +584,7 @@ func (p *FaceServiceProxy) EnrollRemotely(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	if disabledFeatures == nil {
 		_data.WriteInt32(-1)
@@ -624,7 +624,7 @@ func (p *FaceServiceProxy) CancelEnrollment(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt64(requestId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "cancelEnrollment")
@@ -654,10 +654,10 @@ func (p *FaceServiceProxy) Remove(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(faceId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "remove")
@@ -686,9 +686,9 @@ func (p *FaceServiceProxy) RemoveAll(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "removeAll")
@@ -794,10 +794,10 @@ func (p *FaceServiceProxy) GenerateChallenge(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "generateChallenge")
@@ -827,7 +827,7 @@ func (p *FaceServiceProxy) RevokeChallenge(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(_identity.PackageName)
@@ -928,7 +928,7 @@ func (p *FaceServiceProxy) InvalidateAuthenticatorId(
 	_data.WriteInterfaceToken(DescriptorIFaceService)
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "invalidateAuthenticatorId")
 	if _err != nil {
@@ -990,7 +990,7 @@ func (p *FaceServiceProxy) ResetLockout(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(sensorId)
 	_data.WriteInt32(_identity.UserID)
 	if hardwareAuthToken == nil {
@@ -1028,7 +1028,7 @@ func (p *FaceServiceProxy) AddLockoutResetCallback(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "addLockoutResetCallback")
@@ -1060,7 +1060,7 @@ func (p *FaceServiceProxy) SetFeature(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(feature)
 	_data.WriteBool(enabled)
@@ -1072,7 +1072,7 @@ func (p *FaceServiceProxy) SetFeature(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "setFeature")
@@ -1102,10 +1102,10 @@ func (p *FaceServiceProxy) GetFeature(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(feature)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "getFeature")
@@ -1161,7 +1161,7 @@ func (p *FaceServiceProxy) AddAuthenticatorsRegisteredCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "addAuthenticatorsRegisteredCallback")
 	if _err != nil {
@@ -1187,7 +1187,7 @@ func (p *FaceServiceProxy) RegisterAuthenticationStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "registerAuthenticationStateListener")
 	if _err != nil {
@@ -1213,7 +1213,7 @@ func (p *FaceServiceProxy) UnregisterAuthenticationStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "unregisterAuthenticationStateListener")
 	if _err != nil {
@@ -1239,7 +1239,7 @@ func (p *FaceServiceProxy) RegisterBiometricStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIFaceService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIFaceService, "registerBiometricStateListener")
 	if _err != nil {
@@ -2119,4 +2119,350 @@ func (s *FaceServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IFaceServiceServer is the server-side interface that user implementations
+// provide to NewFaceServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFaceServiceServer interface {
+	CreateTestSession(ctx context.Context, sensorId int32, callback biometrics.ITestSessionCallback) (biometrics.ITestSession, error)
+	DumpSensorServiceStateProto(ctx context.Context, sensorId int32, clearSchedulerBuffer bool) ([]byte, error)
+	GetSensorPropertiesInternal(ctx context.Context) ([]FaceSensorPropertiesInternal, error)
+	GetSensorProperties(ctx context.Context, sensorId int32) (FaceSensorPropertiesInternal, error)
+	Authenticate(ctx context.Context, token binder.IBinder, operationId int64, receiver IFaceServiceReceiver, options FaceAuthenticateOptions) (int64, error)
+	DetectFace(ctx context.Context, token binder.IBinder, receiver IFaceServiceReceiver, options FaceAuthenticateOptions) (int64, error)
+	PrepareForAuthentication(ctx context.Context, requireConfirmation bool, token binder.IBinder, operationId int64, sensorReceiver biometrics.IBiometricSensorReceiver, options FaceAuthenticateOptions, requestId int64, cookie int32, allowBackgroundAuthentication bool) error
+	StartPreparedClient(ctx context.Context, sensorId int32, cookie int32) error
+	CancelAuthentication(ctx context.Context, token binder.IBinder, requestId int64) error
+	CancelFaceDetect(ctx context.Context, token binder.IBinder, requestId int64) error
+	CancelAuthenticationFromService(ctx context.Context, sensorId int32, token binder.IBinder, requestId int64) error
+	Enroll(ctx context.Context, token binder.IBinder, hardwareAuthToken []byte, receiver IFaceServiceReceiver, disabledFeatures []int32, previewSurface interface{}, debugConsent bool, options FaceEnrollOptions) (int64, error)
+	EnrollRemotely(ctx context.Context, token binder.IBinder, hardwareAuthToken []byte, receiver IFaceServiceReceiver, disabledFeatures []int32) (int64, error)
+	CancelEnrollment(ctx context.Context, token binder.IBinder, requestId int64) error
+	Remove(ctx context.Context, token binder.IBinder, faceId int32, receiver IFaceServiceReceiver) error
+	RemoveAll(ctx context.Context, token binder.IBinder, receiver IFaceServiceReceiver) error
+	GetEnrolledFaces(ctx context.Context, sensorId int32) ([]Face, error)
+	IsHardwareDetected(ctx context.Context, sensorId int32) (bool, error)
+	GenerateChallenge(ctx context.Context, token binder.IBinder, sensorId int32, receiver IFaceServiceReceiver) error
+	RevokeChallenge(ctx context.Context, token binder.IBinder, sensorId int32, challenge int64) error
+	HasEnrolledFaces(ctx context.Context, sensorId int32) (bool, error)
+	GetLockoutModeForUser(ctx context.Context, sensorId int32) (int32, error)
+	InvalidateAuthenticatorId(ctx context.Context, sensorId int32, callback biometrics.IInvalidationCallback) error
+	GetAuthenticatorId(ctx context.Context, sensorId int32) (int64, error)
+	ResetLockout(ctx context.Context, token binder.IBinder, sensorId int32, hardwareAuthToken []byte) error
+	AddLockoutResetCallback(ctx context.Context, callback biometrics.IBiometricServiceLockoutResetCallback) error
+	SetFeature(ctx context.Context, token binder.IBinder, feature int32, enabled bool, hardwareAuthToken []byte, receiver IFaceServiceReceiver) error
+	GetFeature(ctx context.Context, token binder.IBinder, feature int32, receiver IFaceServiceReceiver) error
+	RegisterAuthenticators(ctx context.Context, faceSensorConfigurations FaceSensorConfigurations) error
+	AddAuthenticatorsRegisteredCallback(ctx context.Context, callback IFaceAuthenticatorsRegisteredCallback) error
+	RegisterAuthenticationStateListener(ctx context.Context, listener biometrics.AuthenticationStateListener) error
+	UnregisterAuthenticationStateListener(ctx context.Context, listener biometrics.AuthenticationStateListener) error
+	RegisterBiometricStateListener(ctx context.Context, listener biometrics.IBiometricStateListener) error
+	ScheduleWatchdog(ctx context.Context) error
+}
+
+type faceServiceStubWrapper struct {
+	impl       IFaceServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *faceServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *faceServiceStubWrapper) CreateTestSession(
+	ctx context.Context,
+	sensorId int32,
+	callback biometrics.ITestSessionCallback,
+) (biometrics.ITestSession, error) {
+	return w.impl.CreateTestSession(ctx, sensorId, callback)
+}
+
+func (w *faceServiceStubWrapper) DumpSensorServiceStateProto(
+	ctx context.Context,
+	sensorId int32,
+	clearSchedulerBuffer bool,
+) ([]byte, error) {
+	return w.impl.DumpSensorServiceStateProto(ctx, sensorId, clearSchedulerBuffer)
+}
+
+func (w *faceServiceStubWrapper) GetSensorPropertiesInternal(
+	ctx context.Context,
+) ([]FaceSensorPropertiesInternal, error) {
+	return w.impl.GetSensorPropertiesInternal(ctx)
+}
+
+func (w *faceServiceStubWrapper) GetSensorProperties(
+	ctx context.Context,
+	sensorId int32,
+) (FaceSensorPropertiesInternal, error) {
+	return w.impl.GetSensorProperties(ctx, sensorId)
+}
+
+func (w *faceServiceStubWrapper) Authenticate(
+	ctx context.Context,
+	token binder.IBinder,
+	operationId int64,
+	receiver IFaceServiceReceiver,
+	options FaceAuthenticateOptions,
+) (int64, error) {
+	return w.impl.Authenticate(ctx, token, operationId, receiver, options)
+}
+
+func (w *faceServiceStubWrapper) DetectFace(
+	ctx context.Context,
+	token binder.IBinder,
+	receiver IFaceServiceReceiver,
+	options FaceAuthenticateOptions,
+) (int64, error) {
+	return w.impl.DetectFace(ctx, token, receiver, options)
+}
+
+func (w *faceServiceStubWrapper) PrepareForAuthentication(
+	ctx context.Context,
+	requireConfirmation bool,
+	token binder.IBinder,
+	operationId int64,
+	sensorReceiver biometrics.IBiometricSensorReceiver,
+	options FaceAuthenticateOptions,
+	requestId int64,
+	cookie int32,
+	allowBackgroundAuthentication bool,
+) error {
+	return w.impl.PrepareForAuthentication(ctx, requireConfirmation, token, operationId, sensorReceiver, options, requestId, cookie, allowBackgroundAuthentication)
+}
+
+func (w *faceServiceStubWrapper) StartPreparedClient(
+	ctx context.Context,
+	sensorId int32,
+	cookie int32,
+) error {
+	return w.impl.StartPreparedClient(ctx, sensorId, cookie)
+}
+
+func (w *faceServiceStubWrapper) CancelAuthentication(
+	ctx context.Context,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelAuthentication(ctx, token, requestId)
+}
+
+func (w *faceServiceStubWrapper) CancelFaceDetect(
+	ctx context.Context,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelFaceDetect(ctx, token, requestId)
+}
+
+func (w *faceServiceStubWrapper) CancelAuthenticationFromService(
+	ctx context.Context,
+	sensorId int32,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelAuthenticationFromService(ctx, sensorId, token, requestId)
+}
+
+func (w *faceServiceStubWrapper) Enroll(
+	ctx context.Context,
+	token binder.IBinder,
+	hardwareAuthToken []byte,
+	receiver IFaceServiceReceiver,
+	disabledFeatures []int32,
+	previewSurface interface{},
+	debugConsent bool,
+	options FaceEnrollOptions,
+) (int64, error) {
+	return w.impl.Enroll(ctx, token, hardwareAuthToken, receiver, disabledFeatures, previewSurface, debugConsent, options)
+}
+
+func (w *faceServiceStubWrapper) EnrollRemotely(
+	ctx context.Context,
+	token binder.IBinder,
+	hardwareAuthToken []byte,
+	receiver IFaceServiceReceiver,
+	disabledFeatures []int32,
+) (int64, error) {
+	return w.impl.EnrollRemotely(ctx, token, hardwareAuthToken, receiver, disabledFeatures)
+}
+
+func (w *faceServiceStubWrapper) CancelEnrollment(
+	ctx context.Context,
+	token binder.IBinder,
+	requestId int64,
+) error {
+	return w.impl.CancelEnrollment(ctx, token, requestId)
+}
+
+func (w *faceServiceStubWrapper) Remove(
+	ctx context.Context,
+	token binder.IBinder,
+	faceId int32,
+	receiver IFaceServiceReceiver,
+) error {
+	return w.impl.Remove(ctx, token, faceId, receiver)
+}
+
+func (w *faceServiceStubWrapper) RemoveAll(
+	ctx context.Context,
+	token binder.IBinder,
+	receiver IFaceServiceReceiver,
+) error {
+	return w.impl.RemoveAll(ctx, token, receiver)
+}
+
+func (w *faceServiceStubWrapper) GetEnrolledFaces(
+	ctx context.Context,
+	sensorId int32,
+) ([]Face, error) {
+	return w.impl.GetEnrolledFaces(ctx, sensorId)
+}
+
+func (w *faceServiceStubWrapper) IsHardwareDetected(
+	ctx context.Context,
+	sensorId int32,
+) (bool, error) {
+	return w.impl.IsHardwareDetected(ctx, sensorId)
+}
+
+func (w *faceServiceStubWrapper) GenerateChallenge(
+	ctx context.Context,
+	token binder.IBinder,
+	sensorId int32,
+	receiver IFaceServiceReceiver,
+) error {
+	return w.impl.GenerateChallenge(ctx, token, sensorId, receiver)
+}
+
+func (w *faceServiceStubWrapper) RevokeChallenge(
+	ctx context.Context,
+	token binder.IBinder,
+	sensorId int32,
+	challenge int64,
+) error {
+	return w.impl.RevokeChallenge(ctx, token, sensorId, challenge)
+}
+
+func (w *faceServiceStubWrapper) HasEnrolledFaces(
+	ctx context.Context,
+	sensorId int32,
+) (bool, error) {
+	return w.impl.HasEnrolledFaces(ctx, sensorId)
+}
+
+func (w *faceServiceStubWrapper) GetLockoutModeForUser(
+	ctx context.Context,
+	sensorId int32,
+) (int32, error) {
+	return w.impl.GetLockoutModeForUser(ctx, sensorId)
+}
+
+func (w *faceServiceStubWrapper) InvalidateAuthenticatorId(
+	ctx context.Context,
+	sensorId int32,
+	callback biometrics.IInvalidationCallback,
+) error {
+	return w.impl.InvalidateAuthenticatorId(ctx, sensorId, callback)
+}
+
+func (w *faceServiceStubWrapper) GetAuthenticatorId(
+	ctx context.Context,
+	sensorId int32,
+) (int64, error) {
+	return w.impl.GetAuthenticatorId(ctx, sensorId)
+}
+
+func (w *faceServiceStubWrapper) ResetLockout(
+	ctx context.Context,
+	token binder.IBinder,
+	sensorId int32,
+	hardwareAuthToken []byte,
+) error {
+	return w.impl.ResetLockout(ctx, token, sensorId, hardwareAuthToken)
+}
+
+func (w *faceServiceStubWrapper) AddLockoutResetCallback(
+	ctx context.Context,
+	callback biometrics.IBiometricServiceLockoutResetCallback,
+) error {
+	return w.impl.AddLockoutResetCallback(ctx, callback)
+}
+
+func (w *faceServiceStubWrapper) SetFeature(
+	ctx context.Context,
+	token binder.IBinder,
+	feature int32,
+	enabled bool,
+	hardwareAuthToken []byte,
+	receiver IFaceServiceReceiver,
+) error {
+	return w.impl.SetFeature(ctx, token, feature, enabled, hardwareAuthToken, receiver)
+}
+
+func (w *faceServiceStubWrapper) GetFeature(
+	ctx context.Context,
+	token binder.IBinder,
+	feature int32,
+	receiver IFaceServiceReceiver,
+) error {
+	return w.impl.GetFeature(ctx, token, feature, receiver)
+}
+
+func (w *faceServiceStubWrapper) RegisterAuthenticators(
+	ctx context.Context,
+	faceSensorConfigurations FaceSensorConfigurations,
+) error {
+	return w.impl.RegisterAuthenticators(ctx, faceSensorConfigurations)
+}
+
+func (w *faceServiceStubWrapper) AddAuthenticatorsRegisteredCallback(
+	ctx context.Context,
+	callback IFaceAuthenticatorsRegisteredCallback,
+) error {
+	return w.impl.AddAuthenticatorsRegisteredCallback(ctx, callback)
+}
+
+func (w *faceServiceStubWrapper) RegisterAuthenticationStateListener(
+	ctx context.Context,
+	listener biometrics.AuthenticationStateListener,
+) error {
+	return w.impl.RegisterAuthenticationStateListener(ctx, listener)
+}
+
+func (w *faceServiceStubWrapper) UnregisterAuthenticationStateListener(
+	ctx context.Context,
+	listener biometrics.AuthenticationStateListener,
+) error {
+	return w.impl.UnregisterAuthenticationStateListener(ctx, listener)
+}
+
+func (w *faceServiceStubWrapper) RegisterBiometricStateListener(
+	ctx context.Context,
+	listener biometrics.IBiometricStateListener,
+) error {
+	return w.impl.RegisterBiometricStateListener(ctx, listener)
+}
+
+func (w *faceServiceStubWrapper) ScheduleWatchdog(
+	ctx context.Context,
+) error {
+	return w.impl.ScheduleWatchdog(ctx)
+}
+
+var _ IFaceService = (*faceServiceStubWrapper)(nil)
+
+// NewFaceServiceStub creates a server-side IFaceService wrapping the given
+// server implementation. The returned value satisfies IFaceService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFaceServiceStub(
+	impl IFaceServiceServer,
+) IFaceService {
+	wrapper := &faceServiceStubWrapper{impl: impl}
+	stub := &FaceServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

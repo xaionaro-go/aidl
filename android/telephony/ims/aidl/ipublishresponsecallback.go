@@ -124,3 +124,50 @@ func (s *PublishResponseCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPublishResponseCallbackServer is the server-side interface that user implementations
+// provide to NewPublishResponseCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPublishResponseCallbackServer interface {
+	OnCommandError(ctx context.Context, code int32) error
+	OnNetworkResponse(ctx context.Context, details ims.SipDetails) error
+}
+
+type publishResponseCallbackStubWrapper struct {
+	impl       IPublishResponseCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *publishResponseCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *publishResponseCallbackStubWrapper) OnCommandError(
+	ctx context.Context,
+	code int32,
+) error {
+	return w.impl.OnCommandError(ctx, code)
+}
+
+func (w *publishResponseCallbackStubWrapper) OnNetworkResponse(
+	ctx context.Context,
+	details ims.SipDetails,
+) error {
+	return w.impl.OnNetworkResponse(ctx, details)
+}
+
+var _ IPublishResponseCallback = (*publishResponseCallbackStubWrapper)(nil)
+
+// NewPublishResponseCallbackStub creates a server-side IPublishResponseCallback wrapping the given
+// server implementation. The returned value satisfies IPublishResponseCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPublishResponseCallbackStub(
+	impl IPublishResponseCallbackServer,
+) IPublishResponseCallback {
+	wrapper := &publishResponseCallbackStubWrapper{impl: impl}
+	stub := &PublishResponseCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

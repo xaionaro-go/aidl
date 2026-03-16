@@ -124,3 +124,52 @@ func (s *AudioFocusDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioFocusDispatcherServer is the server-side interface that user implementations
+// provide to NewAudioFocusDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioFocusDispatcherServer interface {
+	DispatchAudioFocusChange(ctx context.Context, focusChange int32, clientId string) error
+	DispatchFocusResultFromExtPolicy(ctx context.Context, requestResult int32, clientId string) error
+}
+
+type audioFocusDispatcherStubWrapper struct {
+	impl       IAudioFocusDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioFocusDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioFocusDispatcherStubWrapper) DispatchAudioFocusChange(
+	ctx context.Context,
+	focusChange int32,
+	clientId string,
+) error {
+	return w.impl.DispatchAudioFocusChange(ctx, focusChange, clientId)
+}
+
+func (w *audioFocusDispatcherStubWrapper) DispatchFocusResultFromExtPolicy(
+	ctx context.Context,
+	requestResult int32,
+	clientId string,
+) error {
+	return w.impl.DispatchFocusResultFromExtPolicy(ctx, requestResult, clientId)
+}
+
+var _ IAudioFocusDispatcher = (*audioFocusDispatcherStubWrapper)(nil)
+
+// NewAudioFocusDispatcherStub creates a server-side IAudioFocusDispatcher wrapping the given
+// server implementation. The returned value satisfies IAudioFocusDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioFocusDispatcherStub(
+	impl IAudioFocusDispatcherServer,
+) IAudioFocusDispatcher {
+	wrapper := &audioFocusDispatcherStubWrapper{impl: impl}
+	stub := &AudioFocusDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -110,3 +110,43 @@ func (s *DirectReportChannelStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDirectReportChannelServer is the server-side interface that user implementations
+// provide to NewDirectReportChannelStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDirectReportChannelServer interface {
+	Configure(ctx context.Context, sensorHandle int32, rate ISensors.RateLevel) (int32, error)
+}
+
+type directReportChannelStubWrapper struct {
+	impl       IDirectReportChannelServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *directReportChannelStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *directReportChannelStubWrapper) Configure(
+	ctx context.Context,
+	sensorHandle int32,
+	rate ISensors.RateLevel,
+) (int32, error) {
+	return w.impl.Configure(ctx, sensorHandle, rate)
+}
+
+var _ IDirectReportChannel = (*directReportChannelStubWrapper)(nil)
+
+// NewDirectReportChannelStub creates a server-side IDirectReportChannel wrapping the given
+// server implementation. The returned value satisfies IDirectReportChannel
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDirectReportChannelStub(
+	impl IDirectReportChannelServer,
+) IDirectReportChannel {
+	wrapper := &directReportChannelStubWrapper{impl: impl}
+	stub := &DirectReportChannelStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -197,3 +197,53 @@ func (s *ProcessInfoServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IProcessInfoServiceServer is the server-side interface that user implementations
+// provide to NewProcessInfoServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IProcessInfoServiceServer interface {
+	GetProcessStatesFromPids(ctx context.Context, pids []int32, states []int32) error
+	GetProcessStatesAndOomScoresFromPids(ctx context.Context, pids []int32, states []int32, scores []int32) error
+}
+
+type processInfoServiceStubWrapper struct {
+	impl       IProcessInfoServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *processInfoServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *processInfoServiceStubWrapper) GetProcessStatesFromPids(
+	ctx context.Context,
+	pids []int32,
+	states []int32,
+) error {
+	return w.impl.GetProcessStatesFromPids(ctx, pids, states)
+}
+
+func (w *processInfoServiceStubWrapper) GetProcessStatesAndOomScoresFromPids(
+	ctx context.Context,
+	pids []int32,
+	states []int32,
+	scores []int32,
+) error {
+	return w.impl.GetProcessStatesAndOomScoresFromPids(ctx, pids, states, scores)
+}
+
+var _ IProcessInfoService = (*processInfoServiceStubWrapper)(nil)
+
+// NewProcessInfoServiceStub creates a server-side IProcessInfoService wrapping the given
+// server implementation. The returned value satisfies IProcessInfoService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewProcessInfoServiceStub(
+	impl IProcessInfoServiceServer,
+) IProcessInfoService {
+	wrapper := &processInfoServiceStubWrapper{impl: impl}
+	stub := &ProcessInfoServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

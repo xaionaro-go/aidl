@@ -97,7 +97,7 @@ func (p *TimeDetectorServiceProxy) AddListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITimeDetectorService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITimeDetectorService, "addListener")
 	if _err != nil {
@@ -123,7 +123,7 @@ func (p *TimeDetectorServiceProxy) RemoveListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITimeDetectorService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITimeDetectorService, "removeListener")
 	if _err != nil {
@@ -648,4 +648,120 @@ func (s *TimeDetectorServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITimeDetectorServiceServer is the server-side interface that user implementations
+// provide to NewTimeDetectorServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITimeDetectorServiceServer interface {
+	GetCapabilitiesAndConfig(ctx context.Context) (appTime.TimeCapabilitiesAndConfig, error)
+	AddListener(ctx context.Context, listener appTime.ITimeDetectorListener) error
+	RemoveListener(ctx context.Context, listener appTime.ITimeDetectorListener) error
+	UpdateConfiguration(ctx context.Context, timeConfiguration appTime.TimeConfiguration) (bool, error)
+	GetTimeState(ctx context.Context) (appTime.TimeState, error)
+	ConfirmTime(ctx context.Context, time appTime.UnixEpochTime) (bool, error)
+	SetManualTime(ctx context.Context, timeZoneSuggestion ManualTimeSuggestion) (bool, error)
+	SuggestExternalTime(ctx context.Context, timeSuggestion appTime.ExternalTimeSuggestion) error
+	SuggestManualTime(ctx context.Context, timeSuggestion ManualTimeSuggestion) (bool, error)
+	SuggestTelephonyTime(ctx context.Context, timeSuggestion TelephonyTimeSuggestion) error
+	LatestNetworkTime(ctx context.Context) (appTime.UnixEpochTime, error)
+}
+
+type timeDetectorServiceStubWrapper struct {
+	impl       ITimeDetectorServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *timeDetectorServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *timeDetectorServiceStubWrapper) GetCapabilitiesAndConfig(
+	ctx context.Context,
+) (appTime.TimeCapabilitiesAndConfig, error) {
+	return w.impl.GetCapabilitiesAndConfig(ctx)
+}
+
+func (w *timeDetectorServiceStubWrapper) AddListener(
+	ctx context.Context,
+	listener appTime.ITimeDetectorListener,
+) error {
+	return w.impl.AddListener(ctx, listener)
+}
+
+func (w *timeDetectorServiceStubWrapper) RemoveListener(
+	ctx context.Context,
+	listener appTime.ITimeDetectorListener,
+) error {
+	return w.impl.RemoveListener(ctx, listener)
+}
+
+func (w *timeDetectorServiceStubWrapper) UpdateConfiguration(
+	ctx context.Context,
+	timeConfiguration appTime.TimeConfiguration,
+) (bool, error) {
+	return w.impl.UpdateConfiguration(ctx, timeConfiguration)
+}
+
+func (w *timeDetectorServiceStubWrapper) GetTimeState(
+	ctx context.Context,
+) (appTime.TimeState, error) {
+	return w.impl.GetTimeState(ctx)
+}
+
+func (w *timeDetectorServiceStubWrapper) ConfirmTime(
+	ctx context.Context,
+	time appTime.UnixEpochTime,
+) (bool, error) {
+	return w.impl.ConfirmTime(ctx, time)
+}
+
+func (w *timeDetectorServiceStubWrapper) SetManualTime(
+	ctx context.Context,
+	timeZoneSuggestion ManualTimeSuggestion,
+) (bool, error) {
+	return w.impl.SetManualTime(ctx, timeZoneSuggestion)
+}
+
+func (w *timeDetectorServiceStubWrapper) SuggestExternalTime(
+	ctx context.Context,
+	timeSuggestion appTime.ExternalTimeSuggestion,
+) error {
+	return w.impl.SuggestExternalTime(ctx, timeSuggestion)
+}
+
+func (w *timeDetectorServiceStubWrapper) SuggestManualTime(
+	ctx context.Context,
+	timeSuggestion ManualTimeSuggestion,
+) (bool, error) {
+	return w.impl.SuggestManualTime(ctx, timeSuggestion)
+}
+
+func (w *timeDetectorServiceStubWrapper) SuggestTelephonyTime(
+	ctx context.Context,
+	timeSuggestion TelephonyTimeSuggestion,
+) error {
+	return w.impl.SuggestTelephonyTime(ctx, timeSuggestion)
+}
+
+func (w *timeDetectorServiceStubWrapper) LatestNetworkTime(
+	ctx context.Context,
+) (appTime.UnixEpochTime, error) {
+	return w.impl.LatestNetworkTime(ctx)
+}
+
+var _ ITimeDetectorService = (*timeDetectorServiceStubWrapper)(nil)
+
+// NewTimeDetectorServiceStub creates a server-side ITimeDetectorService wrapping the given
+// server implementation. The returned value satisfies ITimeDetectorService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTimeDetectorServiceStub(
+	impl ITimeDetectorServiceServer,
+) ITimeDetectorService {
+	wrapper := &timeDetectorServiceStubWrapper{impl: impl}
+	stub := &TimeDetectorServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

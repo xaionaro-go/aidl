@@ -1123,7 +1123,7 @@ func (p *ModuleProxy) GetVendorParameters(
 	} else {
 		_data.WriteInt32(int32(len(ids)))
 		for _, _item := range ids {
-			_data.WriteString(_item)
+			_data.WriteString16(_item)
 		}
 	}
 
@@ -1203,7 +1203,7 @@ func (p *ModuleProxy) AddDeviceEffect(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(portConfigId)
-	_data.WriteStrongBinder(effect.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, effect.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIModule, "addDeviceEffect")
 	if _err != nil {
@@ -1231,7 +1231,7 @@ func (p *ModuleProxy) RemoveDeviceEffect(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_data.WriteInt32(portConfigId)
-	_data.WriteStrongBinder(effect.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, effect.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIModule, "removeDeviceEffect")
 	if _err != nil {
@@ -2088,4 +2088,349 @@ func (s *ModuleStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IModuleServer is the server-side interface that user implementations
+// provide to NewModuleStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IModuleServer interface {
+	SetModuleDebug(ctx context.Context, debug ModuleDebug) error
+	GetTelephony(ctx context.Context) (ITelephony, error)
+	GetBluetooth(ctx context.Context) (IBluetooth, error)
+	GetBluetoothA2dp(ctx context.Context) (IBluetoothA2dp, error)
+	GetBluetoothLe(ctx context.Context) (IBluetoothLe, error)
+	ConnectExternalDevice(ctx context.Context, templateIdAndAdditionalData common.AudioPort) (common.AudioPort, error)
+	DisconnectExternalDevice(ctx context.Context, portId int32) error
+	GetAudioPatches(ctx context.Context) ([]AudioPatch, error)
+	GetAudioPort(ctx context.Context, portId int32) (common.AudioPort, error)
+	GetAudioPortConfigs(ctx context.Context) ([]common.AudioPortConfig, error)
+	GetAudioPorts(ctx context.Context) ([]common.AudioPort, error)
+	GetAudioRoutes(ctx context.Context) ([]AudioRoute, error)
+	GetAudioRoutesForAudioPort(ctx context.Context, portId int32) ([]AudioRoute, error)
+	OpenInputStream(ctx context.Context, args interface{}) (interface{}, error)
+	OpenOutputStream(ctx context.Context, args interface{}) (interface{}, error)
+	GetSupportedPlaybackRateFactors(ctx context.Context) (interface{}, error)
+	SetAudioPatch(ctx context.Context, requested AudioPatch) (AudioPatch, error)
+	SetAudioPortConfig(ctx context.Context, requested common.AudioPortConfig, suggested common.AudioPortConfig) (bool, error)
+	ResetAudioPatch(ctx context.Context, patchId int32) error
+	ResetAudioPortConfig(ctx context.Context, portConfigId int32) error
+	GetMasterMute(ctx context.Context) (bool, error)
+	SetMasterMute(ctx context.Context, mute bool) error
+	GetMasterVolume(ctx context.Context) (float32, error)
+	SetMasterVolume(ctx context.Context, volume float32) error
+	GetMicMute(ctx context.Context) (bool, error)
+	SetMicMute(ctx context.Context, mute bool) error
+	GetMicrophones(ctx context.Context) ([]common.MicrophoneInfo, error)
+	UpdateAudioMode(ctx context.Context, mode common.AudioMode) error
+	UpdateScreenRotation(ctx context.Context, rotation interface{}) error
+	UpdateScreenState(ctx context.Context, isTurnedOn bool) error
+	GetSoundDose(ctx context.Context) (sounddose.ISoundDose, error)
+	GenerateHwAvSyncId(ctx context.Context) (int32, error)
+	GetVendorParameters(ctx context.Context, ids []string) ([]VendorParameter, error)
+	SetVendorParameters(ctx context.Context, parameters []VendorParameter, async bool) error
+	AddDeviceEffect(ctx context.Context, portConfigId int32, effect audioEffect.IEffect) error
+	RemoveDeviceEffect(ctx context.Context, portConfigId int32, effect audioEffect.IEffect) error
+	GetMmapPolicyInfos(ctx context.Context, mmapPolicyType common.AudioMMapPolicyType) ([]common.AudioMMapPolicyInfo, error)
+	SupportsVariableLatency(ctx context.Context) (bool, error)
+	GetAAudioMixerBurstCount(ctx context.Context) (int32, error)
+	GetAAudioHardwareBurstMinUsec(ctx context.Context) (int32, error)
+	PrepareToDisconnectExternalDevice(ctx context.Context, portId int32) error
+}
+
+type moduleStubWrapper struct {
+	impl       IModuleServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *moduleStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *moduleStubWrapper) SetModuleDebug(
+	ctx context.Context,
+	debug ModuleDebug,
+) error {
+	return w.impl.SetModuleDebug(ctx, debug)
+}
+
+func (w *moduleStubWrapper) GetTelephony(
+	ctx context.Context,
+) (ITelephony, error) {
+	return w.impl.GetTelephony(ctx)
+}
+
+func (w *moduleStubWrapper) GetBluetooth(
+	ctx context.Context,
+) (IBluetooth, error) {
+	return w.impl.GetBluetooth(ctx)
+}
+
+func (w *moduleStubWrapper) GetBluetoothA2dp(
+	ctx context.Context,
+) (IBluetoothA2dp, error) {
+	return w.impl.GetBluetoothA2dp(ctx)
+}
+
+func (w *moduleStubWrapper) GetBluetoothLe(
+	ctx context.Context,
+) (IBluetoothLe, error) {
+	return w.impl.GetBluetoothLe(ctx)
+}
+
+func (w *moduleStubWrapper) ConnectExternalDevice(
+	ctx context.Context,
+	templateIdAndAdditionalData common.AudioPort,
+) (common.AudioPort, error) {
+	return w.impl.ConnectExternalDevice(ctx, templateIdAndAdditionalData)
+}
+
+func (w *moduleStubWrapper) DisconnectExternalDevice(
+	ctx context.Context,
+	portId int32,
+) error {
+	return w.impl.DisconnectExternalDevice(ctx, portId)
+}
+
+func (w *moduleStubWrapper) GetAudioPatches(
+	ctx context.Context,
+) ([]AudioPatch, error) {
+	return w.impl.GetAudioPatches(ctx)
+}
+
+func (w *moduleStubWrapper) GetAudioPort(
+	ctx context.Context,
+	portId int32,
+) (common.AudioPort, error) {
+	return w.impl.GetAudioPort(ctx, portId)
+}
+
+func (w *moduleStubWrapper) GetAudioPortConfigs(
+	ctx context.Context,
+) ([]common.AudioPortConfig, error) {
+	return w.impl.GetAudioPortConfigs(ctx)
+}
+
+func (w *moduleStubWrapper) GetAudioPorts(
+	ctx context.Context,
+) ([]common.AudioPort, error) {
+	return w.impl.GetAudioPorts(ctx)
+}
+
+func (w *moduleStubWrapper) GetAudioRoutes(
+	ctx context.Context,
+) ([]AudioRoute, error) {
+	return w.impl.GetAudioRoutes(ctx)
+}
+
+func (w *moduleStubWrapper) GetAudioRoutesForAudioPort(
+	ctx context.Context,
+	portId int32,
+) ([]AudioRoute, error) {
+	return w.impl.GetAudioRoutesForAudioPort(ctx, portId)
+}
+
+func (w *moduleStubWrapper) OpenInputStream(
+	ctx context.Context,
+	args interface{},
+) (interface{}, error) {
+	return w.impl.OpenInputStream(ctx, args)
+}
+
+func (w *moduleStubWrapper) OpenOutputStream(
+	ctx context.Context,
+	args interface{},
+) (interface{}, error) {
+	return w.impl.OpenOutputStream(ctx, args)
+}
+
+func (w *moduleStubWrapper) GetSupportedPlaybackRateFactors(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetSupportedPlaybackRateFactors(ctx)
+}
+
+func (w *moduleStubWrapper) SetAudioPatch(
+	ctx context.Context,
+	requested AudioPatch,
+) (AudioPatch, error) {
+	return w.impl.SetAudioPatch(ctx, requested)
+}
+
+func (w *moduleStubWrapper) SetAudioPortConfig(
+	ctx context.Context,
+	requested common.AudioPortConfig,
+	suggested common.AudioPortConfig,
+) (bool, error) {
+	return w.impl.SetAudioPortConfig(ctx, requested, suggested)
+}
+
+func (w *moduleStubWrapper) ResetAudioPatch(
+	ctx context.Context,
+	patchId int32,
+) error {
+	return w.impl.ResetAudioPatch(ctx, patchId)
+}
+
+func (w *moduleStubWrapper) ResetAudioPortConfig(
+	ctx context.Context,
+	portConfigId int32,
+) error {
+	return w.impl.ResetAudioPortConfig(ctx, portConfigId)
+}
+
+func (w *moduleStubWrapper) GetMasterMute(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetMasterMute(ctx)
+}
+
+func (w *moduleStubWrapper) SetMasterMute(
+	ctx context.Context,
+	mute bool,
+) error {
+	return w.impl.SetMasterMute(ctx, mute)
+}
+
+func (w *moduleStubWrapper) GetMasterVolume(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetMasterVolume(ctx)
+}
+
+func (w *moduleStubWrapper) SetMasterVolume(
+	ctx context.Context,
+	volume float32,
+) error {
+	return w.impl.SetMasterVolume(ctx, volume)
+}
+
+func (w *moduleStubWrapper) GetMicMute(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetMicMute(ctx)
+}
+
+func (w *moduleStubWrapper) SetMicMute(
+	ctx context.Context,
+	mute bool,
+) error {
+	return w.impl.SetMicMute(ctx, mute)
+}
+
+func (w *moduleStubWrapper) GetMicrophones(
+	ctx context.Context,
+) ([]common.MicrophoneInfo, error) {
+	return w.impl.GetMicrophones(ctx)
+}
+
+func (w *moduleStubWrapper) UpdateAudioMode(
+	ctx context.Context,
+	mode common.AudioMode,
+) error {
+	return w.impl.UpdateAudioMode(ctx, mode)
+}
+
+func (w *moduleStubWrapper) UpdateScreenRotation(
+	ctx context.Context,
+	rotation interface{},
+) error {
+	return w.impl.UpdateScreenRotation(ctx, rotation)
+}
+
+func (w *moduleStubWrapper) UpdateScreenState(
+	ctx context.Context,
+	isTurnedOn bool,
+) error {
+	return w.impl.UpdateScreenState(ctx, isTurnedOn)
+}
+
+func (w *moduleStubWrapper) GetSoundDose(
+	ctx context.Context,
+) (sounddose.ISoundDose, error) {
+	return w.impl.GetSoundDose(ctx)
+}
+
+func (w *moduleStubWrapper) GenerateHwAvSyncId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GenerateHwAvSyncId(ctx)
+}
+
+func (w *moduleStubWrapper) GetVendorParameters(
+	ctx context.Context,
+	ids []string,
+) ([]VendorParameter, error) {
+	return w.impl.GetVendorParameters(ctx, ids)
+}
+
+func (w *moduleStubWrapper) SetVendorParameters(
+	ctx context.Context,
+	parameters []VendorParameter,
+	async bool,
+) error {
+	return w.impl.SetVendorParameters(ctx, parameters, async)
+}
+
+func (w *moduleStubWrapper) AddDeviceEffect(
+	ctx context.Context,
+	portConfigId int32,
+	effect audioEffect.IEffect,
+) error {
+	return w.impl.AddDeviceEffect(ctx, portConfigId, effect)
+}
+
+func (w *moduleStubWrapper) RemoveDeviceEffect(
+	ctx context.Context,
+	portConfigId int32,
+	effect audioEffect.IEffect,
+) error {
+	return w.impl.RemoveDeviceEffect(ctx, portConfigId, effect)
+}
+
+func (w *moduleStubWrapper) GetMmapPolicyInfos(
+	ctx context.Context,
+	mmapPolicyType common.AudioMMapPolicyType,
+) ([]common.AudioMMapPolicyInfo, error) {
+	return w.impl.GetMmapPolicyInfos(ctx, mmapPolicyType)
+}
+
+func (w *moduleStubWrapper) SupportsVariableLatency(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.SupportsVariableLatency(ctx)
+}
+
+func (w *moduleStubWrapper) GetAAudioMixerBurstCount(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAAudioMixerBurstCount(ctx)
+}
+
+func (w *moduleStubWrapper) GetAAudioHardwareBurstMinUsec(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAAudioHardwareBurstMinUsec(ctx)
+}
+
+func (w *moduleStubWrapper) PrepareToDisconnectExternalDevice(
+	ctx context.Context,
+	portId int32,
+) error {
+	return w.impl.PrepareToDisconnectExternalDevice(ctx, portId)
+}
+
+var _ IModule = (*moduleStubWrapper)(nil)
+
+// NewModuleStub creates a server-side IModule wrapping the given
+// server implementation. The returned value satisfies IModule
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewModuleStub(
+	impl IModuleServer,
+) IModule {
+	wrapper := &moduleStubWrapper{impl: impl}
+	stub := &ModuleStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

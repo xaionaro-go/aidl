@@ -88,3 +88,42 @@ func (s *RegionChannelListListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRegionChannelListListenerServer is the server-side interface that user implementations
+// provide to NewRegionChannelListListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRegionChannelListListenerServer interface {
+	OnDetectRegionChannelList(ctx context.Context, detectRegionChannelList []string) error
+}
+
+type regionChannelListListenerStubWrapper struct {
+	impl       IRegionChannelListListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *regionChannelListListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *regionChannelListListenerStubWrapper) OnDetectRegionChannelList(
+	ctx context.Context,
+	detectRegionChannelList []string,
+) error {
+	return w.impl.OnDetectRegionChannelList(ctx, detectRegionChannelList)
+}
+
+var _ IRegionChannelListListener = (*regionChannelListListenerStubWrapper)(nil)
+
+// NewRegionChannelListListenerStub creates a server-side IRegionChannelListListener wrapping the given
+// server implementation. The returned value satisfies IRegionChannelListListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRegionChannelListListenerStub(
+	impl IRegionChannelListListenerServer,
+) IRegionChannelListListener {
+	wrapper := &regionChannelListListenerStubWrapper{impl: impl}
+	stub := &RegionChannelListListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

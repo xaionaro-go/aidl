@@ -101,3 +101,43 @@ func (s *DataLoaderStatusListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDataLoaderStatusListenerServer is the server-side interface that user implementations
+// provide to NewDataLoaderStatusListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDataLoaderStatusListenerServer interface {
+	OnStatusChanged(ctx context.Context, dataLoaderId int32, status int32) error
+}
+
+type dataLoaderStatusListenerStubWrapper struct {
+	impl       IDataLoaderStatusListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dataLoaderStatusListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dataLoaderStatusListenerStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	dataLoaderId int32,
+	status int32,
+) error {
+	return w.impl.OnStatusChanged(ctx, dataLoaderId, status)
+}
+
+var _ IDataLoaderStatusListener = (*dataLoaderStatusListenerStubWrapper)(nil)
+
+// NewDataLoaderStatusListenerStub creates a server-side IDataLoaderStatusListener wrapping the given
+// server implementation. The returned value satisfies IDataLoaderStatusListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDataLoaderStatusListenerStub(
+	impl IDataLoaderStatusListenerServer,
+) IDataLoaderStatusListener {
+	wrapper := &dataLoaderStatusListenerStubWrapper{impl: impl}
+	stub := &DataLoaderStatusListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

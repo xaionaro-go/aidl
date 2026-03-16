@@ -79,7 +79,7 @@ func (p *GnssPsdsProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssPsds)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGnssPsds, "setCallback")
 	if _err != nil {
@@ -151,4 +151,52 @@ func (s *GnssPsdsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssPsdsServer is the server-side interface that user implementations
+// provide to NewGnssPsdsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssPsdsServer interface {
+	InjectPsdsData(ctx context.Context, psdsType PsdsType, psdsData []byte) error
+	SetCallback(ctx context.Context, callback IGnssPsdsCallback) error
+}
+
+type gnssPsdsStubWrapper struct {
+	impl       IGnssPsdsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssPsdsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssPsdsStubWrapper) InjectPsdsData(
+	ctx context.Context,
+	psdsType PsdsType,
+	psdsData []byte,
+) error {
+	return w.impl.InjectPsdsData(ctx, psdsType, psdsData)
+}
+
+func (w *gnssPsdsStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IGnssPsdsCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+var _ IGnssPsds = (*gnssPsdsStubWrapper)(nil)
+
+// NewGnssPsdsStub creates a server-side IGnssPsds wrapping the given
+// server implementation. The returned value satisfies IGnssPsds
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssPsdsStub(
+	impl IGnssPsdsServer,
+) IGnssPsds {
+	wrapper := &gnssPsdsStubWrapper{impl: impl}
+	stub := &GnssPsdsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

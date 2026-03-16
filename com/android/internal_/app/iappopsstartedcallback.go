@@ -135,3 +135,50 @@ func (s *AppOpsStartedCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppOpsStartedCallbackServer is the server-side interface that user implementations
+// provide to NewAppOpsStartedCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppOpsStartedCallbackServer interface {
+	OpStarted(ctx context.Context, op int32, uid int32, packageName string, virtualDeviceId int32, flags int32, mode int32, startedType int32, attributionFlags int32, attributionChainId int32) error
+}
+
+type appOpsStartedCallbackStubWrapper struct {
+	impl       IAppOpsStartedCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appOpsStartedCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appOpsStartedCallbackStubWrapper) OpStarted(
+	ctx context.Context,
+	op int32,
+	uid int32,
+	packageName string,
+	virtualDeviceId int32,
+	flags int32,
+	mode int32,
+	startedType int32,
+	attributionFlags int32,
+	attributionChainId int32,
+) error {
+	return w.impl.OpStarted(ctx, op, uid, packageName, virtualDeviceId, flags, mode, startedType, attributionFlags, attributionChainId)
+}
+
+var _ IAppOpsStartedCallback = (*appOpsStartedCallbackStubWrapper)(nil)
+
+// NewAppOpsStartedCallbackStub creates a server-side IAppOpsStartedCallback wrapping the given
+// server implementation. The returned value satisfies IAppOpsStartedCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppOpsStartedCallbackStub(
+	impl IAppOpsStartedCallbackServer,
+) IAppOpsStartedCallback {
+	wrapper := &appOpsStartedCallbackStubWrapper{impl: impl}
+	stub := &AppOpsStartedCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

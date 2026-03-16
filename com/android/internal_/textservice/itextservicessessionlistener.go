@@ -42,7 +42,7 @@ func (p *TextServicesSessionListenerProxy) OnServiceConnected(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITextServicesSessionListener)
-	_data.WriteStrongBinder(spellCheckerSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, spellCheckerSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITextServicesSessionListener, "onServiceConnected")
 	if _err != nil {
@@ -80,4 +80,43 @@ func (s *TextServicesSessionListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITextServicesSessionListenerServer is the server-side interface that user implementations
+// provide to NewTextServicesSessionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITextServicesSessionListenerServer interface {
+	OnServiceConnected(ctx context.Context, spellCheckerSession ISpellCheckerSession) error
+}
+
+type textServicesSessionListenerStubWrapper struct {
+	impl       ITextServicesSessionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *textServicesSessionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *textServicesSessionListenerStubWrapper) OnServiceConnected(
+	ctx context.Context,
+	spellCheckerSession ISpellCheckerSession,
+) error {
+	return w.impl.OnServiceConnected(ctx, spellCheckerSession)
+}
+
+var _ ITextServicesSessionListener = (*textServicesSessionListenerStubWrapper)(nil)
+
+// NewTextServicesSessionListenerStub creates a server-side ITextServicesSessionListener wrapping the given
+// server implementation. The returned value satisfies ITextServicesSessionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTextServicesSessionListenerStub(
+	impl ITextServicesSessionListenerServer,
+) ITextServicesSessionListener {
+	wrapper := &textServicesSessionListenerStubWrapper{impl: impl}
+	stub := &TextServicesSessionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

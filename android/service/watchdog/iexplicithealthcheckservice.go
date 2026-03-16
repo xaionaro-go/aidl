@@ -239,3 +239,74 @@ func (s *ExplicitHealthCheckServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IExplicitHealthCheckServiceServer is the server-side interface that user implementations
+// provide to NewExplicitHealthCheckServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IExplicitHealthCheckServiceServer interface {
+	SetCallback(ctx context.Context, callback *os.RemoteCallback) error
+	Request(ctx context.Context, packageName string) error
+	Cancel(ctx context.Context, packageName string) error
+	GetSupportedPackages(ctx context.Context, callback os.RemoteCallback) error
+	GetRequestedPackages(ctx context.Context, callback os.RemoteCallback) error
+}
+
+type explicitHealthCheckServiceStubWrapper struct {
+	impl       IExplicitHealthCheckServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *explicitHealthCheckServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *explicitHealthCheckServiceStubWrapper) SetCallback(
+	ctx context.Context,
+	callback *os.RemoteCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *explicitHealthCheckServiceStubWrapper) Request(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Request(ctx, packageName)
+}
+
+func (w *explicitHealthCheckServiceStubWrapper) Cancel(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.Cancel(ctx, packageName)
+}
+
+func (w *explicitHealthCheckServiceStubWrapper) GetSupportedPackages(
+	ctx context.Context,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.GetSupportedPackages(ctx, callback)
+}
+
+func (w *explicitHealthCheckServiceStubWrapper) GetRequestedPackages(
+	ctx context.Context,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.GetRequestedPackages(ctx, callback)
+}
+
+var _ IExplicitHealthCheckService = (*explicitHealthCheckServiceStubWrapper)(nil)
+
+// NewExplicitHealthCheckServiceStub creates a server-side IExplicitHealthCheckService wrapping the given
+// server implementation. The returned value satisfies IExplicitHealthCheckService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewExplicitHealthCheckServiceStub(
+	impl IExplicitHealthCheckServiceServer,
+) IExplicitHealthCheckService {
+	wrapper := &explicitHealthCheckServiceStubWrapper{impl: impl}
+	stub := &ExplicitHealthCheckServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

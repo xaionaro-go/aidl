@@ -808,3 +808,156 @@ func (s *DynamicSystemServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDynamicSystemServiceServer is the server-side interface that user implementations
+// provide to NewDynamicSystemServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDynamicSystemServiceServer interface {
+	StartInstallation(ctx context.Context, dsuSlot string) (bool, error)
+	CreatePartition(ctx context.Context, name string, size int64, readOnly bool) (int32, error)
+	ClosePartition(ctx context.Context) (bool, error)
+	FinishInstallation(ctx context.Context) (bool, error)
+	GetInstallationProgress(ctx context.Context) (interface{}, error)
+	Abort(ctx context.Context) (bool, error)
+	IsInUse(ctx context.Context) (bool, error)
+	IsInstalled(ctx context.Context) (bool, error)
+	IsEnabled(ctx context.Context) (bool, error)
+	Remove(ctx context.Context) (bool, error)
+	SetEnable(ctx context.Context, enable bool, oneShot bool) (bool, error)
+	SetAshmem(ctx context.Context, fd int32, size int64) (bool, error)
+	SubmitFromAshmem(ctx context.Context, bytes int64) (bool, error)
+	GetAvbPublicKey(ctx context.Context, dst interface{}) (bool, error)
+	SuggestScratchSize(ctx context.Context) (int64, error)
+	GetActiveDsuSlot(ctx context.Context) (string, error)
+}
+
+type dynamicSystemServiceStubWrapper struct {
+	impl       IDynamicSystemServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dynamicSystemServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dynamicSystemServiceStubWrapper) StartInstallation(
+	ctx context.Context,
+	dsuSlot string,
+) (bool, error) {
+	return w.impl.StartInstallation(ctx, dsuSlot)
+}
+
+func (w *dynamicSystemServiceStubWrapper) CreatePartition(
+	ctx context.Context,
+	name string,
+	size int64,
+	readOnly bool,
+) (int32, error) {
+	return w.impl.CreatePartition(ctx, name, size, readOnly)
+}
+
+func (w *dynamicSystemServiceStubWrapper) ClosePartition(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ClosePartition(ctx)
+}
+
+func (w *dynamicSystemServiceStubWrapper) FinishInstallation(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.FinishInstallation(ctx)
+}
+
+func (w *dynamicSystemServiceStubWrapper) GetInstallationProgress(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetInstallationProgress(ctx)
+}
+
+func (w *dynamicSystemServiceStubWrapper) Abort(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.Abort(ctx)
+}
+
+func (w *dynamicSystemServiceStubWrapper) IsInUse(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInUse(ctx)
+}
+
+func (w *dynamicSystemServiceStubWrapper) IsInstalled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInstalled(ctx)
+}
+
+func (w *dynamicSystemServiceStubWrapper) IsEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsEnabled(ctx)
+}
+
+func (w *dynamicSystemServiceStubWrapper) Remove(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.Remove(ctx)
+}
+
+func (w *dynamicSystemServiceStubWrapper) SetEnable(
+	ctx context.Context,
+	enable bool,
+	oneShot bool,
+) (bool, error) {
+	return w.impl.SetEnable(ctx, enable, oneShot)
+}
+
+func (w *dynamicSystemServiceStubWrapper) SetAshmem(
+	ctx context.Context,
+	fd int32,
+	size int64,
+) (bool, error) {
+	return w.impl.SetAshmem(ctx, fd, size)
+}
+
+func (w *dynamicSystemServiceStubWrapper) SubmitFromAshmem(
+	ctx context.Context,
+	bytes int64,
+) (bool, error) {
+	return w.impl.SubmitFromAshmem(ctx, bytes)
+}
+
+func (w *dynamicSystemServiceStubWrapper) GetAvbPublicKey(
+	ctx context.Context,
+	dst interface{},
+) (bool, error) {
+	return w.impl.GetAvbPublicKey(ctx, dst)
+}
+
+func (w *dynamicSystemServiceStubWrapper) SuggestScratchSize(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.SuggestScratchSize(ctx)
+}
+
+func (w *dynamicSystemServiceStubWrapper) GetActiveDsuSlot(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetActiveDsuSlot(ctx)
+}
+
+var _ IDynamicSystemService = (*dynamicSystemServiceStubWrapper)(nil)
+
+// NewDynamicSystemServiceStub creates a server-side IDynamicSystemService wrapping the given
+// server implementation. The returned value satisfies IDynamicSystemService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDynamicSystemServiceStub(
+	impl IDynamicSystemServiceServer,
+) IDynamicSystemService {
+	wrapper := &dynamicSystemServiceStubWrapper{impl: impl}
+	stub := &DynamicSystemServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

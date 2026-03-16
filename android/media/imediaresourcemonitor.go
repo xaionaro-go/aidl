@@ -88,3 +88,43 @@ func (s *MediaResourceMonitorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaResourceMonitorServer is the server-side interface that user implementations
+// provide to NewMediaResourceMonitorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaResourceMonitorServer interface {
+	NotifyResourceGranted(ctx context.Context, pid int32, type_ int32) error
+}
+
+type mediaResourceMonitorStubWrapper struct {
+	impl       IMediaResourceMonitorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaResourceMonitorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaResourceMonitorStubWrapper) NotifyResourceGranted(
+	ctx context.Context,
+	pid int32,
+	type_ int32,
+) error {
+	return w.impl.NotifyResourceGranted(ctx, pid, type_)
+}
+
+var _ IMediaResourceMonitor = (*mediaResourceMonitorStubWrapper)(nil)
+
+// NewMediaResourceMonitorStub creates a server-side IMediaResourceMonitor wrapping the given
+// server implementation. The returned value satisfies IMediaResourceMonitor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaResourceMonitorStub(
+	impl IMediaResourceMonitorServer,
+) IMediaResourceMonitor {
+	wrapper := &mediaResourceMonitorStubWrapper{impl: impl}
+	stub := &MediaResourceMonitorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

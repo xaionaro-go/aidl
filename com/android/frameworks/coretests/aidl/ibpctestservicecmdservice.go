@@ -161,7 +161,7 @@ func (p *BpcTestServiceCmdServiceProxy) SetBinderProxyCountCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBpcTestServiceCmdService)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBpcTestServiceCmdService, "setBinderProxyCountCallback")
 	if _err != nil {
@@ -282,4 +282,76 @@ func (s *BpcTestServiceCmdServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBpcTestServiceCmdServiceServer is the server-side interface that user implementations
+// provide to NewBpcTestServiceCmdServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBpcTestServiceCmdServiceServer interface {
+	ForceGc(ctx context.Context) error
+	GetBinderProxyCount(ctx context.Context, uid int32) (int32, error)
+	SetBinderProxyWatermarks(ctx context.Context, high int32, low int32, warning int32) error
+	EnableBinderProxyLimit(ctx context.Context, enable bool) error
+	SetBinderProxyCountCallback(ctx context.Context, observer IBpcCallbackObserver) error
+}
+
+type bpcTestServiceCmdServiceStubWrapper struct {
+	impl       IBpcTestServiceCmdServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bpcTestServiceCmdServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bpcTestServiceCmdServiceStubWrapper) ForceGc(
+	ctx context.Context,
+) error {
+	return w.impl.ForceGc(ctx)
+}
+
+func (w *bpcTestServiceCmdServiceStubWrapper) GetBinderProxyCount(
+	ctx context.Context,
+	uid int32,
+) (int32, error) {
+	return w.impl.GetBinderProxyCount(ctx, uid)
+}
+
+func (w *bpcTestServiceCmdServiceStubWrapper) SetBinderProxyWatermarks(
+	ctx context.Context,
+	high int32,
+	low int32,
+	warning int32,
+) error {
+	return w.impl.SetBinderProxyWatermarks(ctx, high, low, warning)
+}
+
+func (w *bpcTestServiceCmdServiceStubWrapper) EnableBinderProxyLimit(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.EnableBinderProxyLimit(ctx, enable)
+}
+
+func (w *bpcTestServiceCmdServiceStubWrapper) SetBinderProxyCountCallback(
+	ctx context.Context,
+	observer IBpcCallbackObserver,
+) error {
+	return w.impl.SetBinderProxyCountCallback(ctx, observer)
+}
+
+var _ IBpcTestServiceCmdService = (*bpcTestServiceCmdServiceStubWrapper)(nil)
+
+// NewBpcTestServiceCmdServiceStub creates a server-side IBpcTestServiceCmdService wrapping the given
+// server implementation. The returned value satisfies IBpcTestServiceCmdService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBpcTestServiceCmdServiceStub(
+	impl IBpcTestServiceCmdServiceServer,
+) IBpcTestServiceCmdService {
+	wrapper := &bpcTestServiceCmdServiceStubWrapper{impl: impl}
+	stub := &BpcTestServiceCmdServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

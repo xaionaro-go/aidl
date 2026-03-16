@@ -232,3 +232,85 @@ func (s *FullBackupRestoreObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFullBackupRestoreObserverServer is the server-side interface that user implementations
+// provide to NewFullBackupRestoreObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFullBackupRestoreObserverServer interface {
+	OnStartBackup(ctx context.Context) error
+	OnBackupPackage(ctx context.Context, name string) error
+	OnEndBackup(ctx context.Context) error
+	OnStartRestore(ctx context.Context) error
+	OnRestorePackage(ctx context.Context, name string) error
+	OnEndRestore(ctx context.Context) error
+	OnTimeout(ctx context.Context) error
+}
+
+type fullBackupRestoreObserverStubWrapper struct {
+	impl       IFullBackupRestoreObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fullBackupRestoreObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fullBackupRestoreObserverStubWrapper) OnStartBackup(
+	ctx context.Context,
+) error {
+	return w.impl.OnStartBackup(ctx)
+}
+
+func (w *fullBackupRestoreObserverStubWrapper) OnBackupPackage(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.OnBackupPackage(ctx, name)
+}
+
+func (w *fullBackupRestoreObserverStubWrapper) OnEndBackup(
+	ctx context.Context,
+) error {
+	return w.impl.OnEndBackup(ctx)
+}
+
+func (w *fullBackupRestoreObserverStubWrapper) OnStartRestore(
+	ctx context.Context,
+) error {
+	return w.impl.OnStartRestore(ctx)
+}
+
+func (w *fullBackupRestoreObserverStubWrapper) OnRestorePackage(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.OnRestorePackage(ctx, name)
+}
+
+func (w *fullBackupRestoreObserverStubWrapper) OnEndRestore(
+	ctx context.Context,
+) error {
+	return w.impl.OnEndRestore(ctx)
+}
+
+func (w *fullBackupRestoreObserverStubWrapper) OnTimeout(
+	ctx context.Context,
+) error {
+	return w.impl.OnTimeout(ctx)
+}
+
+var _ IFullBackupRestoreObserver = (*fullBackupRestoreObserverStubWrapper)(nil)
+
+// NewFullBackupRestoreObserverStub creates a server-side IFullBackupRestoreObserver wrapping the given
+// server implementation. The returned value satisfies IFullBackupRestoreObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFullBackupRestoreObserverStub(
+	impl IFullBackupRestoreObserverServer,
+) IFullBackupRestoreObserver {
+	wrapper := &fullBackupRestoreObserverStubWrapper{impl: impl}
+	stub := &FullBackupRestoreObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -609,3 +609,127 @@ func (s *HdmiCecStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiCecServer is the server-side interface that user implementations
+// provide to NewHdmiCecStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiCecServer interface {
+	AddLogicalAddress(ctx context.Context, addr CecLogicalAddress) (Result, error)
+	ClearLogicalAddress(ctx context.Context) error
+	EnableAudioReturnChannel(ctx context.Context, portId int32, enable bool) error
+	GetCecVersion(ctx context.Context) (int32, error)
+	GetPhysicalAddress(ctx context.Context) (int32, error)
+	GetVendorId(ctx context.Context) (int32, error)
+	SendMessage(ctx context.Context, message CecMessage) (SendMessageResult, error)
+	SetCallback(ctx context.Context, callback *IHdmiCecCallback) error
+	SetLanguage(ctx context.Context, language string) error
+	EnableWakeupByOtp(ctx context.Context, value bool) error
+	EnableCec(ctx context.Context, value bool) error
+	EnableSystemCecControl(ctx context.Context, value bool) error
+}
+
+type hdmiCecStubWrapper struct {
+	impl       IHdmiCecServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiCecStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiCecStubWrapper) AddLogicalAddress(
+	ctx context.Context,
+	addr CecLogicalAddress,
+) (Result, error) {
+	return w.impl.AddLogicalAddress(ctx, addr)
+}
+
+func (w *hdmiCecStubWrapper) ClearLogicalAddress(
+	ctx context.Context,
+) error {
+	return w.impl.ClearLogicalAddress(ctx)
+}
+
+func (w *hdmiCecStubWrapper) EnableAudioReturnChannel(
+	ctx context.Context,
+	portId int32,
+	enable bool,
+) error {
+	return w.impl.EnableAudioReturnChannel(ctx, portId, enable)
+}
+
+func (w *hdmiCecStubWrapper) GetCecVersion(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCecVersion(ctx)
+}
+
+func (w *hdmiCecStubWrapper) GetPhysicalAddress(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPhysicalAddress(ctx)
+}
+
+func (w *hdmiCecStubWrapper) GetVendorId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetVendorId(ctx)
+}
+
+func (w *hdmiCecStubWrapper) SendMessage(
+	ctx context.Context,
+	message CecMessage,
+) (SendMessageResult, error) {
+	return w.impl.SendMessage(ctx, message)
+}
+
+func (w *hdmiCecStubWrapper) SetCallback(
+	ctx context.Context,
+	callback *IHdmiCecCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *hdmiCecStubWrapper) SetLanguage(
+	ctx context.Context,
+	language string,
+) error {
+	return w.impl.SetLanguage(ctx, language)
+}
+
+func (w *hdmiCecStubWrapper) EnableWakeupByOtp(
+	ctx context.Context,
+	value bool,
+) error {
+	return w.impl.EnableWakeupByOtp(ctx, value)
+}
+
+func (w *hdmiCecStubWrapper) EnableCec(
+	ctx context.Context,
+	value bool,
+) error {
+	return w.impl.EnableCec(ctx, value)
+}
+
+func (w *hdmiCecStubWrapper) EnableSystemCecControl(
+	ctx context.Context,
+	value bool,
+) error {
+	return w.impl.EnableSystemCecControl(ctx, value)
+}
+
+var _ IHdmiCec = (*hdmiCecStubWrapper)(nil)
+
+// NewHdmiCecStub creates a server-side IHdmiCec wrapping the given
+// server implementation. The returned value satisfies IHdmiCec
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiCecStub(
+	impl IHdmiCecServer,
+) IHdmiCec {
+	wrapper := &hdmiCecStubWrapper{impl: impl}
+	stub := &HdmiCecStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

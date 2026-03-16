@@ -76,3 +76,41 @@ func (s *CancellationSignalStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICancellationSignalServer is the server-side interface that user implementations
+// provide to NewCancellationSignalStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICancellationSignalServer interface {
+	Cancel(ctx context.Context) error
+}
+
+type cancellationSignalStubWrapper struct {
+	impl       ICancellationSignalServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cancellationSignalStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cancellationSignalStubWrapper) Cancel(
+	ctx context.Context,
+) error {
+	return w.impl.Cancel(ctx)
+}
+
+var _ ICancellationSignal = (*cancellationSignalStubWrapper)(nil)
+
+// NewCancellationSignalStub creates a server-side ICancellationSignal wrapping the given
+// server implementation. The returned value satisfies ICancellationSignal
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCancellationSignalStub(
+	impl ICancellationSignalServer,
+) ICancellationSignal {
+	wrapper := &cancellationSignalStubWrapper{impl: impl}
+	stub := &CancellationSignalStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

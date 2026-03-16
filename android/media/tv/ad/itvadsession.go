@@ -329,7 +329,7 @@ func (p *TvAdSessionProxy) CreateMediaView(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITvAdSession)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := frame.MarshalParcel(_data); _err != nil {
 		return _err
@@ -663,4 +663,173 @@ func (s *TvAdSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITvAdSessionServer is the server-side interface that user implementations
+// provide to NewTvAdSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvAdSessionServer interface {
+	Release(ctx context.Context) error
+	StartAdService(ctx context.Context) error
+	StopAdService(ctx context.Context) error
+	ResetAdService(ctx context.Context) error
+	SetSurface(ctx context.Context, surface interface{}) error
+	DispatchSurfaceChanged(ctx context.Context, format int32, width int32, height int32) error
+	SendCurrentVideoBounds(ctx context.Context, bounds graphics.Rect) error
+	SendCurrentChannelUri(ctx context.Context, channelUri net.Uri) error
+	SendTrackInfoList(ctx context.Context, tracks []tv.TvTrackInfo) error
+	SendCurrentTvInputId(ctx context.Context, inputId string) error
+	SendSigningResult(ctx context.Context, signingId string, result []byte) error
+	NotifyError(ctx context.Context, errMsg string, params os.Bundle) error
+	NotifyTvMessage(ctx context.Context, type_ int32, data os.Bundle) error
+	CreateMediaView(ctx context.Context, windowToken binder.IBinder, frame graphics.Rect) error
+	RelayoutMediaView(ctx context.Context, frame graphics.Rect) error
+	RemoveMediaView(ctx context.Context) error
+	NotifyTvInputSessionData(ctx context.Context, type_ string, data os.Bundle) error
+}
+
+type tvAdSessionStubWrapper struct {
+	impl       ITvAdSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvAdSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvAdSessionStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+func (w *tvAdSessionStubWrapper) StartAdService(
+	ctx context.Context,
+) error {
+	return w.impl.StartAdService(ctx)
+}
+
+func (w *tvAdSessionStubWrapper) StopAdService(
+	ctx context.Context,
+) error {
+	return w.impl.StopAdService(ctx)
+}
+
+func (w *tvAdSessionStubWrapper) ResetAdService(
+	ctx context.Context,
+) error {
+	return w.impl.ResetAdService(ctx)
+}
+
+func (w *tvAdSessionStubWrapper) SetSurface(
+	ctx context.Context,
+	surface interface{},
+) error {
+	return w.impl.SetSurface(ctx, surface)
+}
+
+func (w *tvAdSessionStubWrapper) DispatchSurfaceChanged(
+	ctx context.Context,
+	format int32,
+	width int32,
+	height int32,
+) error {
+	return w.impl.DispatchSurfaceChanged(ctx, format, width, height)
+}
+
+func (w *tvAdSessionStubWrapper) SendCurrentVideoBounds(
+	ctx context.Context,
+	bounds graphics.Rect,
+) error {
+	return w.impl.SendCurrentVideoBounds(ctx, bounds)
+}
+
+func (w *tvAdSessionStubWrapper) SendCurrentChannelUri(
+	ctx context.Context,
+	channelUri net.Uri,
+) error {
+	return w.impl.SendCurrentChannelUri(ctx, channelUri)
+}
+
+func (w *tvAdSessionStubWrapper) SendTrackInfoList(
+	ctx context.Context,
+	tracks []tv.TvTrackInfo,
+) error {
+	return w.impl.SendTrackInfoList(ctx, tracks)
+}
+
+func (w *tvAdSessionStubWrapper) SendCurrentTvInputId(
+	ctx context.Context,
+	inputId string,
+) error {
+	return w.impl.SendCurrentTvInputId(ctx, inputId)
+}
+
+func (w *tvAdSessionStubWrapper) SendSigningResult(
+	ctx context.Context,
+	signingId string,
+	result []byte,
+) error {
+	return w.impl.SendSigningResult(ctx, signingId, result)
+}
+
+func (w *tvAdSessionStubWrapper) NotifyError(
+	ctx context.Context,
+	errMsg string,
+	params os.Bundle,
+) error {
+	return w.impl.NotifyError(ctx, errMsg, params)
+}
+
+func (w *tvAdSessionStubWrapper) NotifyTvMessage(
+	ctx context.Context,
+	type_ int32,
+	data os.Bundle,
+) error {
+	return w.impl.NotifyTvMessage(ctx, type_, data)
+}
+
+func (w *tvAdSessionStubWrapper) CreateMediaView(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	frame graphics.Rect,
+) error {
+	return w.impl.CreateMediaView(ctx, windowToken, frame)
+}
+
+func (w *tvAdSessionStubWrapper) RelayoutMediaView(
+	ctx context.Context,
+	frame graphics.Rect,
+) error {
+	return w.impl.RelayoutMediaView(ctx, frame)
+}
+
+func (w *tvAdSessionStubWrapper) RemoveMediaView(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveMediaView(ctx)
+}
+
+func (w *tvAdSessionStubWrapper) NotifyTvInputSessionData(
+	ctx context.Context,
+	type_ string,
+	data os.Bundle,
+) error {
+	return w.impl.NotifyTvInputSessionData(ctx, type_, data)
+}
+
+var _ ITvAdSession = (*tvAdSessionStubWrapper)(nil)
+
+// NewTvAdSessionStub creates a server-side ITvAdSession wrapping the given
+// server implementation. The returned value satisfies ITvAdSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvAdSessionStub(
+	impl ITvAdSessionServer,
+) ITvAdSession {
+	wrapper := &tvAdSessionStubWrapper{impl: impl}
+	stub := &TvAdSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

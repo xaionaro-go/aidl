@@ -159,3 +159,52 @@ func (s *HalSoundDoseCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHalSoundDoseCallbackServer is the server-side interface that user implementations
+// provide to NewHalSoundDoseCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHalSoundDoseCallbackServer interface {
+	OnMomentaryExposureWarning(ctx context.Context, currentDbA float32, audioDevice common.AudioDevice) error
+	OnNewMelValues(ctx context.Context, melRecord ISoundDoseIHalSoundDoseCallback.MelRecord, audioDevice common.AudioDevice) error
+}
+
+type halSoundDoseCallbackStubWrapper struct {
+	impl       IHalSoundDoseCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *halSoundDoseCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *halSoundDoseCallbackStubWrapper) OnMomentaryExposureWarning(
+	ctx context.Context,
+	currentDbA float32,
+	audioDevice common.AudioDevice,
+) error {
+	return w.impl.OnMomentaryExposureWarning(ctx, currentDbA, audioDevice)
+}
+
+func (w *halSoundDoseCallbackStubWrapper) OnNewMelValues(
+	ctx context.Context,
+	melRecord ISoundDoseIHalSoundDoseCallback.MelRecord,
+	audioDevice common.AudioDevice,
+) error {
+	return w.impl.OnNewMelValues(ctx, melRecord, audioDevice)
+}
+
+var _ IHalSoundDoseCallback = (*halSoundDoseCallbackStubWrapper)(nil)
+
+// NewHalSoundDoseCallbackStub creates a server-side IHalSoundDoseCallback wrapping the given
+// server implementation. The returned value satisfies IHalSoundDoseCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHalSoundDoseCallbackStub(
+	impl IHalSoundDoseCallbackServer,
+) IHalSoundDoseCallback {
+	wrapper := &halSoundDoseCallbackStubWrapper{impl: impl}
+	stub := &HalSoundDoseCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -51,7 +51,7 @@ func (p *ObbBackupServiceProxy) BackupObbs(
 	_data.WriteString16(packageName)
 	_data.WriteFileDescriptor(data)
 	_data.WriteInt32(token)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIObbBackupService, "backupObbs")
 	if _err != nil {
@@ -84,7 +84,7 @@ func (p *ObbBackupServiceProxy) RestoreObbFile(
 	_data.WriteInt64(mode)
 	_data.WriteInt64(mtime)
 	_data.WriteInt32(token)
-	_data.WriteStrongBinder(callbackBinder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIObbBackupService, "restoreObbFile")
 	if _err != nil {
@@ -176,4 +176,62 @@ func (s *ObbBackupServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IObbBackupServiceServer is the server-side interface that user implementations
+// provide to NewObbBackupServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IObbBackupServiceServer interface {
+	BackupObbs(ctx context.Context, packageName string, data int32, token int32, callbackBinder appBackup.IBackupManager) error
+	RestoreObbFile(ctx context.Context, pkgName string, data int32, fileSize int64, type_ int32, path string, mode int64, mtime int64, token int32, callbackBinder appBackup.IBackupManager) error
+}
+
+type obbBackupServiceStubWrapper struct {
+	impl       IObbBackupServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *obbBackupServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *obbBackupServiceStubWrapper) BackupObbs(
+	ctx context.Context,
+	packageName string,
+	data int32,
+	token int32,
+	callbackBinder appBackup.IBackupManager,
+) error {
+	return w.impl.BackupObbs(ctx, packageName, data, token, callbackBinder)
+}
+
+func (w *obbBackupServiceStubWrapper) RestoreObbFile(
+	ctx context.Context,
+	pkgName string,
+	data int32,
+	fileSize int64,
+	type_ int32,
+	path string,
+	mode int64,
+	mtime int64,
+	token int32,
+	callbackBinder appBackup.IBackupManager,
+) error {
+	return w.impl.RestoreObbFile(ctx, pkgName, data, fileSize, type_, path, mode, mtime, token, callbackBinder)
+}
+
+var _ IObbBackupService = (*obbBackupServiceStubWrapper)(nil)
+
+// NewObbBackupServiceStub creates a server-side IObbBackupService wrapping the given
+// server implementation. The returned value satisfies IObbBackupService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewObbBackupServiceStub(
+	impl IObbBackupServiceServer,
+) IObbBackupService {
+	wrapper := &obbBackupServiceStubWrapper{impl: impl}
+	stub := &ObbBackupServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

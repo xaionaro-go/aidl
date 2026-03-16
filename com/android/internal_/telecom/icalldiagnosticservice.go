@@ -60,7 +60,7 @@ func (p *CallDiagnosticServiceProxy) SetAdapter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICallDiagnosticService)
-	_data.WriteStrongBinder(adapter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, adapter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICallDiagnosticService, "setAdapter")
 	if _err != nil {
@@ -412,4 +412,111 @@ func (s *CallDiagnosticServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICallDiagnosticServiceServer is the server-side interface that user implementations
+// provide to NewCallDiagnosticServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallDiagnosticServiceServer interface {
+	SetAdapter(ctx context.Context, adapter ICallDiagnosticServiceAdapter) error
+	InitializeDiagnosticCall(ctx context.Context, call androidTelecom.ParcelableCall) error
+	UpdateCall(ctx context.Context, call androidTelecom.ParcelableCall) error
+	UpdateCallAudioState(ctx context.Context, callAudioState androidTelecom.CallAudioState) error
+	RemoveDiagnosticCall(ctx context.Context, callId string) error
+	ReceiveDeviceToDeviceMessage(ctx context.Context, callId string, message int32, value int32) error
+	CallQualityChanged(ctx context.Context, callId string, callQuality media.CallQuality) error
+	ReceiveBluetoothCallQualityReport(ctx context.Context, qualityReport androidTelecom.BluetoothCallQualityReport) error
+	NotifyCallDisconnected(ctx context.Context, callId string, disconnectCause androidTelecom.DisconnectCause) error
+}
+
+type callDiagnosticServiceStubWrapper struct {
+	impl       ICallDiagnosticServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callDiagnosticServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callDiagnosticServiceStubWrapper) SetAdapter(
+	ctx context.Context,
+	adapter ICallDiagnosticServiceAdapter,
+) error {
+	return w.impl.SetAdapter(ctx, adapter)
+}
+
+func (w *callDiagnosticServiceStubWrapper) InitializeDiagnosticCall(
+	ctx context.Context,
+	call androidTelecom.ParcelableCall,
+) error {
+	return w.impl.InitializeDiagnosticCall(ctx, call)
+}
+
+func (w *callDiagnosticServiceStubWrapper) UpdateCall(
+	ctx context.Context,
+	call androidTelecom.ParcelableCall,
+) error {
+	return w.impl.UpdateCall(ctx, call)
+}
+
+func (w *callDiagnosticServiceStubWrapper) UpdateCallAudioState(
+	ctx context.Context,
+	callAudioState androidTelecom.CallAudioState,
+) error {
+	return w.impl.UpdateCallAudioState(ctx, callAudioState)
+}
+
+func (w *callDiagnosticServiceStubWrapper) RemoveDiagnosticCall(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.RemoveDiagnosticCall(ctx, callId)
+}
+
+func (w *callDiagnosticServiceStubWrapper) ReceiveDeviceToDeviceMessage(
+	ctx context.Context,
+	callId string,
+	message int32,
+	value int32,
+) error {
+	return w.impl.ReceiveDeviceToDeviceMessage(ctx, callId, message, value)
+}
+
+func (w *callDiagnosticServiceStubWrapper) CallQualityChanged(
+	ctx context.Context,
+	callId string,
+	callQuality media.CallQuality,
+) error {
+	return w.impl.CallQualityChanged(ctx, callId, callQuality)
+}
+
+func (w *callDiagnosticServiceStubWrapper) ReceiveBluetoothCallQualityReport(
+	ctx context.Context,
+	qualityReport androidTelecom.BluetoothCallQualityReport,
+) error {
+	return w.impl.ReceiveBluetoothCallQualityReport(ctx, qualityReport)
+}
+
+func (w *callDiagnosticServiceStubWrapper) NotifyCallDisconnected(
+	ctx context.Context,
+	callId string,
+	disconnectCause androidTelecom.DisconnectCause,
+) error {
+	return w.impl.NotifyCallDisconnected(ctx, callId, disconnectCause)
+}
+
+var _ ICallDiagnosticService = (*callDiagnosticServiceStubWrapper)(nil)
+
+// NewCallDiagnosticServiceStub creates a server-side ICallDiagnosticService wrapping the given
+// server implementation. The returned value satisfies ICallDiagnosticService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallDiagnosticServiceStub(
+	impl ICallDiagnosticServiceServer,
+) ICallDiagnosticService {
+	wrapper := &callDiagnosticServiceStubWrapper{impl: impl}
+	stub := &CallDiagnosticServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

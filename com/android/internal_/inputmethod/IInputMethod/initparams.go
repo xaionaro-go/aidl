@@ -19,7 +19,11 @@ func (s *InitParams) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Token.Handle())
+	if s.Token == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Token.Handle())
+	}
 	p.WriteInt32(s.NavigationBarFlags)
 
 	parcel.WriteParcelableFooter(p, _headerPos)

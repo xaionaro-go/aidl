@@ -3,7 +3,6 @@ package os
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -32,7 +31,7 @@ type IRecoverySystem interface {
 	SetupBcb(ctx context.Context, command string) (bool, error)
 	ClearBcb(ctx context.Context) (bool, error)
 	RebootRecoveryWithCommand(ctx context.Context, command string) error
-	RequestLskf(ctx context.Context, packageName string, sender content.IntentSender) (bool, error)
+	RequestLskf(ctx context.Context, packageName string, sender interface{}) (bool, error)
 	ClearLskf(ctx context.Context, packageName string) (bool, error)
 	IsLskfCaptured(ctx context.Context, packageName string) (bool, error)
 	RebootWithLskfAssumeSlotSwitch(ctx context.Context, packageName string, reason string) (int32, error)
@@ -95,7 +94,7 @@ func (p *RecoverySystemProxy) Uncrypt(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecoverySystem)
 	_data.WriteString16(packageFile)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "uncrypt")
 	if _err != nil {
@@ -208,16 +207,12 @@ func (p *RecoverySystemProxy) RebootRecoveryWithCommand(
 func (p *RecoverySystemProxy) RequestLskf(
 	ctx context.Context,
 	packageName string,
-	sender content.IntentSender,
+	sender interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRecoverySystem)
 	_data.WriteString16(packageName)
-	_data.WriteInt32(1)
-	if _err := sender.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRecoverySystem, "requestLskf")
 	if _err != nil {
@@ -476,18 +471,7 @@ func (s *RecoverySystemStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_sender content.IntentSender
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_sender.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_sender interface{}
 		_result, _err := s.Impl.RequestLskf(ctx, _arg_packageName, _arg_sender)
 		_reply := parcel.New()
 		if _err != nil {
@@ -580,4 +564,119 @@ func (s *RecoverySystemStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRecoverySystemServer is the server-side interface that user implementations
+// provide to NewRecoverySystemStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecoverySystemServer interface {
+	AllocateSpaceForUpdate(ctx context.Context, packageFilePath string) (bool, error)
+	Uncrypt(ctx context.Context, packageFile string, listener IRecoverySystemProgressListener) (bool, error)
+	SetupBcb(ctx context.Context, command string) (bool, error)
+	ClearBcb(ctx context.Context) (bool, error)
+	RebootRecoveryWithCommand(ctx context.Context, command string) error
+	RequestLskf(ctx context.Context, packageName string, sender interface{}) (bool, error)
+	ClearLskf(ctx context.Context, packageName string) (bool, error)
+	IsLskfCaptured(ctx context.Context, packageName string) (bool, error)
+	RebootWithLskfAssumeSlotSwitch(ctx context.Context, packageName string, reason string) (int32, error)
+	RebootWithLskf(ctx context.Context, packageName string, reason string, slotSwitch bool) (int32, error)
+}
+
+type recoverySystemStubWrapper struct {
+	impl       IRecoverySystemServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recoverySystemStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recoverySystemStubWrapper) AllocateSpaceForUpdate(
+	ctx context.Context,
+	packageFilePath string,
+) (bool, error) {
+	return w.impl.AllocateSpaceForUpdate(ctx, packageFilePath)
+}
+
+func (w *recoverySystemStubWrapper) Uncrypt(
+	ctx context.Context,
+	packageFile string,
+	listener IRecoverySystemProgressListener,
+) (bool, error) {
+	return w.impl.Uncrypt(ctx, packageFile, listener)
+}
+
+func (w *recoverySystemStubWrapper) SetupBcb(
+	ctx context.Context,
+	command string,
+) (bool, error) {
+	return w.impl.SetupBcb(ctx, command)
+}
+
+func (w *recoverySystemStubWrapper) ClearBcb(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ClearBcb(ctx)
+}
+
+func (w *recoverySystemStubWrapper) RebootRecoveryWithCommand(
+	ctx context.Context,
+	command string,
+) error {
+	return w.impl.RebootRecoveryWithCommand(ctx, command)
+}
+
+func (w *recoverySystemStubWrapper) RequestLskf(
+	ctx context.Context,
+	packageName string,
+	sender interface{},
+) (bool, error) {
+	return w.impl.RequestLskf(ctx, packageName, sender)
+}
+
+func (w *recoverySystemStubWrapper) ClearLskf(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.ClearLskf(ctx, packageName)
+}
+
+func (w *recoverySystemStubWrapper) IsLskfCaptured(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsLskfCaptured(ctx, packageName)
+}
+
+func (w *recoverySystemStubWrapper) RebootWithLskfAssumeSlotSwitch(
+	ctx context.Context,
+	packageName string,
+	reason string,
+) (int32, error) {
+	return w.impl.RebootWithLskfAssumeSlotSwitch(ctx, packageName, reason)
+}
+
+func (w *recoverySystemStubWrapper) RebootWithLskf(
+	ctx context.Context,
+	packageName string,
+	reason string,
+	slotSwitch bool,
+) (int32, error) {
+	return w.impl.RebootWithLskf(ctx, packageName, reason, slotSwitch)
+}
+
+var _ IRecoverySystem = (*recoverySystemStubWrapper)(nil)
+
+// NewRecoverySystemStub creates a server-side IRecoverySystem wrapping the given
+// server implementation. The returned value satisfies IRecoverySystem
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecoverySystemStub(
+	impl IRecoverySystemServer,
+) IRecoverySystem {
+	wrapper := &recoverySystemStubWrapper{impl: impl}
+	stub := &RecoverySystemStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

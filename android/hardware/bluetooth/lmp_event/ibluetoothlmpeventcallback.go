@@ -191,3 +191,55 @@ func (s *BluetoothLmpEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothLmpEventCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothLmpEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothLmpEventCallbackServer interface {
+	OnEventGenerated(ctx context.Context, timestamp Timestamp, addressType AddressType, address []byte, direction Direction, lmpEventId LmpEventId, connEventCounter uint16) error
+	OnRegistered(ctx context.Context, status bool) error
+}
+
+type bluetoothLmpEventCallbackStubWrapper struct {
+	impl       IBluetoothLmpEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothLmpEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothLmpEventCallbackStubWrapper) OnEventGenerated(
+	ctx context.Context,
+	timestamp Timestamp,
+	addressType AddressType,
+	address []byte,
+	direction Direction,
+	lmpEventId LmpEventId,
+	connEventCounter uint16,
+) error {
+	return w.impl.OnEventGenerated(ctx, timestamp, addressType, address, direction, lmpEventId, connEventCounter)
+}
+
+func (w *bluetoothLmpEventCallbackStubWrapper) OnRegistered(
+	ctx context.Context,
+	status bool,
+) error {
+	return w.impl.OnRegistered(ctx, status)
+}
+
+var _ IBluetoothLmpEventCallback = (*bluetoothLmpEventCallbackStubWrapper)(nil)
+
+// NewBluetoothLmpEventCallbackStub creates a server-side IBluetoothLmpEventCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothLmpEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothLmpEventCallbackStub(
+	impl IBluetoothLmpEventCallbackServer,
+) IBluetoothLmpEventCallback {
+	wrapper := &bluetoothLmpEventCallbackStubWrapper{impl: impl}
+	stub := &BluetoothLmpEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

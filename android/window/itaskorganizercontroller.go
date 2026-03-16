@@ -59,7 +59,7 @@ func (p *TaskOrganizerControllerProxy) RegisterTaskOrganizer(
 	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskOrganizerController)
-	_data.WriteStrongBinder(organizer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, organizer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskOrganizerController, "registerTaskOrganizer")
 	if _err != nil {
@@ -85,7 +85,7 @@ func (p *TaskOrganizerControllerProxy) UnregisterTaskOrganizer(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskOrganizerController)
-	_data.WriteStrongBinder(organizer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, organizer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskOrganizerController, "unregisterTaskOrganizer")
 	if _err != nil {
@@ -116,7 +116,7 @@ func (p *TaskOrganizerControllerProxy) CreateRootTask(
 	_data.WriteInterfaceToken(DescriptorITaskOrganizerController)
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(windowingMode)
-	_data.WriteStrongBinder(launchCookie.Handle())
+	binder.WriteBinderToParcel(ctx, _data, launchCookie, p.remote.Transport())
 	_data.WriteBool(removeWithTaskOrganizer)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskOrganizerController, "createRootTask")
@@ -584,4 +584,113 @@ func (s *TaskOrganizerControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITaskOrganizerControllerServer is the server-side interface that user implementations
+// provide to NewTaskOrganizerControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITaskOrganizerControllerServer interface {
+	RegisterTaskOrganizer(ctx context.Context, organizer ITaskOrganizer) (interface{}, error)
+	UnregisterTaskOrganizer(ctx context.Context, organizer ITaskOrganizer) error
+	CreateRootTask(ctx context.Context, displayId int32, windowingMode int32, launchCookie binder.IBinder, removeWithTaskOrganizer bool) error
+	DeleteRootTask(ctx context.Context, task WindowContainerToken) (bool, error)
+	GetChildTasks(ctx context.Context, parent WindowContainerToken, activityTypes []int32) ([]interface{}, error)
+	GetRootTasks(ctx context.Context, displayId int32, activityTypes []int32) ([]interface{}, error)
+	GetImeTarget(ctx context.Context, display int32) (WindowContainerToken, error)
+	SetInterceptBackPressedOnTaskRoot(ctx context.Context, task WindowContainerToken, interceptBackPressed bool) error
+	RestartTaskTopActivityProcessIfVisible(ctx context.Context, task WindowContainerToken) error
+}
+
+type taskOrganizerControllerStubWrapper struct {
+	impl       ITaskOrganizerControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *taskOrganizerControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *taskOrganizerControllerStubWrapper) RegisterTaskOrganizer(
+	ctx context.Context,
+	organizer ITaskOrganizer,
+) (interface{}, error) {
+	return w.impl.RegisterTaskOrganizer(ctx, organizer)
+}
+
+func (w *taskOrganizerControllerStubWrapper) UnregisterTaskOrganizer(
+	ctx context.Context,
+	organizer ITaskOrganizer,
+) error {
+	return w.impl.UnregisterTaskOrganizer(ctx, organizer)
+}
+
+func (w *taskOrganizerControllerStubWrapper) CreateRootTask(
+	ctx context.Context,
+	displayId int32,
+	windowingMode int32,
+	launchCookie binder.IBinder,
+	removeWithTaskOrganizer bool,
+) error {
+	return w.impl.CreateRootTask(ctx, displayId, windowingMode, launchCookie, removeWithTaskOrganizer)
+}
+
+func (w *taskOrganizerControllerStubWrapper) DeleteRootTask(
+	ctx context.Context,
+	task WindowContainerToken,
+) (bool, error) {
+	return w.impl.DeleteRootTask(ctx, task)
+}
+
+func (w *taskOrganizerControllerStubWrapper) GetChildTasks(
+	ctx context.Context,
+	parent WindowContainerToken,
+	activityTypes []int32,
+) ([]interface{}, error) {
+	return w.impl.GetChildTasks(ctx, parent, activityTypes)
+}
+
+func (w *taskOrganizerControllerStubWrapper) GetRootTasks(
+	ctx context.Context,
+	displayId int32,
+	activityTypes []int32,
+) ([]interface{}, error) {
+	return w.impl.GetRootTasks(ctx, displayId, activityTypes)
+}
+
+func (w *taskOrganizerControllerStubWrapper) GetImeTarget(
+	ctx context.Context,
+	display int32,
+) (WindowContainerToken, error) {
+	return w.impl.GetImeTarget(ctx, display)
+}
+
+func (w *taskOrganizerControllerStubWrapper) SetInterceptBackPressedOnTaskRoot(
+	ctx context.Context,
+	task WindowContainerToken,
+	interceptBackPressed bool,
+) error {
+	return w.impl.SetInterceptBackPressedOnTaskRoot(ctx, task, interceptBackPressed)
+}
+
+func (w *taskOrganizerControllerStubWrapper) RestartTaskTopActivityProcessIfVisible(
+	ctx context.Context,
+	task WindowContainerToken,
+) error {
+	return w.impl.RestartTaskTopActivityProcessIfVisible(ctx, task)
+}
+
+var _ ITaskOrganizerController = (*taskOrganizerControllerStubWrapper)(nil)
+
+// NewTaskOrganizerControllerStub creates a server-side ITaskOrganizerController wrapping the given
+// server implementation. The returned value satisfies ITaskOrganizerController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTaskOrganizerControllerStub(
+	impl ITaskOrganizerControllerServer,
+) ITaskOrganizerController {
+	wrapper := &taskOrganizerControllerStubWrapper{impl: impl}
+	stub := &TaskOrganizerControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

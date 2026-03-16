@@ -116,3 +116,43 @@ func (s *OverrideValidatorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOverrideValidatorServer is the server-side interface that user implementations
+// provide to NewOverrideValidatorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOverrideValidatorServer interface {
+	GetOverrideAllowedState(ctx context.Context, changeId int64, packageName string) (OverrideAllowedState, error)
+}
+
+type overrideValidatorStubWrapper struct {
+	impl       IOverrideValidatorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *overrideValidatorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *overrideValidatorStubWrapper) GetOverrideAllowedState(
+	ctx context.Context,
+	changeId int64,
+	packageName string,
+) (OverrideAllowedState, error) {
+	return w.impl.GetOverrideAllowedState(ctx, changeId, packageName)
+}
+
+var _ IOverrideValidator = (*overrideValidatorStubWrapper)(nil)
+
+// NewOverrideValidatorStub creates a server-side IOverrideValidator wrapping the given
+// server implementation. The returned value satisfies IOverrideValidator
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOverrideValidatorStub(
+	impl IOverrideValidatorServer,
+) IOverrideValidator {
+	wrapper := &overrideValidatorStubWrapper{impl: impl}
+	stub := &OverrideValidatorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

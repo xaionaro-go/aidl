@@ -5,7 +5,6 @@ import (
 	"fmt"
 	accessibilityservice "github.com/xaionaro-go/binder/android/accessibilityservice"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
-	view "github.com/xaionaro-go/binder/android/view"
 	window "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
@@ -47,16 +46,16 @@ type IUiAutomationConnection interface {
 	AsBinder() binder.IBinder
 	Connect(ctx context.Context, client accessibilityservice.IAccessibilityServiceClient, flags int32) error
 	Disconnect(ctx context.Context) error
-	InjectInputEvent(ctx context.Context, event view.InputEvent, sync bool, waitForAnimations bool) (bool, error)
-	InjectInputEventToInputFilter(ctx context.Context, event view.InputEvent) error
+	InjectInputEvent(ctx context.Context, event interface{}, sync bool, waitForAnimations bool) (bool, error)
+	InjectInputEventToInputFilter(ctx context.Context, event interface{}) error
 	SyncInputTransactions(ctx context.Context, waitForAnimations bool) error
 	SetRotation(ctx context.Context, rotation int32) (bool, error)
 	TakeScreenshot(ctx context.Context, crop graphics.Rect, listener window.ScreenCaptureScreenCaptureListener, displayId int32) (bool, error)
-	TakeSurfaceControlScreenshot(ctx context.Context, surfaceControl view.SurfaceControl, listener window.ScreenCaptureScreenCaptureListener) (bool, error)
+	TakeSurfaceControlScreenshot(ctx context.Context, surfaceControl interface{}, listener window.ScreenCaptureScreenCaptureListener) (bool, error)
 	ClearWindowContentFrameStats(ctx context.Context, windowId int32) (bool, error)
-	GetWindowContentFrameStats(ctx context.Context, windowId int32) (view.WindowContentFrameStats, error)
+	GetWindowContentFrameStats(ctx context.Context, windowId int32) (interface{}, error)
 	ClearWindowAnimationFrameStats(ctx context.Context) error
-	GetWindowAnimationFrameStats(ctx context.Context) (view.WindowAnimationFrameStats, error)
+	GetWindowAnimationFrameStats(ctx context.Context) (interface{}, error)
 	ExecuteShellCommand(ctx context.Context, command string, sink int32, source int32) error
 	GrantRuntimePermission(ctx context.Context, packageName string, permission string) error
 	RevokeRuntimePermission(ctx context.Context, packageName string, permission string) error
@@ -95,7 +94,7 @@ func (p *UiAutomationConnectionProxy) Connect(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "connect")
@@ -142,17 +141,13 @@ func (p *UiAutomationConnectionProxy) Disconnect(
 
 func (p *UiAutomationConnectionProxy) InjectInputEvent(
 	ctx context.Context,
-	event view.InputEvent,
+	event interface{},
 	sync bool,
 	waitForAnimations bool,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
-	_data.WriteInt32(1)
-	if _err := event.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteBool(sync)
 	_data.WriteBool(waitForAnimations)
 
@@ -180,14 +175,10 @@ func (p *UiAutomationConnectionProxy) InjectInputEvent(
 
 func (p *UiAutomationConnectionProxy) InjectInputEventToInputFilter(
 	ctx context.Context,
-	event view.InputEvent,
+	event interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
-	_data.WriteInt32(1)
-	if _err := event.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiAutomationConnection, "injectInputEventToInputFilter")
 	if _err != nil {
@@ -307,16 +298,12 @@ func (p *UiAutomationConnectionProxy) TakeScreenshot(
 
 func (p *UiAutomationConnectionProxy) TakeSurfaceControlScreenshot(
 	ctx context.Context,
-	surfaceControl view.SurfaceControl,
+	surfaceControl interface{},
 	listener window.ScreenCaptureScreenCaptureListener,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
-	_data.WriteInt32(1)
-	if _err := surfaceControl.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteInt32(1)
 	if _err := listener.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -378,8 +365,8 @@ func (p *UiAutomationConnectionProxy) ClearWindowContentFrameStats(
 func (p *UiAutomationConnectionProxy) GetWindowContentFrameStats(
 	ctx context.Context,
 	windowId int32,
-) (view.WindowContentFrameStats, error) {
-	var _result view.WindowContentFrameStats
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteInt32(windowId)
@@ -399,15 +386,6 @@ func (p *UiAutomationConnectionProxy) GetWindowContentFrameStats(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -437,8 +415,8 @@ func (p *UiAutomationConnectionProxy) ClearWindowAnimationFrameStats(
 
 func (p *UiAutomationConnectionProxy) GetWindowAnimationFrameStats(
 	ctx context.Context,
-) (view.WindowAnimationFrameStats, error) {
-	var _result view.WindowAnimationFrameStats
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 
@@ -457,15 +435,6 @@ func (p *UiAutomationConnectionProxy) GetWindowAnimationFrameStats(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -900,18 +869,7 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_event view.InputEvent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_event.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_event interface{}
 		_arg_sync, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -933,18 +891,7 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_event view.InputEvent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_event.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_event interface{}
 		_err := s.Impl.InjectInputEventToInputFilter(ctx, _arg_event)
 		_reply := parcel.New()
 		if _err != nil {
@@ -1031,18 +978,7 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_surfaceControl view.SurfaceControl
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_surfaceControl.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_surfaceControl interface{}
 		var _arg_listener window.ScreenCaptureScreenCaptureListener
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1096,10 +1032,7 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIUiAutomationConnectionClearWindowAnimationFrameStats:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -1124,10 +1057,7 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIUiAutomationConnectionExecuteShellCommand:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -1381,4 +1311,248 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUiAutomationConnectionServer is the server-side interface that user implementations
+// provide to NewUiAutomationConnectionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUiAutomationConnectionServer interface {
+	Connect(ctx context.Context, client accessibilityservice.IAccessibilityServiceClient, flags int32) error
+	Disconnect(ctx context.Context) error
+	InjectInputEvent(ctx context.Context, event interface{}, sync bool, waitForAnimations bool) (bool, error)
+	InjectInputEventToInputFilter(ctx context.Context, event interface{}) error
+	SyncInputTransactions(ctx context.Context, waitForAnimations bool) error
+	SetRotation(ctx context.Context, rotation int32) (bool, error)
+	TakeScreenshot(ctx context.Context, crop graphics.Rect, listener window.ScreenCaptureScreenCaptureListener, displayId int32) (bool, error)
+	TakeSurfaceControlScreenshot(ctx context.Context, surfaceControl interface{}, listener window.ScreenCaptureScreenCaptureListener) (bool, error)
+	ClearWindowContentFrameStats(ctx context.Context, windowId int32) (bool, error)
+	GetWindowContentFrameStats(ctx context.Context, windowId int32) (interface{}, error)
+	ClearWindowAnimationFrameStats(ctx context.Context) error
+	GetWindowAnimationFrameStats(ctx context.Context) (interface{}, error)
+	ExecuteShellCommand(ctx context.Context, command string, sink int32, source int32) error
+	GrantRuntimePermission(ctx context.Context, packageName string, permission string) error
+	RevokeRuntimePermission(ctx context.Context, packageName string, permission string) error
+	AdoptShellPermissionIdentity(ctx context.Context, uid int32, permissions []string) error
+	DropShellPermissionIdentity(ctx context.Context) error
+	Shutdown(ctx context.Context) error
+	ExecuteShellCommandWithStderr(ctx context.Context, command string, sink int32, source int32, stderrSink int32) error
+	ExecuteShellCommandArrayWithStderr(ctx context.Context, command []string, sink int32, source int32, stderrSink int32) error
+	GetAdoptedShellPermissions(ctx context.Context) ([]string, error)
+	AddOverridePermissionState(ctx context.Context, uid int32, permission string, result int32) error
+	RemoveOverridePermissionState(ctx context.Context, uid int32, permission string) error
+	ClearOverridePermissionStates(ctx context.Context, uid int32) error
+	ClearAllOverridePermissionStates(ctx context.Context) error
+}
+
+type uiAutomationConnectionStubWrapper struct {
+	impl       IUiAutomationConnectionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *uiAutomationConnectionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *uiAutomationConnectionStubWrapper) Connect(
+	ctx context.Context,
+	client accessibilityservice.IAccessibilityServiceClient,
+	flags int32,
+) error {
+	return w.impl.Connect(ctx, client, flags)
+}
+
+func (w *uiAutomationConnectionStubWrapper) Disconnect(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnect(ctx)
+}
+
+func (w *uiAutomationConnectionStubWrapper) InjectInputEvent(
+	ctx context.Context,
+	event interface{},
+	sync bool,
+	waitForAnimations bool,
+) (bool, error) {
+	return w.impl.InjectInputEvent(ctx, event, sync, waitForAnimations)
+}
+
+func (w *uiAutomationConnectionStubWrapper) InjectInputEventToInputFilter(
+	ctx context.Context,
+	event interface{},
+) error {
+	return w.impl.InjectInputEventToInputFilter(ctx, event)
+}
+
+func (w *uiAutomationConnectionStubWrapper) SyncInputTransactions(
+	ctx context.Context,
+	waitForAnimations bool,
+) error {
+	return w.impl.SyncInputTransactions(ctx, waitForAnimations)
+}
+
+func (w *uiAutomationConnectionStubWrapper) SetRotation(
+	ctx context.Context,
+	rotation int32,
+) (bool, error) {
+	return w.impl.SetRotation(ctx, rotation)
+}
+
+func (w *uiAutomationConnectionStubWrapper) TakeScreenshot(
+	ctx context.Context,
+	crop graphics.Rect,
+	listener window.ScreenCaptureScreenCaptureListener,
+	displayId int32,
+) (bool, error) {
+	return w.impl.TakeScreenshot(ctx, crop, listener, displayId)
+}
+
+func (w *uiAutomationConnectionStubWrapper) TakeSurfaceControlScreenshot(
+	ctx context.Context,
+	surfaceControl interface{},
+	listener window.ScreenCaptureScreenCaptureListener,
+) (bool, error) {
+	return w.impl.TakeSurfaceControlScreenshot(ctx, surfaceControl, listener)
+}
+
+func (w *uiAutomationConnectionStubWrapper) ClearWindowContentFrameStats(
+	ctx context.Context,
+	windowId int32,
+) (bool, error) {
+	return w.impl.ClearWindowContentFrameStats(ctx, windowId)
+}
+
+func (w *uiAutomationConnectionStubWrapper) GetWindowContentFrameStats(
+	ctx context.Context,
+	windowId int32,
+) (interface{}, error) {
+	return w.impl.GetWindowContentFrameStats(ctx, windowId)
+}
+
+func (w *uiAutomationConnectionStubWrapper) ClearWindowAnimationFrameStats(
+	ctx context.Context,
+) error {
+	return w.impl.ClearWindowAnimationFrameStats(ctx)
+}
+
+func (w *uiAutomationConnectionStubWrapper) GetWindowAnimationFrameStats(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetWindowAnimationFrameStats(ctx)
+}
+
+func (w *uiAutomationConnectionStubWrapper) ExecuteShellCommand(
+	ctx context.Context,
+	command string,
+	sink int32,
+	source int32,
+) error {
+	return w.impl.ExecuteShellCommand(ctx, command, sink, source)
+}
+
+func (w *uiAutomationConnectionStubWrapper) GrantRuntimePermission(
+	ctx context.Context,
+	packageName string,
+	permission string,
+) error {
+	return w.impl.GrantRuntimePermission(ctx, packageName, permission)
+}
+
+func (w *uiAutomationConnectionStubWrapper) RevokeRuntimePermission(
+	ctx context.Context,
+	packageName string,
+	permission string,
+) error {
+	return w.impl.RevokeRuntimePermission(ctx, packageName, permission)
+}
+
+func (w *uiAutomationConnectionStubWrapper) AdoptShellPermissionIdentity(
+	ctx context.Context,
+	uid int32,
+	permissions []string,
+) error {
+	return w.impl.AdoptShellPermissionIdentity(ctx, uid, permissions)
+}
+
+func (w *uiAutomationConnectionStubWrapper) DropShellPermissionIdentity(
+	ctx context.Context,
+) error {
+	return w.impl.DropShellPermissionIdentity(ctx)
+}
+
+func (w *uiAutomationConnectionStubWrapper) Shutdown(
+	ctx context.Context,
+) error {
+	return w.impl.Shutdown(ctx)
+}
+
+func (w *uiAutomationConnectionStubWrapper) ExecuteShellCommandWithStderr(
+	ctx context.Context,
+	command string,
+	sink int32,
+	source int32,
+	stderrSink int32,
+) error {
+	return w.impl.ExecuteShellCommandWithStderr(ctx, command, sink, source, stderrSink)
+}
+
+func (w *uiAutomationConnectionStubWrapper) ExecuteShellCommandArrayWithStderr(
+	ctx context.Context,
+	command []string,
+	sink int32,
+	source int32,
+	stderrSink int32,
+) error {
+	return w.impl.ExecuteShellCommandArrayWithStderr(ctx, command, sink, source, stderrSink)
+}
+
+func (w *uiAutomationConnectionStubWrapper) GetAdoptedShellPermissions(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetAdoptedShellPermissions(ctx)
+}
+
+func (w *uiAutomationConnectionStubWrapper) AddOverridePermissionState(
+	ctx context.Context,
+	uid int32,
+	permission string,
+	result int32,
+) error {
+	return w.impl.AddOverridePermissionState(ctx, uid, permission, result)
+}
+
+func (w *uiAutomationConnectionStubWrapper) RemoveOverridePermissionState(
+	ctx context.Context,
+	uid int32,
+	permission string,
+) error {
+	return w.impl.RemoveOverridePermissionState(ctx, uid, permission)
+}
+
+func (w *uiAutomationConnectionStubWrapper) ClearOverridePermissionStates(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.ClearOverridePermissionStates(ctx, uid)
+}
+
+func (w *uiAutomationConnectionStubWrapper) ClearAllOverridePermissionStates(
+	ctx context.Context,
+) error {
+	return w.impl.ClearAllOverridePermissionStates(ctx)
+}
+
+var _ IUiAutomationConnection = (*uiAutomationConnectionStubWrapper)(nil)
+
+// NewUiAutomationConnectionStub creates a server-side IUiAutomationConnection wrapping the given
+// server implementation. The returned value satisfies IUiAutomationConnection
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUiAutomationConnectionStub(
+	impl IUiAutomationConnectionServer,
+) IUiAutomationConnection {
+	wrapper := &uiAutomationConnectionStubWrapper{impl: impl}
+	stub := &UiAutomationConnectionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

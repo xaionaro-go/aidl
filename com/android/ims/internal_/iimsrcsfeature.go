@@ -49,3 +49,34 @@ func (s *ImsRcsFeatureStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IImsRcsFeatureServer is the server-side interface that user implementations
+// provide to NewImsRcsFeatureStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsRcsFeatureServer interface {
+}
+
+type imsRcsFeatureStubWrapper struct {
+	impl       IImsRcsFeatureServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsRcsFeatureStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IImsRcsFeature = (*imsRcsFeatureStubWrapper)(nil)
+
+// NewImsRcsFeatureStub creates a server-side IImsRcsFeature wrapping the given
+// server implementation. The returned value satisfies IImsRcsFeature
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsRcsFeatureStub(
+	impl IImsRcsFeatureServer,
+) IImsRcsFeature {
+	wrapper := &imsRcsFeatureStubWrapper{impl: impl}
+	stub := &ImsRcsFeatureStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

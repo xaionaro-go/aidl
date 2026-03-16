@@ -113,7 +113,7 @@ func (p *NotificationListenerProxy) OnNotificationPosted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINotificationListener)
-	_data.WriteStrongBinder(notificationHolder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, notificationHolder.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := update.MarshalParcel(_data); _err != nil {
 		return _err
@@ -179,7 +179,7 @@ func (p *NotificationListenerProxy) OnNotificationRemoved(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINotificationListener)
-	_data.WriteStrongBinder(notificationHolder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, notificationHolder.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := update.MarshalParcel(_data); _err != nil {
 		return _err
@@ -335,7 +335,7 @@ func (p *NotificationListenerProxy) OnNotificationEnqueuedWithChannel(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINotificationListener)
-	_data.WriteStrongBinder(notificationHolder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, notificationHolder.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := update.MarshalParcel(_data); _err != nil {
 		return _err
@@ -383,7 +383,7 @@ func (p *NotificationListenerProxy) OnNotificationSnoozedUntilContext(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINotificationListener)
-	_data.WriteStrongBinder(notificationHolder.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, notificationHolder.AsBinder(), p.remote.Transport())
 	_data.WriteString16(snoozeCriterionId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorINotificationListener, "onNotificationSnoozedUntilContext")
@@ -1124,4 +1124,270 @@ func (s *NotificationListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// INotificationListenerServer is the server-side interface that user implementations
+// provide to NewNotificationListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INotificationListenerServer interface {
+	OnListenerConnected(ctx context.Context, update NotificationRankingUpdate) error
+	OnNotificationPosted(ctx context.Context, notificationHolder IStatusBarNotificationHolder, update NotificationRankingUpdate) error
+	OnNotificationPostedFull(ctx context.Context, sbn StatusBarNotification, update NotificationRankingUpdate) error
+	OnStatusBarIconsBehaviorChanged(ctx context.Context, hideSilentStatusIcons bool) error
+	OnNotificationRemoved(ctx context.Context, notificationHolder IStatusBarNotificationHolder, update NotificationRankingUpdate, stats NotificationStats, reason int32) error
+	OnNotificationRemovedFull(ctx context.Context, sbn StatusBarNotification, update NotificationRankingUpdate, stats NotificationStats, reason int32) error
+	OnNotificationRankingUpdate(ctx context.Context, update NotificationRankingUpdate) error
+	OnListenerHintsChanged(ctx context.Context, hints int32) error
+	OnInterruptionFilterChanged(ctx context.Context, interruptionFilter int32) error
+	OnNotificationChannelModification(ctx context.Context, pkgName string, user interface{}, channel interface{}, modificationType int32) error
+	OnNotificationChannelGroupModification(ctx context.Context, pkgName string, user interface{}, group interface{}, modificationType int32) error
+	OnNotificationEnqueuedWithChannel(ctx context.Context, notificationHolder IStatusBarNotificationHolder, channel interface{}, update NotificationRankingUpdate) error
+	OnNotificationEnqueuedWithChannelFull(ctx context.Context, sbn StatusBarNotification, channel interface{}, update NotificationRankingUpdate) error
+	OnNotificationSnoozedUntilContext(ctx context.Context, notificationHolder IStatusBarNotificationHolder, snoozeCriterionId string) error
+	OnNotificationSnoozedUntilContextFull(ctx context.Context, sbn StatusBarNotification, snoozeCriterionId string) error
+	OnNotificationsSeen(ctx context.Context, keys []string) error
+	OnPanelRevealed(ctx context.Context, items int32) error
+	OnPanelHidden(ctx context.Context) error
+	OnNotificationVisibilityChanged(ctx context.Context, key string, isVisible bool) error
+	OnNotificationExpansionChanged(ctx context.Context, key string, userAction bool, expanded bool) error
+	OnNotificationDirectReply(ctx context.Context, key string) error
+	OnSuggestedReplySent(ctx context.Context, key string, reply interface{}, source int32) error
+	OnActionClicked(ctx context.Context, key string, action interface{}, source int32) error
+	OnNotificationClicked(ctx context.Context, key string) error
+	OnAllowedAdjustmentsChanged(ctx context.Context) error
+	OnNotificationFeedbackReceived(ctx context.Context, key string, update NotificationRankingUpdate, feedback interface{}) error
+}
+
+type notificationListenerStubWrapper struct {
+	impl       INotificationListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *notificationListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *notificationListenerStubWrapper) OnListenerConnected(
+	ctx context.Context,
+	update NotificationRankingUpdate,
+) error {
+	return w.impl.OnListenerConnected(ctx, update)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationPosted(
+	ctx context.Context,
+	notificationHolder IStatusBarNotificationHolder,
+	update NotificationRankingUpdate,
+) error {
+	return w.impl.OnNotificationPosted(ctx, notificationHolder, update)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationPostedFull(
+	ctx context.Context,
+	sbn StatusBarNotification,
+	update NotificationRankingUpdate,
+) error {
+	return w.impl.OnNotificationPostedFull(ctx, sbn, update)
+}
+
+func (w *notificationListenerStubWrapper) OnStatusBarIconsBehaviorChanged(
+	ctx context.Context,
+	hideSilentStatusIcons bool,
+) error {
+	return w.impl.OnStatusBarIconsBehaviorChanged(ctx, hideSilentStatusIcons)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationRemoved(
+	ctx context.Context,
+	notificationHolder IStatusBarNotificationHolder,
+	update NotificationRankingUpdate,
+	stats NotificationStats,
+	reason int32,
+) error {
+	return w.impl.OnNotificationRemoved(ctx, notificationHolder, update, stats, reason)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationRemovedFull(
+	ctx context.Context,
+	sbn StatusBarNotification,
+	update NotificationRankingUpdate,
+	stats NotificationStats,
+	reason int32,
+) error {
+	return w.impl.OnNotificationRemovedFull(ctx, sbn, update, stats, reason)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationRankingUpdate(
+	ctx context.Context,
+	update NotificationRankingUpdate,
+) error {
+	return w.impl.OnNotificationRankingUpdate(ctx, update)
+}
+
+func (w *notificationListenerStubWrapper) OnListenerHintsChanged(
+	ctx context.Context,
+	hints int32,
+) error {
+	return w.impl.OnListenerHintsChanged(ctx, hints)
+}
+
+func (w *notificationListenerStubWrapper) OnInterruptionFilterChanged(
+	ctx context.Context,
+	interruptionFilter int32,
+) error {
+	return w.impl.OnInterruptionFilterChanged(ctx, interruptionFilter)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationChannelModification(
+	ctx context.Context,
+	pkgName string,
+	user interface{},
+	channel interface{},
+	modificationType int32,
+) error {
+	return w.impl.OnNotificationChannelModification(ctx, pkgName, user, channel, modificationType)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationChannelGroupModification(
+	ctx context.Context,
+	pkgName string,
+	user interface{},
+	group interface{},
+	modificationType int32,
+) error {
+	return w.impl.OnNotificationChannelGroupModification(ctx, pkgName, user, group, modificationType)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationEnqueuedWithChannel(
+	ctx context.Context,
+	notificationHolder IStatusBarNotificationHolder,
+	channel interface{},
+	update NotificationRankingUpdate,
+) error {
+	return w.impl.OnNotificationEnqueuedWithChannel(ctx, notificationHolder, channel, update)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationEnqueuedWithChannelFull(
+	ctx context.Context,
+	sbn StatusBarNotification,
+	channel interface{},
+	update NotificationRankingUpdate,
+) error {
+	return w.impl.OnNotificationEnqueuedWithChannelFull(ctx, sbn, channel, update)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationSnoozedUntilContext(
+	ctx context.Context,
+	notificationHolder IStatusBarNotificationHolder,
+	snoozeCriterionId string,
+) error {
+	return w.impl.OnNotificationSnoozedUntilContext(ctx, notificationHolder, snoozeCriterionId)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationSnoozedUntilContextFull(
+	ctx context.Context,
+	sbn StatusBarNotification,
+	snoozeCriterionId string,
+) error {
+	return w.impl.OnNotificationSnoozedUntilContextFull(ctx, sbn, snoozeCriterionId)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationsSeen(
+	ctx context.Context,
+	keys []string,
+) error {
+	return w.impl.OnNotificationsSeen(ctx, keys)
+}
+
+func (w *notificationListenerStubWrapper) OnPanelRevealed(
+	ctx context.Context,
+	items int32,
+) error {
+	return w.impl.OnPanelRevealed(ctx, items)
+}
+
+func (w *notificationListenerStubWrapper) OnPanelHidden(
+	ctx context.Context,
+) error {
+	return w.impl.OnPanelHidden(ctx)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationVisibilityChanged(
+	ctx context.Context,
+	key string,
+	isVisible bool,
+) error {
+	return w.impl.OnNotificationVisibilityChanged(ctx, key, isVisible)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationExpansionChanged(
+	ctx context.Context,
+	key string,
+	userAction bool,
+	expanded bool,
+) error {
+	return w.impl.OnNotificationExpansionChanged(ctx, key, userAction, expanded)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationDirectReply(
+	ctx context.Context,
+	key string,
+) error {
+	return w.impl.OnNotificationDirectReply(ctx, key)
+}
+
+func (w *notificationListenerStubWrapper) OnSuggestedReplySent(
+	ctx context.Context,
+	key string,
+	reply interface{},
+	source int32,
+) error {
+	return w.impl.OnSuggestedReplySent(ctx, key, reply, source)
+}
+
+func (w *notificationListenerStubWrapper) OnActionClicked(
+	ctx context.Context,
+	key string,
+	action interface{},
+	source int32,
+) error {
+	return w.impl.OnActionClicked(ctx, key, action, source)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationClicked(
+	ctx context.Context,
+	key string,
+) error {
+	return w.impl.OnNotificationClicked(ctx, key)
+}
+
+func (w *notificationListenerStubWrapper) OnAllowedAdjustmentsChanged(
+	ctx context.Context,
+) error {
+	return w.impl.OnAllowedAdjustmentsChanged(ctx)
+}
+
+func (w *notificationListenerStubWrapper) OnNotificationFeedbackReceived(
+	ctx context.Context,
+	key string,
+	update NotificationRankingUpdate,
+	feedback interface{},
+) error {
+	return w.impl.OnNotificationFeedbackReceived(ctx, key, update, feedback)
+}
+
+var _ INotificationListener = (*notificationListenerStubWrapper)(nil)
+
+// NewNotificationListenerStub creates a server-side INotificationListener wrapping the given
+// server implementation. The returned value satisfies INotificationListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNotificationListenerStub(
+	impl INotificationListenerServer,
+) INotificationListener {
+	wrapper := &notificationListenerStubWrapper{impl: impl}
+	stub := &NotificationListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

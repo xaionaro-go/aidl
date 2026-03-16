@@ -44,7 +44,7 @@ func (p *PreparedModelCallbackProxy) Notify(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreparedModelCallback)
 	_data.WriteInt32(int32(status))
-	_data.WriteStrongBinder(preparedModel.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, preparedModel.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPreparedModelCallback, "notify")
 	if _err != nil {
@@ -101,4 +101,44 @@ func (s *PreparedModelCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPreparedModelCallbackServer is the server-side interface that user implementations
+// provide to NewPreparedModelCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPreparedModelCallbackServer interface {
+	Notify(ctx context.Context, status ErrorStatus, preparedModel IPreparedModel) error
+}
+
+type preparedModelCallbackStubWrapper struct {
+	impl       IPreparedModelCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *preparedModelCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *preparedModelCallbackStubWrapper) Notify(
+	ctx context.Context,
+	status ErrorStatus,
+	preparedModel IPreparedModel,
+) error {
+	return w.impl.Notify(ctx, status, preparedModel)
+}
+
+var _ IPreparedModelCallback = (*preparedModelCallbackStubWrapper)(nil)
+
+// NewPreparedModelCallbackStub creates a server-side IPreparedModelCallback wrapping the given
+// server implementation. The returned value satisfies IPreparedModelCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPreparedModelCallbackStub(
+	impl IPreparedModelCallbackServer,
+) IPreparedModelCallback {
+	wrapper := &preparedModelCallbackStubWrapper{impl: impl}
+	stub := &PreparedModelCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -56,7 +56,7 @@ func (p *MidiDeviceServerProxy) OpenInputPort(
 	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceServer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(portNumber)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "openInputPort")
@@ -85,7 +85,7 @@ func (p *MidiDeviceServerProxy) OpenOutputPort(
 	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceServer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(portNumber)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "openOutputPort")
@@ -112,7 +112,7 @@ func (p *MidiDeviceServerProxy) ClosePort(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceServer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "closePort")
 	if _err != nil {
@@ -156,7 +156,7 @@ func (p *MidiDeviceServerProxy) ConnectPorts(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMidiDeviceServer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(outputPortNumber)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMidiDeviceServer, "connectPorts")
@@ -343,4 +343,93 @@ func (s *MidiDeviceServerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMidiDeviceServerServer is the server-side interface that user implementations
+// provide to NewMidiDeviceServerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMidiDeviceServerServer interface {
+	OpenInputPort(ctx context.Context, token binder.IBinder, portNumber int32) (interface{}, error)
+	OpenOutputPort(ctx context.Context, token binder.IBinder, portNumber int32) (interface{}, error)
+	ClosePort(ctx context.Context, token binder.IBinder) error
+	CloseDevice(ctx context.Context) error
+	ConnectPorts(ctx context.Context, token binder.IBinder, fd interface{}, outputPortNumber int32) (int32, error)
+	GetDeviceInfo(ctx context.Context) (interface{}, error)
+	SetDeviceInfo(ctx context.Context, deviceInfo interface{}) error
+}
+
+type midiDeviceServerStubWrapper struct {
+	impl       IMidiDeviceServerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *midiDeviceServerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *midiDeviceServerStubWrapper) OpenInputPort(
+	ctx context.Context,
+	token binder.IBinder,
+	portNumber int32,
+) (interface{}, error) {
+	return w.impl.OpenInputPort(ctx, token, portNumber)
+}
+
+func (w *midiDeviceServerStubWrapper) OpenOutputPort(
+	ctx context.Context,
+	token binder.IBinder,
+	portNumber int32,
+) (interface{}, error) {
+	return w.impl.OpenOutputPort(ctx, token, portNumber)
+}
+
+func (w *midiDeviceServerStubWrapper) ClosePort(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ClosePort(ctx, token)
+}
+
+func (w *midiDeviceServerStubWrapper) CloseDevice(
+	ctx context.Context,
+) error {
+	return w.impl.CloseDevice(ctx)
+}
+
+func (w *midiDeviceServerStubWrapper) ConnectPorts(
+	ctx context.Context,
+	token binder.IBinder,
+	fd interface{},
+	outputPortNumber int32,
+) (int32, error) {
+	return w.impl.ConnectPorts(ctx, token, fd, outputPortNumber)
+}
+
+func (w *midiDeviceServerStubWrapper) GetDeviceInfo(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetDeviceInfo(ctx)
+}
+
+func (w *midiDeviceServerStubWrapper) SetDeviceInfo(
+	ctx context.Context,
+	deviceInfo interface{},
+) error {
+	return w.impl.SetDeviceInfo(ctx, deviceInfo)
+}
+
+var _ IMidiDeviceServer = (*midiDeviceServerStubWrapper)(nil)
+
+// NewMidiDeviceServerStub creates a server-side IMidiDeviceServer wrapping the given
+// server implementation. The returned value satisfies IMidiDeviceServer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMidiDeviceServerStub(
+	impl IMidiDeviceServerServer,
+) IMidiDeviceServer {
+	wrapper := &midiDeviceServerStubWrapper{impl: impl}
+	stub := &MidiDeviceServerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

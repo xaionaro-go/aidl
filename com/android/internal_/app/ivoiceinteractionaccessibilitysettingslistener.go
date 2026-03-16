@@ -82,3 +82,42 @@ func (s *VoiceInteractionAccessibilitySettingsListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVoiceInteractionAccessibilitySettingsListenerServer is the server-side interface that user implementations
+// provide to NewVoiceInteractionAccessibilitySettingsListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceInteractionAccessibilitySettingsListenerServer interface {
+	OnAccessibilityDetectionChanged(ctx context.Context, enable bool) error
+}
+
+type voiceInteractionAccessibilitySettingsListenerStubWrapper struct {
+	impl       IVoiceInteractionAccessibilitySettingsListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceInteractionAccessibilitySettingsListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceInteractionAccessibilitySettingsListenerStubWrapper) OnAccessibilityDetectionChanged(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.OnAccessibilityDetectionChanged(ctx, enable)
+}
+
+var _ IVoiceInteractionAccessibilitySettingsListener = (*voiceInteractionAccessibilitySettingsListenerStubWrapper)(nil)
+
+// NewVoiceInteractionAccessibilitySettingsListenerStub creates a server-side IVoiceInteractionAccessibilitySettingsListener wrapping the given
+// server implementation. The returned value satisfies IVoiceInteractionAccessibilitySettingsListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceInteractionAccessibilitySettingsListenerStub(
+	impl IVoiceInteractionAccessibilitySettingsListenerServer,
+) IVoiceInteractionAccessibilitySettingsListener {
+	wrapper := &voiceInteractionAccessibilitySettingsListenerStubWrapper{impl: impl}
+	stub := &VoiceInteractionAccessibilitySettingsListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -82,3 +82,42 @@ func (s *ResetMemoryCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IResetMemoryCallbackServer is the server-side interface that user implementations
+// provide to NewResetMemoryCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResetMemoryCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32) error
+}
+
+type resetMemoryCallbackStubWrapper struct {
+	impl       IResetMemoryCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resetMemoryCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resetMemoryCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+) error {
+	return w.impl.OnComplete(ctx, resultCode)
+}
+
+var _ IResetMemoryCallback = (*resetMemoryCallbackStubWrapper)(nil)
+
+// NewResetMemoryCallbackStub creates a server-side IResetMemoryCallback wrapping the given
+// server implementation. The returned value satisfies IResetMemoryCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResetMemoryCallbackStub(
+	impl IResetMemoryCallbackServer,
+) IResetMemoryCallback {
+	wrapper := &resetMemoryCallbackStubWrapper{impl: impl}
+	stub := &ResetMemoryCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

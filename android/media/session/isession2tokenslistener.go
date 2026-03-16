@@ -85,3 +85,42 @@ func (s *Session2TokensListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISession2TokensListenerServer is the server-side interface that user implementations
+// provide to NewSession2TokensListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISession2TokensListenerServer interface {
+	OnSession2TokensChanged(ctx context.Context, tokens []interface{}) error
+}
+
+type session2TokensListenerStubWrapper struct {
+	impl       ISession2TokensListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *session2TokensListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *session2TokensListenerStubWrapper) OnSession2TokensChanged(
+	ctx context.Context,
+	tokens []interface{},
+) error {
+	return w.impl.OnSession2TokensChanged(ctx, tokens)
+}
+
+var _ ISession2TokensListener = (*session2TokensListenerStubWrapper)(nil)
+
+// NewSession2TokensListenerStub creates a server-side ISession2TokensListener wrapping the given
+// server implementation. The returned value satisfies ISession2TokensListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSession2TokensListenerStub(
+	impl ISession2TokensListenerServer,
+) ISession2TokensListener {
+	wrapper := &session2TokensListenerStubWrapper{impl: impl}
+	stub := &Session2TokensListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

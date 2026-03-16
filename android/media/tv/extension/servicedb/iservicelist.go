@@ -178,3 +178,50 @@ func (s *ServiceListStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IServiceListServer is the server-side interface that user implementations
+// provide to NewServiceListStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListServer interface {
+	GetServiceListIds(ctx context.Context) ([]string, error)
+	GetServiceListInfo(ctx context.Context, serviceListId string, keys []string) (os.Bundle, error)
+}
+
+type serviceListStubWrapper struct {
+	impl       IServiceListServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListStubWrapper) GetServiceListIds(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetServiceListIds(ctx)
+}
+
+func (w *serviceListStubWrapper) GetServiceListInfo(
+	ctx context.Context,
+	serviceListId string,
+	keys []string,
+) (os.Bundle, error) {
+	return w.impl.GetServiceListInfo(ctx, serviceListId, keys)
+}
+
+var _ IServiceList = (*serviceListStubWrapper)(nil)
+
+// NewServiceListStub creates a server-side IServiceList wrapping the given
+// server implementation. The returned value satisfies IServiceList
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListStub(
+	impl IServiceListServer,
+) IServiceList {
+	wrapper := &serviceListStubWrapper{impl: impl}
+	stub := &ServiceListStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

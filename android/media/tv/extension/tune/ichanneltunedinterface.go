@@ -44,7 +44,7 @@ func (p *ChannelTunedInterfaceProxy) AddChannelTunedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIChannelTunedInterface)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIChannelTunedInterface, "addChannelTunedListener")
 	if _err != nil {
@@ -70,7 +70,7 @@ func (p *ChannelTunedInterfaceProxy) RemoveChannelTunedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIChannelTunedInterface)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIChannelTunedInterface, "removeChannelTunedListener")
 	if _err != nil {
@@ -137,4 +137,51 @@ func (s *ChannelTunedInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IChannelTunedInterfaceServer is the server-side interface that user implementations
+// provide to NewChannelTunedInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IChannelTunedInterfaceServer interface {
+	AddChannelTunedListener(ctx context.Context, listener IChannelTunedListener) error
+	RemoveChannelTunedListener(ctx context.Context, listener IChannelTunedListener) error
+}
+
+type channelTunedInterfaceStubWrapper struct {
+	impl       IChannelTunedInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *channelTunedInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *channelTunedInterfaceStubWrapper) AddChannelTunedListener(
+	ctx context.Context,
+	listener IChannelTunedListener,
+) error {
+	return w.impl.AddChannelTunedListener(ctx, listener)
+}
+
+func (w *channelTunedInterfaceStubWrapper) RemoveChannelTunedListener(
+	ctx context.Context,
+	listener IChannelTunedListener,
+) error {
+	return w.impl.RemoveChannelTunedListener(ctx, listener)
+}
+
+var _ IChannelTunedInterface = (*channelTunedInterfaceStubWrapper)(nil)
+
+// NewChannelTunedInterfaceStub creates a server-side IChannelTunedInterface wrapping the given
+// server implementation. The returned value satisfies IChannelTunedInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewChannelTunedInterfaceStub(
+	impl IChannelTunedInterfaceServer,
+) IChannelTunedInterface {
+	wrapper := &channelTunedInterfaceStubWrapper{impl: impl}
+	stub := &ChannelTunedInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

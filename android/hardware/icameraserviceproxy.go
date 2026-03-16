@@ -303,3 +303,81 @@ func (s *CameraServiceProxyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraServiceProxyServer is the server-side interface that user implementations
+// provide to NewCameraServiceProxyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraServiceProxyServer interface {
+	PingForUserUpdate(ctx context.Context) error
+	NotifyCameraState(ctx context.Context, cameraSessionStats interface{}) error
+	NotifyFeatureCombinationStats(ctx context.Context, cameraFeatureCombinationStats CameraFeatureCombinationStats) error
+	GetRotateAndCropOverride(ctx context.Context, packageName string, lensFacing int32) (int32, error)
+	GetAutoframingOverride(ctx context.Context, packageName string) (int32, error)
+	IsCameraDisabled(ctx context.Context) (bool, error)
+}
+
+type cameraServiceProxyStubWrapper struct {
+	impl       ICameraServiceProxyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraServiceProxyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraServiceProxyStubWrapper) PingForUserUpdate(
+	ctx context.Context,
+) error {
+	return w.impl.PingForUserUpdate(ctx)
+}
+
+func (w *cameraServiceProxyStubWrapper) NotifyCameraState(
+	ctx context.Context,
+	cameraSessionStats interface{},
+) error {
+	return w.impl.NotifyCameraState(ctx, cameraSessionStats)
+}
+
+func (w *cameraServiceProxyStubWrapper) NotifyFeatureCombinationStats(
+	ctx context.Context,
+	cameraFeatureCombinationStats CameraFeatureCombinationStats,
+) error {
+	return w.impl.NotifyFeatureCombinationStats(ctx, cameraFeatureCombinationStats)
+}
+
+func (w *cameraServiceProxyStubWrapper) GetRotateAndCropOverride(
+	ctx context.Context,
+	packageName string,
+	lensFacing int32,
+) (int32, error) {
+	return w.impl.GetRotateAndCropOverride(ctx, packageName, lensFacing)
+}
+
+func (w *cameraServiceProxyStubWrapper) GetAutoframingOverride(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetAutoframingOverride(ctx, packageName)
+}
+
+func (w *cameraServiceProxyStubWrapper) IsCameraDisabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCameraDisabled(ctx)
+}
+
+var _ ICameraServiceProxy = (*cameraServiceProxyStubWrapper)(nil)
+
+// NewCameraServiceProxyStub creates a server-side ICameraServiceProxy wrapping the given
+// server implementation. The returned value satisfies ICameraServiceProxy
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraServiceProxyStub(
+	impl ICameraServiceProxyServer,
+) ICameraServiceProxy {
+	wrapper := &cameraServiceProxyStubWrapper{impl: impl}
+	stub := &CameraServiceProxyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

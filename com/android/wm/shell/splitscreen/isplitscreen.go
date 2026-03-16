@@ -74,7 +74,7 @@ func (p *SplitScreenProxy) RegisterSplitScreenListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISplitScreen)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISplitScreen, "registerSplitScreenListener")
 	if _err != nil {
@@ -91,7 +91,7 @@ func (p *SplitScreenProxy) UnregisterSplitScreenListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISplitScreen)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISplitScreen, "unregisterSplitScreenListener")
 	if _err != nil {
@@ -108,7 +108,7 @@ func (p *SplitScreenProxy) RegisterSplitSelectListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISplitScreen)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISplitScreen, "registerSplitSelectListener")
 	if _err != nil {
@@ -125,7 +125,7 @@ func (p *SplitScreenProxy) UnregisterSplitSelectListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISplitScreen)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISplitScreen, "unregisterSplitSelectListener")
 	if _err != nil {
@@ -1066,4 +1066,190 @@ func (s *SplitScreenStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISplitScreenServer is the server-side interface that user implementations
+// provide to NewSplitScreenStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISplitScreenServer interface {
+	RegisterSplitScreenListener(ctx context.Context, listener ISplitScreenListener) error
+	UnregisterSplitScreenListener(ctx context.Context, listener ISplitScreenListener) error
+	RegisterSplitSelectListener(ctx context.Context, listener ISplitSelectListener) error
+	UnregisterSplitSelectListener(ctx context.Context, listener ISplitSelectListener) error
+	ExitSplitScreen(ctx context.Context, toTopTaskId int32) error
+	ExitSplitScreenOnHide(ctx context.Context, exitSplitScreenOnHide bool) error
+	StartTask(ctx context.Context, taskId int32, position int32, options os.Bundle) error
+	StartShortcut(ctx context.Context, packageName string, shortcutId string, position int32, options os.Bundle, user os.UserHandle, instanceId logging.InstanceId) error
+	StartIntent(ctx context.Context, intent app.PendingIntent, fillInIntent content.Intent, position int32, options os.Bundle, instanceId logging.InstanceId) error
+	StartTasks(ctx context.Context, taskId1 int32, options1 os.Bundle, taskId2 int32, options2 os.Bundle, splitPosition int32, snapPosition int32, remoteTransition window.RemoteTransition, instanceId logging.InstanceId) error
+	StartIntentAndTask(ctx context.Context, pendingIntent app.PendingIntent, userId1 int32, options1 os.Bundle, taskId int32, options2 os.Bundle, sidePosition int32, snapPosition int32, remoteTransition window.RemoteTransition, instanceId logging.InstanceId) error
+	StartShortcutAndTask(ctx context.Context, shortcutInfo pm.ShortcutInfo, options1 os.Bundle, taskId int32, options2 os.Bundle, splitPosition int32, snapPosition int32, remoteTransition window.RemoteTransition, instanceId logging.InstanceId) error
+	StartIntents(ctx context.Context, pendingIntent1 app.PendingIntent, userId1 int32, shortcutInfo1 pm.ShortcutInfo, options1 os.Bundle, pendingIntent2 app.PendingIntent, userId2 int32, shortcutInfo2 pm.ShortcutInfo, options2 os.Bundle, splitPosition int32, snapPosition int32, remoteTransition window.RemoteTransition, instanceId logging.InstanceId) error
+	SwitchSplitPosition(ctx context.Context) error
+}
+
+type splitScreenStubWrapper struct {
+	impl       ISplitScreenServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *splitScreenStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *splitScreenStubWrapper) RegisterSplitScreenListener(
+	ctx context.Context,
+	listener ISplitScreenListener,
+) error {
+	return w.impl.RegisterSplitScreenListener(ctx, listener)
+}
+
+func (w *splitScreenStubWrapper) UnregisterSplitScreenListener(
+	ctx context.Context,
+	listener ISplitScreenListener,
+) error {
+	return w.impl.UnregisterSplitScreenListener(ctx, listener)
+}
+
+func (w *splitScreenStubWrapper) RegisterSplitSelectListener(
+	ctx context.Context,
+	listener ISplitSelectListener,
+) error {
+	return w.impl.RegisterSplitSelectListener(ctx, listener)
+}
+
+func (w *splitScreenStubWrapper) UnregisterSplitSelectListener(
+	ctx context.Context,
+	listener ISplitSelectListener,
+) error {
+	return w.impl.UnregisterSplitSelectListener(ctx, listener)
+}
+
+func (w *splitScreenStubWrapper) ExitSplitScreen(
+	ctx context.Context,
+	toTopTaskId int32,
+) error {
+	return w.impl.ExitSplitScreen(ctx, toTopTaskId)
+}
+
+func (w *splitScreenStubWrapper) ExitSplitScreenOnHide(
+	ctx context.Context,
+	exitSplitScreenOnHide bool,
+) error {
+	return w.impl.ExitSplitScreenOnHide(ctx, exitSplitScreenOnHide)
+}
+
+func (w *splitScreenStubWrapper) StartTask(
+	ctx context.Context,
+	taskId int32,
+	position int32,
+	options os.Bundle,
+) error {
+	return w.impl.StartTask(ctx, taskId, position, options)
+}
+
+func (w *splitScreenStubWrapper) StartShortcut(
+	ctx context.Context,
+	packageName string,
+	shortcutId string,
+	position int32,
+	options os.Bundle,
+	user os.UserHandle,
+	instanceId logging.InstanceId,
+) error {
+	return w.impl.StartShortcut(ctx, packageName, shortcutId, position, options, user, instanceId)
+}
+
+func (w *splitScreenStubWrapper) StartIntent(
+	ctx context.Context,
+	intent app.PendingIntent,
+	fillInIntent content.Intent,
+	position int32,
+	options os.Bundle,
+	instanceId logging.InstanceId,
+) error {
+	return w.impl.StartIntent(ctx, intent, fillInIntent, position, options, instanceId)
+}
+
+func (w *splitScreenStubWrapper) StartTasks(
+	ctx context.Context,
+	taskId1 int32,
+	options1 os.Bundle,
+	taskId2 int32,
+	options2 os.Bundle,
+	splitPosition int32,
+	snapPosition int32,
+	remoteTransition window.RemoteTransition,
+	instanceId logging.InstanceId,
+) error {
+	return w.impl.StartTasks(ctx, taskId1, options1, taskId2, options2, splitPosition, snapPosition, remoteTransition, instanceId)
+}
+
+func (w *splitScreenStubWrapper) StartIntentAndTask(
+	ctx context.Context,
+	pendingIntent app.PendingIntent,
+	userId1 int32,
+	options1 os.Bundle,
+	taskId int32,
+	options2 os.Bundle,
+	sidePosition int32,
+	snapPosition int32,
+	remoteTransition window.RemoteTransition,
+	instanceId logging.InstanceId,
+) error {
+	return w.impl.StartIntentAndTask(ctx, pendingIntent, userId1, options1, taskId, options2, sidePosition, snapPosition, remoteTransition, instanceId)
+}
+
+func (w *splitScreenStubWrapper) StartShortcutAndTask(
+	ctx context.Context,
+	shortcutInfo pm.ShortcutInfo,
+	options1 os.Bundle,
+	taskId int32,
+	options2 os.Bundle,
+	splitPosition int32,
+	snapPosition int32,
+	remoteTransition window.RemoteTransition,
+	instanceId logging.InstanceId,
+) error {
+	return w.impl.StartShortcutAndTask(ctx, shortcutInfo, options1, taskId, options2, splitPosition, snapPosition, remoteTransition, instanceId)
+}
+
+func (w *splitScreenStubWrapper) StartIntents(
+	ctx context.Context,
+	pendingIntent1 app.PendingIntent,
+	userId1 int32,
+	shortcutInfo1 pm.ShortcutInfo,
+	options1 os.Bundle,
+	pendingIntent2 app.PendingIntent,
+	userId2 int32,
+	shortcutInfo2 pm.ShortcutInfo,
+	options2 os.Bundle,
+	splitPosition int32,
+	snapPosition int32,
+	remoteTransition window.RemoteTransition,
+	instanceId logging.InstanceId,
+) error {
+	return w.impl.StartIntents(ctx, pendingIntent1, userId1, shortcutInfo1, options1, pendingIntent2, userId2, shortcutInfo2, options2, splitPosition, snapPosition, remoteTransition, instanceId)
+}
+
+func (w *splitScreenStubWrapper) SwitchSplitPosition(
+	ctx context.Context,
+) error {
+	return w.impl.SwitchSplitPosition(ctx)
+}
+
+var _ ISplitScreen = (*splitScreenStubWrapper)(nil)
+
+// NewSplitScreenStub creates a server-side ISplitScreen wrapping the given
+// server implementation. The returned value satisfies ISplitScreen
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSplitScreenStub(
+	impl ISplitScreenServer,
+) ISplitScreen {
+	wrapper := &splitScreenStubWrapper{impl: impl}
+	stub := &SplitScreenStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

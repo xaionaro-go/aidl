@@ -124,3 +124,47 @@ func (s *CommandReceiverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICommandReceiverServer is the server-side interface that user implementations
+// provide to NewCommandReceiverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICommandReceiverServer interface {
+	SendCommand(ctx context.Context, command int32, seq int32, sourcePackage string, targetPackage string, flags int32, bundle os.Bundle) error
+}
+
+type commandReceiverStubWrapper struct {
+	impl       ICommandReceiverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *commandReceiverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *commandReceiverStubWrapper) SendCommand(
+	ctx context.Context,
+	command int32,
+	seq int32,
+	sourcePackage string,
+	targetPackage string,
+	flags int32,
+	bundle os.Bundle,
+) error {
+	return w.impl.SendCommand(ctx, command, seq, sourcePackage, targetPackage, flags, bundle)
+}
+
+var _ ICommandReceiver = (*commandReceiverStubWrapper)(nil)
+
+// NewCommandReceiverStub creates a server-side ICommandReceiver wrapping the given
+// server implementation. The returned value satisfies ICommandReceiver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCommandReceiverStub(
+	impl ICommandReceiverServer,
+) ICommandReceiver {
+	wrapper := &commandReceiverStubWrapper{impl: impl}
+	stub := &CommandReceiverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

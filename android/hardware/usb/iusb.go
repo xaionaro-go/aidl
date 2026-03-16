@@ -134,7 +134,7 @@ func (p *UsbProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsb)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsb, "setCallback")
 	if _err != nil {
@@ -361,4 +361,109 @@ func (s *UsbStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUsbServer is the server-side interface that user implementations
+// provide to NewUsbStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUsbServer interface {
+	EnableContaminantPresenceDetection(ctx context.Context, portName string, enable bool, transactionId int64) error
+	EnableUsbData(ctx context.Context, portName string, enable bool, transactionId int64) error
+	EnableUsbDataWhileDocked(ctx context.Context, portName string, transactionId int64) error
+	QueryPortStatus(ctx context.Context, transactionId int64) error
+	SetCallback(ctx context.Context, callback IUsbCallback) error
+	SwitchRole(ctx context.Context, portName string, role PortRole, transactionId int64) error
+	LimitPowerTransfer(ctx context.Context, portName string, limit bool, transactionId int64) error
+	ResetUsbPort(ctx context.Context, portName string, transactionId int64) error
+}
+
+type usbStubWrapper struct {
+	impl       IUsbServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *usbStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *usbStubWrapper) EnableContaminantPresenceDetection(
+	ctx context.Context,
+	portName string,
+	enable bool,
+	transactionId int64,
+) error {
+	return w.impl.EnableContaminantPresenceDetection(ctx, portName, enable, transactionId)
+}
+
+func (w *usbStubWrapper) EnableUsbData(
+	ctx context.Context,
+	portName string,
+	enable bool,
+	transactionId int64,
+) error {
+	return w.impl.EnableUsbData(ctx, portName, enable, transactionId)
+}
+
+func (w *usbStubWrapper) EnableUsbDataWhileDocked(
+	ctx context.Context,
+	portName string,
+	transactionId int64,
+) error {
+	return w.impl.EnableUsbDataWhileDocked(ctx, portName, transactionId)
+}
+
+func (w *usbStubWrapper) QueryPortStatus(
+	ctx context.Context,
+	transactionId int64,
+) error {
+	return w.impl.QueryPortStatus(ctx, transactionId)
+}
+
+func (w *usbStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IUsbCallback,
+) error {
+	return w.impl.SetCallback(ctx, callback)
+}
+
+func (w *usbStubWrapper) SwitchRole(
+	ctx context.Context,
+	portName string,
+	role PortRole,
+	transactionId int64,
+) error {
+	return w.impl.SwitchRole(ctx, portName, role, transactionId)
+}
+
+func (w *usbStubWrapper) LimitPowerTransfer(
+	ctx context.Context,
+	portName string,
+	limit bool,
+	transactionId int64,
+) error {
+	return w.impl.LimitPowerTransfer(ctx, portName, limit, transactionId)
+}
+
+func (w *usbStubWrapper) ResetUsbPort(
+	ctx context.Context,
+	portName string,
+	transactionId int64,
+) error {
+	return w.impl.ResetUsbPort(ctx, portName, transactionId)
+}
+
+var _ IUsb = (*usbStubWrapper)(nil)
+
+// NewUsbStub creates a server-side IUsb wrapping the given
+// server implementation. The returned value satisfies IUsb
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUsbStub(
+	impl IUsbServer,
+) IUsb {
+	wrapper := &usbStubWrapper{impl: impl}
+	stub := &UsbStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

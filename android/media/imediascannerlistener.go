@@ -100,3 +100,43 @@ func (s *MediaScannerListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMediaScannerListenerServer is the server-side interface that user implementations
+// provide to NewMediaScannerListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaScannerListenerServer interface {
+	ScanCompleted(ctx context.Context, path string, uri net.Uri) error
+}
+
+type mediaScannerListenerStubWrapper struct {
+	impl       IMediaScannerListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaScannerListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaScannerListenerStubWrapper) ScanCompleted(
+	ctx context.Context,
+	path string,
+	uri net.Uri,
+) error {
+	return w.impl.ScanCompleted(ctx, path, uri)
+}
+
+var _ IMediaScannerListener = (*mediaScannerListenerStubWrapper)(nil)
+
+// NewMediaScannerListenerStub creates a server-side IMediaScannerListener wrapping the given
+// server implementation. The returned value satisfies IMediaScannerListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaScannerListenerStub(
+	impl IMediaScannerListenerServer,
+) IMediaScannerListener {
+	wrapper := &mediaScannerListenerStubWrapper{impl: impl}
+	stub := &MediaScannerListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

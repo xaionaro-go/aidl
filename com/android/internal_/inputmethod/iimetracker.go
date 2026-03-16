@@ -107,7 +107,7 @@ func (p *ImeTrackerProxy) OnProgress(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImeTracker)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 	_data.WriteInt32(phase)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImeTracker, "onProgress")
@@ -478,4 +478,114 @@ func (s *ImeTrackerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImeTrackerServer is the server-side interface that user implementations
+// provide to NewImeTrackerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImeTrackerServer interface {
+	OnStart(ctx context.Context, tag string, uid int32, type_ int32, origin int32, reason int32, fromUser bool) (viewInputmethod.ImeTrackerToken, error)
+	OnProgress(ctx context.Context, binder_ binder.IBinder, phase int32) error
+	OnFailed(ctx context.Context, statsToken viewInputmethod.ImeTrackerToken, phase int32) error
+	OnCancelled(ctx context.Context, statsToken viewInputmethod.ImeTrackerToken, phase int32) error
+	OnShown(ctx context.Context, statsToken viewInputmethod.ImeTrackerToken) error
+	OnHidden(ctx context.Context, statsToken viewInputmethod.ImeTrackerToken) error
+	OnDispatched(ctx context.Context, statsToken viewInputmethod.ImeTrackerToken) error
+	HasPendingImeVisibilityRequests(ctx context.Context) (bool, error)
+	FinishTrackingPendingImeVisibilityRequests(ctx context.Context, completionSignal infra.AndroidFuture) error
+}
+
+type imeTrackerStubWrapper struct {
+	impl       IImeTrackerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imeTrackerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imeTrackerStubWrapper) OnStart(
+	ctx context.Context,
+	tag string,
+	uid int32,
+	type_ int32,
+	origin int32,
+	reason int32,
+	fromUser bool,
+) (viewInputmethod.ImeTrackerToken, error) {
+	return w.impl.OnStart(ctx, tag, uid, type_, origin, reason, fromUser)
+}
+
+func (w *imeTrackerStubWrapper) OnProgress(
+	ctx context.Context,
+	binder_ binder.IBinder,
+	phase int32,
+) error {
+	return w.impl.OnProgress(ctx, binder_, phase)
+}
+
+func (w *imeTrackerStubWrapper) OnFailed(
+	ctx context.Context,
+	statsToken viewInputmethod.ImeTrackerToken,
+	phase int32,
+) error {
+	return w.impl.OnFailed(ctx, statsToken, phase)
+}
+
+func (w *imeTrackerStubWrapper) OnCancelled(
+	ctx context.Context,
+	statsToken viewInputmethod.ImeTrackerToken,
+	phase int32,
+) error {
+	return w.impl.OnCancelled(ctx, statsToken, phase)
+}
+
+func (w *imeTrackerStubWrapper) OnShown(
+	ctx context.Context,
+	statsToken viewInputmethod.ImeTrackerToken,
+) error {
+	return w.impl.OnShown(ctx, statsToken)
+}
+
+func (w *imeTrackerStubWrapper) OnHidden(
+	ctx context.Context,
+	statsToken viewInputmethod.ImeTrackerToken,
+) error {
+	return w.impl.OnHidden(ctx, statsToken)
+}
+
+func (w *imeTrackerStubWrapper) OnDispatched(
+	ctx context.Context,
+	statsToken viewInputmethod.ImeTrackerToken,
+) error {
+	return w.impl.OnDispatched(ctx, statsToken)
+}
+
+func (w *imeTrackerStubWrapper) HasPendingImeVisibilityRequests(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasPendingImeVisibilityRequests(ctx)
+}
+
+func (w *imeTrackerStubWrapper) FinishTrackingPendingImeVisibilityRequests(
+	ctx context.Context,
+	completionSignal infra.AndroidFuture,
+) error {
+	return w.impl.FinishTrackingPendingImeVisibilityRequests(ctx, completionSignal)
+}
+
+var _ IImeTracker = (*imeTrackerStubWrapper)(nil)
+
+// NewImeTrackerStub creates a server-side IImeTracker wrapping the given
+// server implementation. The returned value satisfies IImeTracker
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImeTrackerStub(
+	impl IImeTrackerServer,
+) IImeTracker {
+	wrapper := &imeTrackerStubWrapper{impl: impl}
+	stub := &ImeTrackerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

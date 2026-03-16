@@ -43,7 +43,7 @@ func (p *TransitionMetricsReporterProxy) ReportAnimationStart(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransitionMetricsReporter)
-	_data.WriteStrongBinder(transitionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, transitionToken, p.remote.Transport())
 	_data.WriteInt64(startTime)
 
 	_code, _err := p.remote.ResolveCode(DescriptorITransitionMetricsReporter, "reportAnimationStart")
@@ -86,4 +86,44 @@ func (s *TransitionMetricsReporterStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITransitionMetricsReporterServer is the server-side interface that user implementations
+// provide to NewTransitionMetricsReporterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITransitionMetricsReporterServer interface {
+	ReportAnimationStart(ctx context.Context, transitionToken binder.IBinder, startTime int64) error
+}
+
+type transitionMetricsReporterStubWrapper struct {
+	impl       ITransitionMetricsReporterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transitionMetricsReporterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transitionMetricsReporterStubWrapper) ReportAnimationStart(
+	ctx context.Context,
+	transitionToken binder.IBinder,
+	startTime int64,
+) error {
+	return w.impl.ReportAnimationStart(ctx, transitionToken, startTime)
+}
+
+var _ ITransitionMetricsReporter = (*transitionMetricsReporterStubWrapper)(nil)
+
+// NewTransitionMetricsReporterStub creates a server-side ITransitionMetricsReporter wrapping the given
+// server implementation. The returned value satisfies ITransitionMetricsReporter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTransitionMetricsReporterStub(
+	impl ITransitionMetricsReporterServer,
+) ITransitionMetricsReporter {
+	wrapper := &transitionMetricsReporterStubWrapper{impl: impl}
+	stub := &TransitionMetricsReporterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

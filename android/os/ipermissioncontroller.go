@@ -343,3 +343,79 @@ func (s *PermissionControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPermissionControllerServer is the server-side interface that user implementations
+// provide to NewPermissionControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPermissionControllerServer interface {
+	CheckPermission(ctx context.Context, permission string, pid int32, uid int32) (bool, error)
+	NoteOp(ctx context.Context, op string, uid int32, packageName string) (int32, error)
+	GetPackagesForUid(ctx context.Context, uid int32) ([]string, error)
+	IsRuntimePermission(ctx context.Context, permission string) (bool, error)
+	GetPackageUid(ctx context.Context, packageName string, flags int32) (int32, error)
+}
+
+type permissionControllerStubWrapper struct {
+	impl       IPermissionControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *permissionControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *permissionControllerStubWrapper) CheckPermission(
+	ctx context.Context,
+	permission string,
+	pid int32,
+	uid int32,
+) (bool, error) {
+	return w.impl.CheckPermission(ctx, permission, pid, uid)
+}
+
+func (w *permissionControllerStubWrapper) NoteOp(
+	ctx context.Context,
+	op string,
+	uid int32,
+	packageName string,
+) (int32, error) {
+	return w.impl.NoteOp(ctx, op, uid, packageName)
+}
+
+func (w *permissionControllerStubWrapper) GetPackagesForUid(
+	ctx context.Context,
+	uid int32,
+) ([]string, error) {
+	return w.impl.GetPackagesForUid(ctx, uid)
+}
+
+func (w *permissionControllerStubWrapper) IsRuntimePermission(
+	ctx context.Context,
+	permission string,
+) (bool, error) {
+	return w.impl.IsRuntimePermission(ctx, permission)
+}
+
+func (w *permissionControllerStubWrapper) GetPackageUid(
+	ctx context.Context,
+	packageName string,
+	flags int32,
+) (int32, error) {
+	return w.impl.GetPackageUid(ctx, packageName, flags)
+}
+
+var _ IPermissionController = (*permissionControllerStubWrapper)(nil)
+
+// NewPermissionControllerStub creates a server-side IPermissionController wrapping the given
+// server implementation. The returned value satisfies IPermissionController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPermissionControllerStub(
+	impl IPermissionControllerServer,
+) IPermissionController {
+	wrapper := &permissionControllerStubWrapper{impl: impl}
+	stub := &PermissionControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

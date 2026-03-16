@@ -436,7 +436,7 @@ func (p *GameManagerServiceProxy) AddGameModeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
-	_data.WriteStrongBinder(gameModeListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, gameModeListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "addGameModeListener")
 	if _err != nil {
@@ -462,7 +462,7 @@ func (p *GameManagerServiceProxy) RemoveGameModeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
-	_data.WriteStrongBinder(gameModeListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, gameModeListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "removeGameModeListener")
 	if _err != nil {
@@ -488,7 +488,7 @@ func (p *GameManagerServiceProxy) AddGameStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
-	_data.WriteStrongBinder(gameStateListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, gameStateListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "addGameStateListener")
 	if _err != nil {
@@ -514,7 +514,7 @@ func (p *GameManagerServiceProxy) RemoveGameStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameManagerService)
-	_data.WriteStrongBinder(gameStateListener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, gameStateListener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameManagerService, "removeGameStateListener")
 	if _err != nil {
@@ -908,4 +908,169 @@ func (s *GameManagerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGameManagerServiceServer is the server-side interface that user implementations
+// provide to NewGameManagerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGameManagerServiceServer interface {
+	GetGameMode(ctx context.Context, packageName string) (int32, error)
+	SetGameMode(ctx context.Context, packageName string, gameMode int32) error
+	GetAvailableGameModes(ctx context.Context, packageName string) ([]int32, error)
+	IsAngleEnabled(ctx context.Context, packageName string) (bool, error)
+	NotifyGraphicsEnvironmentSetup(ctx context.Context, packageName string) error
+	SetGameState(ctx context.Context, packageName string, gameState GameState) error
+	GetGameModeInfo(ctx context.Context, packageName string) (GameModeInfo, error)
+	SetGameServiceProvider(ctx context.Context, packageName string) error
+	UpdateResolutionScalingFactor(ctx context.Context, packageName string, gameMode int32, scalingFactor float32) error
+	GetResolutionScalingFactor(ctx context.Context, packageName string, gameMode int32) (float32, error)
+	UpdateCustomGameModeConfiguration(ctx context.Context, packageName string, gameModeConfig GameModeConfiguration) error
+	AddGameModeListener(ctx context.Context, gameModeListener IGameModeListener) error
+	RemoveGameModeListener(ctx context.Context, gameModeListener IGameModeListener) error
+	AddGameStateListener(ctx context.Context, gameStateListener IGameStateListener) error
+	RemoveGameStateListener(ctx context.Context, gameStateListener IGameStateListener) error
+	ToggleGameDefaultFrameRate(ctx context.Context, isEnabled bool) error
+}
+
+type gameManagerServiceStubWrapper struct {
+	impl       IGameManagerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gameManagerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gameManagerServiceStubWrapper) GetGameMode(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetGameMode(ctx, packageName)
+}
+
+func (w *gameManagerServiceStubWrapper) SetGameMode(
+	ctx context.Context,
+	packageName string,
+	gameMode int32,
+) error {
+	return w.impl.SetGameMode(ctx, packageName, gameMode)
+}
+
+func (w *gameManagerServiceStubWrapper) GetAvailableGameModes(
+	ctx context.Context,
+	packageName string,
+) ([]int32, error) {
+	return w.impl.GetAvailableGameModes(ctx, packageName)
+}
+
+func (w *gameManagerServiceStubWrapper) IsAngleEnabled(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsAngleEnabled(ctx, packageName)
+}
+
+func (w *gameManagerServiceStubWrapper) NotifyGraphicsEnvironmentSetup(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.NotifyGraphicsEnvironmentSetup(ctx, packageName)
+}
+
+func (w *gameManagerServiceStubWrapper) SetGameState(
+	ctx context.Context,
+	packageName string,
+	gameState GameState,
+) error {
+	return w.impl.SetGameState(ctx, packageName, gameState)
+}
+
+func (w *gameManagerServiceStubWrapper) GetGameModeInfo(
+	ctx context.Context,
+	packageName string,
+) (GameModeInfo, error) {
+	return w.impl.GetGameModeInfo(ctx, packageName)
+}
+
+func (w *gameManagerServiceStubWrapper) SetGameServiceProvider(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.SetGameServiceProvider(ctx, packageName)
+}
+
+func (w *gameManagerServiceStubWrapper) UpdateResolutionScalingFactor(
+	ctx context.Context,
+	packageName string,
+	gameMode int32,
+	scalingFactor float32,
+) error {
+	return w.impl.UpdateResolutionScalingFactor(ctx, packageName, gameMode, scalingFactor)
+}
+
+func (w *gameManagerServiceStubWrapper) GetResolutionScalingFactor(
+	ctx context.Context,
+	packageName string,
+	gameMode int32,
+) (float32, error) {
+	return w.impl.GetResolutionScalingFactor(ctx, packageName, gameMode)
+}
+
+func (w *gameManagerServiceStubWrapper) UpdateCustomGameModeConfiguration(
+	ctx context.Context,
+	packageName string,
+	gameModeConfig GameModeConfiguration,
+) error {
+	return w.impl.UpdateCustomGameModeConfiguration(ctx, packageName, gameModeConfig)
+}
+
+func (w *gameManagerServiceStubWrapper) AddGameModeListener(
+	ctx context.Context,
+	gameModeListener IGameModeListener,
+) error {
+	return w.impl.AddGameModeListener(ctx, gameModeListener)
+}
+
+func (w *gameManagerServiceStubWrapper) RemoveGameModeListener(
+	ctx context.Context,
+	gameModeListener IGameModeListener,
+) error {
+	return w.impl.RemoveGameModeListener(ctx, gameModeListener)
+}
+
+func (w *gameManagerServiceStubWrapper) AddGameStateListener(
+	ctx context.Context,
+	gameStateListener IGameStateListener,
+) error {
+	return w.impl.AddGameStateListener(ctx, gameStateListener)
+}
+
+func (w *gameManagerServiceStubWrapper) RemoveGameStateListener(
+	ctx context.Context,
+	gameStateListener IGameStateListener,
+) error {
+	return w.impl.RemoveGameStateListener(ctx, gameStateListener)
+}
+
+func (w *gameManagerServiceStubWrapper) ToggleGameDefaultFrameRate(
+	ctx context.Context,
+	isEnabled bool,
+) error {
+	return w.impl.ToggleGameDefaultFrameRate(ctx, isEnabled)
+}
+
+var _ IGameManagerService = (*gameManagerServiceStubWrapper)(nil)
+
+// NewGameManagerServiceStub creates a server-side IGameManagerService wrapping the given
+// server implementation. The returned value satisfies IGameManagerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGameManagerServiceStub(
+	impl IGameManagerServiceServer,
+) IGameManagerService {
+	wrapper := &gameManagerServiceStubWrapper{impl: impl}
+	stub := &GameManagerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

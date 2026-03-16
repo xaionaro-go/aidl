@@ -120,3 +120,50 @@ func (s *SendMgmtFrameEventStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISendMgmtFrameEventServer is the server-side interface that user implementations
+// provide to NewSendMgmtFrameEventStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISendMgmtFrameEventServer interface {
+	OnAck(ctx context.Context, elapsedTimeMs int32) error
+	OnFailure(ctx context.Context, reason int32) error
+}
+
+type sendMgmtFrameEventStubWrapper struct {
+	impl       ISendMgmtFrameEventServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sendMgmtFrameEventStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sendMgmtFrameEventStubWrapper) OnAck(
+	ctx context.Context,
+	elapsedTimeMs int32,
+) error {
+	return w.impl.OnAck(ctx, elapsedTimeMs)
+}
+
+func (w *sendMgmtFrameEventStubWrapper) OnFailure(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.OnFailure(ctx, reason)
+}
+
+var _ ISendMgmtFrameEvent = (*sendMgmtFrameEventStubWrapper)(nil)
+
+// NewSendMgmtFrameEventStub creates a server-side ISendMgmtFrameEvent wrapping the given
+// server implementation. The returned value satisfies ISendMgmtFrameEvent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSendMgmtFrameEventStub(
+	impl ISendMgmtFrameEventServer,
+) ISendMgmtFrameEvent {
+	wrapper := &sendMgmtFrameEventStubWrapper{impl: impl}
+	stub := &SendMgmtFrameEventStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

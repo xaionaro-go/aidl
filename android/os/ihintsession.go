@@ -295,3 +295,91 @@ func (s *HintSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHintSessionServer is the server-side interface that user implementations
+// provide to NewHintSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHintSessionServer interface {
+	UpdateTargetWorkDuration(ctx context.Context, targetDurationNanos int64) error
+	ReportActualWorkDuration(ctx context.Context, actualDurationNanos []int64, timeStampNanos []int64) error
+	Close(ctx context.Context) error
+	SendHint(ctx context.Context, hint int32) error
+	SetMode(ctx context.Context, mode int32, enabled bool) error
+	ReportActualWorkDuration2(ctx context.Context, workDurations []power.WorkDuration) error
+	AssociateToLayers(ctx context.Context, layerTokens []binder.IBinder) error
+}
+
+type hintSessionStubWrapper struct {
+	impl       IHintSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hintSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hintSessionStubWrapper) UpdateTargetWorkDuration(
+	ctx context.Context,
+	targetDurationNanos int64,
+) error {
+	return w.impl.UpdateTargetWorkDuration(ctx, targetDurationNanos)
+}
+
+func (w *hintSessionStubWrapper) ReportActualWorkDuration(
+	ctx context.Context,
+	actualDurationNanos []int64,
+	timeStampNanos []int64,
+) error {
+	return w.impl.ReportActualWorkDuration(ctx, actualDurationNanos, timeStampNanos)
+}
+
+func (w *hintSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *hintSessionStubWrapper) SendHint(
+	ctx context.Context,
+	hint int32,
+) error {
+	return w.impl.SendHint(ctx, hint)
+}
+
+func (w *hintSessionStubWrapper) SetMode(
+	ctx context.Context,
+	mode int32,
+	enabled bool,
+) error {
+	return w.impl.SetMode(ctx, mode, enabled)
+}
+
+func (w *hintSessionStubWrapper) ReportActualWorkDuration2(
+	ctx context.Context,
+	workDurations []power.WorkDuration,
+) error {
+	return w.impl.ReportActualWorkDuration2(ctx, workDurations)
+}
+
+func (w *hintSessionStubWrapper) AssociateToLayers(
+	ctx context.Context,
+	layerTokens []binder.IBinder,
+) error {
+	return w.impl.AssociateToLayers(ctx, layerTokens)
+}
+
+var _ IHintSession = (*hintSessionStubWrapper)(nil)
+
+// NewHintSessionStub creates a server-side IHintSession wrapping the given
+// server implementation. The returned value satisfies IHintSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHintSessionStub(
+	impl IHintSessionServer,
+) IHintSession {
+	wrapper := &hintSessionStubWrapper{impl: impl}
+	stub := &HintSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

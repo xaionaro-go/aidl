@@ -280,3 +280,82 @@ func (s *NetdEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INetdEventCallbackServer is the server-side interface that user implementations
+// provide to NewNetdEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetdEventCallbackServer interface {
+	OnDnsEvent(ctx context.Context, netId int32, eventType int32, returnCode int32, hostname string, ipAddresses []string, ipAddressesCount int32, timestamp int64, uid int32) error
+	OnNat64PrefixEvent(ctx context.Context, netId int32, added bool, prefixString string, prefixLength int32) error
+	OnPrivateDnsValidationEvent(ctx context.Context, netId int32, ipAddress string, hostname string, validated bool) error
+	OnConnectEvent(ctx context.Context, ipAddr string, port int32, timestamp int64, uid int32) error
+}
+
+type netdEventCallbackStubWrapper struct {
+	impl       INetdEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *netdEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *netdEventCallbackStubWrapper) OnDnsEvent(
+	ctx context.Context,
+	netId int32,
+	eventType int32,
+	returnCode int32,
+	hostname string,
+	ipAddresses []string,
+	ipAddressesCount int32,
+	timestamp int64,
+	uid int32,
+) error {
+	return w.impl.OnDnsEvent(ctx, netId, eventType, returnCode, hostname, ipAddresses, ipAddressesCount, timestamp, uid)
+}
+
+func (w *netdEventCallbackStubWrapper) OnNat64PrefixEvent(
+	ctx context.Context,
+	netId int32,
+	added bool,
+	prefixString string,
+	prefixLength int32,
+) error {
+	return w.impl.OnNat64PrefixEvent(ctx, netId, added, prefixString, prefixLength)
+}
+
+func (w *netdEventCallbackStubWrapper) OnPrivateDnsValidationEvent(
+	ctx context.Context,
+	netId int32,
+	ipAddress string,
+	hostname string,
+	validated bool,
+) error {
+	return w.impl.OnPrivateDnsValidationEvent(ctx, netId, ipAddress, hostname, validated)
+}
+
+func (w *netdEventCallbackStubWrapper) OnConnectEvent(
+	ctx context.Context,
+	ipAddr string,
+	port int32,
+	timestamp int64,
+	uid int32,
+) error {
+	return w.impl.OnConnectEvent(ctx, ipAddr, port, timestamp, uid)
+}
+
+var _ INetdEventCallback = (*netdEventCallbackStubWrapper)(nil)
+
+// NewNetdEventCallbackStub creates a server-side INetdEventCallback wrapping the given
+// server implementation. The returned value satisfies INetdEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetdEventCallbackStub(
+	impl INetdEventCallbackServer,
+) INetdEventCallback {
+	wrapper := &netdEventCallbackStubWrapper{impl: impl}
+	stub := &NetdEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -157,3 +157,51 @@ func (s *HciProxyCallbacksStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHciProxyCallbacksServer is the server-side interface that user implementations
+// provide to NewHciProxyCallbacksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHciProxyCallbacksServer interface {
+	StartStream(ctx context.Context, handle int32, configuration StreamConfiguration) error
+	StopStream(ctx context.Context, handle int32) error
+}
+
+type hciProxyCallbacksStubWrapper struct {
+	impl       IHciProxyCallbacksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hciProxyCallbacksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hciProxyCallbacksStubWrapper) StartStream(
+	ctx context.Context,
+	handle int32,
+	configuration StreamConfiguration,
+) error {
+	return w.impl.StartStream(ctx, handle, configuration)
+}
+
+func (w *hciProxyCallbacksStubWrapper) StopStream(
+	ctx context.Context,
+	handle int32,
+) error {
+	return w.impl.StopStream(ctx, handle)
+}
+
+var _ IHciProxyCallbacks = (*hciProxyCallbacksStubWrapper)(nil)
+
+// NewHciProxyCallbacksStub creates a server-side IHciProxyCallbacks wrapping the given
+// server implementation. The returned value satisfies IHciProxyCallbacks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHciProxyCallbacksStub(
+	impl IHciProxyCallbacksServer,
+) IHciProxyCallbacks {
+	wrapper := &hciProxyCallbacksStubWrapper{impl: impl}
+	stub := &HciProxyCallbacksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

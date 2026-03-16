@@ -107,3 +107,43 @@ func (s *FencedExecutionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFencedExecutionCallbackServer is the server-side interface that user implementations
+// provide to NewFencedExecutionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFencedExecutionCallbackServer interface {
+	GetExecutionInfo(ctx context.Context, timingLaunched Timing, timingFenced Timing) (ErrorStatus, error)
+}
+
+type fencedExecutionCallbackStubWrapper struct {
+	impl       IFencedExecutionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fencedExecutionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fencedExecutionCallbackStubWrapper) GetExecutionInfo(
+	ctx context.Context,
+	timingLaunched Timing,
+	timingFenced Timing,
+) (ErrorStatus, error) {
+	return w.impl.GetExecutionInfo(ctx, timingLaunched, timingFenced)
+}
+
+var _ IFencedExecutionCallback = (*fencedExecutionCallbackStubWrapper)(nil)
+
+// NewFencedExecutionCallbackStub creates a server-side IFencedExecutionCallback wrapping the given
+// server implementation. The returned value satisfies IFencedExecutionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFencedExecutionCallbackStub(
+	impl IFencedExecutionCallbackServer,
+) IFencedExecutionCallback {
+	wrapper := &fencedExecutionCallbackStubWrapper{impl: impl}
+	stub := &FencedExecutionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

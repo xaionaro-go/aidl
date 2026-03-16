@@ -76,7 +76,7 @@ func (p *InCallServiceProxy) SetInCallAdapter(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInCallService)
-	_data.WriteStrongBinder(inCallAdapter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, inCallAdapter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInCallService, "setInCallAdapter")
 	if _err != nil {
@@ -661,4 +661,177 @@ func (s *InCallServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInCallServiceServer is the server-side interface that user implementations
+// provide to NewInCallServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInCallServiceServer interface {
+	SetInCallAdapter(ctx context.Context, inCallAdapter IInCallAdapter) error
+	AddCall(ctx context.Context, call androidTelecom.ParcelableCall) error
+	UpdateCall(ctx context.Context, call androidTelecom.ParcelableCall) error
+	SetPostDial(ctx context.Context, callId string, remaining string) error
+	SetPostDialWait(ctx context.Context, callId string, remaining string) error
+	OnCallAudioStateChanged(ctx context.Context, callAudioState androidTelecom.CallAudioState) error
+	OnCallEndpointChanged(ctx context.Context, callEndpoint androidTelecom.CallEndpoint) error
+	OnAvailableCallEndpointsChanged(ctx context.Context, availableCallEndpoints []androidTelecom.CallEndpoint) error
+	OnMuteStateChanged(ctx context.Context, isMuted bool) error
+	BringToForeground(ctx context.Context, showDialpad bool) error
+	OnCanAddCallChanged(ctx context.Context, canAddCall bool) error
+	SilenceRinger(ctx context.Context) error
+	OnConnectionEvent(ctx context.Context, callId string, event string, extras os.Bundle) error
+	OnRttUpgradeRequest(ctx context.Context, callId string, id int32) error
+	OnRttInitiationFailure(ctx context.Context, callId string, reason int32) error
+	OnHandoverFailed(ctx context.Context, callId string, error_ int32) error
+	OnHandoverComplete(ctx context.Context, callId string) error
+}
+
+type inCallServiceStubWrapper struct {
+	impl       IInCallServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inCallServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inCallServiceStubWrapper) SetInCallAdapter(
+	ctx context.Context,
+	inCallAdapter IInCallAdapter,
+) error {
+	return w.impl.SetInCallAdapter(ctx, inCallAdapter)
+}
+
+func (w *inCallServiceStubWrapper) AddCall(
+	ctx context.Context,
+	call androidTelecom.ParcelableCall,
+) error {
+	return w.impl.AddCall(ctx, call)
+}
+
+func (w *inCallServiceStubWrapper) UpdateCall(
+	ctx context.Context,
+	call androidTelecom.ParcelableCall,
+) error {
+	return w.impl.UpdateCall(ctx, call)
+}
+
+func (w *inCallServiceStubWrapper) SetPostDial(
+	ctx context.Context,
+	callId string,
+	remaining string,
+) error {
+	return w.impl.SetPostDial(ctx, callId, remaining)
+}
+
+func (w *inCallServiceStubWrapper) SetPostDialWait(
+	ctx context.Context,
+	callId string,
+	remaining string,
+) error {
+	return w.impl.SetPostDialWait(ctx, callId, remaining)
+}
+
+func (w *inCallServiceStubWrapper) OnCallAudioStateChanged(
+	ctx context.Context,
+	callAudioState androidTelecom.CallAudioState,
+) error {
+	return w.impl.OnCallAudioStateChanged(ctx, callAudioState)
+}
+
+func (w *inCallServiceStubWrapper) OnCallEndpointChanged(
+	ctx context.Context,
+	callEndpoint androidTelecom.CallEndpoint,
+) error {
+	return w.impl.OnCallEndpointChanged(ctx, callEndpoint)
+}
+
+func (w *inCallServiceStubWrapper) OnAvailableCallEndpointsChanged(
+	ctx context.Context,
+	availableCallEndpoints []androidTelecom.CallEndpoint,
+) error {
+	return w.impl.OnAvailableCallEndpointsChanged(ctx, availableCallEndpoints)
+}
+
+func (w *inCallServiceStubWrapper) OnMuteStateChanged(
+	ctx context.Context,
+	isMuted bool,
+) error {
+	return w.impl.OnMuteStateChanged(ctx, isMuted)
+}
+
+func (w *inCallServiceStubWrapper) BringToForeground(
+	ctx context.Context,
+	showDialpad bool,
+) error {
+	return w.impl.BringToForeground(ctx, showDialpad)
+}
+
+func (w *inCallServiceStubWrapper) OnCanAddCallChanged(
+	ctx context.Context,
+	canAddCall bool,
+) error {
+	return w.impl.OnCanAddCallChanged(ctx, canAddCall)
+}
+
+func (w *inCallServiceStubWrapper) SilenceRinger(
+	ctx context.Context,
+) error {
+	return w.impl.SilenceRinger(ctx)
+}
+
+func (w *inCallServiceStubWrapper) OnConnectionEvent(
+	ctx context.Context,
+	callId string,
+	event string,
+	extras os.Bundle,
+) error {
+	return w.impl.OnConnectionEvent(ctx, callId, event, extras)
+}
+
+func (w *inCallServiceStubWrapper) OnRttUpgradeRequest(
+	ctx context.Context,
+	callId string,
+	id int32,
+) error {
+	return w.impl.OnRttUpgradeRequest(ctx, callId, id)
+}
+
+func (w *inCallServiceStubWrapper) OnRttInitiationFailure(
+	ctx context.Context,
+	callId string,
+	reason int32,
+) error {
+	return w.impl.OnRttInitiationFailure(ctx, callId, reason)
+}
+
+func (w *inCallServiceStubWrapper) OnHandoverFailed(
+	ctx context.Context,
+	callId string,
+	error_ int32,
+) error {
+	return w.impl.OnHandoverFailed(ctx, callId, error_)
+}
+
+func (w *inCallServiceStubWrapper) OnHandoverComplete(
+	ctx context.Context,
+	callId string,
+) error {
+	return w.impl.OnHandoverComplete(ctx, callId)
+}
+
+var _ IInCallService = (*inCallServiceStubWrapper)(nil)
+
+// NewInCallServiceStub creates a server-side IInCallService wrapping the given
+// server implementation. The returned value satisfies IInCallService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInCallServiceStub(
+	impl IInCallServiceServer,
+) IInCallService {
+	wrapper := &inCallServiceStubWrapper{impl: impl}
+	stub := &InCallServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

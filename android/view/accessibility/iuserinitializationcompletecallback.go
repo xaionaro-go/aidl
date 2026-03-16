@@ -81,3 +81,41 @@ func (s *UserInitializationCompleteCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUserInitializationCompleteCallbackServer is the server-side interface that user implementations
+// provide to NewUserInitializationCompleteCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUserInitializationCompleteCallbackServer interface {
+	OnUserInitializationComplete(ctx context.Context) error
+}
+
+type userInitializationCompleteCallbackStubWrapper struct {
+	impl       IUserInitializationCompleteCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *userInitializationCompleteCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *userInitializationCompleteCallbackStubWrapper) OnUserInitializationComplete(
+	ctx context.Context,
+) error {
+	return w.impl.OnUserInitializationComplete(ctx)
+}
+
+var _ IUserInitializationCompleteCallback = (*userInitializationCompleteCallbackStubWrapper)(nil)
+
+// NewUserInitializationCompleteCallbackStub creates a server-side IUserInitializationCompleteCallback wrapping the given
+// server implementation. The returned value satisfies IUserInitializationCompleteCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUserInitializationCompleteCallbackStub(
+	impl IUserInitializationCompleteCallbackServer,
+) IUserInitializationCompleteCallback {
+	wrapper := &userInitializationCompleteCallbackStubWrapper{impl: impl}
+	stub := &UserInitializationCompleteCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -160,3 +160,59 @@ func (s *SipDelegateMessageCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISipDelegateMessageCallbackServer is the server-side interface that user implementations
+// provide to NewSipDelegateMessageCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISipDelegateMessageCallbackServer interface {
+	OnMessageReceived(ctx context.Context, message ims.SipMessage) error
+	OnMessageSent(ctx context.Context, viaTransactionId string) error
+	OnMessageSendFailure(ctx context.Context, viaTransactionId string, reason int32) error
+}
+
+type sipDelegateMessageCallbackStubWrapper struct {
+	impl       ISipDelegateMessageCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sipDelegateMessageCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sipDelegateMessageCallbackStubWrapper) OnMessageReceived(
+	ctx context.Context,
+	message ims.SipMessage,
+) error {
+	return w.impl.OnMessageReceived(ctx, message)
+}
+
+func (w *sipDelegateMessageCallbackStubWrapper) OnMessageSent(
+	ctx context.Context,
+	viaTransactionId string,
+) error {
+	return w.impl.OnMessageSent(ctx, viaTransactionId)
+}
+
+func (w *sipDelegateMessageCallbackStubWrapper) OnMessageSendFailure(
+	ctx context.Context,
+	viaTransactionId string,
+	reason int32,
+) error {
+	return w.impl.OnMessageSendFailure(ctx, viaTransactionId, reason)
+}
+
+var _ ISipDelegateMessageCallback = (*sipDelegateMessageCallbackStubWrapper)(nil)
+
+// NewSipDelegateMessageCallbackStub creates a server-side ISipDelegateMessageCallback wrapping the given
+// server implementation. The returned value satisfies ISipDelegateMessageCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSipDelegateMessageCallbackStub(
+	impl ISipDelegateMessageCallbackServer,
+) ISipDelegateMessageCallback {
+	wrapper := &sipDelegateMessageCallbackStubWrapper{impl: impl}
+	stub := &SipDelegateMessageCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

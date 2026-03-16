@@ -47,7 +47,7 @@ func (p *MmiInterfaceProxy) OpenSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMmiInterface)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMmiInterface, "openSession")
 	if _err != nil {
@@ -80,7 +80,7 @@ func (p *MmiInterfaceProxy) AppInfoEnterMenu(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMmiInterface)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMmiInterface, "appInfoEnterMenu")
 	if _err != nil {
@@ -157,4 +157,53 @@ func (s *MmiInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMmiInterfaceServer is the server-side interface that user implementations
+// provide to NewMmiInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMmiInterfaceServer interface {
+	OpenSession(ctx context.Context, slotId int32, callback IMmiStatusCallback) (IMmiSession, error)
+	AppInfoEnterMenu(ctx context.Context, slotId int32, callback IEnterMenuErrorCallback) error
+}
+
+type mmiInterfaceStubWrapper struct {
+	impl       IMmiInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mmiInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mmiInterfaceStubWrapper) OpenSession(
+	ctx context.Context,
+	slotId int32,
+	callback IMmiStatusCallback,
+) (IMmiSession, error) {
+	return w.impl.OpenSession(ctx, slotId, callback)
+}
+
+func (w *mmiInterfaceStubWrapper) AppInfoEnterMenu(
+	ctx context.Context,
+	slotId int32,
+	callback IEnterMenuErrorCallback,
+) error {
+	return w.impl.AppInfoEnterMenu(ctx, slotId, callback)
+}
+
+var _ IMmiInterface = (*mmiInterfaceStubWrapper)(nil)
+
+// NewMmiInterfaceStub creates a server-side IMmiInterface wrapping the given
+// server implementation. The returned value satisfies IMmiInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMmiInterfaceStub(
+	impl IMmiInterfaceServer,
+) IMmiInterface {
+	wrapper := &mmiInterfaceStubWrapper{impl: impl}
+	stub := &MmiInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

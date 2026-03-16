@@ -78,3 +78,42 @@ func (s *WindowInfosListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWindowInfosListenerServer is the server-side interface that user implementations
+// provide to NewWindowInfosListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowInfosListenerServer interface {
+	OnWindowInfosChanged(ctx context.Context, update interface{}) error
+}
+
+type windowInfosListenerStubWrapper struct {
+	impl       IWindowInfosListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowInfosListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *windowInfosListenerStubWrapper) OnWindowInfosChanged(
+	ctx context.Context,
+	update interface{},
+) error {
+	return w.impl.OnWindowInfosChanged(ctx, update)
+}
+
+var _ IWindowInfosListener = (*windowInfosListenerStubWrapper)(nil)
+
+// NewWindowInfosListenerStub creates a server-side IWindowInfosListener wrapping the given
+// server implementation. The returned value satisfies IWindowInfosListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowInfosListenerStub(
+	impl IWindowInfosListenerServer,
+) IWindowInfosListener {
+	wrapper := &windowInfosListenerStubWrapper{impl: impl}
+	stub := &WindowInfosListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -314,3 +314,71 @@ func (s *SecretkeeperStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISecretkeeperServer is the server-side interface that user implementations
+// provide to NewSecretkeeperStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecretkeeperServer interface {
+	GetAuthGraphKe(ctx context.Context) (authgraph.IAuthGraphKeyExchange, error)
+	ProcessSecretManagementRequest(ctx context.Context, request []byte) ([]byte, error)
+	DeleteIds(ctx context.Context, ids []SecretId) error
+	DeleteAll(ctx context.Context) error
+	GetSecretkeeperIdentity(ctx context.Context) (PublicKey, error)
+}
+
+type secretkeeperStubWrapper struct {
+	impl       ISecretkeeperServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secretkeeperStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *secretkeeperStubWrapper) GetAuthGraphKe(
+	ctx context.Context,
+) (authgraph.IAuthGraphKeyExchange, error) {
+	return w.impl.GetAuthGraphKe(ctx)
+}
+
+func (w *secretkeeperStubWrapper) ProcessSecretManagementRequest(
+	ctx context.Context,
+	request []byte,
+) ([]byte, error) {
+	return w.impl.ProcessSecretManagementRequest(ctx, request)
+}
+
+func (w *secretkeeperStubWrapper) DeleteIds(
+	ctx context.Context,
+	ids []SecretId,
+) error {
+	return w.impl.DeleteIds(ctx, ids)
+}
+
+func (w *secretkeeperStubWrapper) DeleteAll(
+	ctx context.Context,
+) error {
+	return w.impl.DeleteAll(ctx)
+}
+
+func (w *secretkeeperStubWrapper) GetSecretkeeperIdentity(
+	ctx context.Context,
+) (PublicKey, error) {
+	return w.impl.GetSecretkeeperIdentity(ctx)
+}
+
+var _ ISecretkeeper = (*secretkeeperStubWrapper)(nil)
+
+// NewSecretkeeperStub creates a server-side ISecretkeeper wrapping the given
+// server implementation. The returned value satisfies ISecretkeeper
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecretkeeperStub(
+	impl ISecretkeeperServer,
+) ISecretkeeper {
+	wrapper := &secretkeeperStubWrapper{impl: impl}
+	stub := &SecretkeeperStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

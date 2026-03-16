@@ -93,3 +93,42 @@ func (s *SatelliteCapabilitiesCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISatelliteCapabilitiesCallbackServer is the server-side interface that user implementations
+// provide to NewSatelliteCapabilitiesCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISatelliteCapabilitiesCallbackServer interface {
+	OnSatelliteCapabilitiesChanged(ctx context.Context, capabilities SatelliteCapabilities) error
+}
+
+type satelliteCapabilitiesCallbackStubWrapper struct {
+	impl       ISatelliteCapabilitiesCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *satelliteCapabilitiesCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *satelliteCapabilitiesCallbackStubWrapper) OnSatelliteCapabilitiesChanged(
+	ctx context.Context,
+	capabilities SatelliteCapabilities,
+) error {
+	return w.impl.OnSatelliteCapabilitiesChanged(ctx, capabilities)
+}
+
+var _ ISatelliteCapabilitiesCallback = (*satelliteCapabilitiesCallbackStubWrapper)(nil)
+
+// NewSatelliteCapabilitiesCallbackStub creates a server-side ISatelliteCapabilitiesCallback wrapping the given
+// server implementation. The returned value satisfies ISatelliteCapabilitiesCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSatelliteCapabilitiesCallbackStub(
+	impl ISatelliteCapabilitiesCallbackServer,
+) ISatelliteCapabilitiesCallback {
+	wrapper := &satelliteCapabilitiesCallbackStubWrapper{impl: impl}
+	stub := &SatelliteCapabilitiesCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

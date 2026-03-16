@@ -82,3 +82,42 @@ func (s *WificondEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWificondEventCallbackServer is the server-side interface that user implementations
+// provide to NewWificondEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWificondEventCallbackServer interface {
+	OnRegDomainChanged(ctx context.Context, countryCode string) error
+}
+
+type wificondEventCallbackStubWrapper struct {
+	impl       IWificondEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wificondEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wificondEventCallbackStubWrapper) OnRegDomainChanged(
+	ctx context.Context,
+	countryCode string,
+) error {
+	return w.impl.OnRegDomainChanged(ctx, countryCode)
+}
+
+var _ IWificondEventCallback = (*wificondEventCallbackStubWrapper)(nil)
+
+// NewWificondEventCallbackStub creates a server-side IWificondEventCallback wrapping the given
+// server implementation. The returned value satisfies IWificondEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWificondEventCallbackStub(
+	impl IWificondEventCallbackServer,
+) IWificondEventCallback {
+	wrapper := &wificondEventCallbackStubWrapper{impl: impl}
+	stub := &WificondEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -3,6 +3,7 @@ package content
 import (
 	"context"
 	"fmt"
+	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -17,7 +18,7 @@ const (
 
 type IIntentReceiver interface {
 	AsBinder() binder.IBinder
-	PerformReceive(ctx context.Context, intent Intent, resultCode int32, data string, extras interface{}, ordered bool, sticky bool, sendingUser int32) error
+	PerformReceive(ctx context.Context, intent Intent, resultCode int32, data string, extras os.Bundle, ordered bool, sticky bool, sendingUser int32) error
 }
 
 type IntentReceiverProxy struct {
@@ -41,7 +42,7 @@ func (p *IntentReceiverProxy) PerformReceive(
 	intent Intent,
 	resultCode int32,
 	data string,
-	extras interface{},
+	extras os.Bundle,
 	ordered bool,
 	sticky bool,
 	sendingUser int32,
@@ -54,6 +55,10 @@ func (p *IntentReceiverProxy) PerformReceive(
 	}
 	_data.WriteInt32(resultCode)
 	_data.WriteString16(data)
+	_data.WriteInt32(1)
+	if _err := extras.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteBool(ordered)
 	_data.WriteBool(sticky)
 	_data.WriteInt32(sendingUser)
@@ -105,7 +110,18 @@ func (s *IntentReceiverStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras interface{}
+		var _arg_extras os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_ordered, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -124,4 +140,49 @@ func (s *IntentReceiverStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IIntentReceiverServer is the server-side interface that user implementations
+// provide to NewIntentReceiverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIntentReceiverServer interface {
+	PerformReceive(ctx context.Context, intent Intent, resultCode int32, data string, extras os.Bundle, ordered bool, sticky bool, sendingUser int32) error
+}
+
+type intentReceiverStubWrapper struct {
+	impl       IIntentReceiverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *intentReceiverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *intentReceiverStubWrapper) PerformReceive(
+	ctx context.Context,
+	intent Intent,
+	resultCode int32,
+	data string,
+	extras os.Bundle,
+	ordered bool,
+	sticky bool,
+	sendingUser int32,
+) error {
+	return w.impl.PerformReceive(ctx, intent, resultCode, data, extras, ordered, sticky, sendingUser)
+}
+
+var _ IIntentReceiver = (*intentReceiverStubWrapper)(nil)
+
+// NewIntentReceiverStub creates a server-side IIntentReceiver wrapping the given
+// server implementation. The returned value satisfies IIntentReceiver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIntentReceiverStub(
+	impl IIntentReceiverServer,
+) IIntentReceiver {
+	wrapper := &intentReceiverStubWrapper{impl: impl}
+	stub := &IntentReceiverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

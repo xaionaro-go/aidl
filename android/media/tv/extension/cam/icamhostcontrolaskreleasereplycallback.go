@@ -88,3 +88,43 @@ func (s *CamHostControlAskReleaseReplyCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICamHostControlAskReleaseReplyCallbackServer is the server-side interface that user implementations
+// provide to NewCamHostControlAskReleaseReplyCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICamHostControlAskReleaseReplyCallbackServer interface {
+	OnAskReleaseReply(ctx context.Context, sessionToken string, replyStatus int32) error
+}
+
+type camHostControlAskReleaseReplyCallbackStubWrapper struct {
+	impl       ICamHostControlAskReleaseReplyCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *camHostControlAskReleaseReplyCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *camHostControlAskReleaseReplyCallbackStubWrapper) OnAskReleaseReply(
+	ctx context.Context,
+	sessionToken string,
+	replyStatus int32,
+) error {
+	return w.impl.OnAskReleaseReply(ctx, sessionToken, replyStatus)
+}
+
+var _ ICamHostControlAskReleaseReplyCallback = (*camHostControlAskReleaseReplyCallbackStubWrapper)(nil)
+
+// NewCamHostControlAskReleaseReplyCallbackStub creates a server-side ICamHostControlAskReleaseReplyCallback wrapping the given
+// server implementation. The returned value satisfies ICamHostControlAskReleaseReplyCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCamHostControlAskReleaseReplyCallbackStub(
+	impl ICamHostControlAskReleaseReplyCallbackServer,
+) ICamHostControlAskReleaseReplyCallback {
+	wrapper := &camHostControlAskReleaseReplyCallbackStubWrapper{impl: impl}
+	stub := &CamHostControlAskReleaseReplyCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -82,3 +82,42 @@ func (s *AudioModeDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAudioModeDispatcherServer is the server-side interface that user implementations
+// provide to NewAudioModeDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioModeDispatcherServer interface {
+	DispatchAudioModeChanged(ctx context.Context, mode int32) error
+}
+
+type audioModeDispatcherStubWrapper struct {
+	impl       IAudioModeDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioModeDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioModeDispatcherStubWrapper) DispatchAudioModeChanged(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.DispatchAudioModeChanged(ctx, mode)
+}
+
+var _ IAudioModeDispatcher = (*audioModeDispatcherStubWrapper)(nil)
+
+// NewAudioModeDispatcherStub creates a server-side IAudioModeDispatcher wrapping the given
+// server implementation. The returned value satisfies IAudioModeDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioModeDispatcherStub(
+	impl IAudioModeDispatcherServer,
+) IAudioModeDispatcher {
+	wrapper := &audioModeDispatcherStubWrapper{impl: impl}
+	stub := &AudioModeDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

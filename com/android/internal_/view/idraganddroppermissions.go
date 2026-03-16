@@ -46,7 +46,7 @@ func (p *DragAndDropPermissionsProxy) Take(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDragAndDropPermissions)
-	_data.WriteStrongBinder(activityToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDragAndDropPermissions, "take")
 	if _err != nil {
@@ -170,4 +170,57 @@ func (s *DragAndDropPermissionsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDragAndDropPermissionsServer is the server-side interface that user implementations
+// provide to NewDragAndDropPermissionsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDragAndDropPermissionsServer interface {
+	Take(ctx context.Context, activityToken binder.IBinder) error
+	TakeTransient(ctx context.Context) error
+	Release(ctx context.Context) error
+}
+
+type dragAndDropPermissionsStubWrapper struct {
+	impl       IDragAndDropPermissionsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dragAndDropPermissionsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dragAndDropPermissionsStubWrapper) Take(
+	ctx context.Context,
+	activityToken binder.IBinder,
+) error {
+	return w.impl.Take(ctx, activityToken)
+}
+
+func (w *dragAndDropPermissionsStubWrapper) TakeTransient(
+	ctx context.Context,
+) error {
+	return w.impl.TakeTransient(ctx)
+}
+
+func (w *dragAndDropPermissionsStubWrapper) Release(
+	ctx context.Context,
+) error {
+	return w.impl.Release(ctx)
+}
+
+var _ IDragAndDropPermissions = (*dragAndDropPermissionsStubWrapper)(nil)
+
+// NewDragAndDropPermissionsStub creates a server-side IDragAndDropPermissions wrapping the given
+// server implementation. The returned value satisfies IDragAndDropPermissions
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDragAndDropPermissionsStub(
+	impl IDragAndDropPermissionsServer,
+) IDragAndDropPermissions {
+	wrapper := &dragAndDropPermissionsStubWrapper{impl: impl}
+	stub := &DragAndDropPermissionsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

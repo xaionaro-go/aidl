@@ -63,7 +63,7 @@ func (p *RingtonePlayerProxy) Play(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := uri.MarshalParcel(_data); _err != nil {
 		return _err
@@ -95,7 +95,7 @@ func (p *RingtonePlayerProxy) PlayWithVolumeShaping(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := uri.MarshalParcel(_data); _err != nil {
 		return _err
@@ -129,7 +129,7 @@ func (p *RingtonePlayerProxy) Stop(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "stop")
 	if _err != nil {
@@ -147,7 +147,7 @@ func (p *RingtonePlayerProxy) IsPlaying(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRingtonePlayer, "isPlaying")
 	if _err != nil {
@@ -180,7 +180,7 @@ func (p *RingtonePlayerProxy) SetPlaybackProperties(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRingtonePlayer)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteFloat32(volume)
 	_data.WriteBool(looping)
 	_data.WriteBool(hapticGeneratorEnabled)
@@ -565,4 +565,122 @@ func (s *RingtonePlayerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRingtonePlayerServer is the server-side interface that user implementations
+// provide to NewRingtonePlayerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRingtonePlayerServer interface {
+	Play(ctx context.Context, token binder.IBinder, uri net.Uri, aa AudioAttributes, volume float32, looping bool) error
+	PlayWithVolumeShaping(ctx context.Context, token binder.IBinder, uri net.Uri, aa AudioAttributes, volume float32, looping bool, volumeShaperConfig *VolumeShaperConfiguration) error
+	Stop(ctx context.Context, token binder.IBinder) error
+	IsPlaying(ctx context.Context, token binder.IBinder) (bool, error)
+	SetPlaybackProperties(ctx context.Context, token binder.IBinder, volume float32, looping bool, hapticGeneratorEnabled bool) error
+	PlayAsync(ctx context.Context, uri net.Uri, user interface{}, looping bool, aa AudioAttributes, volume float32) error
+	StopAsync(ctx context.Context) error
+	GetTitle(ctx context.Context, uri net.Uri) (string, error)
+	OpenRingtone(ctx context.Context, uri net.Uri) (int32, error)
+}
+
+type ringtonePlayerStubWrapper struct {
+	impl       IRingtonePlayerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ringtonePlayerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ringtonePlayerStubWrapper) Play(
+	ctx context.Context,
+	token binder.IBinder,
+	uri net.Uri,
+	aa AudioAttributes,
+	volume float32,
+	looping bool,
+) error {
+	return w.impl.Play(ctx, token, uri, aa, volume, looping)
+}
+
+func (w *ringtonePlayerStubWrapper) PlayWithVolumeShaping(
+	ctx context.Context,
+	token binder.IBinder,
+	uri net.Uri,
+	aa AudioAttributes,
+	volume float32,
+	looping bool,
+	volumeShaperConfig *VolumeShaperConfiguration,
+) error {
+	return w.impl.PlayWithVolumeShaping(ctx, token, uri, aa, volume, looping, volumeShaperConfig)
+}
+
+func (w *ringtonePlayerStubWrapper) Stop(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.Stop(ctx, token)
+}
+
+func (w *ringtonePlayerStubWrapper) IsPlaying(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.IsPlaying(ctx, token)
+}
+
+func (w *ringtonePlayerStubWrapper) SetPlaybackProperties(
+	ctx context.Context,
+	token binder.IBinder,
+	volume float32,
+	looping bool,
+	hapticGeneratorEnabled bool,
+) error {
+	return w.impl.SetPlaybackProperties(ctx, token, volume, looping, hapticGeneratorEnabled)
+}
+
+func (w *ringtonePlayerStubWrapper) PlayAsync(
+	ctx context.Context,
+	uri net.Uri,
+	user interface{},
+	looping bool,
+	aa AudioAttributes,
+	volume float32,
+) error {
+	return w.impl.PlayAsync(ctx, uri, user, looping, aa, volume)
+}
+
+func (w *ringtonePlayerStubWrapper) StopAsync(
+	ctx context.Context,
+) error {
+	return w.impl.StopAsync(ctx)
+}
+
+func (w *ringtonePlayerStubWrapper) GetTitle(
+	ctx context.Context,
+	uri net.Uri,
+) (string, error) {
+	return w.impl.GetTitle(ctx, uri)
+}
+
+func (w *ringtonePlayerStubWrapper) OpenRingtone(
+	ctx context.Context,
+	uri net.Uri,
+) (int32, error) {
+	return w.impl.OpenRingtone(ctx, uri)
+}
+
+var _ IRingtonePlayer = (*ringtonePlayerStubWrapper)(nil)
+
+// NewRingtonePlayerStub creates a server-side IRingtonePlayer wrapping the given
+// server implementation. The returned value satisfies IRingtonePlayer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRingtonePlayerStub(
+	impl IRingtonePlayerServer,
+) IRingtonePlayer {
+	wrapper := &ringtonePlayerStubWrapper{impl: impl}
+	stub := &RingtonePlayerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

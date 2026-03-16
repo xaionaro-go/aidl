@@ -93,3 +93,42 @@ func (s *RemoteCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoteCallbackServer is the server-side interface that user implementations
+// provide to NewRemoteCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteCallbackServer interface {
+	SendResult(ctx context.Context, data Bundle) error
+}
+
+type remoteCallbackStubWrapper struct {
+	impl       IRemoteCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteCallbackStubWrapper) SendResult(
+	ctx context.Context,
+	data Bundle,
+) error {
+	return w.impl.SendResult(ctx, data)
+}
+
+var _ IRemoteCallback = (*remoteCallbackStubWrapper)(nil)
+
+// NewRemoteCallbackStub creates a server-side IRemoteCallback wrapping the given
+// server implementation. The returned value satisfies IRemoteCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteCallbackStub(
+	impl IRemoteCallbackServer,
+) IRemoteCallback {
+	wrapper := &remoteCallbackStubWrapper{impl: impl}
+	stub := &RemoteCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

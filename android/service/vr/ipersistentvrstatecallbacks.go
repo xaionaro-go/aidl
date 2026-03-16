@@ -82,3 +82,42 @@ func (s *PersistentVrStateCallbacksStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPersistentVrStateCallbacksServer is the server-side interface that user implementations
+// provide to NewPersistentVrStateCallbacksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPersistentVrStateCallbacksServer interface {
+	OnPersistentVrStateChanged(ctx context.Context, enabled bool) error
+}
+
+type persistentVrStateCallbacksStubWrapper struct {
+	impl       IPersistentVrStateCallbacksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *persistentVrStateCallbacksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *persistentVrStateCallbacksStubWrapper) OnPersistentVrStateChanged(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.OnPersistentVrStateChanged(ctx, enabled)
+}
+
+var _ IPersistentVrStateCallbacks = (*persistentVrStateCallbacksStubWrapper)(nil)
+
+// NewPersistentVrStateCallbacksStub creates a server-side IPersistentVrStateCallbacks wrapping the given
+// server implementation. The returned value satisfies IPersistentVrStateCallbacks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPersistentVrStateCallbacksStub(
+	impl IPersistentVrStateCallbacksServer,
+) IPersistentVrStateCallbacks {
+	wrapper := &persistentVrStateCallbacksStubWrapper{impl: impl}
+	stub := &PersistentVrStateCallbacksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

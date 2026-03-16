@@ -206,3 +206,55 @@ func (s *RegisterClientArgsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRegisterClientArgsServer is the server-side interface that user implementations
+// provide to NewRegisterClientArgsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRegisterClientArgsServer interface {
+	GetGroups(ctx context.Context) ([]string, error)
+	GetGroupsDefaultLogcatStatus(ctx context.Context) ([]bool, error)
+	GetViewerConfigFile(ctx context.Context) (string, error)
+}
+
+type registerClientArgsStubWrapper struct {
+	impl       IRegisterClientArgsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *registerClientArgsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *registerClientArgsStubWrapper) GetGroups(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetGroups(ctx)
+}
+
+func (w *registerClientArgsStubWrapper) GetGroupsDefaultLogcatStatus(
+	ctx context.Context,
+) ([]bool, error) {
+	return w.impl.GetGroupsDefaultLogcatStatus(ctx)
+}
+
+func (w *registerClientArgsStubWrapper) GetViewerConfigFile(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetViewerConfigFile(ctx)
+}
+
+var _ IRegisterClientArgs = (*registerClientArgsStubWrapper)(nil)
+
+// NewRegisterClientArgsStub creates a server-side IRegisterClientArgs wrapping the given
+// server implementation. The returned value satisfies IRegisterClientArgs
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRegisterClientArgsStub(
+	impl IRegisterClientArgsServer,
+) IRegisterClientArgs {
+	wrapper := &registerClientArgsStubWrapper{impl: impl}
+	stub := &RegisterClientArgsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

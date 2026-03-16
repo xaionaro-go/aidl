@@ -260,3 +260,75 @@ func (s *VehicleCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVehicleCallbackServer is the server-side interface that user implementations
+// provide to NewVehicleCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVehicleCallbackServer interface {
+	OnGetValues(ctx context.Context, responses GetValueResults) error
+	OnSetValues(ctx context.Context, responses SetValueResults) error
+	OnPropertyEvent(ctx context.Context, propValues VehiclePropValues, sharedMemoryFileCount int32) error
+	OnPropertySetError(ctx context.Context, errors VehiclePropErrors) error
+	OnSupportedValueChange(ctx context.Context, propIdAreaIds []PropIdAreaId) error
+}
+
+type vehicleCallbackStubWrapper struct {
+	impl       IVehicleCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vehicleCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vehicleCallbackStubWrapper) OnGetValues(
+	ctx context.Context,
+	responses GetValueResults,
+) error {
+	return w.impl.OnGetValues(ctx, responses)
+}
+
+func (w *vehicleCallbackStubWrapper) OnSetValues(
+	ctx context.Context,
+	responses SetValueResults,
+) error {
+	return w.impl.OnSetValues(ctx, responses)
+}
+
+func (w *vehicleCallbackStubWrapper) OnPropertyEvent(
+	ctx context.Context,
+	propValues VehiclePropValues,
+	sharedMemoryFileCount int32,
+) error {
+	return w.impl.OnPropertyEvent(ctx, propValues, sharedMemoryFileCount)
+}
+
+func (w *vehicleCallbackStubWrapper) OnPropertySetError(
+	ctx context.Context,
+	errors VehiclePropErrors,
+) error {
+	return w.impl.OnPropertySetError(ctx, errors)
+}
+
+func (w *vehicleCallbackStubWrapper) OnSupportedValueChange(
+	ctx context.Context,
+	propIdAreaIds []PropIdAreaId,
+) error {
+	return w.impl.OnSupportedValueChange(ctx, propIdAreaIds)
+}
+
+var _ IVehicleCallback = (*vehicleCallbackStubWrapper)(nil)
+
+// NewVehicleCallbackStub creates a server-side IVehicleCallback wrapping the given
+// server implementation. The returned value satisfies IVehicleCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVehicleCallbackStub(
+	impl IVehicleCallbackServer,
+) IVehicleCallback {
+	wrapper := &vehicleCallbackStubWrapper{impl: impl}
+	stub := &VehicleCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

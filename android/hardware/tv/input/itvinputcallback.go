@@ -162,3 +162,50 @@ func (s *TvInputCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITvInputCallbackServer is the server-side interface that user implementations
+// provide to NewTvInputCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInputCallbackServer interface {
+	Notify(ctx context.Context, event TvInputEvent) error
+	NotifyTvMessageEvent(ctx context.Context, event TvMessageEvent) error
+}
+
+type tvInputCallbackStubWrapper struct {
+	impl       ITvInputCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInputCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInputCallbackStubWrapper) Notify(
+	ctx context.Context,
+	event TvInputEvent,
+) error {
+	return w.impl.Notify(ctx, event)
+}
+
+func (w *tvInputCallbackStubWrapper) NotifyTvMessageEvent(
+	ctx context.Context,
+	event TvMessageEvent,
+) error {
+	return w.impl.NotifyTvMessageEvent(ctx, event)
+}
+
+var _ ITvInputCallback = (*tvInputCallbackStubWrapper)(nil)
+
+// NewTvInputCallbackStub creates a server-side ITvInputCallback wrapping the given
+// server implementation. The returned value satisfies ITvInputCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInputCallbackStub(
+	impl ITvInputCallbackServer,
+) ITvInputCallback {
+	wrapper := &tvInputCallbackStubWrapper{impl: impl}
+	stub := &TvInputCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

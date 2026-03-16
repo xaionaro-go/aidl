@@ -85,7 +85,7 @@ func (p *MediaCasServiceProxy) CreatePlugin(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaCasService)
 	_data.WriteInt32(CA_system_id)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaCasService, "createPlugin")
 	if _err != nil {
@@ -314,4 +314,75 @@ func (s *MediaCasServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaCasServiceServer is the server-side interface that user implementations
+// provide to NewMediaCasServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaCasServiceServer interface {
+	CreateDescrambler(ctx context.Context, CA_system_id int32) (IDescrambler, error)
+	CreatePlugin(ctx context.Context, CA_system_id int32, listener ICasListener) (ICas, error)
+	EnumeratePlugins(ctx context.Context) ([]AidlCasPluginDescriptor, error)
+	IsDescramblerSupported(ctx context.Context, CA_system_id int32) (bool, error)
+	IsSystemIdSupported(ctx context.Context, CA_system_id int32) (bool, error)
+}
+
+type mediaCasServiceStubWrapper struct {
+	impl       IMediaCasServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaCasServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaCasServiceStubWrapper) CreateDescrambler(
+	ctx context.Context,
+	CA_system_id int32,
+) (IDescrambler, error) {
+	return w.impl.CreateDescrambler(ctx, CA_system_id)
+}
+
+func (w *mediaCasServiceStubWrapper) CreatePlugin(
+	ctx context.Context,
+	CA_system_id int32,
+	listener ICasListener,
+) (ICas, error) {
+	return w.impl.CreatePlugin(ctx, CA_system_id, listener)
+}
+
+func (w *mediaCasServiceStubWrapper) EnumeratePlugins(
+	ctx context.Context,
+) ([]AidlCasPluginDescriptor, error) {
+	return w.impl.EnumeratePlugins(ctx)
+}
+
+func (w *mediaCasServiceStubWrapper) IsDescramblerSupported(
+	ctx context.Context,
+	CA_system_id int32,
+) (bool, error) {
+	return w.impl.IsDescramblerSupported(ctx, CA_system_id)
+}
+
+func (w *mediaCasServiceStubWrapper) IsSystemIdSupported(
+	ctx context.Context,
+	CA_system_id int32,
+) (bool, error) {
+	return w.impl.IsSystemIdSupported(ctx, CA_system_id)
+}
+
+var _ IMediaCasService = (*mediaCasServiceStubWrapper)(nil)
+
+// NewMediaCasServiceStub creates a server-side IMediaCasService wrapping the given
+// server implementation. The returned value satisfies IMediaCasService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaCasServiceStub(
+	impl IMediaCasServiceServer,
+) IMediaCasService {
+	wrapper := &mediaCasServiceStubWrapper{impl: impl}
+	stub := &MediaCasServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

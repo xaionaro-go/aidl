@@ -82,3 +82,42 @@ func (s *VirtualDeviceSoundEffectListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVirtualDeviceSoundEffectListenerServer is the server-side interface that user implementations
+// provide to NewVirtualDeviceSoundEffectListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualDeviceSoundEffectListenerServer interface {
+	OnPlaySoundEffect(ctx context.Context, effectType int32) error
+}
+
+type virtualDeviceSoundEffectListenerStubWrapper struct {
+	impl       IVirtualDeviceSoundEffectListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualDeviceSoundEffectListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualDeviceSoundEffectListenerStubWrapper) OnPlaySoundEffect(
+	ctx context.Context,
+	effectType int32,
+) error {
+	return w.impl.OnPlaySoundEffect(ctx, effectType)
+}
+
+var _ IVirtualDeviceSoundEffectListener = (*virtualDeviceSoundEffectListenerStubWrapper)(nil)
+
+// NewVirtualDeviceSoundEffectListenerStub creates a server-side IVirtualDeviceSoundEffectListener wrapping the given
+// server implementation. The returned value satisfies IVirtualDeviceSoundEffectListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualDeviceSoundEffectListenerStub(
+	impl IVirtualDeviceSoundEffectListenerServer,
+) IVirtualDeviceSoundEffectListener {
+	wrapper := &virtualDeviceSoundEffectListenerStubWrapper{impl: impl}
+	stub := &VirtualDeviceSoundEffectListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

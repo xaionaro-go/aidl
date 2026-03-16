@@ -93,3 +93,42 @@ func (s *SoundProfileChangedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundProfileChangedListenerServer is the server-side interface that user implementations
+// provide to NewSoundProfileChangedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundProfileChangedListenerServer interface {
+	OnSoundProfileChanged(ctx context.Context, soundProfile SoundProfile) error
+}
+
+type soundProfileChangedListenerStubWrapper struct {
+	impl       ISoundProfileChangedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundProfileChangedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundProfileChangedListenerStubWrapper) OnSoundProfileChanged(
+	ctx context.Context,
+	soundProfile SoundProfile,
+) error {
+	return w.impl.OnSoundProfileChanged(ctx, soundProfile)
+}
+
+var _ ISoundProfileChangedListener = (*soundProfileChangedListenerStubWrapper)(nil)
+
+// NewSoundProfileChangedListenerStub creates a server-side ISoundProfileChangedListener wrapping the given
+// server implementation. The returned value satisfies ISoundProfileChangedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundProfileChangedListenerStub(
+	impl ISoundProfileChangedListenerServer,
+) ISoundProfileChangedListener {
+	wrapper := &soundProfileChangedListenerStubWrapper{impl: impl}
+	stub := &SoundProfileChangedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

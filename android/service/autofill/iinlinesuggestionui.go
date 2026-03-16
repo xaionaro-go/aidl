@@ -44,7 +44,7 @@ func (p *InlineSuggestionUiProxy) GetSurfacePackage(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionUi)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIInlineSuggestionUi, "getSurfacePackage")
 	if _err != nil {
@@ -104,4 +104,50 @@ func (s *InlineSuggestionUiStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInlineSuggestionUiServer is the server-side interface that user implementations
+// provide to NewInlineSuggestionUiStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInlineSuggestionUiServer interface {
+	GetSurfacePackage(ctx context.Context, callback ISurfacePackageResultCallback) error
+	ReleaseSurfaceControlViewHost(ctx context.Context) error
+}
+
+type inlineSuggestionUiStubWrapper struct {
+	impl       IInlineSuggestionUiServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inlineSuggestionUiStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inlineSuggestionUiStubWrapper) GetSurfacePackage(
+	ctx context.Context,
+	callback ISurfacePackageResultCallback,
+) error {
+	return w.impl.GetSurfacePackage(ctx, callback)
+}
+
+func (w *inlineSuggestionUiStubWrapper) ReleaseSurfaceControlViewHost(
+	ctx context.Context,
+) error {
+	return w.impl.ReleaseSurfaceControlViewHost(ctx)
+}
+
+var _ IInlineSuggestionUi = (*inlineSuggestionUiStubWrapper)(nil)
+
+// NewInlineSuggestionUiStub creates a server-side IInlineSuggestionUi wrapping the given
+// server implementation. The returned value satisfies IInlineSuggestionUi
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInlineSuggestionUiStub(
+	impl IInlineSuggestionUiServer,
+) IInlineSuggestionUi {
+	wrapper := &inlineSuggestionUiStubWrapper{impl: impl}
+	stub := &InlineSuggestionUiStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

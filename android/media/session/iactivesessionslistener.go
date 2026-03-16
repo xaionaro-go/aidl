@@ -90,3 +90,42 @@ func (s *ActiveSessionsListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IActiveSessionsListenerServer is the server-side interface that user implementations
+// provide to NewActiveSessionsListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IActiveSessionsListenerServer interface {
+	OnActiveSessionsChanged(ctx context.Context, sessions []MediaSessionToken) error
+}
+
+type activeSessionsListenerStubWrapper struct {
+	impl       IActiveSessionsListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *activeSessionsListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *activeSessionsListenerStubWrapper) OnActiveSessionsChanged(
+	ctx context.Context,
+	sessions []MediaSessionToken,
+) error {
+	return w.impl.OnActiveSessionsChanged(ctx, sessions)
+}
+
+var _ IActiveSessionsListener = (*activeSessionsListenerStubWrapper)(nil)
+
+// NewActiveSessionsListenerStub creates a server-side IActiveSessionsListener wrapping the given
+// server implementation. The returned value satisfies IActiveSessionsListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewActiveSessionsListenerStub(
+	impl IActiveSessionsListenerServer,
+) IActiveSessionsListener {
+	wrapper := &activeSessionsListenerStubWrapper{impl: impl}
+	stub := &ActiveSessionsListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

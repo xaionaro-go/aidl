@@ -3,7 +3,6 @@ package projection
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -22,7 +21,7 @@ type IMediaProjectionWatcherCallback interface {
 	AsBinder() binder.IBinder
 	OnStart(ctx context.Context, info MediaProjectionInfo) error
 	OnStop(ctx context.Context, info MediaProjectionInfo) error
-	OnRecordingSessionSet(ctx context.Context, info MediaProjectionInfo, session *view.ContentRecordingSession) error
+	OnRecordingSessionSet(ctx context.Context, info MediaProjectionInfo, session *interface{}) error
 }
 
 type MediaProjectionWatcherCallbackProxy struct {
@@ -84,20 +83,13 @@ func (p *MediaProjectionWatcherCallbackProxy) OnStop(
 func (p *MediaProjectionWatcherCallbackProxy) OnRecordingSessionSet(
 	ctx context.Context,
 	info MediaProjectionInfo,
-	session *view.ContentRecordingSession,
+	session *interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaProjectionWatcherCallback)
 	_data.WriteInt32(1)
 	if _err := info.MarshalParcel(_data); _err != nil {
 		return _err
-	}
-	if session != nil {
-		if _err := (*session).MarshalParcel(_data); _err != nil {
-			return _err
-		}
-	} else {
-		_data.WriteInt32(-1)
 	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaProjectionWatcherCallback, "onRecordingSessionSet")
@@ -177,22 +169,67 @@ func (s *MediaProjectionWatcherCallbackStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_session *view.ContentRecordingSession
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_session.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_session *interface{}
 		_err := s.Impl.OnRecordingSessionSet(ctx, _arg_info, _arg_session)
 		_ = _err
 		return nil, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaProjectionWatcherCallbackServer is the server-side interface that user implementations
+// provide to NewMediaProjectionWatcherCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaProjectionWatcherCallbackServer interface {
+	OnStart(ctx context.Context, info MediaProjectionInfo) error
+	OnStop(ctx context.Context, info MediaProjectionInfo) error
+	OnRecordingSessionSet(ctx context.Context, info MediaProjectionInfo, session *interface{}) error
+}
+
+type mediaProjectionWatcherCallbackStubWrapper struct {
+	impl       IMediaProjectionWatcherCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaProjectionWatcherCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaProjectionWatcherCallbackStubWrapper) OnStart(
+	ctx context.Context,
+	info MediaProjectionInfo,
+) error {
+	return w.impl.OnStart(ctx, info)
+}
+
+func (w *mediaProjectionWatcherCallbackStubWrapper) OnStop(
+	ctx context.Context,
+	info MediaProjectionInfo,
+) error {
+	return w.impl.OnStop(ctx, info)
+}
+
+func (w *mediaProjectionWatcherCallbackStubWrapper) OnRecordingSessionSet(
+	ctx context.Context,
+	info MediaProjectionInfo,
+	session *interface{},
+) error {
+	return w.impl.OnRecordingSessionSet(ctx, info, session)
+}
+
+var _ IMediaProjectionWatcherCallback = (*mediaProjectionWatcherCallbackStubWrapper)(nil)
+
+// NewMediaProjectionWatcherCallbackStub creates a server-side IMediaProjectionWatcherCallback wrapping the given
+// server implementation. The returned value satisfies IMediaProjectionWatcherCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaProjectionWatcherCallbackStub(
+	impl IMediaProjectionWatcherCallbackServer,
+) IMediaProjectionWatcherCallback {
+	wrapper := &mediaProjectionWatcherCallbackStubWrapper{impl: impl}
+	stub := &MediaProjectionWatcherCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

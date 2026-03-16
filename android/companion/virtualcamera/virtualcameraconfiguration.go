@@ -30,7 +30,11 @@ func (s *VirtualCameraConfiguration) MarshalParcel(
 			}
 		}
 	}
-	p.WriteStrongBinder(s.VirtualCameraCallback.AsBinder().Handle())
+	if s.VirtualCameraCallback == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.VirtualCameraCallback.AsBinder().Handle())
+	}
 	p.WriteInt32(int32(s.SensorOrientation))
 	p.WriteInt32(int32(s.LensFacing))
 

@@ -384,7 +384,7 @@ func (p *BlobStoreSessionProxy) Commit(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBlobStoreSession)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBlobStoreSession, "commit")
 	if _err != nil {
@@ -596,4 +596,126 @@ func (s *BlobStoreSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBlobStoreSessionServer is the server-side interface that user implementations
+// provide to NewBlobStoreSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBlobStoreSessionServer interface {
+	OpenWrite(ctx context.Context, offsetBytes int64, lengthBytes int64) (int32, error)
+	OpenRead(ctx context.Context) (int32, error)
+	AllowPackageAccess(ctx context.Context, packageName string, certificate []byte) error
+	AllowSameSignatureAccess(ctx context.Context) error
+	AllowPublicAccess(ctx context.Context) error
+	IsPackageAccessAllowed(ctx context.Context, packageName string, certificate []byte) (bool, error)
+	IsSameSignatureAccessAllowed(ctx context.Context) (bool, error)
+	IsPublicAccessAllowed(ctx context.Context) (bool, error)
+	GetSize(ctx context.Context) (int64, error)
+	Close(ctx context.Context) error
+	Abandon(ctx context.Context) error
+	Commit(ctx context.Context, callback IBlobCommitCallback) error
+}
+
+type blobStoreSessionStubWrapper struct {
+	impl       IBlobStoreSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *blobStoreSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *blobStoreSessionStubWrapper) OpenWrite(
+	ctx context.Context,
+	offsetBytes int64,
+	lengthBytes int64,
+) (int32, error) {
+	return w.impl.OpenWrite(ctx, offsetBytes, lengthBytes)
+}
+
+func (w *blobStoreSessionStubWrapper) OpenRead(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.OpenRead(ctx)
+}
+
+func (w *blobStoreSessionStubWrapper) AllowPackageAccess(
+	ctx context.Context,
+	packageName string,
+	certificate []byte,
+) error {
+	return w.impl.AllowPackageAccess(ctx, packageName, certificate)
+}
+
+func (w *blobStoreSessionStubWrapper) AllowSameSignatureAccess(
+	ctx context.Context,
+) error {
+	return w.impl.AllowSameSignatureAccess(ctx)
+}
+
+func (w *blobStoreSessionStubWrapper) AllowPublicAccess(
+	ctx context.Context,
+) error {
+	return w.impl.AllowPublicAccess(ctx)
+}
+
+func (w *blobStoreSessionStubWrapper) IsPackageAccessAllowed(
+	ctx context.Context,
+	packageName string,
+	certificate []byte,
+) (bool, error) {
+	return w.impl.IsPackageAccessAllowed(ctx, packageName, certificate)
+}
+
+func (w *blobStoreSessionStubWrapper) IsSameSignatureAccessAllowed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSameSignatureAccessAllowed(ctx)
+}
+
+func (w *blobStoreSessionStubWrapper) IsPublicAccessAllowed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsPublicAccessAllowed(ctx)
+}
+
+func (w *blobStoreSessionStubWrapper) GetSize(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetSize(ctx)
+}
+
+func (w *blobStoreSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *blobStoreSessionStubWrapper) Abandon(
+	ctx context.Context,
+) error {
+	return w.impl.Abandon(ctx)
+}
+
+func (w *blobStoreSessionStubWrapper) Commit(
+	ctx context.Context,
+	callback IBlobCommitCallback,
+) error {
+	return w.impl.Commit(ctx, callback)
+}
+
+var _ IBlobStoreSession = (*blobStoreSessionStubWrapper)(nil)
+
+// NewBlobStoreSessionStub creates a server-side IBlobStoreSession wrapping the given
+// server implementation. The returned value satisfies IBlobStoreSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBlobStoreSessionStub(
+	impl IBlobStoreSessionServer,
+) IBlobStoreSession {
+	wrapper := &blobStoreSessionStubWrapper{impl: impl}
+	stub := &BlobStoreSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

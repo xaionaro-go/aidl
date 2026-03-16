@@ -80,3 +80,43 @@ func (s *PacProxyInstalledListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPacProxyInstalledListenerServer is the server-side interface that user implementations
+// provide to NewPacProxyInstalledListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPacProxyInstalledListenerServer interface {
+	OnPacProxyInstalled(ctx context.Context, network interface{}, proxy interface{}) error
+}
+
+type pacProxyInstalledListenerStubWrapper struct {
+	impl       IPacProxyInstalledListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pacProxyInstalledListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pacProxyInstalledListenerStubWrapper) OnPacProxyInstalled(
+	ctx context.Context,
+	network interface{},
+	proxy interface{},
+) error {
+	return w.impl.OnPacProxyInstalled(ctx, network, proxy)
+}
+
+var _ IPacProxyInstalledListener = (*pacProxyInstalledListenerStubWrapper)(nil)
+
+// NewPacProxyInstalledListenerStub creates a server-side IPacProxyInstalledListener wrapping the given
+// server implementation. The returned value satisfies IPacProxyInstalledListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPacProxyInstalledListenerStub(
+	impl IPacProxyInstalledListenerServer,
+) IPacProxyInstalledListener {
+	wrapper := &pacProxyInstalledListenerStubWrapper{impl: impl}
+	stub := &PacProxyInstalledListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

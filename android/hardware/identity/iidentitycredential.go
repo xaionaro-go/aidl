@@ -299,8 +299,8 @@ func (p *IdentityCredentialProxy) StartRetrieveEntryValue(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIIdentityCredential)
-	_data.WriteString(nameSpace)
-	_data.WriteString(name)
+	_data.WriteString16(nameSpace)
+	_data.WriteString16(name)
 	_data.WriteInt32(entrySize)
 	if accessControlProfileIds == nil {
 		_data.WriteInt32(-1)
@@ -849,11 +849,11 @@ func (s *IdentityCredentialStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_arg_nameSpace, _err := _data.ReadString()
+		_arg_nameSpace, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_name, _err := _data.ReadString()
+		_arg_name, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1025,4 +1025,163 @@ func (s *IdentityCredentialStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IIdentityCredentialServer is the server-side interface that user implementations
+// provide to NewIdentityCredentialStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IIdentityCredentialServer interface {
+	DeleteCredential(ctx context.Context) ([]byte, error)
+	CreateEphemeralKeyPair(ctx context.Context) ([]byte, error)
+	SetReaderEphemeralPublicKey(ctx context.Context, publicKey []byte) error
+	CreateAuthChallenge(ctx context.Context) (int64, error)
+	StartRetrieval(ctx context.Context, accessControlProfiles []SecureAccessControlProfile, authToken keymaster.HardwareAuthToken, itemsRequest []byte, signingKeyBlob []byte, sessionTranscript []byte, readerSignature []byte, requestCounts []int32) error
+	StartRetrieveEntryValue(ctx context.Context, nameSpace string, name string, entrySize int32, accessControlProfileIds []int32) error
+	RetrieveEntryValue(ctx context.Context, encryptedContent []byte) ([]byte, error)
+	FinishRetrieval(ctx context.Context, mac []byte, deviceNameSpaces []byte) error
+	GenerateSigningKeyPair(ctx context.Context, signingKeyBlob []byte) (Certificate, error)
+	SetRequestedNamespaces(ctx context.Context, requestNamespaces []RequestNamespace) error
+	SetVerificationToken(ctx context.Context, verificationToken keymaster.VerificationToken) error
+	DeleteCredentialWithChallenge(ctx context.Context, challenge []byte) ([]byte, error)
+	ProveOwnership(ctx context.Context, challenge []byte) ([]byte, error)
+	UpdateCredential(ctx context.Context) (IWritableIdentityCredential, error)
+	FinishRetrievalWithSignature(ctx context.Context, mac []byte, deviceNameSpaces []byte, ecdsaSignature []byte) error
+}
+
+type identityCredentialStubWrapper struct {
+	impl       IIdentityCredentialServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *identityCredentialStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *identityCredentialStubWrapper) DeleteCredential(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.DeleteCredential(ctx)
+}
+
+func (w *identityCredentialStubWrapper) CreateEphemeralKeyPair(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.CreateEphemeralKeyPair(ctx)
+}
+
+func (w *identityCredentialStubWrapper) SetReaderEphemeralPublicKey(
+	ctx context.Context,
+	publicKey []byte,
+) error {
+	return w.impl.SetReaderEphemeralPublicKey(ctx, publicKey)
+}
+
+func (w *identityCredentialStubWrapper) CreateAuthChallenge(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.CreateAuthChallenge(ctx)
+}
+
+func (w *identityCredentialStubWrapper) StartRetrieval(
+	ctx context.Context,
+	accessControlProfiles []SecureAccessControlProfile,
+	authToken keymaster.HardwareAuthToken,
+	itemsRequest []byte,
+	signingKeyBlob []byte,
+	sessionTranscript []byte,
+	readerSignature []byte,
+	requestCounts []int32,
+) error {
+	return w.impl.StartRetrieval(ctx, accessControlProfiles, authToken, itemsRequest, signingKeyBlob, sessionTranscript, readerSignature, requestCounts)
+}
+
+func (w *identityCredentialStubWrapper) StartRetrieveEntryValue(
+	ctx context.Context,
+	nameSpace string,
+	name string,
+	entrySize int32,
+	accessControlProfileIds []int32,
+) error {
+	return w.impl.StartRetrieveEntryValue(ctx, nameSpace, name, entrySize, accessControlProfileIds)
+}
+
+func (w *identityCredentialStubWrapper) RetrieveEntryValue(
+	ctx context.Context,
+	encryptedContent []byte,
+) ([]byte, error) {
+	return w.impl.RetrieveEntryValue(ctx, encryptedContent)
+}
+
+func (w *identityCredentialStubWrapper) FinishRetrieval(
+	ctx context.Context,
+	mac []byte,
+	deviceNameSpaces []byte,
+) error {
+	return w.impl.FinishRetrieval(ctx, mac, deviceNameSpaces)
+}
+
+func (w *identityCredentialStubWrapper) GenerateSigningKeyPair(
+	ctx context.Context,
+	signingKeyBlob []byte,
+) (Certificate, error) {
+	return w.impl.GenerateSigningKeyPair(ctx, signingKeyBlob)
+}
+
+func (w *identityCredentialStubWrapper) SetRequestedNamespaces(
+	ctx context.Context,
+	requestNamespaces []RequestNamespace,
+) error {
+	return w.impl.SetRequestedNamespaces(ctx, requestNamespaces)
+}
+
+func (w *identityCredentialStubWrapper) SetVerificationToken(
+	ctx context.Context,
+	verificationToken keymaster.VerificationToken,
+) error {
+	return w.impl.SetVerificationToken(ctx, verificationToken)
+}
+
+func (w *identityCredentialStubWrapper) DeleteCredentialWithChallenge(
+	ctx context.Context,
+	challenge []byte,
+) ([]byte, error) {
+	return w.impl.DeleteCredentialWithChallenge(ctx, challenge)
+}
+
+func (w *identityCredentialStubWrapper) ProveOwnership(
+	ctx context.Context,
+	challenge []byte,
+) ([]byte, error) {
+	return w.impl.ProveOwnership(ctx, challenge)
+}
+
+func (w *identityCredentialStubWrapper) UpdateCredential(
+	ctx context.Context,
+) (IWritableIdentityCredential, error) {
+	return w.impl.UpdateCredential(ctx)
+}
+
+func (w *identityCredentialStubWrapper) FinishRetrievalWithSignature(
+	ctx context.Context,
+	mac []byte,
+	deviceNameSpaces []byte,
+	ecdsaSignature []byte,
+) error {
+	return w.impl.FinishRetrievalWithSignature(ctx, mac, deviceNameSpaces, ecdsaSignature)
+}
+
+var _ IIdentityCredential = (*identityCredentialStubWrapper)(nil)
+
+// NewIdentityCredentialStub creates a server-side IIdentityCredential wrapping the given
+// server implementation. The returned value satisfies IIdentityCredential
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewIdentityCredentialStub(
+	impl IIdentityCredentialServer,
+) IIdentityCredential {
+	wrapper := &identityCredentialStubWrapper{impl: impl}
+	stub := &IdentityCredentialStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

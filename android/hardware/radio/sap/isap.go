@@ -158,7 +158,7 @@ func (p *SapProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISap)
-	_data.WriteStrongBinder(sapCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, sapCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISap, "setCallback")
 	if _err != nil {
@@ -358,4 +358,112 @@ func (s *SapStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISapServer is the server-side interface that user implementations
+// provide to NewSapStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISapServer interface {
+	ApduReq(ctx context.Context, serial int32, type_ SapApduType, command []byte) error
+	ConnectReq(ctx context.Context, serial int32, maxMsgSizeBytes int32) error
+	DisconnectReq(ctx context.Context, serial int32) error
+	PowerReq(ctx context.Context, serial int32, powerOn bool) error
+	ResetSimReq(ctx context.Context, serial int32) error
+	SetCallback(ctx context.Context, sapCallback ISapCallback) error
+	SetTransferProtocolReq(ctx context.Context, serial int32, transferProtocol SapTransferProtocol) error
+	TransferAtrReq(ctx context.Context, serial int32) error
+	TransferCardReaderStatusReq(ctx context.Context, serial int32) error
+}
+
+type sapStubWrapper struct {
+	impl       ISapServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sapStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sapStubWrapper) ApduReq(
+	ctx context.Context,
+	serial int32,
+	type_ SapApduType,
+	command []byte,
+) error {
+	return w.impl.ApduReq(ctx, serial, type_, command)
+}
+
+func (w *sapStubWrapper) ConnectReq(
+	ctx context.Context,
+	serial int32,
+	maxMsgSizeBytes int32,
+) error {
+	return w.impl.ConnectReq(ctx, serial, maxMsgSizeBytes)
+}
+
+func (w *sapStubWrapper) DisconnectReq(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.DisconnectReq(ctx, serial)
+}
+
+func (w *sapStubWrapper) PowerReq(
+	ctx context.Context,
+	serial int32,
+	powerOn bool,
+) error {
+	return w.impl.PowerReq(ctx, serial, powerOn)
+}
+
+func (w *sapStubWrapper) ResetSimReq(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.ResetSimReq(ctx, serial)
+}
+
+func (w *sapStubWrapper) SetCallback(
+	ctx context.Context,
+	sapCallback ISapCallback,
+) error {
+	return w.impl.SetCallback(ctx, sapCallback)
+}
+
+func (w *sapStubWrapper) SetTransferProtocolReq(
+	ctx context.Context,
+	serial int32,
+	transferProtocol SapTransferProtocol,
+) error {
+	return w.impl.SetTransferProtocolReq(ctx, serial, transferProtocol)
+}
+
+func (w *sapStubWrapper) TransferAtrReq(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.TransferAtrReq(ctx, serial)
+}
+
+func (w *sapStubWrapper) TransferCardReaderStatusReq(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.TransferCardReaderStatusReq(ctx, serial)
+}
+
+var _ ISap = (*sapStubWrapper)(nil)
+
+// NewSapStub creates a server-side ISap wrapping the given
+// server implementation. The returned value satisfies ISap
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSapStub(
+	impl ISapServer,
+) ISap {
+	wrapper := &sapStubWrapper{impl: impl}
+	stub := &SapStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

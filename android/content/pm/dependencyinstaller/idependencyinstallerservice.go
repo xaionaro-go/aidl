@@ -108,3 +108,43 @@ func (s *DependencyInstallerServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDependencyInstallerServiceServer is the server-side interface that user implementations
+// provide to NewDependencyInstallerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDependencyInstallerServiceServer interface {
+	OnDependenciesRequired(ctx context.Context, neededLibraries []pm.SharedLibraryInfo, callback DependencyInstallerCallback) error
+}
+
+type dependencyInstallerServiceStubWrapper struct {
+	impl       IDependencyInstallerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dependencyInstallerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dependencyInstallerServiceStubWrapper) OnDependenciesRequired(
+	ctx context.Context,
+	neededLibraries []pm.SharedLibraryInfo,
+	callback DependencyInstallerCallback,
+) error {
+	return w.impl.OnDependenciesRequired(ctx, neededLibraries, callback)
+}
+
+var _ IDependencyInstallerService = (*dependencyInstallerServiceStubWrapper)(nil)
+
+// NewDependencyInstallerServiceStub creates a server-side IDependencyInstallerService wrapping the given
+// server implementation. The returned value satisfies IDependencyInstallerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDependencyInstallerServiceStub(
+	impl IDependencyInstallerServiceServer,
+) IDependencyInstallerService {
+	wrapper := &dependencyInstallerServiceStubWrapper{impl: impl}
+	stub := &DependencyInstallerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

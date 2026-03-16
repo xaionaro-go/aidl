@@ -387,3 +387,86 @@ func (s *OptionsListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOptionsListenerServer is the server-side interface that user implementations
+// provide to NewOptionsListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOptionsListenerServer interface {
+	GetVersionCb(ctx context.Context, version string) error
+	ServiceAvailable(ctx context.Context, statusCode vehicle.StatusCode) error
+	ServiceUnavailable(ctx context.Context, statusCode vehicle.StatusCode) error
+	SipResponseReceived(ctx context.Context, uri string, sipResponse OptionsSipResponse, capInfo OptionsCapInfo) error
+	CmdStatus(ctx context.Context, cmdStatus OptionsCmdStatus) error
+	IncomingOptions(ctx context.Context, uri string, capInfo OptionsCapInfo, tID int32) error
+}
+
+type optionsListenerStubWrapper struct {
+	impl       IOptionsListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *optionsListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *optionsListenerStubWrapper) GetVersionCb(
+	ctx context.Context,
+	version string,
+) error {
+	return w.impl.GetVersionCb(ctx, version)
+}
+
+func (w *optionsListenerStubWrapper) ServiceAvailable(
+	ctx context.Context,
+	statusCode vehicle.StatusCode,
+) error {
+	return w.impl.ServiceAvailable(ctx, statusCode)
+}
+
+func (w *optionsListenerStubWrapper) ServiceUnavailable(
+	ctx context.Context,
+	statusCode vehicle.StatusCode,
+) error {
+	return w.impl.ServiceUnavailable(ctx, statusCode)
+}
+
+func (w *optionsListenerStubWrapper) SipResponseReceived(
+	ctx context.Context,
+	uri string,
+	sipResponse OptionsSipResponse,
+	capInfo OptionsCapInfo,
+) error {
+	return w.impl.SipResponseReceived(ctx, uri, sipResponse, capInfo)
+}
+
+func (w *optionsListenerStubWrapper) CmdStatus(
+	ctx context.Context,
+	cmdStatus OptionsCmdStatus,
+) error {
+	return w.impl.CmdStatus(ctx, cmdStatus)
+}
+
+func (w *optionsListenerStubWrapper) IncomingOptions(
+	ctx context.Context,
+	uri string,
+	capInfo OptionsCapInfo,
+	tID int32,
+) error {
+	return w.impl.IncomingOptions(ctx, uri, capInfo, tID)
+}
+
+var _ IOptionsListener = (*optionsListenerStubWrapper)(nil)
+
+// NewOptionsListenerStub creates a server-side IOptionsListener wrapping the given
+// server implementation. The returned value satisfies IOptionsListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOptionsListenerStub(
+	impl IOptionsListenerServer,
+) IOptionsListener {
+	wrapper := &optionsListenerStubWrapper{impl: impl}
+	stub := &OptionsListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -94,3 +94,43 @@ func (s *OnProjectionStateChangedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOnProjectionStateChangedListenerServer is the server-side interface that user implementations
+// provide to NewOnProjectionStateChangedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnProjectionStateChangedListenerServer interface {
+	OnProjectionStateChanged(ctx context.Context, activeProjectionTypes int32, projectingPackages []string) error
+}
+
+type onProjectionStateChangedListenerStubWrapper struct {
+	impl       IOnProjectionStateChangedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onProjectionStateChangedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onProjectionStateChangedListenerStubWrapper) OnProjectionStateChanged(
+	ctx context.Context,
+	activeProjectionTypes int32,
+	projectingPackages []string,
+) error {
+	return w.impl.OnProjectionStateChanged(ctx, activeProjectionTypes, projectingPackages)
+}
+
+var _ IOnProjectionStateChangedListener = (*onProjectionStateChangedListenerStubWrapper)(nil)
+
+// NewOnProjectionStateChangedListenerStub creates a server-side IOnProjectionStateChangedListener wrapping the given
+// server implementation. The returned value satisfies IOnProjectionStateChangedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnProjectionStateChangedListenerStub(
+	impl IOnProjectionStateChangedListenerServer,
+) IOnProjectionStateChangedListener {
+	wrapper := &onProjectionStateChangedListenerStubWrapper{impl: impl}
+	stub := &OnProjectionStateChangedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

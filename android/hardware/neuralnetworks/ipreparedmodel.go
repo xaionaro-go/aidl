@@ -577,3 +577,96 @@ func (s *PreparedModelStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPreparedModelServer is the server-side interface that user implementations
+// provide to NewPreparedModelStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPreparedModelServer interface {
+	ExecuteSynchronously(ctx context.Context, request Request, measureTiming bool, deadlineNs int64, loopTimeoutDurationNs int64) (ExecutionResult, error)
+	ExecuteFenced(ctx context.Context, request Request, waitFor []int32, measureTiming bool, deadlineNs int64, loopTimeoutDurationNs int64, durationNs int64) (FencedExecutionResult, error)
+	ConfigureExecutionBurst(ctx context.Context) (IBurst, error)
+	CreateReusableExecution(ctx context.Context, request Request, config ExecutionConfig) (IExecution, error)
+	ExecuteSynchronouslyWithConfig(ctx context.Context, request Request, config ExecutionConfig, deadlineNs int64) (ExecutionResult, error)
+	ExecuteFencedWithConfig(ctx context.Context, request Request, waitFor []int32, config ExecutionConfig, deadlineNs int64, durationNs int64) (FencedExecutionResult, error)
+}
+
+type preparedModelStubWrapper struct {
+	impl       IPreparedModelServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *preparedModelStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *preparedModelStubWrapper) ExecuteSynchronously(
+	ctx context.Context,
+	request Request,
+	measureTiming bool,
+	deadlineNs int64,
+	loopTimeoutDurationNs int64,
+) (ExecutionResult, error) {
+	return w.impl.ExecuteSynchronously(ctx, request, measureTiming, deadlineNs, loopTimeoutDurationNs)
+}
+
+func (w *preparedModelStubWrapper) ExecuteFenced(
+	ctx context.Context,
+	request Request,
+	waitFor []int32,
+	measureTiming bool,
+	deadlineNs int64,
+	loopTimeoutDurationNs int64,
+	durationNs int64,
+) (FencedExecutionResult, error) {
+	return w.impl.ExecuteFenced(ctx, request, waitFor, measureTiming, deadlineNs, loopTimeoutDurationNs, durationNs)
+}
+
+func (w *preparedModelStubWrapper) ConfigureExecutionBurst(
+	ctx context.Context,
+) (IBurst, error) {
+	return w.impl.ConfigureExecutionBurst(ctx)
+}
+
+func (w *preparedModelStubWrapper) CreateReusableExecution(
+	ctx context.Context,
+	request Request,
+	config ExecutionConfig,
+) (IExecution, error) {
+	return w.impl.CreateReusableExecution(ctx, request, config)
+}
+
+func (w *preparedModelStubWrapper) ExecuteSynchronouslyWithConfig(
+	ctx context.Context,
+	request Request,
+	config ExecutionConfig,
+	deadlineNs int64,
+) (ExecutionResult, error) {
+	return w.impl.ExecuteSynchronouslyWithConfig(ctx, request, config, deadlineNs)
+}
+
+func (w *preparedModelStubWrapper) ExecuteFencedWithConfig(
+	ctx context.Context,
+	request Request,
+	waitFor []int32,
+	config ExecutionConfig,
+	deadlineNs int64,
+	durationNs int64,
+) (FencedExecutionResult, error) {
+	return w.impl.ExecuteFencedWithConfig(ctx, request, waitFor, config, deadlineNs, durationNs)
+}
+
+var _ IPreparedModel = (*preparedModelStubWrapper)(nil)
+
+// NewPreparedModelStub creates a server-side IPreparedModel wrapping the given
+// server implementation. The returned value satisfies IPreparedModel
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPreparedModelStub(
+	impl IPreparedModelServer,
+) IPreparedModel {
+	wrapper := &preparedModelStubWrapper{impl: impl}
+	stub := &PreparedModelStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -166,7 +166,7 @@ func (p *StorageManagerProxy) RegisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "registerListener")
 	if _err != nil {
@@ -192,7 +192,7 @@ func (p *StorageManagerProxy) UnregisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "unregisterListener")
 	if _err != nil {
@@ -218,7 +218,7 @@ func (p *StorageManagerProxy) Shutdown(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "shutdown")
 	if _err != nil {
@@ -250,7 +250,7 @@ func (p *StorageManagerProxy) MountObb(
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
 	_data.WriteString16(rawPath)
 	_data.WriteString16(canonicalPath)
-	_data.WriteStrongBinder(token.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(nonce)
 	_data.WriteInt32(1)
 	if _err := obbInfo.MarshalParcel(_data); _err != nil {
@@ -286,7 +286,7 @@ func (p *StorageManagerProxy) UnmountObb(
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
 	_data.WriteString16(rawPath)
 	_data.WriteBool(force)
-	_data.WriteStrongBinder(token.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, token.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(nonce)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "unmountObb")
@@ -914,7 +914,7 @@ func (p *StorageManagerProxy) SetPrimaryStorageUuid(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStorageManager)
 	_data.WriteString16(volumeUuid)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStorageManager, "setPrimaryStorageUuid")
 	if _err != nil {
@@ -3111,4 +3111,544 @@ func (s *StorageManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IStorageManagerServer is the server-side interface that user implementations
+// provide to NewStorageManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStorageManagerServer interface {
+	RegisterListener(ctx context.Context, listener IStorageEventListener) error
+	UnregisterListener(ctx context.Context, listener IStorageEventListener) error
+	Shutdown(ctx context.Context, observer IStorageShutdownObserver) error
+	MountObb(ctx context.Context, rawPath string, canonicalPath string, token IObbActionListener, nonce int32, obbInfo res.ObbInfo) error
+	UnmountObb(ctx context.Context, rawPath string, force bool, token IObbActionListener, nonce int32) error
+	IsObbMounted(ctx context.Context, rawPath string) (bool, error)
+	GetMountedObbPath(ctx context.Context, rawPath string) (string, error)
+	GetVolumeList(ctx context.Context, flags int32) ([]StorageVolume, error)
+	Mkdirs(ctx context.Context, callingPkg string, path string) error
+	LastMaintenance(ctx context.Context) (int64, error)
+	RunMaintenance(ctx context.Context) error
+	GetDisks(ctx context.Context) ([]DiskInfo, error)
+	GetVolumes(ctx context.Context, flags int32) ([]VolumeInfo, error)
+	GetVolumeRecords(ctx context.Context, flags int32) ([]VolumeRecord, error)
+	Mount(ctx context.Context, volId string) error
+	Unmount(ctx context.Context, volId string) error
+	Format(ctx context.Context, volId string) error
+	PartitionPublic(ctx context.Context, diskId string) error
+	PartitionPrivate(ctx context.Context, diskId string) error
+	PartitionMixed(ctx context.Context, diskId string, ratio int32) error
+	SetVolumeNickname(ctx context.Context, fsUuid string, nickname string) error
+	SetVolumeUserFlags(ctx context.Context, fsUuid string, flags int32, mask int32) error
+	ForgetVolume(ctx context.Context, fsUuid string) error
+	ForgetAllVolumes(ctx context.Context) error
+	GetPrimaryStorageUuid(ctx context.Context) (string, error)
+	SetPrimaryStorageUuid(ctx context.Context, volumeUuid string, callback pm.IPackageMoveObserver) error
+	Benchmark(ctx context.Context, volId string, listener interface{}) error
+	SetDebugFlags(ctx context.Context, flags int32, mask int32) error
+	CreateUserStorageKeys(ctx context.Context, ephemeral bool) error
+	DestroyUserStorageKeys(ctx context.Context) error
+	UnlockCeStorage(ctx context.Context, secret []byte) error
+	LockCeStorage(ctx context.Context) error
+	IsCeStorageUnlocked(ctx context.Context) (bool, error)
+	PrepareUserStorage(ctx context.Context, volumeUuid string, flags int32) error
+	DestroyUserStorage(ctx context.Context, volumeUuid string, flags int32) error
+	SetCeStorageProtection(ctx context.Context, secret []byte) error
+	Fstrim(ctx context.Context, flags int32, listener interface{}) error
+	MountProxyFileDescriptorBridge(ctx context.Context) (os.AppFuseMount, error)
+	OpenProxyFileDescriptor(ctx context.Context, mountPointId int32, fileId int32, mode int32) (int32, error)
+	GetCacheQuotaBytes(ctx context.Context, volumeUuid string, uid int32) (int64, error)
+	GetCacheSizeBytes(ctx context.Context, volumeUuid string, uid int32) (int64, error)
+	GetAllocatableBytes(ctx context.Context, volumeUuid string, flags int32) (int64, error)
+	AllocateBytes(ctx context.Context, volumeUuid string, bytes int64, flags int32) error
+	RunIdleMaintenance(ctx context.Context) error
+	AbortIdleMaintenance(ctx context.Context) error
+	CommitChanges(ctx context.Context) error
+	SupportsCheckpoint(ctx context.Context) (bool, error)
+	StartCheckpoint(ctx context.Context, numTries int32) error
+	NeedsCheckpoint(ctx context.Context) (bool, error)
+	AbortChanges(ctx context.Context, message string, retry bool) error
+	FixupAppDir(ctx context.Context, path string) error
+	DisableAppDataIsolation(ctx context.Context, pkgName string, pid int32) error
+	GetManageSpaceActivityIntent(ctx context.Context, packageName string, requestCode int32) (app.PendingIntent, error)
+	NotifyAppIoBlocked(ctx context.Context, volumeUuid string, uid int32, tid int32, reason int32) error
+	NotifyAppIoResumed(ctx context.Context, volumeUuid string, uid int32, tid int32, reason int32) error
+	GetExternalStorageMountMode(ctx context.Context, uid int32, packageName string) (int32, error)
+	IsAppIoBlocked(ctx context.Context, volumeUuid string, uid int32, tid int32, reason int32) (bool, error)
+	SetCloudMediaProvider(ctx context.Context, authority string) error
+	GetCloudMediaProvider(ctx context.Context) (string, error)
+	GetInternalStorageBlockDeviceSize(ctx context.Context) (int64, error)
+	GetInternalStorageRemainingLifetime(ctx context.Context) (int32, error)
+}
+
+type storageManagerStubWrapper struct {
+	impl       IStorageManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *storageManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *storageManagerStubWrapper) RegisterListener(
+	ctx context.Context,
+	listener IStorageEventListener,
+) error {
+	return w.impl.RegisterListener(ctx, listener)
+}
+
+func (w *storageManagerStubWrapper) UnregisterListener(
+	ctx context.Context,
+	listener IStorageEventListener,
+) error {
+	return w.impl.UnregisterListener(ctx, listener)
+}
+
+func (w *storageManagerStubWrapper) Shutdown(
+	ctx context.Context,
+	observer IStorageShutdownObserver,
+) error {
+	return w.impl.Shutdown(ctx, observer)
+}
+
+func (w *storageManagerStubWrapper) MountObb(
+	ctx context.Context,
+	rawPath string,
+	canonicalPath string,
+	token IObbActionListener,
+	nonce int32,
+	obbInfo res.ObbInfo,
+) error {
+	return w.impl.MountObb(ctx, rawPath, canonicalPath, token, nonce, obbInfo)
+}
+
+func (w *storageManagerStubWrapper) UnmountObb(
+	ctx context.Context,
+	rawPath string,
+	force bool,
+	token IObbActionListener,
+	nonce int32,
+) error {
+	return w.impl.UnmountObb(ctx, rawPath, force, token, nonce)
+}
+
+func (w *storageManagerStubWrapper) IsObbMounted(
+	ctx context.Context,
+	rawPath string,
+) (bool, error) {
+	return w.impl.IsObbMounted(ctx, rawPath)
+}
+
+func (w *storageManagerStubWrapper) GetMountedObbPath(
+	ctx context.Context,
+	rawPath string,
+) (string, error) {
+	return w.impl.GetMountedObbPath(ctx, rawPath)
+}
+
+func (w *storageManagerStubWrapper) GetVolumeList(
+	ctx context.Context,
+	flags int32,
+) ([]StorageVolume, error) {
+	return w.impl.GetVolumeList(ctx, flags)
+}
+
+func (w *storageManagerStubWrapper) Mkdirs(
+	ctx context.Context,
+	callingPkg string,
+	path string,
+) error {
+	return w.impl.Mkdirs(ctx, callingPkg, path)
+}
+
+func (w *storageManagerStubWrapper) LastMaintenance(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.LastMaintenance(ctx)
+}
+
+func (w *storageManagerStubWrapper) RunMaintenance(
+	ctx context.Context,
+) error {
+	return w.impl.RunMaintenance(ctx)
+}
+
+func (w *storageManagerStubWrapper) GetDisks(
+	ctx context.Context,
+) ([]DiskInfo, error) {
+	return w.impl.GetDisks(ctx)
+}
+
+func (w *storageManagerStubWrapper) GetVolumes(
+	ctx context.Context,
+	flags int32,
+) ([]VolumeInfo, error) {
+	return w.impl.GetVolumes(ctx, flags)
+}
+
+func (w *storageManagerStubWrapper) GetVolumeRecords(
+	ctx context.Context,
+	flags int32,
+) ([]VolumeRecord, error) {
+	return w.impl.GetVolumeRecords(ctx, flags)
+}
+
+func (w *storageManagerStubWrapper) Mount(
+	ctx context.Context,
+	volId string,
+) error {
+	return w.impl.Mount(ctx, volId)
+}
+
+func (w *storageManagerStubWrapper) Unmount(
+	ctx context.Context,
+	volId string,
+) error {
+	return w.impl.Unmount(ctx, volId)
+}
+
+func (w *storageManagerStubWrapper) Format(
+	ctx context.Context,
+	volId string,
+) error {
+	return w.impl.Format(ctx, volId)
+}
+
+func (w *storageManagerStubWrapper) PartitionPublic(
+	ctx context.Context,
+	diskId string,
+) error {
+	return w.impl.PartitionPublic(ctx, diskId)
+}
+
+func (w *storageManagerStubWrapper) PartitionPrivate(
+	ctx context.Context,
+	diskId string,
+) error {
+	return w.impl.PartitionPrivate(ctx, diskId)
+}
+
+func (w *storageManagerStubWrapper) PartitionMixed(
+	ctx context.Context,
+	diskId string,
+	ratio int32,
+) error {
+	return w.impl.PartitionMixed(ctx, diskId, ratio)
+}
+
+func (w *storageManagerStubWrapper) SetVolumeNickname(
+	ctx context.Context,
+	fsUuid string,
+	nickname string,
+) error {
+	return w.impl.SetVolumeNickname(ctx, fsUuid, nickname)
+}
+
+func (w *storageManagerStubWrapper) SetVolumeUserFlags(
+	ctx context.Context,
+	fsUuid string,
+	flags int32,
+	mask int32,
+) error {
+	return w.impl.SetVolumeUserFlags(ctx, fsUuid, flags, mask)
+}
+
+func (w *storageManagerStubWrapper) ForgetVolume(
+	ctx context.Context,
+	fsUuid string,
+) error {
+	return w.impl.ForgetVolume(ctx, fsUuid)
+}
+
+func (w *storageManagerStubWrapper) ForgetAllVolumes(
+	ctx context.Context,
+) error {
+	return w.impl.ForgetAllVolumes(ctx)
+}
+
+func (w *storageManagerStubWrapper) GetPrimaryStorageUuid(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetPrimaryStorageUuid(ctx)
+}
+
+func (w *storageManagerStubWrapper) SetPrimaryStorageUuid(
+	ctx context.Context,
+	volumeUuid string,
+	callback pm.IPackageMoveObserver,
+) error {
+	return w.impl.SetPrimaryStorageUuid(ctx, volumeUuid, callback)
+}
+
+func (w *storageManagerStubWrapper) Benchmark(
+	ctx context.Context,
+	volId string,
+	listener interface{},
+) error {
+	return w.impl.Benchmark(ctx, volId, listener)
+}
+
+func (w *storageManagerStubWrapper) SetDebugFlags(
+	ctx context.Context,
+	flags int32,
+	mask int32,
+) error {
+	return w.impl.SetDebugFlags(ctx, flags, mask)
+}
+
+func (w *storageManagerStubWrapper) CreateUserStorageKeys(
+	ctx context.Context,
+	ephemeral bool,
+) error {
+	return w.impl.CreateUserStorageKeys(ctx, ephemeral)
+}
+
+func (w *storageManagerStubWrapper) DestroyUserStorageKeys(
+	ctx context.Context,
+) error {
+	return w.impl.DestroyUserStorageKeys(ctx)
+}
+
+func (w *storageManagerStubWrapper) UnlockCeStorage(
+	ctx context.Context,
+	secret []byte,
+) error {
+	return w.impl.UnlockCeStorage(ctx, secret)
+}
+
+func (w *storageManagerStubWrapper) LockCeStorage(
+	ctx context.Context,
+) error {
+	return w.impl.LockCeStorage(ctx)
+}
+
+func (w *storageManagerStubWrapper) IsCeStorageUnlocked(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCeStorageUnlocked(ctx)
+}
+
+func (w *storageManagerStubWrapper) PrepareUserStorage(
+	ctx context.Context,
+	volumeUuid string,
+	flags int32,
+) error {
+	return w.impl.PrepareUserStorage(ctx, volumeUuid, flags)
+}
+
+func (w *storageManagerStubWrapper) DestroyUserStorage(
+	ctx context.Context,
+	volumeUuid string,
+	flags int32,
+) error {
+	return w.impl.DestroyUserStorage(ctx, volumeUuid, flags)
+}
+
+func (w *storageManagerStubWrapper) SetCeStorageProtection(
+	ctx context.Context,
+	secret []byte,
+) error {
+	return w.impl.SetCeStorageProtection(ctx, secret)
+}
+
+func (w *storageManagerStubWrapper) Fstrim(
+	ctx context.Context,
+	flags int32,
+	listener interface{},
+) error {
+	return w.impl.Fstrim(ctx, flags, listener)
+}
+
+func (w *storageManagerStubWrapper) MountProxyFileDescriptorBridge(
+	ctx context.Context,
+) (os.AppFuseMount, error) {
+	return w.impl.MountProxyFileDescriptorBridge(ctx)
+}
+
+func (w *storageManagerStubWrapper) OpenProxyFileDescriptor(
+	ctx context.Context,
+	mountPointId int32,
+	fileId int32,
+	mode int32,
+) (int32, error) {
+	return w.impl.OpenProxyFileDescriptor(ctx, mountPointId, fileId, mode)
+}
+
+func (w *storageManagerStubWrapper) GetCacheQuotaBytes(
+	ctx context.Context,
+	volumeUuid string,
+	uid int32,
+) (int64, error) {
+	return w.impl.GetCacheQuotaBytes(ctx, volumeUuid, uid)
+}
+
+func (w *storageManagerStubWrapper) GetCacheSizeBytes(
+	ctx context.Context,
+	volumeUuid string,
+	uid int32,
+) (int64, error) {
+	return w.impl.GetCacheSizeBytes(ctx, volumeUuid, uid)
+}
+
+func (w *storageManagerStubWrapper) GetAllocatableBytes(
+	ctx context.Context,
+	volumeUuid string,
+	flags int32,
+) (int64, error) {
+	return w.impl.GetAllocatableBytes(ctx, volumeUuid, flags)
+}
+
+func (w *storageManagerStubWrapper) AllocateBytes(
+	ctx context.Context,
+	volumeUuid string,
+	bytes int64,
+	flags int32,
+) error {
+	return w.impl.AllocateBytes(ctx, volumeUuid, bytes, flags)
+}
+
+func (w *storageManagerStubWrapper) RunIdleMaintenance(
+	ctx context.Context,
+) error {
+	return w.impl.RunIdleMaintenance(ctx)
+}
+
+func (w *storageManagerStubWrapper) AbortIdleMaintenance(
+	ctx context.Context,
+) error {
+	return w.impl.AbortIdleMaintenance(ctx)
+}
+
+func (w *storageManagerStubWrapper) CommitChanges(
+	ctx context.Context,
+) error {
+	return w.impl.CommitChanges(ctx)
+}
+
+func (w *storageManagerStubWrapper) SupportsCheckpoint(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.SupportsCheckpoint(ctx)
+}
+
+func (w *storageManagerStubWrapper) StartCheckpoint(
+	ctx context.Context,
+	numTries int32,
+) error {
+	return w.impl.StartCheckpoint(ctx, numTries)
+}
+
+func (w *storageManagerStubWrapper) NeedsCheckpoint(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.NeedsCheckpoint(ctx)
+}
+
+func (w *storageManagerStubWrapper) AbortChanges(
+	ctx context.Context,
+	message string,
+	retry bool,
+) error {
+	return w.impl.AbortChanges(ctx, message, retry)
+}
+
+func (w *storageManagerStubWrapper) FixupAppDir(
+	ctx context.Context,
+	path string,
+) error {
+	return w.impl.FixupAppDir(ctx, path)
+}
+
+func (w *storageManagerStubWrapper) DisableAppDataIsolation(
+	ctx context.Context,
+	pkgName string,
+	pid int32,
+) error {
+	return w.impl.DisableAppDataIsolation(ctx, pkgName, pid)
+}
+
+func (w *storageManagerStubWrapper) GetManageSpaceActivityIntent(
+	ctx context.Context,
+	packageName string,
+	requestCode int32,
+) (app.PendingIntent, error) {
+	return w.impl.GetManageSpaceActivityIntent(ctx, packageName, requestCode)
+}
+
+func (w *storageManagerStubWrapper) NotifyAppIoBlocked(
+	ctx context.Context,
+	volumeUuid string,
+	uid int32,
+	tid int32,
+	reason int32,
+) error {
+	return w.impl.NotifyAppIoBlocked(ctx, volumeUuid, uid, tid, reason)
+}
+
+func (w *storageManagerStubWrapper) NotifyAppIoResumed(
+	ctx context.Context,
+	volumeUuid string,
+	uid int32,
+	tid int32,
+	reason int32,
+) error {
+	return w.impl.NotifyAppIoResumed(ctx, volumeUuid, uid, tid, reason)
+}
+
+func (w *storageManagerStubWrapper) GetExternalStorageMountMode(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetExternalStorageMountMode(ctx, uid, packageName)
+}
+
+func (w *storageManagerStubWrapper) IsAppIoBlocked(
+	ctx context.Context,
+	volumeUuid string,
+	uid int32,
+	tid int32,
+	reason int32,
+) (bool, error) {
+	return w.impl.IsAppIoBlocked(ctx, volumeUuid, uid, tid, reason)
+}
+
+func (w *storageManagerStubWrapper) SetCloudMediaProvider(
+	ctx context.Context,
+	authority string,
+) error {
+	return w.impl.SetCloudMediaProvider(ctx, authority)
+}
+
+func (w *storageManagerStubWrapper) GetCloudMediaProvider(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCloudMediaProvider(ctx)
+}
+
+func (w *storageManagerStubWrapper) GetInternalStorageBlockDeviceSize(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetInternalStorageBlockDeviceSize(ctx)
+}
+
+func (w *storageManagerStubWrapper) GetInternalStorageRemainingLifetime(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetInternalStorageRemainingLifetime(ctx)
+}
+
+var _ IStorageManager = (*storageManagerStubWrapper)(nil)
+
+// NewStorageManagerStub creates a server-side IStorageManager wrapping the given
+// server implementation. The returned value satisfies IStorageManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStorageManagerStub(
+	impl IStorageManagerServer,
+) IStorageManager {
+	wrapper := &storageManagerStubWrapper{impl: impl}
+	stub := &StorageManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -527,3 +527,136 @@ func (s *WifiStaIfaceEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWifiStaIfaceEventCallbackServer is the server-side interface that user implementations
+// provide to NewWifiStaIfaceEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiStaIfaceEventCallbackServer interface {
+	OnBackgroundFullScanResult(ctx context.Context, cmdId int32, bucketsScanned int32, result StaScanResult) error
+	OnBackgroundScanFailure(ctx context.Context, cmdId int32) error
+	OnBackgroundScanResults(ctx context.Context, cmdId int32, scanDatas []StaScanData) error
+	OnRssiThresholdBreached(ctx context.Context, cmdId int32, currBssid []byte, currRssi int32) error
+	OnTwtFailure(ctx context.Context, cmdId int32, error_ wifiIWifiStaIfaceEventCallback.TwtErrorCode) error
+	OnTwtSessionCreate(ctx context.Context, cmdId int32, twtSession TwtSession) error
+	OnTwtSessionUpdate(ctx context.Context, cmdId int32, twtSession TwtSession) error
+	OnTwtSessionTeardown(ctx context.Context, cmdId int32, twtSessionId int32, reasonCode wifiIWifiStaIfaceEventCallback.TwtTeardownReasonCode) error
+	OnTwtSessionStats(ctx context.Context, cmdId int32, twtSessionId int32, twtSessionStats TwtSessionStats) error
+	OnTwtSessionSuspend(ctx context.Context, cmdId int32, twtSessionId int32) error
+	OnTwtSessionResume(ctx context.Context, cmdId int32, twtSessionId int32) error
+}
+
+type wifiStaIfaceEventCallbackStubWrapper struct {
+	impl       IWifiStaIfaceEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnBackgroundFullScanResult(
+	ctx context.Context,
+	cmdId int32,
+	bucketsScanned int32,
+	result StaScanResult,
+) error {
+	return w.impl.OnBackgroundFullScanResult(ctx, cmdId, bucketsScanned, result)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnBackgroundScanFailure(
+	ctx context.Context,
+	cmdId int32,
+) error {
+	return w.impl.OnBackgroundScanFailure(ctx, cmdId)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnBackgroundScanResults(
+	ctx context.Context,
+	cmdId int32,
+	scanDatas []StaScanData,
+) error {
+	return w.impl.OnBackgroundScanResults(ctx, cmdId, scanDatas)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnRssiThresholdBreached(
+	ctx context.Context,
+	cmdId int32,
+	currBssid []byte,
+	currRssi int32,
+) error {
+	return w.impl.OnRssiThresholdBreached(ctx, cmdId, currBssid, currRssi)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnTwtFailure(
+	ctx context.Context,
+	cmdId int32,
+	error_ wifiIWifiStaIfaceEventCallback.TwtErrorCode,
+) error {
+	return w.impl.OnTwtFailure(ctx, cmdId, error_)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnTwtSessionCreate(
+	ctx context.Context,
+	cmdId int32,
+	twtSession TwtSession,
+) error {
+	return w.impl.OnTwtSessionCreate(ctx, cmdId, twtSession)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnTwtSessionUpdate(
+	ctx context.Context,
+	cmdId int32,
+	twtSession TwtSession,
+) error {
+	return w.impl.OnTwtSessionUpdate(ctx, cmdId, twtSession)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnTwtSessionTeardown(
+	ctx context.Context,
+	cmdId int32,
+	twtSessionId int32,
+	reasonCode wifiIWifiStaIfaceEventCallback.TwtTeardownReasonCode,
+) error {
+	return w.impl.OnTwtSessionTeardown(ctx, cmdId, twtSessionId, reasonCode)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnTwtSessionStats(
+	ctx context.Context,
+	cmdId int32,
+	twtSessionId int32,
+	twtSessionStats TwtSessionStats,
+) error {
+	return w.impl.OnTwtSessionStats(ctx, cmdId, twtSessionId, twtSessionStats)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnTwtSessionSuspend(
+	ctx context.Context,
+	cmdId int32,
+	twtSessionId int32,
+) error {
+	return w.impl.OnTwtSessionSuspend(ctx, cmdId, twtSessionId)
+}
+
+func (w *wifiStaIfaceEventCallbackStubWrapper) OnTwtSessionResume(
+	ctx context.Context,
+	cmdId int32,
+	twtSessionId int32,
+) error {
+	return w.impl.OnTwtSessionResume(ctx, cmdId, twtSessionId)
+}
+
+var _ IWifiStaIfaceEventCallback = (*wifiStaIfaceEventCallbackStubWrapper)(nil)
+
+// NewWifiStaIfaceEventCallbackStub creates a server-side IWifiStaIfaceEventCallback wrapping the given
+// server implementation. The returned value satisfies IWifiStaIfaceEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiStaIfaceEventCallbackStub(
+	impl IWifiStaIfaceEventCallbackServer,
+) IWifiStaIfaceEventCallback {
+	wrapper := &wifiStaIfaceEventCallbackStubWrapper{impl: impl}
+	stub := &WifiStaIfaceEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

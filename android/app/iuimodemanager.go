@@ -94,7 +94,7 @@ func (p *UiModeManagerProxy) AddCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "addCallback")
 	if _err != nil {
@@ -659,7 +659,7 @@ func (p *UiModeManagerProxy) RequestProjection(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 	_data.WriteInt32(projectionType)
 	_data.WriteString16(_identity.PackageName)
 
@@ -725,7 +725,7 @@ func (p *UiModeManagerProxy) AddOnProjectionStateChangedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(projectionType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "addOnProjectionStateChangedListener")
@@ -752,7 +752,7 @@ func (p *UiModeManagerProxy) RemoveOnProjectionStateChangedListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUiModeManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUiModeManager, "removeOnProjectionStateChangedListener")
 	if _err != nil {
@@ -1320,4 +1320,245 @@ func (s *UiModeManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUiModeManagerServer is the server-side interface that user implementations
+// provide to NewUiModeManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUiModeManagerServer interface {
+	AddCallback(ctx context.Context, callback IUiModeManagerCallback) error
+	EnableCarMode(ctx context.Context, flags int32, priority int32) error
+	DisableCarMode(ctx context.Context, flags int32) error
+	DisableCarModeByCallingPackage(ctx context.Context, flags int32) error
+	GetCurrentModeType(ctx context.Context) (int32, error)
+	SetNightMode(ctx context.Context, mode int32) error
+	GetNightMode(ctx context.Context) (int32, error)
+	SetNightModeCustomType(ctx context.Context, nightModeCustomType int32) error
+	GetNightModeCustomType(ctx context.Context) (int32, error)
+	SetAttentionModeThemeOverlay(ctx context.Context, attentionModeThemeOverlayType int32) error
+	GetAttentionModeThemeOverlay(ctx context.Context) (int32, error)
+	SetApplicationNightMode(ctx context.Context, mode int32) error
+	IsUiModeLocked(ctx context.Context) (bool, error)
+	IsNightModeLocked(ctx context.Context) (bool, error)
+	SetNightModeActivatedForCustomMode(ctx context.Context, nightModeCustom int32, active bool) (bool, error)
+	SetNightModeActivated(ctx context.Context, active bool) (bool, error)
+	GetCustomNightModeStart(ctx context.Context) (int64, error)
+	SetCustomNightModeStart(ctx context.Context, time int64) error
+	GetCustomNightModeEnd(ctx context.Context) (int64, error)
+	SetCustomNightModeEnd(ctx context.Context, time int64) error
+	RequestProjection(ctx context.Context, binder_ binder.IBinder, projectionType int32) (bool, error)
+	ReleaseProjection(ctx context.Context, projectionType int32) (bool, error)
+	AddOnProjectionStateChangedListener(ctx context.Context, listener IOnProjectionStateChangedListener, projectionType int32) error
+	RemoveOnProjectionStateChangedListener(ctx context.Context, listener IOnProjectionStateChangedListener) error
+	GetProjectingPackages(ctx context.Context, projectionType int32) ([]string, error)
+	GetActiveProjectionTypes(ctx context.Context) (int32, error)
+	GetContrast(ctx context.Context) (float32, error)
+}
+
+type uiModeManagerStubWrapper struct {
+	impl       IUiModeManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *uiModeManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *uiModeManagerStubWrapper) AddCallback(
+	ctx context.Context,
+	callback IUiModeManagerCallback,
+) error {
+	return w.impl.AddCallback(ctx, callback)
+}
+
+func (w *uiModeManagerStubWrapper) EnableCarMode(
+	ctx context.Context,
+	flags int32,
+	priority int32,
+) error {
+	return w.impl.EnableCarMode(ctx, flags, priority)
+}
+
+func (w *uiModeManagerStubWrapper) DisableCarMode(
+	ctx context.Context,
+	flags int32,
+) error {
+	return w.impl.DisableCarMode(ctx, flags)
+}
+
+func (w *uiModeManagerStubWrapper) DisableCarModeByCallingPackage(
+	ctx context.Context,
+	flags int32,
+) error {
+	return w.impl.DisableCarModeByCallingPackage(ctx, flags)
+}
+
+func (w *uiModeManagerStubWrapper) GetCurrentModeType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentModeType(ctx)
+}
+
+func (w *uiModeManagerStubWrapper) SetNightMode(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.SetNightMode(ctx, mode)
+}
+
+func (w *uiModeManagerStubWrapper) GetNightMode(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNightMode(ctx)
+}
+
+func (w *uiModeManagerStubWrapper) SetNightModeCustomType(
+	ctx context.Context,
+	nightModeCustomType int32,
+) error {
+	return w.impl.SetNightModeCustomType(ctx, nightModeCustomType)
+}
+
+func (w *uiModeManagerStubWrapper) GetNightModeCustomType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetNightModeCustomType(ctx)
+}
+
+func (w *uiModeManagerStubWrapper) SetAttentionModeThemeOverlay(
+	ctx context.Context,
+	attentionModeThemeOverlayType int32,
+) error {
+	return w.impl.SetAttentionModeThemeOverlay(ctx, attentionModeThemeOverlayType)
+}
+
+func (w *uiModeManagerStubWrapper) GetAttentionModeThemeOverlay(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetAttentionModeThemeOverlay(ctx)
+}
+
+func (w *uiModeManagerStubWrapper) SetApplicationNightMode(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.SetApplicationNightMode(ctx, mode)
+}
+
+func (w *uiModeManagerStubWrapper) IsUiModeLocked(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUiModeLocked(ctx)
+}
+
+func (w *uiModeManagerStubWrapper) IsNightModeLocked(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsNightModeLocked(ctx)
+}
+
+func (w *uiModeManagerStubWrapper) SetNightModeActivatedForCustomMode(
+	ctx context.Context,
+	nightModeCustom int32,
+	active bool,
+) (bool, error) {
+	return w.impl.SetNightModeActivatedForCustomMode(ctx, nightModeCustom, active)
+}
+
+func (w *uiModeManagerStubWrapper) SetNightModeActivated(
+	ctx context.Context,
+	active bool,
+) (bool, error) {
+	return w.impl.SetNightModeActivated(ctx, active)
+}
+
+func (w *uiModeManagerStubWrapper) GetCustomNightModeStart(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetCustomNightModeStart(ctx)
+}
+
+func (w *uiModeManagerStubWrapper) SetCustomNightModeStart(
+	ctx context.Context,
+	time int64,
+) error {
+	return w.impl.SetCustomNightModeStart(ctx, time)
+}
+
+func (w *uiModeManagerStubWrapper) GetCustomNightModeEnd(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetCustomNightModeEnd(ctx)
+}
+
+func (w *uiModeManagerStubWrapper) SetCustomNightModeEnd(
+	ctx context.Context,
+	time int64,
+) error {
+	return w.impl.SetCustomNightModeEnd(ctx, time)
+}
+
+func (w *uiModeManagerStubWrapper) RequestProjection(
+	ctx context.Context,
+	binder_ binder.IBinder,
+	projectionType int32,
+) (bool, error) {
+	return w.impl.RequestProjection(ctx, binder_, projectionType)
+}
+
+func (w *uiModeManagerStubWrapper) ReleaseProjection(
+	ctx context.Context,
+	projectionType int32,
+) (bool, error) {
+	return w.impl.ReleaseProjection(ctx, projectionType)
+}
+
+func (w *uiModeManagerStubWrapper) AddOnProjectionStateChangedListener(
+	ctx context.Context,
+	listener IOnProjectionStateChangedListener,
+	projectionType int32,
+) error {
+	return w.impl.AddOnProjectionStateChangedListener(ctx, listener, projectionType)
+}
+
+func (w *uiModeManagerStubWrapper) RemoveOnProjectionStateChangedListener(
+	ctx context.Context,
+	listener IOnProjectionStateChangedListener,
+) error {
+	return w.impl.RemoveOnProjectionStateChangedListener(ctx, listener)
+}
+
+func (w *uiModeManagerStubWrapper) GetProjectingPackages(
+	ctx context.Context,
+	projectionType int32,
+) ([]string, error) {
+	return w.impl.GetProjectingPackages(ctx, projectionType)
+}
+
+func (w *uiModeManagerStubWrapper) GetActiveProjectionTypes(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetActiveProjectionTypes(ctx)
+}
+
+func (w *uiModeManagerStubWrapper) GetContrast(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetContrast(ctx)
+}
+
+var _ IUiModeManager = (*uiModeManagerStubWrapper)(nil)
+
+// NewUiModeManagerStub creates a server-side IUiModeManager wrapping the given
+// server implementation. The returned value satisfies IUiModeManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUiModeManagerStub(
+	impl IUiModeManagerServer,
+) IUiModeManager {
+	wrapper := &uiModeManagerStubWrapper{impl: impl}
+	stub := &UiModeManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

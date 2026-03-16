@@ -473,3 +473,102 @@ func (s *RemoteMemoryIntArrayStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRemoteMemoryIntArrayServer is the server-side interface that user implementations
+// provide to NewRemoteMemoryIntArrayStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteMemoryIntArrayServer interface {
+	PeekInstance(ctx context.Context) (MemoryIntArray, error)
+	Create(ctx context.Context, size int32) error
+	IsWritable(ctx context.Context) (bool, error)
+	Get(ctx context.Context, index int32) (int32, error)
+	Set(ctx context.Context, index int32, value int32) error
+	Size(ctx context.Context) (int32, error)
+	Close(ctx context.Context) error
+	IsClosed(ctx context.Context) (bool, error)
+	AccessLastElementInRemoteProcess(ctx context.Context, array MemoryIntArray) error
+}
+
+type remoteMemoryIntArrayStubWrapper struct {
+	impl       IRemoteMemoryIntArrayServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) PeekInstance(
+	ctx context.Context,
+) (MemoryIntArray, error) {
+	return w.impl.PeekInstance(ctx)
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) Create(
+	ctx context.Context,
+	size int32,
+) error {
+	return w.impl.Create(ctx, size)
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) IsWritable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsWritable(ctx)
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) Get(
+	ctx context.Context,
+	index int32,
+) (int32, error) {
+	return w.impl.Get(ctx, index)
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) Set(
+	ctx context.Context,
+	index int32,
+	value int32,
+) error {
+	return w.impl.Set(ctx, index, value)
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) Size(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Size(ctx)
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) IsClosed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsClosed(ctx)
+}
+
+func (w *remoteMemoryIntArrayStubWrapper) AccessLastElementInRemoteProcess(
+	ctx context.Context,
+	array MemoryIntArray,
+) error {
+	return w.impl.AccessLastElementInRemoteProcess(ctx, array)
+}
+
+var _ IRemoteMemoryIntArray = (*remoteMemoryIntArrayStubWrapper)(nil)
+
+// NewRemoteMemoryIntArrayStub creates a server-side IRemoteMemoryIntArray wrapping the given
+// server implementation. The returned value satisfies IRemoteMemoryIntArray
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteMemoryIntArrayStub(
+	impl IRemoteMemoryIntArrayServer,
+) IRemoteMemoryIntArray {
+	wrapper := &remoteMemoryIntArrayStubWrapper{impl: impl}
+	stub := &RemoteMemoryIntArrayStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

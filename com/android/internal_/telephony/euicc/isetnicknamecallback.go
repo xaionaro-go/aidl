@@ -82,3 +82,42 @@ func (s *SetNicknameCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISetNicknameCallbackServer is the server-side interface that user implementations
+// provide to NewSetNicknameCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISetNicknameCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32) error
+}
+
+type setNicknameCallbackStubWrapper struct {
+	impl       ISetNicknameCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *setNicknameCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *setNicknameCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+) error {
+	return w.impl.OnComplete(ctx, resultCode)
+}
+
+var _ ISetNicknameCallback = (*setNicknameCallbackStubWrapper)(nil)
+
+// NewSetNicknameCallbackStub creates a server-side ISetNicknameCallback wrapping the given
+// server implementation. The returned value satisfies ISetNicknameCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSetNicknameCallbackStub(
+	impl ISetNicknameCallbackServer,
+) ISetNicknameCallback {
+	wrapper := &setNicknameCallbackStubWrapper{impl: impl}
+	stub := &SetNicknameCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

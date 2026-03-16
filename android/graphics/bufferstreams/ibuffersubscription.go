@@ -106,3 +106,49 @@ func (s *BufferSubscriptionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBufferSubscriptionServer is the server-side interface that user implementations
+// provide to NewBufferSubscriptionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBufferSubscriptionServer interface {
+	Request(ctx context.Context, n int64) error
+	Cancel(ctx context.Context) error
+}
+
+type bufferSubscriptionStubWrapper struct {
+	impl       IBufferSubscriptionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bufferSubscriptionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bufferSubscriptionStubWrapper) Request(
+	ctx context.Context,
+	n int64,
+) error {
+	return w.impl.Request(ctx, n)
+}
+
+func (w *bufferSubscriptionStubWrapper) Cancel(
+	ctx context.Context,
+) error {
+	return w.impl.Cancel(ctx)
+}
+
+var _ IBufferSubscription = (*bufferSubscriptionStubWrapper)(nil)
+
+// NewBufferSubscriptionStub creates a server-side IBufferSubscription wrapping the given
+// server implementation. The returned value satisfies IBufferSubscription
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBufferSubscriptionStub(
+	impl IBufferSubscriptionServer,
+) IBufferSubscription {
+	wrapper := &bufferSubscriptionStubWrapper{impl: impl}
+	stub := &BufferSubscriptionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

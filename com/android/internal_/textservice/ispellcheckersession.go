@@ -195,3 +195,67 @@ func (s *SpellCheckerSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISpellCheckerSessionServer is the server-side interface that user implementations
+// provide to NewSpellCheckerSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpellCheckerSessionServer interface {
+	OnGetSuggestionsMultiple(ctx context.Context, textInfos []viewTextservice.TextInfo, suggestionsLimit int32, multipleWords bool) error
+	OnGetSentenceSuggestionsMultiple(ctx context.Context, textInfos []viewTextservice.TextInfo, suggestionsLimit int32) error
+	OnCancel(ctx context.Context) error
+	OnClose(ctx context.Context) error
+}
+
+type spellCheckerSessionStubWrapper struct {
+	impl       ISpellCheckerSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spellCheckerSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spellCheckerSessionStubWrapper) OnGetSuggestionsMultiple(
+	ctx context.Context,
+	textInfos []viewTextservice.TextInfo,
+	suggestionsLimit int32,
+	multipleWords bool,
+) error {
+	return w.impl.OnGetSuggestionsMultiple(ctx, textInfos, suggestionsLimit, multipleWords)
+}
+
+func (w *spellCheckerSessionStubWrapper) OnGetSentenceSuggestionsMultiple(
+	ctx context.Context,
+	textInfos []viewTextservice.TextInfo,
+	suggestionsLimit int32,
+) error {
+	return w.impl.OnGetSentenceSuggestionsMultiple(ctx, textInfos, suggestionsLimit)
+}
+
+func (w *spellCheckerSessionStubWrapper) OnCancel(
+	ctx context.Context,
+) error {
+	return w.impl.OnCancel(ctx)
+}
+
+func (w *spellCheckerSessionStubWrapper) OnClose(
+	ctx context.Context,
+) error {
+	return w.impl.OnClose(ctx)
+}
+
+var _ ISpellCheckerSession = (*spellCheckerSessionStubWrapper)(nil)
+
+// NewSpellCheckerSessionStub creates a server-side ISpellCheckerSession wrapping the given
+// server implementation. The returned value satisfies ISpellCheckerSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpellCheckerSessionStub(
+	impl ISpellCheckerSessionServer,
+) ISpellCheckerSession {
+	wrapper := &spellCheckerSessionStubWrapper{impl: impl}
+	stub := &SpellCheckerSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

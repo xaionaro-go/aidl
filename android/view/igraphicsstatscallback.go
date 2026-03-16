@@ -76,3 +76,41 @@ func (s *GraphicsStatsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGraphicsStatsCallbackServer is the server-side interface that user implementations
+// provide to NewGraphicsStatsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGraphicsStatsCallbackServer interface {
+	OnRotateGraphicsStatsBuffer(ctx context.Context) error
+}
+
+type graphicsStatsCallbackStubWrapper struct {
+	impl       IGraphicsStatsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *graphicsStatsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *graphicsStatsCallbackStubWrapper) OnRotateGraphicsStatsBuffer(
+	ctx context.Context,
+) error {
+	return w.impl.OnRotateGraphicsStatsBuffer(ctx)
+}
+
+var _ IGraphicsStatsCallback = (*graphicsStatsCallbackStubWrapper)(nil)
+
+// NewGraphicsStatsCallbackStub creates a server-side IGraphicsStatsCallback wrapping the given
+// server implementation. The returned value satisfies IGraphicsStatsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGraphicsStatsCallbackStub(
+	impl IGraphicsStatsCallbackServer,
+) IGraphicsStatsCallback {
+	wrapper := &graphicsStatsCallbackStubWrapper{impl: impl}
+	stub := &GraphicsStatsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -99,7 +99,7 @@ func (p *DumpstateProxy) StartBugreport(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(bugreportMode)
 	_data.WriteInt32(bugreportFlags)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteBool(isScreenshotRequested)
 	_data.WriteBool(skipUserConsent)
 
@@ -165,7 +165,7 @@ func (p *DumpstateProxy) RetrieveBugreport(
 	_data.WriteString16(bugreportFile)
 	_data.WriteBool(keepBugreportOnRetrieval)
 	_data.WriteBool(skipUserConsent)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDumpstate, "retrieveBugreport")
 	if _err != nil {
@@ -311,4 +311,75 @@ func (s *DumpstateStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDumpstateServer is the server-side interface that user implementations
+// provide to NewDumpstateStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDumpstateServer interface {
+	PreDumpUiData(ctx context.Context) error
+	StartBugreport(ctx context.Context, bugreportFd interface{}, screenshotFd interface{}, bugreportMode int32, bugreportFlags int32, listener IDumpstateListener, isScreenshotRequested bool, skipUserConsent bool) error
+	CancelBugreport(ctx context.Context) error
+	RetrieveBugreport(ctx context.Context, bugreportFd interface{}, bugreportFile string, keepBugreportOnRetrieval bool, skipUserConsent bool, listener IDumpstateListener) error
+}
+
+type dumpstateStubWrapper struct {
+	impl       IDumpstateServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dumpstateStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dumpstateStubWrapper) PreDumpUiData(
+	ctx context.Context,
+) error {
+	return w.impl.PreDumpUiData(ctx)
+}
+
+func (w *dumpstateStubWrapper) StartBugreport(
+	ctx context.Context,
+	bugreportFd interface{},
+	screenshotFd interface{},
+	bugreportMode int32,
+	bugreportFlags int32,
+	listener IDumpstateListener,
+	isScreenshotRequested bool,
+	skipUserConsent bool,
+) error {
+	return w.impl.StartBugreport(ctx, bugreportFd, screenshotFd, bugreportMode, bugreportFlags, listener, isScreenshotRequested, skipUserConsent)
+}
+
+func (w *dumpstateStubWrapper) CancelBugreport(
+	ctx context.Context,
+) error {
+	return w.impl.CancelBugreport(ctx)
+}
+
+func (w *dumpstateStubWrapper) RetrieveBugreport(
+	ctx context.Context,
+	bugreportFd interface{},
+	bugreportFile string,
+	keepBugreportOnRetrieval bool,
+	skipUserConsent bool,
+	listener IDumpstateListener,
+) error {
+	return w.impl.RetrieveBugreport(ctx, bugreportFd, bugreportFile, keepBugreportOnRetrieval, skipUserConsent, listener)
+}
+
+var _ IDumpstate = (*dumpstateStubWrapper)(nil)
+
+// NewDumpstateStub creates a server-side IDumpstate wrapping the given
+// server implementation. The returned value satisfies IDumpstate
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDumpstateStub(
+	impl IDumpstateServer,
+) IDumpstate {
+	wrapper := &dumpstateStubWrapper{impl: impl}
+	stub := &DumpstateStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

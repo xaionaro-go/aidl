@@ -75,7 +75,7 @@ func (p *QualifiedNetworksServiceCallbackProxy) OnNetworkValidationRequested(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQualifiedNetworksServiceCallback)
 	_data.WriteInt32(networkCapability)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQualifiedNetworksServiceCallback, "onNetworkValidationRequested")
 	if _err != nil {
@@ -165,4 +165,62 @@ func (s *QualifiedNetworksServiceCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IQualifiedNetworksServiceCallbackServer is the server-side interface that user implementations
+// provide to NewQualifiedNetworksServiceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IQualifiedNetworksServiceCallbackServer interface {
+	OnQualifiedNetworkTypesChanged(ctx context.Context, apnTypes int32, qualifiedNetworkTypes []int32) error
+	OnNetworkValidationRequested(ctx context.Context, networkCapability int32, callback telephony.IIntegerConsumer) error
+	OnReconnectQualifiedNetworkType(ctx context.Context, apnTypes int32, qualifiedNetworkType int32) error
+}
+
+type qualifiedNetworksServiceCallbackStubWrapper struct {
+	impl       IQualifiedNetworksServiceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *qualifiedNetworksServiceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *qualifiedNetworksServiceCallbackStubWrapper) OnQualifiedNetworkTypesChanged(
+	ctx context.Context,
+	apnTypes int32,
+	qualifiedNetworkTypes []int32,
+) error {
+	return w.impl.OnQualifiedNetworkTypesChanged(ctx, apnTypes, qualifiedNetworkTypes)
+}
+
+func (w *qualifiedNetworksServiceCallbackStubWrapper) OnNetworkValidationRequested(
+	ctx context.Context,
+	networkCapability int32,
+	callback telephony.IIntegerConsumer,
+) error {
+	return w.impl.OnNetworkValidationRequested(ctx, networkCapability, callback)
+}
+
+func (w *qualifiedNetworksServiceCallbackStubWrapper) OnReconnectQualifiedNetworkType(
+	ctx context.Context,
+	apnTypes int32,
+	qualifiedNetworkType int32,
+) error {
+	return w.impl.OnReconnectQualifiedNetworkType(ctx, apnTypes, qualifiedNetworkType)
+}
+
+var _ IQualifiedNetworksServiceCallback = (*qualifiedNetworksServiceCallbackStubWrapper)(nil)
+
+// NewQualifiedNetworksServiceCallbackStub creates a server-side IQualifiedNetworksServiceCallback wrapping the given
+// server implementation. The returned value satisfies IQualifiedNetworksServiceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewQualifiedNetworksServiceCallbackStub(
+	impl IQualifiedNetworksServiceCallbackServer,
+) IQualifiedNetworksServiceCallback {
+	wrapper := &qualifiedNetworksServiceCallbackStubWrapper{impl: impl}
+	stub := &QualifiedNetworksServiceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

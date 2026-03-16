@@ -5,7 +5,9 @@ import (
 	"fmt"
 	content "github.com/xaionaro-go/binder/android/content"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
+	os "github.com/xaionaro-go/binder/android/os"
 	inputmethod "github.com/xaionaro-go/binder/android/view/inputmethod"
+	androidWindow "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -81,8 +83,8 @@ type IWindowSession interface {
 	SetShouldZoomOutWallpaper(ctx context.Context, windowToken binder.IBinder, shouldZoom bool) error
 	WallpaperOffsetsComplete(ctx context.Context, window binder.IBinder) error
 	SetWallpaperDisplayOffset(ctx context.Context, windowToken binder.IBinder, x int32, y int32) error
-	SendWallpaperCommand(ctx context.Context, window binder.IBinder, action string, x int32, y int32, z int32, extras interface{}, sync bool) error
-	WallpaperCommandComplete(ctx context.Context, window binder.IBinder, result interface{}) error
+	SendWallpaperCommand(ctx context.Context, window binder.IBinder, action string, x int32, y int32, z int32, extras os.Bundle, sync bool) error
+	WallpaperCommandComplete(ctx context.Context, window binder.IBinder, result os.Bundle) error
 	OnRectangleOnScreenRequested(ctx context.Context, token binder.IBinder, rectangle graphics.Rect) error
 	GetWindowId(ctx context.Context, window binder.IBinder) (IWindowId, error)
 	PokeDrawLock(ctx context.Context, window binder.IBinder) error
@@ -93,11 +95,11 @@ type IWindowSession interface {
 	ReportSystemGestureExclusionChanged(ctx context.Context, window IWindow, exclusionRects []graphics.Rect) error
 	ReportDecorViewGestureInterceptionChanged(ctx context.Context, window IWindow, intercepted bool) error
 	ReportKeepClearAreasChanged(ctx context.Context, window IWindow, restricted []graphics.Rect, unrestricted []graphics.Rect) error
-	GrantInputChannel(ctx context.Context, displayId int32, surface SurfaceControl, clientToken binder.IBinder, hostInputTransferToken *interface{}, flags int32, privateFlags int32, inputFeatures int32, type_ int32, windowToken binder.IBinder, embeddedInputTransferToken interface{}, inputHandleName string, outInputChannel InputChannel) error
+	GrantInputChannel(ctx context.Context, displayId int32, surface SurfaceControl, clientToken binder.IBinder, hostInputTransferToken *androidWindow.InputTransferToken, flags int32, privateFlags int32, inputFeatures int32, type_ int32, windowToken binder.IBinder, embeddedInputTransferToken androidWindow.InputTransferToken, inputHandleName string, outInputChannel InputChannel) error
 	UpdateInputChannel(ctx context.Context, channelToken binder.IBinder, displayId int32, surface SurfaceControl, flags int32, privateFlags int32, inputFeatures int32, region graphics.Region) error
-	GrantEmbeddedWindowFocus(ctx context.Context, window IWindow, inputToken interface{}, grantFocus bool) error
-	GenerateDisplayHash(ctx context.Context, window IWindow, boundsInWindow graphics.Rect, hashAlgorithm string, callback interface{}) error
-	SetOnBackInvokedCallbackInfo(ctx context.Context, window IWindow, callbackInfo interface{}) error
+	GrantEmbeddedWindowFocus(ctx context.Context, window IWindow, inputToken androidWindow.InputTransferToken, grantFocus bool) error
+	GenerateDisplayHash(ctx context.Context, window IWindow, boundsInWindow graphics.Rect, hashAlgorithm string, callback os.RemoteCallback) error
+	SetOnBackInvokedCallbackInfo(ctx context.Context, window IWindow, callbackInfo androidWindow.OnBackInvokedCallbackInfo) error
 	ClearTouchableRegion(ctx context.Context, window IWindow) error
 	CancelDraw(ctx context.Context, window IWindow) (bool, error)
 	MoveFocusToAdjacentWindow(ctx context.Context, fromWindow IWindow, direction int32) (bool, error)
@@ -137,7 +139,7 @@ func (p *WindowSessionProxy) AddToDisplay(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := attrs.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -210,7 +212,7 @@ func (p *WindowSessionProxy) AddToDisplayAsUser(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := attrs.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -280,7 +282,7 @@ func (p *WindowSessionProxy) AddToDisplayWithoutInputChannel(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := attrs.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -335,7 +337,7 @@ func (p *WindowSessionProxy) Remove(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(clientToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "remove")
 	if _err != nil {
@@ -370,7 +372,7 @@ func (p *WindowSessionProxy) Relayout(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := attrs.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -420,7 +422,7 @@ func (p *WindowSessionProxy) RelayoutAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := attrs.MarshalParcel(_data); _err != nil {
 		return _err
@@ -448,7 +450,7 @@ func (p *WindowSessionProxy) OutOfMemory(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "outOfMemory")
 	if _err != nil {
@@ -482,7 +484,7 @@ func (p *WindowSessionProxy) SetInsets(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(touchableInsets)
 	_data.WriteInt32(1)
 	if _err := contentInsets.MarshalParcel(_data); _err != nil {
@@ -514,7 +516,7 @@ func (p *WindowSessionProxy) FinishDrawing(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := postDrawTransaction.MarshalParcel(_data); _err != nil {
 		return _err
@@ -547,7 +549,7 @@ func (p *WindowSessionProxy) PerformDrag(
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteInt32(1)
 	if _err := surface.MarshalParcel(_data); _err != nil {
@@ -597,7 +599,7 @@ func (p *WindowSessionProxy) DropForAccessibility(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(x)
 	_data.WriteInt32(y)
 
@@ -630,7 +632,7 @@ func (p *WindowSessionProxy) ReportDropResult(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteBool(consumed)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "reportDropResult")
@@ -649,7 +651,7 @@ func (p *WindowSessionProxy) CancelDragAndDrop(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(dragToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, dragToken, p.remote.Transport())
 	_data.WriteBool(skipAnimation)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "cancelDragAndDrop")
@@ -667,7 +669,7 @@ func (p *WindowSessionProxy) DragRecipientEntered(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "dragRecipientEntered")
 	if _err != nil {
@@ -684,7 +686,7 @@ func (p *WindowSessionProxy) DragRecipientExited(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "dragRecipientExited")
 	if _err != nil {
@@ -705,7 +707,7 @@ func (p *WindowSessionProxy) SetWallpaperPosition(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteFloat32(x)
 	_data.WriteFloat32(y)
 	_data.WriteFloat32(xstep)
@@ -727,7 +729,7 @@ func (p *WindowSessionProxy) SetWallpaperZoomOut(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteFloat32(scale)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "setWallpaperZoomOut")
@@ -746,7 +748,7 @@ func (p *WindowSessionProxy) SetShouldZoomOutWallpaper(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteBool(shouldZoom)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "setShouldZoomOutWallpaper")
@@ -764,7 +766,7 @@ func (p *WindowSessionProxy) WallpaperOffsetsComplete(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.Handle())
+	binder.WriteBinderToParcel(ctx, _data, window, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "wallpaperOffsetsComplete")
 	if _err != nil {
@@ -783,7 +785,7 @@ func (p *WindowSessionProxy) SetWallpaperDisplayOffset(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(x)
 	_data.WriteInt32(y)
 
@@ -803,16 +805,20 @@ func (p *WindowSessionProxy) SendWallpaperCommand(
 	x int32,
 	y int32,
 	z int32,
-	extras interface{},
+	extras os.Bundle,
 	sync bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.Handle())
+	binder.WriteBinderToParcel(ctx, _data, window, p.remote.Transport())
 	_data.WriteString16(action)
 	_data.WriteInt32(x)
 	_data.WriteInt32(y)
 	_data.WriteInt32(z)
+	_data.WriteInt32(1)
+	if _err := extras.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteBool(sync)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "sendWallpaperCommand")
@@ -827,11 +833,15 @@ func (p *WindowSessionProxy) SendWallpaperCommand(
 func (p *WindowSessionProxy) WallpaperCommandComplete(
 	ctx context.Context,
 	window binder.IBinder,
-	result interface{},
+	result os.Bundle,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.Handle())
+	binder.WriteBinderToParcel(ctx, _data, window, p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := result.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "wallpaperCommandComplete")
 	if _err != nil {
@@ -849,7 +859,7 @@ func (p *WindowSessionProxy) OnRectangleOnScreenRequested(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := rectangle.MarshalParcel(_data); _err != nil {
 		return _err
@@ -871,7 +881,7 @@ func (p *WindowSessionProxy) GetWindowId(
 	var _result IWindowId
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.Handle())
+	binder.WriteBinderToParcel(ctx, _data, window, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "getWindowId")
 	if _err != nil {
@@ -902,7 +912,7 @@ func (p *WindowSessionProxy) PokeDrawLock(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.Handle())
+	binder.WriteBinderToParcel(ctx, _data, window, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "pokeDrawLock")
 	if _err != nil {
@@ -931,7 +941,7 @@ func (p *WindowSessionProxy) StartMovingTask(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteFloat32(startX)
 	_data.WriteFloat32(startY)
 
@@ -963,7 +973,7 @@ func (p *WindowSessionProxy) FinishMovingTask(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "finishMovingTask")
 	if _err != nil {
@@ -981,7 +991,7 @@ func (p *WindowSessionProxy) UpdateTapExcludeRegion(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := region.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1004,7 +1014,7 @@ func (p *WindowSessionProxy) UpdateRequestedVisibleTypes(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(requestedVisibleTypes)
 	if imeStatsToken != nil {
 		if _err := (*imeStatsToken).MarshalParcel(_data); _err != nil {
@@ -1030,7 +1040,7 @@ func (p *WindowSessionProxy) ReportSystemGestureExclusionChanged(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	if exclusionRects == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1058,7 +1068,7 @@ func (p *WindowSessionProxy) ReportDecorViewGestureInterceptionChanged(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteBool(intercepted)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "reportDecorViewGestureInterceptionChanged")
@@ -1078,7 +1088,7 @@ func (p *WindowSessionProxy) ReportKeepClearAreasChanged(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	if restricted == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1114,13 +1124,13 @@ func (p *WindowSessionProxy) GrantInputChannel(
 	displayId int32,
 	surface SurfaceControl,
 	clientToken binder.IBinder,
-	hostInputTransferToken *interface{},
+	hostInputTransferToken *androidWindow.InputTransferToken,
 	flags int32,
 	privateFlags int32,
 	inputFeatures int32,
 	type_ int32,
 	windowToken binder.IBinder,
-	embeddedInputTransferToken interface{},
+	embeddedInputTransferToken androidWindow.InputTransferToken,
 	inputHandleName string,
 	outInputChannel InputChannel,
 ) error {
@@ -1131,12 +1141,23 @@ func (p *WindowSessionProxy) GrantInputChannel(
 	if _err := surface.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(clientToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
+	if hostInputTransferToken != nil {
+		if _err := (*hostInputTransferToken).MarshalParcel(_data); _err != nil {
+			return _err
+		}
+	} else {
+		_data.WriteInt32(-1)
+	}
 	_data.WriteInt32(flags)
 	_data.WriteInt32(privateFlags)
 	_data.WriteInt32(inputFeatures)
 	_data.WriteInt32(type_)
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := embeddedInputTransferToken.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteString16(inputHandleName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "grantInputChannel")
@@ -1172,7 +1193,7 @@ func (p *WindowSessionProxy) UpdateInputChannel(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(channelToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, channelToken, p.remote.Transport())
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(1)
 	if _err := surface.MarshalParcel(_data); _err != nil {
@@ -1198,12 +1219,16 @@ func (p *WindowSessionProxy) UpdateInputChannel(
 func (p *WindowSessionProxy) GrantEmbeddedWindowFocus(
 	ctx context.Context,
 	window IWindow,
-	inputToken interface{},
+	inputToken androidWindow.InputTransferToken,
 	grantFocus bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := inputToken.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteBool(grantFocus)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "grantEmbeddedWindowFocus")
@@ -1229,16 +1254,20 @@ func (p *WindowSessionProxy) GenerateDisplayHash(
 	window IWindow,
 	boundsInWindow graphics.Rect,
 	hashAlgorithm string,
-	callback interface{},
+	callback os.RemoteCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := boundsInWindow.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteString16(hashAlgorithm)
+	_data.WriteInt32(1)
+	if _err := callback.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "generateDisplayHash")
 	if _err != nil {
@@ -1252,11 +1281,15 @@ func (p *WindowSessionProxy) GenerateDisplayHash(
 func (p *WindowSessionProxy) SetOnBackInvokedCallbackInfo(
 	ctx context.Context,
 	window IWindow,
-	callbackInfo interface{},
+	callbackInfo androidWindow.OnBackInvokedCallbackInfo,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
+	_data.WriteInt32(1)
+	if _err := callbackInfo.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "setOnBackInvokedCallbackInfo")
 	if _err != nil {
@@ -1273,7 +1306,7 @@ func (p *WindowSessionProxy) ClearTouchableRegion(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "clearTouchableRegion")
 	if _err != nil {
@@ -1300,7 +1333,7 @@ func (p *WindowSessionProxy) CancelDraw(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "cancelDraw")
 	if _err != nil {
@@ -1332,7 +1365,7 @@ func (p *WindowSessionProxy) MoveFocusToAdjacentWindow(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(fromWindow.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, fromWindow.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(direction)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "moveFocusToAdjacentWindow")
@@ -1365,7 +1398,7 @@ func (p *WindowSessionProxy) NotifyImeWindowVisibilityChangedFromClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteBool(visible)
 	_data.WriteInt32(1)
 	if _err := statsToken.MarshalParcel(_data); _err != nil {
@@ -1388,7 +1421,7 @@ func (p *WindowSessionProxy) NotifyInsetsAnimationRunningStateChanged(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowSession)
-	_data.WriteStrongBinder(window.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, window.AsBinder(), p.remote.Transport())
 	_data.WriteBool(running)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowSession, "notifyInsetsAnimationRunningStateChanged")
@@ -2002,7 +2035,18 @@ func (s *WindowSessionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras interface{}
+		var _arg_extras os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_sync, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -2017,7 +2061,18 @@ func (s *WindowSessionStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_window binder.IBinder
 		_ = _arg_window
-		var _arg_result interface{}
+		var _arg_result os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_result.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.WallpaperCommandComplete(ctx, _arg_window, _arg_result)
 		_ = _err
 		return nil, nil
@@ -2223,7 +2278,18 @@ func (s *WindowSessionStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_clientToken binder.IBinder
 		_ = _arg_clientToken
-		var _arg_hostInputTransferToken *interface{}
+		var _arg_hostInputTransferToken *androidWindow.InputTransferToken
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_hostInputTransferToken.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_flags, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -2243,7 +2309,18 @@ func (s *WindowSessionStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_windowToken binder.IBinder
 		_ = _arg_windowToken
-		var _arg_embeddedInputTransferToken interface{}
+		var _arg_embeddedInputTransferToken androidWindow.InputTransferToken
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_embeddedInputTransferToken.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_inputHandleName, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -2314,7 +2391,18 @@ func (s *WindowSessionStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_window IWindow
 		_ = _arg_window
-		var _arg_inputToken interface{}
+		var _arg_inputToken androidWindow.InputTransferToken
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_inputToken.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_grantFocus, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -2350,7 +2438,18 @@ func (s *WindowSessionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		var _arg_callback os.RemoteCallback
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_callback.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.GenerateDisplayHash(ctx, _arg_window, _arg_boundsInWindow, _arg_hashAlgorithm, _arg_callback)
 		_ = _err
 		return nil, nil
@@ -2361,7 +2460,18 @@ func (s *WindowSessionStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_window IWindow
 		_ = _arg_window
-		var _arg_callbackInfo interface{}
+		var _arg_callbackInfo androidWindow.OnBackInvokedCallbackInfo
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_callbackInfo.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.SetOnBackInvokedCallbackInfo(ctx, _arg_window, _arg_callbackInfo)
 		_ = _err
 		return nil, nil
@@ -2459,4 +2569,482 @@ func (s *WindowSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWindowSessionServer is the server-side interface that user implementations
+// provide to NewWindowSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowSessionServer interface {
+	AddToDisplay(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, viewVisibility int32, layerStackId int32, requestedVisibleTypes int32, outInputChannel InputChannel, insetsState InsetsState, activeControls InsetsSourceControlArray, attachedFrame graphics.Rect, sizeCompatScale []float32) (int32, error)
+	AddToDisplayAsUser(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, viewVisibility int32, layerStackId int32, requestedVisibleTypes int32, outInputChannel InputChannel, insetsState InsetsState, activeControls InsetsSourceControlArray, attachedFrame graphics.Rect, sizeCompatScale []float32) (int32, error)
+	AddToDisplayWithoutInputChannel(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, viewVisibility int32, layerStackId int32, insetsState InsetsState, attachedFrame graphics.Rect, sizeCompatScale []float32) (int32, error)
+	Remove(ctx context.Context, clientToken binder.IBinder) error
+	Relayout(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, requestedWidth int32, requestedHeight int32, viewVisibility int32, flags int32, seq int32, lastSyncSeqId int32, outRelayoutResult *WindowRelayoutResult) (int32, error)
+	RelayoutAsync(ctx context.Context, window IWindow, attrs WindowManagerLayoutParams, requestedWidth int32, requestedHeight int32, viewVisibility int32, flags int32, seq int32, lastSyncSeqId int32) error
+	OutOfMemory(ctx context.Context, window IWindow) (bool, error)
+	SetInsets(ctx context.Context, window IWindow, touchableInsets int32, contentInsets graphics.Rect, visibleInsets graphics.Rect, touchableRegion graphics.Region) error
+	FinishDrawing(ctx context.Context, window IWindow, postDrawTransaction SurfaceControlTransaction, seqId int32) error
+	PerformDrag(ctx context.Context, window IWindow, flags int32, surface SurfaceControl, touchSource int32, touchDeviceId int32, touchPointerId int32, touchX float32, touchY float32, thumbCenterX float32, thumbCenterY float32, data content.ClipData) (binder.IBinder, error)
+	DropForAccessibility(ctx context.Context, window IWindow, x int32, y int32) (bool, error)
+	ReportDropResult(ctx context.Context, window IWindow, consumed bool) error
+	CancelDragAndDrop(ctx context.Context, dragToken binder.IBinder, skipAnimation bool) error
+	DragRecipientEntered(ctx context.Context, window IWindow) error
+	DragRecipientExited(ctx context.Context, window IWindow) error
+	SetWallpaperPosition(ctx context.Context, windowToken binder.IBinder, x float32, y float32, xstep float32, ystep float32) error
+	SetWallpaperZoomOut(ctx context.Context, windowToken binder.IBinder, scale float32) error
+	SetShouldZoomOutWallpaper(ctx context.Context, windowToken binder.IBinder, shouldZoom bool) error
+	WallpaperOffsetsComplete(ctx context.Context, window binder.IBinder) error
+	SetWallpaperDisplayOffset(ctx context.Context, windowToken binder.IBinder, x int32, y int32) error
+	SendWallpaperCommand(ctx context.Context, window binder.IBinder, action string, x int32, y int32, z int32, extras os.Bundle, sync bool) error
+	WallpaperCommandComplete(ctx context.Context, window binder.IBinder, result os.Bundle) error
+	OnRectangleOnScreenRequested(ctx context.Context, token binder.IBinder, rectangle graphics.Rect) error
+	GetWindowId(ctx context.Context, window binder.IBinder) (IWindowId, error)
+	PokeDrawLock(ctx context.Context, window binder.IBinder) error
+	StartMovingTask(ctx context.Context, window IWindow, startX float32, startY float32) (bool, error)
+	FinishMovingTask(ctx context.Context, window IWindow) error
+	UpdateTapExcludeRegion(ctx context.Context, window IWindow, region graphics.Region) error
+	UpdateRequestedVisibleTypes(ctx context.Context, window IWindow, requestedVisibleTypes int32, imeStatsToken *inputmethod.ImeTrackerToken) error
+	ReportSystemGestureExclusionChanged(ctx context.Context, window IWindow, exclusionRects []graphics.Rect) error
+	ReportDecorViewGestureInterceptionChanged(ctx context.Context, window IWindow, intercepted bool) error
+	ReportKeepClearAreasChanged(ctx context.Context, window IWindow, restricted []graphics.Rect, unrestricted []graphics.Rect) error
+	GrantInputChannel(ctx context.Context, displayId int32, surface SurfaceControl, clientToken binder.IBinder, hostInputTransferToken *androidWindow.InputTransferToken, flags int32, privateFlags int32, inputFeatures int32, type_ int32, windowToken binder.IBinder, embeddedInputTransferToken androidWindow.InputTransferToken, inputHandleName string, outInputChannel InputChannel) error
+	UpdateInputChannel(ctx context.Context, channelToken binder.IBinder, displayId int32, surface SurfaceControl, flags int32, privateFlags int32, inputFeatures int32, region graphics.Region) error
+	GrantEmbeddedWindowFocus(ctx context.Context, window IWindow, inputToken androidWindow.InputTransferToken, grantFocus bool) error
+	GenerateDisplayHash(ctx context.Context, window IWindow, boundsInWindow graphics.Rect, hashAlgorithm string, callback os.RemoteCallback) error
+	SetOnBackInvokedCallbackInfo(ctx context.Context, window IWindow, callbackInfo androidWindow.OnBackInvokedCallbackInfo) error
+	ClearTouchableRegion(ctx context.Context, window IWindow) error
+	CancelDraw(ctx context.Context, window IWindow) (bool, error)
+	MoveFocusToAdjacentWindow(ctx context.Context, fromWindow IWindow, direction int32) (bool, error)
+	NotifyImeWindowVisibilityChangedFromClient(ctx context.Context, window IWindow, visible bool, statsToken inputmethod.ImeTrackerToken) error
+	NotifyInsetsAnimationRunningStateChanged(ctx context.Context, window IWindow, running bool) error
+}
+
+type windowSessionStubWrapper struct {
+	impl       IWindowSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *windowSessionStubWrapper) AddToDisplay(
+	ctx context.Context,
+	window IWindow,
+	attrs WindowManagerLayoutParams,
+	viewVisibility int32,
+	layerStackId int32,
+	requestedVisibleTypes int32,
+	outInputChannel InputChannel,
+	insetsState InsetsState,
+	activeControls InsetsSourceControlArray,
+	attachedFrame graphics.Rect,
+	sizeCompatScale []float32,
+) (int32, error) {
+	return w.impl.AddToDisplay(ctx, window, attrs, viewVisibility, layerStackId, requestedVisibleTypes, outInputChannel, insetsState, activeControls, attachedFrame, sizeCompatScale)
+}
+
+func (w *windowSessionStubWrapper) AddToDisplayAsUser(
+	ctx context.Context,
+	window IWindow,
+	attrs WindowManagerLayoutParams,
+	viewVisibility int32,
+	layerStackId int32,
+	requestedVisibleTypes int32,
+	outInputChannel InputChannel,
+	insetsState InsetsState,
+	activeControls InsetsSourceControlArray,
+	attachedFrame graphics.Rect,
+	sizeCompatScale []float32,
+) (int32, error) {
+	return w.impl.AddToDisplayAsUser(ctx, window, attrs, viewVisibility, layerStackId, requestedVisibleTypes, outInputChannel, insetsState, activeControls, attachedFrame, sizeCompatScale)
+}
+
+func (w *windowSessionStubWrapper) AddToDisplayWithoutInputChannel(
+	ctx context.Context,
+	window IWindow,
+	attrs WindowManagerLayoutParams,
+	viewVisibility int32,
+	layerStackId int32,
+	insetsState InsetsState,
+	attachedFrame graphics.Rect,
+	sizeCompatScale []float32,
+) (int32, error) {
+	return w.impl.AddToDisplayWithoutInputChannel(ctx, window, attrs, viewVisibility, layerStackId, insetsState, attachedFrame, sizeCompatScale)
+}
+
+func (w *windowSessionStubWrapper) Remove(
+	ctx context.Context,
+	clientToken binder.IBinder,
+) error {
+	return w.impl.Remove(ctx, clientToken)
+}
+
+func (w *windowSessionStubWrapper) Relayout(
+	ctx context.Context,
+	window IWindow,
+	attrs WindowManagerLayoutParams,
+	requestedWidth int32,
+	requestedHeight int32,
+	viewVisibility int32,
+	flags int32,
+	seq int32,
+	lastSyncSeqId int32,
+	outRelayoutResult *WindowRelayoutResult,
+) (int32, error) {
+	return w.impl.Relayout(ctx, window, attrs, requestedWidth, requestedHeight, viewVisibility, flags, seq, lastSyncSeqId, outRelayoutResult)
+}
+
+func (w *windowSessionStubWrapper) RelayoutAsync(
+	ctx context.Context,
+	window IWindow,
+	attrs WindowManagerLayoutParams,
+	requestedWidth int32,
+	requestedHeight int32,
+	viewVisibility int32,
+	flags int32,
+	seq int32,
+	lastSyncSeqId int32,
+) error {
+	return w.impl.RelayoutAsync(ctx, window, attrs, requestedWidth, requestedHeight, viewVisibility, flags, seq, lastSyncSeqId)
+}
+
+func (w *windowSessionStubWrapper) OutOfMemory(
+	ctx context.Context,
+	window IWindow,
+) (bool, error) {
+	return w.impl.OutOfMemory(ctx, window)
+}
+
+func (w *windowSessionStubWrapper) SetInsets(
+	ctx context.Context,
+	window IWindow,
+	touchableInsets int32,
+	contentInsets graphics.Rect,
+	visibleInsets graphics.Rect,
+	touchableRegion graphics.Region,
+) error {
+	return w.impl.SetInsets(ctx, window, touchableInsets, contentInsets, visibleInsets, touchableRegion)
+}
+
+func (w *windowSessionStubWrapper) FinishDrawing(
+	ctx context.Context,
+	window IWindow,
+	postDrawTransaction SurfaceControlTransaction,
+	seqId int32,
+) error {
+	return w.impl.FinishDrawing(ctx, window, postDrawTransaction, seqId)
+}
+
+func (w *windowSessionStubWrapper) PerformDrag(
+	ctx context.Context,
+	window IWindow,
+	flags int32,
+	surface SurfaceControl,
+	touchSource int32,
+	touchDeviceId int32,
+	touchPointerId int32,
+	touchX float32,
+	touchY float32,
+	thumbCenterX float32,
+	thumbCenterY float32,
+	data content.ClipData,
+) (binder.IBinder, error) {
+	return w.impl.PerformDrag(ctx, window, flags, surface, touchSource, touchDeviceId, touchPointerId, touchX, touchY, thumbCenterX, thumbCenterY, data)
+}
+
+func (w *windowSessionStubWrapper) DropForAccessibility(
+	ctx context.Context,
+	window IWindow,
+	x int32,
+	y int32,
+) (bool, error) {
+	return w.impl.DropForAccessibility(ctx, window, x, y)
+}
+
+func (w *windowSessionStubWrapper) ReportDropResult(
+	ctx context.Context,
+	window IWindow,
+	consumed bool,
+) error {
+	return w.impl.ReportDropResult(ctx, window, consumed)
+}
+
+func (w *windowSessionStubWrapper) CancelDragAndDrop(
+	ctx context.Context,
+	dragToken binder.IBinder,
+	skipAnimation bool,
+) error {
+	return w.impl.CancelDragAndDrop(ctx, dragToken, skipAnimation)
+}
+
+func (w *windowSessionStubWrapper) DragRecipientEntered(
+	ctx context.Context,
+	window IWindow,
+) error {
+	return w.impl.DragRecipientEntered(ctx, window)
+}
+
+func (w *windowSessionStubWrapper) DragRecipientExited(
+	ctx context.Context,
+	window IWindow,
+) error {
+	return w.impl.DragRecipientExited(ctx, window)
+}
+
+func (w *windowSessionStubWrapper) SetWallpaperPosition(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	x float32,
+	y float32,
+	xstep float32,
+	ystep float32,
+) error {
+	return w.impl.SetWallpaperPosition(ctx, windowToken, x, y, xstep, ystep)
+}
+
+func (w *windowSessionStubWrapper) SetWallpaperZoomOut(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	scale float32,
+) error {
+	return w.impl.SetWallpaperZoomOut(ctx, windowToken, scale)
+}
+
+func (w *windowSessionStubWrapper) SetShouldZoomOutWallpaper(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	shouldZoom bool,
+) error {
+	return w.impl.SetShouldZoomOutWallpaper(ctx, windowToken, shouldZoom)
+}
+
+func (w *windowSessionStubWrapper) WallpaperOffsetsComplete(
+	ctx context.Context,
+	window binder.IBinder,
+) error {
+	return w.impl.WallpaperOffsetsComplete(ctx, window)
+}
+
+func (w *windowSessionStubWrapper) SetWallpaperDisplayOffset(
+	ctx context.Context,
+	windowToken binder.IBinder,
+	x int32,
+	y int32,
+) error {
+	return w.impl.SetWallpaperDisplayOffset(ctx, windowToken, x, y)
+}
+
+func (w *windowSessionStubWrapper) SendWallpaperCommand(
+	ctx context.Context,
+	window binder.IBinder,
+	action string,
+	x int32,
+	y int32,
+	z int32,
+	extras os.Bundle,
+	sync bool,
+) error {
+	return w.impl.SendWallpaperCommand(ctx, window, action, x, y, z, extras, sync)
+}
+
+func (w *windowSessionStubWrapper) WallpaperCommandComplete(
+	ctx context.Context,
+	window binder.IBinder,
+	result os.Bundle,
+) error {
+	return w.impl.WallpaperCommandComplete(ctx, window, result)
+}
+
+func (w *windowSessionStubWrapper) OnRectangleOnScreenRequested(
+	ctx context.Context,
+	token binder.IBinder,
+	rectangle graphics.Rect,
+) error {
+	return w.impl.OnRectangleOnScreenRequested(ctx, token, rectangle)
+}
+
+func (w *windowSessionStubWrapper) GetWindowId(
+	ctx context.Context,
+	window binder.IBinder,
+) (IWindowId, error) {
+	return w.impl.GetWindowId(ctx, window)
+}
+
+func (w *windowSessionStubWrapper) PokeDrawLock(
+	ctx context.Context,
+	window binder.IBinder,
+) error {
+	return w.impl.PokeDrawLock(ctx, window)
+}
+
+func (w *windowSessionStubWrapper) StartMovingTask(
+	ctx context.Context,
+	window IWindow,
+	startX float32,
+	startY float32,
+) (bool, error) {
+	return w.impl.StartMovingTask(ctx, window, startX, startY)
+}
+
+func (w *windowSessionStubWrapper) FinishMovingTask(
+	ctx context.Context,
+	window IWindow,
+) error {
+	return w.impl.FinishMovingTask(ctx, window)
+}
+
+func (w *windowSessionStubWrapper) UpdateTapExcludeRegion(
+	ctx context.Context,
+	window IWindow,
+	region graphics.Region,
+) error {
+	return w.impl.UpdateTapExcludeRegion(ctx, window, region)
+}
+
+func (w *windowSessionStubWrapper) UpdateRequestedVisibleTypes(
+	ctx context.Context,
+	window IWindow,
+	requestedVisibleTypes int32,
+	imeStatsToken *inputmethod.ImeTrackerToken,
+) error {
+	return w.impl.UpdateRequestedVisibleTypes(ctx, window, requestedVisibleTypes, imeStatsToken)
+}
+
+func (w *windowSessionStubWrapper) ReportSystemGestureExclusionChanged(
+	ctx context.Context,
+	window IWindow,
+	exclusionRects []graphics.Rect,
+) error {
+	return w.impl.ReportSystemGestureExclusionChanged(ctx, window, exclusionRects)
+}
+
+func (w *windowSessionStubWrapper) ReportDecorViewGestureInterceptionChanged(
+	ctx context.Context,
+	window IWindow,
+	intercepted bool,
+) error {
+	return w.impl.ReportDecorViewGestureInterceptionChanged(ctx, window, intercepted)
+}
+
+func (w *windowSessionStubWrapper) ReportKeepClearAreasChanged(
+	ctx context.Context,
+	window IWindow,
+	restricted []graphics.Rect,
+	unrestricted []graphics.Rect,
+) error {
+	return w.impl.ReportKeepClearAreasChanged(ctx, window, restricted, unrestricted)
+}
+
+func (w *windowSessionStubWrapper) GrantInputChannel(
+	ctx context.Context,
+	displayId int32,
+	surface SurfaceControl,
+	clientToken binder.IBinder,
+	hostInputTransferToken *androidWindow.InputTransferToken,
+	flags int32,
+	privateFlags int32,
+	inputFeatures int32,
+	type_ int32,
+	windowToken binder.IBinder,
+	embeddedInputTransferToken androidWindow.InputTransferToken,
+	inputHandleName string,
+	outInputChannel InputChannel,
+) error {
+	return w.impl.GrantInputChannel(ctx, displayId, surface, clientToken, hostInputTransferToken, flags, privateFlags, inputFeatures, type_, windowToken, embeddedInputTransferToken, inputHandleName, outInputChannel)
+}
+
+func (w *windowSessionStubWrapper) UpdateInputChannel(
+	ctx context.Context,
+	channelToken binder.IBinder,
+	displayId int32,
+	surface SurfaceControl,
+	flags int32,
+	privateFlags int32,
+	inputFeatures int32,
+	region graphics.Region,
+) error {
+	return w.impl.UpdateInputChannel(ctx, channelToken, displayId, surface, flags, privateFlags, inputFeatures, region)
+}
+
+func (w *windowSessionStubWrapper) GrantEmbeddedWindowFocus(
+	ctx context.Context,
+	window IWindow,
+	inputToken androidWindow.InputTransferToken,
+	grantFocus bool,
+) error {
+	return w.impl.GrantEmbeddedWindowFocus(ctx, window, inputToken, grantFocus)
+}
+
+func (w *windowSessionStubWrapper) GenerateDisplayHash(
+	ctx context.Context,
+	window IWindow,
+	boundsInWindow graphics.Rect,
+	hashAlgorithm string,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.GenerateDisplayHash(ctx, window, boundsInWindow, hashAlgorithm, callback)
+}
+
+func (w *windowSessionStubWrapper) SetOnBackInvokedCallbackInfo(
+	ctx context.Context,
+	window IWindow,
+	callbackInfo androidWindow.OnBackInvokedCallbackInfo,
+) error {
+	return w.impl.SetOnBackInvokedCallbackInfo(ctx, window, callbackInfo)
+}
+
+func (w *windowSessionStubWrapper) ClearTouchableRegion(
+	ctx context.Context,
+	window IWindow,
+) error {
+	return w.impl.ClearTouchableRegion(ctx, window)
+}
+
+func (w *windowSessionStubWrapper) CancelDraw(
+	ctx context.Context,
+	window IWindow,
+) (bool, error) {
+	return w.impl.CancelDraw(ctx, window)
+}
+
+func (w *windowSessionStubWrapper) MoveFocusToAdjacentWindow(
+	ctx context.Context,
+	fromWindow IWindow,
+	direction int32,
+) (bool, error) {
+	return w.impl.MoveFocusToAdjacentWindow(ctx, fromWindow, direction)
+}
+
+func (w *windowSessionStubWrapper) NotifyImeWindowVisibilityChangedFromClient(
+	ctx context.Context,
+	window IWindow,
+	visible bool,
+	statsToken inputmethod.ImeTrackerToken,
+) error {
+	return w.impl.NotifyImeWindowVisibilityChangedFromClient(ctx, window, visible, statsToken)
+}
+
+func (w *windowSessionStubWrapper) NotifyInsetsAnimationRunningStateChanged(
+	ctx context.Context,
+	window IWindow,
+	running bool,
+) error {
+	return w.impl.NotifyInsetsAnimationRunningStateChanged(ctx, window, running)
+}
+
+var _ IWindowSession = (*windowSessionStubWrapper)(nil)
+
+// NewWindowSessionStub creates a server-side IWindowSession wrapping the given
+// server implementation. The returned value satisfies IWindowSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowSessionStub(
+	impl IWindowSessionServer,
+) IWindowSession {
+	wrapper := &windowSessionStubWrapper{impl: impl}
+	stub := &WindowSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

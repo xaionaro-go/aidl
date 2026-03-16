@@ -52,7 +52,7 @@ func (p *MusicRecognitionServiceProxy) OnAudioStreamStarted(
 	if _err := audioFormat.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMusicRecognitionService, "onAudioStreamStarted")
 	if _err != nil {
@@ -69,7 +69,7 @@ func (p *MusicRecognitionServiceProxy) GetAttributionTag(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMusicRecognitionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMusicRecognitionService, "getAttributionTag")
 	if _err != nil {
@@ -133,4 +133,53 @@ func (s *MusicRecognitionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMusicRecognitionServiceServer is the server-side interface that user implementations
+// provide to NewMusicRecognitionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMusicRecognitionServiceServer interface {
+	OnAudioStreamStarted(ctx context.Context, fd int32, audioFormat media.AudioFormat, callback IMusicRecognitionServiceCallback) error
+	GetAttributionTag(ctx context.Context, callback IMusicRecognitionAttributionTagCallback) error
+}
+
+type musicRecognitionServiceStubWrapper struct {
+	impl       IMusicRecognitionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *musicRecognitionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *musicRecognitionServiceStubWrapper) OnAudioStreamStarted(
+	ctx context.Context,
+	fd int32,
+	audioFormat media.AudioFormat,
+	callback IMusicRecognitionServiceCallback,
+) error {
+	return w.impl.OnAudioStreamStarted(ctx, fd, audioFormat, callback)
+}
+
+func (w *musicRecognitionServiceStubWrapper) GetAttributionTag(
+	ctx context.Context,
+	callback IMusicRecognitionAttributionTagCallback,
+) error {
+	return w.impl.GetAttributionTag(ctx, callback)
+}
+
+var _ IMusicRecognitionService = (*musicRecognitionServiceStubWrapper)(nil)
+
+// NewMusicRecognitionServiceStub creates a server-side IMusicRecognitionService wrapping the given
+// server implementation. The returned value satisfies IMusicRecognitionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMusicRecognitionServiceStub(
+	impl IMusicRecognitionServiceServer,
+) IMusicRecognitionService {
+	wrapper := &musicRecognitionServiceStubWrapper{impl: impl}
+	stub := &MusicRecognitionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

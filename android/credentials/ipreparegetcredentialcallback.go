@@ -129,3 +129,51 @@ func (s *PrepareGetCredentialCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPrepareGetCredentialCallbackServer is the server-side interface that user implementations
+// provide to NewPrepareGetCredentialCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrepareGetCredentialCallbackServer interface {
+	OnResponse(ctx context.Context, response PrepareGetCredentialResponseInternal) error
+	OnError(ctx context.Context, errorType string, message string) error
+}
+
+type prepareGetCredentialCallbackStubWrapper struct {
+	impl       IPrepareGetCredentialCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *prepareGetCredentialCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *prepareGetCredentialCallbackStubWrapper) OnResponse(
+	ctx context.Context,
+	response PrepareGetCredentialResponseInternal,
+) error {
+	return w.impl.OnResponse(ctx, response)
+}
+
+func (w *prepareGetCredentialCallbackStubWrapper) OnError(
+	ctx context.Context,
+	errorType string,
+	message string,
+) error {
+	return w.impl.OnError(ctx, errorType, message)
+}
+
+var _ IPrepareGetCredentialCallback = (*prepareGetCredentialCallbackStubWrapper)(nil)
+
+// NewPrepareGetCredentialCallbackStub creates a server-side IPrepareGetCredentialCallback wrapping the given
+// server implementation. The returned value satisfies IPrepareGetCredentialCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrepareGetCredentialCallbackStub(
+	impl IPrepareGetCredentialCallbackServer,
+) IPrepareGetCredentialCallback {
+	wrapper := &prepareGetCredentialCallbackStubWrapper{impl: impl}
+	stub := &PrepareGetCredentialCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

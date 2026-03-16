@@ -138,3 +138,48 @@ func (s *StopUserCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStopUserCallbackServer is the server-side interface that user implementations
+// provide to NewStopUserCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStopUserCallbackServer interface {
+	UserStopped(ctx context.Context) error
+	UserStopAborted(ctx context.Context) error
+}
+
+type stopUserCallbackStubWrapper struct {
+	impl       IStopUserCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *stopUserCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *stopUserCallbackStubWrapper) UserStopped(
+	ctx context.Context,
+) error {
+	return w.impl.UserStopped(ctx)
+}
+
+func (w *stopUserCallbackStubWrapper) UserStopAborted(
+	ctx context.Context,
+) error {
+	return w.impl.UserStopAborted(ctx)
+}
+
+var _ IStopUserCallback = (*stopUserCallbackStubWrapper)(nil)
+
+// NewStopUserCallbackStub creates a server-side IStopUserCallback wrapping the given
+// server implementation. The returned value satisfies IStopUserCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStopUserCallbackStub(
+	impl IStopUserCallbackServer,
+) IStopUserCallback {
+	wrapper := &stopUserCallbackStubWrapper{impl: impl}
+	stub := &StopUserCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -94,3 +94,43 @@ func (s *PrepareDownloadCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPrepareDownloadCallbackServer is the server-side interface that user implementations
+// provide to NewPrepareDownloadCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrepareDownloadCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, response []byte) error
+}
+
+type prepareDownloadCallbackStubWrapper struct {
+	impl       IPrepareDownloadCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *prepareDownloadCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *prepareDownloadCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	response []byte,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, response)
+}
+
+var _ IPrepareDownloadCallback = (*prepareDownloadCallbackStubWrapper)(nil)
+
+// NewPrepareDownloadCallbackStub creates a server-side IPrepareDownloadCallback wrapping the given
+// server implementation. The returned value satisfies IPrepareDownloadCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrepareDownloadCallbackStub(
+	impl IPrepareDownloadCallbackServer,
+) IPrepareDownloadCallback {
+	wrapper := &prepareDownloadCallbackStubWrapper{impl: impl}
+	stub := &PrepareDownloadCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

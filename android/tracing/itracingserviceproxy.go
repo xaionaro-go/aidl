@@ -123,3 +123,50 @@ func (s *TracingServiceProxyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITracingServiceProxyServer is the server-side interface that user implementations
+// provide to NewTracingServiceProxyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITracingServiceProxyServer interface {
+	NotifyTraceSessionEnded(ctx context.Context, sessionStolen bool) error
+	ReportTrace(ctx context.Context, params TraceReportParams) error
+}
+
+type tracingServiceProxyStubWrapper struct {
+	impl       ITracingServiceProxyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tracingServiceProxyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tracingServiceProxyStubWrapper) NotifyTraceSessionEnded(
+	ctx context.Context,
+	sessionStolen bool,
+) error {
+	return w.impl.NotifyTraceSessionEnded(ctx, sessionStolen)
+}
+
+func (w *tracingServiceProxyStubWrapper) ReportTrace(
+	ctx context.Context,
+	params TraceReportParams,
+) error {
+	return w.impl.ReportTrace(ctx, params)
+}
+
+var _ ITracingServiceProxy = (*tracingServiceProxyStubWrapper)(nil)
+
+// NewTracingServiceProxyStub creates a server-side ITracingServiceProxy wrapping the given
+// server implementation. The returned value satisfies ITracingServiceProxy
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTracingServiceProxyStub(
+	impl ITracingServiceProxyServer,
+) ITracingServiceProxy {
+	wrapper := &tracingServiceProxyStubWrapper{impl: impl}
+	stub := &TracingServiceProxyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

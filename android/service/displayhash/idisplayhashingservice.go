@@ -285,3 +285,72 @@ func (s *DisplayHashingServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDisplayHashingServiceServer is the server-side interface that user implementations
+// provide to NewDisplayHashingServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayHashingServiceServer interface {
+	GenerateDisplayHash(ctx context.Context, salt []byte, buffer interface{}, bounds graphics.Rect, hashAlgorithm string, callback os.RemoteCallback) error
+	VerifyDisplayHash(ctx context.Context, salt []byte, displayHash viewDisplayhash.DisplayHash, callback os.RemoteCallback) error
+	GetDisplayHashAlgorithms(ctx context.Context, callback os.RemoteCallback) error
+	GetIntervalBetweenRequestsMillis(ctx context.Context, callback os.RemoteCallback) error
+}
+
+type displayHashingServiceStubWrapper struct {
+	impl       IDisplayHashingServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayHashingServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayHashingServiceStubWrapper) GenerateDisplayHash(
+	ctx context.Context,
+	salt []byte,
+	buffer interface{},
+	bounds graphics.Rect,
+	hashAlgorithm string,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.GenerateDisplayHash(ctx, salt, buffer, bounds, hashAlgorithm, callback)
+}
+
+func (w *displayHashingServiceStubWrapper) VerifyDisplayHash(
+	ctx context.Context,
+	salt []byte,
+	displayHash viewDisplayhash.DisplayHash,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.VerifyDisplayHash(ctx, salt, displayHash, callback)
+}
+
+func (w *displayHashingServiceStubWrapper) GetDisplayHashAlgorithms(
+	ctx context.Context,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.GetDisplayHashAlgorithms(ctx, callback)
+}
+
+func (w *displayHashingServiceStubWrapper) GetIntervalBetweenRequestsMillis(
+	ctx context.Context,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.GetIntervalBetweenRequestsMillis(ctx, callback)
+}
+
+var _ IDisplayHashingService = (*displayHashingServiceStubWrapper)(nil)
+
+// NewDisplayHashingServiceStub creates a server-side IDisplayHashingService wrapping the given
+// server implementation. The returned value satisfies IDisplayHashingService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayHashingServiceStub(
+	impl IDisplayHashingServiceServer,
+) IDisplayHashingService {
+	wrapper := &displayHashingServiceStubWrapper{impl: impl}
+	stub := &DisplayHashingServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

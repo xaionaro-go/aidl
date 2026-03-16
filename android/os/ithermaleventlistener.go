@@ -78,3 +78,42 @@ func (s *ThermalEventListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IThermalEventListenerServer is the server-side interface that user implementations
+// provide to NewThermalEventListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IThermalEventListenerServer interface {
+	NotifyThrottling(ctx context.Context, temperature interface{}) error
+}
+
+type thermalEventListenerStubWrapper struct {
+	impl       IThermalEventListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *thermalEventListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *thermalEventListenerStubWrapper) NotifyThrottling(
+	ctx context.Context,
+	temperature interface{},
+) error {
+	return w.impl.NotifyThrottling(ctx, temperature)
+}
+
+var _ IThermalEventListener = (*thermalEventListenerStubWrapper)(nil)
+
+// NewThermalEventListenerStub creates a server-side IThermalEventListener wrapping the given
+// server implementation. The returned value satisfies IThermalEventListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewThermalEventListenerStub(
+	impl IThermalEventListenerServer,
+) IThermalEventListener {
+	wrapper := &thermalEventListenerStubWrapper{impl: impl}
+	stub := &ThermalEventListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

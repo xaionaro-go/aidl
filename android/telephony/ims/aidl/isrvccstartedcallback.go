@@ -91,3 +91,42 @@ func (s *SrvccStartedCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISrvccStartedCallbackServer is the server-side interface that user implementations
+// provide to NewSrvccStartedCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISrvccStartedCallbackServer interface {
+	OnSrvccCallNotified(ctx context.Context, profiles []ims.SrvccCall) error
+}
+
+type srvccStartedCallbackStubWrapper struct {
+	impl       ISrvccStartedCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *srvccStartedCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *srvccStartedCallbackStubWrapper) OnSrvccCallNotified(
+	ctx context.Context,
+	profiles []ims.SrvccCall,
+) error {
+	return w.impl.OnSrvccCallNotified(ctx, profiles)
+}
+
+var _ ISrvccStartedCallback = (*srvccStartedCallbackStubWrapper)(nil)
+
+// NewSrvccStartedCallbackStub creates a server-side ISrvccStartedCallback wrapping the given
+// server implementation. The returned value satisfies ISrvccStartedCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSrvccStartedCallbackStub(
+	impl ISrvccStartedCallbackServer,
+) ISrvccStartedCallback {
+	wrapper := &srvccStartedCallbackStubWrapper{impl: impl}
+	stub := &SrvccStartedCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -84,3 +84,43 @@ func (s *LoudnessCodecUpdatesDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILoudnessCodecUpdatesDispatcherServer is the server-side interface that user implementations
+// provide to NewLoudnessCodecUpdatesDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILoudnessCodecUpdatesDispatcherServer interface {
+	DispatchLoudnessCodecParameterChange(ctx context.Context, sessionId int32, params interface{}) error
+}
+
+type loudnessCodecUpdatesDispatcherStubWrapper struct {
+	impl       ILoudnessCodecUpdatesDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *loudnessCodecUpdatesDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *loudnessCodecUpdatesDispatcherStubWrapper) DispatchLoudnessCodecParameterChange(
+	ctx context.Context,
+	sessionId int32,
+	params interface{},
+) error {
+	return w.impl.DispatchLoudnessCodecParameterChange(ctx, sessionId, params)
+}
+
+var _ ILoudnessCodecUpdatesDispatcher = (*loudnessCodecUpdatesDispatcherStubWrapper)(nil)
+
+// NewLoudnessCodecUpdatesDispatcherStub creates a server-side ILoudnessCodecUpdatesDispatcher wrapping the given
+// server implementation. The returned value satisfies ILoudnessCodecUpdatesDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLoudnessCodecUpdatesDispatcherStub(
+	impl ILoudnessCodecUpdatesDispatcherServer,
+) ILoudnessCodecUpdatesDispatcher {
+	wrapper := &loudnessCodecUpdatesDispatcherStubWrapper{impl: impl}
+	stub := &LoudnessCodecUpdatesDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

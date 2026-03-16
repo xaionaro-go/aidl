@@ -2,7 +2,6 @@ package CodecCapabilities
 
 import (
 	"fmt"
-	audio "github.com/xaionaro-go/binder/android/hardware/bluetooth/audio"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -21,103 +20,103 @@ const (
 
 type Capabilities struct {
 	Tag                      int32
-	SbcCapabilities          audio.SbcCapabilities
-	AacCapabilities          audio.AacCapabilities
-	LdacCapabilities         audio.LdacCapabilities
-	AptxCapabilities         audio.AptxCapabilities
-	AptxAdaptiveCapabilities audio.AptxAdaptiveCapabilities
-	Lc3Capabilities          audio.Lc3Capabilities
+	SbcCapabilities          interface{}
+	AacCapabilities          interface{}
+	LdacCapabilities         interface{}
+	AptxCapabilities         interface{}
+	AptxAdaptiveCapabilities interface{}
+	Lc3Capabilities          interface{}
 	VendorCapabilities       VendorCapabilities
-	OpusCapabilities         audio.OpusCapabilities
+	OpusCapabilities         interface{}
 }
 
 var _ parcel.Parcelable = (*Capabilities)(nil)
 
-func (u *Capabilities) GetSbcCapabilities() (audio.SbcCapabilities, bool) {
+func (u *Capabilities) GetSbcCapabilities() (interface{}, bool) {
 	if u.Tag != CapabilitiesTagSbcCapabilities {
-		var _zero audio.SbcCapabilities
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.SbcCapabilities, true
 }
 
 func (u *Capabilities) SetSbcCapabilities(
-	v audio.SbcCapabilities,
+	v interface{},
 ) {
 	u.Tag = CapabilitiesTagSbcCapabilities
 	u.SbcCapabilities = v
 }
 
-func (u *Capabilities) GetAacCapabilities() (audio.AacCapabilities, bool) {
+func (u *Capabilities) GetAacCapabilities() (interface{}, bool) {
 	if u.Tag != CapabilitiesTagAacCapabilities {
-		var _zero audio.AacCapabilities
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.AacCapabilities, true
 }
 
 func (u *Capabilities) SetAacCapabilities(
-	v audio.AacCapabilities,
+	v interface{},
 ) {
 	u.Tag = CapabilitiesTagAacCapabilities
 	u.AacCapabilities = v
 }
 
-func (u *Capabilities) GetLdacCapabilities() (audio.LdacCapabilities, bool) {
+func (u *Capabilities) GetLdacCapabilities() (interface{}, bool) {
 	if u.Tag != CapabilitiesTagLdacCapabilities {
-		var _zero audio.LdacCapabilities
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.LdacCapabilities, true
 }
 
 func (u *Capabilities) SetLdacCapabilities(
-	v audio.LdacCapabilities,
+	v interface{},
 ) {
 	u.Tag = CapabilitiesTagLdacCapabilities
 	u.LdacCapabilities = v
 }
 
-func (u *Capabilities) GetAptxCapabilities() (audio.AptxCapabilities, bool) {
+func (u *Capabilities) GetAptxCapabilities() (interface{}, bool) {
 	if u.Tag != CapabilitiesTagAptxCapabilities {
-		var _zero audio.AptxCapabilities
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.AptxCapabilities, true
 }
 
 func (u *Capabilities) SetAptxCapabilities(
-	v audio.AptxCapabilities,
+	v interface{},
 ) {
 	u.Tag = CapabilitiesTagAptxCapabilities
 	u.AptxCapabilities = v
 }
 
-func (u *Capabilities) GetAptxAdaptiveCapabilities() (audio.AptxAdaptiveCapabilities, bool) {
+func (u *Capabilities) GetAptxAdaptiveCapabilities() (interface{}, bool) {
 	if u.Tag != CapabilitiesTagAptxAdaptiveCapabilities {
-		var _zero audio.AptxAdaptiveCapabilities
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.AptxAdaptiveCapabilities, true
 }
 
 func (u *Capabilities) SetAptxAdaptiveCapabilities(
-	v audio.AptxAdaptiveCapabilities,
+	v interface{},
 ) {
 	u.Tag = CapabilitiesTagAptxAdaptiveCapabilities
 	u.AptxAdaptiveCapabilities = v
 }
 
-func (u *Capabilities) GetLc3Capabilities() (audio.Lc3Capabilities, bool) {
+func (u *Capabilities) GetLc3Capabilities() (interface{}, bool) {
 	if u.Tag != CapabilitiesTagLc3Capabilities {
-		var _zero audio.Lc3Capabilities
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.Lc3Capabilities, true
 }
 
 func (u *Capabilities) SetLc3Capabilities(
-	v audio.Lc3Capabilities,
+	v interface{},
 ) {
 	u.Tag = CapabilitiesTagLc3Capabilities
 	u.Lc3Capabilities = v
@@ -138,16 +137,16 @@ func (u *Capabilities) SetVendorCapabilities(
 	u.VendorCapabilities = v
 }
 
-func (u *Capabilities) GetOpusCapabilities() (audio.OpusCapabilities, bool) {
+func (u *Capabilities) GetOpusCapabilities() (interface{}, bool) {
 	if u.Tag != CapabilitiesTagOpusCapabilities {
-		var _zero audio.OpusCapabilities
+		var _zero interface{}
 		return _zero, false
 	}
 	return u.OpusCapabilities, true
 }
 
 func (u *Capabilities) SetOpusCapabilities(
-	v audio.OpusCapabilities,
+	v interface{},
 ) {
 	u.Tag = CapabilitiesTagOpusCapabilities
 	u.OpusCapabilities = v
@@ -161,37 +160,16 @@ func (u *Capabilities) MarshalParcel(
 
 	switch u.Tag {
 	case CapabilitiesTagSbcCapabilities:
-		if _err := u.SbcCapabilities.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagAacCapabilities:
-		if _err := u.AacCapabilities.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagLdacCapabilities:
-		if _err := u.LdacCapabilities.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagAptxCapabilities:
-		if _err := u.AptxCapabilities.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagAptxAdaptiveCapabilities:
-		if _err := u.AptxAdaptiveCapabilities.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagLc3Capabilities:
-		if _err := u.Lc3Capabilities.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagVendorCapabilities:
 		if _err := u.VendorCapabilities.MarshalParcel(p); _err != nil {
 			return _err
 		}
 	case CapabilitiesTagOpusCapabilities:
-		if _err := u.OpusCapabilities.MarshalParcel(p); _err != nil {
-			return _err
-		}
 	default:
 		return fmt.Errorf("unknown union tag %d for Capabilities", u.Tag)
 	}
@@ -215,37 +193,16 @@ func (u *Capabilities) UnmarshalParcel(
 
 	switch u.Tag {
 	case CapabilitiesTagSbcCapabilities:
-		if _err = u.SbcCapabilities.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagAacCapabilities:
-		if _err = u.AacCapabilities.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagLdacCapabilities:
-		if _err = u.LdacCapabilities.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagAptxCapabilities:
-		if _err = u.AptxCapabilities.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagAptxAdaptiveCapabilities:
-		if _err = u.AptxAdaptiveCapabilities.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagLc3Capabilities:
-		if _err = u.Lc3Capabilities.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	case CapabilitiesTagVendorCapabilities:
 		if _err = u.VendorCapabilities.UnmarshalParcel(p); _err != nil {
 			return _err
 		}
 	case CapabilitiesTagOpusCapabilities:
-		if _err = u.OpusCapabilities.UnmarshalParcel(p); _err != nil {
-			return _err
-		}
 	default:
 		return fmt.Errorf("unknown union tag %d for Capabilities", u.Tag)
 	}

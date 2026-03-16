@@ -82,3 +82,42 @@ func (s *ScreenRecordingCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScreenRecordingCallbackServer is the server-side interface that user implementations
+// provide to NewScreenRecordingCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScreenRecordingCallbackServer interface {
+	OnScreenRecordingStateChanged(ctx context.Context, visibleInScreenRecording bool) error
+}
+
+type screenRecordingCallbackStubWrapper struct {
+	impl       IScreenRecordingCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *screenRecordingCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *screenRecordingCallbackStubWrapper) OnScreenRecordingStateChanged(
+	ctx context.Context,
+	visibleInScreenRecording bool,
+) error {
+	return w.impl.OnScreenRecordingStateChanged(ctx, visibleInScreenRecording)
+}
+
+var _ IScreenRecordingCallback = (*screenRecordingCallbackStubWrapper)(nil)
+
+// NewScreenRecordingCallbackStub creates a server-side IScreenRecordingCallback wrapping the given
+// server implementation. The returned value satisfies IScreenRecordingCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScreenRecordingCallbackStub(
+	impl IScreenRecordingCallbackServer,
+) IScreenRecordingCallback {
+	wrapper := &screenRecordingCallbackStubWrapper{impl: impl}
+	stub := &ScreenRecordingCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

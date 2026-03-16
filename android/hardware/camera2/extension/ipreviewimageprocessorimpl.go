@@ -138,7 +138,7 @@ func (p *PreviewImageProcessorImplProxy) Process(
 		return _err
 	}
 	_data.WriteInt32(sequenceId)
-	_data.WriteStrongBinder(resultCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPreviewImageProcessorImpl, "process")
 	if _err != nil {
@@ -264,4 +264,71 @@ func (s *PreviewImageProcessorImplStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPreviewImageProcessorImplServer is the server-side interface that user implementations
+// provide to NewPreviewImageProcessorImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPreviewImageProcessorImplServer interface {
+	OnOutputSurface(ctx context.Context, surface interface{}, imageFormat int32) error
+	OnResolutionUpdate(ctx context.Context, size Size) error
+	OnImageFormatUpdate(ctx context.Context, imageFormat int32) error
+	Process(ctx context.Context, image ParcelImage, result interface{}, sequenceId int32, resultCallback IProcessResultImpl) error
+}
+
+type previewImageProcessorImplStubWrapper struct {
+	impl       IPreviewImageProcessorImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *previewImageProcessorImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *previewImageProcessorImplStubWrapper) OnOutputSurface(
+	ctx context.Context,
+	surface interface{},
+	imageFormat int32,
+) error {
+	return w.impl.OnOutputSurface(ctx, surface, imageFormat)
+}
+
+func (w *previewImageProcessorImplStubWrapper) OnResolutionUpdate(
+	ctx context.Context,
+	size Size,
+) error {
+	return w.impl.OnResolutionUpdate(ctx, size)
+}
+
+func (w *previewImageProcessorImplStubWrapper) OnImageFormatUpdate(
+	ctx context.Context,
+	imageFormat int32,
+) error {
+	return w.impl.OnImageFormatUpdate(ctx, imageFormat)
+}
+
+func (w *previewImageProcessorImplStubWrapper) Process(
+	ctx context.Context,
+	image ParcelImage,
+	result interface{},
+	sequenceId int32,
+	resultCallback IProcessResultImpl,
+) error {
+	return w.impl.Process(ctx, image, result, sequenceId, resultCallback)
+}
+
+var _ IPreviewImageProcessorImpl = (*previewImageProcessorImplStubWrapper)(nil)
+
+// NewPreviewImageProcessorImplStub creates a server-side IPreviewImageProcessorImpl wrapping the given
+// server implementation. The returned value satisfies IPreviewImageProcessorImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPreviewImageProcessorImplStub(
+	impl IPreviewImageProcessorImplServer,
+) IPreviewImageProcessorImpl {
+	wrapper := &previewImageProcessorImplStubWrapper{impl: impl}
+	stub := &PreviewImageProcessorImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

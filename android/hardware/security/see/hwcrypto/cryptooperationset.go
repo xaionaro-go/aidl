@@ -18,7 +18,11 @@ func (s *CryptoOperationSet) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Context.AsBinder().Handle())
+	if s.Context == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Context.AsBinder().Handle())
+	}
 	if s.Operations == nil {
 		p.WriteInt32(-1)
 	} else {

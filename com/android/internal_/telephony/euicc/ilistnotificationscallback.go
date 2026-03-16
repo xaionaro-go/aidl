@@ -97,3 +97,43 @@ func (s *ListNotificationsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IListNotificationsCallbackServer is the server-side interface that user implementations
+// provide to NewListNotificationsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IListNotificationsCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, notifications []telephonyEuicc.EuiccNotification) error
+}
+
+type listNotificationsCallbackStubWrapper struct {
+	impl       IListNotificationsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *listNotificationsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *listNotificationsCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	notifications []telephonyEuicc.EuiccNotification,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, notifications)
+}
+
+var _ IListNotificationsCallback = (*listNotificationsCallbackStubWrapper)(nil)
+
+// NewListNotificationsCallbackStub creates a server-side IListNotificationsCallback wrapping the given
+// server implementation. The returned value satisfies IListNotificationsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewListNotificationsCallbackStub(
+	impl IListNotificationsCallbackServer,
+) IListNotificationsCallback {
+	wrapper := &listNotificationsCallbackStubWrapper{impl: impl}
+	stub := &ListNotificationsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

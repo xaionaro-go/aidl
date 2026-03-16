@@ -429,7 +429,7 @@ func (p *LockSettingsProxy) CheckCredential(
 		return _result, _err
 	}
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(progressCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, progressCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILockSettings, "checkCredential")
 	if _err != nil {
@@ -819,7 +819,7 @@ func (p *LockSettingsProxy) RegisterStrongAuthTracker(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILockSettings)
-	_data.WriteStrongBinder(tracker.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tracker.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILockSettings, "registerStrongAuthTracker")
 	if _err != nil {
@@ -845,7 +845,7 @@ func (p *LockSettingsProxy) UnregisterStrongAuthTracker(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILockSettings)
-	_data.WriteStrongBinder(tracker.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tracker.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILockSettings, "unregisterStrongAuthTracker")
 	if _err != nil {
@@ -1897,7 +1897,7 @@ func (p *LockSettingsProxy) RegisterWeakEscrowTokenRemovedListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILockSettings)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILockSettings, "registerWeakEscrowTokenRemovedListener")
 	if _err != nil {
@@ -1928,7 +1928,7 @@ func (p *LockSettingsProxy) UnregisterWeakEscrowTokenRemovedListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorILockSettings)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILockSettings, "unregisterWeakEscrowTokenRemovedListener")
 	if _err != nil {
@@ -1970,7 +1970,7 @@ func (p *LockSettingsProxy) AddWeakEscrowToken(
 		}
 	}
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorILockSettings, "addWeakEscrowToken")
 	if _err != nil {
@@ -3348,4 +3348,508 @@ func (s *LockSettingsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ILockSettingsServer is the server-side interface that user implementations
+// provide to NewLockSettingsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILockSettingsServer interface {
+	SetBoolean(ctx context.Context, key string, value bool) error
+	SetLong(ctx context.Context, key string, value int64) error
+	SetString(ctx context.Context, key string, value string) error
+	GetBoolean(ctx context.Context, key string, defaultValue bool) (bool, error)
+	GetLong(ctx context.Context, key string, defaultValue int64) (int64, error)
+	GetString(ctx context.Context, key string, defaultValue string) (string, error)
+	SetLockCredential(ctx context.Context, credential LockscreenCredential, savedCredential LockscreenCredential) (bool, error)
+	ResetKeyStore(ctx context.Context) error
+	CheckCredential(ctx context.Context, credential LockscreenCredential, progressCallback ICheckCredentialProgressCallback) (VerifyCredentialResponse, error)
+	VerifyCredential(ctx context.Context, credential LockscreenCredential, flags int32) (VerifyCredentialResponse, error)
+	VerifyTiedProfileChallenge(ctx context.Context, credential LockscreenCredential, flags int32) (VerifyCredentialResponse, error)
+	VerifyGatekeeperPasswordHandle(ctx context.Context, gatekeeperPasswordHandle int64, challenge int64) (VerifyCredentialResponse, error)
+	RemoveGatekeeperPasswordHandle(ctx context.Context, gatekeeperPasswordHandle int64) error
+	GetCredentialType(ctx context.Context) (int32, error)
+	GetPinLength(ctx context.Context) (int32, error)
+	RefreshStoredPinLength(ctx context.Context) (bool, error)
+	GetHashFactor(ctx context.Context, currentCredential LockscreenCredential) ([]byte, error)
+	SetSeparateProfileChallengeEnabled(ctx context.Context, enabled bool, managedUserPassword LockscreenCredential) error
+	GetSeparateProfileChallengeEnabled(ctx context.Context) (bool, error)
+	RegisterStrongAuthTracker(ctx context.Context, tracker trust.IStrongAuthTracker) error
+	UnregisterStrongAuthTracker(ctx context.Context, tracker trust.IStrongAuthTracker) error
+	RequireStrongAuth(ctx context.Context, strongAuthReason int32) error
+	ReportSuccessfulBiometricUnlock(ctx context.Context, isStrongBiometric bool) error
+	ScheduleNonStrongBiometricIdleTimeout(ctx context.Context) error
+	SystemReady(ctx context.Context) error
+	UserPresent(ctx context.Context) error
+	GetStrongAuthForUser(ctx context.Context) (int32, error)
+	HasPendingEscrowToken(ctx context.Context) (bool, error)
+	InitRecoveryServiceWithSigFile(ctx context.Context, rootCertificateAlias string, recoveryServiceCertFile []byte, recoveryServiceSigFile []byte) error
+	GetKeyChainSnapshot(ctx context.Context) (recovery.KeyChainSnapshot, error)
+	GenerateKey(ctx context.Context, alias string) (string, error)
+	GenerateKeyWithMetadata(ctx context.Context, alias string, metadata []byte) (string, error)
+	ImportKey(ctx context.Context, alias string, keyBytes []byte) (string, error)
+	ImportKeyWithMetadata(ctx context.Context, alias string, keyBytes []byte, metadata []byte) (string, error)
+	GetKey(ctx context.Context, alias string) (string, error)
+	RemoveKey(ctx context.Context, alias string) error
+	SetSnapshotCreatedPendingIntent(ctx context.Context, intent app.PendingIntent) error
+	SetServerParams(ctx context.Context, serverParams []byte) error
+	SetRecoveryStatus(ctx context.Context, alias string, status int32) error
+	GetRecoveryStatus(ctx context.Context) (map[interface{}]interface{}, error)
+	SetRecoverySecretTypes(ctx context.Context, secretTypes []int32) error
+	GetRecoverySecretTypes(ctx context.Context) ([]int32, error)
+	StartRecoverySessionWithCertPath(ctx context.Context, sessionId string, rootCertificateAlias string, verifierCertPath recovery.RecoveryCertPath, vaultParams []byte, vaultChallenge []byte, secrets []recovery.KeyChainProtectionParams) ([]byte, error)
+	RecoverKeyChainSnapshot(ctx context.Context, sessionId string, recoveryKeyBlob []byte, applicationKeys []recovery.WrappedApplicationKey) (map[interface{}]interface{}, error)
+	CloseSession(ctx context.Context, sessionId string) error
+	StartRemoteLockscreenValidation(ctx context.Context) (app.RemoteLockscreenValidationSession, error)
+	ValidateRemoteLockscreen(ctx context.Context, encryptedCredential []byte) (app.RemoteLockscreenValidationResult, error)
+	HasSecureLockScreen(ctx context.Context) (bool, error)
+	TryUnlockWithCachedUnifiedChallenge(ctx context.Context) (bool, error)
+	RemoveCachedUnifiedChallenge(ctx context.Context) error
+	RegisterWeakEscrowTokenRemovedListener(ctx context.Context, listener IWeakEscrowTokenRemovedListener) (bool, error)
+	UnregisterWeakEscrowTokenRemovedListener(ctx context.Context, listener IWeakEscrowTokenRemovedListener) (bool, error)
+	AddWeakEscrowToken(ctx context.Context, token []byte, callback IWeakEscrowTokenActivatedListener) (int64, error)
+	RemoveWeakEscrowToken(ctx context.Context, handle int64) (bool, error)
+	IsWeakEscrowTokenActive(ctx context.Context, handle int64) (bool, error)
+	IsWeakEscrowTokenValid(ctx context.Context, handle int64, token []byte) (bool, error)
+	UnlockUserKeyIfUnsecured(ctx context.Context) error
+	WriteRepairModeCredential(ctx context.Context) (bool, error)
+}
+
+type lockSettingsStubWrapper struct {
+	impl       ILockSettingsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *lockSettingsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *lockSettingsStubWrapper) SetBoolean(
+	ctx context.Context,
+	key string,
+	value bool,
+) error {
+	return w.impl.SetBoolean(ctx, key, value)
+}
+
+func (w *lockSettingsStubWrapper) SetLong(
+	ctx context.Context,
+	key string,
+	value int64,
+) error {
+	return w.impl.SetLong(ctx, key, value)
+}
+
+func (w *lockSettingsStubWrapper) SetString(
+	ctx context.Context,
+	key string,
+	value string,
+) error {
+	return w.impl.SetString(ctx, key, value)
+}
+
+func (w *lockSettingsStubWrapper) GetBoolean(
+	ctx context.Context,
+	key string,
+	defaultValue bool,
+) (bool, error) {
+	return w.impl.GetBoolean(ctx, key, defaultValue)
+}
+
+func (w *lockSettingsStubWrapper) GetLong(
+	ctx context.Context,
+	key string,
+	defaultValue int64,
+) (int64, error) {
+	return w.impl.GetLong(ctx, key, defaultValue)
+}
+
+func (w *lockSettingsStubWrapper) GetString(
+	ctx context.Context,
+	key string,
+	defaultValue string,
+) (string, error) {
+	return w.impl.GetString(ctx, key, defaultValue)
+}
+
+func (w *lockSettingsStubWrapper) SetLockCredential(
+	ctx context.Context,
+	credential LockscreenCredential,
+	savedCredential LockscreenCredential,
+) (bool, error) {
+	return w.impl.SetLockCredential(ctx, credential, savedCredential)
+}
+
+func (w *lockSettingsStubWrapper) ResetKeyStore(
+	ctx context.Context,
+) error {
+	return w.impl.ResetKeyStore(ctx)
+}
+
+func (w *lockSettingsStubWrapper) CheckCredential(
+	ctx context.Context,
+	credential LockscreenCredential,
+	progressCallback ICheckCredentialProgressCallback,
+) (VerifyCredentialResponse, error) {
+	return w.impl.CheckCredential(ctx, credential, progressCallback)
+}
+
+func (w *lockSettingsStubWrapper) VerifyCredential(
+	ctx context.Context,
+	credential LockscreenCredential,
+	flags int32,
+) (VerifyCredentialResponse, error) {
+	return w.impl.VerifyCredential(ctx, credential, flags)
+}
+
+func (w *lockSettingsStubWrapper) VerifyTiedProfileChallenge(
+	ctx context.Context,
+	credential LockscreenCredential,
+	flags int32,
+) (VerifyCredentialResponse, error) {
+	return w.impl.VerifyTiedProfileChallenge(ctx, credential, flags)
+}
+
+func (w *lockSettingsStubWrapper) VerifyGatekeeperPasswordHandle(
+	ctx context.Context,
+	gatekeeperPasswordHandle int64,
+	challenge int64,
+) (VerifyCredentialResponse, error) {
+	return w.impl.VerifyGatekeeperPasswordHandle(ctx, gatekeeperPasswordHandle, challenge)
+}
+
+func (w *lockSettingsStubWrapper) RemoveGatekeeperPasswordHandle(
+	ctx context.Context,
+	gatekeeperPasswordHandle int64,
+) error {
+	return w.impl.RemoveGatekeeperPasswordHandle(ctx, gatekeeperPasswordHandle)
+}
+
+func (w *lockSettingsStubWrapper) GetCredentialType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCredentialType(ctx)
+}
+
+func (w *lockSettingsStubWrapper) GetPinLength(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPinLength(ctx)
+}
+
+func (w *lockSettingsStubWrapper) RefreshStoredPinLength(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.RefreshStoredPinLength(ctx)
+}
+
+func (w *lockSettingsStubWrapper) GetHashFactor(
+	ctx context.Context,
+	currentCredential LockscreenCredential,
+) ([]byte, error) {
+	return w.impl.GetHashFactor(ctx, currentCredential)
+}
+
+func (w *lockSettingsStubWrapper) SetSeparateProfileChallengeEnabled(
+	ctx context.Context,
+	enabled bool,
+	managedUserPassword LockscreenCredential,
+) error {
+	return w.impl.SetSeparateProfileChallengeEnabled(ctx, enabled, managedUserPassword)
+}
+
+func (w *lockSettingsStubWrapper) GetSeparateProfileChallengeEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetSeparateProfileChallengeEnabled(ctx)
+}
+
+func (w *lockSettingsStubWrapper) RegisterStrongAuthTracker(
+	ctx context.Context,
+	tracker trust.IStrongAuthTracker,
+) error {
+	return w.impl.RegisterStrongAuthTracker(ctx, tracker)
+}
+
+func (w *lockSettingsStubWrapper) UnregisterStrongAuthTracker(
+	ctx context.Context,
+	tracker trust.IStrongAuthTracker,
+) error {
+	return w.impl.UnregisterStrongAuthTracker(ctx, tracker)
+}
+
+func (w *lockSettingsStubWrapper) RequireStrongAuth(
+	ctx context.Context,
+	strongAuthReason int32,
+) error {
+	return w.impl.RequireStrongAuth(ctx, strongAuthReason)
+}
+
+func (w *lockSettingsStubWrapper) ReportSuccessfulBiometricUnlock(
+	ctx context.Context,
+	isStrongBiometric bool,
+) error {
+	return w.impl.ReportSuccessfulBiometricUnlock(ctx, isStrongBiometric)
+}
+
+func (w *lockSettingsStubWrapper) ScheduleNonStrongBiometricIdleTimeout(
+	ctx context.Context,
+) error {
+	return w.impl.ScheduleNonStrongBiometricIdleTimeout(ctx)
+}
+
+func (w *lockSettingsStubWrapper) SystemReady(
+	ctx context.Context,
+) error {
+	return w.impl.SystemReady(ctx)
+}
+
+func (w *lockSettingsStubWrapper) UserPresent(
+	ctx context.Context,
+) error {
+	return w.impl.UserPresent(ctx)
+}
+
+func (w *lockSettingsStubWrapper) GetStrongAuthForUser(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetStrongAuthForUser(ctx)
+}
+
+func (w *lockSettingsStubWrapper) HasPendingEscrowToken(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasPendingEscrowToken(ctx)
+}
+
+func (w *lockSettingsStubWrapper) InitRecoveryServiceWithSigFile(
+	ctx context.Context,
+	rootCertificateAlias string,
+	recoveryServiceCertFile []byte,
+	recoveryServiceSigFile []byte,
+) error {
+	return w.impl.InitRecoveryServiceWithSigFile(ctx, rootCertificateAlias, recoveryServiceCertFile, recoveryServiceSigFile)
+}
+
+func (w *lockSettingsStubWrapper) GetKeyChainSnapshot(
+	ctx context.Context,
+) (recovery.KeyChainSnapshot, error) {
+	return w.impl.GetKeyChainSnapshot(ctx)
+}
+
+func (w *lockSettingsStubWrapper) GenerateKey(
+	ctx context.Context,
+	alias string,
+) (string, error) {
+	return w.impl.GenerateKey(ctx, alias)
+}
+
+func (w *lockSettingsStubWrapper) GenerateKeyWithMetadata(
+	ctx context.Context,
+	alias string,
+	metadata []byte,
+) (string, error) {
+	return w.impl.GenerateKeyWithMetadata(ctx, alias, metadata)
+}
+
+func (w *lockSettingsStubWrapper) ImportKey(
+	ctx context.Context,
+	alias string,
+	keyBytes []byte,
+) (string, error) {
+	return w.impl.ImportKey(ctx, alias, keyBytes)
+}
+
+func (w *lockSettingsStubWrapper) ImportKeyWithMetadata(
+	ctx context.Context,
+	alias string,
+	keyBytes []byte,
+	metadata []byte,
+) (string, error) {
+	return w.impl.ImportKeyWithMetadata(ctx, alias, keyBytes, metadata)
+}
+
+func (w *lockSettingsStubWrapper) GetKey(
+	ctx context.Context,
+	alias string,
+) (string, error) {
+	return w.impl.GetKey(ctx, alias)
+}
+
+func (w *lockSettingsStubWrapper) RemoveKey(
+	ctx context.Context,
+	alias string,
+) error {
+	return w.impl.RemoveKey(ctx, alias)
+}
+
+func (w *lockSettingsStubWrapper) SetSnapshotCreatedPendingIntent(
+	ctx context.Context,
+	intent app.PendingIntent,
+) error {
+	return w.impl.SetSnapshotCreatedPendingIntent(ctx, intent)
+}
+
+func (w *lockSettingsStubWrapper) SetServerParams(
+	ctx context.Context,
+	serverParams []byte,
+) error {
+	return w.impl.SetServerParams(ctx, serverParams)
+}
+
+func (w *lockSettingsStubWrapper) SetRecoveryStatus(
+	ctx context.Context,
+	alias string,
+	status int32,
+) error {
+	return w.impl.SetRecoveryStatus(ctx, alias, status)
+}
+
+func (w *lockSettingsStubWrapper) GetRecoveryStatus(
+	ctx context.Context,
+) (map[interface{}]interface{}, error) {
+	return w.impl.GetRecoveryStatus(ctx)
+}
+
+func (w *lockSettingsStubWrapper) SetRecoverySecretTypes(
+	ctx context.Context,
+	secretTypes []int32,
+) error {
+	return w.impl.SetRecoverySecretTypes(ctx, secretTypes)
+}
+
+func (w *lockSettingsStubWrapper) GetRecoverySecretTypes(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetRecoverySecretTypes(ctx)
+}
+
+func (w *lockSettingsStubWrapper) StartRecoverySessionWithCertPath(
+	ctx context.Context,
+	sessionId string,
+	rootCertificateAlias string,
+	verifierCertPath recovery.RecoveryCertPath,
+	vaultParams []byte,
+	vaultChallenge []byte,
+	secrets []recovery.KeyChainProtectionParams,
+) ([]byte, error) {
+	return w.impl.StartRecoverySessionWithCertPath(ctx, sessionId, rootCertificateAlias, verifierCertPath, vaultParams, vaultChallenge, secrets)
+}
+
+func (w *lockSettingsStubWrapper) RecoverKeyChainSnapshot(
+	ctx context.Context,
+	sessionId string,
+	recoveryKeyBlob []byte,
+	applicationKeys []recovery.WrappedApplicationKey,
+) (map[interface{}]interface{}, error) {
+	return w.impl.RecoverKeyChainSnapshot(ctx, sessionId, recoveryKeyBlob, applicationKeys)
+}
+
+func (w *lockSettingsStubWrapper) CloseSession(
+	ctx context.Context,
+	sessionId string,
+) error {
+	return w.impl.CloseSession(ctx, sessionId)
+}
+
+func (w *lockSettingsStubWrapper) StartRemoteLockscreenValidation(
+	ctx context.Context,
+) (app.RemoteLockscreenValidationSession, error) {
+	return w.impl.StartRemoteLockscreenValidation(ctx)
+}
+
+func (w *lockSettingsStubWrapper) ValidateRemoteLockscreen(
+	ctx context.Context,
+	encryptedCredential []byte,
+) (app.RemoteLockscreenValidationResult, error) {
+	return w.impl.ValidateRemoteLockscreen(ctx, encryptedCredential)
+}
+
+func (w *lockSettingsStubWrapper) HasSecureLockScreen(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasSecureLockScreen(ctx)
+}
+
+func (w *lockSettingsStubWrapper) TryUnlockWithCachedUnifiedChallenge(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.TryUnlockWithCachedUnifiedChallenge(ctx)
+}
+
+func (w *lockSettingsStubWrapper) RemoveCachedUnifiedChallenge(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveCachedUnifiedChallenge(ctx)
+}
+
+func (w *lockSettingsStubWrapper) RegisterWeakEscrowTokenRemovedListener(
+	ctx context.Context,
+	listener IWeakEscrowTokenRemovedListener,
+) (bool, error) {
+	return w.impl.RegisterWeakEscrowTokenRemovedListener(ctx, listener)
+}
+
+func (w *lockSettingsStubWrapper) UnregisterWeakEscrowTokenRemovedListener(
+	ctx context.Context,
+	listener IWeakEscrowTokenRemovedListener,
+) (bool, error) {
+	return w.impl.UnregisterWeakEscrowTokenRemovedListener(ctx, listener)
+}
+
+func (w *lockSettingsStubWrapper) AddWeakEscrowToken(
+	ctx context.Context,
+	token []byte,
+	callback IWeakEscrowTokenActivatedListener,
+) (int64, error) {
+	return w.impl.AddWeakEscrowToken(ctx, token, callback)
+}
+
+func (w *lockSettingsStubWrapper) RemoveWeakEscrowToken(
+	ctx context.Context,
+	handle int64,
+) (bool, error) {
+	return w.impl.RemoveWeakEscrowToken(ctx, handle)
+}
+
+func (w *lockSettingsStubWrapper) IsWeakEscrowTokenActive(
+	ctx context.Context,
+	handle int64,
+) (bool, error) {
+	return w.impl.IsWeakEscrowTokenActive(ctx, handle)
+}
+
+func (w *lockSettingsStubWrapper) IsWeakEscrowTokenValid(
+	ctx context.Context,
+	handle int64,
+	token []byte,
+) (bool, error) {
+	return w.impl.IsWeakEscrowTokenValid(ctx, handle, token)
+}
+
+func (w *lockSettingsStubWrapper) UnlockUserKeyIfUnsecured(
+	ctx context.Context,
+) error {
+	return w.impl.UnlockUserKeyIfUnsecured(ctx)
+}
+
+func (w *lockSettingsStubWrapper) WriteRepairModeCredential(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.WriteRepairModeCredential(ctx)
+}
+
+var _ ILockSettings = (*lockSettingsStubWrapper)(nil)
+
+// NewLockSettingsStub creates a server-side ILockSettings wrapping the given
+// server implementation. The returned value satisfies ILockSettings
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLockSettingsStub(
+	impl ILockSettingsServer,
+) ILockSettings {
+	wrapper := &lockSettingsStubWrapper{impl: impl}
+	stub := &LockSettingsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

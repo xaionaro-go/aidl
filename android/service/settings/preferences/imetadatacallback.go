@@ -117,3 +117,49 @@ func (s *MetadataCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMetadataCallbackServer is the server-side interface that user implementations
+// provide to NewMetadataCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMetadataCallbackServer interface {
+	OnSuccess(ctx context.Context, result MetadataResult) error
+	OnFailure(ctx context.Context) error
+}
+
+type metadataCallbackStubWrapper struct {
+	impl       IMetadataCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *metadataCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *metadataCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	result MetadataResult,
+) error {
+	return w.impl.OnSuccess(ctx, result)
+}
+
+func (w *metadataCallbackStubWrapper) OnFailure(
+	ctx context.Context,
+) error {
+	return w.impl.OnFailure(ctx)
+}
+
+var _ IMetadataCallback = (*metadataCallbackStubWrapper)(nil)
+
+// NewMetadataCallbackStub creates a server-side IMetadataCallback wrapping the given
+// server implementation. The returned value satisfies IMetadataCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMetadataCallbackStub(
+	impl IMetadataCallbackServer,
+) IMetadataCallback {
+	wrapper := &metadataCallbackStubWrapper{impl: impl}
+	stub := &MetadataCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

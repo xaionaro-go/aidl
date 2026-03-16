@@ -131,3 +131,50 @@ func (s *SurfaceControlViewHostParentStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISurfaceControlViewHostParentServer is the server-side interface that user implementations
+// provide to NewSurfaceControlViewHostParentStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISurfaceControlViewHostParentServer interface {
+	UpdateParams(ctx context.Context, childAttrs []WindowManagerLayoutParams) error
+	ForwardBackKeyToParent(ctx context.Context, keyEvent KeyEvent) error
+}
+
+type surfaceControlViewHostParentStubWrapper struct {
+	impl       ISurfaceControlViewHostParentServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *surfaceControlViewHostParentStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *surfaceControlViewHostParentStubWrapper) UpdateParams(
+	ctx context.Context,
+	childAttrs []WindowManagerLayoutParams,
+) error {
+	return w.impl.UpdateParams(ctx, childAttrs)
+}
+
+func (w *surfaceControlViewHostParentStubWrapper) ForwardBackKeyToParent(
+	ctx context.Context,
+	keyEvent KeyEvent,
+) error {
+	return w.impl.ForwardBackKeyToParent(ctx, keyEvent)
+}
+
+var _ ISurfaceControlViewHostParent = (*surfaceControlViewHostParentStubWrapper)(nil)
+
+// NewSurfaceControlViewHostParentStub creates a server-side ISurfaceControlViewHostParent wrapping the given
+// server implementation. The returned value satisfies ISurfaceControlViewHostParent
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSurfaceControlViewHostParentStub(
+	impl ISurfaceControlViewHostParentServer,
+) ISurfaceControlViewHostParent {
+	wrapper := &surfaceControlViewHostParentStubWrapper{impl: impl}
+	stub := &SurfaceControlViewHostParentStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

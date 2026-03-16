@@ -105,3 +105,42 @@ func (s *WalletCardsUpdatedListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWalletCardsUpdatedListenerServer is the server-side interface that user implementations
+// provide to NewWalletCardsUpdatedListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWalletCardsUpdatedListenerServer interface {
+	RegisterNewWalletCards(ctx context.Context, cards []quickaccesswallet.WalletCard) error
+}
+
+type walletCardsUpdatedListenerStubWrapper struct {
+	impl       IWalletCardsUpdatedListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *walletCardsUpdatedListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *walletCardsUpdatedListenerStubWrapper) RegisterNewWalletCards(
+	ctx context.Context,
+	cards []quickaccesswallet.WalletCard,
+) error {
+	return w.impl.RegisterNewWalletCards(ctx, cards)
+}
+
+var _ IWalletCardsUpdatedListener = (*walletCardsUpdatedListenerStubWrapper)(nil)
+
+// NewWalletCardsUpdatedListenerStub creates a server-side IWalletCardsUpdatedListener wrapping the given
+// server implementation. The returned value satisfies IWalletCardsUpdatedListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWalletCardsUpdatedListenerStub(
+	impl IWalletCardsUpdatedListenerServer,
+) IWalletCardsUpdatedListener {
+	wrapper := &walletCardsUpdatedListenerStubWrapper{impl: impl}
+	stub := &WalletCardsUpdatedListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

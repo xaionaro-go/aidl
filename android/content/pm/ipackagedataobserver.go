@@ -88,3 +88,43 @@ func (s *PackageDataObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPackageDataObserverServer is the server-side interface that user implementations
+// provide to NewPackageDataObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageDataObserverServer interface {
+	OnRemoveCompleted(ctx context.Context, packageName string, succeeded bool) error
+}
+
+type packageDataObserverStubWrapper struct {
+	impl       IPackageDataObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageDataObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageDataObserverStubWrapper) OnRemoveCompleted(
+	ctx context.Context,
+	packageName string,
+	succeeded bool,
+) error {
+	return w.impl.OnRemoveCompleted(ctx, packageName, succeeded)
+}
+
+var _ IPackageDataObserver = (*packageDataObserverStubWrapper)(nil)
+
+// NewPackageDataObserverStub creates a server-side IPackageDataObserver wrapping the given
+// server implementation. The returned value satisfies IPackageDataObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageDataObserverStub(
+	impl IPackageDataObserverServer,
+) IPackageDataObserver {
+	wrapper := &packageDataObserverStubWrapper{impl: impl}
+	stub := &PackageDataObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

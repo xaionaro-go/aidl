@@ -53,7 +53,7 @@ func (p *CompanionDeviceDiscoveryServiceProxy) StartDiscovery(
 		return _err
 	}
 	_data.WriteString16(_identity.PackageName)
-	_data.WriteStrongBinder(applicationCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, applicationCallback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := serviceCallback.MarshalParcel(_data); _err != nil {
 		return _err
@@ -144,4 +144,52 @@ func (s *CompanionDeviceDiscoveryServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICompanionDeviceDiscoveryServiceServer is the server-side interface that user implementations
+// provide to NewCompanionDeviceDiscoveryServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICompanionDeviceDiscoveryServiceServer interface {
+	StartDiscovery(ctx context.Context, request AssociationRequest, applicationCallback IAssociationRequestCallback, serviceCallback infra.AndroidFuture) error
+	OnAssociationCreated(ctx context.Context) error
+}
+
+type companionDeviceDiscoveryServiceStubWrapper struct {
+	impl       ICompanionDeviceDiscoveryServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *companionDeviceDiscoveryServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *companionDeviceDiscoveryServiceStubWrapper) StartDiscovery(
+	ctx context.Context,
+	request AssociationRequest,
+	applicationCallback IAssociationRequestCallback,
+	serviceCallback infra.AndroidFuture,
+) error {
+	return w.impl.StartDiscovery(ctx, request, applicationCallback, serviceCallback)
+}
+
+func (w *companionDeviceDiscoveryServiceStubWrapper) OnAssociationCreated(
+	ctx context.Context,
+) error {
+	return w.impl.OnAssociationCreated(ctx)
+}
+
+var _ ICompanionDeviceDiscoveryService = (*companionDeviceDiscoveryServiceStubWrapper)(nil)
+
+// NewCompanionDeviceDiscoveryServiceStub creates a server-side ICompanionDeviceDiscoveryService wrapping the given
+// server implementation. The returned value satisfies ICompanionDeviceDiscoveryService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCompanionDeviceDiscoveryServiceStub(
+	impl ICompanionDeviceDiscoveryServiceServer,
+) ICompanionDeviceDiscoveryService {
+	wrapper := &companionDeviceDiscoveryServiceStubWrapper{impl: impl}
+	stub := &CompanionDeviceDiscoveryServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

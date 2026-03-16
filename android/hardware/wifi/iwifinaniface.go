@@ -331,7 +331,7 @@ func (p *WifiNanIfaceProxy) RegisterEventCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWifiNanIface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWifiNanIface, "registerEventCallback")
 	if _err != nil {
@@ -1357,4 +1357,239 @@ func (s *WifiNanIfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWifiNanIfaceServer is the server-side interface that user implementations
+// provide to NewWifiNanIfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiNanIfaceServer interface {
+	GetName(ctx context.Context) (string, error)
+	ConfigRequest(ctx context.Context, cmdId uint16, msg1 NanConfigRequest, msg2 NanConfigRequestSupplemental) error
+	CreateDataInterfaceRequest(ctx context.Context, cmdId uint16, ifaceName string) error
+	DeleteDataInterfaceRequest(ctx context.Context, cmdId uint16, ifaceName string) error
+	DisableRequest(ctx context.Context, cmdId uint16) error
+	EnableRequest(ctx context.Context, cmdId uint16, msg1 NanEnableRequest, msg2 NanConfigRequestSupplemental) error
+	GetCapabilitiesRequest(ctx context.Context, cmdId uint16) error
+	InitiateDataPathRequest(ctx context.Context, cmdId uint16, msg NanInitiateDataPathRequest) error
+	RegisterEventCallback(ctx context.Context, callback IWifiNanIfaceEventCallback) error
+	RespondToDataPathIndicationRequest(ctx context.Context, cmdId uint16, msg NanRespondToDataPathIndicationRequest) error
+	StartPublishRequest(ctx context.Context, cmdId uint16, msg NanPublishRequest) error
+	StartSubscribeRequest(ctx context.Context, cmdId uint16, msg NanSubscribeRequest) error
+	StopPublishRequest(ctx context.Context, cmdId uint16, sessionId byte) error
+	StopSubscribeRequest(ctx context.Context, cmdId uint16, sessionId byte) error
+	TerminateDataPathRequest(ctx context.Context, cmdId uint16, ndpInstanceId int32) error
+	SuspendRequest(ctx context.Context, cmdId uint16, sessionId byte) error
+	ResumeRequest(ctx context.Context, cmdId uint16, sessionId byte) error
+	TransmitFollowupRequest(ctx context.Context, cmdId uint16, msg NanTransmitFollowupRequest) error
+	InitiatePairingRequest(ctx context.Context, cmdId uint16, msg NanPairingRequest) error
+	RespondToPairingIndicationRequest(ctx context.Context, cmdId uint16, msg NanRespondToPairingIndicationRequest) error
+	InitiateBootstrappingRequest(ctx context.Context, cmdId uint16, msg NanBootstrappingRequest) error
+	RespondToBootstrappingIndicationRequest(ctx context.Context, cmdId uint16, msg NanBootstrappingResponse) error
+	TerminatePairingRequest(ctx context.Context, cmdId uint16, pairingInstanceId int32) error
+}
+
+type wifiNanIfaceStubWrapper struct {
+	impl       IWifiNanIfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiNanIfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiNanIfaceStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+func (w *wifiNanIfaceStubWrapper) ConfigRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg1 NanConfigRequest,
+	msg2 NanConfigRequestSupplemental,
+) error {
+	return w.impl.ConfigRequest(ctx, cmdId, msg1, msg2)
+}
+
+func (w *wifiNanIfaceStubWrapper) CreateDataInterfaceRequest(
+	ctx context.Context,
+	cmdId uint16,
+	ifaceName string,
+) error {
+	return w.impl.CreateDataInterfaceRequest(ctx, cmdId, ifaceName)
+}
+
+func (w *wifiNanIfaceStubWrapper) DeleteDataInterfaceRequest(
+	ctx context.Context,
+	cmdId uint16,
+	ifaceName string,
+) error {
+	return w.impl.DeleteDataInterfaceRequest(ctx, cmdId, ifaceName)
+}
+
+func (w *wifiNanIfaceStubWrapper) DisableRequest(
+	ctx context.Context,
+	cmdId uint16,
+) error {
+	return w.impl.DisableRequest(ctx, cmdId)
+}
+
+func (w *wifiNanIfaceStubWrapper) EnableRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg1 NanEnableRequest,
+	msg2 NanConfigRequestSupplemental,
+) error {
+	return w.impl.EnableRequest(ctx, cmdId, msg1, msg2)
+}
+
+func (w *wifiNanIfaceStubWrapper) GetCapabilitiesRequest(
+	ctx context.Context,
+	cmdId uint16,
+) error {
+	return w.impl.GetCapabilitiesRequest(ctx, cmdId)
+}
+
+func (w *wifiNanIfaceStubWrapper) InitiateDataPathRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg NanInitiateDataPathRequest,
+) error {
+	return w.impl.InitiateDataPathRequest(ctx, cmdId, msg)
+}
+
+func (w *wifiNanIfaceStubWrapper) RegisterEventCallback(
+	ctx context.Context,
+	callback IWifiNanIfaceEventCallback,
+) error {
+	return w.impl.RegisterEventCallback(ctx, callback)
+}
+
+func (w *wifiNanIfaceStubWrapper) RespondToDataPathIndicationRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg NanRespondToDataPathIndicationRequest,
+) error {
+	return w.impl.RespondToDataPathIndicationRequest(ctx, cmdId, msg)
+}
+
+func (w *wifiNanIfaceStubWrapper) StartPublishRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg NanPublishRequest,
+) error {
+	return w.impl.StartPublishRequest(ctx, cmdId, msg)
+}
+
+func (w *wifiNanIfaceStubWrapper) StartSubscribeRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg NanSubscribeRequest,
+) error {
+	return w.impl.StartSubscribeRequest(ctx, cmdId, msg)
+}
+
+func (w *wifiNanIfaceStubWrapper) StopPublishRequest(
+	ctx context.Context,
+	cmdId uint16,
+	sessionId byte,
+) error {
+	return w.impl.StopPublishRequest(ctx, cmdId, sessionId)
+}
+
+func (w *wifiNanIfaceStubWrapper) StopSubscribeRequest(
+	ctx context.Context,
+	cmdId uint16,
+	sessionId byte,
+) error {
+	return w.impl.StopSubscribeRequest(ctx, cmdId, sessionId)
+}
+
+func (w *wifiNanIfaceStubWrapper) TerminateDataPathRequest(
+	ctx context.Context,
+	cmdId uint16,
+	ndpInstanceId int32,
+) error {
+	return w.impl.TerminateDataPathRequest(ctx, cmdId, ndpInstanceId)
+}
+
+func (w *wifiNanIfaceStubWrapper) SuspendRequest(
+	ctx context.Context,
+	cmdId uint16,
+	sessionId byte,
+) error {
+	return w.impl.SuspendRequest(ctx, cmdId, sessionId)
+}
+
+func (w *wifiNanIfaceStubWrapper) ResumeRequest(
+	ctx context.Context,
+	cmdId uint16,
+	sessionId byte,
+) error {
+	return w.impl.ResumeRequest(ctx, cmdId, sessionId)
+}
+
+func (w *wifiNanIfaceStubWrapper) TransmitFollowupRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg NanTransmitFollowupRequest,
+) error {
+	return w.impl.TransmitFollowupRequest(ctx, cmdId, msg)
+}
+
+func (w *wifiNanIfaceStubWrapper) InitiatePairingRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg NanPairingRequest,
+) error {
+	return w.impl.InitiatePairingRequest(ctx, cmdId, msg)
+}
+
+func (w *wifiNanIfaceStubWrapper) RespondToPairingIndicationRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg NanRespondToPairingIndicationRequest,
+) error {
+	return w.impl.RespondToPairingIndicationRequest(ctx, cmdId, msg)
+}
+
+func (w *wifiNanIfaceStubWrapper) InitiateBootstrappingRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg NanBootstrappingRequest,
+) error {
+	return w.impl.InitiateBootstrappingRequest(ctx, cmdId, msg)
+}
+
+func (w *wifiNanIfaceStubWrapper) RespondToBootstrappingIndicationRequest(
+	ctx context.Context,
+	cmdId uint16,
+	msg NanBootstrappingResponse,
+) error {
+	return w.impl.RespondToBootstrappingIndicationRequest(ctx, cmdId, msg)
+}
+
+func (w *wifiNanIfaceStubWrapper) TerminatePairingRequest(
+	ctx context.Context,
+	cmdId uint16,
+	pairingInstanceId int32,
+) error {
+	return w.impl.TerminatePairingRequest(ctx, cmdId, pairingInstanceId)
+}
+
+var _ IWifiNanIface = (*wifiNanIfaceStubWrapper)(nil)
+
+// NewWifiNanIfaceStub creates a server-side IWifiNanIface wrapping the given
+// server implementation. The returned value satisfies IWifiNanIface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiNanIfaceStub(
+	impl IWifiNanIfaceServer,
+) IWifiNanIface {
+	wrapper := &wifiNanIfaceStubWrapper{impl: impl}
+	stub := &WifiNanIfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -143,3 +143,50 @@ func (s *TunerDvrCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITunerDvrCallbackServer is the server-side interface that user implementations
+// provide to NewTunerDvrCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerDvrCallbackServer interface {
+	OnRecordStatus(ctx context.Context, status tvTuner.RecordStatus) error
+	OnPlaybackStatus(ctx context.Context, status tvTuner.PlaybackStatus) error
+}
+
+type tunerDvrCallbackStubWrapper struct {
+	impl       ITunerDvrCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerDvrCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerDvrCallbackStubWrapper) OnRecordStatus(
+	ctx context.Context,
+	status tvTuner.RecordStatus,
+) error {
+	return w.impl.OnRecordStatus(ctx, status)
+}
+
+func (w *tunerDvrCallbackStubWrapper) OnPlaybackStatus(
+	ctx context.Context,
+	status tvTuner.PlaybackStatus,
+) error {
+	return w.impl.OnPlaybackStatus(ctx, status)
+}
+
+var _ ITunerDvrCallback = (*tunerDvrCallbackStubWrapper)(nil)
+
+// NewTunerDvrCallbackStub creates a server-side ITunerDvrCallback wrapping the given
+// server implementation. The returned value satisfies ITunerDvrCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerDvrCallbackStub(
+	impl ITunerDvrCallbackServer,
+) ITunerDvrCallback {
+	wrapper := &tunerDvrCallbackStubWrapper{impl: impl}
+	stub := &TunerDvrCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

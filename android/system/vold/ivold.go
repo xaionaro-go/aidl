@@ -43,7 +43,7 @@ func (p *VoldProxy) RegisterCheckpointListener(
 	var _result CheckpointingState
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVold)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVold, "registerCheckpointListener")
 	if _err != nil {
@@ -101,4 +101,43 @@ func (s *VoldStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVoldServer is the server-side interface that user implementations
+// provide to NewVoldStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoldServer interface {
+	RegisterCheckpointListener(ctx context.Context, listener IVoldCheckpointListener) (CheckpointingState, error)
+}
+
+type voldStubWrapper struct {
+	impl       IVoldServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voldStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voldStubWrapper) RegisterCheckpointListener(
+	ctx context.Context,
+	listener IVoldCheckpointListener,
+) (CheckpointingState, error) {
+	return w.impl.RegisterCheckpointListener(ctx, listener)
+}
+
+var _ IVold = (*voldStubWrapper)(nil)
+
+// NewVoldStub creates a server-side IVold wrapping the given
+// server implementation. The returned value satisfies IVold
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoldStub(
+	impl IVoldServer,
+) IVold {
+	wrapper := &voldStubWrapper{impl: impl}
+	stub := &VoldStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

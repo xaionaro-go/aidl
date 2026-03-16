@@ -148,3 +148,57 @@ func (s *ScrollCaptureCallbacksStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IScrollCaptureCallbacksServer is the server-side interface that user implementations
+// provide to NewScrollCaptureCallbacksStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IScrollCaptureCallbacksServer interface {
+	OnCaptureStarted(ctx context.Context) error
+	OnImageRequestCompleted(ctx context.Context, flags int32, capturedArea graphics.Rect) error
+	OnCaptureEnded(ctx context.Context) error
+}
+
+type scrollCaptureCallbacksStubWrapper struct {
+	impl       IScrollCaptureCallbacksServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *scrollCaptureCallbacksStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *scrollCaptureCallbacksStubWrapper) OnCaptureStarted(
+	ctx context.Context,
+) error {
+	return w.impl.OnCaptureStarted(ctx)
+}
+
+func (w *scrollCaptureCallbacksStubWrapper) OnImageRequestCompleted(
+	ctx context.Context,
+	flags int32,
+	capturedArea graphics.Rect,
+) error {
+	return w.impl.OnImageRequestCompleted(ctx, flags, capturedArea)
+}
+
+func (w *scrollCaptureCallbacksStubWrapper) OnCaptureEnded(
+	ctx context.Context,
+) error {
+	return w.impl.OnCaptureEnded(ctx)
+}
+
+var _ IScrollCaptureCallbacks = (*scrollCaptureCallbacksStubWrapper)(nil)
+
+// NewScrollCaptureCallbacksStub creates a server-side IScrollCaptureCallbacks wrapping the given
+// server implementation. The returned value satisfies IScrollCaptureCallbacks
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewScrollCaptureCallbacksStub(
+	impl IScrollCaptureCallbacksServer,
+) IScrollCaptureCallbacks {
+	wrapper := &scrollCaptureCallbacksStubWrapper{impl: impl}
+	stub := &ScrollCaptureCallbacksStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -257,3 +257,83 @@ func (s *TvInputManagerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITvInputManagerCallbackServer is the server-side interface that user implementations
+// provide to NewTvInputManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITvInputManagerCallbackServer interface {
+	OnInputAdded(ctx context.Context, inputId string) error
+	OnInputRemoved(ctx context.Context, inputId string) error
+	OnInputUpdated(ctx context.Context, inputId string) error
+	OnInputStateChanged(ctx context.Context, inputId string, state int32) error
+	OnTvInputInfoUpdated(ctx context.Context, TvInputInfo TvInputInfo) error
+	OnCurrentTunedInfosUpdated(ctx context.Context, currentTunedInfos []TunedInfo) error
+}
+
+type tvInputManagerCallbackStubWrapper struct {
+	impl       ITvInputManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tvInputManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tvInputManagerCallbackStubWrapper) OnInputAdded(
+	ctx context.Context,
+	inputId string,
+) error {
+	return w.impl.OnInputAdded(ctx, inputId)
+}
+
+func (w *tvInputManagerCallbackStubWrapper) OnInputRemoved(
+	ctx context.Context,
+	inputId string,
+) error {
+	return w.impl.OnInputRemoved(ctx, inputId)
+}
+
+func (w *tvInputManagerCallbackStubWrapper) OnInputUpdated(
+	ctx context.Context,
+	inputId string,
+) error {
+	return w.impl.OnInputUpdated(ctx, inputId)
+}
+
+func (w *tvInputManagerCallbackStubWrapper) OnInputStateChanged(
+	ctx context.Context,
+	inputId string,
+	state int32,
+) error {
+	return w.impl.OnInputStateChanged(ctx, inputId, state)
+}
+
+func (w *tvInputManagerCallbackStubWrapper) OnTvInputInfoUpdated(
+	ctx context.Context,
+	TvInputInfo TvInputInfo,
+) error {
+	return w.impl.OnTvInputInfoUpdated(ctx, TvInputInfo)
+}
+
+func (w *tvInputManagerCallbackStubWrapper) OnCurrentTunedInfosUpdated(
+	ctx context.Context,
+	currentTunedInfos []TunedInfo,
+) error {
+	return w.impl.OnCurrentTunedInfosUpdated(ctx, currentTunedInfos)
+}
+
+var _ ITvInputManagerCallback = (*tvInputManagerCallbackStubWrapper)(nil)
+
+// NewTvInputManagerCallbackStub creates a server-side ITvInputManagerCallback wrapping the given
+// server implementation. The returned value satisfies ITvInputManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTvInputManagerCallbackStub(
+	impl ITvInputManagerCallbackServer,
+) ITvInputManagerCallback {
+	wrapper := &tvInputManagerCallbackStubWrapper{impl: impl}
+	stub := &TvInputManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

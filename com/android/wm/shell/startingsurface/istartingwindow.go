@@ -42,7 +42,7 @@ func (p *StartingWindowProxy) SetStartingWindowListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStartingWindow)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStartingWindow, "setStartingWindowListener")
 	if _err != nil {
@@ -80,4 +80,43 @@ func (s *StartingWindowStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IStartingWindowServer is the server-side interface that user implementations
+// provide to NewStartingWindowStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStartingWindowServer interface {
+	SetStartingWindowListener(ctx context.Context, listener IStartingWindowListener) error
+}
+
+type startingWindowStubWrapper struct {
+	impl       IStartingWindowServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *startingWindowStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *startingWindowStubWrapper) SetStartingWindowListener(
+	ctx context.Context,
+	listener IStartingWindowListener,
+) error {
+	return w.impl.SetStartingWindowListener(ctx, listener)
+}
+
+var _ IStartingWindow = (*startingWindowStubWrapper)(nil)
+
+// NewStartingWindowStub creates a server-side IStartingWindow wrapping the given
+// server implementation. The returned value satisfies IStartingWindow
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStartingWindowStub(
+	impl IStartingWindowServer,
+) IStartingWindow {
+	wrapper := &startingWindowStubWrapper{impl: impl}
+	stub := &StartingWindowStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

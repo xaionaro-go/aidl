@@ -230,3 +230,59 @@ func (s *PackageManagerProxyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPackageManagerProxyServer is the server-side interface that user implementations
+// provide to NewPackageManagerProxyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPackageManagerProxyServer interface {
+	GetNamesForUids(ctx context.Context, uids []int32) ([]string, error)
+	GetPackageUid(ctx context.Context, packageName string, flags int64) (int32, error)
+	GetVersionCodeForPackage(ctx context.Context, packageName string) (int64, error)
+}
+
+type packageManagerProxyStubWrapper struct {
+	impl       IPackageManagerProxyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *packageManagerProxyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *packageManagerProxyStubWrapper) GetNamesForUids(
+	ctx context.Context,
+	uids []int32,
+) ([]string, error) {
+	return w.impl.GetNamesForUids(ctx, uids)
+}
+
+func (w *packageManagerProxyStubWrapper) GetPackageUid(
+	ctx context.Context,
+	packageName string,
+	flags int64,
+) (int32, error) {
+	return w.impl.GetPackageUid(ctx, packageName, flags)
+}
+
+func (w *packageManagerProxyStubWrapper) GetVersionCodeForPackage(
+	ctx context.Context,
+	packageName string,
+) (int64, error) {
+	return w.impl.GetVersionCodeForPackage(ctx, packageName)
+}
+
+var _ IPackageManagerProxy = (*packageManagerProxyStubWrapper)(nil)
+
+// NewPackageManagerProxyStub creates a server-side IPackageManagerProxy wrapping the given
+// server implementation. The returned value satisfies IPackageManagerProxy
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPackageManagerProxyStub(
+	impl IPackageManagerProxyServer,
+) IPackageManagerProxy {
+	wrapper := &packageManagerProxyStubWrapper{impl: impl}
+	stub := &PackageManagerProxyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

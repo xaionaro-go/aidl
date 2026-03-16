@@ -79,7 +79,7 @@ func (p *RemoteAnimationRunnerProxy) OnAnimationStart(
 			}
 		}
 	}
-	_data.WriteStrongBinder(finishedCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, finishedCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRemoteAnimationRunner, "onAnimationStart")
 	if _err != nil {
@@ -152,4 +152,54 @@ func (s *RemoteAnimationRunnerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRemoteAnimationRunnerServer is the server-side interface that user implementations
+// provide to NewRemoteAnimationRunnerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRemoteAnimationRunnerServer interface {
+	OnAnimationStart(ctx context.Context, transit int32, apps []RemoteAnimationTarget, wallpapers []RemoteAnimationTarget, nonApps []RemoteAnimationTarget, finishedCallback IRemoteAnimationFinishedCallback) error
+	OnAnimationCancelled(ctx context.Context) error
+}
+
+type remoteAnimationRunnerStubWrapper struct {
+	impl       IRemoteAnimationRunnerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *remoteAnimationRunnerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *remoteAnimationRunnerStubWrapper) OnAnimationStart(
+	ctx context.Context,
+	transit int32,
+	apps []RemoteAnimationTarget,
+	wallpapers []RemoteAnimationTarget,
+	nonApps []RemoteAnimationTarget,
+	finishedCallback IRemoteAnimationFinishedCallback,
+) error {
+	return w.impl.OnAnimationStart(ctx, transit, apps, wallpapers, nonApps, finishedCallback)
+}
+
+func (w *remoteAnimationRunnerStubWrapper) OnAnimationCancelled(
+	ctx context.Context,
+) error {
+	return w.impl.OnAnimationCancelled(ctx)
+}
+
+var _ IRemoteAnimationRunner = (*remoteAnimationRunnerStubWrapper)(nil)
+
+// NewRemoteAnimationRunnerStub creates a server-side IRemoteAnimationRunner wrapping the given
+// server implementation. The returned value satisfies IRemoteAnimationRunner
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRemoteAnimationRunnerStub(
+	impl IRemoteAnimationRunnerServer,
+) IRemoteAnimationRunner {
+	wrapper := &remoteAnimationRunnerStubWrapper{impl: impl}
+	stub := &RemoteAnimationRunnerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -53,7 +53,7 @@ func (p *MbmsGroupCallServiceProxy) Initialize(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMbmsGroupCallService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(subId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMbmsGroupCallService, "initialize")
@@ -169,7 +169,7 @@ func (p *MbmsGroupCallServiceProxy) StartGroupCall(
 	} else {
 		_data.WriteInt32(int32(len(frequencyList)))
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMbmsGroupCallService, "startGroupCall")
 	if _err != nil {
@@ -348,4 +348,84 @@ func (s *MbmsGroupCallServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMbmsGroupCallServiceServer is the server-side interface that user implementations
+// provide to NewMbmsGroupCallServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMbmsGroupCallServiceServer interface {
+	Initialize(ctx context.Context, callback mbms.IMbmsGroupCallSessionCallback, subId int32) (int32, error)
+	StopGroupCall(ctx context.Context, subId int32, tmgi int64) error
+	UpdateGroupCall(ctx context.Context, subscriptionId int32, tmgi int64, saiList []interface{}, frequencyList []interface{}) error
+	StartGroupCall(ctx context.Context, subscriptionId int32, tmgi int64, saiList []interface{}, frequencyList []interface{}, callback mbms.IGroupCallCallback) (int32, error)
+	Dispose(ctx context.Context, subId int32) error
+}
+
+type mbmsGroupCallServiceStubWrapper struct {
+	impl       IMbmsGroupCallServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mbmsGroupCallServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mbmsGroupCallServiceStubWrapper) Initialize(
+	ctx context.Context,
+	callback mbms.IMbmsGroupCallSessionCallback,
+	subId int32,
+) (int32, error) {
+	return w.impl.Initialize(ctx, callback, subId)
+}
+
+func (w *mbmsGroupCallServiceStubWrapper) StopGroupCall(
+	ctx context.Context,
+	subId int32,
+	tmgi int64,
+) error {
+	return w.impl.StopGroupCall(ctx, subId, tmgi)
+}
+
+func (w *mbmsGroupCallServiceStubWrapper) UpdateGroupCall(
+	ctx context.Context,
+	subscriptionId int32,
+	tmgi int64,
+	saiList []interface{},
+	frequencyList []interface{},
+) error {
+	return w.impl.UpdateGroupCall(ctx, subscriptionId, tmgi, saiList, frequencyList)
+}
+
+func (w *mbmsGroupCallServiceStubWrapper) StartGroupCall(
+	ctx context.Context,
+	subscriptionId int32,
+	tmgi int64,
+	saiList []interface{},
+	frequencyList []interface{},
+	callback mbms.IGroupCallCallback,
+) (int32, error) {
+	return w.impl.StartGroupCall(ctx, subscriptionId, tmgi, saiList, frequencyList, callback)
+}
+
+func (w *mbmsGroupCallServiceStubWrapper) Dispose(
+	ctx context.Context,
+	subId int32,
+) error {
+	return w.impl.Dispose(ctx, subId)
+}
+
+var _ IMbmsGroupCallService = (*mbmsGroupCallServiceStubWrapper)(nil)
+
+// NewMbmsGroupCallServiceStub creates a server-side IMbmsGroupCallService wrapping the given
+// server implementation. The returned value satisfies IMbmsGroupCallService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMbmsGroupCallServiceStub(
+	impl IMbmsGroupCallServiceServer,
+) IMbmsGroupCallService {
+	wrapper := &mbmsGroupCallServiceStubWrapper{impl: impl}
+	stub := &MbmsGroupCallServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

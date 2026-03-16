@@ -90,3 +90,42 @@ func (s *ActivePictureListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IActivePictureListenerServer is the server-side interface that user implementations
+// provide to NewActivePictureListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IActivePictureListenerServer interface {
+	OnActivePicturesChanged(ctx context.Context, activePictures []ActivePicture) error
+}
+
+type activePictureListenerStubWrapper struct {
+	impl       IActivePictureListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *activePictureListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *activePictureListenerStubWrapper) OnActivePicturesChanged(
+	ctx context.Context,
+	activePictures []ActivePicture,
+) error {
+	return w.impl.OnActivePicturesChanged(ctx, activePictures)
+}
+
+var _ IActivePictureListener = (*activePictureListenerStubWrapper)(nil)
+
+// NewActivePictureListenerStub creates a server-side IActivePictureListener wrapping the given
+// server implementation. The returned value satisfies IActivePictureListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewActivePictureListenerStub(
+	impl IActivePictureListenerServer,
+) IActivePictureListener {
+	wrapper := &activePictureListenerStubWrapper{impl: impl}
+	stub := &ActivePictureListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

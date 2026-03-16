@@ -119,3 +119,44 @@ func (s *PreferredMixerAttributesDispatcherStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPreferredMixerAttributesDispatcherServer is the server-side interface that user implementations
+// provide to NewPreferredMixerAttributesDispatcherStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPreferredMixerAttributesDispatcherServer interface {
+	DispatchPrefMixerAttributesChanged(ctx context.Context, attributes AudioAttributes, deviceId int32, mixerAttributes *AudioMixerAttributes) error
+}
+
+type preferredMixerAttributesDispatcherStubWrapper struct {
+	impl       IPreferredMixerAttributesDispatcherServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *preferredMixerAttributesDispatcherStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *preferredMixerAttributesDispatcherStubWrapper) DispatchPrefMixerAttributesChanged(
+	ctx context.Context,
+	attributes AudioAttributes,
+	deviceId int32,
+	mixerAttributes *AudioMixerAttributes,
+) error {
+	return w.impl.DispatchPrefMixerAttributesChanged(ctx, attributes, deviceId, mixerAttributes)
+}
+
+var _ IPreferredMixerAttributesDispatcher = (*preferredMixerAttributesDispatcherStubWrapper)(nil)
+
+// NewPreferredMixerAttributesDispatcherStub creates a server-side IPreferredMixerAttributesDispatcher wrapping the given
+// server implementation. The returned value satisfies IPreferredMixerAttributesDispatcher
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPreferredMixerAttributesDispatcherStub(
+	impl IPreferredMixerAttributesDispatcherServer,
+) IPreferredMixerAttributesDispatcher {
+	wrapper := &preferredMixerAttributesDispatcherStubWrapper{impl: impl}
+	stub := &PreferredMixerAttributesDispatcherStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

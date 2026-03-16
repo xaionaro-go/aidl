@@ -19,7 +19,11 @@ func (s *OpenOutputStreamReturn) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Stream.AsBinder().Handle())
+	if s.Stream == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Stream.AsBinder().Handle())
+	}
 	if _err := s.Desc.MarshalParcel(p); _err != nil {
 		return _err
 	}

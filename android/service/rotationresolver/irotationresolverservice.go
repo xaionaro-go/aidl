@@ -43,7 +43,7 @@ func (p *RotationResolverServiceProxy) ResolveRotation(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRotationResolverService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := request.MarshalParcel(_data); _err != nil {
 		return _err
@@ -97,4 +97,44 @@ func (s *RotationResolverServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRotationResolverServiceServer is the server-side interface that user implementations
+// provide to NewRotationResolverServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRotationResolverServiceServer interface {
+	ResolveRotation(ctx context.Context, callback IRotationResolverCallback, request RotationResolutionRequest) error
+}
+
+type rotationResolverServiceStubWrapper struct {
+	impl       IRotationResolverServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *rotationResolverServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *rotationResolverServiceStubWrapper) ResolveRotation(
+	ctx context.Context,
+	callback IRotationResolverCallback,
+	request RotationResolutionRequest,
+) error {
+	return w.impl.ResolveRotation(ctx, callback, request)
+}
+
+var _ IRotationResolverService = (*rotationResolverServiceStubWrapper)(nil)
+
+// NewRotationResolverServiceStub creates a server-side IRotationResolverService wrapping the given
+// server implementation. The returned value satisfies IRotationResolverService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRotationResolverServiceStub(
+	impl IRotationResolverServiceServer,
+) IRotationResolverService {
+	wrapper := &rotationResolverServiceStubWrapper{impl: impl}
+	stub := &RotationResolverServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -100,3 +100,43 @@ func (s *SwitchToProfileCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISwitchToProfileCallbackServer is the server-side interface that user implementations
+// provide to NewSwitchToProfileCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISwitchToProfileCallbackServer interface {
+	OnComplete(ctx context.Context, resultCode int32, profile serviceEuicc.EuiccProfileInfo) error
+}
+
+type switchToProfileCallbackStubWrapper struct {
+	impl       ISwitchToProfileCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *switchToProfileCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *switchToProfileCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	resultCode int32,
+	profile serviceEuicc.EuiccProfileInfo,
+) error {
+	return w.impl.OnComplete(ctx, resultCode, profile)
+}
+
+var _ ISwitchToProfileCallback = (*switchToProfileCallbackStubWrapper)(nil)
+
+// NewSwitchToProfileCallbackStub creates a server-side ISwitchToProfileCallback wrapping the given
+// server implementation. The returned value satisfies ISwitchToProfileCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSwitchToProfileCallbackStub(
+	impl ISwitchToProfileCallbackServer,
+) ISwitchToProfileCallback {
+	wrapper := &switchToProfileCallbackStubWrapper{impl: impl}
+	stub := &SwitchToProfileCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

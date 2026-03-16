@@ -106,3 +106,41 @@ func (s *PinnerServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPinnerServiceServer is the server-side interface that user implementations
+// provide to NewPinnerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPinnerServiceServer interface {
+	GetPinnerStats(ctx context.Context) ([]PinnedFileStat, error)
+}
+
+type pinnerServiceStubWrapper struct {
+	impl       IPinnerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pinnerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pinnerServiceStubWrapper) GetPinnerStats(
+	ctx context.Context,
+) ([]PinnedFileStat, error) {
+	return w.impl.GetPinnerStats(ctx)
+}
+
+var _ IPinnerService = (*pinnerServiceStubWrapper)(nil)
+
+// NewPinnerServiceStub creates a server-side IPinnerService wrapping the given
+// server implementation. The returned value satisfies IPinnerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPinnerServiceStub(
+	impl IPinnerServiceServer,
+) IPinnerService {
+	wrapper := &pinnerServiceStubWrapper{impl: impl}
+	stub := &PinnerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -82,3 +82,42 @@ func (s *BackupCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBackupCallbackServer is the server-side interface that user implementations
+// provide to NewBackupCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackupCallbackServer interface {
+	OperationComplete(ctx context.Context, result int64) error
+}
+
+type backupCallbackStubWrapper struct {
+	impl       IBackupCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backupCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backupCallbackStubWrapper) OperationComplete(
+	ctx context.Context,
+	result int64,
+) error {
+	return w.impl.OperationComplete(ctx, result)
+}
+
+var _ IBackupCallback = (*backupCallbackStubWrapper)(nil)
+
+// NewBackupCallbackStub creates a server-side IBackupCallback wrapping the given
+// server implementation. The returned value satisfies IBackupCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackupCallbackStub(
+	impl IBackupCallbackServer,
+) IBackupCallback {
+	wrapper := &backupCallbackStubWrapper{impl: impl}
+	stub := &BackupCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

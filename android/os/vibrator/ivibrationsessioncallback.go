@@ -46,7 +46,7 @@ func (p *VibrationSessionCallbackProxy) OnStarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibrationSessionCallback)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibrationSessionCallback, "onStarted")
 	if _err != nil {
@@ -134,4 +134,58 @@ func (s *VibrationSessionCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVibrationSessionCallbackServer is the server-side interface that user implementations
+// provide to NewVibrationSessionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVibrationSessionCallbackServer interface {
+	OnStarted(ctx context.Context, session IVibrationSession) error
+	OnFinishing(ctx context.Context) error
+	OnFinished(ctx context.Context, status int32) error
+}
+
+type vibrationSessionCallbackStubWrapper struct {
+	impl       IVibrationSessionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vibrationSessionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vibrationSessionCallbackStubWrapper) OnStarted(
+	ctx context.Context,
+	session IVibrationSession,
+) error {
+	return w.impl.OnStarted(ctx, session)
+}
+
+func (w *vibrationSessionCallbackStubWrapper) OnFinishing(
+	ctx context.Context,
+) error {
+	return w.impl.OnFinishing(ctx)
+}
+
+func (w *vibrationSessionCallbackStubWrapper) OnFinished(
+	ctx context.Context,
+	status int32,
+) error {
+	return w.impl.OnFinished(ctx, status)
+}
+
+var _ IVibrationSessionCallback = (*vibrationSessionCallbackStubWrapper)(nil)
+
+// NewVibrationSessionCallbackStub creates a server-side IVibrationSessionCallback wrapping the given
+// server implementation. The returned value satisfies IVibrationSessionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVibrationSessionCallbackStub(
+	impl IVibrationSessionCallbackServer,
+) IVibrationSessionCallback {
+	wrapper := &vibrationSessionCallbackStubWrapper{impl: impl}
+	stub := &VibrationSessionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

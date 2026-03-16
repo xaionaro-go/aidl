@@ -129,3 +129,51 @@ func (s *DisplayManagerCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDisplayManagerCallbackServer is the server-side interface that user implementations
+// provide to NewDisplayManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDisplayManagerCallbackServer interface {
+	OnDisplayEvent(ctx context.Context, displayId int32, event int32) error
+	OnTopologyChanged(ctx context.Context, topology DisplayTopology) error
+}
+
+type displayManagerCallbackStubWrapper struct {
+	impl       IDisplayManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *displayManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *displayManagerCallbackStubWrapper) OnDisplayEvent(
+	ctx context.Context,
+	displayId int32,
+	event int32,
+) error {
+	return w.impl.OnDisplayEvent(ctx, displayId, event)
+}
+
+func (w *displayManagerCallbackStubWrapper) OnTopologyChanged(
+	ctx context.Context,
+	topology DisplayTopology,
+) error {
+	return w.impl.OnTopologyChanged(ctx, topology)
+}
+
+var _ IDisplayManagerCallback = (*displayManagerCallbackStubWrapper)(nil)
+
+// NewDisplayManagerCallbackStub creates a server-side IDisplayManagerCallback wrapping the given
+// server implementation. The returned value satisfies IDisplayManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDisplayManagerCallbackStub(
+	impl IDisplayManagerCallbackServer,
+) IDisplayManagerCallback {
+	wrapper := &displayManagerCallbackStubWrapper{impl: impl}
+	stub := &DisplayManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

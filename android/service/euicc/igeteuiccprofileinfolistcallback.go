@@ -93,3 +93,42 @@ func (s *GetEuiccProfileInfoListCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetEuiccProfileInfoListCallbackServer is the server-side interface that user implementations
+// provide to NewGetEuiccProfileInfoListCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetEuiccProfileInfoListCallbackServer interface {
+	OnComplete(ctx context.Context, result GetEuiccProfileInfoListResult) error
+}
+
+type getEuiccProfileInfoListCallbackStubWrapper struct {
+	impl       IGetEuiccProfileInfoListCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getEuiccProfileInfoListCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getEuiccProfileInfoListCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result GetEuiccProfileInfoListResult,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IGetEuiccProfileInfoListCallback = (*getEuiccProfileInfoListCallbackStubWrapper)(nil)
+
+// NewGetEuiccProfileInfoListCallbackStub creates a server-side IGetEuiccProfileInfoListCallback wrapping the given
+// server implementation. The returned value satisfies IGetEuiccProfileInfoListCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetEuiccProfileInfoListCallbackStub(
+	impl IGetEuiccProfileInfoListCallbackServer,
+) IGetEuiccProfileInfoListCallback {
+	wrapper := &getEuiccProfileInfoListCallbackStubWrapper{impl: impl}
+	stub := &GetEuiccProfileInfoListCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

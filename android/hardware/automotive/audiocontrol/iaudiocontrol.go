@@ -143,7 +143,7 @@ func (p *AudioControlProxy) RegisterFocusListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioControl)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioControl, "registerFocusListener")
 	if _err != nil {
@@ -253,7 +253,7 @@ func (p *AudioControlProxy) RegisterGainCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioControl)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioControl, "registerGainCallback")
 	if _err != nil {
@@ -270,7 +270,7 @@ func (p *AudioControlProxy) SetModuleChangeCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioControl)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioControl, "setModuleChangeCallback")
 	if _err != nil {
@@ -635,4 +635,148 @@ func (s *AudioControlStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAudioControlServer is the server-side interface that user implementations
+// provide to NewAudioControlStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioControlServer interface {
+	OnAudioFocusChange(ctx context.Context, usage string, zoneId int32, focusChange AudioFocusChange) error
+	OnDevicesToDuckChange(ctx context.Context, duckingInfos []DuckingInfo) error
+	OnDevicesToMuteChange(ctx context.Context, mutingInfos []MutingInfo) error
+	RegisterFocusListener(ctx context.Context, listener IFocusListener) error
+	SetBalanceTowardRight(ctx context.Context, value float32) error
+	SetFadeTowardFront(ctx context.Context, value float32) error
+	OnAudioFocusChangeWithMetaData(ctx context.Context, playbackMetaData common.PlaybackTrackMetadata, zoneId int32, focusChange AudioFocusChange) error
+	SetAudioDeviceGainsChanged(ctx context.Context, reasons []Reasons, gains []AudioGainConfigInfo) error
+	RegisterGainCallback(ctx context.Context, callback IAudioGainCallback) error
+	SetModuleChangeCallback(ctx context.Context, callback IModuleChangeCallback) error
+	ClearModuleChangeCallback(ctx context.Context) error
+	GetAudioDeviceConfiguration(ctx context.Context) (AudioDeviceConfiguration, error)
+	GetOutputMirroringDevices(ctx context.Context) ([]audioCommon.AudioPort, error)
+	GetCarAudioZones(ctx context.Context) ([]AudioZone, error)
+}
+
+type audioControlStubWrapper struct {
+	impl       IAudioControlServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioControlStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioControlStubWrapper) OnAudioFocusChange(
+	ctx context.Context,
+	usage string,
+	zoneId int32,
+	focusChange AudioFocusChange,
+) error {
+	return w.impl.OnAudioFocusChange(ctx, usage, zoneId, focusChange)
+}
+
+func (w *audioControlStubWrapper) OnDevicesToDuckChange(
+	ctx context.Context,
+	duckingInfos []DuckingInfo,
+) error {
+	return w.impl.OnDevicesToDuckChange(ctx, duckingInfos)
+}
+
+func (w *audioControlStubWrapper) OnDevicesToMuteChange(
+	ctx context.Context,
+	mutingInfos []MutingInfo,
+) error {
+	return w.impl.OnDevicesToMuteChange(ctx, mutingInfos)
+}
+
+func (w *audioControlStubWrapper) RegisterFocusListener(
+	ctx context.Context,
+	listener IFocusListener,
+) error {
+	return w.impl.RegisterFocusListener(ctx, listener)
+}
+
+func (w *audioControlStubWrapper) SetBalanceTowardRight(
+	ctx context.Context,
+	value float32,
+) error {
+	return w.impl.SetBalanceTowardRight(ctx, value)
+}
+
+func (w *audioControlStubWrapper) SetFadeTowardFront(
+	ctx context.Context,
+	value float32,
+) error {
+	return w.impl.SetFadeTowardFront(ctx, value)
+}
+
+func (w *audioControlStubWrapper) OnAudioFocusChangeWithMetaData(
+	ctx context.Context,
+	playbackMetaData common.PlaybackTrackMetadata,
+	zoneId int32,
+	focusChange AudioFocusChange,
+) error {
+	return w.impl.OnAudioFocusChangeWithMetaData(ctx, playbackMetaData, zoneId, focusChange)
+}
+
+func (w *audioControlStubWrapper) SetAudioDeviceGainsChanged(
+	ctx context.Context,
+	reasons []Reasons,
+	gains []AudioGainConfigInfo,
+) error {
+	return w.impl.SetAudioDeviceGainsChanged(ctx, reasons, gains)
+}
+
+func (w *audioControlStubWrapper) RegisterGainCallback(
+	ctx context.Context,
+	callback IAudioGainCallback,
+) error {
+	return w.impl.RegisterGainCallback(ctx, callback)
+}
+
+func (w *audioControlStubWrapper) SetModuleChangeCallback(
+	ctx context.Context,
+	callback IModuleChangeCallback,
+) error {
+	return w.impl.SetModuleChangeCallback(ctx, callback)
+}
+
+func (w *audioControlStubWrapper) ClearModuleChangeCallback(
+	ctx context.Context,
+) error {
+	return w.impl.ClearModuleChangeCallback(ctx)
+}
+
+func (w *audioControlStubWrapper) GetAudioDeviceConfiguration(
+	ctx context.Context,
+) (AudioDeviceConfiguration, error) {
+	return w.impl.GetAudioDeviceConfiguration(ctx)
+}
+
+func (w *audioControlStubWrapper) GetOutputMirroringDevices(
+	ctx context.Context,
+) ([]audioCommon.AudioPort, error) {
+	return w.impl.GetOutputMirroringDevices(ctx)
+}
+
+func (w *audioControlStubWrapper) GetCarAudioZones(
+	ctx context.Context,
+) ([]AudioZone, error) {
+	return w.impl.GetCarAudioZones(ctx)
+}
+
+var _ IAudioControl = (*audioControlStubWrapper)(nil)
+
+// NewAudioControlStub creates a server-side IAudioControl wrapping the given
+// server implementation. The returned value satisfies IAudioControl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioControlStub(
+	impl IAudioControlServer,
+) IAudioControl {
+	wrapper := &audioControlStubWrapper{impl: impl}
+	stub := &AudioControlStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

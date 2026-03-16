@@ -56,7 +56,7 @@ func (p *AppOpsUserServiceProxy) CallApiThatNotesSyncOpNativelyAndCheckLog(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsUserService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsUserService, "callApiThatNotesSyncOpNativelyAndCheckLog")
 	if _err != nil {
@@ -82,7 +82,7 @@ func (p *AppOpsUserServiceProxy) CallApiThatNotesNonPermissionSyncOpNativelyAndC
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsUserService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsUserService, "callApiThatNotesNonPermissionSyncOpNativelyAndCheckLog")
 	if _err != nil {
@@ -108,7 +108,7 @@ func (p *AppOpsUserServiceProxy) CallOnewayApiThatNotesSyncOpNativelyAndCheckLog
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsUserService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsUserService, "callOnewayApiThatNotesSyncOpNativelyAndCheckLog")
 	if _err != nil {
@@ -134,7 +134,7 @@ func (p *AppOpsUserServiceProxy) CallApiThatNotesSyncOpOtherUidNativelyAndCheckL
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsUserService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsUserService, "callApiThatNotesSyncOpOtherUidNativelyAndCheckLog")
 	if _err != nil {
@@ -160,7 +160,7 @@ func (p *AppOpsUserServiceProxy) CallApiThatNotesAsyncOpNativelyAndCheckCustomMe
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsUserService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsUserService, "callApiThatNotesAsyncOpNativelyAndCheckCustomMessage")
 	if _err != nil {
@@ -186,7 +186,7 @@ func (p *AppOpsUserServiceProxy) CallApiThatNotesAsyncOpNativelyAndCheckLog(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsUserService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsUserService, "callApiThatNotesAsyncOpNativelyAndCheckLog")
 	if _err != nil {
@@ -212,7 +212,7 @@ func (p *AppOpsUserServiceProxy) CallFreezeAndNoteSyncOp(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsUserService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsUserService, "callFreezeAndNoteSyncOp")
 	if _err != nil {
@@ -390,4 +390,98 @@ func (s *AppOpsUserServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAppOpsUserServiceServer is the server-side interface that user implementations
+// provide to NewAppOpsUserServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppOpsUserServiceServer interface {
+	CallApiThatNotesSyncOpNativelyAndCheckLog(ctx context.Context, client IAppOpsUserClient) error
+	CallApiThatNotesNonPermissionSyncOpNativelyAndCheckLog(ctx context.Context, client IAppOpsUserClient) error
+	CallOnewayApiThatNotesSyncOpNativelyAndCheckLog(ctx context.Context, client IAppOpsUserClient) error
+	CallApiThatNotesSyncOpOtherUidNativelyAndCheckLog(ctx context.Context, client IAppOpsUserClient) error
+	CallApiThatNotesAsyncOpNativelyAndCheckCustomMessage(ctx context.Context, client IAppOpsUserClient) error
+	CallApiThatNotesAsyncOpNativelyAndCheckLog(ctx context.Context, client IAppOpsUserClient) error
+	CallFreezeAndNoteSyncOp(ctx context.Context, client IAppOpsUserClient) error
+	AssertEmptyAsyncNoted(ctx context.Context) error
+}
+
+type appOpsUserServiceStubWrapper struct {
+	impl       IAppOpsUserServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appOpsUserServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appOpsUserServiceStubWrapper) CallApiThatNotesSyncOpNativelyAndCheckLog(
+	ctx context.Context,
+	client IAppOpsUserClient,
+) error {
+	return w.impl.CallApiThatNotesSyncOpNativelyAndCheckLog(ctx, client)
+}
+
+func (w *appOpsUserServiceStubWrapper) CallApiThatNotesNonPermissionSyncOpNativelyAndCheckLog(
+	ctx context.Context,
+	client IAppOpsUserClient,
+) error {
+	return w.impl.CallApiThatNotesNonPermissionSyncOpNativelyAndCheckLog(ctx, client)
+}
+
+func (w *appOpsUserServiceStubWrapper) CallOnewayApiThatNotesSyncOpNativelyAndCheckLog(
+	ctx context.Context,
+	client IAppOpsUserClient,
+) error {
+	return w.impl.CallOnewayApiThatNotesSyncOpNativelyAndCheckLog(ctx, client)
+}
+
+func (w *appOpsUserServiceStubWrapper) CallApiThatNotesSyncOpOtherUidNativelyAndCheckLog(
+	ctx context.Context,
+	client IAppOpsUserClient,
+) error {
+	return w.impl.CallApiThatNotesSyncOpOtherUidNativelyAndCheckLog(ctx, client)
+}
+
+func (w *appOpsUserServiceStubWrapper) CallApiThatNotesAsyncOpNativelyAndCheckCustomMessage(
+	ctx context.Context,
+	client IAppOpsUserClient,
+) error {
+	return w.impl.CallApiThatNotesAsyncOpNativelyAndCheckCustomMessage(ctx, client)
+}
+
+func (w *appOpsUserServiceStubWrapper) CallApiThatNotesAsyncOpNativelyAndCheckLog(
+	ctx context.Context,
+	client IAppOpsUserClient,
+) error {
+	return w.impl.CallApiThatNotesAsyncOpNativelyAndCheckLog(ctx, client)
+}
+
+func (w *appOpsUserServiceStubWrapper) CallFreezeAndNoteSyncOp(
+	ctx context.Context,
+	client IAppOpsUserClient,
+) error {
+	return w.impl.CallFreezeAndNoteSyncOp(ctx, client)
+}
+
+func (w *appOpsUserServiceStubWrapper) AssertEmptyAsyncNoted(
+	ctx context.Context,
+) error {
+	return w.impl.AssertEmptyAsyncNoted(ctx)
+}
+
+var _ IAppOpsUserService = (*appOpsUserServiceStubWrapper)(nil)
+
+// NewAppOpsUserServiceStub creates a server-side IAppOpsUserService wrapping the given
+// server implementation. The returned value satisfies IAppOpsUserService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppOpsUserServiceStub(
+	impl IAppOpsUserServiceServer,
+) IAppOpsUserService {
+	wrapper := &appOpsUserServiceStubWrapper{impl: impl}
+	stub := &AppOpsUserServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

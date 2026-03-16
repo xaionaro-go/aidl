@@ -236,3 +236,64 @@ func (s *BluetoothA2dpStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothA2dpServer is the server-side interface that user implementations
+// provide to NewBluetoothA2dpStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothA2dpServer interface {
+	IsEnabled(ctx context.Context) (bool, error)
+	SetEnabled(ctx context.Context, enabled bool) error
+	SupportsOffloadReconfiguration(ctx context.Context) (bool, error)
+	ReconfigureOffload(ctx context.Context, parameters []VendorParameter) error
+}
+
+type bluetoothA2dpStubWrapper struct {
+	impl       IBluetoothA2dpServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothA2dpStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothA2dpStubWrapper) IsEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsEnabled(ctx)
+}
+
+func (w *bluetoothA2dpStubWrapper) SetEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetEnabled(ctx, enabled)
+}
+
+func (w *bluetoothA2dpStubWrapper) SupportsOffloadReconfiguration(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.SupportsOffloadReconfiguration(ctx)
+}
+
+func (w *bluetoothA2dpStubWrapper) ReconfigureOffload(
+	ctx context.Context,
+	parameters []VendorParameter,
+) error {
+	return w.impl.ReconfigureOffload(ctx, parameters)
+}
+
+var _ IBluetoothA2dp = (*bluetoothA2dpStubWrapper)(nil)
+
+// NewBluetoothA2dpStub creates a server-side IBluetoothA2dp wrapping the given
+// server implementation. The returned value satisfies IBluetoothA2dp
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothA2dpStub(
+	impl IBluetoothA2dpServer,
+) IBluetoothA2dp {
+	wrapper := &bluetoothA2dpStubWrapper{impl: impl}
+	stub := &BluetoothA2dpStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

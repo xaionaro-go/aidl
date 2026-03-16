@@ -79,7 +79,7 @@ func (p *VbiRatingInterfaceProxy) AddVbiRatingListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVbiRatingInterface)
 	_data.WriteString16(clientToken)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVbiRatingInterface, "addVbiRatingListener")
 	if _err != nil {
@@ -105,7 +105,7 @@ func (p *VbiRatingInterfaceProxy) RemoveVbiRatingListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVbiRatingInterface)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVbiRatingInterface, "removeVbiRatingListener")
 	if _err != nil {
@@ -193,4 +193,60 @@ func (s *VbiRatingInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVbiRatingInterfaceServer is the server-side interface that user implementations
+// provide to NewVbiRatingInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVbiRatingInterfaceServer interface {
+	GetVbiRating(ctx context.Context, sessionToken string) (string, error)
+	AddVbiRatingListener(ctx context.Context, clientToken string, listener IVbiRatingListener) error
+	RemoveVbiRatingListener(ctx context.Context, listener IVbiRatingListener) error
+}
+
+type vbiRatingInterfaceStubWrapper struct {
+	impl       IVbiRatingInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vbiRatingInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vbiRatingInterfaceStubWrapper) GetVbiRating(
+	ctx context.Context,
+	sessionToken string,
+) (string, error) {
+	return w.impl.GetVbiRating(ctx, sessionToken)
+}
+
+func (w *vbiRatingInterfaceStubWrapper) AddVbiRatingListener(
+	ctx context.Context,
+	clientToken string,
+	listener IVbiRatingListener,
+) error {
+	return w.impl.AddVbiRatingListener(ctx, clientToken, listener)
+}
+
+func (w *vbiRatingInterfaceStubWrapper) RemoveVbiRatingListener(
+	ctx context.Context,
+	listener IVbiRatingListener,
+) error {
+	return w.impl.RemoveVbiRatingListener(ctx, listener)
+}
+
+var _ IVbiRatingInterface = (*vbiRatingInterfaceStubWrapper)(nil)
+
+// NewVbiRatingInterfaceStub creates a server-side IVbiRatingInterface wrapping the given
+// server implementation. The returned value satisfies IVbiRatingInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVbiRatingInterfaceStub(
+	impl IVbiRatingInterfaceServer,
+) IVbiRatingInterface {
+	wrapper := &vbiRatingInterfaceStubWrapper{impl: impl}
+	stub := &VbiRatingInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

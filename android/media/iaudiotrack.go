@@ -3,7 +3,6 @@ package media
 import (
 	"context"
 	"fmt"
-	common "github.com/xaionaro-go/binder/android/media/audio/common"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -47,12 +46,12 @@ type IAudioTrack interface {
 	Signal(ctx context.Context) error
 	ApplyVolumeShaper(ctx context.Context, configuration VolumeShaperConfiguration, operation VolumeShaperOperation) (int32, error)
 	GetVolumeShaperState(ctx context.Context, id int32) (VolumeShaperState, error)
-	GetDualMonoMode(ctx context.Context) (common.AudioDualMonoMode, error)
-	SetDualMonoMode(ctx context.Context, mode common.AudioDualMonoMode) error
+	GetDualMonoMode(ctx context.Context) (interface{}, error)
+	SetDualMonoMode(ctx context.Context, mode interface{}) error
 	GetAudioDescriptionMixLevel(ctx context.Context) (float32, error)
 	SetAudioDescriptionMixLevel(ctx context.Context, leveldB float32) error
-	GetPlaybackRateParameters(ctx context.Context) (common.AudioPlaybackRate, error)
-	SetPlaybackRateParameters(ctx context.Context, playbackRate common.AudioPlaybackRate) error
+	GetPlaybackRateParameters(ctx context.Context) (interface{}, error)
+	SetPlaybackRateParameters(ctx context.Context, playbackRate interface{}) error
 }
 
 type AudioTrackProxy struct {
@@ -435,8 +434,8 @@ func (p *AudioTrackProxy) GetVolumeShaperState(
 
 func (p *AudioTrackProxy) GetDualMonoMode(
 	ctx context.Context,
-) (common.AudioDualMonoMode, error) {
-	var _result common.AudioDualMonoMode
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioTrack)
 
@@ -455,21 +454,15 @@ func (p *AudioTrackProxy) GetDualMonoMode(
 		return _result, _err
 	}
 
-	_raw, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	_result = common.AudioDualMonoMode(_raw)
 	return _result, nil
 }
 
 func (p *AudioTrackProxy) SetDualMonoMode(
 	ctx context.Context,
-	mode common.AudioDualMonoMode,
+	mode interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioTrack)
-	_data.WriteInt32(int32(mode))
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioTrack, "setDualMonoMode")
 	if _err != nil {
@@ -546,8 +539,8 @@ func (p *AudioTrackProxy) SetAudioDescriptionMixLevel(
 
 func (p *AudioTrackProxy) GetPlaybackRateParameters(
 	ctx context.Context,
-) (common.AudioPlaybackRate, error) {
-	var _result common.AudioPlaybackRate
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioTrack)
 
@@ -566,28 +559,15 @@ func (p *AudioTrackProxy) GetPlaybackRateParameters(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
 func (p *AudioTrackProxy) SetPlaybackRateParameters(
 	ctx context.Context,
-	playbackRate common.AudioPlaybackRate,
+	playbackRate interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAudioTrack)
-	_data.WriteInt32(1)
-	if _err := playbackRate.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAudioTrack, "setPlaybackRateParameters")
 	if _err != nil {
@@ -835,18 +815,14 @@ func (s *AudioTrackStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(int32(_result))
+		_ = _result
 		return _reply, nil
 	case TransactionIAudioTrackSetDualMonoMode:
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		_raw_mode, _err := _data.ReadInt32()
-		if _err != nil {
-			return nil, _err
-		}
-		_arg_mode := common.AudioDualMonoMode(_raw_mode)
-		_err = s.Impl.SetDualMonoMode(ctx, _arg_mode)
+		var _arg_mode interface{}
+		_err := s.Impl.SetDualMonoMode(ctx, _arg_mode)
 		_reply := parcel.New()
 		if _err != nil {
 			binder.WriteStatus(_reply, _err)
@@ -894,27 +870,13 @@ func (s *AudioTrackStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIAudioTrackSetPlaybackRateParameters:
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_playbackRate common.AudioPlaybackRate
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_playbackRate.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_playbackRate interface{}
 		_err := s.Impl.SetPlaybackRateParameters(ctx, _arg_playbackRate)
 		_reply := parcel.New()
 		if _err != nil {
@@ -926,4 +888,172 @@ func (s *AudioTrackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAudioTrackServer is the server-side interface that user implementations
+// provide to NewAudioTrackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAudioTrackServer interface {
+	GetCblk(ctx context.Context) (SharedFileRegion, error)
+	Start(ctx context.Context) (int32, error)
+	Stop(ctx context.Context) error
+	Flush(ctx context.Context) error
+	Pause(ctx context.Context) error
+	AttachAuxEffect(ctx context.Context, effectId int32) (int32, error)
+	SetParameters(ctx context.Context, keyValuePairs string) (int32, error)
+	SelectPresentation(ctx context.Context, presentationId int32, programId int32) (int32, error)
+	GetTimestamp(ctx context.Context, timestamp AudioTimestampInternal) (int32, error)
+	Signal(ctx context.Context) error
+	ApplyVolumeShaper(ctx context.Context, configuration VolumeShaperConfiguration, operation VolumeShaperOperation) (int32, error)
+	GetVolumeShaperState(ctx context.Context, id int32) (VolumeShaperState, error)
+	GetDualMonoMode(ctx context.Context) (interface{}, error)
+	SetDualMonoMode(ctx context.Context, mode interface{}) error
+	GetAudioDescriptionMixLevel(ctx context.Context) (float32, error)
+	SetAudioDescriptionMixLevel(ctx context.Context, leveldB float32) error
+	GetPlaybackRateParameters(ctx context.Context) (interface{}, error)
+	SetPlaybackRateParameters(ctx context.Context, playbackRate interface{}) error
+}
+
+type audioTrackStubWrapper struct {
+	impl       IAudioTrackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *audioTrackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *audioTrackStubWrapper) GetCblk(
+	ctx context.Context,
+) (SharedFileRegion, error) {
+	return w.impl.GetCblk(ctx)
+}
+
+func (w *audioTrackStubWrapper) Start(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Start(ctx)
+}
+
+func (w *audioTrackStubWrapper) Stop(
+	ctx context.Context,
+) error {
+	return w.impl.Stop(ctx)
+}
+
+func (w *audioTrackStubWrapper) Flush(
+	ctx context.Context,
+) error {
+	return w.impl.Flush(ctx)
+}
+
+func (w *audioTrackStubWrapper) Pause(
+	ctx context.Context,
+) error {
+	return w.impl.Pause(ctx)
+}
+
+func (w *audioTrackStubWrapper) AttachAuxEffect(
+	ctx context.Context,
+	effectId int32,
+) (int32, error) {
+	return w.impl.AttachAuxEffect(ctx, effectId)
+}
+
+func (w *audioTrackStubWrapper) SetParameters(
+	ctx context.Context,
+	keyValuePairs string,
+) (int32, error) {
+	return w.impl.SetParameters(ctx, keyValuePairs)
+}
+
+func (w *audioTrackStubWrapper) SelectPresentation(
+	ctx context.Context,
+	presentationId int32,
+	programId int32,
+) (int32, error) {
+	return w.impl.SelectPresentation(ctx, presentationId, programId)
+}
+
+func (w *audioTrackStubWrapper) GetTimestamp(
+	ctx context.Context,
+	timestamp AudioTimestampInternal,
+) (int32, error) {
+	return w.impl.GetTimestamp(ctx, timestamp)
+}
+
+func (w *audioTrackStubWrapper) Signal(
+	ctx context.Context,
+) error {
+	return w.impl.Signal(ctx)
+}
+
+func (w *audioTrackStubWrapper) ApplyVolumeShaper(
+	ctx context.Context,
+	configuration VolumeShaperConfiguration,
+	operation VolumeShaperOperation,
+) (int32, error) {
+	return w.impl.ApplyVolumeShaper(ctx, configuration, operation)
+}
+
+func (w *audioTrackStubWrapper) GetVolumeShaperState(
+	ctx context.Context,
+	id int32,
+) (VolumeShaperState, error) {
+	return w.impl.GetVolumeShaperState(ctx, id)
+}
+
+func (w *audioTrackStubWrapper) GetDualMonoMode(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetDualMonoMode(ctx)
+}
+
+func (w *audioTrackStubWrapper) SetDualMonoMode(
+	ctx context.Context,
+	mode interface{},
+) error {
+	return w.impl.SetDualMonoMode(ctx, mode)
+}
+
+func (w *audioTrackStubWrapper) GetAudioDescriptionMixLevel(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetAudioDescriptionMixLevel(ctx)
+}
+
+func (w *audioTrackStubWrapper) SetAudioDescriptionMixLevel(
+	ctx context.Context,
+	leveldB float32,
+) error {
+	return w.impl.SetAudioDescriptionMixLevel(ctx, leveldB)
+}
+
+func (w *audioTrackStubWrapper) GetPlaybackRateParameters(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetPlaybackRateParameters(ctx)
+}
+
+func (w *audioTrackStubWrapper) SetPlaybackRateParameters(
+	ctx context.Context,
+	playbackRate interface{},
+) error {
+	return w.impl.SetPlaybackRateParameters(ctx, playbackRate)
+}
+
+var _ IAudioTrack = (*audioTrackStubWrapper)(nil)
+
+// NewAudioTrackStub creates a server-side IAudioTrack wrapping the given
+// server implementation. The returned value satisfies IAudioTrack
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAudioTrackStub(
+	impl IAudioTrackServer,
+) IAudioTrack {
+	wrapper := &audioTrackStubWrapper{impl: impl}
+	stub := &AudioTrackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

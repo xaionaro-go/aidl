@@ -249,3 +249,59 @@ func (s *SecureElementServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISecureElementServiceServer is the server-side interface that user implementations
+// provide to NewSecureElementServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecureElementServiceServer interface {
+	GetReaders(ctx context.Context) ([]string, error)
+	GetReader(ctx context.Context, reader string) (ISecureElementReader, error)
+	IsNfcEventAllowed(ctx context.Context, reader string, aid []byte, packageNames []string) ([]bool, error)
+}
+
+type secureElementServiceStubWrapper struct {
+	impl       ISecureElementServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secureElementServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *secureElementServiceStubWrapper) GetReaders(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetReaders(ctx)
+}
+
+func (w *secureElementServiceStubWrapper) GetReader(
+	ctx context.Context,
+	reader string,
+) (ISecureElementReader, error) {
+	return w.impl.GetReader(ctx, reader)
+}
+
+func (w *secureElementServiceStubWrapper) IsNfcEventAllowed(
+	ctx context.Context,
+	reader string,
+	aid []byte,
+	packageNames []string,
+) ([]bool, error) {
+	return w.impl.IsNfcEventAllowed(ctx, reader, aid, packageNames)
+}
+
+var _ ISecureElementService = (*secureElementServiceStubWrapper)(nil)
+
+// NewSecureElementServiceStub creates a server-side ISecureElementService wrapping the given
+// server implementation. The returned value satisfies ISecureElementService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecureElementServiceStub(
+	impl ISecureElementServiceServer,
+) ISecureElementService {
+	wrapper := &secureElementServiceStubWrapper{impl: impl}
+	stub := &SecureElementServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

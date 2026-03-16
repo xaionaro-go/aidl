@@ -93,3 +93,42 @@ func (s *CarPowerPolicyChangeCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICarPowerPolicyChangeCallbackServer is the server-side interface that user implementations
+// provide to NewCarPowerPolicyChangeCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICarPowerPolicyChangeCallbackServer interface {
+	OnPolicyChanged(ctx context.Context, policy CarPowerPolicy) error
+}
+
+type carPowerPolicyChangeCallbackStubWrapper struct {
+	impl       ICarPowerPolicyChangeCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *carPowerPolicyChangeCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *carPowerPolicyChangeCallbackStubWrapper) OnPolicyChanged(
+	ctx context.Context,
+	policy CarPowerPolicy,
+) error {
+	return w.impl.OnPolicyChanged(ctx, policy)
+}
+
+var _ ICarPowerPolicyChangeCallback = (*carPowerPolicyChangeCallbackStubWrapper)(nil)
+
+// NewCarPowerPolicyChangeCallbackStub creates a server-side ICarPowerPolicyChangeCallback wrapping the given
+// server implementation. The returned value satisfies ICarPowerPolicyChangeCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCarPowerPolicyChangeCallbackStub(
+	impl ICarPowerPolicyChangeCallbackServer,
+) ICarPowerPolicyChangeCallback {
+	wrapper := &carPowerPolicyChangeCallbackStubWrapper{impl: impl}
+	stub := &CarPowerPolicyChangeCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

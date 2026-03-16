@@ -499,3 +499,95 @@ func (s *EffectStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEffectServer is the server-side interface that user implementations
+// provide to NewEffectStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEffectServer interface {
+	Open(ctx context.Context, common effectParameter.Common, specific *effectParameter.Specific) (effectIEffect.OpenEffectReturn, error)
+	Close(ctx context.Context) error
+	GetDescriptor(ctx context.Context) (Descriptor, error)
+	Command(ctx context.Context, commandId CommandId) error
+	GetState(ctx context.Context) (State, error)
+	SetParameter(ctx context.Context, param Parameter) error
+	GetParameter(ctx context.Context, paramId effectParameter.Id) (Parameter, error)
+	Reopen(ctx context.Context) (effectIEffect.OpenEffectReturn, error)
+}
+
+type effectStubWrapper struct {
+	impl       IEffectServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *effectStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *effectStubWrapper) Open(
+	ctx context.Context,
+	common effectParameter.Common,
+	specific *effectParameter.Specific,
+) (effectIEffect.OpenEffectReturn, error) {
+	return w.impl.Open(ctx, common, specific)
+}
+
+func (w *effectStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *effectStubWrapper) GetDescriptor(
+	ctx context.Context,
+) (Descriptor, error) {
+	return w.impl.GetDescriptor(ctx)
+}
+
+func (w *effectStubWrapper) Command(
+	ctx context.Context,
+	commandId CommandId,
+) error {
+	return w.impl.Command(ctx, commandId)
+}
+
+func (w *effectStubWrapper) GetState(
+	ctx context.Context,
+) (State, error) {
+	return w.impl.GetState(ctx)
+}
+
+func (w *effectStubWrapper) SetParameter(
+	ctx context.Context,
+	param Parameter,
+) error {
+	return w.impl.SetParameter(ctx, param)
+}
+
+func (w *effectStubWrapper) GetParameter(
+	ctx context.Context,
+	paramId effectParameter.Id,
+) (Parameter, error) {
+	return w.impl.GetParameter(ctx, paramId)
+}
+
+func (w *effectStubWrapper) Reopen(
+	ctx context.Context,
+) (effectIEffect.OpenEffectReturn, error) {
+	return w.impl.Reopen(ctx)
+}
+
+var _ IEffect = (*effectStubWrapper)(nil)
+
+// NewEffectStub creates a server-side IEffect wrapping the given
+// server implementation. The returned value satisfies IEffect
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEffectStub(
+	impl IEffectServer,
+) IEffect {
+	wrapper := &effectStubWrapper{impl: impl}
+	stub := &EffectStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

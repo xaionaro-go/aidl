@@ -268,3 +268,84 @@ func (s *AppWidgetHostStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppWidgetHostServer is the server-side interface that user implementations
+// provide to NewAppWidgetHostStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppWidgetHostServer interface {
+	UpdateAppWidgetDeferred(ctx context.Context, appWidgetId int32) error
+	UpdateAppWidget(ctx context.Context, appWidgetId int32, views widget.RemoteViews) error
+	ProviderChanged(ctx context.Context, appWidgetId int32, info androidAppwidget.AppWidgetProviderInfo) error
+	ProvidersChanged(ctx context.Context) error
+	ViewDataChanged(ctx context.Context, appWidgetId int32, viewId int32) error
+	AppWidgetRemoved(ctx context.Context, appWidgetId int32) error
+}
+
+type appWidgetHostStubWrapper struct {
+	impl       IAppWidgetHostServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appWidgetHostStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appWidgetHostStubWrapper) UpdateAppWidgetDeferred(
+	ctx context.Context,
+	appWidgetId int32,
+) error {
+	return w.impl.UpdateAppWidgetDeferred(ctx, appWidgetId)
+}
+
+func (w *appWidgetHostStubWrapper) UpdateAppWidget(
+	ctx context.Context,
+	appWidgetId int32,
+	views widget.RemoteViews,
+) error {
+	return w.impl.UpdateAppWidget(ctx, appWidgetId, views)
+}
+
+func (w *appWidgetHostStubWrapper) ProviderChanged(
+	ctx context.Context,
+	appWidgetId int32,
+	info androidAppwidget.AppWidgetProviderInfo,
+) error {
+	return w.impl.ProviderChanged(ctx, appWidgetId, info)
+}
+
+func (w *appWidgetHostStubWrapper) ProvidersChanged(
+	ctx context.Context,
+) error {
+	return w.impl.ProvidersChanged(ctx)
+}
+
+func (w *appWidgetHostStubWrapper) ViewDataChanged(
+	ctx context.Context,
+	appWidgetId int32,
+	viewId int32,
+) error {
+	return w.impl.ViewDataChanged(ctx, appWidgetId, viewId)
+}
+
+func (w *appWidgetHostStubWrapper) AppWidgetRemoved(
+	ctx context.Context,
+	appWidgetId int32,
+) error {
+	return w.impl.AppWidgetRemoved(ctx, appWidgetId)
+}
+
+var _ IAppWidgetHost = (*appWidgetHostStubWrapper)(nil)
+
+// NewAppWidgetHostStub creates a server-side IAppWidgetHost wrapping the given
+// server implementation. The returned value satisfies IAppWidgetHost
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppWidgetHostStub(
+	impl IAppWidgetHostServer,
+) IAppWidgetHost {
+	wrapper := &appWidgetHostStubWrapper{impl: impl}
+	stub := &AppWidgetHostStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

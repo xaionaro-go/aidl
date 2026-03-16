@@ -145,7 +145,7 @@ func (p *VehicleProxy) GetValues(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVehicle)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := requests.MarshalParcel(_data); _err != nil {
 		return _err
@@ -176,7 +176,7 @@ func (p *VehicleProxy) SetValues(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVehicle)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := requests.MarshalParcel(_data); _err != nil {
 		return _err
@@ -208,7 +208,7 @@ func (p *VehicleProxy) Subscribe(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVehicle)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	if options == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -246,7 +246,7 @@ func (p *VehicleProxy) Unsubscribe(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVehicle)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	if propIds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -281,7 +281,7 @@ func (p *VehicleProxy) ReturnSharedMemory(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVehicle)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(sharedMemoryId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVehicle, "returnSharedMemory")
@@ -399,7 +399,7 @@ func (p *VehicleProxy) RegisterSupportedValueChangeCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVehicle)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	if propIdAreaIds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -436,7 +436,7 @@ func (p *VehicleProxy) UnregisterSupportedValueChangeCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVehicle)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	if propIdAreaIds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -705,4 +705,130 @@ func (s *VehicleStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVehicleServer is the server-side interface that user implementations
+// provide to NewVehicleStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVehicleServer interface {
+	GetAllPropConfigs(ctx context.Context) (VehiclePropConfigs, error)
+	GetPropConfigs(ctx context.Context, props []int32) (VehiclePropConfigs, error)
+	GetValues(ctx context.Context, callback IVehicleCallback, requests GetValueRequests) error
+	SetValues(ctx context.Context, callback IVehicleCallback, requests SetValueRequests) error
+	Subscribe(ctx context.Context, callback IVehicleCallback, options []SubscribeOptions, maxSharedMemoryFileCount int32) error
+	Unsubscribe(ctx context.Context, callback IVehicleCallback, propIds []int32) error
+	ReturnSharedMemory(ctx context.Context, callback IVehicleCallback, sharedMemoryId int64) error
+	GetSupportedValuesLists(ctx context.Context, propIdAreaIds []PropIdAreaId) (SupportedValuesListResults, error)
+	GetMinMaxSupportedValue(ctx context.Context, propIdAreaIds []PropIdAreaId) (MinMaxSupportedValueResults, error)
+	RegisterSupportedValueChangeCallback(ctx context.Context, callback IVehicleCallback, propIdAreaIds []PropIdAreaId) error
+	UnregisterSupportedValueChangeCallback(ctx context.Context, callback IVehicleCallback, propIdAreaIds []PropIdAreaId) error
+}
+
+type vehicleStubWrapper struct {
+	impl       IVehicleServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vehicleStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vehicleStubWrapper) GetAllPropConfigs(
+	ctx context.Context,
+) (VehiclePropConfigs, error) {
+	return w.impl.GetAllPropConfigs(ctx)
+}
+
+func (w *vehicleStubWrapper) GetPropConfigs(
+	ctx context.Context,
+	props []int32,
+) (VehiclePropConfigs, error) {
+	return w.impl.GetPropConfigs(ctx, props)
+}
+
+func (w *vehicleStubWrapper) GetValues(
+	ctx context.Context,
+	callback IVehicleCallback,
+	requests GetValueRequests,
+) error {
+	return w.impl.GetValues(ctx, callback, requests)
+}
+
+func (w *vehicleStubWrapper) SetValues(
+	ctx context.Context,
+	callback IVehicleCallback,
+	requests SetValueRequests,
+) error {
+	return w.impl.SetValues(ctx, callback, requests)
+}
+
+func (w *vehicleStubWrapper) Subscribe(
+	ctx context.Context,
+	callback IVehicleCallback,
+	options []SubscribeOptions,
+	maxSharedMemoryFileCount int32,
+) error {
+	return w.impl.Subscribe(ctx, callback, options, maxSharedMemoryFileCount)
+}
+
+func (w *vehicleStubWrapper) Unsubscribe(
+	ctx context.Context,
+	callback IVehicleCallback,
+	propIds []int32,
+) error {
+	return w.impl.Unsubscribe(ctx, callback, propIds)
+}
+
+func (w *vehicleStubWrapper) ReturnSharedMemory(
+	ctx context.Context,
+	callback IVehicleCallback,
+	sharedMemoryId int64,
+) error {
+	return w.impl.ReturnSharedMemory(ctx, callback, sharedMemoryId)
+}
+
+func (w *vehicleStubWrapper) GetSupportedValuesLists(
+	ctx context.Context,
+	propIdAreaIds []PropIdAreaId,
+) (SupportedValuesListResults, error) {
+	return w.impl.GetSupportedValuesLists(ctx, propIdAreaIds)
+}
+
+func (w *vehicleStubWrapper) GetMinMaxSupportedValue(
+	ctx context.Context,
+	propIdAreaIds []PropIdAreaId,
+) (MinMaxSupportedValueResults, error) {
+	return w.impl.GetMinMaxSupportedValue(ctx, propIdAreaIds)
+}
+
+func (w *vehicleStubWrapper) RegisterSupportedValueChangeCallback(
+	ctx context.Context,
+	callback IVehicleCallback,
+	propIdAreaIds []PropIdAreaId,
+) error {
+	return w.impl.RegisterSupportedValueChangeCallback(ctx, callback, propIdAreaIds)
+}
+
+func (w *vehicleStubWrapper) UnregisterSupportedValueChangeCallback(
+	ctx context.Context,
+	callback IVehicleCallback,
+	propIdAreaIds []PropIdAreaId,
+) error {
+	return w.impl.UnregisterSupportedValueChangeCallback(ctx, callback, propIdAreaIds)
+}
+
+var _ IVehicle = (*vehicleStubWrapper)(nil)
+
+// NewVehicleStub creates a server-side IVehicle wrapping the given
+// server implementation. The returned value satisfies IVehicle
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVehicleStub(
+	impl IVehicleServer,
+) IVehicle {
+	wrapper := &vehicleStubWrapper{impl: impl}
+	stub := &VehicleStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

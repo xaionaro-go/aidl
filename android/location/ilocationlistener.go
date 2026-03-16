@@ -166,3 +166,60 @@ func (s *LocationListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILocationListenerServer is the server-side interface that user implementations
+// provide to NewLocationListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILocationListenerServer interface {
+	OnLocationChanged(ctx context.Context, locations []Location, onCompleteCallback *ondeviceintelligence.IRemoteCallback) error
+	OnProviderEnabledChanged(ctx context.Context, provider string, enabled bool) error
+	OnFlushComplete(ctx context.Context, requestCode int32) error
+}
+
+type locationListenerStubWrapper struct {
+	impl       ILocationListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *locationListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *locationListenerStubWrapper) OnLocationChanged(
+	ctx context.Context,
+	locations []Location,
+	onCompleteCallback *ondeviceintelligence.IRemoteCallback,
+) error {
+	return w.impl.OnLocationChanged(ctx, locations, onCompleteCallback)
+}
+
+func (w *locationListenerStubWrapper) OnProviderEnabledChanged(
+	ctx context.Context,
+	provider string,
+	enabled bool,
+) error {
+	return w.impl.OnProviderEnabledChanged(ctx, provider, enabled)
+}
+
+func (w *locationListenerStubWrapper) OnFlushComplete(
+	ctx context.Context,
+	requestCode int32,
+) error {
+	return w.impl.OnFlushComplete(ctx, requestCode)
+}
+
+var _ ILocationListener = (*locationListenerStubWrapper)(nil)
+
+// NewLocationListenerStub creates a server-side ILocationListener wrapping the given
+// server implementation. The returned value satisfies ILocationListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLocationListenerStub(
+	impl ILocationListenerServer,
+) ILocationListener {
+	wrapper := &locationListenerStubWrapper{impl: impl}
+	stub := &LocationListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -96,8 +96,8 @@ func (p *ComponentStoreProxy) CreateComponent(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIComponentStore)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
-	_data.WriteStrongBinder(pool.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, pool.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIComponentStore, "createComponent")
 	if _err != nil {
@@ -497,4 +497,98 @@ func (s *ComponentStoreStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IComponentStoreServer is the server-side interface that user implementations
+// provide to NewComponentStoreStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IComponentStoreServer interface {
+	CopyBuffer(ctx context.Context, src Buffer, dst Buffer) error
+	CreateComponent(ctx context.Context, name string, listener IComponentListener, pool bufferpool2.IClientManager) (IComponent, error)
+	CreateInterface(ctx context.Context, name string) (IComponentInterface, error)
+	GetConfigurable(ctx context.Context) (IConfigurable, error)
+	GetPoolClientManager(ctx context.Context) (bufferpool2.IClientManager, error)
+	GetStructDescriptors(ctx context.Context, indices []int32) ([]StructDescriptor, error)
+	ListComponents(ctx context.Context) ([]c2IComponentStore.ComponentTraits, error)
+	CreateInputSurface(ctx context.Context) (IInputSurface, error)
+}
+
+type componentStoreStubWrapper struct {
+	impl       IComponentStoreServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *componentStoreStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *componentStoreStubWrapper) CopyBuffer(
+	ctx context.Context,
+	src Buffer,
+	dst Buffer,
+) error {
+	return w.impl.CopyBuffer(ctx, src, dst)
+}
+
+func (w *componentStoreStubWrapper) CreateComponent(
+	ctx context.Context,
+	name string,
+	listener IComponentListener,
+	pool bufferpool2.IClientManager,
+) (IComponent, error) {
+	return w.impl.CreateComponent(ctx, name, listener, pool)
+}
+
+func (w *componentStoreStubWrapper) CreateInterface(
+	ctx context.Context,
+	name string,
+) (IComponentInterface, error) {
+	return w.impl.CreateInterface(ctx, name)
+}
+
+func (w *componentStoreStubWrapper) GetConfigurable(
+	ctx context.Context,
+) (IConfigurable, error) {
+	return w.impl.GetConfigurable(ctx)
+}
+
+func (w *componentStoreStubWrapper) GetPoolClientManager(
+	ctx context.Context,
+) (bufferpool2.IClientManager, error) {
+	return w.impl.GetPoolClientManager(ctx)
+}
+
+func (w *componentStoreStubWrapper) GetStructDescriptors(
+	ctx context.Context,
+	indices []int32,
+) ([]StructDescriptor, error) {
+	return w.impl.GetStructDescriptors(ctx, indices)
+}
+
+func (w *componentStoreStubWrapper) ListComponents(
+	ctx context.Context,
+) ([]c2IComponentStore.ComponentTraits, error) {
+	return w.impl.ListComponents(ctx)
+}
+
+func (w *componentStoreStubWrapper) CreateInputSurface(
+	ctx context.Context,
+) (IInputSurface, error) {
+	return w.impl.CreateInputSurface(ctx)
+}
+
+var _ IComponentStore = (*componentStoreStubWrapper)(nil)
+
+// NewComponentStoreStub creates a server-side IComponentStore wrapping the given
+// server implementation. The returned value satisfies IComponentStore
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewComponentStoreStub(
+	impl IComponentStoreServer,
+) IComponentStore {
+	wrapper := &componentStoreStubWrapper{impl: impl}
+	stub := &ComponentStoreStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

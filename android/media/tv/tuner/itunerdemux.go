@@ -61,7 +61,7 @@ func (p *TunerDemuxProxy) SetFrontendDataSource(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerDemux)
-	_data.WriteStrongBinder(frontend.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, frontend.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerDemux, "setFrontendDataSource")
 	if _err != nil {
@@ -121,7 +121,7 @@ func (p *TunerDemuxProxy) OpenFilter(
 		return _result, _err
 	}
 	_data.WriteInt32(bufferSize)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerDemux, "openFilter")
 	if _err != nil {
@@ -183,7 +183,7 @@ func (p *TunerDemuxProxy) GetAvSyncHwId(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITunerDemux)
-	_data.WriteStrongBinder(tunerFilter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, tunerFilter.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerDemux, "getAvSyncHwId")
 	if _err != nil {
@@ -249,7 +249,7 @@ func (p *TunerDemuxProxy) OpenDvr(
 	_data.WriteInterfaceToken(DescriptorITunerDemux)
 	_data.WritePaddedByte(byte(dvbType))
 	_data.WriteInt32(bufferSize)
-	_data.WriteStrongBinder(cb.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerDemux, "openDvr")
 	if _err != nil {
@@ -542,4 +542,116 @@ func (s *TunerDemuxStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITunerDemuxServer is the server-side interface that user implementations
+// provide to NewTunerDemuxStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerDemuxServer interface {
+	SetFrontendDataSource(ctx context.Context, frontend ITunerFrontend) error
+	SetFrontendDataSourceById(ctx context.Context, frontendId int32) error
+	OpenFilter(ctx context.Context, type_ tvTuner.DemuxFilterType, bufferSize int32, cb ITunerFilterCallback) (ITunerFilter, error)
+	OpenTimeFilter(ctx context.Context) (ITunerTimeFilter, error)
+	GetAvSyncHwId(ctx context.Context, tunerFilter ITunerFilter) (int32, error)
+	GetAvSyncTime(ctx context.Context, avSyncHwId int32) (int64, error)
+	OpenDvr(ctx context.Context, dvbType tvTuner.DvrType, bufferSize int32, cb ITunerDvrCallback) (ITunerDvr, error)
+	ConnectCiCam(ctx context.Context, ciCamId int32) error
+	DisconnectCiCam(ctx context.Context) error
+	Close(ctx context.Context) error
+}
+
+type tunerDemuxStubWrapper struct {
+	impl       ITunerDemuxServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerDemuxStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerDemuxStubWrapper) SetFrontendDataSource(
+	ctx context.Context,
+	frontend ITunerFrontend,
+) error {
+	return w.impl.SetFrontendDataSource(ctx, frontend)
+}
+
+func (w *tunerDemuxStubWrapper) SetFrontendDataSourceById(
+	ctx context.Context,
+	frontendId int32,
+) error {
+	return w.impl.SetFrontendDataSourceById(ctx, frontendId)
+}
+
+func (w *tunerDemuxStubWrapper) OpenFilter(
+	ctx context.Context,
+	type_ tvTuner.DemuxFilterType,
+	bufferSize int32,
+	cb ITunerFilterCallback,
+) (ITunerFilter, error) {
+	return w.impl.OpenFilter(ctx, type_, bufferSize, cb)
+}
+
+func (w *tunerDemuxStubWrapper) OpenTimeFilter(
+	ctx context.Context,
+) (ITunerTimeFilter, error) {
+	return w.impl.OpenTimeFilter(ctx)
+}
+
+func (w *tunerDemuxStubWrapper) GetAvSyncHwId(
+	ctx context.Context,
+	tunerFilter ITunerFilter,
+) (int32, error) {
+	return w.impl.GetAvSyncHwId(ctx, tunerFilter)
+}
+
+func (w *tunerDemuxStubWrapper) GetAvSyncTime(
+	ctx context.Context,
+	avSyncHwId int32,
+) (int64, error) {
+	return w.impl.GetAvSyncTime(ctx, avSyncHwId)
+}
+
+func (w *tunerDemuxStubWrapper) OpenDvr(
+	ctx context.Context,
+	dvbType tvTuner.DvrType,
+	bufferSize int32,
+	cb ITunerDvrCallback,
+) (ITunerDvr, error) {
+	return w.impl.OpenDvr(ctx, dvbType, bufferSize, cb)
+}
+
+func (w *tunerDemuxStubWrapper) ConnectCiCam(
+	ctx context.Context,
+	ciCamId int32,
+) error {
+	return w.impl.ConnectCiCam(ctx, ciCamId)
+}
+
+func (w *tunerDemuxStubWrapper) DisconnectCiCam(
+	ctx context.Context,
+) error {
+	return w.impl.DisconnectCiCam(ctx)
+}
+
+func (w *tunerDemuxStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+var _ ITunerDemux = (*tunerDemuxStubWrapper)(nil)
+
+// NewTunerDemuxStub creates a server-side ITunerDemux wrapping the given
+// server implementation. The returned value satisfies ITunerDemux
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerDemuxStub(
+	impl ITunerDemuxServer,
+) ITunerDemux {
+	wrapper := &tunerDemuxStubWrapper{impl: impl}
+	stub := &TunerDemuxStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -24,7 +24,11 @@ func (s *StartInputParams) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.StartInputToken.Handle())
+	if s.StartInputToken == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.StartInputToken.Handle())
+	}
 	if _err := s.EditorInfo.MarshalParcel(p); _err != nil {
 		return _err
 	}

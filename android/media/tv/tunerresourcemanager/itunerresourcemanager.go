@@ -114,7 +114,7 @@ func (p *TunerResourceManagerProxy) RegisterClientProfile(
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITunerResourceManager, "registerClientProfile")
 	if _err != nil {
@@ -1994,4 +1994,334 @@ func (s *TunerResourceManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITunerResourceManagerServer is the server-side interface that user implementations
+// provide to NewTunerResourceManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITunerResourceManagerServer interface {
+	RegisterClientProfile(ctx context.Context, profile ResourceClientProfile, listener IResourcesReclaimListener, clientId []int32) error
+	UnregisterClientProfile(ctx context.Context, clientId int32) error
+	UpdateClientPriority(ctx context.Context, clientId int32, priority int32, niceValue int32) (bool, error)
+	HasUnusedFrontend(ctx context.Context, frontendType int32) (bool, error)
+	IsLowestPriority(ctx context.Context, clientId int32, frontendType int32) (bool, error)
+	SetFrontendInfoList(ctx context.Context, infos []TunerFrontendInfo) error
+	UpdateCasInfo(ctx context.Context, casSystemId int32, maxSessionNum int32) error
+	SetDemuxInfoList(ctx context.Context, infos []TunerDemuxInfo) error
+	SetLnbInfoList(ctx context.Context, lnbIds []int64) error
+	SetResourceOwnershipRetention(ctx context.Context, clientId int32, enabled bool) error
+	RequestFrontend(ctx context.Context, request TunerFrontendRequest, frontendHandle []int64) (bool, error)
+	SetMaxNumberOfFrontends(ctx context.Context, frontendType int32, maxNum int32) (bool, error)
+	GetMaxNumberOfFrontends(ctx context.Context, frontendType int32) (int32, error)
+	ShareFrontend(ctx context.Context, selfClientId int32, targetClientId int32) error
+	TransferOwner(ctx context.Context, resourceType int32, currentOwnerId int32, newOwnerId int32) (bool, error)
+	RequestDemux(ctx context.Context, request TunerDemuxRequest, demuxHandle []int64) (bool, error)
+	RequestDescrambler(ctx context.Context, request TunerDescramblerRequest, descramblerHandle []int64) (bool, error)
+	RequestCasSession(ctx context.Context, request CasSessionRequest, casSessionHandle []int64) (bool, error)
+	RequestCiCam(ctx context.Context, request TunerCiCamRequest, ciCamHandle []int64) (bool, error)
+	RequestLnb(ctx context.Context, request TunerLnbRequest, lnbHandle []int64) (bool, error)
+	ReleaseFrontend(ctx context.Context, frontendHandle int64, clientId int32) error
+	ReleaseDemux(ctx context.Context, demuxHandle int64, clientId int32) error
+	ReleaseDescrambler(ctx context.Context, descramblerHandle int64, clientId int32) error
+	ReleaseCasSession(ctx context.Context, casSessionHandle int64, clientId int32) error
+	ReleaseCiCam(ctx context.Context, ciCamHandle int64, clientId int32) error
+	ReleaseLnb(ctx context.Context, lnbHandle int64, clientId int32) error
+	IsHigherPriority(ctx context.Context, challengerProfile ResourceClientProfile, holderProfile ResourceClientProfile) (bool, error)
+	StoreResourceMap(ctx context.Context, resourceType int32) error
+	ClearResourceMap(ctx context.Context, resourceType int32) error
+	RestoreResourceMap(ctx context.Context, resourceType int32) error
+	AcquireLock(ctx context.Context, clientId int32, clientThreadId int64) (bool, error)
+	ReleaseLock(ctx context.Context, clientId int32) (bool, error)
+	GetClientPriority(ctx context.Context, useCase int32, pid int32) (int32, error)
+	GetConfigPriority(ctx context.Context, useCase int32, isForeground bool) (int32, error)
+}
+
+type tunerResourceManagerStubWrapper struct {
+	impl       ITunerResourceManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tunerResourceManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tunerResourceManagerStubWrapper) RegisterClientProfile(
+	ctx context.Context,
+	profile ResourceClientProfile,
+	listener IResourcesReclaimListener,
+	clientId []int32,
+) error {
+	return w.impl.RegisterClientProfile(ctx, profile, listener, clientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) UnregisterClientProfile(
+	ctx context.Context,
+	clientId int32,
+) error {
+	return w.impl.UnregisterClientProfile(ctx, clientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) UpdateClientPriority(
+	ctx context.Context,
+	clientId int32,
+	priority int32,
+	niceValue int32,
+) (bool, error) {
+	return w.impl.UpdateClientPriority(ctx, clientId, priority, niceValue)
+}
+
+func (w *tunerResourceManagerStubWrapper) HasUnusedFrontend(
+	ctx context.Context,
+	frontendType int32,
+) (bool, error) {
+	return w.impl.HasUnusedFrontend(ctx, frontendType)
+}
+
+func (w *tunerResourceManagerStubWrapper) IsLowestPriority(
+	ctx context.Context,
+	clientId int32,
+	frontendType int32,
+) (bool, error) {
+	return w.impl.IsLowestPriority(ctx, clientId, frontendType)
+}
+
+func (w *tunerResourceManagerStubWrapper) SetFrontendInfoList(
+	ctx context.Context,
+	infos []TunerFrontendInfo,
+) error {
+	return w.impl.SetFrontendInfoList(ctx, infos)
+}
+
+func (w *tunerResourceManagerStubWrapper) UpdateCasInfo(
+	ctx context.Context,
+	casSystemId int32,
+	maxSessionNum int32,
+) error {
+	return w.impl.UpdateCasInfo(ctx, casSystemId, maxSessionNum)
+}
+
+func (w *tunerResourceManagerStubWrapper) SetDemuxInfoList(
+	ctx context.Context,
+	infos []TunerDemuxInfo,
+) error {
+	return w.impl.SetDemuxInfoList(ctx, infos)
+}
+
+func (w *tunerResourceManagerStubWrapper) SetLnbInfoList(
+	ctx context.Context,
+	lnbIds []int64,
+) error {
+	return w.impl.SetLnbInfoList(ctx, lnbIds)
+}
+
+func (w *tunerResourceManagerStubWrapper) SetResourceOwnershipRetention(
+	ctx context.Context,
+	clientId int32,
+	enabled bool,
+) error {
+	return w.impl.SetResourceOwnershipRetention(ctx, clientId, enabled)
+}
+
+func (w *tunerResourceManagerStubWrapper) RequestFrontend(
+	ctx context.Context,
+	request TunerFrontendRequest,
+	frontendHandle []int64,
+) (bool, error) {
+	return w.impl.RequestFrontend(ctx, request, frontendHandle)
+}
+
+func (w *tunerResourceManagerStubWrapper) SetMaxNumberOfFrontends(
+	ctx context.Context,
+	frontendType int32,
+	maxNum int32,
+) (bool, error) {
+	return w.impl.SetMaxNumberOfFrontends(ctx, frontendType, maxNum)
+}
+
+func (w *tunerResourceManagerStubWrapper) GetMaxNumberOfFrontends(
+	ctx context.Context,
+	frontendType int32,
+) (int32, error) {
+	return w.impl.GetMaxNumberOfFrontends(ctx, frontendType)
+}
+
+func (w *tunerResourceManagerStubWrapper) ShareFrontend(
+	ctx context.Context,
+	selfClientId int32,
+	targetClientId int32,
+) error {
+	return w.impl.ShareFrontend(ctx, selfClientId, targetClientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) TransferOwner(
+	ctx context.Context,
+	resourceType int32,
+	currentOwnerId int32,
+	newOwnerId int32,
+) (bool, error) {
+	return w.impl.TransferOwner(ctx, resourceType, currentOwnerId, newOwnerId)
+}
+
+func (w *tunerResourceManagerStubWrapper) RequestDemux(
+	ctx context.Context,
+	request TunerDemuxRequest,
+	demuxHandle []int64,
+) (bool, error) {
+	return w.impl.RequestDemux(ctx, request, demuxHandle)
+}
+
+func (w *tunerResourceManagerStubWrapper) RequestDescrambler(
+	ctx context.Context,
+	request TunerDescramblerRequest,
+	descramblerHandle []int64,
+) (bool, error) {
+	return w.impl.RequestDescrambler(ctx, request, descramblerHandle)
+}
+
+func (w *tunerResourceManagerStubWrapper) RequestCasSession(
+	ctx context.Context,
+	request CasSessionRequest,
+	casSessionHandle []int64,
+) (bool, error) {
+	return w.impl.RequestCasSession(ctx, request, casSessionHandle)
+}
+
+func (w *tunerResourceManagerStubWrapper) RequestCiCam(
+	ctx context.Context,
+	request TunerCiCamRequest,
+	ciCamHandle []int64,
+) (bool, error) {
+	return w.impl.RequestCiCam(ctx, request, ciCamHandle)
+}
+
+func (w *tunerResourceManagerStubWrapper) RequestLnb(
+	ctx context.Context,
+	request TunerLnbRequest,
+	lnbHandle []int64,
+) (bool, error) {
+	return w.impl.RequestLnb(ctx, request, lnbHandle)
+}
+
+func (w *tunerResourceManagerStubWrapper) ReleaseFrontend(
+	ctx context.Context,
+	frontendHandle int64,
+	clientId int32,
+) error {
+	return w.impl.ReleaseFrontend(ctx, frontendHandle, clientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) ReleaseDemux(
+	ctx context.Context,
+	demuxHandle int64,
+	clientId int32,
+) error {
+	return w.impl.ReleaseDemux(ctx, demuxHandle, clientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) ReleaseDescrambler(
+	ctx context.Context,
+	descramblerHandle int64,
+	clientId int32,
+) error {
+	return w.impl.ReleaseDescrambler(ctx, descramblerHandle, clientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) ReleaseCasSession(
+	ctx context.Context,
+	casSessionHandle int64,
+	clientId int32,
+) error {
+	return w.impl.ReleaseCasSession(ctx, casSessionHandle, clientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) ReleaseCiCam(
+	ctx context.Context,
+	ciCamHandle int64,
+	clientId int32,
+) error {
+	return w.impl.ReleaseCiCam(ctx, ciCamHandle, clientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) ReleaseLnb(
+	ctx context.Context,
+	lnbHandle int64,
+	clientId int32,
+) error {
+	return w.impl.ReleaseLnb(ctx, lnbHandle, clientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) IsHigherPriority(
+	ctx context.Context,
+	challengerProfile ResourceClientProfile,
+	holderProfile ResourceClientProfile,
+) (bool, error) {
+	return w.impl.IsHigherPriority(ctx, challengerProfile, holderProfile)
+}
+
+func (w *tunerResourceManagerStubWrapper) StoreResourceMap(
+	ctx context.Context,
+	resourceType int32,
+) error {
+	return w.impl.StoreResourceMap(ctx, resourceType)
+}
+
+func (w *tunerResourceManagerStubWrapper) ClearResourceMap(
+	ctx context.Context,
+	resourceType int32,
+) error {
+	return w.impl.ClearResourceMap(ctx, resourceType)
+}
+
+func (w *tunerResourceManagerStubWrapper) RestoreResourceMap(
+	ctx context.Context,
+	resourceType int32,
+) error {
+	return w.impl.RestoreResourceMap(ctx, resourceType)
+}
+
+func (w *tunerResourceManagerStubWrapper) AcquireLock(
+	ctx context.Context,
+	clientId int32,
+	clientThreadId int64,
+) (bool, error) {
+	return w.impl.AcquireLock(ctx, clientId, clientThreadId)
+}
+
+func (w *tunerResourceManagerStubWrapper) ReleaseLock(
+	ctx context.Context,
+	clientId int32,
+) (bool, error) {
+	return w.impl.ReleaseLock(ctx, clientId)
+}
+
+func (w *tunerResourceManagerStubWrapper) GetClientPriority(
+	ctx context.Context,
+	useCase int32,
+	pid int32,
+) (int32, error) {
+	return w.impl.GetClientPriority(ctx, useCase, pid)
+}
+
+func (w *tunerResourceManagerStubWrapper) GetConfigPriority(
+	ctx context.Context,
+	useCase int32,
+	isForeground bool,
+) (int32, error) {
+	return w.impl.GetConfigPriority(ctx, useCase, isForeground)
+}
+
+var _ ITunerResourceManager = (*tunerResourceManagerStubWrapper)(nil)
+
+// NewTunerResourceManagerStub creates a server-side ITunerResourceManager wrapping the given
+// server implementation. The returned value satisfies ITunerResourceManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTunerResourceManagerStub(
+	impl ITunerResourceManagerServer,
+) ITunerResourceManager {
+	wrapper := &tunerResourceManagerStubWrapper{impl: impl}
+	stub := &TunerResourceManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

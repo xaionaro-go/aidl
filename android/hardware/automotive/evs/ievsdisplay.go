@@ -301,3 +301,71 @@ func (s *EvsDisplayStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEvsDisplayServer is the server-side interface that user implementations
+// provide to NewEvsDisplayStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEvsDisplayServer interface {
+	GetDisplayInfo(ctx context.Context) (DisplayDesc, error)
+	GetDisplayState(ctx context.Context) (DisplayState, error)
+	GetTargetBuffer(ctx context.Context) (BufferDesc, error)
+	ReturnTargetBufferForDisplay(ctx context.Context, buffer BufferDesc) error
+	SetDisplayState(ctx context.Context, state DisplayState) error
+}
+
+type evsDisplayStubWrapper struct {
+	impl       IEvsDisplayServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *evsDisplayStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *evsDisplayStubWrapper) GetDisplayInfo(
+	ctx context.Context,
+) (DisplayDesc, error) {
+	return w.impl.GetDisplayInfo(ctx)
+}
+
+func (w *evsDisplayStubWrapper) GetDisplayState(
+	ctx context.Context,
+) (DisplayState, error) {
+	return w.impl.GetDisplayState(ctx)
+}
+
+func (w *evsDisplayStubWrapper) GetTargetBuffer(
+	ctx context.Context,
+) (BufferDesc, error) {
+	return w.impl.GetTargetBuffer(ctx)
+}
+
+func (w *evsDisplayStubWrapper) ReturnTargetBufferForDisplay(
+	ctx context.Context,
+	buffer BufferDesc,
+) error {
+	return w.impl.ReturnTargetBufferForDisplay(ctx, buffer)
+}
+
+func (w *evsDisplayStubWrapper) SetDisplayState(
+	ctx context.Context,
+	state DisplayState,
+) error {
+	return w.impl.SetDisplayState(ctx, state)
+}
+
+var _ IEvsDisplay = (*evsDisplayStubWrapper)(nil)
+
+// NewEvsDisplayStub creates a server-side IEvsDisplay wrapping the given
+// server implementation. The returned value satisfies IEvsDisplay
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEvsDisplayStub(
+	impl IEvsDisplayServer,
+) IEvsDisplay {
+	wrapper := &evsDisplayStubWrapper{impl: impl}
+	stub := &EvsDisplayStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

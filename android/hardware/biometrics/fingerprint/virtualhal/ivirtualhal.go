@@ -1526,3 +1526,288 @@ func (s *VirtualHalStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVirtualHalServer is the server-side interface that user implementations
+// provide to NewVirtualHalStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualHalServer interface {
+	SetEnrollments(ctx context.Context, id []int32) error
+	SetEnrollmentHit(ctx context.Context, hit_id int32) error
+	SetNextEnrollment(ctx context.Context, next_enrollment NextEnrollment) error
+	SetAuthenticatorId(ctx context.Context, id int64) error
+	SetChallenge(ctx context.Context, challenge int64) error
+	SetOperationAuthenticateFails(ctx context.Context, fail bool) error
+	SetOperationAuthenticateLatency(ctx context.Context, latencyMs []int32) error
+	SetOperationAuthenticateDuration(ctx context.Context, durationMs int32) error
+	SetOperationAuthenticateError(ctx context.Context, error_ int32) error
+	SetOperationAuthenticateAcquired(ctx context.Context, acquired []AcquiredInfoAndVendorCode) error
+	SetOperationEnrollError(ctx context.Context, error_ int32) error
+	SetOperationEnrollLatency(ctx context.Context, latencyMs []int32) error
+	SetOperationDetectInteractionLatency(ctx context.Context, latencyMs []int32) error
+	SetOperationDetectInteractionError(ctx context.Context, error_ int32) error
+	SetOperationDetectInteractionDuration(ctx context.Context, durationMs int32) error
+	SetOperationDetectInteractionAcquired(ctx context.Context, acquired []AcquiredInfoAndVendorCode) error
+	SetLockout(ctx context.Context, lockout bool) error
+	SetLockoutEnable(ctx context.Context, enable bool) error
+	SetLockoutTimedThreshold(ctx context.Context, threshold int32) error
+	SetLockoutTimedDuration(ctx context.Context, durationMs int32) error
+	SetLockoutPermanentThreshold(ctx context.Context, threshold int32) error
+	ResetConfigurations(ctx context.Context) error
+	SetType(ctx context.Context, type_ fingerprint.FingerprintSensorType) error
+	SetSensorId(ctx context.Context, id int32) error
+	SetSensorStrength(ctx context.Context, strength common.SensorStrength) error
+	SetMaxEnrollmentPerUser(ctx context.Context, max_ int32) error
+	SetSensorLocation(ctx context.Context, loc fingerprint.SensorLocation) error
+	SetNavigationGuesture(ctx context.Context, v bool) error
+	SetDetectInteraction(ctx context.Context, v bool) error
+	SetDisplayTouch(ctx context.Context, v bool) error
+	SetControlIllumination(ctx context.Context, v bool) error
+	GetFingerprintHal(ctx context.Context) (fingerprint.IFingerprint, error)
+}
+
+type virtualHalStubWrapper struct {
+	impl       IVirtualHalServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualHalStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualHalStubWrapper) SetEnrollments(
+	ctx context.Context,
+	id []int32,
+) error {
+	return w.impl.SetEnrollments(ctx, id)
+}
+
+func (w *virtualHalStubWrapper) SetEnrollmentHit(
+	ctx context.Context,
+	hit_id int32,
+) error {
+	return w.impl.SetEnrollmentHit(ctx, hit_id)
+}
+
+func (w *virtualHalStubWrapper) SetNextEnrollment(
+	ctx context.Context,
+	next_enrollment NextEnrollment,
+) error {
+	return w.impl.SetNextEnrollment(ctx, next_enrollment)
+}
+
+func (w *virtualHalStubWrapper) SetAuthenticatorId(
+	ctx context.Context,
+	id int64,
+) error {
+	return w.impl.SetAuthenticatorId(ctx, id)
+}
+
+func (w *virtualHalStubWrapper) SetChallenge(
+	ctx context.Context,
+	challenge int64,
+) error {
+	return w.impl.SetChallenge(ctx, challenge)
+}
+
+func (w *virtualHalStubWrapper) SetOperationAuthenticateFails(
+	ctx context.Context,
+	fail bool,
+) error {
+	return w.impl.SetOperationAuthenticateFails(ctx, fail)
+}
+
+func (w *virtualHalStubWrapper) SetOperationAuthenticateLatency(
+	ctx context.Context,
+	latencyMs []int32,
+) error {
+	return w.impl.SetOperationAuthenticateLatency(ctx, latencyMs)
+}
+
+func (w *virtualHalStubWrapper) SetOperationAuthenticateDuration(
+	ctx context.Context,
+	durationMs int32,
+) error {
+	return w.impl.SetOperationAuthenticateDuration(ctx, durationMs)
+}
+
+func (w *virtualHalStubWrapper) SetOperationAuthenticateError(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.SetOperationAuthenticateError(ctx, error_)
+}
+
+func (w *virtualHalStubWrapper) SetOperationAuthenticateAcquired(
+	ctx context.Context,
+	acquired []AcquiredInfoAndVendorCode,
+) error {
+	return w.impl.SetOperationAuthenticateAcquired(ctx, acquired)
+}
+
+func (w *virtualHalStubWrapper) SetOperationEnrollError(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.SetOperationEnrollError(ctx, error_)
+}
+
+func (w *virtualHalStubWrapper) SetOperationEnrollLatency(
+	ctx context.Context,
+	latencyMs []int32,
+) error {
+	return w.impl.SetOperationEnrollLatency(ctx, latencyMs)
+}
+
+func (w *virtualHalStubWrapper) SetOperationDetectInteractionLatency(
+	ctx context.Context,
+	latencyMs []int32,
+) error {
+	return w.impl.SetOperationDetectInteractionLatency(ctx, latencyMs)
+}
+
+func (w *virtualHalStubWrapper) SetOperationDetectInteractionError(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.SetOperationDetectInteractionError(ctx, error_)
+}
+
+func (w *virtualHalStubWrapper) SetOperationDetectInteractionDuration(
+	ctx context.Context,
+	durationMs int32,
+) error {
+	return w.impl.SetOperationDetectInteractionDuration(ctx, durationMs)
+}
+
+func (w *virtualHalStubWrapper) SetOperationDetectInteractionAcquired(
+	ctx context.Context,
+	acquired []AcquiredInfoAndVendorCode,
+) error {
+	return w.impl.SetOperationDetectInteractionAcquired(ctx, acquired)
+}
+
+func (w *virtualHalStubWrapper) SetLockout(
+	ctx context.Context,
+	lockout bool,
+) error {
+	return w.impl.SetLockout(ctx, lockout)
+}
+
+func (w *virtualHalStubWrapper) SetLockoutEnable(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetLockoutEnable(ctx, enable)
+}
+
+func (w *virtualHalStubWrapper) SetLockoutTimedThreshold(
+	ctx context.Context,
+	threshold int32,
+) error {
+	return w.impl.SetLockoutTimedThreshold(ctx, threshold)
+}
+
+func (w *virtualHalStubWrapper) SetLockoutTimedDuration(
+	ctx context.Context,
+	durationMs int32,
+) error {
+	return w.impl.SetLockoutTimedDuration(ctx, durationMs)
+}
+
+func (w *virtualHalStubWrapper) SetLockoutPermanentThreshold(
+	ctx context.Context,
+	threshold int32,
+) error {
+	return w.impl.SetLockoutPermanentThreshold(ctx, threshold)
+}
+
+func (w *virtualHalStubWrapper) ResetConfigurations(
+	ctx context.Context,
+) error {
+	return w.impl.ResetConfigurations(ctx)
+}
+
+func (w *virtualHalStubWrapper) SetType(
+	ctx context.Context,
+	type_ fingerprint.FingerprintSensorType,
+) error {
+	return w.impl.SetType(ctx, type_)
+}
+
+func (w *virtualHalStubWrapper) SetSensorId(
+	ctx context.Context,
+	id int32,
+) error {
+	return w.impl.SetSensorId(ctx, id)
+}
+
+func (w *virtualHalStubWrapper) SetSensorStrength(
+	ctx context.Context,
+	strength common.SensorStrength,
+) error {
+	return w.impl.SetSensorStrength(ctx, strength)
+}
+
+func (w *virtualHalStubWrapper) SetMaxEnrollmentPerUser(
+	ctx context.Context,
+	max_ int32,
+) error {
+	return w.impl.SetMaxEnrollmentPerUser(ctx, max_)
+}
+
+func (w *virtualHalStubWrapper) SetSensorLocation(
+	ctx context.Context,
+	loc fingerprint.SensorLocation,
+) error {
+	return w.impl.SetSensorLocation(ctx, loc)
+}
+
+func (w *virtualHalStubWrapper) SetNavigationGuesture(
+	ctx context.Context,
+	v bool,
+) error {
+	return w.impl.SetNavigationGuesture(ctx, v)
+}
+
+func (w *virtualHalStubWrapper) SetDetectInteraction(
+	ctx context.Context,
+	v bool,
+) error {
+	return w.impl.SetDetectInteraction(ctx, v)
+}
+
+func (w *virtualHalStubWrapper) SetDisplayTouch(
+	ctx context.Context,
+	v bool,
+) error {
+	return w.impl.SetDisplayTouch(ctx, v)
+}
+
+func (w *virtualHalStubWrapper) SetControlIllumination(
+	ctx context.Context,
+	v bool,
+) error {
+	return w.impl.SetControlIllumination(ctx, v)
+}
+
+func (w *virtualHalStubWrapper) GetFingerprintHal(
+	ctx context.Context,
+) (fingerprint.IFingerprint, error) {
+	return w.impl.GetFingerprintHal(ctx)
+}
+
+var _ IVirtualHal = (*virtualHalStubWrapper)(nil)
+
+// NewVirtualHalStub creates a server-side IVirtualHal wrapping the given
+// server implementation. The returned value satisfies IVirtualHal
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualHalStub(
+	impl IVirtualHalServer,
+) IVirtualHal {
+	wrapper := &virtualHalStubWrapper{impl: impl}
+	stub := &VirtualHalStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

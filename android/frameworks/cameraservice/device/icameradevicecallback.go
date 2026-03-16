@@ -339,3 +339,94 @@ func (s *CameraDeviceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraDeviceCallbackServer is the server-side interface that user implementations
+// provide to NewCameraDeviceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraDeviceCallbackServer interface {
+	OnCaptureStarted(ctx context.Context, resultExtras CaptureResultExtras, timestamp int64) error
+	OnDeviceError(ctx context.Context, errorCode ErrorCode, resultExtras CaptureResultExtras) error
+	OnDeviceIdle(ctx context.Context) error
+	OnPrepared(ctx context.Context, streamId int32) error
+	OnRepeatingRequestError(ctx context.Context, lastFrameNumber int64, repeatingRequestId int32) error
+	OnResultReceived(ctx context.Context, result CaptureMetadataInfo, resultExtras CaptureResultExtras, physicalCaptureResultInfos []PhysicalCaptureResultInfo) error
+	OnClientSharedAccessPriorityChanged(ctx context.Context, primaryClient bool) error
+}
+
+type cameraDeviceCallbackStubWrapper struct {
+	impl       ICameraDeviceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraDeviceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraDeviceCallbackStubWrapper) OnCaptureStarted(
+	ctx context.Context,
+	resultExtras CaptureResultExtras,
+	timestamp int64,
+) error {
+	return w.impl.OnCaptureStarted(ctx, resultExtras, timestamp)
+}
+
+func (w *cameraDeviceCallbackStubWrapper) OnDeviceError(
+	ctx context.Context,
+	errorCode ErrorCode,
+	resultExtras CaptureResultExtras,
+) error {
+	return w.impl.OnDeviceError(ctx, errorCode, resultExtras)
+}
+
+func (w *cameraDeviceCallbackStubWrapper) OnDeviceIdle(
+	ctx context.Context,
+) error {
+	return w.impl.OnDeviceIdle(ctx)
+}
+
+func (w *cameraDeviceCallbackStubWrapper) OnPrepared(
+	ctx context.Context,
+	streamId int32,
+) error {
+	return w.impl.OnPrepared(ctx, streamId)
+}
+
+func (w *cameraDeviceCallbackStubWrapper) OnRepeatingRequestError(
+	ctx context.Context,
+	lastFrameNumber int64,
+	repeatingRequestId int32,
+) error {
+	return w.impl.OnRepeatingRequestError(ctx, lastFrameNumber, repeatingRequestId)
+}
+
+func (w *cameraDeviceCallbackStubWrapper) OnResultReceived(
+	ctx context.Context,
+	result CaptureMetadataInfo,
+	resultExtras CaptureResultExtras,
+	physicalCaptureResultInfos []PhysicalCaptureResultInfo,
+) error {
+	return w.impl.OnResultReceived(ctx, result, resultExtras, physicalCaptureResultInfos)
+}
+
+func (w *cameraDeviceCallbackStubWrapper) OnClientSharedAccessPriorityChanged(
+	ctx context.Context,
+	primaryClient bool,
+) error {
+	return w.impl.OnClientSharedAccessPriorityChanged(ctx, primaryClient)
+}
+
+var _ ICameraDeviceCallback = (*cameraDeviceCallbackStubWrapper)(nil)
+
+// NewCameraDeviceCallbackStub creates a server-side ICameraDeviceCallback wrapping the given
+// server implementation. The returned value satisfies ICameraDeviceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraDeviceCallbackStub(
+	impl ICameraDeviceCallbackServer,
+) ICameraDeviceCallback {
+	wrapper := &cameraDeviceCallbackStubWrapper{impl: impl}
+	stub := &CameraDeviceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

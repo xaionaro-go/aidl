@@ -861,3 +861,233 @@ func (s *SystemUiProxyStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISystemUiProxyServer is the server-side interface that user implementations
+// provide to NewSystemUiProxyStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISystemUiProxyServer interface {
+	StartScreenPinning(ctx context.Context, taskId int32) error
+	OnOverviewShown(ctx context.Context, fromHome bool) error
+	OnStatusBarTouchEvent(ctx context.Context, event common.MotionEvent) error
+	OnAssistantProgress(ctx context.Context, progress float32) error
+	OnAssistantGestureCompletion(ctx context.Context, velocity float32) error
+	StartAssistant(ctx context.Context, bundle os.Bundle) error
+	SetAssistantOverridesRequested(ctx context.Context, invocationTypes []int32) error
+	NotifyAccessibilityButtonClicked(ctx context.Context, displayId int32) error
+	NotifyAccessibilityButtonLongClicked(ctx context.Context) error
+	StopScreenPinning(ctx context.Context) error
+	NotifyPrioritizedRotation(ctx context.Context, rotation int32) error
+	ExpandNotificationPanel(ctx context.Context) error
+	OnBackEvent(ctx context.Context, keyEvent view.KeyEvent) error
+	SetHomeRotationEnabled(ctx context.Context, enabled bool) error
+	NotifyTaskbarStatus(ctx context.Context, visible bool, stashed bool) error
+	NotifyTaskbarAutohideSuspend(ctx context.Context, suspend bool) error
+	OnImeSwitcherPressed(ctx context.Context) error
+	ToggleNotificationPanel(ctx context.Context) error
+	TakeScreenshot(ctx context.Context, request util.ScreenshotRequest) error
+	OnStatusBarTrackpadEvent(ctx context.Context, event common.MotionEvent) error
+	AnimateNavBarLongPress(ctx context.Context, isTouchDown bool, shrink bool, durationMs int64) error
+	SetOverrideHomeButtonLongPress(ctx context.Context, duration int64, slopMultiplier float32, haptic bool) error
+	ToggleQuickSettingsPanel(ctx context.Context) error
+	OnImeSwitcherLongPress(ctx context.Context) error
+	UpdateContextualEduStats(ctx context.Context, isTrackpadGesture bool, gestureType string) error
+}
+
+type systemUiProxyStubWrapper struct {
+	impl       ISystemUiProxyServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *systemUiProxyStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *systemUiProxyStubWrapper) StartScreenPinning(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.StartScreenPinning(ctx, taskId)
+}
+
+func (w *systemUiProxyStubWrapper) OnOverviewShown(
+	ctx context.Context,
+	fromHome bool,
+) error {
+	return w.impl.OnOverviewShown(ctx, fromHome)
+}
+
+func (w *systemUiProxyStubWrapper) OnStatusBarTouchEvent(
+	ctx context.Context,
+	event common.MotionEvent,
+) error {
+	return w.impl.OnStatusBarTouchEvent(ctx, event)
+}
+
+func (w *systemUiProxyStubWrapper) OnAssistantProgress(
+	ctx context.Context,
+	progress float32,
+) error {
+	return w.impl.OnAssistantProgress(ctx, progress)
+}
+
+func (w *systemUiProxyStubWrapper) OnAssistantGestureCompletion(
+	ctx context.Context,
+	velocity float32,
+) error {
+	return w.impl.OnAssistantGestureCompletion(ctx, velocity)
+}
+
+func (w *systemUiProxyStubWrapper) StartAssistant(
+	ctx context.Context,
+	bundle os.Bundle,
+) error {
+	return w.impl.StartAssistant(ctx, bundle)
+}
+
+func (w *systemUiProxyStubWrapper) SetAssistantOverridesRequested(
+	ctx context.Context,
+	invocationTypes []int32,
+) error {
+	return w.impl.SetAssistantOverridesRequested(ctx, invocationTypes)
+}
+
+func (w *systemUiProxyStubWrapper) NotifyAccessibilityButtonClicked(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.NotifyAccessibilityButtonClicked(ctx, displayId)
+}
+
+func (w *systemUiProxyStubWrapper) NotifyAccessibilityButtonLongClicked(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyAccessibilityButtonLongClicked(ctx)
+}
+
+func (w *systemUiProxyStubWrapper) StopScreenPinning(
+	ctx context.Context,
+) error {
+	return w.impl.StopScreenPinning(ctx)
+}
+
+func (w *systemUiProxyStubWrapper) NotifyPrioritizedRotation(
+	ctx context.Context,
+	rotation int32,
+) error {
+	return w.impl.NotifyPrioritizedRotation(ctx, rotation)
+}
+
+func (w *systemUiProxyStubWrapper) ExpandNotificationPanel(
+	ctx context.Context,
+) error {
+	return w.impl.ExpandNotificationPanel(ctx)
+}
+
+func (w *systemUiProxyStubWrapper) OnBackEvent(
+	ctx context.Context,
+	keyEvent view.KeyEvent,
+) error {
+	return w.impl.OnBackEvent(ctx, keyEvent)
+}
+
+func (w *systemUiProxyStubWrapper) SetHomeRotationEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetHomeRotationEnabled(ctx, enabled)
+}
+
+func (w *systemUiProxyStubWrapper) NotifyTaskbarStatus(
+	ctx context.Context,
+	visible bool,
+	stashed bool,
+) error {
+	return w.impl.NotifyTaskbarStatus(ctx, visible, stashed)
+}
+
+func (w *systemUiProxyStubWrapper) NotifyTaskbarAutohideSuspend(
+	ctx context.Context,
+	suspend bool,
+) error {
+	return w.impl.NotifyTaskbarAutohideSuspend(ctx, suspend)
+}
+
+func (w *systemUiProxyStubWrapper) OnImeSwitcherPressed(
+	ctx context.Context,
+) error {
+	return w.impl.OnImeSwitcherPressed(ctx)
+}
+
+func (w *systemUiProxyStubWrapper) ToggleNotificationPanel(
+	ctx context.Context,
+) error {
+	return w.impl.ToggleNotificationPanel(ctx)
+}
+
+func (w *systemUiProxyStubWrapper) TakeScreenshot(
+	ctx context.Context,
+	request util.ScreenshotRequest,
+) error {
+	return w.impl.TakeScreenshot(ctx, request)
+}
+
+func (w *systemUiProxyStubWrapper) OnStatusBarTrackpadEvent(
+	ctx context.Context,
+	event common.MotionEvent,
+) error {
+	return w.impl.OnStatusBarTrackpadEvent(ctx, event)
+}
+
+func (w *systemUiProxyStubWrapper) AnimateNavBarLongPress(
+	ctx context.Context,
+	isTouchDown bool,
+	shrink bool,
+	durationMs int64,
+) error {
+	return w.impl.AnimateNavBarLongPress(ctx, isTouchDown, shrink, durationMs)
+}
+
+func (w *systemUiProxyStubWrapper) SetOverrideHomeButtonLongPress(
+	ctx context.Context,
+	duration int64,
+	slopMultiplier float32,
+	haptic bool,
+) error {
+	return w.impl.SetOverrideHomeButtonLongPress(ctx, duration, slopMultiplier, haptic)
+}
+
+func (w *systemUiProxyStubWrapper) ToggleQuickSettingsPanel(
+	ctx context.Context,
+) error {
+	return w.impl.ToggleQuickSettingsPanel(ctx)
+}
+
+func (w *systemUiProxyStubWrapper) OnImeSwitcherLongPress(
+	ctx context.Context,
+) error {
+	return w.impl.OnImeSwitcherLongPress(ctx)
+}
+
+func (w *systemUiProxyStubWrapper) UpdateContextualEduStats(
+	ctx context.Context,
+	isTrackpadGesture bool,
+	gestureType string,
+) error {
+	return w.impl.UpdateContextualEduStats(ctx, isTrackpadGesture, gestureType)
+}
+
+var _ ISystemUiProxy = (*systemUiProxyStubWrapper)(nil)
+
+// NewSystemUiProxyStub creates a server-side ISystemUiProxy wrapping the given
+// server implementation. The returned value satisfies ISystemUiProxy
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSystemUiProxyStub(
+	impl ISystemUiProxyServer,
+) ISystemUiProxy {
+	wrapper := &systemUiProxyStubWrapper{impl: impl}
+	stub := &SystemUiProxyStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

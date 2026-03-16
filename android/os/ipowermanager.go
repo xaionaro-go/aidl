@@ -209,13 +209,13 @@ func (p *PowerManagerProxy) AcquireWakeLock(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(lock.Handle())
+	binder.WriteBinderToParcel(ctx, _data, lock, p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteString16(tag)
 	_data.WriteString16(packageName)
 	_data.WriteString16(historyTag)
 	_data.WriteInt32(displayId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "acquireWakeLock")
 	if _err != nil {
@@ -247,13 +247,13 @@ func (p *PowerManagerProxy) AcquireWakeLockWithUid(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(lock.Handle())
+	binder.WriteBinderToParcel(ctx, _data, lock, p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteString16(tag)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(uidtoblame)
 	_data.WriteInt32(displayId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "acquireWakeLockWithUid")
 	if _err != nil {
@@ -280,7 +280,7 @@ func (p *PowerManagerProxy) ReleaseWakeLock(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(lock.Handle())
+	binder.WriteBinderToParcel(ctx, _data, lock, p.remote.Transport())
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "releaseWakeLock")
@@ -308,7 +308,7 @@ func (p *PowerManagerProxy) UpdateWakeLockUids(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(lock.Handle())
+	binder.WriteBinderToParcel(ctx, _data, lock, p.remote.Transport())
 	if uids == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -415,7 +415,7 @@ func (p *PowerManagerProxy) UpdateWakeLockWorkSource(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(lock.Handle())
+	binder.WriteBinderToParcel(ctx, _data, lock, p.remote.Transport())
 	_data.WriteString16(historyTag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "updateWakeLockWorkSource")
@@ -443,8 +443,8 @@ func (p *PowerManagerProxy) UpdateWakeLockCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(lock.Handle())
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, lock, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "updateWakeLockCallback")
 	if _err != nil {
@@ -1569,7 +1569,7 @@ func (p *PowerManagerProxy) AcquireLowPowerStandbyPorts(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	if ports == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1605,7 +1605,7 @@ func (p *PowerManagerProxy) ReleaseLowPowerStandbyPorts(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "releaseLowPowerStandbyPorts")
 	if _err != nil {
@@ -1898,7 +1898,7 @@ func (p *PowerManagerProxy) AcquireWakeLockAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(lock.Handle())
+	binder.WriteBinderToParcel(ctx, _data, lock, p.remote.Transport())
 	_data.WriteInt32(flags)
 	_data.WriteString16(tag)
 	_data.WriteString16(packageName)
@@ -1920,7 +1920,7 @@ func (p *PowerManagerProxy) ReleaseWakeLockAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(lock.Handle())
+	binder.WriteBinderToParcel(ctx, _data, lock, p.remote.Transport())
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPowerManager, "releaseWakeLockAsync")
@@ -1939,7 +1939,7 @@ func (p *PowerManagerProxy) UpdateWakeLockUidsAsync(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPowerManager)
-	_data.WriteStrongBinder(lock.Handle())
+	binder.WriteBinderToParcel(ctx, _data, lock, p.remote.Transport())
 	if uids == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -3466,4 +3466,619 @@ func (s *PowerManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPowerManagerServer is the server-side interface that user implementations
+// provide to NewPowerManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPowerManagerServer interface {
+	AcquireWakeLock(ctx context.Context, lock binder.IBinder, flags int32, tag string, packageName string, ws interface{}, historyTag string, displayId int32, callback IWakeLockCallback) error
+	AcquireWakeLockWithUid(ctx context.Context, lock binder.IBinder, flags int32, tag string, packageName string, uidtoblame int32, displayId int32, callback IWakeLockCallback) error
+	ReleaseWakeLock(ctx context.Context, lock binder.IBinder, flags int32) error
+	UpdateWakeLockUids(ctx context.Context, lock binder.IBinder, uids []int32) error
+	SetPowerBoost(ctx context.Context, boost int32, durationMs int32) error
+	SetPowerMode(ctx context.Context, mode int32, enabled bool) error
+	SetPowerModeChecked(ctx context.Context, mode int32, enabled bool) (bool, error)
+	UpdateWakeLockWorkSource(ctx context.Context, lock binder.IBinder, ws interface{}, historyTag string) error
+	UpdateWakeLockCallback(ctx context.Context, lock binder.IBinder, callback IWakeLockCallback) error
+	IsWakeLockLevelSupported(ctx context.Context, level int32) (bool, error)
+	IsWakeLockLevelSupportedWithDisplayId(ctx context.Context, level int32, displayId int32) (bool, error)
+	UserActivity(ctx context.Context, displayId int32, time int64, event int32, flags int32) error
+	WakeUp(ctx context.Context, time int64, reason int32, details string) error
+	WakeUpWithDisplayId(ctx context.Context, time int64, reason int32, details string, displayId int32) error
+	GoToSleep(ctx context.Context, time int64, reason int32, flags int32) error
+	GoToSleepWithDisplayId(ctx context.Context, displayId int32, time int64, reason int32, flags int32) error
+	Nap(ctx context.Context, time int64) error
+	GetBrightnessConstraint(ctx context.Context, displayId int32, constraint int32) (float32, error)
+	IsInteractive(ctx context.Context) (bool, error)
+	IsDisplayInteractive(ctx context.Context, displayId int32) (bool, error)
+	AreAutoPowerSaveModesEnabled(ctx context.Context) (bool, error)
+	IsPowerSaveMode(ctx context.Context) (bool, error)
+	GetPowerSaveState(ctx context.Context, serviceType int32) (interface{}, error)
+	SetPowerSaveModeEnabled(ctx context.Context, mode bool) (bool, error)
+	IsBatterySaverSupported(ctx context.Context) (bool, error)
+	GetFullPowerSavePolicy(ctx context.Context) (interface{}, error)
+	SetFullPowerSavePolicy(ctx context.Context, config interface{}) (bool, error)
+	SetDynamicPowerSaveHint(ctx context.Context, powerSaveHint bool, disableThreshold int32) (bool, error)
+	SetAdaptivePowerSavePolicy(ctx context.Context, config interface{}) (bool, error)
+	SetAdaptivePowerSaveEnabled(ctx context.Context, enabled bool) (bool, error)
+	GetPowerSaveModeTrigger(ctx context.Context) (int32, error)
+	SetBatteryDischargePrediction(ctx context.Context, timeRemaining interface{}, isCustomized bool) error
+	GetBatteryDischargePrediction(ctx context.Context) (interface{}, error)
+	IsBatteryDischargePredictionPersonalized(ctx context.Context) (bool, error)
+	IsDeviceIdleMode(ctx context.Context) (bool, error)
+	IsLightDeviceIdleMode(ctx context.Context) (bool, error)
+	IsLowPowerStandbySupported(ctx context.Context) (bool, error)
+	IsLowPowerStandbyEnabled(ctx context.Context) (bool, error)
+	SetLowPowerStandbyEnabled(ctx context.Context, enabled bool) error
+	SetLowPowerStandbyActiveDuringMaintenance(ctx context.Context, activeDuringMaintenance bool) error
+	ForceLowPowerStandbyActive(ctx context.Context, active bool) error
+	SetLowPowerStandbyPolicy(ctx context.Context, policy *osIPowerManager.LowPowerStandbyPolicy) error
+	GetLowPowerStandbyPolicy(ctx context.Context) (osIPowerManager.LowPowerStandbyPolicy, error)
+	IsExemptFromLowPowerStandby(ctx context.Context) (bool, error)
+	IsReasonAllowedInLowPowerStandby(ctx context.Context, reason int32) (bool, error)
+	IsFeatureAllowedInLowPowerStandby(ctx context.Context, feature string) (bool, error)
+	AcquireLowPowerStandbyPorts(ctx context.Context, token binder.IBinder, ports []osIPowerManager.LowPowerStandbyPortDescription) error
+	ReleaseLowPowerStandbyPorts(ctx context.Context, token binder.IBinder) error
+	GetActiveLowPowerStandbyPorts(ctx context.Context) ([]osIPowerManager.LowPowerStandbyPortDescription, error)
+	Reboot(ctx context.Context, confirm bool, reason string, wait bool) error
+	RebootSafeMode(ctx context.Context, confirm bool, wait bool) error
+	Shutdown(ctx context.Context, confirm bool, reason string, wait bool) error
+	Crash(ctx context.Context, message string) error
+	GetLastShutdownReason(ctx context.Context) (int32, error)
+	GetLastSleepReason(ctx context.Context) (int32, error)
+	SetStayOnSetting(ctx context.Context, val int32) error
+	BoostScreenBrightness(ctx context.Context, time int64) error
+	AcquireWakeLockAsync(ctx context.Context, lock binder.IBinder, flags int32, tag string, packageName string, ws interface{}, historyTag string) error
+	ReleaseWakeLockAsync(ctx context.Context, lock binder.IBinder, flags int32) error
+	UpdateWakeLockUidsAsync(ctx context.Context, lock binder.IBinder, uids []int32) error
+	IsScreenBrightnessBoosted(ctx context.Context) (bool, error)
+	SetAttentionLight(ctx context.Context, on bool, color int32) error
+	SetDozeAfterScreenOff(ctx context.Context, on bool) error
+	IsAmbientDisplayAvailable(ctx context.Context) (bool, error)
+	SuppressAmbientDisplay(ctx context.Context, token string, suppress bool) error
+	IsAmbientDisplaySuppressedForToken(ctx context.Context, token string) (bool, error)
+	IsAmbientDisplaySuppressed(ctx context.Context) (bool, error)
+	IsAmbientDisplaySuppressedForTokenByApp(ctx context.Context, token string) (bool, error)
+	ForceSuspend(ctx context.Context) (bool, error)
+}
+
+type powerManagerStubWrapper struct {
+	impl       IPowerManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *powerManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *powerManagerStubWrapper) AcquireWakeLock(
+	ctx context.Context,
+	lock binder.IBinder,
+	flags int32,
+	tag string,
+	packageName string,
+	ws interface{},
+	historyTag string,
+	displayId int32,
+	callback IWakeLockCallback,
+) error {
+	return w.impl.AcquireWakeLock(ctx, lock, flags, tag, packageName, ws, historyTag, displayId, callback)
+}
+
+func (w *powerManagerStubWrapper) AcquireWakeLockWithUid(
+	ctx context.Context,
+	lock binder.IBinder,
+	flags int32,
+	tag string,
+	packageName string,
+	uidtoblame int32,
+	displayId int32,
+	callback IWakeLockCallback,
+) error {
+	return w.impl.AcquireWakeLockWithUid(ctx, lock, flags, tag, packageName, uidtoblame, displayId, callback)
+}
+
+func (w *powerManagerStubWrapper) ReleaseWakeLock(
+	ctx context.Context,
+	lock binder.IBinder,
+	flags int32,
+) error {
+	return w.impl.ReleaseWakeLock(ctx, lock, flags)
+}
+
+func (w *powerManagerStubWrapper) UpdateWakeLockUids(
+	ctx context.Context,
+	lock binder.IBinder,
+	uids []int32,
+) error {
+	return w.impl.UpdateWakeLockUids(ctx, lock, uids)
+}
+
+func (w *powerManagerStubWrapper) SetPowerBoost(
+	ctx context.Context,
+	boost int32,
+	durationMs int32,
+) error {
+	return w.impl.SetPowerBoost(ctx, boost, durationMs)
+}
+
+func (w *powerManagerStubWrapper) SetPowerMode(
+	ctx context.Context,
+	mode int32,
+	enabled bool,
+) error {
+	return w.impl.SetPowerMode(ctx, mode, enabled)
+}
+
+func (w *powerManagerStubWrapper) SetPowerModeChecked(
+	ctx context.Context,
+	mode int32,
+	enabled bool,
+) (bool, error) {
+	return w.impl.SetPowerModeChecked(ctx, mode, enabled)
+}
+
+func (w *powerManagerStubWrapper) UpdateWakeLockWorkSource(
+	ctx context.Context,
+	lock binder.IBinder,
+	ws interface{},
+	historyTag string,
+) error {
+	return w.impl.UpdateWakeLockWorkSource(ctx, lock, ws, historyTag)
+}
+
+func (w *powerManagerStubWrapper) UpdateWakeLockCallback(
+	ctx context.Context,
+	lock binder.IBinder,
+	callback IWakeLockCallback,
+) error {
+	return w.impl.UpdateWakeLockCallback(ctx, lock, callback)
+}
+
+func (w *powerManagerStubWrapper) IsWakeLockLevelSupported(
+	ctx context.Context,
+	level int32,
+) (bool, error) {
+	return w.impl.IsWakeLockLevelSupported(ctx, level)
+}
+
+func (w *powerManagerStubWrapper) IsWakeLockLevelSupportedWithDisplayId(
+	ctx context.Context,
+	level int32,
+	displayId int32,
+) (bool, error) {
+	return w.impl.IsWakeLockLevelSupportedWithDisplayId(ctx, level, displayId)
+}
+
+func (w *powerManagerStubWrapper) UserActivity(
+	ctx context.Context,
+	displayId int32,
+	time int64,
+	event int32,
+	flags int32,
+) error {
+	return w.impl.UserActivity(ctx, displayId, time, event, flags)
+}
+
+func (w *powerManagerStubWrapper) WakeUp(
+	ctx context.Context,
+	time int64,
+	reason int32,
+	details string,
+) error {
+	return w.impl.WakeUp(ctx, time, reason, details)
+}
+
+func (w *powerManagerStubWrapper) WakeUpWithDisplayId(
+	ctx context.Context,
+	time int64,
+	reason int32,
+	details string,
+	displayId int32,
+) error {
+	return w.impl.WakeUpWithDisplayId(ctx, time, reason, details, displayId)
+}
+
+func (w *powerManagerStubWrapper) GoToSleep(
+	ctx context.Context,
+	time int64,
+	reason int32,
+	flags int32,
+) error {
+	return w.impl.GoToSleep(ctx, time, reason, flags)
+}
+
+func (w *powerManagerStubWrapper) GoToSleepWithDisplayId(
+	ctx context.Context,
+	displayId int32,
+	time int64,
+	reason int32,
+	flags int32,
+) error {
+	return w.impl.GoToSleepWithDisplayId(ctx, displayId, time, reason, flags)
+}
+
+func (w *powerManagerStubWrapper) Nap(
+	ctx context.Context,
+	time int64,
+) error {
+	return w.impl.Nap(ctx, time)
+}
+
+func (w *powerManagerStubWrapper) GetBrightnessConstraint(
+	ctx context.Context,
+	displayId int32,
+	constraint int32,
+) (float32, error) {
+	return w.impl.GetBrightnessConstraint(ctx, displayId, constraint)
+}
+
+func (w *powerManagerStubWrapper) IsInteractive(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInteractive(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsDisplayInteractive(
+	ctx context.Context,
+	displayId int32,
+) (bool, error) {
+	return w.impl.IsDisplayInteractive(ctx, displayId)
+}
+
+func (w *powerManagerStubWrapper) AreAutoPowerSaveModesEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.AreAutoPowerSaveModesEnabled(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsPowerSaveMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsPowerSaveMode(ctx)
+}
+
+func (w *powerManagerStubWrapper) GetPowerSaveState(
+	ctx context.Context,
+	serviceType int32,
+) (interface{}, error) {
+	return w.impl.GetPowerSaveState(ctx, serviceType)
+}
+
+func (w *powerManagerStubWrapper) SetPowerSaveModeEnabled(
+	ctx context.Context,
+	mode bool,
+) (bool, error) {
+	return w.impl.SetPowerSaveModeEnabled(ctx, mode)
+}
+
+func (w *powerManagerStubWrapper) IsBatterySaverSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBatterySaverSupported(ctx)
+}
+
+func (w *powerManagerStubWrapper) GetFullPowerSavePolicy(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetFullPowerSavePolicy(ctx)
+}
+
+func (w *powerManagerStubWrapper) SetFullPowerSavePolicy(
+	ctx context.Context,
+	config interface{},
+) (bool, error) {
+	return w.impl.SetFullPowerSavePolicy(ctx, config)
+}
+
+func (w *powerManagerStubWrapper) SetDynamicPowerSaveHint(
+	ctx context.Context,
+	powerSaveHint bool,
+	disableThreshold int32,
+) (bool, error) {
+	return w.impl.SetDynamicPowerSaveHint(ctx, powerSaveHint, disableThreshold)
+}
+
+func (w *powerManagerStubWrapper) SetAdaptivePowerSavePolicy(
+	ctx context.Context,
+	config interface{},
+) (bool, error) {
+	return w.impl.SetAdaptivePowerSavePolicy(ctx, config)
+}
+
+func (w *powerManagerStubWrapper) SetAdaptivePowerSaveEnabled(
+	ctx context.Context,
+	enabled bool,
+) (bool, error) {
+	return w.impl.SetAdaptivePowerSaveEnabled(ctx, enabled)
+}
+
+func (w *powerManagerStubWrapper) GetPowerSaveModeTrigger(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPowerSaveModeTrigger(ctx)
+}
+
+func (w *powerManagerStubWrapper) SetBatteryDischargePrediction(
+	ctx context.Context,
+	timeRemaining interface{},
+	isCustomized bool,
+) error {
+	return w.impl.SetBatteryDischargePrediction(ctx, timeRemaining, isCustomized)
+}
+
+func (w *powerManagerStubWrapper) GetBatteryDischargePrediction(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetBatteryDischargePrediction(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsBatteryDischargePredictionPersonalized(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsBatteryDischargePredictionPersonalized(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsDeviceIdleMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDeviceIdleMode(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsLightDeviceIdleMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLightDeviceIdleMode(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsLowPowerStandbySupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLowPowerStandbySupported(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsLowPowerStandbyEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLowPowerStandbyEnabled(ctx)
+}
+
+func (w *powerManagerStubWrapper) SetLowPowerStandbyEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetLowPowerStandbyEnabled(ctx, enabled)
+}
+
+func (w *powerManagerStubWrapper) SetLowPowerStandbyActiveDuringMaintenance(
+	ctx context.Context,
+	activeDuringMaintenance bool,
+) error {
+	return w.impl.SetLowPowerStandbyActiveDuringMaintenance(ctx, activeDuringMaintenance)
+}
+
+func (w *powerManagerStubWrapper) ForceLowPowerStandbyActive(
+	ctx context.Context,
+	active bool,
+) error {
+	return w.impl.ForceLowPowerStandbyActive(ctx, active)
+}
+
+func (w *powerManagerStubWrapper) SetLowPowerStandbyPolicy(
+	ctx context.Context,
+	policy *osIPowerManager.LowPowerStandbyPolicy,
+) error {
+	return w.impl.SetLowPowerStandbyPolicy(ctx, policy)
+}
+
+func (w *powerManagerStubWrapper) GetLowPowerStandbyPolicy(
+	ctx context.Context,
+) (osIPowerManager.LowPowerStandbyPolicy, error) {
+	return w.impl.GetLowPowerStandbyPolicy(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsExemptFromLowPowerStandby(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsExemptFromLowPowerStandby(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsReasonAllowedInLowPowerStandby(
+	ctx context.Context,
+	reason int32,
+) (bool, error) {
+	return w.impl.IsReasonAllowedInLowPowerStandby(ctx, reason)
+}
+
+func (w *powerManagerStubWrapper) IsFeatureAllowedInLowPowerStandby(
+	ctx context.Context,
+	feature string,
+) (bool, error) {
+	return w.impl.IsFeatureAllowedInLowPowerStandby(ctx, feature)
+}
+
+func (w *powerManagerStubWrapper) AcquireLowPowerStandbyPorts(
+	ctx context.Context,
+	token binder.IBinder,
+	ports []osIPowerManager.LowPowerStandbyPortDescription,
+) error {
+	return w.impl.AcquireLowPowerStandbyPorts(ctx, token, ports)
+}
+
+func (w *powerManagerStubWrapper) ReleaseLowPowerStandbyPorts(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ReleaseLowPowerStandbyPorts(ctx, token)
+}
+
+func (w *powerManagerStubWrapper) GetActiveLowPowerStandbyPorts(
+	ctx context.Context,
+) ([]osIPowerManager.LowPowerStandbyPortDescription, error) {
+	return w.impl.GetActiveLowPowerStandbyPorts(ctx)
+}
+
+func (w *powerManagerStubWrapper) Reboot(
+	ctx context.Context,
+	confirm bool,
+	reason string,
+	wait bool,
+) error {
+	return w.impl.Reboot(ctx, confirm, reason, wait)
+}
+
+func (w *powerManagerStubWrapper) RebootSafeMode(
+	ctx context.Context,
+	confirm bool,
+	wait bool,
+) error {
+	return w.impl.RebootSafeMode(ctx, confirm, wait)
+}
+
+func (w *powerManagerStubWrapper) Shutdown(
+	ctx context.Context,
+	confirm bool,
+	reason string,
+	wait bool,
+) error {
+	return w.impl.Shutdown(ctx, confirm, reason, wait)
+}
+
+func (w *powerManagerStubWrapper) Crash(
+	ctx context.Context,
+	message string,
+) error {
+	return w.impl.Crash(ctx, message)
+}
+
+func (w *powerManagerStubWrapper) GetLastShutdownReason(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetLastShutdownReason(ctx)
+}
+
+func (w *powerManagerStubWrapper) GetLastSleepReason(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetLastSleepReason(ctx)
+}
+
+func (w *powerManagerStubWrapper) SetStayOnSetting(
+	ctx context.Context,
+	val int32,
+) error {
+	return w.impl.SetStayOnSetting(ctx, val)
+}
+
+func (w *powerManagerStubWrapper) BoostScreenBrightness(
+	ctx context.Context,
+	time int64,
+) error {
+	return w.impl.BoostScreenBrightness(ctx, time)
+}
+
+func (w *powerManagerStubWrapper) AcquireWakeLockAsync(
+	ctx context.Context,
+	lock binder.IBinder,
+	flags int32,
+	tag string,
+	packageName string,
+	ws interface{},
+	historyTag string,
+) error {
+	return w.impl.AcquireWakeLockAsync(ctx, lock, flags, tag, packageName, ws, historyTag)
+}
+
+func (w *powerManagerStubWrapper) ReleaseWakeLockAsync(
+	ctx context.Context,
+	lock binder.IBinder,
+	flags int32,
+) error {
+	return w.impl.ReleaseWakeLockAsync(ctx, lock, flags)
+}
+
+func (w *powerManagerStubWrapper) UpdateWakeLockUidsAsync(
+	ctx context.Context,
+	lock binder.IBinder,
+	uids []int32,
+) error {
+	return w.impl.UpdateWakeLockUidsAsync(ctx, lock, uids)
+}
+
+func (w *powerManagerStubWrapper) IsScreenBrightnessBoosted(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsScreenBrightnessBoosted(ctx)
+}
+
+func (w *powerManagerStubWrapper) SetAttentionLight(
+	ctx context.Context,
+	on bool,
+	color int32,
+) error {
+	return w.impl.SetAttentionLight(ctx, on, color)
+}
+
+func (w *powerManagerStubWrapper) SetDozeAfterScreenOff(
+	ctx context.Context,
+	on bool,
+) error {
+	return w.impl.SetDozeAfterScreenOff(ctx, on)
+}
+
+func (w *powerManagerStubWrapper) IsAmbientDisplayAvailable(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAmbientDisplayAvailable(ctx)
+}
+
+func (w *powerManagerStubWrapper) SuppressAmbientDisplay(
+	ctx context.Context,
+	token string,
+	suppress bool,
+) error {
+	return w.impl.SuppressAmbientDisplay(ctx, token, suppress)
+}
+
+func (w *powerManagerStubWrapper) IsAmbientDisplaySuppressedForToken(
+	ctx context.Context,
+	token string,
+) (bool, error) {
+	return w.impl.IsAmbientDisplaySuppressedForToken(ctx, token)
+}
+
+func (w *powerManagerStubWrapper) IsAmbientDisplaySuppressed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAmbientDisplaySuppressed(ctx)
+}
+
+func (w *powerManagerStubWrapper) IsAmbientDisplaySuppressedForTokenByApp(
+	ctx context.Context,
+	token string,
+) (bool, error) {
+	return w.impl.IsAmbientDisplaySuppressedForTokenByApp(ctx, token)
+}
+
+func (w *powerManagerStubWrapper) ForceSuspend(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ForceSuspend(ctx)
+}
+
+var _ IPowerManager = (*powerManagerStubWrapper)(nil)
+
+// NewPowerManagerStub creates a server-side IPowerManager wrapping the given
+// server implementation. The returned value satisfies IPowerManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPowerManagerStub(
+	impl IPowerManagerServer,
+) IPowerManager {
+	wrapper := &powerManagerStubWrapper{impl: impl}
+	stub := &PowerManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

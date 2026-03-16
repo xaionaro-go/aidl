@@ -104,3 +104,41 @@ func (s *StatusBarNotificationHolderStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStatusBarNotificationHolderServer is the server-side interface that user implementations
+// provide to NewStatusBarNotificationHolderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStatusBarNotificationHolderServer interface {
+	Get(ctx context.Context) (StatusBarNotification, error)
+}
+
+type statusBarNotificationHolderStubWrapper struct {
+	impl       IStatusBarNotificationHolderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *statusBarNotificationHolderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *statusBarNotificationHolderStubWrapper) Get(
+	ctx context.Context,
+) (StatusBarNotification, error) {
+	return w.impl.Get(ctx)
+}
+
+var _ IStatusBarNotificationHolder = (*statusBarNotificationHolderStubWrapper)(nil)
+
+// NewStatusBarNotificationHolderStub creates a server-side IStatusBarNotificationHolder wrapping the given
+// server implementation. The returned value satisfies IStatusBarNotificationHolder
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStatusBarNotificationHolderStub(
+	impl IStatusBarNotificationHolderServer,
+) IStatusBarNotificationHolder {
+	wrapper := &statusBarNotificationHolderStubWrapper{impl: impl}
+	stub := &StatusBarNotificationHolderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

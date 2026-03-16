@@ -50,7 +50,7 @@ func (p *QualifiedNetworksServiceProxy) CreateNetworkAvailabilityProvider(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIQualifiedNetworksService)
 	_data.WriteInt32(slotId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIQualifiedNetworksService, "createNetworkAvailabilityProvider")
 	if _err != nil {
@@ -196,4 +196,70 @@ func (s *QualifiedNetworksServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IQualifiedNetworksServiceServer is the server-side interface that user implementations
+// provide to NewQualifiedNetworksServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IQualifiedNetworksServiceServer interface {
+	CreateNetworkAvailabilityProvider(ctx context.Context, slotId int32, callback IQualifiedNetworksServiceCallback) error
+	RemoveNetworkAvailabilityProvider(ctx context.Context, slotId int32) error
+	ReportThrottleStatusChanged(ctx context.Context, slotId int32, statuses []ThrottleStatus) error
+	ReportEmergencyDataNetworkPreferredTransportChanged(ctx context.Context, slotId int32, transportType int32) error
+}
+
+type qualifiedNetworksServiceStubWrapper struct {
+	impl       IQualifiedNetworksServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *qualifiedNetworksServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *qualifiedNetworksServiceStubWrapper) CreateNetworkAvailabilityProvider(
+	ctx context.Context,
+	slotId int32,
+	callback IQualifiedNetworksServiceCallback,
+) error {
+	return w.impl.CreateNetworkAvailabilityProvider(ctx, slotId, callback)
+}
+
+func (w *qualifiedNetworksServiceStubWrapper) RemoveNetworkAvailabilityProvider(
+	ctx context.Context,
+	slotId int32,
+) error {
+	return w.impl.RemoveNetworkAvailabilityProvider(ctx, slotId)
+}
+
+func (w *qualifiedNetworksServiceStubWrapper) ReportThrottleStatusChanged(
+	ctx context.Context,
+	slotId int32,
+	statuses []ThrottleStatus,
+) error {
+	return w.impl.ReportThrottleStatusChanged(ctx, slotId, statuses)
+}
+
+func (w *qualifiedNetworksServiceStubWrapper) ReportEmergencyDataNetworkPreferredTransportChanged(
+	ctx context.Context,
+	slotId int32,
+	transportType int32,
+) error {
+	return w.impl.ReportEmergencyDataNetworkPreferredTransportChanged(ctx, slotId, transportType)
+}
+
+var _ IQualifiedNetworksService = (*qualifiedNetworksServiceStubWrapper)(nil)
+
+// NewQualifiedNetworksServiceStub creates a server-side IQualifiedNetworksService wrapping the given
+// server implementation. The returned value satisfies IQualifiedNetworksService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewQualifiedNetworksServiceStub(
+	impl IQualifiedNetworksServiceServer,
+) IQualifiedNetworksService {
+	wrapper := &qualifiedNetworksServiceStubWrapper{impl: impl}
+	stub := &QualifiedNetworksServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

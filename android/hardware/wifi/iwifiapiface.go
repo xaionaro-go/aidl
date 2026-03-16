@@ -388,3 +388,85 @@ func (s *WifiApIfaceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWifiApIfaceServer is the server-side interface that user implementations
+// provide to NewWifiApIfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiApIfaceServer interface {
+	GetName(ctx context.Context) (string, error)
+	GetBridgedInstances(ctx context.Context) ([]string, error)
+	GetFactoryMacAddress(ctx context.Context) ([]byte, error)
+	SetCountryCode(ctx context.Context, code []byte) error
+	ResetToFactoryMacAddress(ctx context.Context) error
+	SetMacAddress(ctx context.Context, mac []byte) error
+	UsesMlo(ctx context.Context) (bool, error)
+}
+
+type wifiApIfaceStubWrapper struct {
+	impl       IWifiApIfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiApIfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiApIfaceStubWrapper) GetName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetName(ctx)
+}
+
+func (w *wifiApIfaceStubWrapper) GetBridgedInstances(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetBridgedInstances(ctx)
+}
+
+func (w *wifiApIfaceStubWrapper) GetFactoryMacAddress(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetFactoryMacAddress(ctx)
+}
+
+func (w *wifiApIfaceStubWrapper) SetCountryCode(
+	ctx context.Context,
+	code []byte,
+) error {
+	return w.impl.SetCountryCode(ctx, code)
+}
+
+func (w *wifiApIfaceStubWrapper) ResetToFactoryMacAddress(
+	ctx context.Context,
+) error {
+	return w.impl.ResetToFactoryMacAddress(ctx)
+}
+
+func (w *wifiApIfaceStubWrapper) SetMacAddress(
+	ctx context.Context,
+	mac []byte,
+) error {
+	return w.impl.SetMacAddress(ctx, mac)
+}
+
+func (w *wifiApIfaceStubWrapper) UsesMlo(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.UsesMlo(ctx)
+}
+
+var _ IWifiApIface = (*wifiApIfaceStubWrapper)(nil)
+
+// NewWifiApIfaceStub creates a server-side IWifiApIface wrapping the given
+// server implementation. The returned value satisfies IWifiApIface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiApIfaceStub(
+	impl IWifiApIfaceServer,
+) IWifiApIface {
+	wrapper := &wifiApIfaceStubWrapper{impl: impl}
+	stub := &WifiApIfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

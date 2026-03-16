@@ -152,3 +152,52 @@ func (s *EventQueueStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEventQueueServer is the server-side interface that user implementations
+// provide to NewEventQueueStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEventQueueServer interface {
+	DisableSensor(ctx context.Context, sensorHandle int32) error
+	EnableSensor(ctx context.Context, sensorHandle int32, samplingPeriodUs int32, maxBatchReportLatencyUs int64) error
+}
+
+type eventQueueStubWrapper struct {
+	impl       IEventQueueServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *eventQueueStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *eventQueueStubWrapper) DisableSensor(
+	ctx context.Context,
+	sensorHandle int32,
+) error {
+	return w.impl.DisableSensor(ctx, sensorHandle)
+}
+
+func (w *eventQueueStubWrapper) EnableSensor(
+	ctx context.Context,
+	sensorHandle int32,
+	samplingPeriodUs int32,
+	maxBatchReportLatencyUs int64,
+) error {
+	return w.impl.EnableSensor(ctx, sensorHandle, samplingPeriodUs, maxBatchReportLatencyUs)
+}
+
+var _ IEventQueue = (*eventQueueStubWrapper)(nil)
+
+// NewEventQueueStub creates a server-side IEventQueue wrapping the given
+// server implementation. The returned value satisfies IEventQueue
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEventQueueStub(
+	impl IEventQueueServer,
+) IEventQueue {
+	wrapper := &eventQueueStubWrapper{impl: impl}
+	stub := &EventQueueStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

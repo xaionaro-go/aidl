@@ -94,3 +94,42 @@ func (s *VirtualDeviceIntentInterceptorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVirtualDeviceIntentInterceptorServer is the server-side interface that user implementations
+// provide to NewVirtualDeviceIntentInterceptorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVirtualDeviceIntentInterceptorServer interface {
+	OnIntentIntercepted(ctx context.Context, intent content.Intent) error
+}
+
+type virtualDeviceIntentInterceptorStubWrapper struct {
+	impl       IVirtualDeviceIntentInterceptorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *virtualDeviceIntentInterceptorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *virtualDeviceIntentInterceptorStubWrapper) OnIntentIntercepted(
+	ctx context.Context,
+	intent content.Intent,
+) error {
+	return w.impl.OnIntentIntercepted(ctx, intent)
+}
+
+var _ IVirtualDeviceIntentInterceptor = (*virtualDeviceIntentInterceptorStubWrapper)(nil)
+
+// NewVirtualDeviceIntentInterceptorStub creates a server-side IVirtualDeviceIntentInterceptor wrapping the given
+// server implementation. The returned value satisfies IVirtualDeviceIntentInterceptor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVirtualDeviceIntentInterceptorStub(
+	impl IVirtualDeviceIntentInterceptorServer,
+) IVirtualDeviceIntentInterceptor {
+	wrapper := &virtualDeviceIntentInterceptorStubWrapper{impl: impl}
+	stub := &VirtualDeviceIntentInterceptorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

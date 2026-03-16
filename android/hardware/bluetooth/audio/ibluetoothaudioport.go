@@ -380,3 +380,87 @@ func (s *BluetoothAudioPortStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothAudioPortServer is the server-side interface that user implementations
+// provide to NewBluetoothAudioPortStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothAudioPortServer interface {
+	GetPresentationPosition(ctx context.Context) (PresentationPosition, error)
+	StartStream(ctx context.Context, isLowLatency bool) error
+	StopStream(ctx context.Context) error
+	SuspendStream(ctx context.Context) error
+	UpdateSourceMetadata(ctx context.Context, sourceMetadata common.SourceMetadata) error
+	UpdateSinkMetadata(ctx context.Context, sinkMetadata common.SinkMetadata) error
+	SetLatencyMode(ctx context.Context, latencyMode LatencyMode) error
+}
+
+type bluetoothAudioPortStubWrapper struct {
+	impl       IBluetoothAudioPortServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothAudioPortStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothAudioPortStubWrapper) GetPresentationPosition(
+	ctx context.Context,
+) (PresentationPosition, error) {
+	return w.impl.GetPresentationPosition(ctx)
+}
+
+func (w *bluetoothAudioPortStubWrapper) StartStream(
+	ctx context.Context,
+	isLowLatency bool,
+) error {
+	return w.impl.StartStream(ctx, isLowLatency)
+}
+
+func (w *bluetoothAudioPortStubWrapper) StopStream(
+	ctx context.Context,
+) error {
+	return w.impl.StopStream(ctx)
+}
+
+func (w *bluetoothAudioPortStubWrapper) SuspendStream(
+	ctx context.Context,
+) error {
+	return w.impl.SuspendStream(ctx)
+}
+
+func (w *bluetoothAudioPortStubWrapper) UpdateSourceMetadata(
+	ctx context.Context,
+	sourceMetadata common.SourceMetadata,
+) error {
+	return w.impl.UpdateSourceMetadata(ctx, sourceMetadata)
+}
+
+func (w *bluetoothAudioPortStubWrapper) UpdateSinkMetadata(
+	ctx context.Context,
+	sinkMetadata common.SinkMetadata,
+) error {
+	return w.impl.UpdateSinkMetadata(ctx, sinkMetadata)
+}
+
+func (w *bluetoothAudioPortStubWrapper) SetLatencyMode(
+	ctx context.Context,
+	latencyMode LatencyMode,
+) error {
+	return w.impl.SetLatencyMode(ctx, latencyMode)
+}
+
+var _ IBluetoothAudioPort = (*bluetoothAudioPortStubWrapper)(nil)
+
+// NewBluetoothAudioPortStub creates a server-side IBluetoothAudioPort wrapping the given
+// server implementation. The returned value satisfies IBluetoothAudioPort
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothAudioPortStub(
+	impl IBluetoothAudioPortServer,
+) IBluetoothAudioPort {
+	wrapper := &bluetoothAudioPortStubWrapper{impl: impl}
+	stub := &BluetoothAudioPortStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

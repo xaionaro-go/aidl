@@ -44,7 +44,7 @@ func (p *SignificantPlaceProviderProxy) SetSignificantPlaceProviderManager(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorISignificantPlaceProvider)
-	_data.WriteStrongBinder(manager.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, manager.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISignificantPlaceProvider, "setSignificantPlaceProviderManager")
 	if _err != nil {
@@ -104,4 +104,50 @@ func (s *SignificantPlaceProviderStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISignificantPlaceProviderServer is the server-side interface that user implementations
+// provide to NewSignificantPlaceProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISignificantPlaceProviderServer interface {
+	SetSignificantPlaceProviderManager(ctx context.Context, manager ISignificantPlaceProviderManager) error
+	OnSignificantPlaceCheck(ctx context.Context) error
+}
+
+type significantPlaceProviderStubWrapper struct {
+	impl       ISignificantPlaceProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *significantPlaceProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *significantPlaceProviderStubWrapper) SetSignificantPlaceProviderManager(
+	ctx context.Context,
+	manager ISignificantPlaceProviderManager,
+) error {
+	return w.impl.SetSignificantPlaceProviderManager(ctx, manager)
+}
+
+func (w *significantPlaceProviderStubWrapper) OnSignificantPlaceCheck(
+	ctx context.Context,
+) error {
+	return w.impl.OnSignificantPlaceCheck(ctx)
+}
+
+var _ ISignificantPlaceProvider = (*significantPlaceProviderStubWrapper)(nil)
+
+// NewSignificantPlaceProviderStub creates a server-side ISignificantPlaceProvider wrapping the given
+// server implementation. The returned value satisfies ISignificantPlaceProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSignificantPlaceProviderStub(
+	impl ISignificantPlaceProviderServer,
+) ISignificantPlaceProvider {
+	wrapper := &significantPlaceProviderStubWrapper{impl: impl}
+	stub := &SignificantPlaceProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

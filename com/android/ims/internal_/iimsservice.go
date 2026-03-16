@@ -85,7 +85,7 @@ func (p *ImsServiceProxy) Open(
 	if _err := incomingCallIntent.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsService, "open")
 	if _err != nil {
@@ -209,7 +209,7 @@ func (p *ImsServiceProxy) SetRegistrationListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsService)
 	_data.WriteInt32(serviceId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsService, "setRegistrationListener")
 	if _err != nil {
@@ -239,7 +239,7 @@ func (p *ImsServiceProxy) AddRegistrationListener(
 	_data.WriteInterfaceToken(DescriptorIImsService)
 	_data.WriteInt32(phoneId)
 	_data.WriteInt32(serviceClass)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsService, "addRegistrationListener")
 	if _err != nil {
@@ -313,7 +313,7 @@ func (p *ImsServiceProxy) CreateCallSession(
 	if _err := profile.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsService, "createCallSession")
 	if _err != nil {
@@ -957,4 +957,178 @@ func (s *ImsServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsServiceServer is the server-side interface that user implementations
+// provide to NewImsServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsServiceServer interface {
+	Open(ctx context.Context, phoneId int32, serviceClass int32, incomingCallIntent app.PendingIntent, listener IImsRegistrationListener) (int32, error)
+	Close(ctx context.Context, serviceId int32) error
+	IsConnected(ctx context.Context, serviceId int32, serviceType int32, callType int32) (bool, error)
+	IsOpened(ctx context.Context, serviceId int32) (bool, error)
+	SetRegistrationListener(ctx context.Context, serviceId int32, listener IImsRegistrationListener) error
+	AddRegistrationListener(ctx context.Context, phoneId int32, serviceClass int32, listener IImsRegistrationListener) error
+	CreateCallProfile(ctx context.Context, serviceId int32, serviceType int32, callType int32) (ims.ImsCallProfile, error)
+	CreateCallSession(ctx context.Context, serviceId int32, profile ims.ImsCallProfile, listener IImsCallSessionListener) (IImsCallSession, error)
+	GetPendingCallSession(ctx context.Context, serviceId int32, callId string) (IImsCallSession, error)
+	GetUtInterface(ctx context.Context, serviceId int32) (IImsUt, error)
+	GetConfigInterface(ctx context.Context, phoneId int32) (IImsConfig, error)
+	TurnOnIms(ctx context.Context, phoneId int32) error
+	TurnOffIms(ctx context.Context, phoneId int32) error
+	GetEcbmInterface(ctx context.Context, serviceId int32) (IImsEcbm, error)
+	SetUiTTYMode(ctx context.Context, serviceId int32, uiTtyMode int32, onComplete contexthub.Message) error
+	GetMultiEndpointInterface(ctx context.Context, serviceId int32) (IImsMultiEndpoint, error)
+}
+
+type imsServiceStubWrapper struct {
+	impl       IImsServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsServiceStubWrapper) Open(
+	ctx context.Context,
+	phoneId int32,
+	serviceClass int32,
+	incomingCallIntent app.PendingIntent,
+	listener IImsRegistrationListener,
+) (int32, error) {
+	return w.impl.Open(ctx, phoneId, serviceClass, incomingCallIntent, listener)
+}
+
+func (w *imsServiceStubWrapper) Close(
+	ctx context.Context,
+	serviceId int32,
+) error {
+	return w.impl.Close(ctx, serviceId)
+}
+
+func (w *imsServiceStubWrapper) IsConnected(
+	ctx context.Context,
+	serviceId int32,
+	serviceType int32,
+	callType int32,
+) (bool, error) {
+	return w.impl.IsConnected(ctx, serviceId, serviceType, callType)
+}
+
+func (w *imsServiceStubWrapper) IsOpened(
+	ctx context.Context,
+	serviceId int32,
+) (bool, error) {
+	return w.impl.IsOpened(ctx, serviceId)
+}
+
+func (w *imsServiceStubWrapper) SetRegistrationListener(
+	ctx context.Context,
+	serviceId int32,
+	listener IImsRegistrationListener,
+) error {
+	return w.impl.SetRegistrationListener(ctx, serviceId, listener)
+}
+
+func (w *imsServiceStubWrapper) AddRegistrationListener(
+	ctx context.Context,
+	phoneId int32,
+	serviceClass int32,
+	listener IImsRegistrationListener,
+) error {
+	return w.impl.AddRegistrationListener(ctx, phoneId, serviceClass, listener)
+}
+
+func (w *imsServiceStubWrapper) CreateCallProfile(
+	ctx context.Context,
+	serviceId int32,
+	serviceType int32,
+	callType int32,
+) (ims.ImsCallProfile, error) {
+	return w.impl.CreateCallProfile(ctx, serviceId, serviceType, callType)
+}
+
+func (w *imsServiceStubWrapper) CreateCallSession(
+	ctx context.Context,
+	serviceId int32,
+	profile ims.ImsCallProfile,
+	listener IImsCallSessionListener,
+) (IImsCallSession, error) {
+	return w.impl.CreateCallSession(ctx, serviceId, profile, listener)
+}
+
+func (w *imsServiceStubWrapper) GetPendingCallSession(
+	ctx context.Context,
+	serviceId int32,
+	callId string,
+) (IImsCallSession, error) {
+	return w.impl.GetPendingCallSession(ctx, serviceId, callId)
+}
+
+func (w *imsServiceStubWrapper) GetUtInterface(
+	ctx context.Context,
+	serviceId int32,
+) (IImsUt, error) {
+	return w.impl.GetUtInterface(ctx, serviceId)
+}
+
+func (w *imsServiceStubWrapper) GetConfigInterface(
+	ctx context.Context,
+	phoneId int32,
+) (IImsConfig, error) {
+	return w.impl.GetConfigInterface(ctx, phoneId)
+}
+
+func (w *imsServiceStubWrapper) TurnOnIms(
+	ctx context.Context,
+	phoneId int32,
+) error {
+	return w.impl.TurnOnIms(ctx, phoneId)
+}
+
+func (w *imsServiceStubWrapper) TurnOffIms(
+	ctx context.Context,
+	phoneId int32,
+) error {
+	return w.impl.TurnOffIms(ctx, phoneId)
+}
+
+func (w *imsServiceStubWrapper) GetEcbmInterface(
+	ctx context.Context,
+	serviceId int32,
+) (IImsEcbm, error) {
+	return w.impl.GetEcbmInterface(ctx, serviceId)
+}
+
+func (w *imsServiceStubWrapper) SetUiTTYMode(
+	ctx context.Context,
+	serviceId int32,
+	uiTtyMode int32,
+	onComplete contexthub.Message,
+) error {
+	return w.impl.SetUiTTYMode(ctx, serviceId, uiTtyMode, onComplete)
+}
+
+func (w *imsServiceStubWrapper) GetMultiEndpointInterface(
+	ctx context.Context,
+	serviceId int32,
+) (IImsMultiEndpoint, error) {
+	return w.impl.GetMultiEndpointInterface(ctx, serviceId)
+}
+
+var _ IImsService = (*imsServiceStubWrapper)(nil)
+
+// NewImsServiceStub creates a server-side IImsService wrapping the given
+// server implementation. The returned value satisfies IImsService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsServiceStub(
+	impl IImsServiceServer,
+) IImsService {
+	wrapper := &imsServiceStubWrapper{impl: impl}
+	stub := &ImsServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

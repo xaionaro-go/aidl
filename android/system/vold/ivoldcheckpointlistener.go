@@ -76,3 +76,41 @@ func (s *VoldCheckpointListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVoldCheckpointListenerServer is the server-side interface that user implementations
+// provide to NewVoldCheckpointListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoldCheckpointListenerServer interface {
+	OnCheckpointingComplete(ctx context.Context) error
+}
+
+type voldCheckpointListenerStubWrapper struct {
+	impl       IVoldCheckpointListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voldCheckpointListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voldCheckpointListenerStubWrapper) OnCheckpointingComplete(
+	ctx context.Context,
+) error {
+	return w.impl.OnCheckpointingComplete(ctx)
+}
+
+var _ IVoldCheckpointListener = (*voldCheckpointListenerStubWrapper)(nil)
+
+// NewVoldCheckpointListenerStub creates a server-side IVoldCheckpointListener wrapping the given
+// server implementation. The returned value satisfies IVoldCheckpointListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoldCheckpointListenerStub(
+	impl IVoldCheckpointListenerServer,
+) IVoldCheckpointListener {
+	wrapper := &voldCheckpointListenerStubWrapper{impl: impl}
+	stub := &VoldCheckpointListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

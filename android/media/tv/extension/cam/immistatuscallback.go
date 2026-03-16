@@ -159,3 +159,57 @@ func (s *MmiStatusCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMmiStatusCallbackServer is the server-side interface that user implementations
+// provide to NewMmiStatusCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMmiStatusCallbackServer interface {
+	OnMmiEnq(ctx context.Context, request os.Bundle) error
+	OnMmiListMenu(ctx context.Context, request os.Bundle) error
+	OnMmiClose(ctx context.Context) error
+}
+
+type mmiStatusCallbackStubWrapper struct {
+	impl       IMmiStatusCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mmiStatusCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mmiStatusCallbackStubWrapper) OnMmiEnq(
+	ctx context.Context,
+	request os.Bundle,
+) error {
+	return w.impl.OnMmiEnq(ctx, request)
+}
+
+func (w *mmiStatusCallbackStubWrapper) OnMmiListMenu(
+	ctx context.Context,
+	request os.Bundle,
+) error {
+	return w.impl.OnMmiListMenu(ctx, request)
+}
+
+func (w *mmiStatusCallbackStubWrapper) OnMmiClose(
+	ctx context.Context,
+) error {
+	return w.impl.OnMmiClose(ctx)
+}
+
+var _ IMmiStatusCallback = (*mmiStatusCallbackStubWrapper)(nil)
+
+// NewMmiStatusCallbackStub creates a server-side IMmiStatusCallback wrapping the given
+// server implementation. The returned value satisfies IMmiStatusCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMmiStatusCallbackStub(
+	impl IMmiStatusCallbackServer,
+) IMmiStatusCallback {
+	wrapper := &mmiStatusCallbackStubWrapper{impl: impl}
+	stub := &MmiStatusCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

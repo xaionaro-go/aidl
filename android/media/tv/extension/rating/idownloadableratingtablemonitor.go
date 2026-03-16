@@ -107,3 +107,41 @@ func (s *DownloadableRatingTableMonitorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDownloadableRatingTableMonitorServer is the server-side interface that user implementations
+// provide to NewDownloadableRatingTableMonitorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDownloadableRatingTableMonitorServer interface {
+	GetTable(ctx context.Context) ([]os.Bundle, error)
+}
+
+type downloadableRatingTableMonitorStubWrapper struct {
+	impl       IDownloadableRatingTableMonitorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *downloadableRatingTableMonitorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *downloadableRatingTableMonitorStubWrapper) GetTable(
+	ctx context.Context,
+) ([]os.Bundle, error) {
+	return w.impl.GetTable(ctx)
+}
+
+var _ IDownloadableRatingTableMonitor = (*downloadableRatingTableMonitorStubWrapper)(nil)
+
+// NewDownloadableRatingTableMonitorStub creates a server-side IDownloadableRatingTableMonitor wrapping the given
+// server implementation. The returned value satisfies IDownloadableRatingTableMonitor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDownloadableRatingTableMonitorStub(
+	impl IDownloadableRatingTableMonitorServer,
+) IDownloadableRatingTableMonitor {
+	wrapper := &downloadableRatingTableMonitorStubWrapper{impl: impl}
+	stub := &DownloadableRatingTableMonitorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

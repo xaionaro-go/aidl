@@ -108,3 +108,42 @@ func (s *AttachEmbeddedWindowCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAttachEmbeddedWindowCallbackServer is the server-side interface that user implementations
+// provide to NewAttachEmbeddedWindowCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAttachEmbeddedWindowCallbackServer interface {
+	OnEmbeddedWindowAttached(ctx context.Context, surfacePackage view.SurfaceControlViewHostSurfacePackage) error
+}
+
+type attachEmbeddedWindowCallbackStubWrapper struct {
+	impl       IAttachEmbeddedWindowCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *attachEmbeddedWindowCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *attachEmbeddedWindowCallbackStubWrapper) OnEmbeddedWindowAttached(
+	ctx context.Context,
+	surfacePackage view.SurfaceControlViewHostSurfacePackage,
+) error {
+	return w.impl.OnEmbeddedWindowAttached(ctx, surfacePackage)
+}
+
+var _ IAttachEmbeddedWindowCallback = (*attachEmbeddedWindowCallbackStubWrapper)(nil)
+
+// NewAttachEmbeddedWindowCallbackStub creates a server-side IAttachEmbeddedWindowCallback wrapping the given
+// server implementation. The returned value satisfies IAttachEmbeddedWindowCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAttachEmbeddedWindowCallbackStub(
+	impl IAttachEmbeddedWindowCallbackServer,
+) IAttachEmbeddedWindowCallback {
+	wrapper := &attachEmbeddedWindowCallbackStubWrapper{impl: impl}
+	stub := &AttachEmbeddedWindowCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

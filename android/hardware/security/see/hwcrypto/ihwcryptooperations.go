@@ -132,3 +132,42 @@ func (s *HwCryptoOperationsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHwCryptoOperationsServer is the server-side interface that user implementations
+// provide to NewHwCryptoOperationsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHwCryptoOperationsServer interface {
+	ProcessCommandList(ctx context.Context, operations []CryptoOperationSet) ([]CryptoOperationResult, error)
+}
+
+type hwCryptoOperationsStubWrapper struct {
+	impl       IHwCryptoOperationsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hwCryptoOperationsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hwCryptoOperationsStubWrapper) ProcessCommandList(
+	ctx context.Context,
+	operations []CryptoOperationSet,
+) ([]CryptoOperationResult, error) {
+	return w.impl.ProcessCommandList(ctx, operations)
+}
+
+var _ IHwCryptoOperations = (*hwCryptoOperationsStubWrapper)(nil)
+
+// NewHwCryptoOperationsStub creates a server-side IHwCryptoOperations wrapping the given
+// server implementation. The returned value satisfies IHwCryptoOperations
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHwCryptoOperationsStub(
+	impl IHwCryptoOperationsServer,
+) IHwCryptoOperations {
+	wrapper := &hwCryptoOperationsStubWrapper{impl: impl}
+	stub := &HwCryptoOperationsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

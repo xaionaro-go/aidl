@@ -3,7 +3,6 @@ package os
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	pm "github.com/xaionaro-go/binder/android/content/pm"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	"github.com/xaionaro-go/binder/binder"
@@ -219,7 +218,7 @@ type IUserManager interface {
 	IsForegroundUserAdmin(ctx context.Context) (bool, error)
 	IsUserNameSet(ctx context.Context) (bool, error)
 	HasRestrictedProfiles(ctx context.Context) (bool, error)
-	RequestQuietModeEnabled(ctx context.Context, enableQuietMode bool, target content.IntentSender, flags int32) (bool, error)
+	RequestQuietModeEnabled(ctx context.Context, enableQuietMode bool, target interface{}, flags int32) (bool, error)
 	GetUserName(ctx context.Context) (string, error)
 	GetUserStartRealtime(ctx context.Context) (int64, error)
 	GetUserUnlockRealtime(ctx context.Context) (int64, error)
@@ -1975,7 +1974,7 @@ func (p *UserManagerProxy) AddUserRestrictionsListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "addUserRestrictionsListener")
 	if _err != nil {
@@ -3396,7 +3395,7 @@ func (p *UserManagerProxy) HasRestrictedProfiles(
 func (p *UserManagerProxy) RequestQuietModeEnabled(
 	ctx context.Context,
 	enableQuietMode bool,
-	target content.IntentSender,
+	target interface{},
 	flags int32,
 ) (bool, error) {
 	var _result bool
@@ -3406,10 +3405,6 @@ func (p *UserManagerProxy) RequestQuietModeEnabled(
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteBool(enableQuietMode)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteInt32(1)
-	if _err := target.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteInt32(flags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUserManager, "requestQuietModeEnabled")
@@ -5464,18 +5459,7 @@ func (s *UserManagerStub) OnTransaction(
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
-		var _arg_target content.IntentSender
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_target.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_target interface{}
 		_arg_flags, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -5600,4 +5584,834 @@ func (s *UserManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUserManagerServer is the server-side interface that user implementations
+// provide to NewUserManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUserManagerServer interface {
+	GetCredentialOwnerProfile(ctx context.Context) (int32, error)
+	GetProfileParentId(ctx context.Context) (int32, error)
+	CreateUserWithThrow(ctx context.Context, name string, userType string, flags int32) (pm.UserInfo, error)
+	PreCreateUserWithThrow(ctx context.Context, userType string) (pm.UserInfo, error)
+	CreateProfileForUserWithThrow(ctx context.Context, name string, userType string, flags int32, disallowedPackages []string) (pm.UserInfo, error)
+	CreateRestrictedProfileWithThrow(ctx context.Context, name string, parentUserHandle int32) (pm.UserInfo, error)
+	GetPreInstallableSystemPackages(ctx context.Context, userType string) ([]string, error)
+	SetUserEnabled(ctx context.Context) error
+	SetUserAdmin(ctx context.Context) error
+	RevokeUserAdmin(ctx context.Context) error
+	EvictCredentialEncryptionKey(ctx context.Context) error
+	RemoveUser(ctx context.Context) (bool, error)
+	RemoveUserEvenWhenDisallowed(ctx context.Context) (bool, error)
+	SetUserName(ctx context.Context, name string) error
+	SetUserIcon(ctx context.Context, icon graphics.Bitmap) error
+	GetUserIcon(ctx context.Context) (int32, error)
+	GetPrimaryUser(ctx context.Context) (pm.UserInfo, error)
+	GetMainUserId(ctx context.Context) (int32, error)
+	GetCommunalProfileId(ctx context.Context) (int32, error)
+	GetPreviousFullUserToEnterForeground(ctx context.Context) (int32, error)
+	GetUsers(ctx context.Context, excludePartial bool, excludeDying bool, excludePreCreated bool) ([]pm.UserInfo, error)
+	GetProfiles(ctx context.Context, enabledOnly bool) ([]pm.UserInfo, error)
+	GetProfileIds(ctx context.Context, enabledOnly bool) ([]int32, error)
+	IsUserTypeEnabled(ctx context.Context, userType string) (bool, error)
+	CanAddMoreUsersOfType(ctx context.Context, userType string) (bool, error)
+	GetRemainingCreatableUserCount(ctx context.Context, userType string) (int32, error)
+	GetRemainingCreatableProfileCount(ctx context.Context, userType string) (int32, error)
+	CanAddMoreProfilesToUser(ctx context.Context, userType string, allowedToRemoveOne bool) (bool, error)
+	CanAddMoreManagedProfiles(ctx context.Context, allowedToRemoveOne bool) (bool, error)
+	GetProfileParent(ctx context.Context) (pm.UserInfo, error)
+	IsSameProfileGroup(ctx context.Context, otherUserHandle int32) (bool, error)
+	IsHeadlessSystemUserMode(ctx context.Context) (bool, error)
+	IsUserOfType(ctx context.Context, userType string) (bool, error)
+	GetUserInfo(ctx context.Context) (pm.UserInfo, error)
+	GetUserPropertiesCopy(ctx context.Context) (pm.UserProperties, error)
+	GetUserAccount(ctx context.Context) (string, error)
+	SetUserAccount(ctx context.Context, accountName string) error
+	GetUserCreationTime(ctx context.Context) (int64, error)
+	GetUserSwitchability(ctx context.Context) (int32, error)
+	IsUserSwitcherEnabled(ctx context.Context, showEvenIfNotActionable bool, mUserId int32) (bool, error)
+	IsRestricted(ctx context.Context) (bool, error)
+	CanHaveRestrictedProfile(ctx context.Context) (bool, error)
+	CanAddPrivateProfile(ctx context.Context) (bool, error)
+	GetUserSerialNumber(ctx context.Context) (int32, error)
+	GetUserHandle(ctx context.Context, userSerialNumber int32) (int32, error)
+	GetUserRestrictionSource(ctx context.Context, restrictionKey string) (int32, error)
+	GetUserRestrictionSources(ctx context.Context, restrictionKey string) ([]UserManagerEnforcingUser, error)
+	GetUserRestrictions(ctx context.Context) (Bundle, error)
+	HasBaseUserRestriction(ctx context.Context, restrictionKey string) (bool, error)
+	HasUserRestriction(ctx context.Context, restrictionKey string) (bool, error)
+	HasUserRestrictionOnAnyUser(ctx context.Context, restrictionKey string) (bool, error)
+	IsSettingRestrictedForUser(ctx context.Context, setting string, value string) (bool, error)
+	AddUserRestrictionsListener(ctx context.Context, listener IUserRestrictionsListener) error
+	SetUserRestriction(ctx context.Context, key string, value bool) error
+	SetApplicationRestrictions(ctx context.Context, packageName string, restrictions Bundle) error
+	GetApplicationRestrictions(ctx context.Context, packageName string) (Bundle, error)
+	GetApplicationRestrictionsForUser(ctx context.Context, packageName string) (Bundle, error)
+	SetDefaultGuestRestrictions(ctx context.Context, restrictions Bundle) error
+	GetDefaultGuestRestrictions(ctx context.Context) (Bundle, error)
+	RemoveUserWhenPossible(ctx context.Context, overrideDevicePolicy bool) (int32, error)
+	MarkGuestForDeletion(ctx context.Context) (bool, error)
+	GetGuestUsers(ctx context.Context) ([]pm.UserInfo, error)
+	IsQuietModeEnabled(ctx context.Context) (bool, error)
+	CreateUserWithAttributes(ctx context.Context, userName string, userType string, flags int32, userIcon graphics.Bitmap, accountName string, accountType string, accountOptions interface{}) (UserHandle, error)
+	SetSeedAccountData(ctx context.Context, accountName string, accountType string, accountOptions interface{}, persist bool) error
+	GetSeedAccountName(ctx context.Context) (string, error)
+	GetSeedAccountType(ctx context.Context) (string, error)
+	GetSeedAccountOptions(ctx context.Context) (interface{}, error)
+	ClearSeedAccountData(ctx context.Context) error
+	SomeUserHasSeedAccount(ctx context.Context, accountName string, accountType string) (bool, error)
+	SomeUserHasAccount(ctx context.Context, accountName string, accountType string) (bool, error)
+	GetProfileType(ctx context.Context) (string, error)
+	IsDemoUser(ctx context.Context) (bool, error)
+	IsAdminUser(ctx context.Context) (bool, error)
+	IsPreCreated(ctx context.Context) (bool, error)
+	CreateProfileForUserEvenWhenDisallowedWithThrow(ctx context.Context, name string, userType string, flags int32, disallowedPackages []string) (pm.UserInfo, error)
+	IsUserUnlockingOrUnlocked(ctx context.Context) (bool, error)
+	GetUserIconBadgeResId(ctx context.Context) (int32, error)
+	GetUserBadgeResId(ctx context.Context) (int32, error)
+	GetUserBadgeNoBackgroundResId(ctx context.Context) (int32, error)
+	GetUserBadgeLabelResId(ctx context.Context) (int32, error)
+	GetUserBadgeColorResId(ctx context.Context) (int32, error)
+	GetUserBadgeDarkColorResId(ctx context.Context) (int32, error)
+	GetUserStatusBarIconResId(ctx context.Context) (int32, error)
+	HasBadge(ctx context.Context) (bool, error)
+	GetProfileLabelResId(ctx context.Context) (int32, error)
+	GetProfileAccessibilityLabelResId(ctx context.Context) (int32, error)
+	IsUserUnlocked(ctx context.Context) (bool, error)
+	IsUserRunning(ctx context.Context) (bool, error)
+	IsUserForeground(ctx context.Context) (bool, error)
+	IsUserVisible(ctx context.Context) (bool, error)
+	GetVisibleUsers(ctx context.Context) ([]int32, error)
+	GetMainDisplayIdAssignedToUser(ctx context.Context) (int32, error)
+	IsForegroundUserAdmin(ctx context.Context) (bool, error)
+	IsUserNameSet(ctx context.Context) (bool, error)
+	HasRestrictedProfiles(ctx context.Context) (bool, error)
+	RequestQuietModeEnabled(ctx context.Context, enableQuietMode bool, target interface{}, flags int32) (bool, error)
+	GetUserName(ctx context.Context) (string, error)
+	GetUserStartRealtime(ctx context.Context) (int64, error)
+	GetUserUnlockRealtime(ctx context.Context) (int64, error)
+	SetUserEphemeral(ctx context.Context, enableEphemeral bool) (bool, error)
+	SetBootUser(ctx context.Context) error
+	GetBootUser(ctx context.Context) (int32, error)
+	GetProfileIdsExcludingHidden(ctx context.Context, enabledOnly bool) ([]int32, error)
+}
+
+type userManagerStubWrapper struct {
+	impl       IUserManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *userManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *userManagerStubWrapper) GetCredentialOwnerProfile(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCredentialOwnerProfile(ctx)
+}
+
+func (w *userManagerStubWrapper) GetProfileParentId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetProfileParentId(ctx)
+}
+
+func (w *userManagerStubWrapper) CreateUserWithThrow(
+	ctx context.Context,
+	name string,
+	userType string,
+	flags int32,
+) (pm.UserInfo, error) {
+	return w.impl.CreateUserWithThrow(ctx, name, userType, flags)
+}
+
+func (w *userManagerStubWrapper) PreCreateUserWithThrow(
+	ctx context.Context,
+	userType string,
+) (pm.UserInfo, error) {
+	return w.impl.PreCreateUserWithThrow(ctx, userType)
+}
+
+func (w *userManagerStubWrapper) CreateProfileForUserWithThrow(
+	ctx context.Context,
+	name string,
+	userType string,
+	flags int32,
+	disallowedPackages []string,
+) (pm.UserInfo, error) {
+	return w.impl.CreateProfileForUserWithThrow(ctx, name, userType, flags, disallowedPackages)
+}
+
+func (w *userManagerStubWrapper) CreateRestrictedProfileWithThrow(
+	ctx context.Context,
+	name string,
+	parentUserHandle int32,
+) (pm.UserInfo, error) {
+	return w.impl.CreateRestrictedProfileWithThrow(ctx, name, parentUserHandle)
+}
+
+func (w *userManagerStubWrapper) GetPreInstallableSystemPackages(
+	ctx context.Context,
+	userType string,
+) ([]string, error) {
+	return w.impl.GetPreInstallableSystemPackages(ctx, userType)
+}
+
+func (w *userManagerStubWrapper) SetUserEnabled(
+	ctx context.Context,
+) error {
+	return w.impl.SetUserEnabled(ctx)
+}
+
+func (w *userManagerStubWrapper) SetUserAdmin(
+	ctx context.Context,
+) error {
+	return w.impl.SetUserAdmin(ctx)
+}
+
+func (w *userManagerStubWrapper) RevokeUserAdmin(
+	ctx context.Context,
+) error {
+	return w.impl.RevokeUserAdmin(ctx)
+}
+
+func (w *userManagerStubWrapper) EvictCredentialEncryptionKey(
+	ctx context.Context,
+) error {
+	return w.impl.EvictCredentialEncryptionKey(ctx)
+}
+
+func (w *userManagerStubWrapper) RemoveUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.RemoveUser(ctx)
+}
+
+func (w *userManagerStubWrapper) RemoveUserEvenWhenDisallowed(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.RemoveUserEvenWhenDisallowed(ctx)
+}
+
+func (w *userManagerStubWrapper) SetUserName(
+	ctx context.Context,
+	name string,
+) error {
+	return w.impl.SetUserName(ctx, name)
+}
+
+func (w *userManagerStubWrapper) SetUserIcon(
+	ctx context.Context,
+	icon graphics.Bitmap,
+) error {
+	return w.impl.SetUserIcon(ctx, icon)
+}
+
+func (w *userManagerStubWrapper) GetUserIcon(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserIcon(ctx)
+}
+
+func (w *userManagerStubWrapper) GetPrimaryUser(
+	ctx context.Context,
+) (pm.UserInfo, error) {
+	return w.impl.GetPrimaryUser(ctx)
+}
+
+func (w *userManagerStubWrapper) GetMainUserId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMainUserId(ctx)
+}
+
+func (w *userManagerStubWrapper) GetCommunalProfileId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCommunalProfileId(ctx)
+}
+
+func (w *userManagerStubWrapper) GetPreviousFullUserToEnterForeground(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPreviousFullUserToEnterForeground(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUsers(
+	ctx context.Context,
+	excludePartial bool,
+	excludeDying bool,
+	excludePreCreated bool,
+) ([]pm.UserInfo, error) {
+	return w.impl.GetUsers(ctx, excludePartial, excludeDying, excludePreCreated)
+}
+
+func (w *userManagerStubWrapper) GetProfiles(
+	ctx context.Context,
+	enabledOnly bool,
+) ([]pm.UserInfo, error) {
+	return w.impl.GetProfiles(ctx, enabledOnly)
+}
+
+func (w *userManagerStubWrapper) GetProfileIds(
+	ctx context.Context,
+	enabledOnly bool,
+) ([]int32, error) {
+	return w.impl.GetProfileIds(ctx, enabledOnly)
+}
+
+func (w *userManagerStubWrapper) IsUserTypeEnabled(
+	ctx context.Context,
+	userType string,
+) (bool, error) {
+	return w.impl.IsUserTypeEnabled(ctx, userType)
+}
+
+func (w *userManagerStubWrapper) CanAddMoreUsersOfType(
+	ctx context.Context,
+	userType string,
+) (bool, error) {
+	return w.impl.CanAddMoreUsersOfType(ctx, userType)
+}
+
+func (w *userManagerStubWrapper) GetRemainingCreatableUserCount(
+	ctx context.Context,
+	userType string,
+) (int32, error) {
+	return w.impl.GetRemainingCreatableUserCount(ctx, userType)
+}
+
+func (w *userManagerStubWrapper) GetRemainingCreatableProfileCount(
+	ctx context.Context,
+	userType string,
+) (int32, error) {
+	return w.impl.GetRemainingCreatableProfileCount(ctx, userType)
+}
+
+func (w *userManagerStubWrapper) CanAddMoreProfilesToUser(
+	ctx context.Context,
+	userType string,
+	allowedToRemoveOne bool,
+) (bool, error) {
+	return w.impl.CanAddMoreProfilesToUser(ctx, userType, allowedToRemoveOne)
+}
+
+func (w *userManagerStubWrapper) CanAddMoreManagedProfiles(
+	ctx context.Context,
+	allowedToRemoveOne bool,
+) (bool, error) {
+	return w.impl.CanAddMoreManagedProfiles(ctx, allowedToRemoveOne)
+}
+
+func (w *userManagerStubWrapper) GetProfileParent(
+	ctx context.Context,
+) (pm.UserInfo, error) {
+	return w.impl.GetProfileParent(ctx)
+}
+
+func (w *userManagerStubWrapper) IsSameProfileGroup(
+	ctx context.Context,
+	otherUserHandle int32,
+) (bool, error) {
+	return w.impl.IsSameProfileGroup(ctx, otherUserHandle)
+}
+
+func (w *userManagerStubWrapper) IsHeadlessSystemUserMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsHeadlessSystemUserMode(ctx)
+}
+
+func (w *userManagerStubWrapper) IsUserOfType(
+	ctx context.Context,
+	userType string,
+) (bool, error) {
+	return w.impl.IsUserOfType(ctx, userType)
+}
+
+func (w *userManagerStubWrapper) GetUserInfo(
+	ctx context.Context,
+) (pm.UserInfo, error) {
+	return w.impl.GetUserInfo(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserPropertiesCopy(
+	ctx context.Context,
+) (pm.UserProperties, error) {
+	return w.impl.GetUserPropertiesCopy(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserAccount(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetUserAccount(ctx)
+}
+
+func (w *userManagerStubWrapper) SetUserAccount(
+	ctx context.Context,
+	accountName string,
+) error {
+	return w.impl.SetUserAccount(ctx, accountName)
+}
+
+func (w *userManagerStubWrapper) GetUserCreationTime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetUserCreationTime(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserSwitchability(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserSwitchability(ctx)
+}
+
+func (w *userManagerStubWrapper) IsUserSwitcherEnabled(
+	ctx context.Context,
+	showEvenIfNotActionable bool,
+	mUserId int32,
+) (bool, error) {
+	return w.impl.IsUserSwitcherEnabled(ctx, showEvenIfNotActionable, mUserId)
+}
+
+func (w *userManagerStubWrapper) IsRestricted(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsRestricted(ctx)
+}
+
+func (w *userManagerStubWrapper) CanHaveRestrictedProfile(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanHaveRestrictedProfile(ctx)
+}
+
+func (w *userManagerStubWrapper) CanAddPrivateProfile(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.CanAddPrivateProfile(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserSerialNumber(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserSerialNumber(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserHandle(
+	ctx context.Context,
+	userSerialNumber int32,
+) (int32, error) {
+	return w.impl.GetUserHandle(ctx, userSerialNumber)
+}
+
+func (w *userManagerStubWrapper) GetUserRestrictionSource(
+	ctx context.Context,
+	restrictionKey string,
+) (int32, error) {
+	return w.impl.GetUserRestrictionSource(ctx, restrictionKey)
+}
+
+func (w *userManagerStubWrapper) GetUserRestrictionSources(
+	ctx context.Context,
+	restrictionKey string,
+) ([]UserManagerEnforcingUser, error) {
+	return w.impl.GetUserRestrictionSources(ctx, restrictionKey)
+}
+
+func (w *userManagerStubWrapper) GetUserRestrictions(
+	ctx context.Context,
+) (Bundle, error) {
+	return w.impl.GetUserRestrictions(ctx)
+}
+
+func (w *userManagerStubWrapper) HasBaseUserRestriction(
+	ctx context.Context,
+	restrictionKey string,
+) (bool, error) {
+	return w.impl.HasBaseUserRestriction(ctx, restrictionKey)
+}
+
+func (w *userManagerStubWrapper) HasUserRestriction(
+	ctx context.Context,
+	restrictionKey string,
+) (bool, error) {
+	return w.impl.HasUserRestriction(ctx, restrictionKey)
+}
+
+func (w *userManagerStubWrapper) HasUserRestrictionOnAnyUser(
+	ctx context.Context,
+	restrictionKey string,
+) (bool, error) {
+	return w.impl.HasUserRestrictionOnAnyUser(ctx, restrictionKey)
+}
+
+func (w *userManagerStubWrapper) IsSettingRestrictedForUser(
+	ctx context.Context,
+	setting string,
+	value string,
+) (bool, error) {
+	return w.impl.IsSettingRestrictedForUser(ctx, setting, value)
+}
+
+func (w *userManagerStubWrapper) AddUserRestrictionsListener(
+	ctx context.Context,
+	listener IUserRestrictionsListener,
+) error {
+	return w.impl.AddUserRestrictionsListener(ctx, listener)
+}
+
+func (w *userManagerStubWrapper) SetUserRestriction(
+	ctx context.Context,
+	key string,
+	value bool,
+) error {
+	return w.impl.SetUserRestriction(ctx, key, value)
+}
+
+func (w *userManagerStubWrapper) SetApplicationRestrictions(
+	ctx context.Context,
+	packageName string,
+	restrictions Bundle,
+) error {
+	return w.impl.SetApplicationRestrictions(ctx, packageName, restrictions)
+}
+
+func (w *userManagerStubWrapper) GetApplicationRestrictions(
+	ctx context.Context,
+	packageName string,
+) (Bundle, error) {
+	return w.impl.GetApplicationRestrictions(ctx, packageName)
+}
+
+func (w *userManagerStubWrapper) GetApplicationRestrictionsForUser(
+	ctx context.Context,
+	packageName string,
+) (Bundle, error) {
+	return w.impl.GetApplicationRestrictionsForUser(ctx, packageName)
+}
+
+func (w *userManagerStubWrapper) SetDefaultGuestRestrictions(
+	ctx context.Context,
+	restrictions Bundle,
+) error {
+	return w.impl.SetDefaultGuestRestrictions(ctx, restrictions)
+}
+
+func (w *userManagerStubWrapper) GetDefaultGuestRestrictions(
+	ctx context.Context,
+) (Bundle, error) {
+	return w.impl.GetDefaultGuestRestrictions(ctx)
+}
+
+func (w *userManagerStubWrapper) RemoveUserWhenPossible(
+	ctx context.Context,
+	overrideDevicePolicy bool,
+) (int32, error) {
+	return w.impl.RemoveUserWhenPossible(ctx, overrideDevicePolicy)
+}
+
+func (w *userManagerStubWrapper) MarkGuestForDeletion(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.MarkGuestForDeletion(ctx)
+}
+
+func (w *userManagerStubWrapper) GetGuestUsers(
+	ctx context.Context,
+) ([]pm.UserInfo, error) {
+	return w.impl.GetGuestUsers(ctx)
+}
+
+func (w *userManagerStubWrapper) IsQuietModeEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsQuietModeEnabled(ctx)
+}
+
+func (w *userManagerStubWrapper) CreateUserWithAttributes(
+	ctx context.Context,
+	userName string,
+	userType string,
+	flags int32,
+	userIcon graphics.Bitmap,
+	accountName string,
+	accountType string,
+	accountOptions interface{},
+) (UserHandle, error) {
+	return w.impl.CreateUserWithAttributes(ctx, userName, userType, flags, userIcon, accountName, accountType, accountOptions)
+}
+
+func (w *userManagerStubWrapper) SetSeedAccountData(
+	ctx context.Context,
+	accountName string,
+	accountType string,
+	accountOptions interface{},
+	persist bool,
+) error {
+	return w.impl.SetSeedAccountData(ctx, accountName, accountType, accountOptions, persist)
+}
+
+func (w *userManagerStubWrapper) GetSeedAccountName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSeedAccountName(ctx)
+}
+
+func (w *userManagerStubWrapper) GetSeedAccountType(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSeedAccountType(ctx)
+}
+
+func (w *userManagerStubWrapper) GetSeedAccountOptions(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetSeedAccountOptions(ctx)
+}
+
+func (w *userManagerStubWrapper) ClearSeedAccountData(
+	ctx context.Context,
+) error {
+	return w.impl.ClearSeedAccountData(ctx)
+}
+
+func (w *userManagerStubWrapper) SomeUserHasSeedAccount(
+	ctx context.Context,
+	accountName string,
+	accountType string,
+) (bool, error) {
+	return w.impl.SomeUserHasSeedAccount(ctx, accountName, accountType)
+}
+
+func (w *userManagerStubWrapper) SomeUserHasAccount(
+	ctx context.Context,
+	accountName string,
+	accountType string,
+) (bool, error) {
+	return w.impl.SomeUserHasAccount(ctx, accountName, accountType)
+}
+
+func (w *userManagerStubWrapper) GetProfileType(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetProfileType(ctx)
+}
+
+func (w *userManagerStubWrapper) IsDemoUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDemoUser(ctx)
+}
+
+func (w *userManagerStubWrapper) IsAdminUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAdminUser(ctx)
+}
+
+func (w *userManagerStubWrapper) IsPreCreated(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsPreCreated(ctx)
+}
+
+func (w *userManagerStubWrapper) CreateProfileForUserEvenWhenDisallowedWithThrow(
+	ctx context.Context,
+	name string,
+	userType string,
+	flags int32,
+	disallowedPackages []string,
+) (pm.UserInfo, error) {
+	return w.impl.CreateProfileForUserEvenWhenDisallowedWithThrow(ctx, name, userType, flags, disallowedPackages)
+}
+
+func (w *userManagerStubWrapper) IsUserUnlockingOrUnlocked(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUserUnlockingOrUnlocked(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserIconBadgeResId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserIconBadgeResId(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserBadgeResId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserBadgeResId(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserBadgeNoBackgroundResId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserBadgeNoBackgroundResId(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserBadgeLabelResId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserBadgeLabelResId(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserBadgeColorResId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserBadgeColorResId(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserBadgeDarkColorResId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserBadgeDarkColorResId(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserStatusBarIconResId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetUserStatusBarIconResId(ctx)
+}
+
+func (w *userManagerStubWrapper) HasBadge(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasBadge(ctx)
+}
+
+func (w *userManagerStubWrapper) GetProfileLabelResId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetProfileLabelResId(ctx)
+}
+
+func (w *userManagerStubWrapper) GetProfileAccessibilityLabelResId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetProfileAccessibilityLabelResId(ctx)
+}
+
+func (w *userManagerStubWrapper) IsUserUnlocked(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUserUnlocked(ctx)
+}
+
+func (w *userManagerStubWrapper) IsUserRunning(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUserRunning(ctx)
+}
+
+func (w *userManagerStubWrapper) IsUserForeground(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUserForeground(ctx)
+}
+
+func (w *userManagerStubWrapper) IsUserVisible(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUserVisible(ctx)
+}
+
+func (w *userManagerStubWrapper) GetVisibleUsers(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetVisibleUsers(ctx)
+}
+
+func (w *userManagerStubWrapper) GetMainDisplayIdAssignedToUser(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMainDisplayIdAssignedToUser(ctx)
+}
+
+func (w *userManagerStubWrapper) IsForegroundUserAdmin(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsForegroundUserAdmin(ctx)
+}
+
+func (w *userManagerStubWrapper) IsUserNameSet(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUserNameSet(ctx)
+}
+
+func (w *userManagerStubWrapper) HasRestrictedProfiles(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.HasRestrictedProfiles(ctx)
+}
+
+func (w *userManagerStubWrapper) RequestQuietModeEnabled(
+	ctx context.Context,
+	enableQuietMode bool,
+	target interface{},
+	flags int32,
+) (bool, error) {
+	return w.impl.RequestQuietModeEnabled(ctx, enableQuietMode, target, flags)
+}
+
+func (w *userManagerStubWrapper) GetUserName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetUserName(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserStartRealtime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetUserStartRealtime(ctx)
+}
+
+func (w *userManagerStubWrapper) GetUserUnlockRealtime(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetUserUnlockRealtime(ctx)
+}
+
+func (w *userManagerStubWrapper) SetUserEphemeral(
+	ctx context.Context,
+	enableEphemeral bool,
+) (bool, error) {
+	return w.impl.SetUserEphemeral(ctx, enableEphemeral)
+}
+
+func (w *userManagerStubWrapper) SetBootUser(
+	ctx context.Context,
+) error {
+	return w.impl.SetBootUser(ctx)
+}
+
+func (w *userManagerStubWrapper) GetBootUser(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetBootUser(ctx)
+}
+
+func (w *userManagerStubWrapper) GetProfileIdsExcludingHidden(
+	ctx context.Context,
+	enabledOnly bool,
+) ([]int32, error) {
+	return w.impl.GetProfileIdsExcludingHidden(ctx, enabledOnly)
+}
+
+var _ IUserManager = (*userManagerStubWrapper)(nil)
+
+// NewUserManagerStub creates a server-side IUserManager wrapping the given
+// server implementation. The returned value satisfies IUserManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUserManagerStub(
+	impl IUserManagerServer,
+) IUserManager {
+	wrapper := &userManagerStubWrapper{impl: impl}
+	stub := &UserManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

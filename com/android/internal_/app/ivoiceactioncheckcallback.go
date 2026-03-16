@@ -88,3 +88,42 @@ func (s *VoiceActionCheckCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVoiceActionCheckCallbackServer is the server-side interface that user implementations
+// provide to NewVoiceActionCheckCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceActionCheckCallbackServer interface {
+	OnComplete(ctx context.Context, voiceActions []string) error
+}
+
+type voiceActionCheckCallbackStubWrapper struct {
+	impl       IVoiceActionCheckCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceActionCheckCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceActionCheckCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	voiceActions []string,
+) error {
+	return w.impl.OnComplete(ctx, voiceActions)
+}
+
+var _ IVoiceActionCheckCallback = (*voiceActionCheckCallbackStubWrapper)(nil)
+
+// NewVoiceActionCheckCallbackStub creates a server-side IVoiceActionCheckCallback wrapping the given
+// server implementation. The returned value satisfies IVoiceActionCheckCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceActionCheckCallbackStub(
+	impl IVoiceActionCheckCallbackServer,
+) IVoiceActionCheckCallback {
+	wrapper := &voiceActionCheckCallbackStubWrapper{impl: impl}
+	stub := &VoiceActionCheckCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

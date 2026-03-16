@@ -71,7 +71,7 @@ func (p *ImsConfigProxy) AddImsConfigCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "addImsConfigCallback")
 	if _err != nil {
@@ -97,7 +97,7 @@ func (p *ImsConfigProxy) RemoveImsConfigCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "removeImsConfigCallback")
 	if _err != nil {
@@ -335,7 +335,7 @@ func (p *ImsConfigProxy) AddRcsConfigCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "addRcsConfigCallback")
 	if _err != nil {
@@ -361,7 +361,7 @@ func (p *ImsConfigProxy) RemoveRcsConfigCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsConfig)
-	_data.WriteStrongBinder(c.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, c.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsConfig, "removeRcsConfigCallback")
 	if _err != nil {
@@ -763,4 +763,158 @@ func (s *ImsConfigStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsConfigServer is the server-side interface that user implementations
+// provide to NewImsConfigStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsConfigServer interface {
+	AddImsConfigCallback(ctx context.Context, c IImsConfigCallback) error
+	RemoveImsConfigCallback(ctx context.Context, c IImsConfigCallback) error
+	GetConfigInt(ctx context.Context, item int32) (int32, error)
+	GetConfigString(ctx context.Context, item int32) (string, error)
+	SetConfigInt(ctx context.Context, item int32, value int32) (int32, error)
+	SetConfigString(ctx context.Context, item int32, value string) (int32, error)
+	UpdateImsCarrierConfigs(ctx context.Context, bundle interface{}) error
+	NotifyRcsAutoConfigurationReceived(ctx context.Context, config []byte, isCompressed bool) error
+	NotifyRcsAutoConfigurationRemoved(ctx context.Context) error
+	AddRcsConfigCallback(ctx context.Context, c IRcsConfigCallback) error
+	RemoveRcsConfigCallback(ctx context.Context, c IRcsConfigCallback) error
+	TriggerRcsReconfiguration(ctx context.Context) error
+	SetRcsClientConfiguration(ctx context.Context, rcc ims.RcsClientConfiguration) error
+	NotifyIntImsConfigChanged(ctx context.Context, item int32, value int32) error
+	NotifyStringImsConfigChanged(ctx context.Context, item int32, value string) error
+}
+
+type imsConfigStubWrapper struct {
+	impl       IImsConfigServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsConfigStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsConfigStubWrapper) AddImsConfigCallback(
+	ctx context.Context,
+	c IImsConfigCallback,
+) error {
+	return w.impl.AddImsConfigCallback(ctx, c)
+}
+
+func (w *imsConfigStubWrapper) RemoveImsConfigCallback(
+	ctx context.Context,
+	c IImsConfigCallback,
+) error {
+	return w.impl.RemoveImsConfigCallback(ctx, c)
+}
+
+func (w *imsConfigStubWrapper) GetConfigInt(
+	ctx context.Context,
+	item int32,
+) (int32, error) {
+	return w.impl.GetConfigInt(ctx, item)
+}
+
+func (w *imsConfigStubWrapper) GetConfigString(
+	ctx context.Context,
+	item int32,
+) (string, error) {
+	return w.impl.GetConfigString(ctx, item)
+}
+
+func (w *imsConfigStubWrapper) SetConfigInt(
+	ctx context.Context,
+	item int32,
+	value int32,
+) (int32, error) {
+	return w.impl.SetConfigInt(ctx, item, value)
+}
+
+func (w *imsConfigStubWrapper) SetConfigString(
+	ctx context.Context,
+	item int32,
+	value string,
+) (int32, error) {
+	return w.impl.SetConfigString(ctx, item, value)
+}
+
+func (w *imsConfigStubWrapper) UpdateImsCarrierConfigs(
+	ctx context.Context,
+	bundle interface{},
+) error {
+	return w.impl.UpdateImsCarrierConfigs(ctx, bundle)
+}
+
+func (w *imsConfigStubWrapper) NotifyRcsAutoConfigurationReceived(
+	ctx context.Context,
+	config []byte,
+	isCompressed bool,
+) error {
+	return w.impl.NotifyRcsAutoConfigurationReceived(ctx, config, isCompressed)
+}
+
+func (w *imsConfigStubWrapper) NotifyRcsAutoConfigurationRemoved(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyRcsAutoConfigurationRemoved(ctx)
+}
+
+func (w *imsConfigStubWrapper) AddRcsConfigCallback(
+	ctx context.Context,
+	c IRcsConfigCallback,
+) error {
+	return w.impl.AddRcsConfigCallback(ctx, c)
+}
+
+func (w *imsConfigStubWrapper) RemoveRcsConfigCallback(
+	ctx context.Context,
+	c IRcsConfigCallback,
+) error {
+	return w.impl.RemoveRcsConfigCallback(ctx, c)
+}
+
+func (w *imsConfigStubWrapper) TriggerRcsReconfiguration(
+	ctx context.Context,
+) error {
+	return w.impl.TriggerRcsReconfiguration(ctx)
+}
+
+func (w *imsConfigStubWrapper) SetRcsClientConfiguration(
+	ctx context.Context,
+	rcc ims.RcsClientConfiguration,
+) error {
+	return w.impl.SetRcsClientConfiguration(ctx, rcc)
+}
+
+func (w *imsConfigStubWrapper) NotifyIntImsConfigChanged(
+	ctx context.Context,
+	item int32,
+	value int32,
+) error {
+	return w.impl.NotifyIntImsConfigChanged(ctx, item, value)
+}
+
+func (w *imsConfigStubWrapper) NotifyStringImsConfigChanged(
+	ctx context.Context,
+	item int32,
+	value string,
+) error {
+	return w.impl.NotifyStringImsConfigChanged(ctx, item, value)
+}
+
+var _ IImsConfig = (*imsConfigStubWrapper)(nil)
+
+// NewImsConfigStub creates a server-side IImsConfig wrapping the given
+// server implementation. The returned value satisfies IImsConfig
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsConfigStub(
+	impl IImsConfigServer,
+) IImsConfig {
+	wrapper := &imsConfigStubWrapper{impl: impl}
+	stub := &ImsConfigStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -110,3 +110,44 @@ func (s *ActivityPendingResultStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IActivityPendingResultServer is the server-side interface that user implementations
+// provide to NewActivityPendingResultStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IActivityPendingResultServer interface {
+	SendResult(ctx context.Context, code int32, data string, ex interface{}) (bool, error)
+}
+
+type activityPendingResultStubWrapper struct {
+	impl       IActivityPendingResultServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *activityPendingResultStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *activityPendingResultStubWrapper) SendResult(
+	ctx context.Context,
+	code int32,
+	data string,
+	ex interface{},
+) (bool, error) {
+	return w.impl.SendResult(ctx, code, data, ex)
+}
+
+var _ IActivityPendingResult = (*activityPendingResultStubWrapper)(nil)
+
+// NewActivityPendingResultStub creates a server-side IActivityPendingResult wrapping the given
+// server implementation. The returned value satisfies IActivityPendingResult
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewActivityPendingResultStub(
+	impl IActivityPendingResultServer,
+) IActivityPendingResult {
+	wrapper := &activityPendingResultStubWrapper{impl: impl}
+	stub := &ActivityPendingResultStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -125,3 +125,50 @@ func (s *StreamOutEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStreamOutEventCallbackServer is the server-side interface that user implementations
+// provide to NewStreamOutEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStreamOutEventCallbackServer interface {
+	OnCodecFormatChanged(ctx context.Context, audioMetadata []byte) error
+	OnRecommendedLatencyModeChanged(ctx context.Context, modes []common.AudioLatencyMode) error
+}
+
+type streamOutEventCallbackStubWrapper struct {
+	impl       IStreamOutEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *streamOutEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *streamOutEventCallbackStubWrapper) OnCodecFormatChanged(
+	ctx context.Context,
+	audioMetadata []byte,
+) error {
+	return w.impl.OnCodecFormatChanged(ctx, audioMetadata)
+}
+
+func (w *streamOutEventCallbackStubWrapper) OnRecommendedLatencyModeChanged(
+	ctx context.Context,
+	modes []common.AudioLatencyMode,
+) error {
+	return w.impl.OnRecommendedLatencyModeChanged(ctx, modes)
+}
+
+var _ IStreamOutEventCallback = (*streamOutEventCallbackStubWrapper)(nil)
+
+// NewStreamOutEventCallbackStub creates a server-side IStreamOutEventCallback wrapping the given
+// server implementation. The returned value satisfies IStreamOutEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStreamOutEventCallbackStub(
+	impl IStreamOutEventCallbackServer,
+) IStreamOutEventCallback {
+	wrapper := &streamOutEventCallbackStubWrapper{impl: impl}
+	stub := &StreamOutEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

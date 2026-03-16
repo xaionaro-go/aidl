@@ -48,7 +48,7 @@ func (p *ImsMediaListenerProxy) OnOpenSessionSuccess(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsMediaListener)
 	_data.WriteInt32(sessionId)
-	_data.WriteStrongBinder(session.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, session.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsMediaListener, "onOpenSessionSuccess")
 	if _err != nil {
@@ -153,4 +153,61 @@ func (s *ImsMediaListenerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsMediaListenerServer is the server-side interface that user implementations
+// provide to NewImsMediaListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsMediaListenerServer interface {
+	OnOpenSessionSuccess(ctx context.Context, sessionId int32, session IImsMediaSession) error
+	OnOpenSessionFailure(ctx context.Context, sessionId int32, error_ RtpError) error
+	OnSessionClosed(ctx context.Context, sessionId int32) error
+}
+
+type imsMediaListenerStubWrapper struct {
+	impl       IImsMediaListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsMediaListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsMediaListenerStubWrapper) OnOpenSessionSuccess(
+	ctx context.Context,
+	sessionId int32,
+	session IImsMediaSession,
+) error {
+	return w.impl.OnOpenSessionSuccess(ctx, sessionId, session)
+}
+
+func (w *imsMediaListenerStubWrapper) OnOpenSessionFailure(
+	ctx context.Context,
+	sessionId int32,
+	error_ RtpError,
+) error {
+	return w.impl.OnOpenSessionFailure(ctx, sessionId, error_)
+}
+
+func (w *imsMediaListenerStubWrapper) OnSessionClosed(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.OnSessionClosed(ctx, sessionId)
+}
+
+var _ IImsMediaListener = (*imsMediaListenerStubWrapper)(nil)
+
+// NewImsMediaListenerStub creates a server-side IImsMediaListener wrapping the given
+// server implementation. The returned value satisfies IImsMediaListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsMediaListenerStub(
+	impl IImsMediaListenerServer,
+) IImsMediaListener {
+	wrapper := &imsMediaListenerStubWrapper{impl: impl}
+	stub := &ImsMediaListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

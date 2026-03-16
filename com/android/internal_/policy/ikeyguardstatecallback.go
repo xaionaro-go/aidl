@@ -233,3 +233,66 @@ func (s *KeyguardStateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IKeyguardStateCallbackServer is the server-side interface that user implementations
+// provide to NewKeyguardStateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyguardStateCallbackServer interface {
+	OnShowingStateChanged(ctx context.Context, showing bool) error
+	OnSimSecureStateChanged(ctx context.Context, simSecure bool) error
+	OnInputRestrictedStateChanged(ctx context.Context, inputRestricted bool) error
+	OnTrustedChanged(ctx context.Context, trusted bool) error
+}
+
+type keyguardStateCallbackStubWrapper struct {
+	impl       IKeyguardStateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyguardStateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyguardStateCallbackStubWrapper) OnShowingStateChanged(
+	ctx context.Context,
+	showing bool,
+) error {
+	return w.impl.OnShowingStateChanged(ctx, showing)
+}
+
+func (w *keyguardStateCallbackStubWrapper) OnSimSecureStateChanged(
+	ctx context.Context,
+	simSecure bool,
+) error {
+	return w.impl.OnSimSecureStateChanged(ctx, simSecure)
+}
+
+func (w *keyguardStateCallbackStubWrapper) OnInputRestrictedStateChanged(
+	ctx context.Context,
+	inputRestricted bool,
+) error {
+	return w.impl.OnInputRestrictedStateChanged(ctx, inputRestricted)
+}
+
+func (w *keyguardStateCallbackStubWrapper) OnTrustedChanged(
+	ctx context.Context,
+	trusted bool,
+) error {
+	return w.impl.OnTrustedChanged(ctx, trusted)
+}
+
+var _ IKeyguardStateCallback = (*keyguardStateCallbackStubWrapper)(nil)
+
+// NewKeyguardStateCallbackStub creates a server-side IKeyguardStateCallback wrapping the given
+// server implementation. The returned value satisfies IKeyguardStateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyguardStateCallbackStub(
+	impl IKeyguardStateCallbackServer,
+) IKeyguardStateCallback {
+	wrapper := &keyguardStateCallbackStubWrapper{impl: impl}
+	stub := &KeyguardStateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

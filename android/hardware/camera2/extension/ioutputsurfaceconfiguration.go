@@ -260,3 +260,62 @@ func (s *OutputSurfaceConfigurationStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOutputSurfaceConfigurationServer is the server-side interface that user implementations
+// provide to NewOutputSurfaceConfigurationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOutputSurfaceConfigurationServer interface {
+	GetPreviewOutputSurface(ctx context.Context) (OutputSurface, error)
+	GetImageCaptureOutputSurface(ctx context.Context) (OutputSurface, error)
+	GetImageAnalysisOutputSurface(ctx context.Context) (OutputSurface, error)
+	GetPostviewOutputSurface(ctx context.Context) (OutputSurface, error)
+}
+
+type outputSurfaceConfigurationStubWrapper struct {
+	impl       IOutputSurfaceConfigurationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *outputSurfaceConfigurationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *outputSurfaceConfigurationStubWrapper) GetPreviewOutputSurface(
+	ctx context.Context,
+) (OutputSurface, error) {
+	return w.impl.GetPreviewOutputSurface(ctx)
+}
+
+func (w *outputSurfaceConfigurationStubWrapper) GetImageCaptureOutputSurface(
+	ctx context.Context,
+) (OutputSurface, error) {
+	return w.impl.GetImageCaptureOutputSurface(ctx)
+}
+
+func (w *outputSurfaceConfigurationStubWrapper) GetImageAnalysisOutputSurface(
+	ctx context.Context,
+) (OutputSurface, error) {
+	return w.impl.GetImageAnalysisOutputSurface(ctx)
+}
+
+func (w *outputSurfaceConfigurationStubWrapper) GetPostviewOutputSurface(
+	ctx context.Context,
+) (OutputSurface, error) {
+	return w.impl.GetPostviewOutputSurface(ctx)
+}
+
+var _ IOutputSurfaceConfiguration = (*outputSurfaceConfigurationStubWrapper)(nil)
+
+// NewOutputSurfaceConfigurationStub creates a server-side IOutputSurfaceConfiguration wrapping the given
+// server implementation. The returned value satisfies IOutputSurfaceConfiguration
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOutputSurfaceConfigurationStub(
+	impl IOutputSurfaceConfigurationServer,
+) IOutputSurfaceConfiguration {
+	wrapper := &outputSurfaceConfigurationStubWrapper{impl: impl}
+	stub := &OutputSurfaceConfigurationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

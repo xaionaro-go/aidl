@@ -49,7 +49,7 @@ func (p *TranslationServiceProxy) OnConnected(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationService)
-	_data.WriteStrongBinder(callback.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationService, "onConnected")
 	if _err != nil {
@@ -84,7 +84,7 @@ func (p *TranslationServiceProxy) OnCreateTranslationSession(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITranslationService)
 	_data.WriteInt32(sessionId)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorITranslationService, "onCreateTranslationSession")
 	if _err != nil {
@@ -180,4 +180,70 @@ func (s *TranslationServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITranslationServiceServer is the server-side interface that user implementations
+// provide to NewTranslationServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITranslationServiceServer interface {
+	OnConnected(ctx context.Context, callback binder.IBinder) error
+	OnDisconnected(ctx context.Context) error
+	OnCreateTranslationSession(ctx context.Context, translationContext interface{}, sessionId int32, receiver os.IResultReceiver) error
+	OnTranslationCapabilitiesRequest(ctx context.Context, sourceFormat int32, targetFormat int32, receiver interface{}) error
+}
+
+type translationServiceStubWrapper struct {
+	impl       ITranslationServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *translationServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *translationServiceStubWrapper) OnConnected(
+	ctx context.Context,
+	callback binder.IBinder,
+) error {
+	return w.impl.OnConnected(ctx, callback)
+}
+
+func (w *translationServiceStubWrapper) OnDisconnected(
+	ctx context.Context,
+) error {
+	return w.impl.OnDisconnected(ctx)
+}
+
+func (w *translationServiceStubWrapper) OnCreateTranslationSession(
+	ctx context.Context,
+	translationContext interface{},
+	sessionId int32,
+	receiver os.IResultReceiver,
+) error {
+	return w.impl.OnCreateTranslationSession(ctx, translationContext, sessionId, receiver)
+}
+
+func (w *translationServiceStubWrapper) OnTranslationCapabilitiesRequest(
+	ctx context.Context,
+	sourceFormat int32,
+	targetFormat int32,
+	receiver interface{},
+) error {
+	return w.impl.OnTranslationCapabilitiesRequest(ctx, sourceFormat, targetFormat, receiver)
+}
+
+var _ ITranslationService = (*translationServiceStubWrapper)(nil)
+
+// NewTranslationServiceStub creates a server-side ITranslationService wrapping the given
+// server implementation. The returned value satisfies ITranslationService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTranslationServiceStub(
+	impl ITranslationServiceServer,
+) ITranslationService {
+	wrapper := &translationServiceStubWrapper{impl: impl}
+	stub := &TranslationServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

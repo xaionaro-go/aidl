@@ -517,3 +517,107 @@ func (s *PresenceListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPresenceListenerServer is the server-side interface that user implementations
+// provide to NewPresenceListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPresenceListenerServer interface {
+	GetVersionCb(ctx context.Context, version string) error
+	ServiceAvailable(ctx context.Context, statusCode vehicle.StatusCode) error
+	ServiceUnAvailable(ctx context.Context, statusCode vehicle.StatusCode) error
+	PublishTriggering(ctx context.Context, publishTrigger PresPublishTriggerType) error
+	CmdStatus(ctx context.Context, cmdStatus PresCmdStatus) error
+	SipResponseReceived(ctx context.Context, sipResponse PresSipResponse) error
+	CapInfoReceived(ctx context.Context, presentityURI string, tupleInfo []PresTupleInfo) error
+	ListCapInfoReceived(ctx context.Context, rlmiInfo PresRlmiInfo, resInfo []PresResInfo) error
+	UnpublishMessageSent(ctx context.Context) error
+}
+
+type presenceListenerStubWrapper struct {
+	impl       IPresenceListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *presenceListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *presenceListenerStubWrapper) GetVersionCb(
+	ctx context.Context,
+	version string,
+) error {
+	return w.impl.GetVersionCb(ctx, version)
+}
+
+func (w *presenceListenerStubWrapper) ServiceAvailable(
+	ctx context.Context,
+	statusCode vehicle.StatusCode,
+) error {
+	return w.impl.ServiceAvailable(ctx, statusCode)
+}
+
+func (w *presenceListenerStubWrapper) ServiceUnAvailable(
+	ctx context.Context,
+	statusCode vehicle.StatusCode,
+) error {
+	return w.impl.ServiceUnAvailable(ctx, statusCode)
+}
+
+func (w *presenceListenerStubWrapper) PublishTriggering(
+	ctx context.Context,
+	publishTrigger PresPublishTriggerType,
+) error {
+	return w.impl.PublishTriggering(ctx, publishTrigger)
+}
+
+func (w *presenceListenerStubWrapper) CmdStatus(
+	ctx context.Context,
+	cmdStatus PresCmdStatus,
+) error {
+	return w.impl.CmdStatus(ctx, cmdStatus)
+}
+
+func (w *presenceListenerStubWrapper) SipResponseReceived(
+	ctx context.Context,
+	sipResponse PresSipResponse,
+) error {
+	return w.impl.SipResponseReceived(ctx, sipResponse)
+}
+
+func (w *presenceListenerStubWrapper) CapInfoReceived(
+	ctx context.Context,
+	presentityURI string,
+	tupleInfo []PresTupleInfo,
+) error {
+	return w.impl.CapInfoReceived(ctx, presentityURI, tupleInfo)
+}
+
+func (w *presenceListenerStubWrapper) ListCapInfoReceived(
+	ctx context.Context,
+	rlmiInfo PresRlmiInfo,
+	resInfo []PresResInfo,
+) error {
+	return w.impl.ListCapInfoReceived(ctx, rlmiInfo, resInfo)
+}
+
+func (w *presenceListenerStubWrapper) UnpublishMessageSent(
+	ctx context.Context,
+) error {
+	return w.impl.UnpublishMessageSent(ctx)
+}
+
+var _ IPresenceListener = (*presenceListenerStubWrapper)(nil)
+
+// NewPresenceListenerStub creates a server-side IPresenceListener wrapping the given
+// server implementation. The returned value satisfies IPresenceListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPresenceListenerStub(
+	impl IPresenceListenerServer,
+) IPresenceListener {
+	wrapper := &presenceListenerStubWrapper{impl: impl}
+	stub := &PresenceListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

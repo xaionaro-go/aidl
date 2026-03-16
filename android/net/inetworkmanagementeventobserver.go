@@ -463,3 +463,132 @@ func (s *NetworkManagementEventObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INetworkManagementEventObserverServer is the server-side interface that user implementations
+// provide to NewNetworkManagementEventObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkManagementEventObserverServer interface {
+	InterfaceStatusChanged(ctx context.Context, iface string, up bool) error
+	InterfaceLinkStateChanged(ctx context.Context, iface string, up bool) error
+	InterfaceAdded(ctx context.Context, iface string) error
+	InterfaceRemoved(ctx context.Context, iface string) error
+	AddressUpdated(ctx context.Context, iface string, address data.LinkAddress) error
+	AddressRemoved(ctx context.Context, iface string, address data.LinkAddress) error
+	LimitReached(ctx context.Context, limitName string, iface string) error
+	InterfaceClassDataActivityChanged(ctx context.Context, label int32, active bool, tsNanos int64, uid int32) error
+	InterfaceDnsServerInfo(ctx context.Context, iface string, lifetime int64, servers []string) error
+	RouteUpdated(ctx context.Context, route interface{}) error
+	RouteRemoved(ctx context.Context, route interface{}) error
+}
+
+type networkManagementEventObserverStubWrapper struct {
+	impl       INetworkManagementEventObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkManagementEventObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkManagementEventObserverStubWrapper) InterfaceStatusChanged(
+	ctx context.Context,
+	iface string,
+	up bool,
+) error {
+	return w.impl.InterfaceStatusChanged(ctx, iface, up)
+}
+
+func (w *networkManagementEventObserverStubWrapper) InterfaceLinkStateChanged(
+	ctx context.Context,
+	iface string,
+	up bool,
+) error {
+	return w.impl.InterfaceLinkStateChanged(ctx, iface, up)
+}
+
+func (w *networkManagementEventObserverStubWrapper) InterfaceAdded(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.InterfaceAdded(ctx, iface)
+}
+
+func (w *networkManagementEventObserverStubWrapper) InterfaceRemoved(
+	ctx context.Context,
+	iface string,
+) error {
+	return w.impl.InterfaceRemoved(ctx, iface)
+}
+
+func (w *networkManagementEventObserverStubWrapper) AddressUpdated(
+	ctx context.Context,
+	iface string,
+	address data.LinkAddress,
+) error {
+	return w.impl.AddressUpdated(ctx, iface, address)
+}
+
+func (w *networkManagementEventObserverStubWrapper) AddressRemoved(
+	ctx context.Context,
+	iface string,
+	address data.LinkAddress,
+) error {
+	return w.impl.AddressRemoved(ctx, iface, address)
+}
+
+func (w *networkManagementEventObserverStubWrapper) LimitReached(
+	ctx context.Context,
+	limitName string,
+	iface string,
+) error {
+	return w.impl.LimitReached(ctx, limitName, iface)
+}
+
+func (w *networkManagementEventObserverStubWrapper) InterfaceClassDataActivityChanged(
+	ctx context.Context,
+	label int32,
+	active bool,
+	tsNanos int64,
+	uid int32,
+) error {
+	return w.impl.InterfaceClassDataActivityChanged(ctx, label, active, tsNanos, uid)
+}
+
+func (w *networkManagementEventObserverStubWrapper) InterfaceDnsServerInfo(
+	ctx context.Context,
+	iface string,
+	lifetime int64,
+	servers []string,
+) error {
+	return w.impl.InterfaceDnsServerInfo(ctx, iface, lifetime, servers)
+}
+
+func (w *networkManagementEventObserverStubWrapper) RouteUpdated(
+	ctx context.Context,
+	route interface{},
+) error {
+	return w.impl.RouteUpdated(ctx, route)
+}
+
+func (w *networkManagementEventObserverStubWrapper) RouteRemoved(
+	ctx context.Context,
+	route interface{},
+) error {
+	return w.impl.RouteRemoved(ctx, route)
+}
+
+var _ INetworkManagementEventObserver = (*networkManagementEventObserverStubWrapper)(nil)
+
+// NewNetworkManagementEventObserverStub creates a server-side INetworkManagementEventObserver wrapping the given
+// server implementation. The returned value satisfies INetworkManagementEventObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkManagementEventObserverStub(
+	impl INetworkManagementEventObserverServer,
+) INetworkManagementEventObserver {
+	wrapper := &networkManagementEventObserverStubWrapper{impl: impl}
+	stub := &NetworkManagementEventObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

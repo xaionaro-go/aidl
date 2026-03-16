@@ -44,7 +44,7 @@ func (p *DeviceStateServiceProxy) RegisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceStateService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceStateService, "registerListener")
 	if _err != nil {
@@ -70,7 +70,7 @@ func (p *DeviceStateServiceProxy) UnregisterListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDeviceStateService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDeviceStateService, "unregisterListener")
 	if _err != nil {
@@ -137,4 +137,51 @@ func (s *DeviceStateServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDeviceStateServiceServer is the server-side interface that user implementations
+// provide to NewDeviceStateServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceStateServiceServer interface {
+	RegisterListener(ctx context.Context, listener IDeviceStateListener) error
+	UnregisterListener(ctx context.Context, listener IDeviceStateListener) error
+}
+
+type deviceStateServiceStubWrapper struct {
+	impl       IDeviceStateServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceStateServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceStateServiceStubWrapper) RegisterListener(
+	ctx context.Context,
+	listener IDeviceStateListener,
+) error {
+	return w.impl.RegisterListener(ctx, listener)
+}
+
+func (w *deviceStateServiceStubWrapper) UnregisterListener(
+	ctx context.Context,
+	listener IDeviceStateListener,
+) error {
+	return w.impl.UnregisterListener(ctx, listener)
+}
+
+var _ IDeviceStateService = (*deviceStateServiceStubWrapper)(nil)
+
+// NewDeviceStateServiceStub creates a server-side IDeviceStateService wrapping the given
+// server implementation. The returned value satisfies IDeviceStateService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceStateServiceStub(
+	impl IDeviceStateServiceServer,
+) IDeviceStateService {
+	wrapper := &deviceStateServiceStubWrapper{impl: impl}
+	stub := &DeviceStateServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -82,3 +82,42 @@ func (s *UpdateAvailableNetworksCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUpdateAvailableNetworksCallbackServer is the server-side interface that user implementations
+// provide to NewUpdateAvailableNetworksCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUpdateAvailableNetworksCallbackServer interface {
+	OnComplete(ctx context.Context, result int32) error
+}
+
+type updateAvailableNetworksCallbackStubWrapper struct {
+	impl       IUpdateAvailableNetworksCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *updateAvailableNetworksCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *updateAvailableNetworksCallbackStubWrapper) OnComplete(
+	ctx context.Context,
+	result int32,
+) error {
+	return w.impl.OnComplete(ctx, result)
+}
+
+var _ IUpdateAvailableNetworksCallback = (*updateAvailableNetworksCallbackStubWrapper)(nil)
+
+// NewUpdateAvailableNetworksCallbackStub creates a server-side IUpdateAvailableNetworksCallback wrapping the given
+// server implementation. The returned value satisfies IUpdateAvailableNetworksCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUpdateAvailableNetworksCallbackStub(
+	impl IUpdateAvailableNetworksCallbackServer,
+) IUpdateAvailableNetworksCallback {
+	wrapper := &updateAvailableNetworksCallbackStubWrapper{impl: impl}
+	stub := &UpdateAvailableNetworksCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

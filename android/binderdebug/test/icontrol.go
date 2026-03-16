@@ -90,3 +90,41 @@ func (s *ControlStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IControlServer is the server-side interface that user implementations
+// provide to NewControlStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IControlServer interface {
+	Continue(ctx context.Context) error
+}
+
+type controlStubWrapper struct {
+	impl       IControlServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *controlStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *controlStubWrapper) Continue(
+	ctx context.Context,
+) error {
+	return w.impl.Continue(ctx)
+}
+
+var _ IControl = (*controlStubWrapper)(nil)
+
+// NewControlStub creates a server-side IControl wrapping the given
+// server implementation. The returned value satisfies IControl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewControlStub(
+	impl IControlServer,
+) IControl {
+	wrapper := &controlStubWrapper{impl: impl}
+	stub := &ControlStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

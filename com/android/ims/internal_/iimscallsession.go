@@ -359,7 +359,7 @@ func (p *ImsCallSessionProxy) SetListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSession)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSession, "setListener")
 	if _err != nil {
@@ -591,7 +591,7 @@ func (p *ImsCallSessionProxy) ConsultativeTransfer(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIImsCallSession)
-	_data.WriteStrongBinder(transferToSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, transferToSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIImsCallSession, "consultativeTransfer")
 	if _err != nil {
@@ -1820,4 +1820,320 @@ func (s *ImsCallSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IImsCallSessionServer is the server-side interface that user implementations
+// provide to NewImsCallSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IImsCallSessionServer interface {
+	Close(ctx context.Context) error
+	GetCallId(ctx context.Context) (string, error)
+	GetCallProfile(ctx context.Context) (ims.ImsCallProfile, error)
+	GetLocalCallProfile(ctx context.Context) (ims.ImsCallProfile, error)
+	GetRemoteCallProfile(ctx context.Context) (ims.ImsCallProfile, error)
+	GetProperty(ctx context.Context, name string) (string, error)
+	GetState(ctx context.Context) (int32, error)
+	IsInCall(ctx context.Context) (bool, error)
+	SetListener(ctx context.Context, listener IImsCallSessionListener) error
+	SetMute(ctx context.Context, muted bool) error
+	Start(ctx context.Context, callee string, profile ims.ImsCallProfile) error
+	StartConference(ctx context.Context, participants []string, profile ims.ImsCallProfile) error
+	Accept(ctx context.Context, callType int32, profile ims.ImsStreamMediaProfile) error
+	Deflect(ctx context.Context, deflectNumber string) error
+	Reject(ctx context.Context, reason int32) error
+	Transfer(ctx context.Context, number string, isConfirmationRequired bool) error
+	ConsultativeTransfer(ctx context.Context, transferToSession IImsCallSession) error
+	Terminate(ctx context.Context, reason int32) error
+	Hold(ctx context.Context, profile ims.ImsStreamMediaProfile) error
+	Resume(ctx context.Context, profile ims.ImsStreamMediaProfile) error
+	Merge(ctx context.Context) error
+	Update(ctx context.Context, callType int32, profile ims.ImsStreamMediaProfile) error
+	ExtendToConference(ctx context.Context, participants []string) error
+	InviteParticipants(ctx context.Context, participants []string) error
+	RemoveParticipants(ctx context.Context, participants []string) error
+	SendDtmf(ctx context.Context, c uint16, result contexthub.Message) error
+	StartDtmf(ctx context.Context, c uint16) error
+	StopDtmf(ctx context.Context) error
+	SendUssd(ctx context.Context, ussdMessage string) error
+	GetVideoCallProvider(ctx context.Context) (IImsVideoCallProvider, error)
+	IsMultiparty(ctx context.Context) (bool, error)
+	SendRttModifyRequest(ctx context.Context, toProfile ims.ImsCallProfile) error
+	SendRttModifyResponse(ctx context.Context, status bool) error
+	SendRttMessage(ctx context.Context, rttMessage string) error
+	SendRtpHeaderExtensions(ctx context.Context, extensions []media.RtpHeaderExtension) error
+	CallSessionNotifyAnbr(ctx context.Context, mediaType int32, direction int32, bitsPerSecond int32) error
+}
+
+type imsCallSessionStubWrapper struct {
+	impl       IImsCallSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *imsCallSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *imsCallSessionStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) GetCallId(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetCallId(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) GetCallProfile(
+	ctx context.Context,
+) (ims.ImsCallProfile, error) {
+	return w.impl.GetCallProfile(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) GetLocalCallProfile(
+	ctx context.Context,
+) (ims.ImsCallProfile, error) {
+	return w.impl.GetLocalCallProfile(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) GetRemoteCallProfile(
+	ctx context.Context,
+) (ims.ImsCallProfile, error) {
+	return w.impl.GetRemoteCallProfile(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) GetProperty(
+	ctx context.Context,
+	name string,
+) (string, error) {
+	return w.impl.GetProperty(ctx, name)
+}
+
+func (w *imsCallSessionStubWrapper) GetState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetState(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) IsInCall(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInCall(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) SetListener(
+	ctx context.Context,
+	listener IImsCallSessionListener,
+) error {
+	return w.impl.SetListener(ctx, listener)
+}
+
+func (w *imsCallSessionStubWrapper) SetMute(
+	ctx context.Context,
+	muted bool,
+) error {
+	return w.impl.SetMute(ctx, muted)
+}
+
+func (w *imsCallSessionStubWrapper) Start(
+	ctx context.Context,
+	callee string,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.Start(ctx, callee, profile)
+}
+
+func (w *imsCallSessionStubWrapper) StartConference(
+	ctx context.Context,
+	participants []string,
+	profile ims.ImsCallProfile,
+) error {
+	return w.impl.StartConference(ctx, participants, profile)
+}
+
+func (w *imsCallSessionStubWrapper) Accept(
+	ctx context.Context,
+	callType int32,
+	profile ims.ImsStreamMediaProfile,
+) error {
+	return w.impl.Accept(ctx, callType, profile)
+}
+
+func (w *imsCallSessionStubWrapper) Deflect(
+	ctx context.Context,
+	deflectNumber string,
+) error {
+	return w.impl.Deflect(ctx, deflectNumber)
+}
+
+func (w *imsCallSessionStubWrapper) Reject(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.Reject(ctx, reason)
+}
+
+func (w *imsCallSessionStubWrapper) Transfer(
+	ctx context.Context,
+	number string,
+	isConfirmationRequired bool,
+) error {
+	return w.impl.Transfer(ctx, number, isConfirmationRequired)
+}
+
+func (w *imsCallSessionStubWrapper) ConsultativeTransfer(
+	ctx context.Context,
+	transferToSession IImsCallSession,
+) error {
+	return w.impl.ConsultativeTransfer(ctx, transferToSession)
+}
+
+func (w *imsCallSessionStubWrapper) Terminate(
+	ctx context.Context,
+	reason int32,
+) error {
+	return w.impl.Terminate(ctx, reason)
+}
+
+func (w *imsCallSessionStubWrapper) Hold(
+	ctx context.Context,
+	profile ims.ImsStreamMediaProfile,
+) error {
+	return w.impl.Hold(ctx, profile)
+}
+
+func (w *imsCallSessionStubWrapper) Resume(
+	ctx context.Context,
+	profile ims.ImsStreamMediaProfile,
+) error {
+	return w.impl.Resume(ctx, profile)
+}
+
+func (w *imsCallSessionStubWrapper) Merge(
+	ctx context.Context,
+) error {
+	return w.impl.Merge(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) Update(
+	ctx context.Context,
+	callType int32,
+	profile ims.ImsStreamMediaProfile,
+) error {
+	return w.impl.Update(ctx, callType, profile)
+}
+
+func (w *imsCallSessionStubWrapper) ExtendToConference(
+	ctx context.Context,
+	participants []string,
+) error {
+	return w.impl.ExtendToConference(ctx, participants)
+}
+
+func (w *imsCallSessionStubWrapper) InviteParticipants(
+	ctx context.Context,
+	participants []string,
+) error {
+	return w.impl.InviteParticipants(ctx, participants)
+}
+
+func (w *imsCallSessionStubWrapper) RemoveParticipants(
+	ctx context.Context,
+	participants []string,
+) error {
+	return w.impl.RemoveParticipants(ctx, participants)
+}
+
+func (w *imsCallSessionStubWrapper) SendDtmf(
+	ctx context.Context,
+	c uint16,
+	result contexthub.Message,
+) error {
+	return w.impl.SendDtmf(ctx, c, result)
+}
+
+func (w *imsCallSessionStubWrapper) StartDtmf(
+	ctx context.Context,
+	c uint16,
+) error {
+	return w.impl.StartDtmf(ctx, c)
+}
+
+func (w *imsCallSessionStubWrapper) StopDtmf(
+	ctx context.Context,
+) error {
+	return w.impl.StopDtmf(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) SendUssd(
+	ctx context.Context,
+	ussdMessage string,
+) error {
+	return w.impl.SendUssd(ctx, ussdMessage)
+}
+
+func (w *imsCallSessionStubWrapper) GetVideoCallProvider(
+	ctx context.Context,
+) (IImsVideoCallProvider, error) {
+	return w.impl.GetVideoCallProvider(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) IsMultiparty(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsMultiparty(ctx)
+}
+
+func (w *imsCallSessionStubWrapper) SendRttModifyRequest(
+	ctx context.Context,
+	toProfile ims.ImsCallProfile,
+) error {
+	return w.impl.SendRttModifyRequest(ctx, toProfile)
+}
+
+func (w *imsCallSessionStubWrapper) SendRttModifyResponse(
+	ctx context.Context,
+	status bool,
+) error {
+	return w.impl.SendRttModifyResponse(ctx, status)
+}
+
+func (w *imsCallSessionStubWrapper) SendRttMessage(
+	ctx context.Context,
+	rttMessage string,
+) error {
+	return w.impl.SendRttMessage(ctx, rttMessage)
+}
+
+func (w *imsCallSessionStubWrapper) SendRtpHeaderExtensions(
+	ctx context.Context,
+	extensions []media.RtpHeaderExtension,
+) error {
+	return w.impl.SendRtpHeaderExtensions(ctx, extensions)
+}
+
+func (w *imsCallSessionStubWrapper) CallSessionNotifyAnbr(
+	ctx context.Context,
+	mediaType int32,
+	direction int32,
+	bitsPerSecond int32,
+) error {
+	return w.impl.CallSessionNotifyAnbr(ctx, mediaType, direction, bitsPerSecond)
+}
+
+var _ IImsCallSession = (*imsCallSessionStubWrapper)(nil)
+
+// NewImsCallSessionStub creates a server-side IImsCallSession wrapping the given
+// server implementation. The returned value satisfies IImsCallSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewImsCallSessionStub(
+	impl IImsCallSessionServer,
+) IImsCallSession {
+	wrapper := &imsCallSessionStubWrapper{impl: impl}
+	stub := &ImsCallSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

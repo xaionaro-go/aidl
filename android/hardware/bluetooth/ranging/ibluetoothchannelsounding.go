@@ -164,7 +164,7 @@ func (p *BluetoothChannelSoundingProxy) OpenSession(
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothChannelSounding, "openSession")
 	if _err != nil {
@@ -330,4 +330,72 @@ func (s *BluetoothChannelSoundingStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothChannelSoundingServer is the server-side interface that user implementations
+// provide to NewBluetoothChannelSoundingStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothChannelSoundingServer interface {
+	GetVendorSpecificData(ctx context.Context) ([]VendorSpecificData, error)
+	GetSupportedSessionTypes(ctx context.Context) ([]SessionType, error)
+	GetMaxSupportedCsSecurityLevel(ctx context.Context) (CsSecurityLevel, error)
+	OpenSession(ctx context.Context, params BluetoothChannelSoundingParameters, callback IBluetoothChannelSoundingSessionCallback) (IBluetoothChannelSoundingSession, error)
+	GetSupportedCsSecurityLevels(ctx context.Context) ([]CsSecurityLevel, error)
+}
+
+type bluetoothChannelSoundingStubWrapper struct {
+	impl       IBluetoothChannelSoundingServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothChannelSoundingStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothChannelSoundingStubWrapper) GetVendorSpecificData(
+	ctx context.Context,
+) ([]VendorSpecificData, error) {
+	return w.impl.GetVendorSpecificData(ctx)
+}
+
+func (w *bluetoothChannelSoundingStubWrapper) GetSupportedSessionTypes(
+	ctx context.Context,
+) ([]SessionType, error) {
+	return w.impl.GetSupportedSessionTypes(ctx)
+}
+
+func (w *bluetoothChannelSoundingStubWrapper) GetMaxSupportedCsSecurityLevel(
+	ctx context.Context,
+) (CsSecurityLevel, error) {
+	return w.impl.GetMaxSupportedCsSecurityLevel(ctx)
+}
+
+func (w *bluetoothChannelSoundingStubWrapper) OpenSession(
+	ctx context.Context,
+	params BluetoothChannelSoundingParameters,
+	callback IBluetoothChannelSoundingSessionCallback,
+) (IBluetoothChannelSoundingSession, error) {
+	return w.impl.OpenSession(ctx, params, callback)
+}
+
+func (w *bluetoothChannelSoundingStubWrapper) GetSupportedCsSecurityLevels(
+	ctx context.Context,
+) ([]CsSecurityLevel, error) {
+	return w.impl.GetSupportedCsSecurityLevels(ctx)
+}
+
+var _ IBluetoothChannelSounding = (*bluetoothChannelSoundingStubWrapper)(nil)
+
+// NewBluetoothChannelSoundingStub creates a server-side IBluetoothChannelSounding wrapping the given
+// server implementation. The returned value satisfies IBluetoothChannelSounding
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothChannelSoundingStub(
+	impl IBluetoothChannelSoundingServer,
+) IBluetoothChannelSounding {
+	wrapper := &bluetoothChannelSoundingStubWrapper{impl: impl}
+	stub := &BluetoothChannelSoundingStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

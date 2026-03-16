@@ -152,3 +152,49 @@ func (s *GnssVisibilityControlCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssVisibilityControlCallbackServer is the server-side interface that user implementations
+// provide to NewGnssVisibilityControlCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssVisibilityControlCallbackServer interface {
+	NfwNotifyCb(ctx context.Context, notification visibility_controlIGnssVisibilityControlCallback.NfwNotification) error
+	IsInEmergencySession(ctx context.Context) (bool, error)
+}
+
+type gnssVisibilityControlCallbackStubWrapper struct {
+	impl       IGnssVisibilityControlCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssVisibilityControlCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssVisibilityControlCallbackStubWrapper) NfwNotifyCb(
+	ctx context.Context,
+	notification visibility_controlIGnssVisibilityControlCallback.NfwNotification,
+) error {
+	return w.impl.NfwNotifyCb(ctx, notification)
+}
+
+func (w *gnssVisibilityControlCallbackStubWrapper) IsInEmergencySession(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInEmergencySession(ctx)
+}
+
+var _ IGnssVisibilityControlCallback = (*gnssVisibilityControlCallbackStubWrapper)(nil)
+
+// NewGnssVisibilityControlCallbackStub creates a server-side IGnssVisibilityControlCallback wrapping the given
+// server implementation. The returned value satisfies IGnssVisibilityControlCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssVisibilityControlCallbackStub(
+	impl IGnssVisibilityControlCallbackServer,
+) IGnssVisibilityControlCallback {
+	wrapper := &gnssVisibilityControlCallbackStubWrapper{impl: impl}
+	stub := &GnssVisibilityControlCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

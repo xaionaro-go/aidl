@@ -120,3 +120,50 @@ func (s *AssistDataReceiverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAssistDataReceiverServer is the server-side interface that user implementations
+// provide to NewAssistDataReceiverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAssistDataReceiverServer interface {
+	OnHandleAssistData(ctx context.Context, resultData interface{}) error
+	OnHandleAssistScreenshot(ctx context.Context, screenshot graphics.Bitmap) error
+}
+
+type assistDataReceiverStubWrapper struct {
+	impl       IAssistDataReceiverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *assistDataReceiverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *assistDataReceiverStubWrapper) OnHandleAssistData(
+	ctx context.Context,
+	resultData interface{},
+) error {
+	return w.impl.OnHandleAssistData(ctx, resultData)
+}
+
+func (w *assistDataReceiverStubWrapper) OnHandleAssistScreenshot(
+	ctx context.Context,
+	screenshot graphics.Bitmap,
+) error {
+	return w.impl.OnHandleAssistScreenshot(ctx, screenshot)
+}
+
+var _ IAssistDataReceiver = (*assistDataReceiverStubWrapper)(nil)
+
+// NewAssistDataReceiverStub creates a server-side IAssistDataReceiver wrapping the given
+// server implementation. The returned value satisfies IAssistDataReceiver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAssistDataReceiverStub(
+	impl IAssistDataReceiverServer,
+) IAssistDataReceiver {
+	wrapper := &assistDataReceiverStubWrapper{impl: impl}
+	stub := &AssistDataReceiverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

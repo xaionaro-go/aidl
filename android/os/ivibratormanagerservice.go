@@ -3,6 +3,7 @@ package os
 import (
 	"context"
 	"fmt"
+	vibrator "github.com/xaionaro-go/binder/android/os/vibrator"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -39,7 +40,7 @@ type IVibratorManagerService interface {
 	CancelVibrate(ctx context.Context, usageFilter int32, token binder.IBinder) error
 	PerformHapticFeedback(ctx context.Context, uid int32, deviceId int32, opPkg string, constant int32, reason string, flags int32, privFlags int32) error
 	PerformHapticFeedbackForInputDevice(ctx context.Context, uid int32, deviceId int32, opPkg string, constant int32, inputDeviceId int32, inputSource int32, reason string, flags int32, privFlags int32) error
-	StartVendorVibrationSession(ctx context.Context, uid int32, deviceId int32, opPkg string, vibratorIds []int32, attributes VibrationAttributes, reason string, callback interface{}) (ICancellationSignal, error)
+	StartVendorVibrationSession(ctx context.Context, uid int32, deviceId int32, opPkg string, vibratorIds []int32, attributes VibrationAttributes, reason string, callback vibrator.IVibrationSessionCallback) (ICancellationSignal, error)
 }
 
 type VibratorManagerServiceProxy struct {
@@ -202,7 +203,7 @@ func (p *VibratorManagerServiceProxy) RegisterVibratorStateListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibratorManagerService)
 	_data.WriteInt32(vibratorId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorManagerService, "registerVibratorStateListener")
 	if _err != nil {
@@ -235,7 +236,7 @@ func (p *VibratorManagerServiceProxy) UnregisterVibratorStateListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibratorManagerService)
 	_data.WriteInt32(vibratorId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorManagerService, "unregisterVibratorStateListener")
 	if _err != nil {
@@ -328,7 +329,7 @@ func (p *VibratorManagerServiceProxy) Vibrate(
 		return _err
 	}
 	_data.WriteString16(reason)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorManagerService, "vibrate")
 	if _err != nil {
@@ -356,7 +357,7 @@ func (p *VibratorManagerServiceProxy) CancelVibrate(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIVibratorManagerService)
 	_data.WriteInt32(usageFilter)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorManagerService, "cancelVibrate")
 	if _err != nil {
@@ -446,7 +447,7 @@ func (p *VibratorManagerServiceProxy) StartVendorVibrationSession(
 	vibratorIds []int32,
 	attributes VibrationAttributes,
 	reason string,
-	callback interface{},
+	callback vibrator.IVibrationSessionCallback,
 ) (ICancellationSignal, error) {
 	var _result ICancellationSignal
 	_data := parcel.New()
@@ -467,6 +468,7 @@ func (p *VibratorManagerServiceProxy) StartVendorVibrationSession(
 		return _result, _err
 	}
 	_data.WriteString16(reason)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIVibratorManagerService, "startVendorVibrationSession")
 	if _err != nil {
@@ -845,7 +847,9 @@ func (s *VibratorManagerServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback vibrator.IVibrationSessionCallback
+		_ = _arg_callback
 		_result, _err := s.Impl.StartVendorVibrationSession(ctx, _arg_uid, _arg_deviceId, _arg_opPkg, _arg_vibratorIds, _arg_attributes, _arg_reason, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -859,4 +863,162 @@ func (s *VibratorManagerServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IVibratorManagerServiceServer is the server-side interface that user implementations
+// provide to NewVibratorManagerServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVibratorManagerServiceServer interface {
+	GetVibratorIds(ctx context.Context) ([]int32, error)
+	GetCapabilities(ctx context.Context) (int32, error)
+	GetVibratorInfo(ctx context.Context, vibratorId int32) (VibratorInfo, error)
+	IsVibrating(ctx context.Context, vibratorId int32) (bool, error)
+	RegisterVibratorStateListener(ctx context.Context, vibratorId int32, listener IVibratorStateListener) (bool, error)
+	UnregisterVibratorStateListener(ctx context.Context, vibratorId int32, listener IVibratorStateListener) (bool, error)
+	SetAlwaysOnEffect(ctx context.Context, uid int32, opPkg string, alwaysOnId int32, vibration CombinedVibration, attributes VibrationAttributes) (bool, error)
+	Vibrate(ctx context.Context, uid int32, deviceId int32, opPkg string, vibration CombinedVibration, attributes VibrationAttributes, reason string, token binder.IBinder) error
+	CancelVibrate(ctx context.Context, usageFilter int32, token binder.IBinder) error
+	PerformHapticFeedback(ctx context.Context, uid int32, deviceId int32, opPkg string, constant int32, reason string, flags int32, privFlags int32) error
+	PerformHapticFeedbackForInputDevice(ctx context.Context, uid int32, deviceId int32, opPkg string, constant int32, inputDeviceId int32, inputSource int32, reason string, flags int32, privFlags int32) error
+	StartVendorVibrationSession(ctx context.Context, uid int32, deviceId int32, opPkg string, vibratorIds []int32, attributes VibrationAttributes, reason string, callback vibrator.IVibrationSessionCallback) (ICancellationSignal, error)
+}
+
+type vibratorManagerServiceStubWrapper struct {
+	impl       IVibratorManagerServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vibratorManagerServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vibratorManagerServiceStubWrapper) GetVibratorIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetVibratorIds(ctx)
+}
+
+func (w *vibratorManagerServiceStubWrapper) GetCapabilities(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCapabilities(ctx)
+}
+
+func (w *vibratorManagerServiceStubWrapper) GetVibratorInfo(
+	ctx context.Context,
+	vibratorId int32,
+) (VibratorInfo, error) {
+	return w.impl.GetVibratorInfo(ctx, vibratorId)
+}
+
+func (w *vibratorManagerServiceStubWrapper) IsVibrating(
+	ctx context.Context,
+	vibratorId int32,
+) (bool, error) {
+	return w.impl.IsVibrating(ctx, vibratorId)
+}
+
+func (w *vibratorManagerServiceStubWrapper) RegisterVibratorStateListener(
+	ctx context.Context,
+	vibratorId int32,
+	listener IVibratorStateListener,
+) (bool, error) {
+	return w.impl.RegisterVibratorStateListener(ctx, vibratorId, listener)
+}
+
+func (w *vibratorManagerServiceStubWrapper) UnregisterVibratorStateListener(
+	ctx context.Context,
+	vibratorId int32,
+	listener IVibratorStateListener,
+) (bool, error) {
+	return w.impl.UnregisterVibratorStateListener(ctx, vibratorId, listener)
+}
+
+func (w *vibratorManagerServiceStubWrapper) SetAlwaysOnEffect(
+	ctx context.Context,
+	uid int32,
+	opPkg string,
+	alwaysOnId int32,
+	vibration CombinedVibration,
+	attributes VibrationAttributes,
+) (bool, error) {
+	return w.impl.SetAlwaysOnEffect(ctx, uid, opPkg, alwaysOnId, vibration, attributes)
+}
+
+func (w *vibratorManagerServiceStubWrapper) Vibrate(
+	ctx context.Context,
+	uid int32,
+	deviceId int32,
+	opPkg string,
+	vibration CombinedVibration,
+	attributes VibrationAttributes,
+	reason string,
+	token binder.IBinder,
+) error {
+	return w.impl.Vibrate(ctx, uid, deviceId, opPkg, vibration, attributes, reason, token)
+}
+
+func (w *vibratorManagerServiceStubWrapper) CancelVibrate(
+	ctx context.Context,
+	usageFilter int32,
+	token binder.IBinder,
+) error {
+	return w.impl.CancelVibrate(ctx, usageFilter, token)
+}
+
+func (w *vibratorManagerServiceStubWrapper) PerformHapticFeedback(
+	ctx context.Context,
+	uid int32,
+	deviceId int32,
+	opPkg string,
+	constant int32,
+	reason string,
+	flags int32,
+	privFlags int32,
+) error {
+	return w.impl.PerformHapticFeedback(ctx, uid, deviceId, opPkg, constant, reason, flags, privFlags)
+}
+
+func (w *vibratorManagerServiceStubWrapper) PerformHapticFeedbackForInputDevice(
+	ctx context.Context,
+	uid int32,
+	deviceId int32,
+	opPkg string,
+	constant int32,
+	inputDeviceId int32,
+	inputSource int32,
+	reason string,
+	flags int32,
+	privFlags int32,
+) error {
+	return w.impl.PerformHapticFeedbackForInputDevice(ctx, uid, deviceId, opPkg, constant, inputDeviceId, inputSource, reason, flags, privFlags)
+}
+
+func (w *vibratorManagerServiceStubWrapper) StartVendorVibrationSession(
+	ctx context.Context,
+	uid int32,
+	deviceId int32,
+	opPkg string,
+	vibratorIds []int32,
+	attributes VibrationAttributes,
+	reason string,
+	callback vibrator.IVibrationSessionCallback,
+) (ICancellationSignal, error) {
+	return w.impl.StartVendorVibrationSession(ctx, uid, deviceId, opPkg, vibratorIds, attributes, reason, callback)
+}
+
+var _ IVibratorManagerService = (*vibratorManagerServiceStubWrapper)(nil)
+
+// NewVibratorManagerServiceStub creates a server-side IVibratorManagerService wrapping the given
+// server implementation. The returned value satisfies IVibratorManagerService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVibratorManagerServiceStub(
+	impl IVibratorManagerServiceServer,
+) IVibratorManagerService {
+	wrapper := &vibratorManagerServiceStubWrapper{impl: impl}
+	stub := &VibratorManagerServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

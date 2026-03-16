@@ -43,7 +43,7 @@ func (p *PhoneAccountSuggestionServiceProxy) OnAccountSuggestionRequest(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPhoneAccountSuggestionService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(number)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPhoneAccountSuggestionService, "onAccountSuggestionRequest")
@@ -86,4 +86,44 @@ func (s *PhoneAccountSuggestionServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPhoneAccountSuggestionServiceServer is the server-side interface that user implementations
+// provide to NewPhoneAccountSuggestionServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPhoneAccountSuggestionServiceServer interface {
+	OnAccountSuggestionRequest(ctx context.Context, callback IPhoneAccountSuggestionCallback, number string) error
+}
+
+type phoneAccountSuggestionServiceStubWrapper struct {
+	impl       IPhoneAccountSuggestionServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *phoneAccountSuggestionServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *phoneAccountSuggestionServiceStubWrapper) OnAccountSuggestionRequest(
+	ctx context.Context,
+	callback IPhoneAccountSuggestionCallback,
+	number string,
+) error {
+	return w.impl.OnAccountSuggestionRequest(ctx, callback, number)
+}
+
+var _ IPhoneAccountSuggestionService = (*phoneAccountSuggestionServiceStubWrapper)(nil)
+
+// NewPhoneAccountSuggestionServiceStub creates a server-side IPhoneAccountSuggestionService wrapping the given
+// server implementation. The returned value satisfies IPhoneAccountSuggestionService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPhoneAccountSuggestionServiceStub(
+	impl IPhoneAccountSuggestionServiceServer,
+) IPhoneAccountSuggestionService {
+	wrapper := &phoneAccountSuggestionServiceStubWrapper{impl: impl}
+	stub := &PhoneAccountSuggestionServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

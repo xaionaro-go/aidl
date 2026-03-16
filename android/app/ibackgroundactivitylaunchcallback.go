@@ -82,3 +82,42 @@ func (s *BackgroundActivityLaunchCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBackgroundActivityLaunchCallbackServer is the server-side interface that user implementations
+// provide to NewBackgroundActivityLaunchCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackgroundActivityLaunchCallbackServer interface {
+	OnBackgroundActivityLaunchAborted(ctx context.Context, message string) error
+}
+
+type backgroundActivityLaunchCallbackStubWrapper struct {
+	impl       IBackgroundActivityLaunchCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backgroundActivityLaunchCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backgroundActivityLaunchCallbackStubWrapper) OnBackgroundActivityLaunchAborted(
+	ctx context.Context,
+	message string,
+) error {
+	return w.impl.OnBackgroundActivityLaunchAborted(ctx, message)
+}
+
+var _ IBackgroundActivityLaunchCallback = (*backgroundActivityLaunchCallbackStubWrapper)(nil)
+
+// NewBackgroundActivityLaunchCallbackStub creates a server-side IBackgroundActivityLaunchCallback wrapping the given
+// server implementation. The returned value satisfies IBackgroundActivityLaunchCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackgroundActivityLaunchCallbackStub(
+	impl IBackgroundActivityLaunchCallbackServer,
+) IBackgroundActivityLaunchCallback {
+	wrapper := &backgroundActivityLaunchCallbackStubWrapper{impl: impl}
+	stub := &BackgroundActivityLaunchCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

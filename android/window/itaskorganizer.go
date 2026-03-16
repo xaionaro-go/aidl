@@ -3,7 +3,6 @@ package window
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -30,7 +29,7 @@ type ITaskOrganizer interface {
 	RemoveStartingWindow(ctx context.Context, removalInfo StartingWindowRemovalInfo) error
 	CopySplashScreenView(ctx context.Context, taskId int32) error
 	OnAppSplashScreenViewRemoved(ctx context.Context, taskId int32) error
-	OnTaskAppeared(ctx context.Context, taskInfo interface{}, leash view.SurfaceControl) error
+	OnTaskAppeared(ctx context.Context, taskInfo interface{}, leash interface{}) error
 	OnTaskVanished(ctx context.Context, taskInfo interface{}) error
 	OnTaskInfoChanged(ctx context.Context, taskInfo interface{}) error
 	OnBackPressedOnTaskRoot(ctx context.Context, taskInfo interface{}) error
@@ -130,14 +129,10 @@ func (p *TaskOrganizerProxy) OnAppSplashScreenViewRemoved(
 func (p *TaskOrganizerProxy) OnTaskAppeared(
 	ctx context.Context,
 	taskInfo interface{},
-	leash view.SurfaceControl,
+	leash interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITaskOrganizer)
-	_data.WriteInt32(1)
-	if _err := leash.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITaskOrganizer, "onTaskAppeared")
 	if _err != nil {
@@ -292,18 +287,7 @@ func (s *TaskOrganizerStub) OnTransaction(
 			return nil, _err
 		}
 		var _arg_taskInfo interface{}
-		var _arg_leash view.SurfaceControl
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_leash.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_leash interface{}
 		_err := s.Impl.OnTaskAppeared(ctx, _arg_taskInfo, _arg_leash)
 		_ = _err
 		return nil, nil
@@ -345,4 +329,108 @@ func (s *TaskOrganizerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITaskOrganizerServer is the server-side interface that user implementations
+// provide to NewTaskOrganizerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITaskOrganizerServer interface {
+	AddStartingWindow(ctx context.Context, info StartingWindowInfo) error
+	RemoveStartingWindow(ctx context.Context, removalInfo StartingWindowRemovalInfo) error
+	CopySplashScreenView(ctx context.Context, taskId int32) error
+	OnAppSplashScreenViewRemoved(ctx context.Context, taskId int32) error
+	OnTaskAppeared(ctx context.Context, taskInfo interface{}, leash interface{}) error
+	OnTaskVanished(ctx context.Context, taskInfo interface{}) error
+	OnTaskInfoChanged(ctx context.Context, taskInfo interface{}) error
+	OnBackPressedOnTaskRoot(ctx context.Context, taskInfo interface{}) error
+	OnImeDrawnOnTask(ctx context.Context, taskId int32) error
+}
+
+type taskOrganizerStubWrapper struct {
+	impl       ITaskOrganizerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *taskOrganizerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *taskOrganizerStubWrapper) AddStartingWindow(
+	ctx context.Context,
+	info StartingWindowInfo,
+) error {
+	return w.impl.AddStartingWindow(ctx, info)
+}
+
+func (w *taskOrganizerStubWrapper) RemoveStartingWindow(
+	ctx context.Context,
+	removalInfo StartingWindowRemovalInfo,
+) error {
+	return w.impl.RemoveStartingWindow(ctx, removalInfo)
+}
+
+func (w *taskOrganizerStubWrapper) CopySplashScreenView(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.CopySplashScreenView(ctx, taskId)
+}
+
+func (w *taskOrganizerStubWrapper) OnAppSplashScreenViewRemoved(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.OnAppSplashScreenViewRemoved(ctx, taskId)
+}
+
+func (w *taskOrganizerStubWrapper) OnTaskAppeared(
+	ctx context.Context,
+	taskInfo interface{},
+	leash interface{},
+) error {
+	return w.impl.OnTaskAppeared(ctx, taskInfo, leash)
+}
+
+func (w *taskOrganizerStubWrapper) OnTaskVanished(
+	ctx context.Context,
+	taskInfo interface{},
+) error {
+	return w.impl.OnTaskVanished(ctx, taskInfo)
+}
+
+func (w *taskOrganizerStubWrapper) OnTaskInfoChanged(
+	ctx context.Context,
+	taskInfo interface{},
+) error {
+	return w.impl.OnTaskInfoChanged(ctx, taskInfo)
+}
+
+func (w *taskOrganizerStubWrapper) OnBackPressedOnTaskRoot(
+	ctx context.Context,
+	taskInfo interface{},
+) error {
+	return w.impl.OnBackPressedOnTaskRoot(ctx, taskInfo)
+}
+
+func (w *taskOrganizerStubWrapper) OnImeDrawnOnTask(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.OnImeDrawnOnTask(ctx, taskId)
+}
+
+var _ ITaskOrganizer = (*taskOrganizerStubWrapper)(nil)
+
+// NewTaskOrganizerStub creates a server-side ITaskOrganizer wrapping the given
+// server implementation. The returned value satisfies ITaskOrganizer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTaskOrganizerStub(
+	impl ITaskOrganizerServer,
+) ITaskOrganizer {
+	wrapper := &taskOrganizerStubWrapper{impl: impl}
+	stub := &TaskOrganizerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

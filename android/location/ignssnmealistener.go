@@ -88,3 +88,43 @@ func (s *GnssNmeaListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssNmeaListenerServer is the server-side interface that user implementations
+// provide to NewGnssNmeaListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssNmeaListenerServer interface {
+	OnNmeaReceived(ctx context.Context, timestamp int64, nmea string) error
+}
+
+type gnssNmeaListenerStubWrapper struct {
+	impl       IGnssNmeaListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssNmeaListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssNmeaListenerStubWrapper) OnNmeaReceived(
+	ctx context.Context,
+	timestamp int64,
+	nmea string,
+) error {
+	return w.impl.OnNmeaReceived(ctx, timestamp, nmea)
+}
+
+var _ IGnssNmeaListener = (*gnssNmeaListenerStubWrapper)(nil)
+
+// NewGnssNmeaListenerStub creates a server-side IGnssNmeaListener wrapping the given
+// server implementation. The returned value satisfies IGnssNmeaListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssNmeaListenerStub(
+	impl IGnssNmeaListenerServer,
+) IGnssNmeaListener {
+	wrapper := &gnssNmeaListenerStubWrapper{impl: impl}
+	stub := &GnssNmeaListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -18,7 +18,11 @@ func (s *FencedExecutionResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteStrongBinder(s.Callback.AsBinder().Handle())
+	if s.Callback == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Callback.AsBinder().Handle())
+	}
 	p.WriteFileDescriptor(s.SyncFence)
 
 	parcel.WriteParcelableFooter(p, _headerPos)

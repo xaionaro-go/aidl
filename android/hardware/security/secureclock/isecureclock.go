@@ -114,3 +114,42 @@ func (s *SecureClockStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISecureClockServer is the server-side interface that user implementations
+// provide to NewSecureClockStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISecureClockServer interface {
+	GenerateTimeStamp(ctx context.Context, challenge int64) (TimeStampToken, error)
+}
+
+type secureClockStubWrapper struct {
+	impl       ISecureClockServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *secureClockStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *secureClockStubWrapper) GenerateTimeStamp(
+	ctx context.Context,
+	challenge int64,
+) (TimeStampToken, error) {
+	return w.impl.GenerateTimeStamp(ctx, challenge)
+}
+
+var _ ISecureClock = (*secureClockStubWrapper)(nil)
+
+// NewSecureClockStub creates a server-side ISecureClock wrapping the given
+// server implementation. The returned value satisfies ISecureClock
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSecureClockStub(
+	impl ISecureClockServer,
+) ISecureClock {
+	wrapper := &secureClockStubWrapper{impl: impl}
+	stub := &SecureClockStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

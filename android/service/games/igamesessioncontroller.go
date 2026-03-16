@@ -130,3 +130,51 @@ func (s *GameSessionControllerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGameSessionControllerServer is the server-side interface that user implementations
+// provide to NewGameSessionControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGameSessionControllerServer interface {
+	TakeScreenshot(ctx context.Context, taskId int32, gameScreenshotResultFuture infra.AndroidFuture) error
+	RestartGame(ctx context.Context, taskId int32) error
+}
+
+type gameSessionControllerStubWrapper struct {
+	impl       IGameSessionControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gameSessionControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gameSessionControllerStubWrapper) TakeScreenshot(
+	ctx context.Context,
+	taskId int32,
+	gameScreenshotResultFuture infra.AndroidFuture,
+) error {
+	return w.impl.TakeScreenshot(ctx, taskId, gameScreenshotResultFuture)
+}
+
+func (w *gameSessionControllerStubWrapper) RestartGame(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.RestartGame(ctx, taskId)
+}
+
+var _ IGameSessionController = (*gameSessionControllerStubWrapper)(nil)
+
+// NewGameSessionControllerStub creates a server-side IGameSessionController wrapping the given
+// server implementation. The returned value satisfies IGameSessionController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGameSessionControllerStub(
+	impl IGameSessionControllerServer,
+) IGameSessionController {
+	wrapper := &gameSessionControllerStubWrapper{impl: impl}
+	stub := &GameSessionControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

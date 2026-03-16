@@ -106,3 +106,44 @@ func (s *VrListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVrListenerServer is the server-side interface that user implementations
+// provide to NewVrListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVrListenerServer interface {
+	FocusedActivityChanged(ctx context.Context, component content.ComponentName, running2dInVr bool, pid int32) error
+}
+
+type vrListenerStubWrapper struct {
+	impl       IVrListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *vrListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *vrListenerStubWrapper) FocusedActivityChanged(
+	ctx context.Context,
+	component content.ComponentName,
+	running2dInVr bool,
+	pid int32,
+) error {
+	return w.impl.FocusedActivityChanged(ctx, component, running2dInVr, pid)
+}
+
+var _ IVrListener = (*vrListenerStubWrapper)(nil)
+
+// NewVrListenerStub creates a server-side IVrListener wrapping the given
+// server implementation. The returned value satisfies IVrListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVrListenerStub(
+	impl IVrListenerServer,
+) IVrListener {
+	wrapper := &vrListenerStubWrapper{impl: impl}
+	stub := &VrListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

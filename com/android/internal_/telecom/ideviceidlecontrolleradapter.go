@@ -113,3 +113,44 @@ func (s *DeviceIdleControllerAdapterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IDeviceIdleControllerAdapterServer is the server-side interface that user implementations
+// provide to NewDeviceIdleControllerAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDeviceIdleControllerAdapterServer interface {
+	ExemptAppTemporarilyForEvent(ctx context.Context, packageName string, duration int64, reason string) error
+}
+
+type deviceIdleControllerAdapterStubWrapper struct {
+	impl       IDeviceIdleControllerAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *deviceIdleControllerAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *deviceIdleControllerAdapterStubWrapper) ExemptAppTemporarilyForEvent(
+	ctx context.Context,
+	packageName string,
+	duration int64,
+	reason string,
+) error {
+	return w.impl.ExemptAppTemporarilyForEvent(ctx, packageName, duration, reason)
+}
+
+var _ IDeviceIdleControllerAdapter = (*deviceIdleControllerAdapterStubWrapper)(nil)
+
+// NewDeviceIdleControllerAdapterStub creates a server-side IDeviceIdleControllerAdapter wrapping the given
+// server implementation. The returned value satisfies IDeviceIdleControllerAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDeviceIdleControllerAdapterStub(
+	impl IDeviceIdleControllerAdapterServer,
+) IDeviceIdleControllerAdapter {
+	wrapper := &deviceIdleControllerAdapterStubWrapper{impl: impl}
+	stub := &DeviceIdleControllerAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

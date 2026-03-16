@@ -180,3 +180,52 @@ func (s *CrossUserContentServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICrossUserContentServiceServer is the server-side interface that user implementations
+// provide to NewCrossUserContentServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICrossUserContentServiceServer interface {
+	UpdateContent(ctx context.Context, uri net.Uri, key string, value int32) error
+	NotifyForUriAsUser(ctx context.Context, uri net.Uri) error
+}
+
+type crossUserContentServiceStubWrapper struct {
+	impl       ICrossUserContentServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *crossUserContentServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *crossUserContentServiceStubWrapper) UpdateContent(
+	ctx context.Context,
+	uri net.Uri,
+	key string,
+	value int32,
+) error {
+	return w.impl.UpdateContent(ctx, uri, key, value)
+}
+
+func (w *crossUserContentServiceStubWrapper) NotifyForUriAsUser(
+	ctx context.Context,
+	uri net.Uri,
+) error {
+	return w.impl.NotifyForUriAsUser(ctx, uri)
+}
+
+var _ ICrossUserContentService = (*crossUserContentServiceStubWrapper)(nil)
+
+// NewCrossUserContentServiceStub creates a server-side ICrossUserContentService wrapping the given
+// server implementation. The returned value satisfies ICrossUserContentService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCrossUserContentServiceStub(
+	impl ICrossUserContentServiceServer,
+) ICrossUserContentService {
+	wrapper := &crossUserContentServiceStubWrapper{impl: impl}
+	stub := &CrossUserContentServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

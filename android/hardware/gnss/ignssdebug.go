@@ -105,3 +105,41 @@ func (s *GnssDebugStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGnssDebugServer is the server-side interface that user implementations
+// provide to NewGnssDebugStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssDebugServer interface {
+	GetDebugData(ctx context.Context) (gnssIGnssDebug.DebugData, error)
+}
+
+type gnssDebugStubWrapper struct {
+	impl       IGnssDebugServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssDebugStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssDebugStubWrapper) GetDebugData(
+	ctx context.Context,
+) (gnssIGnssDebug.DebugData, error) {
+	return w.impl.GetDebugData(ctx)
+}
+
+var _ IGnssDebug = (*gnssDebugStubWrapper)(nil)
+
+// NewGnssDebugStub creates a server-side IGnssDebug wrapping the given
+// server implementation. The returned value satisfies IGnssDebug
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssDebugStub(
+	impl IGnssDebugServer,
+) IGnssDebug {
+	wrapper := &gnssDebugStubWrapper{impl: impl}
+	stub := &GnssDebugStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

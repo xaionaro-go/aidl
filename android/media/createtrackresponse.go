@@ -2,7 +2,6 @@ package media
 
 import (
 	tuner "github.com/xaionaro-go/binder/android/hardware/tv/tuner"
-	common "github.com/xaionaro-go/binder/android/media/audio/common"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -19,8 +18,8 @@ type CreateTrackResponse struct {
 	StreamType             tuner.AudioStreamType
 	AfFrameCount           int64
 	AfSampleRate           int32
-	AfChannelMask          common.AudioChannelLayout
-	AfFormat               common.AudioFormatDescription
+	AfChannelMask          interface{}
+	AfFormat               interface{}
 	AfLatencyMs            int32
 	AfTrackFlags           int32
 	OutputId               int32
@@ -50,17 +49,15 @@ func (s *CreateTrackResponse) MarshalParcel(
 	p.WriteInt32(int32(s.StreamType))
 	p.WriteInt64(s.AfFrameCount)
 	p.WriteInt32(s.AfSampleRate)
-	if _err := s.AfChannelMask.MarshalParcel(p); _err != nil {
-		return _err
-	}
-	if _err := s.AfFormat.MarshalParcel(p); _err != nil {
-		return _err
-	}
 	p.WriteInt32(s.AfLatencyMs)
 	p.WriteInt32(s.AfTrackFlags)
 	p.WriteInt32(s.OutputId)
 	p.WriteInt32(s.PortId)
-	p.WriteStrongBinder(s.AudioTrack.AsBinder().Handle())
+	if s.AudioTrack == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.AudioTrack.AsBinder().Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -127,14 +124,6 @@ func (s *CreateTrackResponse) UnmarshalParcel(
 
 	s.AfSampleRate, _err = p.ReadInt32()
 	if _err != nil {
-		return _err
-	}
-
-	if _err = s.AfChannelMask.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-
-	if _err = s.AfFormat.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
 

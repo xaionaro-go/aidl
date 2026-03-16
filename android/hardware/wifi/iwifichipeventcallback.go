@@ -321,3 +321,94 @@ func (s *WifiChipEventCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IWifiChipEventCallbackServer is the server-side interface that user implementations
+// provide to NewWifiChipEventCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWifiChipEventCallbackServer interface {
+	OnChipReconfigureFailure(ctx context.Context, status WifiStatusCode) error
+	OnChipReconfigured(ctx context.Context, modeId int32) error
+	OnDebugErrorAlert(ctx context.Context, errorCode int32, debugData []byte) error
+	OnDebugRingBufferDataAvailable(ctx context.Context, status WifiDebugRingBufferStatus, data []byte) error
+	OnIfaceAdded(ctx context.Context, type_ IfaceType, name string) error
+	OnIfaceRemoved(ctx context.Context, type_ IfaceType, name string) error
+	OnRadioModeChange(ctx context.Context, radioModeInfos []wifiIWifiChipEventCallback.RadioModeInfo) error
+}
+
+type wifiChipEventCallbackStubWrapper struct {
+	impl       IWifiChipEventCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *wifiChipEventCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *wifiChipEventCallbackStubWrapper) OnChipReconfigureFailure(
+	ctx context.Context,
+	status WifiStatusCode,
+) error {
+	return w.impl.OnChipReconfigureFailure(ctx, status)
+}
+
+func (w *wifiChipEventCallbackStubWrapper) OnChipReconfigured(
+	ctx context.Context,
+	modeId int32,
+) error {
+	return w.impl.OnChipReconfigured(ctx, modeId)
+}
+
+func (w *wifiChipEventCallbackStubWrapper) OnDebugErrorAlert(
+	ctx context.Context,
+	errorCode int32,
+	debugData []byte,
+) error {
+	return w.impl.OnDebugErrorAlert(ctx, errorCode, debugData)
+}
+
+func (w *wifiChipEventCallbackStubWrapper) OnDebugRingBufferDataAvailable(
+	ctx context.Context,
+	status WifiDebugRingBufferStatus,
+	data []byte,
+) error {
+	return w.impl.OnDebugRingBufferDataAvailable(ctx, status, data)
+}
+
+func (w *wifiChipEventCallbackStubWrapper) OnIfaceAdded(
+	ctx context.Context,
+	type_ IfaceType,
+	name string,
+) error {
+	return w.impl.OnIfaceAdded(ctx, type_, name)
+}
+
+func (w *wifiChipEventCallbackStubWrapper) OnIfaceRemoved(
+	ctx context.Context,
+	type_ IfaceType,
+	name string,
+) error {
+	return w.impl.OnIfaceRemoved(ctx, type_, name)
+}
+
+func (w *wifiChipEventCallbackStubWrapper) OnRadioModeChange(
+	ctx context.Context,
+	radioModeInfos []wifiIWifiChipEventCallback.RadioModeInfo,
+) error {
+	return w.impl.OnRadioModeChange(ctx, radioModeInfos)
+}
+
+var _ IWifiChipEventCallback = (*wifiChipEventCallbackStubWrapper)(nil)
+
+// NewWifiChipEventCallbackStub creates a server-side IWifiChipEventCallback wrapping the given
+// server implementation. The returned value satisfies IWifiChipEventCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWifiChipEventCallbackStub(
+	impl IWifiChipEventCallbackServer,
+) IWifiChipEventCallback {
+	wrapper := &wifiChipEventCallbackStubWrapper{impl: impl}
+	stub := &WifiChipEventCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

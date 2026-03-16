@@ -82,3 +82,42 @@ func (s *ServiceListExportListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IServiceListExportListenerServer is the server-side interface that user implementations
+// provide to NewServiceListExportListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceListExportListenerServer interface {
+	OnExported(ctx context.Context, exportResult int32) error
+}
+
+type serviceListExportListenerStubWrapper struct {
+	impl       IServiceListExportListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceListExportListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceListExportListenerStubWrapper) OnExported(
+	ctx context.Context,
+	exportResult int32,
+) error {
+	return w.impl.OnExported(ctx, exportResult)
+}
+
+var _ IServiceListExportListener = (*serviceListExportListenerStubWrapper)(nil)
+
+// NewServiceListExportListenerStub creates a server-side IServiceListExportListener wrapping the given
+// server implementation. The returned value satisfies IServiceListExportListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceListExportListenerStub(
+	impl IServiceListExportListenerServer,
+) IServiceListExportListener {
+	wrapper := &serviceListExportListenerStubWrapper{impl: impl}
+	stub := &ServiceListExportListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

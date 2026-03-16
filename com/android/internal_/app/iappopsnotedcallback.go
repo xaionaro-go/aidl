@@ -117,3 +117,47 @@ func (s *AppOpsNotedCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAppOpsNotedCallbackServer is the server-side interface that user implementations
+// provide to NewAppOpsNotedCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppOpsNotedCallbackServer interface {
+	OpNoted(ctx context.Context, op int32, uid int32, packageName string, virtualDeviceId int32, flags int32, mode int32) error
+}
+
+type appOpsNotedCallbackStubWrapper struct {
+	impl       IAppOpsNotedCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appOpsNotedCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appOpsNotedCallbackStubWrapper) OpNoted(
+	ctx context.Context,
+	op int32,
+	uid int32,
+	packageName string,
+	virtualDeviceId int32,
+	flags int32,
+	mode int32,
+) error {
+	return w.impl.OpNoted(ctx, op, uid, packageName, virtualDeviceId, flags, mode)
+}
+
+var _ IAppOpsNotedCallback = (*appOpsNotedCallbackStubWrapper)(nil)
+
+// NewAppOpsNotedCallbackStub creates a server-side IAppOpsNotedCallback wrapping the given
+// server implementation. The returned value satisfies IAppOpsNotedCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppOpsNotedCallbackStub(
+	impl IAppOpsNotedCallbackServer,
+) IAppOpsNotedCallback {
+	wrapper := &appOpsNotedCallbackStubWrapper{impl: impl}
+	stub := &AppOpsNotedCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -3,14 +3,18 @@ package view
 import (
 	"context"
 	"fmt"
+	app "github.com/xaionaro-go/binder/android/app"
 	ondeviceintelligence "github.com/xaionaro-go/binder/android/app/ondeviceintelligence"
 	content "github.com/xaionaro-go/binder/android/content"
+	pm "github.com/xaionaro-go/binder/android/content/pm"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	gui "github.com/xaionaro-go/binder/android/gui"
+	os "github.com/xaionaro-go/binder/android/os"
 	displayhash "github.com/xaionaro-go/binder/android/view/displayhash"
 	inputmethod "github.com/xaionaro-go/binder/android/view/inputmethod"
+	androidWindow "github.com/xaionaro-go/binder/android/window"
 	"github.com/xaionaro-go/binder/binder"
-	os "github.com/xaionaro-go/binder/com/android/internal_/os"
+	internalOs "github.com/xaionaro-go/binder/com/android/internal_/os"
 	policy "github.com/xaionaro-go/binder/com/android/internal_/policy"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -194,7 +198,7 @@ type IWindowManager interface {
 	SetForcedDisplayScalingMode(ctx context.Context, displayId int32, mode int32) error
 	SetEventDispatching(ctx context.Context, enabled bool) error
 	IsWindowToken(ctx context.Context, binder_ binder.IBinder) (bool, error)
-	AddWindowToken(ctx context.Context, token binder.IBinder, type_ int32, displayId int32, options interface{}) error
+	AddWindowToken(ctx context.Context, token binder.IBinder, type_ int32, displayId int32, options os.Bundle) error
 	RemoveWindowToken(ctx context.Context, token binder.IBinder, displayId int32) error
 	SetDisplayChangeWindowController(ctx context.Context, controller IDisplayChangeWindowController) error
 	AddShellRoot(ctx context.Context, displayId int32, client IWindow, shellRootLayer int32) (SurfaceControl, error)
@@ -245,22 +249,22 @@ type IWindowManager interface {
 	UnregisterWallpaperVisibilityListener(ctx context.Context, listener IWallpaperVisibilityListener, displayId int32) error
 	RegisterSystemGestureExclusionListener(ctx context.Context, listener ISystemGestureExclusionListener, displayId int32) error
 	UnregisterSystemGestureExclusionListener(ctx context.Context, listener ISystemGestureExclusionListener, displayId int32) error
-	RequestAssistScreenshot(ctx context.Context, receiver interface{}) (bool, error)
+	RequestAssistScreenshot(ctx context.Context, receiver app.IAssistDataReceiver) (bool, error)
 	HideTransientBars(ctx context.Context, displayId int32) error
 	SetRecentsVisibility(ctx context.Context, visible bool) error
 	UpdateStaticPrivacyIndicatorBounds(ctx context.Context, displayId int32, staticBounds []graphics.Rect) error
 	SetNavBarVirtualKeyHapticFeedbackEnabled(ctx context.Context, enabled bool) error
 	HasNavigationBar(ctx context.Context, displayId int32) (bool, error)
-	LockNow(ctx context.Context, options interface{}) error
+	LockNow(ctx context.Context, options os.Bundle) error
 	IsSafeModeEnabled(ctx context.Context) (bool, error)
 	ClearWindowContentFrameStats(ctx context.Context, token binder.IBinder) (bool, error)
 	GetWindowContentFrameStats(ctx context.Context, token binder.IBinder) (WindowContentFrameStats, error)
 	GetDockedStackSide(ctx context.Context) (int32, error)
 	RegisterPinnedTaskListener(ctx context.Context, displayId int32, listener IPinnedTaskListener) error
-	RequestAppKeyboardShortcuts(ctx context.Context, receiver os.IResultReceiver, deviceId int32) error
-	RequestImeKeyboardShortcuts(ctx context.Context, receiver os.IResultReceiver, deviceId int32) error
+	RequestAppKeyboardShortcuts(ctx context.Context, receiver internalOs.IResultReceiver, deviceId int32) error
+	RequestImeKeyboardShortcuts(ctx context.Context, receiver internalOs.IResultReceiver, deviceId int32) error
 	GetStableInsets(ctx context.Context, displayId int32, outInsets graphics.Rect) error
-	RegisterShortcutKey(ctx context.Context, shortcutCode int64, keySubscriber interface{}) error
+	RegisterShortcutKey(ctx context.Context, shortcutCode int64, keySubscriber pm.IShortcutService) error
 	CreateInputConsumer(ctx context.Context, token binder.IBinder, name string, displayId int32, inputChannel InputChannel) error
 	DestroyInputConsumer(ctx context.Context, token binder.IBinder, displayId int32) (bool, error)
 	GetCurrentImeTouchRegion(ctx context.Context) (graphics.Region, error)
@@ -301,36 +305,36 @@ type IWindowManager interface {
 	GetSupportedDisplayHashAlgorithms(ctx context.Context) ([]string, error)
 	VerifyDisplayHash(ctx context.Context, displayHash displayhash.DisplayHash) (displayhash.VerifiedDisplayHash, error)
 	SetDisplayHashThrottlingEnabled(ctx context.Context, enable bool) error
-	AttachWindowContextToDisplayArea(ctx context.Context, appThread interface{}, clientToken binder.IBinder, type_ int32, displayId int32, options *interface{}) (interface{}, error)
-	AttachWindowContextToWindowToken(ctx context.Context, appThread interface{}, clientToken binder.IBinder, token binder.IBinder) (interface{}, error)
-	AttachWindowContextToDisplayContent(ctx context.Context, appThread interface{}, clientToken binder.IBinder, displayId int32) (interface{}, error)
+	AttachWindowContextToDisplayArea(ctx context.Context, appThread app.IApplicationThread, clientToken binder.IBinder, type_ int32, displayId int32, options *os.Bundle) (androidWindow.WindowContextInfo, error)
+	AttachWindowContextToWindowToken(ctx context.Context, appThread app.IApplicationThread, clientToken binder.IBinder, token binder.IBinder) (androidWindow.WindowContextInfo, error)
+	AttachWindowContextToDisplayContent(ctx context.Context, appThread app.IApplicationThread, clientToken binder.IBinder, displayId int32) (androidWindow.WindowContextInfo, error)
 	DetachWindowContext(ctx context.Context, clientToken binder.IBinder) error
-	ReparentWindowContextToDisplayArea(ctx context.Context, appThread interface{}, clientToken binder.IBinder, displayId int32) (bool, error)
+	ReparentWindowContextToDisplayArea(ctx context.Context, appThread app.IApplicationThread, clientToken binder.IBinder, displayId int32) (bool, error)
 	RegisterCrossWindowBlurEnabledListener(ctx context.Context, listener ICrossWindowBlurEnabledListener) (bool, error)
 	UnregisterCrossWindowBlurEnabledListener(ctx context.Context, listener ICrossWindowBlurEnabledListener) error
 	IsTaskSnapshotSupported(ctx context.Context) (bool, error)
 	GetImeDisplayId(ctx context.Context) (int32, error)
 	SetTaskSnapshotEnabled(ctx context.Context, enabled bool) error
-	RegisterTaskFpsCallback(ctx context.Context, taskId int32, callback interface{}) error
-	UnregisterTaskFpsCallback(ctx context.Context, listener interface{}) error
+	RegisterTaskFpsCallback(ctx context.Context, taskId int32, callback androidWindow.ITaskFpsCallback) error
+	UnregisterTaskFpsCallback(ctx context.Context, listener androidWindow.ITaskFpsCallback) error
 	SnapshotTaskForRecents(ctx context.Context, taskId int32) (graphics.Bitmap, error)
 	SetRecentsAppBehindSystemBars(ctx context.Context, behindSystemBars bool) error
 	GetLetterboxBackgroundColorInArgb(ctx context.Context) (int32, error)
 	IsLetterboxBackgroundMultiColored(ctx context.Context) (bool, error)
-	CaptureDisplay(ctx context.Context, displayId int32, captureArgs *interface{}, listener interface{}) error
+	CaptureDisplay(ctx context.Context, displayId int32, captureArgs *androidWindow.ScreenCaptureCaptureArgs, listener androidWindow.ScreenCaptureScreenCaptureListener) error
 	IsGlobalKey(ctx context.Context, keyCode int32) (bool, error)
-	AddToSurfaceSyncGroup(ctx context.Context, syncGroupToken binder.IBinder, parentSyncGroupMerge bool, completedListener *interface{}, addToSurfaceSyncGroupResult interface{}) (bool, error)
+	AddToSurfaceSyncGroup(ctx context.Context, syncGroupToken binder.IBinder, parentSyncGroupMerge bool, completedListener *androidWindow.ISurfaceSyncGroupCompletedListener, addToSurfaceSyncGroupResult androidWindow.AddToSurfaceSyncGroupResult) (bool, error)
 	MarkSurfaceSyncGroupReady(ctx context.Context, syncGroupToken binder.IBinder) error
 	NotifyScreenshotListeners(ctx context.Context, displayId int32) ([]content.ComponentName, error)
 	ReplaceContentOnDisplay(ctx context.Context, displayId int32, sc SurfaceControl) (bool, error)
 	RegisterDecorViewGestureListener(ctx context.Context, listener IDecorViewGestureListener, displayId int32) error
 	UnregisterDecorViewGestureListener(ctx context.Context, listener IDecorViewGestureListener, displayId int32) error
-	RegisterTrustedPresentationListener(ctx context.Context, window binder.IBinder, listener interface{}, thresholds gui.TrustedPresentationThresholds, id int32) error
-	UnregisterTrustedPresentationListener(ctx context.Context, listener interface{}, id int32) error
-	RegisterScreenRecordingCallback(ctx context.Context, callback interface{}) (bool, error)
-	UnregisterScreenRecordingCallback(ctx context.Context, callback interface{}) error
-	SetGlobalDragListener(ctx context.Context, listener interface{}) error
-	TransferTouchGesture(ctx context.Context, transferFromToken interface{}, transferToToken interface{}) (bool, error)
+	RegisterTrustedPresentationListener(ctx context.Context, window binder.IBinder, listener androidWindow.ITrustedPresentationListener, thresholds gui.TrustedPresentationThresholds, id int32) error
+	UnregisterTrustedPresentationListener(ctx context.Context, listener androidWindow.ITrustedPresentationListener, id int32) error
+	RegisterScreenRecordingCallback(ctx context.Context, callback androidWindow.IScreenRecordingCallback) (bool, error)
+	UnregisterScreenRecordingCallback(ctx context.Context, callback androidWindow.IScreenRecordingCallback) error
+	SetGlobalDragListener(ctx context.Context, listener androidWindow.IGlobalDragListener) error
+	TransferTouchGesture(ctx context.Context, transferFromToken androidWindow.InputTransferToken, transferToToken androidWindow.InputTransferToken) (bool, error)
 	GetApplicationLaunchKeyboardShortcuts(ctx context.Context, deviceId int32) (KeyboardShortcutGroup, error)
 }
 
@@ -453,7 +457,7 @@ func (p *WindowManagerProxy) OpenSession(
 	var _result IWindowSession
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "openSession")
 	if _err != nil {
@@ -806,7 +810,7 @@ func (p *WindowManagerProxy) IsWindowToken(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "isWindowToken")
 	if _err != nil {
@@ -835,13 +839,17 @@ func (p *WindowManagerProxy) AddWindowToken(
 	token binder.IBinder,
 	type_ int32,
 	displayId int32,
-	options interface{},
+	options os.Bundle,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(type_)
 	_data.WriteInt32(displayId)
+	_data.WriteInt32(1)
+	if _err := options.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "addWindowToken")
 	if _err != nil {
@@ -868,7 +876,7 @@ func (p *WindowManagerProxy) RemoveWindowToken(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "removeWindowToken")
@@ -895,7 +903,7 @@ func (p *WindowManagerProxy) SetDisplayChangeWindowController(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(controller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, controller.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "setDisplayChangeWindowController")
 	if _err != nil {
@@ -925,7 +933,7 @@ func (p *WindowManagerProxy) AddShellRoot(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(displayId)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(shellRootLayer)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "addShellRoot")
@@ -965,7 +973,7 @@ func (p *WindowManagerProxy) SetShellRootAccessibilityWindow(
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(shellRootLayer)
-	_data.WriteStrongBinder(target.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, target.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "setShellRootAccessibilityWindow")
 	if _err != nil {
@@ -994,8 +1002,8 @@ func (p *WindowManagerProxy) OverridePendingAppTransitionMultiThumbFuture(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(specsFuture.AsBinder().Handle())
-	_data.WriteStrongBinder(startedCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, specsFuture.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, startedCallback.AsBinder(), p.remote.Transport())
 	_data.WriteBool(scaleUp)
 	_data.WriteInt32(displayId)
 
@@ -1132,7 +1140,7 @@ func (p *WindowManagerProxy) DisableKeyguard(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(tag)
 	_data.WriteInt32(_identity.UserID)
 
@@ -1161,7 +1169,7 @@ func (p *WindowManagerProxy) ReenableKeyguard(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "reenableKeyguard")
@@ -1188,7 +1196,7 @@ func (p *WindowManagerProxy) ExitKeyguardSecurely(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "exitKeyguardSecurely")
 	if _err != nil {
@@ -1275,7 +1283,7 @@ func (p *WindowManagerProxy) DismissKeyguard(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "dismissKeyguard")
 	if _err != nil {
@@ -1301,7 +1309,7 @@ func (p *WindowManagerProxy) AddKeyguardLockedStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "addKeyguardLockedStateListener")
 	if _err != nil {
@@ -1327,7 +1335,7 @@ func (p *WindowManagerProxy) RemoveKeyguardLockedStateListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "removeKeyguardLockedStateListener")
 	if _err != nil {
@@ -1788,7 +1796,7 @@ func (p *WindowManagerProxy) WatchRotation(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(watcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, watcher.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "watchRotation")
@@ -1819,7 +1827,7 @@ func (p *WindowManagerProxy) RemoveRotationWatcher(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(watcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, watcher.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "removeRotationWatcher")
 	if _err != nil {
@@ -1847,8 +1855,8 @@ func (p *WindowManagerProxy) RegisterProposedRotationListener(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(contextToken.Handle())
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, contextToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerProposedRotationListener")
 	if _err != nil {
@@ -2209,7 +2217,7 @@ func (p *WindowManagerProxy) RegisterWallpaperVisibilityListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerWallpaperVisibilityListener")
@@ -2241,7 +2249,7 @@ func (p *WindowManagerProxy) UnregisterWallpaperVisibilityListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "unregisterWallpaperVisibilityListener")
@@ -2269,7 +2277,7 @@ func (p *WindowManagerProxy) RegisterSystemGestureExclusionListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerSystemGestureExclusionListener")
@@ -2297,7 +2305,7 @@ func (p *WindowManagerProxy) UnregisterSystemGestureExclusionListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "unregisterSystemGestureExclusionListener")
@@ -2320,11 +2328,12 @@ func (p *WindowManagerProxy) UnregisterSystemGestureExclusionListener(
 
 func (p *WindowManagerProxy) RequestAssistScreenshot(
 	ctx context.Context,
-	receiver interface{},
+	receiver app.IAssistDataReceiver,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "requestAssistScreenshot")
 	if _err != nil {
@@ -2469,10 +2478,14 @@ func (p *WindowManagerProxy) HasNavigationBar(
 
 func (p *WindowManagerProxy) LockNow(
 	ctx context.Context,
-	options interface{},
+	options os.Bundle,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
+	_data.WriteInt32(1)
+	if _err := options.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "lockNow")
 	if _err != nil {
@@ -2528,7 +2541,7 @@ func (p *WindowManagerProxy) ClearWindowContentFrameStats(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "clearWindowContentFrameStats")
 	if _err != nil {
@@ -2559,7 +2572,7 @@ func (p *WindowManagerProxy) GetWindowContentFrameStats(
 	var _result WindowContentFrameStats
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "getWindowContentFrameStats")
 	if _err != nil {
@@ -2625,7 +2638,7 @@ func (p *WindowManagerProxy) RegisterPinnedTaskListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(displayId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerPinnedTaskListener")
 	if _err != nil {
@@ -2647,12 +2660,12 @@ func (p *WindowManagerProxy) RegisterPinnedTaskListener(
 
 func (p *WindowManagerProxy) RequestAppKeyboardShortcuts(
 	ctx context.Context,
-	receiver os.IResultReceiver,
+	receiver internalOs.IResultReceiver,
 	deviceId int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "requestAppKeyboardShortcuts")
@@ -2675,12 +2688,12 @@ func (p *WindowManagerProxy) RequestAppKeyboardShortcuts(
 
 func (p *WindowManagerProxy) RequestImeKeyboardShortcuts(
 	ctx context.Context,
-	receiver os.IResultReceiver,
+	receiver internalOs.IResultReceiver,
 	deviceId int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(deviceId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "requestImeKeyboardShortcuts")
@@ -2734,11 +2747,12 @@ func (p *WindowManagerProxy) GetStableInsets(
 func (p *WindowManagerProxy) RegisterShortcutKey(
 	ctx context.Context,
 	shortcutCode int64,
-	keySubscriber interface{},
+	keySubscriber pm.IShortcutService,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt64(shortcutCode)
+	binder.WriteBinderToParcel(ctx, _data, keySubscriber.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerShortcutKey")
 	if _err != nil {
@@ -2767,7 +2781,7 @@ func (p *WindowManagerProxy) CreateInputConsumer(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(name)
 	_data.WriteInt32(displayId)
 
@@ -2800,7 +2814,7 @@ func (p *WindowManagerProxy) DestroyInputConsumer(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "destroyInputConsumer")
@@ -2865,7 +2879,7 @@ func (p *WindowManagerProxy) RegisterDisplayFoldListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerDisplayFoldListener")
 	if _err != nil {
@@ -2891,7 +2905,7 @@ func (p *WindowManagerProxy) UnregisterDisplayFoldListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "unregisterDisplayFoldListener")
 	if _err != nil {
@@ -2918,7 +2932,7 @@ func (p *WindowManagerProxy) RegisterDisplayWindowListener(
 	var _result []int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerDisplayWindowListener")
 	if _err != nil {
@@ -2958,7 +2972,7 @@ func (p *WindowManagerProxy) UnregisterDisplayWindowListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "unregisterDisplayWindowListener")
 	if _err != nil {
@@ -3575,7 +3589,7 @@ func (p *WindowManagerProxy) SetDisplayWindowInsetsController(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(displayId)
-	_data.WriteStrongBinder(displayWindowInsetsController.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, displayWindowInsetsController.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "setDisplayWindowInsetsController")
 	if _err != nil {
@@ -3643,7 +3657,7 @@ func (p *WindowManagerProxy) GetWindowInsets(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(displayId)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "getWindowInsets")
 	if _err != nil {
@@ -3796,9 +3810,9 @@ func (p *WindowManagerProxy) RequestScrollCapture(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(displayId)
-	_data.WriteStrongBinder(behindClient.Handle())
+	binder.WriteBinderToParcel(ctx, _data, behindClient, p.remote.Transport())
 	_data.WriteInt32(taskId)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "requestScrollCapture")
 	if _err != nil {
@@ -3825,7 +3839,7 @@ func (p *WindowManagerProxy) HoldLock(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(durationMs)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "holdLock")
@@ -3952,18 +3966,26 @@ func (p *WindowManagerProxy) SetDisplayHashThrottlingEnabled(
 
 func (p *WindowManagerProxy) AttachWindowContextToDisplayArea(
 	ctx context.Context,
-	appThread interface{},
+	appThread app.IApplicationThread,
 	clientToken binder.IBinder,
 	type_ int32,
 	displayId int32,
-	options *interface{},
-) (interface{}, error) {
-	var _result interface{}
+	options *os.Bundle,
+) (androidWindow.WindowContextInfo, error) {
+	var _result androidWindow.WindowContextInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(clientToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, appThread.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
 	_data.WriteInt32(type_)
 	_data.WriteInt32(displayId)
+	if options != nil {
+		if _err := (*options).MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
+	} else {
+		_data.WriteInt32(-1)
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "attachWindowContextToDisplayArea")
 	if _err != nil {
@@ -3980,20 +4002,30 @@ func (p *WindowManagerProxy) AttachWindowContextToDisplayArea(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
 func (p *WindowManagerProxy) AttachWindowContextToWindowToken(
 	ctx context.Context,
-	appThread interface{},
+	appThread app.IApplicationThread,
 	clientToken binder.IBinder,
 	token binder.IBinder,
-) (interface{}, error) {
-	var _result interface{}
+) (androidWindow.WindowContextInfo, error) {
+	var _result androidWindow.WindowContextInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(clientToken.Handle())
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, appThread.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "attachWindowContextToWindowToken")
 	if _err != nil {
@@ -4010,19 +4042,29 @@ func (p *WindowManagerProxy) AttachWindowContextToWindowToken(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
 func (p *WindowManagerProxy) AttachWindowContextToDisplayContent(
 	ctx context.Context,
-	appThread interface{},
+	appThread app.IApplicationThread,
 	clientToken binder.IBinder,
 	displayId int32,
-) (interface{}, error) {
-	var _result interface{}
+) (androidWindow.WindowContextInfo, error) {
+	var _result androidWindow.WindowContextInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(clientToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, appThread.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "attachWindowContextToDisplayContent")
@@ -4040,6 +4082,15 @@ func (p *WindowManagerProxy) AttachWindowContextToDisplayContent(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -4049,7 +4100,7 @@ func (p *WindowManagerProxy) DetachWindowContext(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(clientToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "detachWindowContext")
 	if _err != nil {
@@ -4071,14 +4122,15 @@ func (p *WindowManagerProxy) DetachWindowContext(
 
 func (p *WindowManagerProxy) ReparentWindowContextToDisplayArea(
 	ctx context.Context,
-	appThread interface{},
+	appThread app.IApplicationThread,
 	clientToken binder.IBinder,
 	displayId int32,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(clientToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, appThread.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, clientToken, p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "reparentWindowContextToDisplayArea")
@@ -4110,7 +4162,7 @@ func (p *WindowManagerProxy) RegisterCrossWindowBlurEnabledListener(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerCrossWindowBlurEnabledListener")
 	if _err != nil {
@@ -4140,7 +4192,7 @@ func (p *WindowManagerProxy) UnregisterCrossWindowBlurEnabledListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "unregisterCrossWindowBlurEnabledListener")
 	if _err != nil {
@@ -4247,11 +4299,12 @@ func (p *WindowManagerProxy) SetTaskSnapshotEnabled(
 func (p *WindowManagerProxy) RegisterTaskFpsCallback(
 	ctx context.Context,
 	taskId int32,
-	callback interface{},
+	callback androidWindow.ITaskFpsCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(taskId)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerTaskFpsCallback")
 	if _err != nil {
@@ -4273,10 +4326,11 @@ func (p *WindowManagerProxy) RegisterTaskFpsCallback(
 
 func (p *WindowManagerProxy) UnregisterTaskFpsCallback(
 	ctx context.Context,
-	listener interface{},
+	listener androidWindow.ITaskFpsCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "unregisterTaskFpsCallback")
 	if _err != nil {
@@ -4419,12 +4473,23 @@ func (p *WindowManagerProxy) IsLetterboxBackgroundMultiColored(
 func (p *WindowManagerProxy) CaptureDisplay(
 	ctx context.Context,
 	displayId int32,
-	captureArgs *interface{},
-	listener interface{},
+	captureArgs *androidWindow.ScreenCaptureCaptureArgs,
+	listener androidWindow.ScreenCaptureScreenCaptureListener,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
 	_data.WriteInt32(displayId)
+	if captureArgs != nil {
+		if _err := (*captureArgs).MarshalParcel(_data); _err != nil {
+			return _err
+		}
+	} else {
+		_data.WriteInt32(-1)
+	}
+	_data.WriteInt32(1)
+	if _err := listener.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "captureDisplay")
 	if _err != nil {
@@ -4470,14 +4535,19 @@ func (p *WindowManagerProxy) AddToSurfaceSyncGroup(
 	ctx context.Context,
 	syncGroupToken binder.IBinder,
 	parentSyncGroupMerge bool,
-	completedListener *interface{},
-	addToSurfaceSyncGroupResult interface{},
+	completedListener *androidWindow.ISurfaceSyncGroupCompletedListener,
+	addToSurfaceSyncGroupResult androidWindow.AddToSurfaceSyncGroupResult,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(syncGroupToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, syncGroupToken, p.remote.Transport())
 	_data.WriteBool(parentSyncGroupMerge)
+	if completedListener != nil {
+		_data.WriteStrongBinder((*completedListener).AsBinder().Handle())
+	} else {
+		_data.WriteInt32(-1)
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "addToSurfaceSyncGroup")
 	if _err != nil {
@@ -4491,6 +4561,9 @@ func (p *WindowManagerProxy) AddToSurfaceSyncGroup(
 	defer _reply.Recycle()
 
 	if _err = binder.ReadStatus(_reply); _err != nil {
+		return _result, _err
+	}
+	if _err = addToSurfaceSyncGroupResult.UnmarshalParcel(_reply); _err != nil {
 		return _result, _err
 	}
 
@@ -4507,7 +4580,7 @@ func (p *WindowManagerProxy) MarkSurfaceSyncGroupReady(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(syncGroupToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, syncGroupToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "markSurfaceSyncGroupReady")
 	if _err != nil {
@@ -4601,7 +4674,7 @@ func (p *WindowManagerProxy) RegisterDecorViewGestureListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerDecorViewGestureListener")
@@ -4629,7 +4702,7 @@ func (p *WindowManagerProxy) UnregisterDecorViewGestureListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "unregisterDecorViewGestureListener")
@@ -4653,13 +4726,14 @@ func (p *WindowManagerProxy) UnregisterDecorViewGestureListener(
 func (p *WindowManagerProxy) RegisterTrustedPresentationListener(
 	ctx context.Context,
 	window binder.IBinder,
-	listener interface{},
+	listener androidWindow.ITrustedPresentationListener,
 	thresholds gui.TrustedPresentationThresholds,
 	id int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
-	_data.WriteStrongBinder(window.Handle())
+	binder.WriteBinderToParcel(ctx, _data, window, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := thresholds.MarshalParcel(_data); _err != nil {
 		return _err
@@ -4686,11 +4760,12 @@ func (p *WindowManagerProxy) RegisterTrustedPresentationListener(
 
 func (p *WindowManagerProxy) UnregisterTrustedPresentationListener(
 	ctx context.Context,
-	listener interface{},
+	listener androidWindow.ITrustedPresentationListener,
 	id int32,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(id)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "unregisterTrustedPresentationListener")
@@ -4713,11 +4788,12 @@ func (p *WindowManagerProxy) UnregisterTrustedPresentationListener(
 
 func (p *WindowManagerProxy) RegisterScreenRecordingCallback(
 	ctx context.Context,
-	callback interface{},
+	callback androidWindow.IScreenRecordingCallback,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "registerScreenRecordingCallback")
 	if _err != nil {
@@ -4743,10 +4819,11 @@ func (p *WindowManagerProxy) RegisterScreenRecordingCallback(
 
 func (p *WindowManagerProxy) UnregisterScreenRecordingCallback(
 	ctx context.Context,
-	callback interface{},
+	callback androidWindow.IScreenRecordingCallback,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "unregisterScreenRecordingCallback")
 	if _err != nil {
@@ -4768,10 +4845,11 @@ func (p *WindowManagerProxy) UnregisterScreenRecordingCallback(
 
 func (p *WindowManagerProxy) SetGlobalDragListener(
 	ctx context.Context,
-	listener interface{},
+	listener androidWindow.IGlobalDragListener,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "setGlobalDragListener")
 	if _err != nil {
@@ -4793,12 +4871,20 @@ func (p *WindowManagerProxy) SetGlobalDragListener(
 
 func (p *WindowManagerProxy) TransferTouchGesture(
 	ctx context.Context,
-	transferFromToken interface{},
-	transferToToken interface{},
+	transferFromToken androidWindow.InputTransferToken,
+	transferToToken androidWindow.InputTransferToken,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowManager)
+	_data.WriteInt32(1)
+	if _err := transferFromToken.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
+	_data.WriteInt32(1)
+	if _err := transferToToken.MarshalParcel(_data); _err != nil {
+		return _result, _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowManager, "transferTouchGesture")
 	if _err != nil {
@@ -5166,7 +5252,18 @@ func (s *WindowManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options interface{}
+		var _arg_options os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.AddWindowToken(ctx, _arg_token, _arg_type_, _arg_displayId, _arg_options)
 		_reply := parcel.New()
 		if _err != nil {
@@ -6063,7 +6160,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_receiver interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_receiver app.IAssistDataReceiver
+		_ = _arg_receiver
 		_result, _err := s.Impl.RequestAssistScreenshot(ctx, _arg_receiver)
 		_reply := parcel.New()
 		if _err != nil {
@@ -6146,7 +6245,18 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_options interface{}
+		var _arg_options os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.LockNow(ctx, _arg_options)
 		_reply := parcel.New()
 		if _err != nil {
@@ -6240,7 +6350,7 @@ func (s *WindowManagerStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_receiver os.IResultReceiver
+		var _arg_receiver internalOs.IResultReceiver
 		_ = _arg_receiver
 		_arg_deviceId, _err := _data.ReadInt32()
 		if _err != nil {
@@ -6259,7 +6369,7 @@ func (s *WindowManagerStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_receiver os.IResultReceiver
+		var _arg_receiver internalOs.IResultReceiver
 		_ = _arg_receiver
 		_arg_deviceId, _err := _data.ReadInt32()
 		if _err != nil {
@@ -6298,7 +6408,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_keySubscriber interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_keySubscriber pm.IShortcutService
+		_ = _arg_keySubscriber
 		_err = s.Impl.RegisterShortcutKey(ctx, _arg_shortcutCode, _arg_keySubscriber)
 		_reply := parcel.New()
 		if _err != nil {
@@ -7008,7 +7120,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_appThread interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_appThread app.IApplicationThread
+		_ = _arg_appThread
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_clientToken binder.IBinder
 		_ = _arg_clientToken
@@ -7020,7 +7134,18 @@ func (s *WindowManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_options *interface{}
+		var _arg_options *os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_options.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_result, _err := s.Impl.AttachWindowContextToDisplayArea(ctx, _arg_appThread, _arg_clientToken, _arg_type_, _arg_displayId, _arg_options)
 		_reply := parcel.New()
 		if _err != nil {
@@ -7028,13 +7153,18 @@ func (s *WindowManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIWindowManagerAttachWindowContextToWindowToken:
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_appThread interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_appThread app.IApplicationThread
+		_ = _arg_appThread
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_clientToken binder.IBinder
 		_ = _arg_clientToken
@@ -7048,13 +7178,18 @@ func (s *WindowManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIWindowManagerAttachWindowContextToDisplayContent:
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_appThread interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_appThread app.IApplicationThread
+		_ = _arg_appThread
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_clientToken binder.IBinder
 		_ = _arg_clientToken
@@ -7069,7 +7204,10 @@ func (s *WindowManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIWindowManagerDetachWindowContext:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -7090,7 +7228,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_appThread interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_appThread app.IApplicationThread
+		_ = _arg_appThread
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_clientToken binder.IBinder
 		_ = _arg_clientToken
@@ -7188,7 +7328,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback androidWindow.ITaskFpsCallback
+		_ = _arg_callback
 		_err = s.Impl.RegisterTaskFpsCallback(ctx, _arg_taskId, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -7201,7 +7343,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_listener interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_listener androidWindow.ITaskFpsCallback
+		_ = _arg_listener
 		_err := s.Impl.UnregisterTaskFpsCallback(ctx, _arg_listener)
 		_reply := parcel.New()
 		if _err != nil {
@@ -7280,8 +7424,30 @@ func (s *WindowManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_captureArgs *interface{}
-		var _arg_listener interface{}
+		var _arg_captureArgs *androidWindow.ScreenCaptureCaptureArgs
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_captureArgs.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		var _arg_listener androidWindow.ScreenCaptureScreenCaptureListener
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_listener.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.CaptureDisplay(ctx, _arg_displayId, _arg_captureArgs, _arg_listener)
 		_ = _err
 		return nil, nil
@@ -7313,8 +7479,10 @@ func (s *WindowManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_completedListener *interface{}
-		var _arg_addToSurfaceSyncGroupResult interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_completedListener *androidWindow.ISurfaceSyncGroupCompletedListener
+		_ = _arg_completedListener
+		var _arg_addToSurfaceSyncGroupResult androidWindow.AddToSurfaceSyncGroupResult
 		_result, _err := s.Impl.AddToSurfaceSyncGroup(ctx, _arg_syncGroupToken, _arg_parentSyncGroupMerge, _arg_completedListener, _arg_addToSurfaceSyncGroupResult)
 		_reply := parcel.New()
 		if _err != nil {
@@ -7426,7 +7594,9 @@ func (s *WindowManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_window binder.IBinder
 		_ = _arg_window
-		var _arg_listener interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_listener androidWindow.ITrustedPresentationListener
+		_ = _arg_listener
 		var _arg_thresholds gui.TrustedPresentationThresholds
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -7455,7 +7625,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_listener interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_listener androidWindow.ITrustedPresentationListener
+		_ = _arg_listener
 		_arg_id, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -7472,7 +7644,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback androidWindow.IScreenRecordingCallback
+		_ = _arg_callback
 		_result, _err := s.Impl.RegisterScreenRecordingCallback(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -7486,7 +7660,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_callback interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_callback androidWindow.IScreenRecordingCallback
+		_ = _arg_callback
 		_err := s.Impl.UnregisterScreenRecordingCallback(ctx, _arg_callback)
 		_reply := parcel.New()
 		if _err != nil {
@@ -7499,7 +7675,9 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_listener interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_listener androidWindow.IGlobalDragListener
+		_ = _arg_listener
 		_err := s.Impl.SetGlobalDragListener(ctx, _arg_listener)
 		_reply := parcel.New()
 		if _err != nil {
@@ -7512,8 +7690,30 @@ func (s *WindowManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_transferFromToken interface{}
-		var _arg_transferToToken interface{}
+		var _arg_transferFromToken androidWindow.InputTransferToken
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_transferFromToken.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		var _arg_transferToToken androidWindow.InputTransferToken
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_transferToToken.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_result, _err := s.Impl.TransferTouchGesture(ctx, _arg_transferFromToken, _arg_transferToToken)
 		_reply := parcel.New()
 		if _err != nil {
@@ -7546,4 +7746,1323 @@ func (s *WindowManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWindowManagerServer is the server-side interface that user implementations
+// provide to NewWindowManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowManagerServer interface {
+	StartViewServer(ctx context.Context, port int32) (bool, error)
+	StopViewServer(ctx context.Context) (bool, error)
+	IsViewServerRunning(ctx context.Context) (bool, error)
+	OpenSession(ctx context.Context, callback IWindowSessionCallback) (IWindowSession, error)
+	GetInitialDisplaySize(ctx context.Context, displayId int32, size graphics.Point) error
+	GetBaseDisplaySize(ctx context.Context, displayId int32, size graphics.Point) error
+	SetForcedDisplaySize(ctx context.Context, displayId int32, width int32, height int32) error
+	ClearForcedDisplaySize(ctx context.Context, displayId int32) error
+	GetInitialDisplayDensity(ctx context.Context, displayId int32) (int32, error)
+	GetBaseDisplayDensity(ctx context.Context, displayId int32) (int32, error)
+	GetDisplayIdByUniqueId(ctx context.Context, uniqueId string) (int32, error)
+	SetForcedDisplayDensityForUser(ctx context.Context, displayId int32, density int32) error
+	ClearForcedDisplayDensityForUser(ctx context.Context, displayId int32) error
+	SetForcedDisplayScalingMode(ctx context.Context, displayId int32, mode int32) error
+	SetEventDispatching(ctx context.Context, enabled bool) error
+	IsWindowToken(ctx context.Context, binder_ binder.IBinder) (bool, error)
+	AddWindowToken(ctx context.Context, token binder.IBinder, type_ int32, displayId int32, options os.Bundle) error
+	RemoveWindowToken(ctx context.Context, token binder.IBinder, displayId int32) error
+	SetDisplayChangeWindowController(ctx context.Context, controller IDisplayChangeWindowController) error
+	AddShellRoot(ctx context.Context, displayId int32, client IWindow, shellRootLayer int32) (SurfaceControl, error)
+	SetShellRootAccessibilityWindow(ctx context.Context, displayId int32, shellRootLayer int32, target IWindow) error
+	OverridePendingAppTransitionMultiThumbFuture(ctx context.Context, specsFuture IAppTransitionAnimationSpecsFuture, startedCallback ondeviceintelligence.IRemoteCallback, scaleUp bool, displayId int32) error
+	OverridePendingAppTransitionRemote(ctx context.Context, remoteAnimationAdapter RemoteAnimationAdapter, displayId int32) error
+	EndProlongedAnimations(ctx context.Context) error
+	StartFreezingScreen(ctx context.Context, exitAnim int32, enterAnim int32) error
+	StopFreezingScreen(ctx context.Context) error
+	DisableKeyguard(ctx context.Context, token binder.IBinder, tag string) error
+	ReenableKeyguard(ctx context.Context, token binder.IBinder) error
+	ExitKeyguardSecurely(ctx context.Context, callback IOnKeyguardExitResult) error
+	IsKeyguardLocked(ctx context.Context) (bool, error)
+	IsKeyguardSecure(ctx context.Context) (bool, error)
+	DismissKeyguard(ctx context.Context, callback policy.IKeyguardDismissCallback, message interface{}) error
+	AddKeyguardLockedStateListener(ctx context.Context, listener policy.IKeyguardLockedStateListener) error
+	RemoveKeyguardLockedStateListener(ctx context.Context, listener policy.IKeyguardLockedStateListener) error
+	SetSwitchingUser(ctx context.Context, switching bool) error
+	CloseSystemDialogs(ctx context.Context, reason string) error
+	GetAnimationScale(ctx context.Context, which int32) (float32, error)
+	GetAnimationScales(ctx context.Context) ([]float32, error)
+	SetAnimationScale(ctx context.Context, which int32, scale float32) error
+	SetAnimationScales(ctx context.Context, scales []float32) error
+	GetCurrentAnimatorScale(ctx context.Context) (float32, error)
+	SetInTouchMode(ctx context.Context, inTouch bool, displayId int32) error
+	SetInTouchModeOnAllDisplays(ctx context.Context, inTouch bool) error
+	IsInTouchMode(ctx context.Context, displayId int32) (bool, error)
+	ShowStrictModeViolation(ctx context.Context, on bool) error
+	SetStrictModeVisualIndicatorPreference(ctx context.Context, enabled string) error
+	RefreshScreenCaptureDisabled(ctx context.Context) error
+	GetDefaultDisplayRotation(ctx context.Context) (int32, error)
+	GetDisplayUserRotation(ctx context.Context, displayId int32) (int32, error)
+	WatchRotation(ctx context.Context, watcher IRotationWatcher, displayId int32) (int32, error)
+	RemoveRotationWatcher(ctx context.Context, watcher IRotationWatcher) error
+	RegisterProposedRotationListener(ctx context.Context, contextToken binder.IBinder, listener IRotationWatcher) (int32, error)
+	GetPreferredOptionsPanelGravity(ctx context.Context, displayId int32) (int32, error)
+	FreezeRotation(ctx context.Context, rotation int32, caller string) error
+	ThawRotation(ctx context.Context, caller string) error
+	IsRotationFrozen(ctx context.Context) (bool, error)
+	FreezeDisplayRotation(ctx context.Context, displayId int32, rotation int32, caller string) error
+	ThawDisplayRotation(ctx context.Context, displayId int32, caller string) error
+	IsDisplayRotationFrozen(ctx context.Context, displayId int32) (bool, error)
+	SetFixedToUserRotation(ctx context.Context, displayId int32, fixedToUserRotation int32) error
+	SetIgnoreOrientationRequest(ctx context.Context, displayId int32, ignoreOrientationRequest bool) error
+	ScreenshotWallpaper(ctx context.Context) (graphics.Bitmap, error)
+	MirrorWallpaperSurface(ctx context.Context, displayId int32) (SurfaceControl, error)
+	RegisterWallpaperVisibilityListener(ctx context.Context, listener IWallpaperVisibilityListener, displayId int32) (bool, error)
+	UnregisterWallpaperVisibilityListener(ctx context.Context, listener IWallpaperVisibilityListener, displayId int32) error
+	RegisterSystemGestureExclusionListener(ctx context.Context, listener ISystemGestureExclusionListener, displayId int32) error
+	UnregisterSystemGestureExclusionListener(ctx context.Context, listener ISystemGestureExclusionListener, displayId int32) error
+	RequestAssistScreenshot(ctx context.Context, receiver app.IAssistDataReceiver) (bool, error)
+	HideTransientBars(ctx context.Context, displayId int32) error
+	SetRecentsVisibility(ctx context.Context, visible bool) error
+	UpdateStaticPrivacyIndicatorBounds(ctx context.Context, displayId int32, staticBounds []graphics.Rect) error
+	SetNavBarVirtualKeyHapticFeedbackEnabled(ctx context.Context, enabled bool) error
+	HasNavigationBar(ctx context.Context, displayId int32) (bool, error)
+	LockNow(ctx context.Context, options os.Bundle) error
+	IsSafeModeEnabled(ctx context.Context) (bool, error)
+	ClearWindowContentFrameStats(ctx context.Context, token binder.IBinder) (bool, error)
+	GetWindowContentFrameStats(ctx context.Context, token binder.IBinder) (WindowContentFrameStats, error)
+	GetDockedStackSide(ctx context.Context) (int32, error)
+	RegisterPinnedTaskListener(ctx context.Context, displayId int32, listener IPinnedTaskListener) error
+	RequestAppKeyboardShortcuts(ctx context.Context, receiver internalOs.IResultReceiver, deviceId int32) error
+	RequestImeKeyboardShortcuts(ctx context.Context, receiver internalOs.IResultReceiver, deviceId int32) error
+	GetStableInsets(ctx context.Context, displayId int32, outInsets graphics.Rect) error
+	RegisterShortcutKey(ctx context.Context, shortcutCode int64, keySubscriber pm.IShortcutService) error
+	CreateInputConsumer(ctx context.Context, token binder.IBinder, name string, displayId int32, inputChannel InputChannel) error
+	DestroyInputConsumer(ctx context.Context, token binder.IBinder, displayId int32) (bool, error)
+	GetCurrentImeTouchRegion(ctx context.Context) (graphics.Region, error)
+	RegisterDisplayFoldListener(ctx context.Context, listener IDisplayFoldListener) error
+	UnregisterDisplayFoldListener(ctx context.Context, listener IDisplayFoldListener) error
+	RegisterDisplayWindowListener(ctx context.Context, listener IDisplayWindowListener) ([]int32, error)
+	UnregisterDisplayWindowListener(ctx context.Context, listener IDisplayWindowListener) error
+	StartWindowTrace(ctx context.Context) error
+	StopWindowTrace(ctx context.Context) error
+	SaveWindowTraceToFile(ctx context.Context) error
+	IsWindowTraceEnabled(ctx context.Context) (bool, error)
+	StartTransitionTrace(ctx context.Context) error
+	StopTransitionTrace(ctx context.Context) error
+	IsTransitionTraceEnabled(ctx context.Context) (bool, error)
+	GetWindowingMode(ctx context.Context, displayId int32) (int32, error)
+	SetWindowingMode(ctx context.Context, displayId int32, mode int32) error
+	GetRemoveContentMode(ctx context.Context, displayId int32) (int32, error)
+	SetRemoveContentMode(ctx context.Context, displayId int32, mode int32) error
+	ShouldShowWithInsecureKeyguard(ctx context.Context, displayId int32) (bool, error)
+	SetShouldShowWithInsecureKeyguard(ctx context.Context, displayId int32, shouldShow bool) error
+	ShouldShowSystemDecors(ctx context.Context, displayId int32) (bool, error)
+	SetShouldShowSystemDecors(ctx context.Context, displayId int32, shouldShow bool) error
+	GetDisplayImePolicy(ctx context.Context, displayId int32) (int32, error)
+	SetDisplayImePolicy(ctx context.Context, displayId int32, imePolicy int32) error
+	SyncInputTransactions(ctx context.Context, waitForAnimations bool) error
+	IsLayerTracing(ctx context.Context) (bool, error)
+	SetLayerTracing(ctx context.Context, enabled bool) error
+	MirrorDisplay(ctx context.Context, displayId int32, outSurfaceControl SurfaceControl) (bool, error)
+	SetDisplayWindowInsetsController(ctx context.Context, displayId int32, displayWindowInsetsController IDisplayWindowInsetsController) error
+	UpdateDisplayWindowRequestedVisibleTypes(ctx context.Context, displayId int32, visibleTypes int32, mask int32, statsToken *inputmethod.ImeTrackerToken) error
+	GetWindowInsets(ctx context.Context, displayId int32, token binder.IBinder, outInsetsState InsetsState) (bool, error)
+	GetPossibleDisplayInfo(ctx context.Context, displayId int32) ([]DisplayInfo, error)
+	ShowGlobalActions(ctx context.Context) error
+	SetLayerTracingFlags(ctx context.Context, flags int32) error
+	SetActiveTransactionTracing(ctx context.Context, active bool) error
+	RequestScrollCapture(ctx context.Context, displayId int32, behindClient binder.IBinder, taskId int32, listener IScrollCaptureResponseListener) error
+	HoldLock(ctx context.Context, token binder.IBinder, durationMs int32) error
+	GetSupportedDisplayHashAlgorithms(ctx context.Context) ([]string, error)
+	VerifyDisplayHash(ctx context.Context, displayHash displayhash.DisplayHash) (displayhash.VerifiedDisplayHash, error)
+	SetDisplayHashThrottlingEnabled(ctx context.Context, enable bool) error
+	AttachWindowContextToDisplayArea(ctx context.Context, appThread app.IApplicationThread, clientToken binder.IBinder, type_ int32, displayId int32, options *os.Bundle) (androidWindow.WindowContextInfo, error)
+	AttachWindowContextToWindowToken(ctx context.Context, appThread app.IApplicationThread, clientToken binder.IBinder, token binder.IBinder) (androidWindow.WindowContextInfo, error)
+	AttachWindowContextToDisplayContent(ctx context.Context, appThread app.IApplicationThread, clientToken binder.IBinder, displayId int32) (androidWindow.WindowContextInfo, error)
+	DetachWindowContext(ctx context.Context, clientToken binder.IBinder) error
+	ReparentWindowContextToDisplayArea(ctx context.Context, appThread app.IApplicationThread, clientToken binder.IBinder, displayId int32) (bool, error)
+	RegisterCrossWindowBlurEnabledListener(ctx context.Context, listener ICrossWindowBlurEnabledListener) (bool, error)
+	UnregisterCrossWindowBlurEnabledListener(ctx context.Context, listener ICrossWindowBlurEnabledListener) error
+	IsTaskSnapshotSupported(ctx context.Context) (bool, error)
+	GetImeDisplayId(ctx context.Context) (int32, error)
+	SetTaskSnapshotEnabled(ctx context.Context, enabled bool) error
+	RegisterTaskFpsCallback(ctx context.Context, taskId int32, callback androidWindow.ITaskFpsCallback) error
+	UnregisterTaskFpsCallback(ctx context.Context, listener androidWindow.ITaskFpsCallback) error
+	SnapshotTaskForRecents(ctx context.Context, taskId int32) (graphics.Bitmap, error)
+	SetRecentsAppBehindSystemBars(ctx context.Context, behindSystemBars bool) error
+	GetLetterboxBackgroundColorInArgb(ctx context.Context) (int32, error)
+	IsLetterboxBackgroundMultiColored(ctx context.Context) (bool, error)
+	CaptureDisplay(ctx context.Context, displayId int32, captureArgs *androidWindow.ScreenCaptureCaptureArgs, listener androidWindow.ScreenCaptureScreenCaptureListener) error
+	IsGlobalKey(ctx context.Context, keyCode int32) (bool, error)
+	AddToSurfaceSyncGroup(ctx context.Context, syncGroupToken binder.IBinder, parentSyncGroupMerge bool, completedListener *androidWindow.ISurfaceSyncGroupCompletedListener, addToSurfaceSyncGroupResult androidWindow.AddToSurfaceSyncGroupResult) (bool, error)
+	MarkSurfaceSyncGroupReady(ctx context.Context, syncGroupToken binder.IBinder) error
+	NotifyScreenshotListeners(ctx context.Context, displayId int32) ([]content.ComponentName, error)
+	ReplaceContentOnDisplay(ctx context.Context, displayId int32, sc SurfaceControl) (bool, error)
+	RegisterDecorViewGestureListener(ctx context.Context, listener IDecorViewGestureListener, displayId int32) error
+	UnregisterDecorViewGestureListener(ctx context.Context, listener IDecorViewGestureListener, displayId int32) error
+	RegisterTrustedPresentationListener(ctx context.Context, window binder.IBinder, listener androidWindow.ITrustedPresentationListener, thresholds gui.TrustedPresentationThresholds, id int32) error
+	UnregisterTrustedPresentationListener(ctx context.Context, listener androidWindow.ITrustedPresentationListener, id int32) error
+	RegisterScreenRecordingCallback(ctx context.Context, callback androidWindow.IScreenRecordingCallback) (bool, error)
+	UnregisterScreenRecordingCallback(ctx context.Context, callback androidWindow.IScreenRecordingCallback) error
+	SetGlobalDragListener(ctx context.Context, listener androidWindow.IGlobalDragListener) error
+	TransferTouchGesture(ctx context.Context, transferFromToken androidWindow.InputTransferToken, transferToToken androidWindow.InputTransferToken) (bool, error)
+	GetApplicationLaunchKeyboardShortcuts(ctx context.Context, deviceId int32) (KeyboardShortcutGroup, error)
+}
+
+type windowManagerStubWrapper struct {
+	impl       IWindowManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *windowManagerStubWrapper) StartViewServer(
+	ctx context.Context,
+	port int32,
+) (bool, error) {
+	return w.impl.StartViewServer(ctx, port)
+}
+
+func (w *windowManagerStubWrapper) StopViewServer(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.StopViewServer(ctx)
+}
+
+func (w *windowManagerStubWrapper) IsViewServerRunning(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsViewServerRunning(ctx)
+}
+
+func (w *windowManagerStubWrapper) OpenSession(
+	ctx context.Context,
+	callback IWindowSessionCallback,
+) (IWindowSession, error) {
+	return w.impl.OpenSession(ctx, callback)
+}
+
+func (w *windowManagerStubWrapper) GetInitialDisplaySize(
+	ctx context.Context,
+	displayId int32,
+	size graphics.Point,
+) error {
+	return w.impl.GetInitialDisplaySize(ctx, displayId, size)
+}
+
+func (w *windowManagerStubWrapper) GetBaseDisplaySize(
+	ctx context.Context,
+	displayId int32,
+	size graphics.Point,
+) error {
+	return w.impl.GetBaseDisplaySize(ctx, displayId, size)
+}
+
+func (w *windowManagerStubWrapper) SetForcedDisplaySize(
+	ctx context.Context,
+	displayId int32,
+	width int32,
+	height int32,
+) error {
+	return w.impl.SetForcedDisplaySize(ctx, displayId, width, height)
+}
+
+func (w *windowManagerStubWrapper) ClearForcedDisplaySize(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.ClearForcedDisplaySize(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) GetInitialDisplayDensity(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetInitialDisplayDensity(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) GetBaseDisplayDensity(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetBaseDisplayDensity(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) GetDisplayIdByUniqueId(
+	ctx context.Context,
+	uniqueId string,
+) (int32, error) {
+	return w.impl.GetDisplayIdByUniqueId(ctx, uniqueId)
+}
+
+func (w *windowManagerStubWrapper) SetForcedDisplayDensityForUser(
+	ctx context.Context,
+	displayId int32,
+	density int32,
+) error {
+	return w.impl.SetForcedDisplayDensityForUser(ctx, displayId, density)
+}
+
+func (w *windowManagerStubWrapper) ClearForcedDisplayDensityForUser(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.ClearForcedDisplayDensityForUser(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetForcedDisplayScalingMode(
+	ctx context.Context,
+	displayId int32,
+	mode int32,
+) error {
+	return w.impl.SetForcedDisplayScalingMode(ctx, displayId, mode)
+}
+
+func (w *windowManagerStubWrapper) SetEventDispatching(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetEventDispatching(ctx, enabled)
+}
+
+func (w *windowManagerStubWrapper) IsWindowToken(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) (bool, error) {
+	return w.impl.IsWindowToken(ctx, binder_)
+}
+
+func (w *windowManagerStubWrapper) AddWindowToken(
+	ctx context.Context,
+	token binder.IBinder,
+	type_ int32,
+	displayId int32,
+	options os.Bundle,
+) error {
+	return w.impl.AddWindowToken(ctx, token, type_, displayId, options)
+}
+
+func (w *windowManagerStubWrapper) RemoveWindowToken(
+	ctx context.Context,
+	token binder.IBinder,
+	displayId int32,
+) error {
+	return w.impl.RemoveWindowToken(ctx, token, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetDisplayChangeWindowController(
+	ctx context.Context,
+	controller IDisplayChangeWindowController,
+) error {
+	return w.impl.SetDisplayChangeWindowController(ctx, controller)
+}
+
+func (w *windowManagerStubWrapper) AddShellRoot(
+	ctx context.Context,
+	displayId int32,
+	client IWindow,
+	shellRootLayer int32,
+) (SurfaceControl, error) {
+	return w.impl.AddShellRoot(ctx, displayId, client, shellRootLayer)
+}
+
+func (w *windowManagerStubWrapper) SetShellRootAccessibilityWindow(
+	ctx context.Context,
+	displayId int32,
+	shellRootLayer int32,
+	target IWindow,
+) error {
+	return w.impl.SetShellRootAccessibilityWindow(ctx, displayId, shellRootLayer, target)
+}
+
+func (w *windowManagerStubWrapper) OverridePendingAppTransitionMultiThumbFuture(
+	ctx context.Context,
+	specsFuture IAppTransitionAnimationSpecsFuture,
+	startedCallback ondeviceintelligence.IRemoteCallback,
+	scaleUp bool,
+	displayId int32,
+) error {
+	return w.impl.OverridePendingAppTransitionMultiThumbFuture(ctx, specsFuture, startedCallback, scaleUp, displayId)
+}
+
+func (w *windowManagerStubWrapper) OverridePendingAppTransitionRemote(
+	ctx context.Context,
+	remoteAnimationAdapter RemoteAnimationAdapter,
+	displayId int32,
+) error {
+	return w.impl.OverridePendingAppTransitionRemote(ctx, remoteAnimationAdapter, displayId)
+}
+
+func (w *windowManagerStubWrapper) EndProlongedAnimations(
+	ctx context.Context,
+) error {
+	return w.impl.EndProlongedAnimations(ctx)
+}
+
+func (w *windowManagerStubWrapper) StartFreezingScreen(
+	ctx context.Context,
+	exitAnim int32,
+	enterAnim int32,
+) error {
+	return w.impl.StartFreezingScreen(ctx, exitAnim, enterAnim)
+}
+
+func (w *windowManagerStubWrapper) StopFreezingScreen(
+	ctx context.Context,
+) error {
+	return w.impl.StopFreezingScreen(ctx)
+}
+
+func (w *windowManagerStubWrapper) DisableKeyguard(
+	ctx context.Context,
+	token binder.IBinder,
+	tag string,
+) error {
+	return w.impl.DisableKeyguard(ctx, token, tag)
+}
+
+func (w *windowManagerStubWrapper) ReenableKeyguard(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.ReenableKeyguard(ctx, token)
+}
+
+func (w *windowManagerStubWrapper) ExitKeyguardSecurely(
+	ctx context.Context,
+	callback IOnKeyguardExitResult,
+) error {
+	return w.impl.ExitKeyguardSecurely(ctx, callback)
+}
+
+func (w *windowManagerStubWrapper) IsKeyguardLocked(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsKeyguardLocked(ctx)
+}
+
+func (w *windowManagerStubWrapper) IsKeyguardSecure(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsKeyguardSecure(ctx)
+}
+
+func (w *windowManagerStubWrapper) DismissKeyguard(
+	ctx context.Context,
+	callback policy.IKeyguardDismissCallback,
+	message interface{},
+) error {
+	return w.impl.DismissKeyguard(ctx, callback, message)
+}
+
+func (w *windowManagerStubWrapper) AddKeyguardLockedStateListener(
+	ctx context.Context,
+	listener policy.IKeyguardLockedStateListener,
+) error {
+	return w.impl.AddKeyguardLockedStateListener(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) RemoveKeyguardLockedStateListener(
+	ctx context.Context,
+	listener policy.IKeyguardLockedStateListener,
+) error {
+	return w.impl.RemoveKeyguardLockedStateListener(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) SetSwitchingUser(
+	ctx context.Context,
+	switching bool,
+) error {
+	return w.impl.SetSwitchingUser(ctx, switching)
+}
+
+func (w *windowManagerStubWrapper) CloseSystemDialogs(
+	ctx context.Context,
+	reason string,
+) error {
+	return w.impl.CloseSystemDialogs(ctx, reason)
+}
+
+func (w *windowManagerStubWrapper) GetAnimationScale(
+	ctx context.Context,
+	which int32,
+) (float32, error) {
+	return w.impl.GetAnimationScale(ctx, which)
+}
+
+func (w *windowManagerStubWrapper) GetAnimationScales(
+	ctx context.Context,
+) ([]float32, error) {
+	return w.impl.GetAnimationScales(ctx)
+}
+
+func (w *windowManagerStubWrapper) SetAnimationScale(
+	ctx context.Context,
+	which int32,
+	scale float32,
+) error {
+	return w.impl.SetAnimationScale(ctx, which, scale)
+}
+
+func (w *windowManagerStubWrapper) SetAnimationScales(
+	ctx context.Context,
+	scales []float32,
+) error {
+	return w.impl.SetAnimationScales(ctx, scales)
+}
+
+func (w *windowManagerStubWrapper) GetCurrentAnimatorScale(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetCurrentAnimatorScale(ctx)
+}
+
+func (w *windowManagerStubWrapper) SetInTouchMode(
+	ctx context.Context,
+	inTouch bool,
+	displayId int32,
+) error {
+	return w.impl.SetInTouchMode(ctx, inTouch, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetInTouchModeOnAllDisplays(
+	ctx context.Context,
+	inTouch bool,
+) error {
+	return w.impl.SetInTouchModeOnAllDisplays(ctx, inTouch)
+}
+
+func (w *windowManagerStubWrapper) IsInTouchMode(
+	ctx context.Context,
+	displayId int32,
+) (bool, error) {
+	return w.impl.IsInTouchMode(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) ShowStrictModeViolation(
+	ctx context.Context,
+	on bool,
+) error {
+	return w.impl.ShowStrictModeViolation(ctx, on)
+}
+
+func (w *windowManagerStubWrapper) SetStrictModeVisualIndicatorPreference(
+	ctx context.Context,
+	enabled string,
+) error {
+	return w.impl.SetStrictModeVisualIndicatorPreference(ctx, enabled)
+}
+
+func (w *windowManagerStubWrapper) RefreshScreenCaptureDisabled(
+	ctx context.Context,
+) error {
+	return w.impl.RefreshScreenCaptureDisabled(ctx)
+}
+
+func (w *windowManagerStubWrapper) GetDefaultDisplayRotation(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDefaultDisplayRotation(ctx)
+}
+
+func (w *windowManagerStubWrapper) GetDisplayUserRotation(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetDisplayUserRotation(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) WatchRotation(
+	ctx context.Context,
+	watcher IRotationWatcher,
+	displayId int32,
+) (int32, error) {
+	return w.impl.WatchRotation(ctx, watcher, displayId)
+}
+
+func (w *windowManagerStubWrapper) RemoveRotationWatcher(
+	ctx context.Context,
+	watcher IRotationWatcher,
+) error {
+	return w.impl.RemoveRotationWatcher(ctx, watcher)
+}
+
+func (w *windowManagerStubWrapper) RegisterProposedRotationListener(
+	ctx context.Context,
+	contextToken binder.IBinder,
+	listener IRotationWatcher,
+) (int32, error) {
+	return w.impl.RegisterProposedRotationListener(ctx, contextToken, listener)
+}
+
+func (w *windowManagerStubWrapper) GetPreferredOptionsPanelGravity(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetPreferredOptionsPanelGravity(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) FreezeRotation(
+	ctx context.Context,
+	rotation int32,
+	caller string,
+) error {
+	return w.impl.FreezeRotation(ctx, rotation, caller)
+}
+
+func (w *windowManagerStubWrapper) ThawRotation(
+	ctx context.Context,
+	caller string,
+) error {
+	return w.impl.ThawRotation(ctx, caller)
+}
+
+func (w *windowManagerStubWrapper) IsRotationFrozen(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsRotationFrozen(ctx)
+}
+
+func (w *windowManagerStubWrapper) FreezeDisplayRotation(
+	ctx context.Context,
+	displayId int32,
+	rotation int32,
+	caller string,
+) error {
+	return w.impl.FreezeDisplayRotation(ctx, displayId, rotation, caller)
+}
+
+func (w *windowManagerStubWrapper) ThawDisplayRotation(
+	ctx context.Context,
+	displayId int32,
+	caller string,
+) error {
+	return w.impl.ThawDisplayRotation(ctx, displayId, caller)
+}
+
+func (w *windowManagerStubWrapper) IsDisplayRotationFrozen(
+	ctx context.Context,
+	displayId int32,
+) (bool, error) {
+	return w.impl.IsDisplayRotationFrozen(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetFixedToUserRotation(
+	ctx context.Context,
+	displayId int32,
+	fixedToUserRotation int32,
+) error {
+	return w.impl.SetFixedToUserRotation(ctx, displayId, fixedToUserRotation)
+}
+
+func (w *windowManagerStubWrapper) SetIgnoreOrientationRequest(
+	ctx context.Context,
+	displayId int32,
+	ignoreOrientationRequest bool,
+) error {
+	return w.impl.SetIgnoreOrientationRequest(ctx, displayId, ignoreOrientationRequest)
+}
+
+func (w *windowManagerStubWrapper) ScreenshotWallpaper(
+	ctx context.Context,
+) (graphics.Bitmap, error) {
+	return w.impl.ScreenshotWallpaper(ctx)
+}
+
+func (w *windowManagerStubWrapper) MirrorWallpaperSurface(
+	ctx context.Context,
+	displayId int32,
+) (SurfaceControl, error) {
+	return w.impl.MirrorWallpaperSurface(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) RegisterWallpaperVisibilityListener(
+	ctx context.Context,
+	listener IWallpaperVisibilityListener,
+	displayId int32,
+) (bool, error) {
+	return w.impl.RegisterWallpaperVisibilityListener(ctx, listener, displayId)
+}
+
+func (w *windowManagerStubWrapper) UnregisterWallpaperVisibilityListener(
+	ctx context.Context,
+	listener IWallpaperVisibilityListener,
+	displayId int32,
+) error {
+	return w.impl.UnregisterWallpaperVisibilityListener(ctx, listener, displayId)
+}
+
+func (w *windowManagerStubWrapper) RegisterSystemGestureExclusionListener(
+	ctx context.Context,
+	listener ISystemGestureExclusionListener,
+	displayId int32,
+) error {
+	return w.impl.RegisterSystemGestureExclusionListener(ctx, listener, displayId)
+}
+
+func (w *windowManagerStubWrapper) UnregisterSystemGestureExclusionListener(
+	ctx context.Context,
+	listener ISystemGestureExclusionListener,
+	displayId int32,
+) error {
+	return w.impl.UnregisterSystemGestureExclusionListener(ctx, listener, displayId)
+}
+
+func (w *windowManagerStubWrapper) RequestAssistScreenshot(
+	ctx context.Context,
+	receiver app.IAssistDataReceiver,
+) (bool, error) {
+	return w.impl.RequestAssistScreenshot(ctx, receiver)
+}
+
+func (w *windowManagerStubWrapper) HideTransientBars(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.HideTransientBars(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetRecentsVisibility(
+	ctx context.Context,
+	visible bool,
+) error {
+	return w.impl.SetRecentsVisibility(ctx, visible)
+}
+
+func (w *windowManagerStubWrapper) UpdateStaticPrivacyIndicatorBounds(
+	ctx context.Context,
+	displayId int32,
+	staticBounds []graphics.Rect,
+) error {
+	return w.impl.UpdateStaticPrivacyIndicatorBounds(ctx, displayId, staticBounds)
+}
+
+func (w *windowManagerStubWrapper) SetNavBarVirtualKeyHapticFeedbackEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetNavBarVirtualKeyHapticFeedbackEnabled(ctx, enabled)
+}
+
+func (w *windowManagerStubWrapper) HasNavigationBar(
+	ctx context.Context,
+	displayId int32,
+) (bool, error) {
+	return w.impl.HasNavigationBar(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) LockNow(
+	ctx context.Context,
+	options os.Bundle,
+) error {
+	return w.impl.LockNow(ctx, options)
+}
+
+func (w *windowManagerStubWrapper) IsSafeModeEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsSafeModeEnabled(ctx)
+}
+
+func (w *windowManagerStubWrapper) ClearWindowContentFrameStats(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.ClearWindowContentFrameStats(ctx, token)
+}
+
+func (w *windowManagerStubWrapper) GetWindowContentFrameStats(
+	ctx context.Context,
+	token binder.IBinder,
+) (WindowContentFrameStats, error) {
+	return w.impl.GetWindowContentFrameStats(ctx, token)
+}
+
+func (w *windowManagerStubWrapper) GetDockedStackSide(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetDockedStackSide(ctx)
+}
+
+func (w *windowManagerStubWrapper) RegisterPinnedTaskListener(
+	ctx context.Context,
+	displayId int32,
+	listener IPinnedTaskListener,
+) error {
+	return w.impl.RegisterPinnedTaskListener(ctx, displayId, listener)
+}
+
+func (w *windowManagerStubWrapper) RequestAppKeyboardShortcuts(
+	ctx context.Context,
+	receiver internalOs.IResultReceiver,
+	deviceId int32,
+) error {
+	return w.impl.RequestAppKeyboardShortcuts(ctx, receiver, deviceId)
+}
+
+func (w *windowManagerStubWrapper) RequestImeKeyboardShortcuts(
+	ctx context.Context,
+	receiver internalOs.IResultReceiver,
+	deviceId int32,
+) error {
+	return w.impl.RequestImeKeyboardShortcuts(ctx, receiver, deviceId)
+}
+
+func (w *windowManagerStubWrapper) GetStableInsets(
+	ctx context.Context,
+	displayId int32,
+	outInsets graphics.Rect,
+) error {
+	return w.impl.GetStableInsets(ctx, displayId, outInsets)
+}
+
+func (w *windowManagerStubWrapper) RegisterShortcutKey(
+	ctx context.Context,
+	shortcutCode int64,
+	keySubscriber pm.IShortcutService,
+) error {
+	return w.impl.RegisterShortcutKey(ctx, shortcutCode, keySubscriber)
+}
+
+func (w *windowManagerStubWrapper) CreateInputConsumer(
+	ctx context.Context,
+	token binder.IBinder,
+	name string,
+	displayId int32,
+	inputChannel InputChannel,
+) error {
+	return w.impl.CreateInputConsumer(ctx, token, name, displayId, inputChannel)
+}
+
+func (w *windowManagerStubWrapper) DestroyInputConsumer(
+	ctx context.Context,
+	token binder.IBinder,
+	displayId int32,
+) (bool, error) {
+	return w.impl.DestroyInputConsumer(ctx, token, displayId)
+}
+
+func (w *windowManagerStubWrapper) GetCurrentImeTouchRegion(
+	ctx context.Context,
+) (graphics.Region, error) {
+	return w.impl.GetCurrentImeTouchRegion(ctx)
+}
+
+func (w *windowManagerStubWrapper) RegisterDisplayFoldListener(
+	ctx context.Context,
+	listener IDisplayFoldListener,
+) error {
+	return w.impl.RegisterDisplayFoldListener(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) UnregisterDisplayFoldListener(
+	ctx context.Context,
+	listener IDisplayFoldListener,
+) error {
+	return w.impl.UnregisterDisplayFoldListener(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) RegisterDisplayWindowListener(
+	ctx context.Context,
+	listener IDisplayWindowListener,
+) ([]int32, error) {
+	return w.impl.RegisterDisplayWindowListener(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) UnregisterDisplayWindowListener(
+	ctx context.Context,
+	listener IDisplayWindowListener,
+) error {
+	return w.impl.UnregisterDisplayWindowListener(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) StartWindowTrace(
+	ctx context.Context,
+) error {
+	return w.impl.StartWindowTrace(ctx)
+}
+
+func (w *windowManagerStubWrapper) StopWindowTrace(
+	ctx context.Context,
+) error {
+	return w.impl.StopWindowTrace(ctx)
+}
+
+func (w *windowManagerStubWrapper) SaveWindowTraceToFile(
+	ctx context.Context,
+) error {
+	return w.impl.SaveWindowTraceToFile(ctx)
+}
+
+func (w *windowManagerStubWrapper) IsWindowTraceEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsWindowTraceEnabled(ctx)
+}
+
+func (w *windowManagerStubWrapper) StartTransitionTrace(
+	ctx context.Context,
+) error {
+	return w.impl.StartTransitionTrace(ctx)
+}
+
+func (w *windowManagerStubWrapper) StopTransitionTrace(
+	ctx context.Context,
+) error {
+	return w.impl.StopTransitionTrace(ctx)
+}
+
+func (w *windowManagerStubWrapper) IsTransitionTraceEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsTransitionTraceEnabled(ctx)
+}
+
+func (w *windowManagerStubWrapper) GetWindowingMode(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetWindowingMode(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetWindowingMode(
+	ctx context.Context,
+	displayId int32,
+	mode int32,
+) error {
+	return w.impl.SetWindowingMode(ctx, displayId, mode)
+}
+
+func (w *windowManagerStubWrapper) GetRemoveContentMode(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetRemoveContentMode(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetRemoveContentMode(
+	ctx context.Context,
+	displayId int32,
+	mode int32,
+) error {
+	return w.impl.SetRemoveContentMode(ctx, displayId, mode)
+}
+
+func (w *windowManagerStubWrapper) ShouldShowWithInsecureKeyguard(
+	ctx context.Context,
+	displayId int32,
+) (bool, error) {
+	return w.impl.ShouldShowWithInsecureKeyguard(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetShouldShowWithInsecureKeyguard(
+	ctx context.Context,
+	displayId int32,
+	shouldShow bool,
+) error {
+	return w.impl.SetShouldShowWithInsecureKeyguard(ctx, displayId, shouldShow)
+}
+
+func (w *windowManagerStubWrapper) ShouldShowSystemDecors(
+	ctx context.Context,
+	displayId int32,
+) (bool, error) {
+	return w.impl.ShouldShowSystemDecors(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetShouldShowSystemDecors(
+	ctx context.Context,
+	displayId int32,
+	shouldShow bool,
+) error {
+	return w.impl.SetShouldShowSystemDecors(ctx, displayId, shouldShow)
+}
+
+func (w *windowManagerStubWrapper) GetDisplayImePolicy(
+	ctx context.Context,
+	displayId int32,
+) (int32, error) {
+	return w.impl.GetDisplayImePolicy(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) SetDisplayImePolicy(
+	ctx context.Context,
+	displayId int32,
+	imePolicy int32,
+) error {
+	return w.impl.SetDisplayImePolicy(ctx, displayId, imePolicy)
+}
+
+func (w *windowManagerStubWrapper) SyncInputTransactions(
+	ctx context.Context,
+	waitForAnimations bool,
+) error {
+	return w.impl.SyncInputTransactions(ctx, waitForAnimations)
+}
+
+func (w *windowManagerStubWrapper) IsLayerTracing(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLayerTracing(ctx)
+}
+
+func (w *windowManagerStubWrapper) SetLayerTracing(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetLayerTracing(ctx, enabled)
+}
+
+func (w *windowManagerStubWrapper) MirrorDisplay(
+	ctx context.Context,
+	displayId int32,
+	outSurfaceControl SurfaceControl,
+) (bool, error) {
+	return w.impl.MirrorDisplay(ctx, displayId, outSurfaceControl)
+}
+
+func (w *windowManagerStubWrapper) SetDisplayWindowInsetsController(
+	ctx context.Context,
+	displayId int32,
+	displayWindowInsetsController IDisplayWindowInsetsController,
+) error {
+	return w.impl.SetDisplayWindowInsetsController(ctx, displayId, displayWindowInsetsController)
+}
+
+func (w *windowManagerStubWrapper) UpdateDisplayWindowRequestedVisibleTypes(
+	ctx context.Context,
+	displayId int32,
+	visibleTypes int32,
+	mask int32,
+	statsToken *inputmethod.ImeTrackerToken,
+) error {
+	return w.impl.UpdateDisplayWindowRequestedVisibleTypes(ctx, displayId, visibleTypes, mask, statsToken)
+}
+
+func (w *windowManagerStubWrapper) GetWindowInsets(
+	ctx context.Context,
+	displayId int32,
+	token binder.IBinder,
+	outInsetsState InsetsState,
+) (bool, error) {
+	return w.impl.GetWindowInsets(ctx, displayId, token, outInsetsState)
+}
+
+func (w *windowManagerStubWrapper) GetPossibleDisplayInfo(
+	ctx context.Context,
+	displayId int32,
+) ([]DisplayInfo, error) {
+	return w.impl.GetPossibleDisplayInfo(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) ShowGlobalActions(
+	ctx context.Context,
+) error {
+	return w.impl.ShowGlobalActions(ctx)
+}
+
+func (w *windowManagerStubWrapper) SetLayerTracingFlags(
+	ctx context.Context,
+	flags int32,
+) error {
+	return w.impl.SetLayerTracingFlags(ctx, flags)
+}
+
+func (w *windowManagerStubWrapper) SetActiveTransactionTracing(
+	ctx context.Context,
+	active bool,
+) error {
+	return w.impl.SetActiveTransactionTracing(ctx, active)
+}
+
+func (w *windowManagerStubWrapper) RequestScrollCapture(
+	ctx context.Context,
+	displayId int32,
+	behindClient binder.IBinder,
+	taskId int32,
+	listener IScrollCaptureResponseListener,
+) error {
+	return w.impl.RequestScrollCapture(ctx, displayId, behindClient, taskId, listener)
+}
+
+func (w *windowManagerStubWrapper) HoldLock(
+	ctx context.Context,
+	token binder.IBinder,
+	durationMs int32,
+) error {
+	return w.impl.HoldLock(ctx, token, durationMs)
+}
+
+func (w *windowManagerStubWrapper) GetSupportedDisplayHashAlgorithms(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetSupportedDisplayHashAlgorithms(ctx)
+}
+
+func (w *windowManagerStubWrapper) VerifyDisplayHash(
+	ctx context.Context,
+	displayHash displayhash.DisplayHash,
+) (displayhash.VerifiedDisplayHash, error) {
+	return w.impl.VerifyDisplayHash(ctx, displayHash)
+}
+
+func (w *windowManagerStubWrapper) SetDisplayHashThrottlingEnabled(
+	ctx context.Context,
+	enable bool,
+) error {
+	return w.impl.SetDisplayHashThrottlingEnabled(ctx, enable)
+}
+
+func (w *windowManagerStubWrapper) AttachWindowContextToDisplayArea(
+	ctx context.Context,
+	appThread app.IApplicationThread,
+	clientToken binder.IBinder,
+	type_ int32,
+	displayId int32,
+	options *os.Bundle,
+) (androidWindow.WindowContextInfo, error) {
+	return w.impl.AttachWindowContextToDisplayArea(ctx, appThread, clientToken, type_, displayId, options)
+}
+
+func (w *windowManagerStubWrapper) AttachWindowContextToWindowToken(
+	ctx context.Context,
+	appThread app.IApplicationThread,
+	clientToken binder.IBinder,
+	token binder.IBinder,
+) (androidWindow.WindowContextInfo, error) {
+	return w.impl.AttachWindowContextToWindowToken(ctx, appThread, clientToken, token)
+}
+
+func (w *windowManagerStubWrapper) AttachWindowContextToDisplayContent(
+	ctx context.Context,
+	appThread app.IApplicationThread,
+	clientToken binder.IBinder,
+	displayId int32,
+) (androidWindow.WindowContextInfo, error) {
+	return w.impl.AttachWindowContextToDisplayContent(ctx, appThread, clientToken, displayId)
+}
+
+func (w *windowManagerStubWrapper) DetachWindowContext(
+	ctx context.Context,
+	clientToken binder.IBinder,
+) error {
+	return w.impl.DetachWindowContext(ctx, clientToken)
+}
+
+func (w *windowManagerStubWrapper) ReparentWindowContextToDisplayArea(
+	ctx context.Context,
+	appThread app.IApplicationThread,
+	clientToken binder.IBinder,
+	displayId int32,
+) (bool, error) {
+	return w.impl.ReparentWindowContextToDisplayArea(ctx, appThread, clientToken, displayId)
+}
+
+func (w *windowManagerStubWrapper) RegisterCrossWindowBlurEnabledListener(
+	ctx context.Context,
+	listener ICrossWindowBlurEnabledListener,
+) (bool, error) {
+	return w.impl.RegisterCrossWindowBlurEnabledListener(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) UnregisterCrossWindowBlurEnabledListener(
+	ctx context.Context,
+	listener ICrossWindowBlurEnabledListener,
+) error {
+	return w.impl.UnregisterCrossWindowBlurEnabledListener(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) IsTaskSnapshotSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsTaskSnapshotSupported(ctx)
+}
+
+func (w *windowManagerStubWrapper) GetImeDisplayId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetImeDisplayId(ctx)
+}
+
+func (w *windowManagerStubWrapper) SetTaskSnapshotEnabled(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetTaskSnapshotEnabled(ctx, enabled)
+}
+
+func (w *windowManagerStubWrapper) RegisterTaskFpsCallback(
+	ctx context.Context,
+	taskId int32,
+	callback androidWindow.ITaskFpsCallback,
+) error {
+	return w.impl.RegisterTaskFpsCallback(ctx, taskId, callback)
+}
+
+func (w *windowManagerStubWrapper) UnregisterTaskFpsCallback(
+	ctx context.Context,
+	listener androidWindow.ITaskFpsCallback,
+) error {
+	return w.impl.UnregisterTaskFpsCallback(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) SnapshotTaskForRecents(
+	ctx context.Context,
+	taskId int32,
+) (graphics.Bitmap, error) {
+	return w.impl.SnapshotTaskForRecents(ctx, taskId)
+}
+
+func (w *windowManagerStubWrapper) SetRecentsAppBehindSystemBars(
+	ctx context.Context,
+	behindSystemBars bool,
+) error {
+	return w.impl.SetRecentsAppBehindSystemBars(ctx, behindSystemBars)
+}
+
+func (w *windowManagerStubWrapper) GetLetterboxBackgroundColorInArgb(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetLetterboxBackgroundColorInArgb(ctx)
+}
+
+func (w *windowManagerStubWrapper) IsLetterboxBackgroundMultiColored(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsLetterboxBackgroundMultiColored(ctx)
+}
+
+func (w *windowManagerStubWrapper) CaptureDisplay(
+	ctx context.Context,
+	displayId int32,
+	captureArgs *androidWindow.ScreenCaptureCaptureArgs,
+	listener androidWindow.ScreenCaptureScreenCaptureListener,
+) error {
+	return w.impl.CaptureDisplay(ctx, displayId, captureArgs, listener)
+}
+
+func (w *windowManagerStubWrapper) IsGlobalKey(
+	ctx context.Context,
+	keyCode int32,
+) (bool, error) {
+	return w.impl.IsGlobalKey(ctx, keyCode)
+}
+
+func (w *windowManagerStubWrapper) AddToSurfaceSyncGroup(
+	ctx context.Context,
+	syncGroupToken binder.IBinder,
+	parentSyncGroupMerge bool,
+	completedListener *androidWindow.ISurfaceSyncGroupCompletedListener,
+	addToSurfaceSyncGroupResult androidWindow.AddToSurfaceSyncGroupResult,
+) (bool, error) {
+	return w.impl.AddToSurfaceSyncGroup(ctx, syncGroupToken, parentSyncGroupMerge, completedListener, addToSurfaceSyncGroupResult)
+}
+
+func (w *windowManagerStubWrapper) MarkSurfaceSyncGroupReady(
+	ctx context.Context,
+	syncGroupToken binder.IBinder,
+) error {
+	return w.impl.MarkSurfaceSyncGroupReady(ctx, syncGroupToken)
+}
+
+func (w *windowManagerStubWrapper) NotifyScreenshotListeners(
+	ctx context.Context,
+	displayId int32,
+) ([]content.ComponentName, error) {
+	return w.impl.NotifyScreenshotListeners(ctx, displayId)
+}
+
+func (w *windowManagerStubWrapper) ReplaceContentOnDisplay(
+	ctx context.Context,
+	displayId int32,
+	sc SurfaceControl,
+) (bool, error) {
+	return w.impl.ReplaceContentOnDisplay(ctx, displayId, sc)
+}
+
+func (w *windowManagerStubWrapper) RegisterDecorViewGestureListener(
+	ctx context.Context,
+	listener IDecorViewGestureListener,
+	displayId int32,
+) error {
+	return w.impl.RegisterDecorViewGestureListener(ctx, listener, displayId)
+}
+
+func (w *windowManagerStubWrapper) UnregisterDecorViewGestureListener(
+	ctx context.Context,
+	listener IDecorViewGestureListener,
+	displayId int32,
+) error {
+	return w.impl.UnregisterDecorViewGestureListener(ctx, listener, displayId)
+}
+
+func (w *windowManagerStubWrapper) RegisterTrustedPresentationListener(
+	ctx context.Context,
+	window binder.IBinder,
+	listener androidWindow.ITrustedPresentationListener,
+	thresholds gui.TrustedPresentationThresholds,
+	id int32,
+) error {
+	return w.impl.RegisterTrustedPresentationListener(ctx, window, listener, thresholds, id)
+}
+
+func (w *windowManagerStubWrapper) UnregisterTrustedPresentationListener(
+	ctx context.Context,
+	listener androidWindow.ITrustedPresentationListener,
+	id int32,
+) error {
+	return w.impl.UnregisterTrustedPresentationListener(ctx, listener, id)
+}
+
+func (w *windowManagerStubWrapper) RegisterScreenRecordingCallback(
+	ctx context.Context,
+	callback androidWindow.IScreenRecordingCallback,
+) (bool, error) {
+	return w.impl.RegisterScreenRecordingCallback(ctx, callback)
+}
+
+func (w *windowManagerStubWrapper) UnregisterScreenRecordingCallback(
+	ctx context.Context,
+	callback androidWindow.IScreenRecordingCallback,
+) error {
+	return w.impl.UnregisterScreenRecordingCallback(ctx, callback)
+}
+
+func (w *windowManagerStubWrapper) SetGlobalDragListener(
+	ctx context.Context,
+	listener androidWindow.IGlobalDragListener,
+) error {
+	return w.impl.SetGlobalDragListener(ctx, listener)
+}
+
+func (w *windowManagerStubWrapper) TransferTouchGesture(
+	ctx context.Context,
+	transferFromToken androidWindow.InputTransferToken,
+	transferToToken androidWindow.InputTransferToken,
+) (bool, error) {
+	return w.impl.TransferTouchGesture(ctx, transferFromToken, transferToToken)
+}
+
+func (w *windowManagerStubWrapper) GetApplicationLaunchKeyboardShortcuts(
+	ctx context.Context,
+	deviceId int32,
+) (KeyboardShortcutGroup, error) {
+	return w.impl.GetApplicationLaunchKeyboardShortcuts(ctx, deviceId)
+}
+
+var _ IWindowManager = (*windowManagerStubWrapper)(nil)
+
+// NewWindowManagerStub creates a server-side IWindowManager wrapping the given
+// server implementation. The returned value satisfies IWindowManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowManagerStub(
+	impl IWindowManagerServer,
+) IWindowManager {
+	wrapper := &windowManagerStubWrapper{impl: impl}
+	stub := &WindowManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

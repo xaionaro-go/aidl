@@ -166,3 +166,58 @@ func (s *CallRedirectionAdapterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICallRedirectionAdapterServer is the server-side interface that user implementations
+// provide to NewCallRedirectionAdapterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallRedirectionAdapterServer interface {
+	CancelCall(ctx context.Context) error
+	PlaceCallUnmodified(ctx context.Context) error
+	RedirectCall(ctx context.Context, handle net.Uri, targetPhoneAccount androidTelecom.PhoneAccountHandle, confirmFirst bool) error
+}
+
+type callRedirectionAdapterStubWrapper struct {
+	impl       ICallRedirectionAdapterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callRedirectionAdapterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callRedirectionAdapterStubWrapper) CancelCall(
+	ctx context.Context,
+) error {
+	return w.impl.CancelCall(ctx)
+}
+
+func (w *callRedirectionAdapterStubWrapper) PlaceCallUnmodified(
+	ctx context.Context,
+) error {
+	return w.impl.PlaceCallUnmodified(ctx)
+}
+
+func (w *callRedirectionAdapterStubWrapper) RedirectCall(
+	ctx context.Context,
+	handle net.Uri,
+	targetPhoneAccount androidTelecom.PhoneAccountHandle,
+	confirmFirst bool,
+) error {
+	return w.impl.RedirectCall(ctx, handle, targetPhoneAccount, confirmFirst)
+}
+
+var _ ICallRedirectionAdapter = (*callRedirectionAdapterStubWrapper)(nil)
+
+// NewCallRedirectionAdapterStub creates a server-side ICallRedirectionAdapter wrapping the given
+// server implementation. The returned value satisfies ICallRedirectionAdapter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallRedirectionAdapterStub(
+	impl ICallRedirectionAdapterServer,
+) ICallRedirectionAdapter {
+	wrapper := &callRedirectionAdapterStubWrapper{impl: impl}
+	stub := &CallRedirectionAdapterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

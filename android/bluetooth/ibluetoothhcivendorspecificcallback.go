@@ -172,3 +172,61 @@ func (s *BluetoothHciVendorSpecificCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBluetoothHciVendorSpecificCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothHciVendorSpecificCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothHciVendorSpecificCallbackServer interface {
+	OnCommandStatus(ctx context.Context, ocf int32, status int32) error
+	OnCommandComplete(ctx context.Context, ocf int32, returnParameters []byte) error
+	OnEvent(ctx context.Context, code int32, data []byte) error
+}
+
+type bluetoothHciVendorSpecificCallbackStubWrapper struct {
+	impl       IBluetoothHciVendorSpecificCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothHciVendorSpecificCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothHciVendorSpecificCallbackStubWrapper) OnCommandStatus(
+	ctx context.Context,
+	ocf int32,
+	status int32,
+) error {
+	return w.impl.OnCommandStatus(ctx, ocf, status)
+}
+
+func (w *bluetoothHciVendorSpecificCallbackStubWrapper) OnCommandComplete(
+	ctx context.Context,
+	ocf int32,
+	returnParameters []byte,
+) error {
+	return w.impl.OnCommandComplete(ctx, ocf, returnParameters)
+}
+
+func (w *bluetoothHciVendorSpecificCallbackStubWrapper) OnEvent(
+	ctx context.Context,
+	code int32,
+	data []byte,
+) error {
+	return w.impl.OnEvent(ctx, code, data)
+}
+
+var _ IBluetoothHciVendorSpecificCallback = (*bluetoothHciVendorSpecificCallbackStubWrapper)(nil)
+
+// NewBluetoothHciVendorSpecificCallbackStub creates a server-side IBluetoothHciVendorSpecificCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothHciVendorSpecificCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothHciVendorSpecificCallbackStub(
+	impl IBluetoothHciVendorSpecificCallbackServer,
+) IBluetoothHciVendorSpecificCallback {
+	wrapper := &bluetoothHciVendorSpecificCallbackStubWrapper{impl: impl}
+	stub := &BluetoothHciVendorSpecificCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

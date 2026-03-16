@@ -3,7 +3,6 @@ package window
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -18,7 +17,7 @@ const (
 
 type ITransactionReadyCallback interface {
 	AsBinder() binder.IBinder
-	OnTransactionReady(ctx context.Context, t *view.SurfaceControlTransaction) error
+	OnTransactionReady(ctx context.Context, t *interface{}) error
 }
 
 type TransactionReadyCallbackProxy struct {
@@ -39,17 +38,10 @@ var _ ITransactionReadyCallback = (*TransactionReadyCallbackProxy)(nil)
 
 func (p *TransactionReadyCallbackProxy) OnTransactionReady(
 	ctx context.Context,
-	t *view.SurfaceControlTransaction,
+	t *interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorITransactionReadyCallback)
-	if t != nil {
-		if _err := (*t).MarshalParcel(_data); _err != nil {
-			return _err
-		}
-	} else {
-		_data.WriteInt32(-1)
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorITransactionReadyCallback, "onTransactionReady")
 	if _err != nil {
@@ -87,18 +79,7 @@ func (s *TransactionReadyCallbackStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_t *view.SurfaceControlTransaction
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_t.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_t *interface{}
 		_err := s.Impl.OnTransactionReady(ctx, _arg_t)
 		_reply := parcel.New()
 		if _err != nil {
@@ -110,4 +91,43 @@ func (s *TransactionReadyCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ITransactionReadyCallbackServer is the server-side interface that user implementations
+// provide to NewTransactionReadyCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITransactionReadyCallbackServer interface {
+	OnTransactionReady(ctx context.Context, t *interface{}) error
+}
+
+type transactionReadyCallbackStubWrapper struct {
+	impl       ITransactionReadyCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transactionReadyCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transactionReadyCallbackStubWrapper) OnTransactionReady(
+	ctx context.Context,
+	t *interface{},
+) error {
+	return w.impl.OnTransactionReady(ctx, t)
+}
+
+var _ ITransactionReadyCallback = (*transactionReadyCallbackStubWrapper)(nil)
+
+// NewTransactionReadyCallbackStub creates a server-side ITransactionReadyCallback wrapping the given
+// server implementation. The returned value satisfies ITransactionReadyCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTransactionReadyCallbackStub(
+	impl ITransactionReadyCallbackServer,
+) ITransactionReadyCallback {
+	wrapper := &transactionReadyCallbackStubWrapper{impl: impl}
+	stub := &TransactionReadyCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

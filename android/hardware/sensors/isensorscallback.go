@@ -154,3 +154,50 @@ func (s *SensorsCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISensorsCallbackServer is the server-side interface that user implementations
+// provide to NewSensorsCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISensorsCallbackServer interface {
+	OnDynamicSensorsConnected(ctx context.Context, sensorInfos []SensorInfo) error
+	OnDynamicSensorsDisconnected(ctx context.Context, sensorHandles []int32) error
+}
+
+type sensorsCallbackStubWrapper struct {
+	impl       ISensorsCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sensorsCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sensorsCallbackStubWrapper) OnDynamicSensorsConnected(
+	ctx context.Context,
+	sensorInfos []SensorInfo,
+) error {
+	return w.impl.OnDynamicSensorsConnected(ctx, sensorInfos)
+}
+
+func (w *sensorsCallbackStubWrapper) OnDynamicSensorsDisconnected(
+	ctx context.Context,
+	sensorHandles []int32,
+) error {
+	return w.impl.OnDynamicSensorsDisconnected(ctx, sensorHandles)
+}
+
+var _ ISensorsCallback = (*sensorsCallbackStubWrapper)(nil)
+
+// NewSensorsCallbackStub creates a server-side ISensorsCallback wrapping the given
+// server implementation. The returned value satisfies ISensorsCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSensorsCallbackStub(
+	impl ISensorsCallbackServer,
+) ISensorsCallback {
+	wrapper := &sensorsCallbackStubWrapper{impl: impl}
+	stub := &SensorsCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -273,3 +273,79 @@ func (s *SoundProfileCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISoundProfileCallbackServer is the server-side interface that user implementations
+// provide to NewSoundProfileCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISoundProfileCallbackServer interface {
+	OnSoundProfileAdded(ctx context.Context, id string, p_ SoundProfile) error
+	OnSoundProfileUpdated(ctx context.Context, id string, p_ SoundProfile) error
+	OnSoundProfileRemoved(ctx context.Context, id string, p_ SoundProfile) error
+	OnParamCapabilitiesChanged(ctx context.Context, id string, caps []ParamCapability) error
+	OnError(ctx context.Context, id string, err int32) error
+}
+
+type soundProfileCallbackStubWrapper struct {
+	impl       ISoundProfileCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *soundProfileCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *soundProfileCallbackStubWrapper) OnSoundProfileAdded(
+	ctx context.Context,
+	id string,
+	p_ SoundProfile,
+) error {
+	return w.impl.OnSoundProfileAdded(ctx, id, p_)
+}
+
+func (w *soundProfileCallbackStubWrapper) OnSoundProfileUpdated(
+	ctx context.Context,
+	id string,
+	p_ SoundProfile,
+) error {
+	return w.impl.OnSoundProfileUpdated(ctx, id, p_)
+}
+
+func (w *soundProfileCallbackStubWrapper) OnSoundProfileRemoved(
+	ctx context.Context,
+	id string,
+	p_ SoundProfile,
+) error {
+	return w.impl.OnSoundProfileRemoved(ctx, id, p_)
+}
+
+func (w *soundProfileCallbackStubWrapper) OnParamCapabilitiesChanged(
+	ctx context.Context,
+	id string,
+	caps []ParamCapability,
+) error {
+	return w.impl.OnParamCapabilitiesChanged(ctx, id, caps)
+}
+
+func (w *soundProfileCallbackStubWrapper) OnError(
+	ctx context.Context,
+	id string,
+	err int32,
+) error {
+	return w.impl.OnError(ctx, id, err)
+}
+
+var _ ISoundProfileCallback = (*soundProfileCallbackStubWrapper)(nil)
+
+// NewSoundProfileCallbackStub creates a server-side ISoundProfileCallback wrapping the given
+// server implementation. The returned value satisfies ISoundProfileCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSoundProfileCallbackStub(
+	impl ISoundProfileCallbackServer,
+) ISoundProfileCallback {
+	wrapper := &soundProfileCallbackStubWrapper{impl: impl}
+	stub := &SoundProfileCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

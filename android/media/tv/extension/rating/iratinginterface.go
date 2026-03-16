@@ -210,3 +210,56 @@ func (s *RatingInterfaceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRatingInterfaceServer is the server-side interface that user implementations
+// provide to NewRatingInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRatingInterfaceServer interface {
+	GetRRTRatingInfo(ctx context.Context) (os.Bundle, error)
+	SetRRTRatingInfo(ctx context.Context, param os.Bundle) (bool, error)
+	SetResetRrt5(ctx context.Context) (bool, error)
+}
+
+type ratingInterfaceStubWrapper struct {
+	impl       IRatingInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ratingInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ratingInterfaceStubWrapper) GetRRTRatingInfo(
+	ctx context.Context,
+) (os.Bundle, error) {
+	return w.impl.GetRRTRatingInfo(ctx)
+}
+
+func (w *ratingInterfaceStubWrapper) SetRRTRatingInfo(
+	ctx context.Context,
+	param os.Bundle,
+) (bool, error) {
+	return w.impl.SetRRTRatingInfo(ctx, param)
+}
+
+func (w *ratingInterfaceStubWrapper) SetResetRrt5(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.SetResetRrt5(ctx)
+}
+
+var _ IRatingInterface = (*ratingInterfaceStubWrapper)(nil)
+
+// NewRatingInterfaceStub creates a server-side IRatingInterface wrapping the given
+// server implementation. The returned value satisfies IRatingInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRatingInterfaceStub(
+	impl IRatingInterfaceServer,
+) IRatingInterface {
+	wrapper := &ratingInterfaceStubWrapper{impl: impl}
+	stub := &RatingInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

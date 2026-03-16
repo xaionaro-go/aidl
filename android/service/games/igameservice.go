@@ -46,7 +46,7 @@ func (p *GameServiceProxy) Connected(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGameService)
-	_data.WriteStrongBinder(gameServiceController.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, gameServiceController.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGameService, "connected")
 	if _err != nil {
@@ -145,4 +145,58 @@ func (s *GameServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGameServiceServer is the server-side interface that user implementations
+// provide to NewGameServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGameServiceServer interface {
+	Connected(ctx context.Context, gameServiceController IGameServiceController) error
+	Disconnected(ctx context.Context) error
+	GameStarted(ctx context.Context, gameStartedEvent GameStartedEvent) error
+}
+
+type gameServiceStubWrapper struct {
+	impl       IGameServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gameServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gameServiceStubWrapper) Connected(
+	ctx context.Context,
+	gameServiceController IGameServiceController,
+) error {
+	return w.impl.Connected(ctx, gameServiceController)
+}
+
+func (w *gameServiceStubWrapper) Disconnected(
+	ctx context.Context,
+) error {
+	return w.impl.Disconnected(ctx)
+}
+
+func (w *gameServiceStubWrapper) GameStarted(
+	ctx context.Context,
+	gameStartedEvent GameStartedEvent,
+) error {
+	return w.impl.GameStarted(ctx, gameStartedEvent)
+}
+
+var _ IGameService = (*gameServiceStubWrapper)(nil)
+
+// NewGameServiceStub creates a server-side IGameService wrapping the given
+// server implementation. The returned value satisfies IGameService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGameServiceStub(
+	impl IGameServiceServer,
+) IGameService {
+	wrapper := &gameServiceStubWrapper{impl: impl}
+	stub := &GameServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

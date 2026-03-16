@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -23,7 +22,7 @@ const (
 
 type IActivityController interface {
 	AsBinder() binder.IBinder
-	ActivityStarting(ctx context.Context, intent content.Intent, pkg string) (bool, error)
+	ActivityStarting(ctx context.Context, intent interface{}, pkg string) (bool, error)
 	ActivityResuming(ctx context.Context, pkg string) (bool, error)
 	AppCrashed(ctx context.Context, processName string, pid int32, shortMsg string, longMsg string, timeMillis int64, stackTrace string) (bool, error)
 	AppEarlyNotResponding(ctx context.Context, processName string, pid int32, annotation string) (int32, error)
@@ -49,16 +48,12 @@ var _ IActivityController = (*ActivityControllerProxy)(nil)
 
 func (p *ActivityControllerProxy) ActivityStarting(
 	ctx context.Context,
-	intent content.Intent,
+	intent interface{},
 	pkg string,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityController)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(pkg)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityController, "activityStarting")
@@ -274,18 +269,7 @@ func (s *ActivityControllerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_pkg, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -423,4 +407,93 @@ func (s *ActivityControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IActivityControllerServer is the server-side interface that user implementations
+// provide to NewActivityControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IActivityControllerServer interface {
+	ActivityStarting(ctx context.Context, intent interface{}, pkg string) (bool, error)
+	ActivityResuming(ctx context.Context, pkg string) (bool, error)
+	AppCrashed(ctx context.Context, processName string, pid int32, shortMsg string, longMsg string, timeMillis int64, stackTrace string) (bool, error)
+	AppEarlyNotResponding(ctx context.Context, processName string, pid int32, annotation string) (int32, error)
+	AppNotResponding(ctx context.Context, processName string, pid int32, processStats string) (int32, error)
+	SystemNotResponding(ctx context.Context, msg string) (int32, error)
+}
+
+type activityControllerStubWrapper struct {
+	impl       IActivityControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *activityControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *activityControllerStubWrapper) ActivityStarting(
+	ctx context.Context,
+	intent interface{},
+	pkg string,
+) (bool, error) {
+	return w.impl.ActivityStarting(ctx, intent, pkg)
+}
+
+func (w *activityControllerStubWrapper) ActivityResuming(
+	ctx context.Context,
+	pkg string,
+) (bool, error) {
+	return w.impl.ActivityResuming(ctx, pkg)
+}
+
+func (w *activityControllerStubWrapper) AppCrashed(
+	ctx context.Context,
+	processName string,
+	pid int32,
+	shortMsg string,
+	longMsg string,
+	timeMillis int64,
+	stackTrace string,
+) (bool, error) {
+	return w.impl.AppCrashed(ctx, processName, pid, shortMsg, longMsg, timeMillis, stackTrace)
+}
+
+func (w *activityControllerStubWrapper) AppEarlyNotResponding(
+	ctx context.Context,
+	processName string,
+	pid int32,
+	annotation string,
+) (int32, error) {
+	return w.impl.AppEarlyNotResponding(ctx, processName, pid, annotation)
+}
+
+func (w *activityControllerStubWrapper) AppNotResponding(
+	ctx context.Context,
+	processName string,
+	pid int32,
+	processStats string,
+) (int32, error) {
+	return w.impl.AppNotResponding(ctx, processName, pid, processStats)
+}
+
+func (w *activityControllerStubWrapper) SystemNotResponding(
+	ctx context.Context,
+	msg string,
+) (int32, error) {
+	return w.impl.SystemNotResponding(ctx, msg)
+}
+
+var _ IActivityController = (*activityControllerStubWrapper)(nil)
+
+// NewActivityControllerStub creates a server-side IActivityController wrapping the given
+// server implementation. The returned value satisfies IActivityController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewActivityControllerStub(
+	impl IActivityControllerServer,
+) IActivityController {
+	wrapper := &activityControllerStubWrapper{impl: impl}
+	stub := &ActivityControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

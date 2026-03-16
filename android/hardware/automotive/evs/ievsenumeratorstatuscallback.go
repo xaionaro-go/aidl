@@ -90,3 +90,42 @@ func (s *EvsEnumeratorStatusCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IEvsEnumeratorStatusCallbackServer is the server-side interface that user implementations
+// provide to NewEvsEnumeratorStatusCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEvsEnumeratorStatusCallbackServer interface {
+	DeviceStatusChanged(ctx context.Context, status []DeviceStatus) error
+}
+
+type evsEnumeratorStatusCallbackStubWrapper struct {
+	impl       IEvsEnumeratorStatusCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *evsEnumeratorStatusCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *evsEnumeratorStatusCallbackStubWrapper) DeviceStatusChanged(
+	ctx context.Context,
+	status []DeviceStatus,
+) error {
+	return w.impl.DeviceStatusChanged(ctx, status)
+}
+
+var _ IEvsEnumeratorStatusCallback = (*evsEnumeratorStatusCallbackStubWrapper)(nil)
+
+// NewEvsEnumeratorStatusCallbackStub creates a server-side IEvsEnumeratorStatusCallback wrapping the given
+// server implementation. The returned value satisfies IEvsEnumeratorStatusCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEvsEnumeratorStatusCallbackStub(
+	impl IEvsEnumeratorStatusCallbackServer,
+) IEvsEnumeratorStatusCallback {
+	wrapper := &evsEnumeratorStatusCallbackStubWrapper{impl: impl}
+	stub := &EvsEnumeratorStatusCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

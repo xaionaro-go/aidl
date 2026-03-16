@@ -424,3 +424,102 @@ func (s *CaptureCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICaptureCallbackServer is the server-side interface that user implementations
+// provide to NewCaptureCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICaptureCallbackServer interface {
+	OnCaptureStarted(ctx context.Context, captureSequenceId int32, timestamp int64) error
+	OnCaptureProcessStarted(ctx context.Context, captureSequenceId int32) error
+	OnCaptureFailed(ctx context.Context, captureSequenceId int32) error
+	OnCaptureSequenceCompleted(ctx context.Context, captureSequenceId int32) error
+	OnCaptureSequenceAborted(ctx context.Context, captureSequenceId int32) error
+	OnCaptureCompleted(ctx context.Context, shutterTimestamp int64, requestId int32, results interface{}) error
+	OnCaptureProcessProgressed(ctx context.Context, progress int32) error
+	OnCaptureProcessFailed(ctx context.Context, captureSequenceId int32, captureFailureReason int32) error
+}
+
+type captureCallbackStubWrapper struct {
+	impl       ICaptureCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *captureCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *captureCallbackStubWrapper) OnCaptureStarted(
+	ctx context.Context,
+	captureSequenceId int32,
+	timestamp int64,
+) error {
+	return w.impl.OnCaptureStarted(ctx, captureSequenceId, timestamp)
+}
+
+func (w *captureCallbackStubWrapper) OnCaptureProcessStarted(
+	ctx context.Context,
+	captureSequenceId int32,
+) error {
+	return w.impl.OnCaptureProcessStarted(ctx, captureSequenceId)
+}
+
+func (w *captureCallbackStubWrapper) OnCaptureFailed(
+	ctx context.Context,
+	captureSequenceId int32,
+) error {
+	return w.impl.OnCaptureFailed(ctx, captureSequenceId)
+}
+
+func (w *captureCallbackStubWrapper) OnCaptureSequenceCompleted(
+	ctx context.Context,
+	captureSequenceId int32,
+) error {
+	return w.impl.OnCaptureSequenceCompleted(ctx, captureSequenceId)
+}
+
+func (w *captureCallbackStubWrapper) OnCaptureSequenceAborted(
+	ctx context.Context,
+	captureSequenceId int32,
+) error {
+	return w.impl.OnCaptureSequenceAborted(ctx, captureSequenceId)
+}
+
+func (w *captureCallbackStubWrapper) OnCaptureCompleted(
+	ctx context.Context,
+	shutterTimestamp int64,
+	requestId int32,
+	results interface{},
+) error {
+	return w.impl.OnCaptureCompleted(ctx, shutterTimestamp, requestId, results)
+}
+
+func (w *captureCallbackStubWrapper) OnCaptureProcessProgressed(
+	ctx context.Context,
+	progress int32,
+) error {
+	return w.impl.OnCaptureProcessProgressed(ctx, progress)
+}
+
+func (w *captureCallbackStubWrapper) OnCaptureProcessFailed(
+	ctx context.Context,
+	captureSequenceId int32,
+	captureFailureReason int32,
+) error {
+	return w.impl.OnCaptureProcessFailed(ctx, captureSequenceId, captureFailureReason)
+}
+
+var _ ICaptureCallback = (*captureCallbackStubWrapper)(nil)
+
+// NewCaptureCallbackStub creates a server-side ICaptureCallback wrapping the given
+// server implementation. The returned value satisfies ICaptureCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCaptureCallbackStub(
+	impl ICaptureCallbackServer,
+) ICaptureCallback {
+	wrapper := &captureCallbackStubWrapper{impl: impl}
+	stub := &CaptureCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

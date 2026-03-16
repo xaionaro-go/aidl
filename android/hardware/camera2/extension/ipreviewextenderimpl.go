@@ -74,7 +74,7 @@ func (p *PreviewExtenderImplProxy) OnInit(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(cameraId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onInit")
@@ -101,7 +101,7 @@ func (p *PreviewExtenderImplProxy) OnDeInit(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIPreviewExtenderImpl)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIPreviewExtenderImpl, "onDeInit")
 	if _err != nil {
@@ -691,4 +691,134 @@ func (s *PreviewExtenderImplStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IPreviewExtenderImplServer is the server-side interface that user implementations
+// provide to NewPreviewExtenderImplStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPreviewExtenderImplServer interface {
+	OnInit(ctx context.Context, token binder.IBinder, cameraId string, cameraCharacteristics interface{}) error
+	OnDeInit(ctx context.Context, token binder.IBinder) error
+	OnPresetSession(ctx context.Context) (CaptureStageImpl, error)
+	OnEnableSession(ctx context.Context) (CaptureStageImpl, error)
+	OnDisableSession(ctx context.Context) (CaptureStageImpl, error)
+	Init(ctx context.Context, cameraId string, chars interface{}) error
+	IsExtensionAvailable(ctx context.Context, cameraId string, chars interface{}) (bool, error)
+	GetCaptureStage(ctx context.Context) (CaptureStageImpl, error)
+	GetSessionType(ctx context.Context) (int32, error)
+	GetProcessorType(ctx context.Context) (int32, error)
+	GetPreviewImageProcessor(ctx context.Context) (IPreviewImageProcessorImpl, error)
+	GetRequestUpdateProcessor(ctx context.Context) (IRequestUpdateProcessorImpl, error)
+	GetSupportedResolutions(ctx context.Context) ([]SizeList, error)
+}
+
+type previewExtenderImplStubWrapper struct {
+	impl       IPreviewExtenderImplServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *previewExtenderImplStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *previewExtenderImplStubWrapper) OnInit(
+	ctx context.Context,
+	token binder.IBinder,
+	cameraId string,
+	cameraCharacteristics interface{},
+) error {
+	return w.impl.OnInit(ctx, token, cameraId, cameraCharacteristics)
+}
+
+func (w *previewExtenderImplStubWrapper) OnDeInit(
+	ctx context.Context,
+	token binder.IBinder,
+) error {
+	return w.impl.OnDeInit(ctx, token)
+}
+
+func (w *previewExtenderImplStubWrapper) OnPresetSession(
+	ctx context.Context,
+) (CaptureStageImpl, error) {
+	return w.impl.OnPresetSession(ctx)
+}
+
+func (w *previewExtenderImplStubWrapper) OnEnableSession(
+	ctx context.Context,
+) (CaptureStageImpl, error) {
+	return w.impl.OnEnableSession(ctx)
+}
+
+func (w *previewExtenderImplStubWrapper) OnDisableSession(
+	ctx context.Context,
+) (CaptureStageImpl, error) {
+	return w.impl.OnDisableSession(ctx)
+}
+
+func (w *previewExtenderImplStubWrapper) Init(
+	ctx context.Context,
+	cameraId string,
+	chars interface{},
+) error {
+	return w.impl.Init(ctx, cameraId, chars)
+}
+
+func (w *previewExtenderImplStubWrapper) IsExtensionAvailable(
+	ctx context.Context,
+	cameraId string,
+	chars interface{},
+) (bool, error) {
+	return w.impl.IsExtensionAvailable(ctx, cameraId, chars)
+}
+
+func (w *previewExtenderImplStubWrapper) GetCaptureStage(
+	ctx context.Context,
+) (CaptureStageImpl, error) {
+	return w.impl.GetCaptureStage(ctx)
+}
+
+func (w *previewExtenderImplStubWrapper) GetSessionType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetSessionType(ctx)
+}
+
+func (w *previewExtenderImplStubWrapper) GetProcessorType(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetProcessorType(ctx)
+}
+
+func (w *previewExtenderImplStubWrapper) GetPreviewImageProcessor(
+	ctx context.Context,
+) (IPreviewImageProcessorImpl, error) {
+	return w.impl.GetPreviewImageProcessor(ctx)
+}
+
+func (w *previewExtenderImplStubWrapper) GetRequestUpdateProcessor(
+	ctx context.Context,
+) (IRequestUpdateProcessorImpl, error) {
+	return w.impl.GetRequestUpdateProcessor(ctx)
+}
+
+func (w *previewExtenderImplStubWrapper) GetSupportedResolutions(
+	ctx context.Context,
+) ([]SizeList, error) {
+	return w.impl.GetSupportedResolutions(ctx)
+}
+
+var _ IPreviewExtenderImpl = (*previewExtenderImplStubWrapper)(nil)
+
+// NewPreviewExtenderImplStub creates a server-side IPreviewExtenderImpl wrapping the given
+// server implementation. The returned value satisfies IPreviewExtenderImpl
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPreviewExtenderImplStub(
+	impl IPreviewExtenderImplServer,
+) IPreviewExtenderImpl {
+	wrapper := &previewExtenderImplStubWrapper{impl: impl}
+	stub := &PreviewExtenderImplStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

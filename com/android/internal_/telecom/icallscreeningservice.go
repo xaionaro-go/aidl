@@ -44,7 +44,7 @@ func (p *CallScreeningServiceProxy) ScreenCall(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICallScreeningService)
-	_data.WriteStrongBinder(adapter.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, adapter.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := call.MarshalParcel(_data); _err != nil {
 		return _err
@@ -98,4 +98,44 @@ func (s *CallScreeningServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICallScreeningServiceServer is the server-side interface that user implementations
+// provide to NewCallScreeningServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICallScreeningServiceServer interface {
+	ScreenCall(ctx context.Context, adapter ICallScreeningAdapter, call androidTelecom.ParcelableCall) error
+}
+
+type callScreeningServiceStubWrapper struct {
+	impl       ICallScreeningServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *callScreeningServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *callScreeningServiceStubWrapper) ScreenCall(
+	ctx context.Context,
+	adapter ICallScreeningAdapter,
+	call androidTelecom.ParcelableCall,
+) error {
+	return w.impl.ScreenCall(ctx, adapter, call)
+}
+
+var _ ICallScreeningService = (*callScreeningServiceStubWrapper)(nil)
+
+// NewCallScreeningServiceStub creates a server-side ICallScreeningService wrapping the given
+// server implementation. The returned value satisfies ICallScreeningService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCallScreeningServiceStub(
+	impl ICallScreeningServiceServer,
+) ICallScreeningService {
+	wrapper := &callScreeningServiceStubWrapper{impl: impl}
+	stub := &CallScreeningServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

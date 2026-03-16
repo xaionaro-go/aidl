@@ -100,3 +100,43 @@ func (s *UidFrozenStateChangedCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUidFrozenStateChangedCallbackServer is the server-side interface that user implementations
+// provide to NewUidFrozenStateChangedCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUidFrozenStateChangedCallbackServer interface {
+	OnUidFrozenStateChanged(ctx context.Context, uids []int32, frozenStates []int32) error
+}
+
+type uidFrozenStateChangedCallbackStubWrapper struct {
+	impl       IUidFrozenStateChangedCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *uidFrozenStateChangedCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *uidFrozenStateChangedCallbackStubWrapper) OnUidFrozenStateChanged(
+	ctx context.Context,
+	uids []int32,
+	frozenStates []int32,
+) error {
+	return w.impl.OnUidFrozenStateChanged(ctx, uids, frozenStates)
+}
+
+var _ IUidFrozenStateChangedCallback = (*uidFrozenStateChangedCallbackStubWrapper)(nil)
+
+// NewUidFrozenStateChangedCallbackStub creates a server-side IUidFrozenStateChangedCallback wrapping the given
+// server implementation. The returned value satisfies IUidFrozenStateChangedCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUidFrozenStateChangedCallbackStub(
+	impl IUidFrozenStateChangedCallbackServer,
+) IUidFrozenStateChangedCallback {
+	wrapper := &uidFrozenStateChangedCallbackStubWrapper{impl: impl}
+	stub := &UidFrozenStateChangedCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

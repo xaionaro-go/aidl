@@ -78,3 +78,42 @@ func (s *BackupManagerMonitorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBackupManagerMonitorServer is the server-side interface that user implementations
+// provide to NewBackupManagerMonitorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBackupManagerMonitorServer interface {
+	OnEvent(ctx context.Context, event interface{}) error
+}
+
+type backupManagerMonitorStubWrapper struct {
+	impl       IBackupManagerMonitorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *backupManagerMonitorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *backupManagerMonitorStubWrapper) OnEvent(
+	ctx context.Context,
+	event interface{},
+) error {
+	return w.impl.OnEvent(ctx, event)
+}
+
+var _ IBackupManagerMonitor = (*backupManagerMonitorStubWrapper)(nil)
+
+// NewBackupManagerMonitorStub creates a server-side IBackupManagerMonitor wrapping the given
+// server implementation. The returned value satisfies IBackupManagerMonitor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBackupManagerMonitorStub(
+	impl IBackupManagerMonitorServer,
+) IBackupManagerMonitor {
+	wrapper := &backupManagerMonitorStubWrapper{impl: impl}
+	stub := &BackupManagerMonitorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

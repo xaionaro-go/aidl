@@ -209,7 +209,7 @@ func (p *CameraServiceProxy) Connect(
 	var _result ICamera
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraService)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(cameraId)
 	_data.WriteInt32(targetSdkVersion)
 	_data.WriteInt32(rotationOverride)
@@ -257,7 +257,7 @@ func (p *CameraServiceProxy) ConnectDevice(
 	var _result device.ICameraDeviceUser
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraService)
-	_data.WriteStrongBinder(callbacks.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbacks.AsBinder(), p.remote.Transport())
 	_data.WriteString16(cameraId)
 	_data.WriteInt32(oomScoreOffset)
 	_data.WriteInt32(targetSdkVersion)
@@ -299,7 +299,7 @@ func (p *CameraServiceProxy) AddListener(
 	var _result []interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraService, "addListener")
 	if _err != nil {
@@ -444,7 +444,7 @@ func (p *CameraServiceProxy) RemoveListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorICameraService)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraService, "removeListener")
 	if _err != nil {
@@ -660,7 +660,7 @@ func (p *CameraServiceProxy) InjectCamera(
 	_data.WriteString16(packageName)
 	_data.WriteString16(internalCamId)
 	_data.WriteString16(externalCamId)
-	_data.WriteStrongBinder(CameraInjectionCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, CameraInjectionCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorICameraService, "injectCamera")
 	if _err != nil {
@@ -697,7 +697,7 @@ func (p *CameraServiceProxy) SetTorchMode(
 	_data.WriteInterfaceToken(DescriptorICameraService)
 	_data.WriteString16(cameraId)
 	_data.WriteBool(enabled)
-	_data.WriteStrongBinder(clientBinder.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientBinder, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := clientAttribution.MarshalParcel(_data); _err != nil {
 		return _err
@@ -734,7 +734,7 @@ func (p *CameraServiceProxy) TurnOnTorchWithStrengthLevel(
 	_data.WriteInterfaceToken(DescriptorICameraService)
 	_data.WriteString16(cameraId)
 	_data.WriteInt32(strengthLevel)
-	_data.WriteStrongBinder(clientBinder.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientBinder, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := clientAttribution.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1759,4 +1759,292 @@ func (s *CameraServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ICameraServiceServer is the server-side interface that user implementations
+// provide to NewCameraServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraServiceServer interface {
+	GetNumberOfCameras(ctx context.Context, type_ int32, clientAttribution content.AttributionSourceState, devicePolicy int32) (int32, error)
+	GetCameraInfo(ctx context.Context, cameraId int32, rotationOverride int32, clientAttribution content.AttributionSourceState, devicePolicy int32) (interface{}, error)
+	Connect(ctx context.Context, client ICameraClient, cameraId int32, targetSdkVersion int32, rotationOverride int32, forceSlowJpegMode bool, clientAttribution content.AttributionSourceState, devicePolicy int32) (ICamera, error)
+	ConnectDevice(ctx context.Context, callbacks camera2.ICameraDeviceCallbacks, cameraId string, oomScoreOffset int32, targetSdkVersion int32, rotationOverride int32, clientAttribution content.AttributionSourceState, devicePolicy int32, sharedMode bool) (device.ICameraDeviceUser, error)
+	AddListener(ctx context.Context, listener ICameraServiceListener) ([]interface{}, error)
+	GetConcurrentCameraIds(ctx context.Context) ([]provider.ConcurrentCameraIdCombination, error)
+	IsConcurrentSessionConfigurationSupported(ctx context.Context, sessions []interface{}, targetSdkVersion int32, clientAttribution content.AttributionSourceState, devicePolicy int32) (bool, error)
+	InjectSessionParams(ctx context.Context, cameraId string, sessionParams interface{}) error
+	RemoveListener(ctx context.Context, listener ICameraServiceListener) error
+	GetCameraCharacteristics(ctx context.Context, cameraId string, targetSdkVersion int32, rotationOverride int32, clientAttribution content.AttributionSourceState, devicePolicy int32) (interface{}, error)
+	GetCameraVendorTagDescriptor(ctx context.Context) (interface{}, error)
+	GetCameraVendorTagCache(ctx context.Context) (interface{}, error)
+	GetLegacyParameters(ctx context.Context, cameraId int32) (string, error)
+	SupportsCameraApi(ctx context.Context, cameraId string, apiVersion int32) (bool, error)
+	IsHiddenPhysicalCamera(ctx context.Context, cameraId string) (bool, error)
+	InjectCamera(ctx context.Context, packageName string, internalCamId string, externalCamId string, CameraInjectionCallback camera2.ICameraInjectionCallback) (cameraDevice.ICameraInjectionSession, error)
+	SetTorchMode(ctx context.Context, cameraId string, enabled bool, clientBinder binder.IBinder, clientAttribution content.AttributionSourceState, devicePolicy int32) error
+	TurnOnTorchWithStrengthLevel(ctx context.Context, cameraId string, strengthLevel int32, clientBinder binder.IBinder, clientAttribution content.AttributionSourceState, devicePolicy int32) error
+	GetTorchStrengthLevel(ctx context.Context, cameraId string, clientAttribution content.AttributionSourceState, devicePolicy int32) (int32, error)
+	NotifySystemEvent(ctx context.Context, eventId int32, args []int32) error
+	NotifyDisplayConfigurationChange(ctx context.Context) error
+	NotifyDeviceStateChange(ctx context.Context, newState int64) error
+	ReportExtensionSessionStats(ctx context.Context, stats CameraExtensionSessionStats) (string, error)
+	CreateDefaultRequest(ctx context.Context, cameraId string, templateId int32, clientAttribution content.AttributionSourceState, devicePolicy int32) (interface{}, error)
+	IsSessionConfigurationWithParametersSupported(ctx context.Context, cameraId string, targetSdkVersion int32, sessionConfiguration device.SessionConfiguration, clientAttribution content.AttributionSourceState, devicePolicy int32) (bool, error)
+	GetSessionCharacteristics(ctx context.Context, cameraId string, targetSdkVersion int32, rotationOverride int32, sessionConfiguration device.SessionConfiguration, clientAttribution content.AttributionSourceState, devicePolicy int32) (interface{}, error)
+}
+
+type cameraServiceStubWrapper struct {
+	impl       ICameraServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraServiceStubWrapper) GetNumberOfCameras(
+	ctx context.Context,
+	type_ int32,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) (int32, error) {
+	return w.impl.GetNumberOfCameras(ctx, type_, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) GetCameraInfo(
+	ctx context.Context,
+	cameraId int32,
+	rotationOverride int32,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) (interface{}, error) {
+	return w.impl.GetCameraInfo(ctx, cameraId, rotationOverride, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) Connect(
+	ctx context.Context,
+	client ICameraClient,
+	cameraId int32,
+	targetSdkVersion int32,
+	rotationOverride int32,
+	forceSlowJpegMode bool,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) (ICamera, error) {
+	return w.impl.Connect(ctx, client, cameraId, targetSdkVersion, rotationOverride, forceSlowJpegMode, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) ConnectDevice(
+	ctx context.Context,
+	callbacks camera2.ICameraDeviceCallbacks,
+	cameraId string,
+	oomScoreOffset int32,
+	targetSdkVersion int32,
+	rotationOverride int32,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+	sharedMode bool,
+) (device.ICameraDeviceUser, error) {
+	return w.impl.ConnectDevice(ctx, callbacks, cameraId, oomScoreOffset, targetSdkVersion, rotationOverride, clientAttribution, devicePolicy, sharedMode)
+}
+
+func (w *cameraServiceStubWrapper) AddListener(
+	ctx context.Context,
+	listener ICameraServiceListener,
+) ([]interface{}, error) {
+	return w.impl.AddListener(ctx, listener)
+}
+
+func (w *cameraServiceStubWrapper) GetConcurrentCameraIds(
+	ctx context.Context,
+) ([]provider.ConcurrentCameraIdCombination, error) {
+	return w.impl.GetConcurrentCameraIds(ctx)
+}
+
+func (w *cameraServiceStubWrapper) IsConcurrentSessionConfigurationSupported(
+	ctx context.Context,
+	sessions []interface{},
+	targetSdkVersion int32,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) (bool, error) {
+	return w.impl.IsConcurrentSessionConfigurationSupported(ctx, sessions, targetSdkVersion, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) InjectSessionParams(
+	ctx context.Context,
+	cameraId string,
+	sessionParams interface{},
+) error {
+	return w.impl.InjectSessionParams(ctx, cameraId, sessionParams)
+}
+
+func (w *cameraServiceStubWrapper) RemoveListener(
+	ctx context.Context,
+	listener ICameraServiceListener,
+) error {
+	return w.impl.RemoveListener(ctx, listener)
+}
+
+func (w *cameraServiceStubWrapper) GetCameraCharacteristics(
+	ctx context.Context,
+	cameraId string,
+	targetSdkVersion int32,
+	rotationOverride int32,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) (interface{}, error) {
+	return w.impl.GetCameraCharacteristics(ctx, cameraId, targetSdkVersion, rotationOverride, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) GetCameraVendorTagDescriptor(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetCameraVendorTagDescriptor(ctx)
+}
+
+func (w *cameraServiceStubWrapper) GetCameraVendorTagCache(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.GetCameraVendorTagCache(ctx)
+}
+
+func (w *cameraServiceStubWrapper) GetLegacyParameters(
+	ctx context.Context,
+	cameraId int32,
+) (string, error) {
+	return w.impl.GetLegacyParameters(ctx, cameraId)
+}
+
+func (w *cameraServiceStubWrapper) SupportsCameraApi(
+	ctx context.Context,
+	cameraId string,
+	apiVersion int32,
+) (bool, error) {
+	return w.impl.SupportsCameraApi(ctx, cameraId, apiVersion)
+}
+
+func (w *cameraServiceStubWrapper) IsHiddenPhysicalCamera(
+	ctx context.Context,
+	cameraId string,
+) (bool, error) {
+	return w.impl.IsHiddenPhysicalCamera(ctx, cameraId)
+}
+
+func (w *cameraServiceStubWrapper) InjectCamera(
+	ctx context.Context,
+	packageName string,
+	internalCamId string,
+	externalCamId string,
+	CameraInjectionCallback camera2.ICameraInjectionCallback,
+) (cameraDevice.ICameraInjectionSession, error) {
+	return w.impl.InjectCamera(ctx, packageName, internalCamId, externalCamId, CameraInjectionCallback)
+}
+
+func (w *cameraServiceStubWrapper) SetTorchMode(
+	ctx context.Context,
+	cameraId string,
+	enabled bool,
+	clientBinder binder.IBinder,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) error {
+	return w.impl.SetTorchMode(ctx, cameraId, enabled, clientBinder, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) TurnOnTorchWithStrengthLevel(
+	ctx context.Context,
+	cameraId string,
+	strengthLevel int32,
+	clientBinder binder.IBinder,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) error {
+	return w.impl.TurnOnTorchWithStrengthLevel(ctx, cameraId, strengthLevel, clientBinder, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) GetTorchStrengthLevel(
+	ctx context.Context,
+	cameraId string,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) (int32, error) {
+	return w.impl.GetTorchStrengthLevel(ctx, cameraId, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) NotifySystemEvent(
+	ctx context.Context,
+	eventId int32,
+	args []int32,
+) error {
+	return w.impl.NotifySystemEvent(ctx, eventId, args)
+}
+
+func (w *cameraServiceStubWrapper) NotifyDisplayConfigurationChange(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyDisplayConfigurationChange(ctx)
+}
+
+func (w *cameraServiceStubWrapper) NotifyDeviceStateChange(
+	ctx context.Context,
+	newState int64,
+) error {
+	return w.impl.NotifyDeviceStateChange(ctx, newState)
+}
+
+func (w *cameraServiceStubWrapper) ReportExtensionSessionStats(
+	ctx context.Context,
+	stats CameraExtensionSessionStats,
+) (string, error) {
+	return w.impl.ReportExtensionSessionStats(ctx, stats)
+}
+
+func (w *cameraServiceStubWrapper) CreateDefaultRequest(
+	ctx context.Context,
+	cameraId string,
+	templateId int32,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) (interface{}, error) {
+	return w.impl.CreateDefaultRequest(ctx, cameraId, templateId, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) IsSessionConfigurationWithParametersSupported(
+	ctx context.Context,
+	cameraId string,
+	targetSdkVersion int32,
+	sessionConfiguration device.SessionConfiguration,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) (bool, error) {
+	return w.impl.IsSessionConfigurationWithParametersSupported(ctx, cameraId, targetSdkVersion, sessionConfiguration, clientAttribution, devicePolicy)
+}
+
+func (w *cameraServiceStubWrapper) GetSessionCharacteristics(
+	ctx context.Context,
+	cameraId string,
+	targetSdkVersion int32,
+	rotationOverride int32,
+	sessionConfiguration device.SessionConfiguration,
+	clientAttribution content.AttributionSourceState,
+	devicePolicy int32,
+) (interface{}, error) {
+	return w.impl.GetSessionCharacteristics(ctx, cameraId, targetSdkVersion, rotationOverride, sessionConfiguration, clientAttribution, devicePolicy)
+}
+
+var _ ICameraService = (*cameraServiceStubWrapper)(nil)
+
+// NewCameraServiceStub creates a server-side ICameraService wrapping the given
+// server implementation. The returned value satisfies ICameraService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraServiceStub(
+	impl ICameraServiceServer,
+) ICameraService {
+	wrapper := &cameraServiceStubWrapper{impl: impl}
+	stub := &CameraServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

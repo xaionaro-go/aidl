@@ -501,3 +501,101 @@ func (s *StreamInStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStreamInServer is the server-side interface that user implementations
+// provide to NewStreamInStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStreamInServer interface {
+	GetStreamCommon(ctx context.Context) (IStreamCommon, error)
+	GetActiveMicrophones(ctx context.Context) ([]common.MicrophoneDynamicInfo, error)
+	GetMicrophoneDirection(ctx context.Context) (coreIStreamIn.MicrophoneDirection, error)
+	SetMicrophoneDirection(ctx context.Context, direction coreIStreamIn.MicrophoneDirection) error
+	GetMicrophoneFieldDimension(ctx context.Context) (float32, error)
+	SetMicrophoneFieldDimension(ctx context.Context, zoom float32) error
+	UpdateMetadata(ctx context.Context, sinkMetadata audioCommon.SinkMetadata) error
+	GetHwGain(ctx context.Context) ([]float32, error)
+	SetHwGain(ctx context.Context, channelGains []float32) error
+}
+
+type streamInStubWrapper struct {
+	impl       IStreamInServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *streamInStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *streamInStubWrapper) GetStreamCommon(
+	ctx context.Context,
+) (IStreamCommon, error) {
+	return w.impl.GetStreamCommon(ctx)
+}
+
+func (w *streamInStubWrapper) GetActiveMicrophones(
+	ctx context.Context,
+) ([]common.MicrophoneDynamicInfo, error) {
+	return w.impl.GetActiveMicrophones(ctx)
+}
+
+func (w *streamInStubWrapper) GetMicrophoneDirection(
+	ctx context.Context,
+) (coreIStreamIn.MicrophoneDirection, error) {
+	return w.impl.GetMicrophoneDirection(ctx)
+}
+
+func (w *streamInStubWrapper) SetMicrophoneDirection(
+	ctx context.Context,
+	direction coreIStreamIn.MicrophoneDirection,
+) error {
+	return w.impl.SetMicrophoneDirection(ctx, direction)
+}
+
+func (w *streamInStubWrapper) GetMicrophoneFieldDimension(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetMicrophoneFieldDimension(ctx)
+}
+
+func (w *streamInStubWrapper) SetMicrophoneFieldDimension(
+	ctx context.Context,
+	zoom float32,
+) error {
+	return w.impl.SetMicrophoneFieldDimension(ctx, zoom)
+}
+
+func (w *streamInStubWrapper) UpdateMetadata(
+	ctx context.Context,
+	sinkMetadata audioCommon.SinkMetadata,
+) error {
+	return w.impl.UpdateMetadata(ctx, sinkMetadata)
+}
+
+func (w *streamInStubWrapper) GetHwGain(
+	ctx context.Context,
+) ([]float32, error) {
+	return w.impl.GetHwGain(ctx)
+}
+
+func (w *streamInStubWrapper) SetHwGain(
+	ctx context.Context,
+	channelGains []float32,
+) error {
+	return w.impl.SetHwGain(ctx, channelGains)
+}
+
+var _ IStreamIn = (*streamInStubWrapper)(nil)
+
+// NewStreamInStub creates a server-side IStreamIn wrapping the given
+// server implementation. The returned value satisfies IStreamIn
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStreamInStub(
+	impl IStreamInServer,
+) IStreamIn {
+	wrapper := &streamInStubWrapper{impl: impl}
+	stub := &StreamInStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -82,3 +82,42 @@ func (s *SpatializerHeadTrackerAvailableCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISpatializerHeadTrackerAvailableCallbackServer is the server-side interface that user implementations
+// provide to NewSpatializerHeadTrackerAvailableCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISpatializerHeadTrackerAvailableCallbackServer interface {
+	DispatchSpatializerHeadTrackerAvailable(ctx context.Context, available bool) error
+}
+
+type spatializerHeadTrackerAvailableCallbackStubWrapper struct {
+	impl       ISpatializerHeadTrackerAvailableCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *spatializerHeadTrackerAvailableCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *spatializerHeadTrackerAvailableCallbackStubWrapper) DispatchSpatializerHeadTrackerAvailable(
+	ctx context.Context,
+	available bool,
+) error {
+	return w.impl.DispatchSpatializerHeadTrackerAvailable(ctx, available)
+}
+
+var _ ISpatializerHeadTrackerAvailableCallback = (*spatializerHeadTrackerAvailableCallbackStubWrapper)(nil)
+
+// NewSpatializerHeadTrackerAvailableCallbackStub creates a server-side ISpatializerHeadTrackerAvailableCallback wrapping the given
+// server implementation. The returned value satisfies ISpatializerHeadTrackerAvailableCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSpatializerHeadTrackerAvailableCallbackStub(
+	impl ISpatializerHeadTrackerAvailableCallbackServer,
+) ISpatializerHeadTrackerAvailableCallback {
+	wrapper := &spatializerHeadTrackerAvailableCallbackStubWrapper{impl: impl}
+	stub := &SpatializerHeadTrackerAvailableCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

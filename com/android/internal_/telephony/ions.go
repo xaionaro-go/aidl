@@ -120,7 +120,7 @@ func (p *OnsProxy) SetPreferredDataSubscriptionId(
 	_data.WriteInterfaceToken(DescriptorIOns)
 	_data.WriteInt32(subId)
 	_data.WriteBool(needValidation)
-	_data.WriteStrongBinder(callbackStub.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackStub.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOns, "setPreferredDataSubscriptionId")
@@ -191,7 +191,7 @@ func (p *OnsProxy) UpdateAvailableNetworks(
 			}
 		}
 	}
-	_data.WriteStrongBinder(callbackStub.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callbackStub.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIOns, "updateAvailableNetworks")
@@ -331,4 +331,76 @@ func (s *OnsStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IOnsServer is the server-side interface that user implementations
+// provide to NewOnsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOnsServer interface {
+	SetEnable(ctx context.Context, enable bool) (bool, error)
+	IsEnabled(ctx context.Context) (bool, error)
+	SetPreferredDataSubscriptionId(ctx context.Context, subId int32, needValidation bool, callbackStub ISetOpportunisticDataCallback) error
+	GetPreferredDataSubscriptionId(ctx context.Context) (int32, error)
+	UpdateAvailableNetworks(ctx context.Context, availableNetworks []androidTelephony.AvailableNetworkInfo, callbackStub IUpdateAvailableNetworksCallback) error
+}
+
+type onsStubWrapper struct {
+	impl       IOnsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *onsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *onsStubWrapper) SetEnable(
+	ctx context.Context,
+	enable bool,
+) (bool, error) {
+	return w.impl.SetEnable(ctx, enable)
+}
+
+func (w *onsStubWrapper) IsEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsEnabled(ctx)
+}
+
+func (w *onsStubWrapper) SetPreferredDataSubscriptionId(
+	ctx context.Context,
+	subId int32,
+	needValidation bool,
+	callbackStub ISetOpportunisticDataCallback,
+) error {
+	return w.impl.SetPreferredDataSubscriptionId(ctx, subId, needValidation, callbackStub)
+}
+
+func (w *onsStubWrapper) GetPreferredDataSubscriptionId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetPreferredDataSubscriptionId(ctx)
+}
+
+func (w *onsStubWrapper) UpdateAvailableNetworks(
+	ctx context.Context,
+	availableNetworks []androidTelephony.AvailableNetworkInfo,
+	callbackStub IUpdateAvailableNetworksCallback,
+) error {
+	return w.impl.UpdateAvailableNetworks(ctx, availableNetworks, callbackStub)
+}
+
+var _ IOns = (*onsStubWrapper)(nil)
+
+// NewOnsStub creates a server-side IOns wrapping the given
+// server implementation. The returned value satisfies IOns
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOnsStub(
+	impl IOnsServer,
+) IOns {
+	wrapper := &onsStubWrapper{impl: impl}
+	stub := &OnsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -100,3 +100,48 @@ func (s *TransientNotificationCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITransientNotificationCallbackServer is the server-side interface that user implementations
+// provide to NewTransientNotificationCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITransientNotificationCallbackServer interface {
+	OnToastShown(ctx context.Context) error
+	OnToastHidden(ctx context.Context) error
+}
+
+type transientNotificationCallbackStubWrapper struct {
+	impl       ITransientNotificationCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *transientNotificationCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *transientNotificationCallbackStubWrapper) OnToastShown(
+	ctx context.Context,
+) error {
+	return w.impl.OnToastShown(ctx)
+}
+
+func (w *transientNotificationCallbackStubWrapper) OnToastHidden(
+	ctx context.Context,
+) error {
+	return w.impl.OnToastHidden(ctx)
+}
+
+var _ ITransientNotificationCallback = (*transientNotificationCallbackStubWrapper)(nil)
+
+// NewTransientNotificationCallbackStub creates a server-side ITransientNotificationCallback wrapping the given
+// server implementation. The returned value satisfies ITransientNotificationCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTransientNotificationCallbackStub(
+	impl ITransientNotificationCallbackServer,
+) ITransientNotificationCallback {
+	wrapper := &transientNotificationCallbackStubWrapper{impl: impl}
+	stub := &TransientNotificationCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

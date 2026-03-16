@@ -82,3 +82,42 @@ func (s *LongConsumerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ILongConsumerServer is the server-side interface that user implementations
+// provide to NewLongConsumerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ILongConsumerServer interface {
+	Accept(ctx context.Context, result int64) error
+}
+
+type longConsumerStubWrapper struct {
+	impl       ILongConsumerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *longConsumerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *longConsumerStubWrapper) Accept(
+	ctx context.Context,
+	result int64,
+) error {
+	return w.impl.Accept(ctx, result)
+}
+
+var _ ILongConsumer = (*longConsumerStubWrapper)(nil)
+
+// NewLongConsumerStub creates a server-side ILongConsumer wrapping the given
+// server implementation. The returned value satisfies ILongConsumer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewLongConsumerStub(
+	impl ILongConsumerServer,
+) ILongConsumer {
+	wrapper := &longConsumerStubWrapper{impl: impl}
+	stub := &LongConsumerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

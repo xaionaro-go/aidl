@@ -125,7 +125,7 @@ func (p *HostapdProxy) RegisterCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHostapd)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHostapd, "registerCallback")
 	if _err != nil {
@@ -392,4 +392,94 @@ func (s *HostapdStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IHostapdServer is the server-side interface that user implementations
+// provide to NewHostapdStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHostapdServer interface {
+	AddAccessPoint(ctx context.Context, ifaceParams IfaceParams, nwParams NetworkParams) error
+	ForceClientDisconnect(ctx context.Context, ifaceName string, clientAddress []byte, reasonCode Ieee80211ReasonCode) error
+	RegisterCallback(ctx context.Context, callback IHostapdCallback) error
+	RemoveAccessPoint(ctx context.Context, ifaceName string) error
+	SetDebugParams(ctx context.Context, level DebugLevel) error
+	Terminate(ctx context.Context) error
+	RemoveLinkFromMultipleLinkBridgedApIface(ctx context.Context, ifaceName string, linkIdentity string) error
+}
+
+type hostapdStubWrapper struct {
+	impl       IHostapdServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hostapdStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hostapdStubWrapper) AddAccessPoint(
+	ctx context.Context,
+	ifaceParams IfaceParams,
+	nwParams NetworkParams,
+) error {
+	return w.impl.AddAccessPoint(ctx, ifaceParams, nwParams)
+}
+
+func (w *hostapdStubWrapper) ForceClientDisconnect(
+	ctx context.Context,
+	ifaceName string,
+	clientAddress []byte,
+	reasonCode Ieee80211ReasonCode,
+) error {
+	return w.impl.ForceClientDisconnect(ctx, ifaceName, clientAddress, reasonCode)
+}
+
+func (w *hostapdStubWrapper) RegisterCallback(
+	ctx context.Context,
+	callback IHostapdCallback,
+) error {
+	return w.impl.RegisterCallback(ctx, callback)
+}
+
+func (w *hostapdStubWrapper) RemoveAccessPoint(
+	ctx context.Context,
+	ifaceName string,
+) error {
+	return w.impl.RemoveAccessPoint(ctx, ifaceName)
+}
+
+func (w *hostapdStubWrapper) SetDebugParams(
+	ctx context.Context,
+	level DebugLevel,
+) error {
+	return w.impl.SetDebugParams(ctx, level)
+}
+
+func (w *hostapdStubWrapper) Terminate(
+	ctx context.Context,
+) error {
+	return w.impl.Terminate(ctx)
+}
+
+func (w *hostapdStubWrapper) RemoveLinkFromMultipleLinkBridgedApIface(
+	ctx context.Context,
+	ifaceName string,
+	linkIdentity string,
+) error {
+	return w.impl.RemoveLinkFromMultipleLinkBridgedApIface(ctx, ifaceName, linkIdentity)
+}
+
+var _ IHostapd = (*hostapdStubWrapper)(nil)
+
+// NewHostapdStub creates a server-side IHostapd wrapping the given
+// server implementation. The returned value satisfies IHostapd
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHostapdStub(
+	impl IHostapdServer,
+) IHostapd {
+	wrapper := &hostapdStubWrapper{impl: impl}
+	stub := &HostapdStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -93,3 +93,42 @@ func (s *InputDeviceBatteryListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IInputDeviceBatteryListenerServer is the server-side interface that user implementations
+// provide to NewInputDeviceBatteryListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInputDeviceBatteryListenerServer interface {
+	OnBatteryStateChanged(ctx context.Context, batteryState IInputDeviceBatteryState) error
+}
+
+type inputDeviceBatteryListenerStubWrapper struct {
+	impl       IInputDeviceBatteryListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inputDeviceBatteryListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inputDeviceBatteryListenerStubWrapper) OnBatteryStateChanged(
+	ctx context.Context,
+	batteryState IInputDeviceBatteryState,
+) error {
+	return w.impl.OnBatteryStateChanged(ctx, batteryState)
+}
+
+var _ IInputDeviceBatteryListener = (*inputDeviceBatteryListenerStubWrapper)(nil)
+
+// NewInputDeviceBatteryListenerStub creates a server-side IInputDeviceBatteryListener wrapping the given
+// server implementation. The returned value satisfies IInputDeviceBatteryListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInputDeviceBatteryListenerStub(
+	impl IInputDeviceBatteryListenerServer,
+) IInputDeviceBatteryListener {
+	wrapper := &inputDeviceBatteryListenerStubWrapper{impl: impl}
+	stub := &InputDeviceBatteryListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

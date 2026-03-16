@@ -82,3 +82,42 @@ func (s *GetEidCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IGetEidCallbackServer is the server-side interface that user implementations
+// provide to NewGetEidCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGetEidCallbackServer interface {
+	OnSuccess(ctx context.Context, eid string) error
+}
+
+type getEidCallbackStubWrapper struct {
+	impl       IGetEidCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *getEidCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *getEidCallbackStubWrapper) OnSuccess(
+	ctx context.Context,
+	eid string,
+) error {
+	return w.impl.OnSuccess(ctx, eid)
+}
+
+var _ IGetEidCallback = (*getEidCallbackStubWrapper)(nil)
+
+// NewGetEidCallbackStub creates a server-side IGetEidCallback wrapping the given
+// server implementation. The returned value satisfies IGetEidCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGetEidCallbackStub(
+	impl IGetEidCallbackServer,
+) IGetEidCallback {
+	wrapper := &getEidCallbackStubWrapper{impl: impl}
+	stub := &GetEidCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

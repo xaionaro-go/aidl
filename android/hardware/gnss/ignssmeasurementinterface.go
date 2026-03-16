@@ -49,7 +49,7 @@ func (p *GnssMeasurementInterfaceProxy) SetCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssMeasurementInterface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteBool(enableFullTracking)
 	_data.WriteBool(enableCorrVecOutputs)
 
@@ -102,7 +102,7 @@ func (p *GnssMeasurementInterfaceProxy) SetCallbackWithOptions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGnssMeasurementInterface)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := options.MarshalParcel(_data); _err != nil {
 		return _err
@@ -205,4 +205,61 @@ func (s *GnssMeasurementInterfaceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGnssMeasurementInterfaceServer is the server-side interface that user implementations
+// provide to NewGnssMeasurementInterfaceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGnssMeasurementInterfaceServer interface {
+	SetCallback(ctx context.Context, callback IGnssMeasurementCallback, enableFullTracking bool, enableCorrVecOutputs bool) error
+	Close(ctx context.Context) error
+	SetCallbackWithOptions(ctx context.Context, callback IGnssMeasurementCallback, options gnssIGnssBatching.Options) error
+}
+
+type gnssMeasurementInterfaceStubWrapper struct {
+	impl       IGnssMeasurementInterfaceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *gnssMeasurementInterfaceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *gnssMeasurementInterfaceStubWrapper) SetCallback(
+	ctx context.Context,
+	callback IGnssMeasurementCallback,
+	enableFullTracking bool,
+	enableCorrVecOutputs bool,
+) error {
+	return w.impl.SetCallback(ctx, callback, enableFullTracking, enableCorrVecOutputs)
+}
+
+func (w *gnssMeasurementInterfaceStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *gnssMeasurementInterfaceStubWrapper) SetCallbackWithOptions(
+	ctx context.Context,
+	callback IGnssMeasurementCallback,
+	options gnssIGnssBatching.Options,
+) error {
+	return w.impl.SetCallbackWithOptions(ctx, callback, options)
+}
+
+var _ IGnssMeasurementInterface = (*gnssMeasurementInterfaceStubWrapper)(nil)
+
+// NewGnssMeasurementInterfaceStub creates a server-side IGnssMeasurementInterface wrapping the given
+// server implementation. The returned value satisfies IGnssMeasurementInterface
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGnssMeasurementInterfaceStub(
+	impl IGnssMeasurementInterfaceServer,
+) IGnssMeasurementInterface {
+	wrapper := &gnssMeasurementInterfaceStubWrapper{impl: impl}
+	stub := &GnssMeasurementInterfaceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

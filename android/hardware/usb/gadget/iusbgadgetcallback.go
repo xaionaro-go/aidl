@@ -212,3 +212,72 @@ func (s *UsbGadgetCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUsbGadgetCallbackServer is the server-side interface that user implementations
+// provide to NewUsbGadgetCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUsbGadgetCallbackServer interface {
+	SetCurrentUsbFunctionsCb(ctx context.Context, functions int64, status Status, transactionId int64) error
+	GetCurrentUsbFunctionsCb(ctx context.Context, functions int64, status Status, transactionId int64) error
+	GetUsbSpeedCb(ctx context.Context, speed UsbSpeed, transactionId int64) error
+	ResetCb(ctx context.Context, status Status, transactionId int64) error
+}
+
+type usbGadgetCallbackStubWrapper struct {
+	impl       IUsbGadgetCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *usbGadgetCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *usbGadgetCallbackStubWrapper) SetCurrentUsbFunctionsCb(
+	ctx context.Context,
+	functions int64,
+	status Status,
+	transactionId int64,
+) error {
+	return w.impl.SetCurrentUsbFunctionsCb(ctx, functions, status, transactionId)
+}
+
+func (w *usbGadgetCallbackStubWrapper) GetCurrentUsbFunctionsCb(
+	ctx context.Context,
+	functions int64,
+	status Status,
+	transactionId int64,
+) error {
+	return w.impl.GetCurrentUsbFunctionsCb(ctx, functions, status, transactionId)
+}
+
+func (w *usbGadgetCallbackStubWrapper) GetUsbSpeedCb(
+	ctx context.Context,
+	speed UsbSpeed,
+	transactionId int64,
+) error {
+	return w.impl.GetUsbSpeedCb(ctx, speed, transactionId)
+}
+
+func (w *usbGadgetCallbackStubWrapper) ResetCb(
+	ctx context.Context,
+	status Status,
+	transactionId int64,
+) error {
+	return w.impl.ResetCb(ctx, status, transactionId)
+}
+
+var _ IUsbGadgetCallback = (*usbGadgetCallbackStubWrapper)(nil)
+
+// NewUsbGadgetCallbackStub creates a server-side IUsbGadgetCallback wrapping the given
+// server implementation. The returned value satisfies IUsbGadgetCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUsbGadgetCallbackStub(
+	impl IUsbGadgetCallbackServer,
+) IUsbGadgetCallback {
+	wrapper := &usbGadgetCallbackStubWrapper{impl: impl}
+	stub := &UsbGadgetCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

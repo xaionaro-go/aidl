@@ -32,7 +32,11 @@ func (s *Configuration) MarshalParcel(
 		}
 	}
 	p.WriteInt32(s.MaxClassificationMetadata)
-	p.WriteStrongBinder(s.Callback.AsBinder().Handle())
+	if s.Callback == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Callback.AsBinder().Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

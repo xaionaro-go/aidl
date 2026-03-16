@@ -53,14 +53,14 @@ func (p *InlineSuggestionRenderServiceProxy) RenderSuggestion(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIInlineSuggestionRenderService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := presentation.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteInt32(width)
 	_data.WriteInt32(height)
-	_data.WriteStrongBinder(hostInputToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, hostInputToken, p.remote.Transport())
 	_data.WriteInt32(displayId)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(sessionId)
@@ -192,4 +192,65 @@ func (s *InlineSuggestionRenderServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IInlineSuggestionRenderServiceServer is the server-side interface that user implementations
+// provide to NewInlineSuggestionRenderServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IInlineSuggestionRenderServiceServer interface {
+	RenderSuggestion(ctx context.Context, callback IInlineSuggestionUiCallback, presentation InlinePresentation, width int32, height int32, hostInputToken binder.IBinder, displayId int32, sessionId int32) error
+	GetInlineSuggestionsRendererInfo(ctx context.Context, callback interface{}) error
+	DestroySuggestionViews(ctx context.Context, sessionId int32) error
+}
+
+type inlineSuggestionRenderServiceStubWrapper struct {
+	impl       IInlineSuggestionRenderServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *inlineSuggestionRenderServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *inlineSuggestionRenderServiceStubWrapper) RenderSuggestion(
+	ctx context.Context,
+	callback IInlineSuggestionUiCallback,
+	presentation InlinePresentation,
+	width int32,
+	height int32,
+	hostInputToken binder.IBinder,
+	displayId int32,
+	sessionId int32,
+) error {
+	return w.impl.RenderSuggestion(ctx, callback, presentation, width, height, hostInputToken, displayId, sessionId)
+}
+
+func (w *inlineSuggestionRenderServiceStubWrapper) GetInlineSuggestionsRendererInfo(
+	ctx context.Context,
+	callback interface{},
+) error {
+	return w.impl.GetInlineSuggestionsRendererInfo(ctx, callback)
+}
+
+func (w *inlineSuggestionRenderServiceStubWrapper) DestroySuggestionViews(
+	ctx context.Context,
+	sessionId int32,
+) error {
+	return w.impl.DestroySuggestionViews(ctx, sessionId)
+}
+
+var _ IInlineSuggestionRenderService = (*inlineSuggestionRenderServiceStubWrapper)(nil)
+
+// NewInlineSuggestionRenderServiceStub creates a server-side IInlineSuggestionRenderService wrapping the given
+// server implementation. The returned value satisfies IInlineSuggestionRenderService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewInlineSuggestionRenderServiceStub(
+	impl IInlineSuggestionRenderServiceServer,
+) IInlineSuggestionRenderService {
+	wrapper := &inlineSuggestionRenderServiceStubWrapper{impl: impl}
+	stub := &InlineSuggestionRenderServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

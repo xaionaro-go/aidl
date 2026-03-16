@@ -76,3 +76,41 @@ func (s *PrintDocumentAdapterObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPrintDocumentAdapterObserverServer is the server-side interface that user implementations
+// provide to NewPrintDocumentAdapterObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPrintDocumentAdapterObserverServer interface {
+	OnDestroy(ctx context.Context) error
+}
+
+type printDocumentAdapterObserverStubWrapper struct {
+	impl       IPrintDocumentAdapterObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *printDocumentAdapterObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *printDocumentAdapterObserverStubWrapper) OnDestroy(
+	ctx context.Context,
+) error {
+	return w.impl.OnDestroy(ctx)
+}
+
+var _ IPrintDocumentAdapterObserver = (*printDocumentAdapterObserverStubWrapper)(nil)
+
+// NewPrintDocumentAdapterObserverStub creates a server-side IPrintDocumentAdapterObserver wrapping the given
+// server implementation. The returned value satisfies IPrintDocumentAdapterObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPrintDocumentAdapterObserverStub(
+	impl IPrintDocumentAdapterObserverServer,
+) IPrintDocumentAdapterObserver {
+	wrapper := &printDocumentAdapterObserverStubWrapper{impl: impl}
+	stub := &PrintDocumentAdapterObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

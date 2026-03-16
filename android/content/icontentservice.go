@@ -6,6 +6,7 @@ import (
 	accounts "github.com/xaionaro-go/binder/android/accounts"
 	database "github.com/xaionaro-go/binder/android/database"
 	net "github.com/xaionaro-go/binder/android/net"
+	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -63,7 +64,7 @@ type IContentService interface {
 	UnregisterContentObserver(ctx context.Context, observer database.IContentObserver) error
 	RegisterContentObserver(ctx context.Context, uri net.Uri, notifyForDescendants bool, observer database.IContentObserver, targetSdkVersion int32) error
 	NotifyChange(ctx context.Context, uris []net.Uri, observer database.IContentObserver, observerWantsSelfNotifications bool, flags int32, targetSdkVersion int32) error
-	RequestSync(ctx context.Context, account accounts.Account, authority string, extras interface{}) error
+	RequestSync(ctx context.Context, account accounts.Account, authority string, extras os.Bundle) error
 	Sync(ctx context.Context, request SyncRequest) error
 	SyncAsUser(ctx context.Context, request SyncRequest) error
 	CancelSync(ctx context.Context, account accounts.Account, authority string, cname ComponentName) error
@@ -74,8 +75,8 @@ type IContentService interface {
 	SetSyncAutomatically(ctx context.Context, account accounts.Account, providerName string, sync bool) error
 	SetSyncAutomaticallyAsUser(ctx context.Context, account accounts.Account, providerName string, sync bool) error
 	GetPeriodicSyncs(ctx context.Context, account accounts.Account, providerName string, cname ComponentName) ([]PeriodicSync, error)
-	AddPeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras interface{}, pollFrequency int64) error
-	RemovePeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras interface{}) error
+	AddPeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras os.Bundle, pollFrequency int64) error
+	RemovePeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras os.Bundle) error
 	GetIsSyncable(ctx context.Context, account accounts.Account, providerName string) (int32, error)
 	GetIsSyncableAsUser(ctx context.Context, account accounts.Account, providerName string) (int32, error)
 	SetIsSyncable(ctx context.Context, account accounts.Account, providerName string, syncable int32) error
@@ -97,8 +98,8 @@ type IContentService interface {
 	IsSyncPendingAsUser(ctx context.Context, account accounts.Account, authority string, cname ComponentName) (bool, error)
 	AddStatusChangeListener(ctx context.Context, mask int32, callback ISyncStatusObserver) error
 	RemoveStatusChangeListener(ctx context.Context, callback ISyncStatusObserver) error
-	PutCache(ctx context.Context, packageName string, key net.Uri, value interface{}) error
-	GetCache(ctx context.Context, packageName string, key net.Uri) (interface{}, error)
+	PutCache(ctx context.Context, packageName string, key net.Uri, value os.Bundle) error
+	GetCache(ctx context.Context, packageName string, key net.Uri) (os.Bundle, error)
 	ResetTodayStats(ctx context.Context) error
 	OnDbCorruption(ctx context.Context, tag string, message string, stacktrace string) error
 }
@@ -125,7 +126,7 @@ func (p *ContentServiceProxy) UnregisterContentObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "unregisterContentObserver")
 	if _err != nil {
@@ -160,7 +161,7 @@ func (p *ContentServiceProxy) RegisterContentObserver(
 		return _err
 	}
 	_data.WriteBool(notifyForDescendants)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(targetSdkVersion)
 
@@ -203,7 +204,7 @@ func (p *ContentServiceProxy) NotifyChange(
 			}
 		}
 	}
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	_data.WriteBool(observerWantsSelfNotifications)
 	_data.WriteInt32(flags)
 	_data.WriteInt32(_identity.UserID)
@@ -232,7 +233,7 @@ func (p *ContentServiceProxy) RequestSync(
 	ctx context.Context,
 	account accounts.Account,
 	authority string,
-	extras interface{},
+	extras os.Bundle,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
@@ -242,6 +243,10 @@ func (p *ContentServiceProxy) RequestSync(
 		return _err
 	}
 	_data.WriteString16(authority)
+	_data.WriteInt32(1)
+	if _err := extras.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteString16(_identity.PackageName)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "requestSync")
@@ -624,7 +629,7 @@ func (p *ContentServiceProxy) AddPeriodicSync(
 	ctx context.Context,
 	account accounts.Account,
 	providerName string,
-	extras interface{},
+	extras os.Bundle,
 	pollFrequency int64,
 ) error {
 	_data := parcel.New()
@@ -634,6 +639,10 @@ func (p *ContentServiceProxy) AddPeriodicSync(
 		return _err
 	}
 	_data.WriteString16(providerName)
+	_data.WriteInt32(1)
+	if _err := extras.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 	_data.WriteInt64(pollFrequency)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "addPeriodicSync")
@@ -658,7 +667,7 @@ func (p *ContentServiceProxy) RemovePeriodicSync(
 	ctx context.Context,
 	account accounts.Account,
 	providerName string,
-	extras interface{},
+	extras os.Bundle,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
@@ -667,6 +676,10 @@ func (p *ContentServiceProxy) RemovePeriodicSync(
 		return _err
 	}
 	_data.WriteString16(providerName)
+	_data.WriteInt32(1)
+	if _err := extras.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "removePeriodicSync")
 	if _err != nil {
@@ -1403,7 +1416,7 @@ func (p *ContentServiceProxy) AddStatusChangeListener(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
 	_data.WriteInt32(mask)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "addStatusChangeListener")
 	if _err != nil {
@@ -1429,7 +1442,7 @@ func (p *ContentServiceProxy) RemoveStatusChangeListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIContentService, "removeStatusChangeListener")
 	if _err != nil {
@@ -1453,7 +1466,7 @@ func (p *ContentServiceProxy) PutCache(
 	ctx context.Context,
 	packageName string,
 	key net.Uri,
-	value interface{},
+	value os.Bundle,
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
@@ -1461,6 +1474,10 @@ func (p *ContentServiceProxy) PutCache(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(1)
 	if _err := key.MarshalParcel(_data); _err != nil {
+		return _err
+	}
+	_data.WriteInt32(1)
+	if _err := value.MarshalParcel(_data); _err != nil {
 		return _err
 	}
 	_data.WriteInt32(_identity.UserID)
@@ -1487,8 +1504,8 @@ func (p *ContentServiceProxy) GetCache(
 	ctx context.Context,
 	packageName string,
 	key net.Uri,
-) (interface{}, error) {
-	var _result interface{}
+) (os.Bundle, error) {
+	var _result os.Bundle
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIContentService)
@@ -1514,6 +1531,15 @@ func (p *ContentServiceProxy) GetCache(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -1694,7 +1720,18 @@ func (s *ContentServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras interface{}
+		var _arg_extras os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
@@ -2060,7 +2097,18 @@ func (s *ContentServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras interface{}
+		var _arg_extras os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_arg_pollFrequency, _err := _data.ReadInt64()
 		if _err != nil {
 			return nil, _err
@@ -2093,7 +2141,18 @@ func (s *ContentServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_extras interface{}
+		var _arg_extras os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_extras.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err = s.Impl.RemovePeriodicSync(ctx, _arg_account, _arg_providerName, _arg_extras)
 		_reply := parcel.New()
 		if _err != nil {
@@ -2672,7 +2731,18 @@ func (s *ContentServiceStub) OnTransaction(
 				}
 			}
 		}
-		var _arg_value interface{}
+		var _arg_value os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_value.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -2714,7 +2784,10 @@ func (s *ContentServiceStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIContentServiceResetTodayStats:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -2755,4 +2828,405 @@ func (s *ContentServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IContentServiceServer is the server-side interface that user implementations
+// provide to NewContentServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IContentServiceServer interface {
+	UnregisterContentObserver(ctx context.Context, observer database.IContentObserver) error
+	RegisterContentObserver(ctx context.Context, uri net.Uri, notifyForDescendants bool, observer database.IContentObserver, targetSdkVersion int32) error
+	NotifyChange(ctx context.Context, uris []net.Uri, observer database.IContentObserver, observerWantsSelfNotifications bool, flags int32, targetSdkVersion int32) error
+	RequestSync(ctx context.Context, account accounts.Account, authority string, extras os.Bundle) error
+	Sync(ctx context.Context, request SyncRequest) error
+	SyncAsUser(ctx context.Context, request SyncRequest) error
+	CancelSync(ctx context.Context, account accounts.Account, authority string, cname ComponentName) error
+	CancelSyncAsUser(ctx context.Context, account accounts.Account, authority string, cname ComponentName) error
+	CancelRequest(ctx context.Context, request SyncRequest) error
+	GetSyncAutomatically(ctx context.Context, account accounts.Account, providerName string) (bool, error)
+	GetSyncAutomaticallyAsUser(ctx context.Context, account accounts.Account, providerName string) (bool, error)
+	SetSyncAutomatically(ctx context.Context, account accounts.Account, providerName string, sync bool) error
+	SetSyncAutomaticallyAsUser(ctx context.Context, account accounts.Account, providerName string, sync bool) error
+	GetPeriodicSyncs(ctx context.Context, account accounts.Account, providerName string, cname ComponentName) ([]PeriodicSync, error)
+	AddPeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras os.Bundle, pollFrequency int64) error
+	RemovePeriodicSync(ctx context.Context, account accounts.Account, providerName string, extras os.Bundle) error
+	GetIsSyncable(ctx context.Context, account accounts.Account, providerName string) (int32, error)
+	GetIsSyncableAsUser(ctx context.Context, account accounts.Account, providerName string) (int32, error)
+	SetIsSyncable(ctx context.Context, account accounts.Account, providerName string, syncable int32) error
+	SetIsSyncableAsUser(ctx context.Context, account accounts.Account, providerName string, syncable int32) error
+	SetMasterSyncAutomatically(ctx context.Context, flag bool) error
+	SetMasterSyncAutomaticallyAsUser(ctx context.Context, flag bool) error
+	GetMasterSyncAutomatically(ctx context.Context) (bool, error)
+	GetMasterSyncAutomaticallyAsUser(ctx context.Context) (bool, error)
+	GetCurrentSyncs(ctx context.Context) ([]SyncInfo, error)
+	GetCurrentSyncsAsUser(ctx context.Context) ([]SyncInfo, error)
+	GetSyncAdapterTypes(ctx context.Context) ([]SyncAdapterType, error)
+	GetSyncAdapterTypesAsUser(ctx context.Context) ([]SyncAdapterType, error)
+	GetSyncAdapterPackagesForAuthorityAsUser(ctx context.Context, authority string) ([]string, error)
+	GetSyncAdapterPackageAsUser(ctx context.Context, accountType string, authority string) (string, error)
+	IsSyncActive(ctx context.Context, account accounts.Account, authority string, cname ComponentName) (bool, error)
+	GetSyncStatus(ctx context.Context, account accounts.Account, authority string, cname ComponentName) (SyncStatusInfo, error)
+	GetSyncStatusAsUser(ctx context.Context, account accounts.Account, authority string, cname ComponentName) (SyncStatusInfo, error)
+	IsSyncPending(ctx context.Context, account accounts.Account, authority string, cname ComponentName) (bool, error)
+	IsSyncPendingAsUser(ctx context.Context, account accounts.Account, authority string, cname ComponentName) (bool, error)
+	AddStatusChangeListener(ctx context.Context, mask int32, callback ISyncStatusObserver) error
+	RemoveStatusChangeListener(ctx context.Context, callback ISyncStatusObserver) error
+	PutCache(ctx context.Context, packageName string, key net.Uri, value os.Bundle) error
+	GetCache(ctx context.Context, packageName string, key net.Uri) (os.Bundle, error)
+	ResetTodayStats(ctx context.Context) error
+	OnDbCorruption(ctx context.Context, tag string, message string, stacktrace string) error
+}
+
+type contentServiceStubWrapper struct {
+	impl       IContentServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *contentServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *contentServiceStubWrapper) UnregisterContentObserver(
+	ctx context.Context,
+	observer database.IContentObserver,
+) error {
+	return w.impl.UnregisterContentObserver(ctx, observer)
+}
+
+func (w *contentServiceStubWrapper) RegisterContentObserver(
+	ctx context.Context,
+	uri net.Uri,
+	notifyForDescendants bool,
+	observer database.IContentObserver,
+	targetSdkVersion int32,
+) error {
+	return w.impl.RegisterContentObserver(ctx, uri, notifyForDescendants, observer, targetSdkVersion)
+}
+
+func (w *contentServiceStubWrapper) NotifyChange(
+	ctx context.Context,
+	uris []net.Uri,
+	observer database.IContentObserver,
+	observerWantsSelfNotifications bool,
+	flags int32,
+	targetSdkVersion int32,
+) error {
+	return w.impl.NotifyChange(ctx, uris, observer, observerWantsSelfNotifications, flags, targetSdkVersion)
+}
+
+func (w *contentServiceStubWrapper) RequestSync(
+	ctx context.Context,
+	account accounts.Account,
+	authority string,
+	extras os.Bundle,
+) error {
+	return w.impl.RequestSync(ctx, account, authority, extras)
+}
+
+func (w *contentServiceStubWrapper) Sync(
+	ctx context.Context,
+	request SyncRequest,
+) error {
+	return w.impl.Sync(ctx, request)
+}
+
+func (w *contentServiceStubWrapper) SyncAsUser(
+	ctx context.Context,
+	request SyncRequest,
+) error {
+	return w.impl.SyncAsUser(ctx, request)
+}
+
+func (w *contentServiceStubWrapper) CancelSync(
+	ctx context.Context,
+	account accounts.Account,
+	authority string,
+	cname ComponentName,
+) error {
+	return w.impl.CancelSync(ctx, account, authority, cname)
+}
+
+func (w *contentServiceStubWrapper) CancelSyncAsUser(
+	ctx context.Context,
+	account accounts.Account,
+	authority string,
+	cname ComponentName,
+) error {
+	return w.impl.CancelSyncAsUser(ctx, account, authority, cname)
+}
+
+func (w *contentServiceStubWrapper) CancelRequest(
+	ctx context.Context,
+	request SyncRequest,
+) error {
+	return w.impl.CancelRequest(ctx, request)
+}
+
+func (w *contentServiceStubWrapper) GetSyncAutomatically(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+) (bool, error) {
+	return w.impl.GetSyncAutomatically(ctx, account, providerName)
+}
+
+func (w *contentServiceStubWrapper) GetSyncAutomaticallyAsUser(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+) (bool, error) {
+	return w.impl.GetSyncAutomaticallyAsUser(ctx, account, providerName)
+}
+
+func (w *contentServiceStubWrapper) SetSyncAutomatically(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+	sync bool,
+) error {
+	return w.impl.SetSyncAutomatically(ctx, account, providerName, sync)
+}
+
+func (w *contentServiceStubWrapper) SetSyncAutomaticallyAsUser(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+	sync bool,
+) error {
+	return w.impl.SetSyncAutomaticallyAsUser(ctx, account, providerName, sync)
+}
+
+func (w *contentServiceStubWrapper) GetPeriodicSyncs(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+	cname ComponentName,
+) ([]PeriodicSync, error) {
+	return w.impl.GetPeriodicSyncs(ctx, account, providerName, cname)
+}
+
+func (w *contentServiceStubWrapper) AddPeriodicSync(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+	extras os.Bundle,
+	pollFrequency int64,
+) error {
+	return w.impl.AddPeriodicSync(ctx, account, providerName, extras, pollFrequency)
+}
+
+func (w *contentServiceStubWrapper) RemovePeriodicSync(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+	extras os.Bundle,
+) error {
+	return w.impl.RemovePeriodicSync(ctx, account, providerName, extras)
+}
+
+func (w *contentServiceStubWrapper) GetIsSyncable(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+) (int32, error) {
+	return w.impl.GetIsSyncable(ctx, account, providerName)
+}
+
+func (w *contentServiceStubWrapper) GetIsSyncableAsUser(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+) (int32, error) {
+	return w.impl.GetIsSyncableAsUser(ctx, account, providerName)
+}
+
+func (w *contentServiceStubWrapper) SetIsSyncable(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+	syncable int32,
+) error {
+	return w.impl.SetIsSyncable(ctx, account, providerName, syncable)
+}
+
+func (w *contentServiceStubWrapper) SetIsSyncableAsUser(
+	ctx context.Context,
+	account accounts.Account,
+	providerName string,
+	syncable int32,
+) error {
+	return w.impl.SetIsSyncableAsUser(ctx, account, providerName, syncable)
+}
+
+func (w *contentServiceStubWrapper) SetMasterSyncAutomatically(
+	ctx context.Context,
+	flag bool,
+) error {
+	return w.impl.SetMasterSyncAutomatically(ctx, flag)
+}
+
+func (w *contentServiceStubWrapper) SetMasterSyncAutomaticallyAsUser(
+	ctx context.Context,
+	flag bool,
+) error {
+	return w.impl.SetMasterSyncAutomaticallyAsUser(ctx, flag)
+}
+
+func (w *contentServiceStubWrapper) GetMasterSyncAutomatically(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetMasterSyncAutomatically(ctx)
+}
+
+func (w *contentServiceStubWrapper) GetMasterSyncAutomaticallyAsUser(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetMasterSyncAutomaticallyAsUser(ctx)
+}
+
+func (w *contentServiceStubWrapper) GetCurrentSyncs(
+	ctx context.Context,
+) ([]SyncInfo, error) {
+	return w.impl.GetCurrentSyncs(ctx)
+}
+
+func (w *contentServiceStubWrapper) GetCurrentSyncsAsUser(
+	ctx context.Context,
+) ([]SyncInfo, error) {
+	return w.impl.GetCurrentSyncsAsUser(ctx)
+}
+
+func (w *contentServiceStubWrapper) GetSyncAdapterTypes(
+	ctx context.Context,
+) ([]SyncAdapterType, error) {
+	return w.impl.GetSyncAdapterTypes(ctx)
+}
+
+func (w *contentServiceStubWrapper) GetSyncAdapterTypesAsUser(
+	ctx context.Context,
+) ([]SyncAdapterType, error) {
+	return w.impl.GetSyncAdapterTypesAsUser(ctx)
+}
+
+func (w *contentServiceStubWrapper) GetSyncAdapterPackagesForAuthorityAsUser(
+	ctx context.Context,
+	authority string,
+) ([]string, error) {
+	return w.impl.GetSyncAdapterPackagesForAuthorityAsUser(ctx, authority)
+}
+
+func (w *contentServiceStubWrapper) GetSyncAdapterPackageAsUser(
+	ctx context.Context,
+	accountType string,
+	authority string,
+) (string, error) {
+	return w.impl.GetSyncAdapterPackageAsUser(ctx, accountType, authority)
+}
+
+func (w *contentServiceStubWrapper) IsSyncActive(
+	ctx context.Context,
+	account accounts.Account,
+	authority string,
+	cname ComponentName,
+) (bool, error) {
+	return w.impl.IsSyncActive(ctx, account, authority, cname)
+}
+
+func (w *contentServiceStubWrapper) GetSyncStatus(
+	ctx context.Context,
+	account accounts.Account,
+	authority string,
+	cname ComponentName,
+) (SyncStatusInfo, error) {
+	return w.impl.GetSyncStatus(ctx, account, authority, cname)
+}
+
+func (w *contentServiceStubWrapper) GetSyncStatusAsUser(
+	ctx context.Context,
+	account accounts.Account,
+	authority string,
+	cname ComponentName,
+) (SyncStatusInfo, error) {
+	return w.impl.GetSyncStatusAsUser(ctx, account, authority, cname)
+}
+
+func (w *contentServiceStubWrapper) IsSyncPending(
+	ctx context.Context,
+	account accounts.Account,
+	authority string,
+	cname ComponentName,
+) (bool, error) {
+	return w.impl.IsSyncPending(ctx, account, authority, cname)
+}
+
+func (w *contentServiceStubWrapper) IsSyncPendingAsUser(
+	ctx context.Context,
+	account accounts.Account,
+	authority string,
+	cname ComponentName,
+) (bool, error) {
+	return w.impl.IsSyncPendingAsUser(ctx, account, authority, cname)
+}
+
+func (w *contentServiceStubWrapper) AddStatusChangeListener(
+	ctx context.Context,
+	mask int32,
+	callback ISyncStatusObserver,
+) error {
+	return w.impl.AddStatusChangeListener(ctx, mask, callback)
+}
+
+func (w *contentServiceStubWrapper) RemoveStatusChangeListener(
+	ctx context.Context,
+	callback ISyncStatusObserver,
+) error {
+	return w.impl.RemoveStatusChangeListener(ctx, callback)
+}
+
+func (w *contentServiceStubWrapper) PutCache(
+	ctx context.Context,
+	packageName string,
+	key net.Uri,
+	value os.Bundle,
+) error {
+	return w.impl.PutCache(ctx, packageName, key, value)
+}
+
+func (w *contentServiceStubWrapper) GetCache(
+	ctx context.Context,
+	packageName string,
+	key net.Uri,
+) (os.Bundle, error) {
+	return w.impl.GetCache(ctx, packageName, key)
+}
+
+func (w *contentServiceStubWrapper) ResetTodayStats(
+	ctx context.Context,
+) error {
+	return w.impl.ResetTodayStats(ctx)
+}
+
+func (w *contentServiceStubWrapper) OnDbCorruption(
+	ctx context.Context,
+	tag string,
+	message string,
+	stacktrace string,
+) error {
+	return w.impl.OnDbCorruption(ctx, tag, message, stacktrace)
+}
+
+var _ IContentService = (*contentServiceStubWrapper)(nil)
+
+// NewContentServiceStub creates a server-side IContentService wrapping the given
+// server implementation. The returned value satisfies IContentService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewContentServiceStub(
+	impl IContentServiceServer,
+) IContentService {
+	wrapper := &contentServiceStubWrapper{impl: impl}
+	stub := &ContentServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -126,3 +126,51 @@ func (s *UwbClientCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IUwbClientCallbackServer is the server-side interface that user implementations
+// provide to NewUwbClientCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUwbClientCallbackServer interface {
+	OnUciMessage(ctx context.Context, data []byte) error
+	OnHalEvent(ctx context.Context, event UwbEvent, status UwbStatus) error
+}
+
+type uwbClientCallbackStubWrapper struct {
+	impl       IUwbClientCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *uwbClientCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *uwbClientCallbackStubWrapper) OnUciMessage(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.OnUciMessage(ctx, data)
+}
+
+func (w *uwbClientCallbackStubWrapper) OnHalEvent(
+	ctx context.Context,
+	event UwbEvent,
+	status UwbStatus,
+) error {
+	return w.impl.OnHalEvent(ctx, event, status)
+}
+
+var _ IUwbClientCallback = (*uwbClientCallbackStubWrapper)(nil)
+
+// NewUwbClientCallbackStub creates a server-side IUwbClientCallback wrapping the given
+// server implementation. The returned value satisfies IUwbClientCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUwbClientCallbackStub(
+	impl IUwbClientCallbackServer,
+) IUwbClientCallback {
+	wrapper := &uwbClientCallbackStubWrapper{impl: impl}
+	stub := &UwbClientCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -147,3 +147,52 @@ func (s *SessionListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISessionListenerServer is the server-side interface that user implementations
+// provide to NewSessionListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISessionListenerServer interface {
+	OnSessionStarted(ctx context.Context, sessionType int32, instance logging.InstanceId) error
+	OnSessionEnded(ctx context.Context, sessionType int32, instance logging.InstanceId) error
+}
+
+type sessionListenerStubWrapper struct {
+	impl       ISessionListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sessionListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sessionListenerStubWrapper) OnSessionStarted(
+	ctx context.Context,
+	sessionType int32,
+	instance logging.InstanceId,
+) error {
+	return w.impl.OnSessionStarted(ctx, sessionType, instance)
+}
+
+func (w *sessionListenerStubWrapper) OnSessionEnded(
+	ctx context.Context,
+	sessionType int32,
+	instance logging.InstanceId,
+) error {
+	return w.impl.OnSessionEnded(ctx, sessionType, instance)
+}
+
+var _ ISessionListener = (*sessionListenerStubWrapper)(nil)
+
+// NewSessionListenerStub creates a server-side ISessionListener wrapping the given
+// server implementation. The returned value satisfies ISessionListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSessionListenerStub(
+	impl ISessionListenerServer,
+) ISessionListener {
+	wrapper := &sessionListenerStubWrapper{impl: impl}
+	stub := &SessionListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

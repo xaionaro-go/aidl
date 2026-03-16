@@ -3,7 +3,6 @@ package window
 import (
 	"context"
 	"fmt"
-	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -34,7 +33,7 @@ type IWindowOrganizerController interface {
 	ApplySyncTransaction(ctx context.Context, t WindowContainerTransaction, callback IWindowContainerTransactionCallback) (int32, error)
 	StartNewTransition(ctx context.Context, type_ int32, t *WindowContainerTransaction) (binder.IBinder, error)
 	StartTransition(ctx context.Context, transitionToken binder.IBinder, t *WindowContainerTransaction) error
-	StartLegacyTransition(ctx context.Context, type_ int32, adapter view.RemoteAnimationAdapter, syncCallback IWindowContainerTransactionCallback, t WindowContainerTransaction) (int32, error)
+	StartLegacyTransition(ctx context.Context, type_ int32, adapter interface{}, syncCallback IWindowContainerTransactionCallback, t WindowContainerTransaction) (int32, error)
 	FinishTransition(ctx context.Context, transitionToken binder.IBinder, t *WindowContainerTransaction) error
 	GetTaskOrganizerController(ctx context.Context) (ITaskOrganizerController, error)
 	GetDisplayAreaOrganizerController(ctx context.Context) (IDisplayAreaOrganizerController, error)
@@ -102,7 +101,7 @@ func (p *WindowOrganizerControllerProxy) ApplySyncTransaction(
 	if _err := t.MarshalParcel(_data); _err != nil {
 		return _result, _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowOrganizerController, "applySyncTransaction")
 	if _err != nil {
@@ -173,7 +172,7 @@ func (p *WindowOrganizerControllerProxy) StartTransition(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowOrganizerController)
-	_data.WriteStrongBinder(transitionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, transitionToken, p.remote.Transport())
 	if t != nil {
 		if _err := (*t).MarshalParcel(_data); _err != nil {
 			return _err
@@ -203,7 +202,7 @@ func (p *WindowOrganizerControllerProxy) StartTransition(
 func (p *WindowOrganizerControllerProxy) StartLegacyTransition(
 	ctx context.Context,
 	type_ int32,
-	adapter view.RemoteAnimationAdapter,
+	adapter interface{},
 	syncCallback IWindowContainerTransactionCallback,
 	t WindowContainerTransaction,
 ) (int32, error) {
@@ -211,11 +210,7 @@ func (p *WindowOrganizerControllerProxy) StartLegacyTransition(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowOrganizerController)
 	_data.WriteInt32(type_)
-	_data.WriteInt32(1)
-	if _err := adapter.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteStrongBinder(syncCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, syncCallback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := t.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -250,7 +245,7 @@ func (p *WindowOrganizerControllerProxy) FinishTransition(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowOrganizerController)
-	_data.WriteStrongBinder(transitionToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, transitionToken, p.remote.Transport())
 	if t != nil {
 		if _err := (*t).MarshalParcel(_data); _err != nil {
 			return _err
@@ -373,7 +368,7 @@ func (p *WindowOrganizerControllerProxy) RegisterTransitionPlayer(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowOrganizerController)
-	_data.WriteStrongBinder(player.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, player.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowOrganizerController, "registerTransitionPlayer")
 	if _err != nil {
@@ -399,7 +394,7 @@ func (p *WindowOrganizerControllerProxy) UnregisterTransitionPlayer(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIWindowOrganizerController)
-	_data.WriteStrongBinder(player.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, player.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIWindowOrganizerController, "unregisterTransitionPlayer")
 	if _err != nil {
@@ -610,18 +605,7 @@ func (s *WindowOrganizerControllerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_adapter view.RemoteAnimationAdapter
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_adapter.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_adapter interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_syncCallback IWindowContainerTransactionCallback
 		_ = _arg_syncCallback
@@ -776,4 +760,141 @@ func (s *WindowOrganizerControllerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IWindowOrganizerControllerServer is the server-side interface that user implementations
+// provide to NewWindowOrganizerControllerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IWindowOrganizerControllerServer interface {
+	ApplyTransaction(ctx context.Context, t WindowContainerTransaction) error
+	ApplySyncTransaction(ctx context.Context, t WindowContainerTransaction, callback IWindowContainerTransactionCallback) (int32, error)
+	StartNewTransition(ctx context.Context, type_ int32, t *WindowContainerTransaction) (binder.IBinder, error)
+	StartTransition(ctx context.Context, transitionToken binder.IBinder, t *WindowContainerTransaction) error
+	StartLegacyTransition(ctx context.Context, type_ int32, adapter interface{}, syncCallback IWindowContainerTransactionCallback, t WindowContainerTransaction) (int32, error)
+	FinishTransition(ctx context.Context, transitionToken binder.IBinder, t *WindowContainerTransaction) error
+	GetTaskOrganizerController(ctx context.Context) (ITaskOrganizerController, error)
+	GetDisplayAreaOrganizerController(ctx context.Context) (IDisplayAreaOrganizerController, error)
+	GetTaskFragmentOrganizerController(ctx context.Context) (ITaskFragmentOrganizerController, error)
+	RegisterTransitionPlayer(ctx context.Context, player ITransitionPlayer) error
+	UnregisterTransitionPlayer(ctx context.Context, player ITransitionPlayer) error
+	GetTransitionMetricsReporter(ctx context.Context) (ITransitionMetricsReporter, error)
+	GetApplyToken(ctx context.Context) (binder.IBinder, error)
+}
+
+type windowOrganizerControllerStubWrapper struct {
+	impl       IWindowOrganizerControllerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *windowOrganizerControllerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *windowOrganizerControllerStubWrapper) ApplyTransaction(
+	ctx context.Context,
+	t WindowContainerTransaction,
+) error {
+	return w.impl.ApplyTransaction(ctx, t)
+}
+
+func (w *windowOrganizerControllerStubWrapper) ApplySyncTransaction(
+	ctx context.Context,
+	t WindowContainerTransaction,
+	callback IWindowContainerTransactionCallback,
+) (int32, error) {
+	return w.impl.ApplySyncTransaction(ctx, t, callback)
+}
+
+func (w *windowOrganizerControllerStubWrapper) StartNewTransition(
+	ctx context.Context,
+	type_ int32,
+	t *WindowContainerTransaction,
+) (binder.IBinder, error) {
+	return w.impl.StartNewTransition(ctx, type_, t)
+}
+
+func (w *windowOrganizerControllerStubWrapper) StartTransition(
+	ctx context.Context,
+	transitionToken binder.IBinder,
+	t *WindowContainerTransaction,
+) error {
+	return w.impl.StartTransition(ctx, transitionToken, t)
+}
+
+func (w *windowOrganizerControllerStubWrapper) StartLegacyTransition(
+	ctx context.Context,
+	type_ int32,
+	adapter interface{},
+	syncCallback IWindowContainerTransactionCallback,
+	t WindowContainerTransaction,
+) (int32, error) {
+	return w.impl.StartLegacyTransition(ctx, type_, adapter, syncCallback, t)
+}
+
+func (w *windowOrganizerControllerStubWrapper) FinishTransition(
+	ctx context.Context,
+	transitionToken binder.IBinder,
+	t *WindowContainerTransaction,
+) error {
+	return w.impl.FinishTransition(ctx, transitionToken, t)
+}
+
+func (w *windowOrganizerControllerStubWrapper) GetTaskOrganizerController(
+	ctx context.Context,
+) (ITaskOrganizerController, error) {
+	return w.impl.GetTaskOrganizerController(ctx)
+}
+
+func (w *windowOrganizerControllerStubWrapper) GetDisplayAreaOrganizerController(
+	ctx context.Context,
+) (IDisplayAreaOrganizerController, error) {
+	return w.impl.GetDisplayAreaOrganizerController(ctx)
+}
+
+func (w *windowOrganizerControllerStubWrapper) GetTaskFragmentOrganizerController(
+	ctx context.Context,
+) (ITaskFragmentOrganizerController, error) {
+	return w.impl.GetTaskFragmentOrganizerController(ctx)
+}
+
+func (w *windowOrganizerControllerStubWrapper) RegisterTransitionPlayer(
+	ctx context.Context,
+	player ITransitionPlayer,
+) error {
+	return w.impl.RegisterTransitionPlayer(ctx, player)
+}
+
+func (w *windowOrganizerControllerStubWrapper) UnregisterTransitionPlayer(
+	ctx context.Context,
+	player ITransitionPlayer,
+) error {
+	return w.impl.UnregisterTransitionPlayer(ctx, player)
+}
+
+func (w *windowOrganizerControllerStubWrapper) GetTransitionMetricsReporter(
+	ctx context.Context,
+) (ITransitionMetricsReporter, error) {
+	return w.impl.GetTransitionMetricsReporter(ctx)
+}
+
+func (w *windowOrganizerControllerStubWrapper) GetApplyToken(
+	ctx context.Context,
+) (binder.IBinder, error) {
+	return w.impl.GetApplyToken(ctx)
+}
+
+var _ IWindowOrganizerController = (*windowOrganizerControllerStubWrapper)(nil)
+
+// NewWindowOrganizerControllerStub creates a server-side IWindowOrganizerController wrapping the given
+// server implementation. The returned value satisfies IWindowOrganizerController
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewWindowOrganizerControllerStub(
+	impl IWindowOrganizerControllerServer,
+) IWindowOrganizerController {
+	wrapper := &windowOrganizerControllerStubWrapper{impl: impl}
+	stub := &WindowOrganizerControllerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

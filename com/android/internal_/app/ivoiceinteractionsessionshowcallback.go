@@ -100,3 +100,48 @@ func (s *VoiceInteractionSessionShowCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IVoiceInteractionSessionShowCallbackServer is the server-side interface that user implementations
+// provide to NewVoiceInteractionSessionShowCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IVoiceInteractionSessionShowCallbackServer interface {
+	OnFailed(ctx context.Context) error
+	OnShown(ctx context.Context) error
+}
+
+type voiceInteractionSessionShowCallbackStubWrapper struct {
+	impl       IVoiceInteractionSessionShowCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *voiceInteractionSessionShowCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *voiceInteractionSessionShowCallbackStubWrapper) OnFailed(
+	ctx context.Context,
+) error {
+	return w.impl.OnFailed(ctx)
+}
+
+func (w *voiceInteractionSessionShowCallbackStubWrapper) OnShown(
+	ctx context.Context,
+) error {
+	return w.impl.OnShown(ctx)
+}
+
+var _ IVoiceInteractionSessionShowCallback = (*voiceInteractionSessionShowCallbackStubWrapper)(nil)
+
+// NewVoiceInteractionSessionShowCallbackStub creates a server-side IVoiceInteractionSessionShowCallback wrapping the given
+// server implementation. The returned value satisfies IVoiceInteractionSessionShowCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewVoiceInteractionSessionShowCallbackStub(
+	impl IVoiceInteractionSessionShowCallbackServer,
+) IVoiceInteractionSessionShowCallback {
+	wrapper := &voiceInteractionSessionShowCallbackStubWrapper{impl: impl}
+	stub := &VoiceInteractionSessionShowCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

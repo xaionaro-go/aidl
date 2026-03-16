@@ -481,3 +481,135 @@ func (s *SapCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ISapCallbackServer is the server-side interface that user implementations
+// provide to NewSapCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISapCallbackServer interface {
+	ApduResponse(ctx context.Context, serial int32, resultCode SapResultCode, apduRsp []byte) error
+	ConnectResponse(ctx context.Context, serial int32, sapConnectRsp SapConnectRsp, maxMsgSizeBytes int32) error
+	DisconnectIndication(ctx context.Context, serial int32, disconnectType SapDisconnectType) error
+	DisconnectResponse(ctx context.Context, serial int32) error
+	ErrorResponse(ctx context.Context, serial int32) error
+	PowerResponse(ctx context.Context, serial int32, resultCode SapResultCode) error
+	ResetSimResponse(ctx context.Context, serial int32, resultCode SapResultCode) error
+	StatusIndication(ctx context.Context, serial int32, status SapStatus) error
+	TransferAtrResponse(ctx context.Context, serial int32, resultCode SapResultCode, atr []byte) error
+	TransferCardReaderStatusResponse(ctx context.Context, serial int32, resultCode SapResultCode, cardReaderStatus int32) error
+	TransferProtocolResponse(ctx context.Context, serial int32, resultCode SapResultCode) error
+}
+
+type sapCallbackStubWrapper struct {
+	impl       ISapCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *sapCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *sapCallbackStubWrapper) ApduResponse(
+	ctx context.Context,
+	serial int32,
+	resultCode SapResultCode,
+	apduRsp []byte,
+) error {
+	return w.impl.ApduResponse(ctx, serial, resultCode, apduRsp)
+}
+
+func (w *sapCallbackStubWrapper) ConnectResponse(
+	ctx context.Context,
+	serial int32,
+	sapConnectRsp SapConnectRsp,
+	maxMsgSizeBytes int32,
+) error {
+	return w.impl.ConnectResponse(ctx, serial, sapConnectRsp, maxMsgSizeBytes)
+}
+
+func (w *sapCallbackStubWrapper) DisconnectIndication(
+	ctx context.Context,
+	serial int32,
+	disconnectType SapDisconnectType,
+) error {
+	return w.impl.DisconnectIndication(ctx, serial, disconnectType)
+}
+
+func (w *sapCallbackStubWrapper) DisconnectResponse(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.DisconnectResponse(ctx, serial)
+}
+
+func (w *sapCallbackStubWrapper) ErrorResponse(
+	ctx context.Context,
+	serial int32,
+) error {
+	return w.impl.ErrorResponse(ctx, serial)
+}
+
+func (w *sapCallbackStubWrapper) PowerResponse(
+	ctx context.Context,
+	serial int32,
+	resultCode SapResultCode,
+) error {
+	return w.impl.PowerResponse(ctx, serial, resultCode)
+}
+
+func (w *sapCallbackStubWrapper) ResetSimResponse(
+	ctx context.Context,
+	serial int32,
+	resultCode SapResultCode,
+) error {
+	return w.impl.ResetSimResponse(ctx, serial, resultCode)
+}
+
+func (w *sapCallbackStubWrapper) StatusIndication(
+	ctx context.Context,
+	serial int32,
+	status SapStatus,
+) error {
+	return w.impl.StatusIndication(ctx, serial, status)
+}
+
+func (w *sapCallbackStubWrapper) TransferAtrResponse(
+	ctx context.Context,
+	serial int32,
+	resultCode SapResultCode,
+	atr []byte,
+) error {
+	return w.impl.TransferAtrResponse(ctx, serial, resultCode, atr)
+}
+
+func (w *sapCallbackStubWrapper) TransferCardReaderStatusResponse(
+	ctx context.Context,
+	serial int32,
+	resultCode SapResultCode,
+	cardReaderStatus int32,
+) error {
+	return w.impl.TransferCardReaderStatusResponse(ctx, serial, resultCode, cardReaderStatus)
+}
+
+func (w *sapCallbackStubWrapper) TransferProtocolResponse(
+	ctx context.Context,
+	serial int32,
+	resultCode SapResultCode,
+) error {
+	return w.impl.TransferProtocolResponse(ctx, serial, resultCode)
+}
+
+var _ ISapCallback = (*sapCallbackStubWrapper)(nil)
+
+// NewSapCallbackStub creates a server-side ISapCallback wrapping the given
+// server implementation. The returned value satisfies ISapCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSapCallbackStub(
+	impl ISapCallbackServer,
+) ISapCallback {
+	wrapper := &sapCallbackStubWrapper{impl: impl}
+	stub := &SapCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

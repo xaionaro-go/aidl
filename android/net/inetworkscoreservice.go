@@ -189,7 +189,7 @@ func (p *NetworkScoreServiceProxy) RegisterNetworkScoreCache(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkScoreService)
 	_data.WriteInt32(networkType)
-	_data.WriteStrongBinder(scoreCache.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, scoreCache.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(filterType)
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkScoreService, "registerNetworkScoreCache")
@@ -218,7 +218,7 @@ func (p *NetworkScoreServiceProxy) UnregisterNetworkScoreCache(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorINetworkScoreService)
 	_data.WriteInt32(networkType)
-	_data.WriteStrongBinder(scoreCache.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, scoreCache.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorINetworkScoreService, "unregisterNetworkScoreCache")
 	if _err != nil {
@@ -602,4 +602,120 @@ func (s *NetworkScoreServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// INetworkScoreServiceServer is the server-side interface that user implementations
+// provide to NewNetworkScoreServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INetworkScoreServiceServer interface {
+	UpdateScores(ctx context.Context, networks []ScoredNetwork) (bool, error)
+	ClearScores(ctx context.Context) (bool, error)
+	SetActiveScorer(ctx context.Context, packageName string) (bool, error)
+	DisableScoring(ctx context.Context) error
+	RegisterNetworkScoreCache(ctx context.Context, networkType int32, scoreCache INetworkScoreCache, filterType int32) error
+	UnregisterNetworkScoreCache(ctx context.Context, networkType int32, scoreCache INetworkScoreCache) error
+	RequestScores(ctx context.Context, networks []NetworkKey) (bool, error)
+	IsCallerActiveScorer(ctx context.Context) (bool, error)
+	GetActiveScorerPackage(ctx context.Context) (string, error)
+	GetActiveScorer(ctx context.Context) (NetworkScorerAppData, error)
+	GetAllValidScorers(ctx context.Context) ([]NetworkScorerAppData, error)
+}
+
+type networkScoreServiceStubWrapper struct {
+	impl       INetworkScoreServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *networkScoreServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *networkScoreServiceStubWrapper) UpdateScores(
+	ctx context.Context,
+	networks []ScoredNetwork,
+) (bool, error) {
+	return w.impl.UpdateScores(ctx, networks)
+}
+
+func (w *networkScoreServiceStubWrapper) ClearScores(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.ClearScores(ctx)
+}
+
+func (w *networkScoreServiceStubWrapper) SetActiveScorer(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.SetActiveScorer(ctx, packageName)
+}
+
+func (w *networkScoreServiceStubWrapper) DisableScoring(
+	ctx context.Context,
+) error {
+	return w.impl.DisableScoring(ctx)
+}
+
+func (w *networkScoreServiceStubWrapper) RegisterNetworkScoreCache(
+	ctx context.Context,
+	networkType int32,
+	scoreCache INetworkScoreCache,
+	filterType int32,
+) error {
+	return w.impl.RegisterNetworkScoreCache(ctx, networkType, scoreCache, filterType)
+}
+
+func (w *networkScoreServiceStubWrapper) UnregisterNetworkScoreCache(
+	ctx context.Context,
+	networkType int32,
+	scoreCache INetworkScoreCache,
+) error {
+	return w.impl.UnregisterNetworkScoreCache(ctx, networkType, scoreCache)
+}
+
+func (w *networkScoreServiceStubWrapper) RequestScores(
+	ctx context.Context,
+	networks []NetworkKey,
+) (bool, error) {
+	return w.impl.RequestScores(ctx, networks)
+}
+
+func (w *networkScoreServiceStubWrapper) IsCallerActiveScorer(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsCallerActiveScorer(ctx)
+}
+
+func (w *networkScoreServiceStubWrapper) GetActiveScorerPackage(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetActiveScorerPackage(ctx)
+}
+
+func (w *networkScoreServiceStubWrapper) GetActiveScorer(
+	ctx context.Context,
+) (NetworkScorerAppData, error) {
+	return w.impl.GetActiveScorer(ctx)
+}
+
+func (w *networkScoreServiceStubWrapper) GetAllValidScorers(
+	ctx context.Context,
+) ([]NetworkScorerAppData, error) {
+	return w.impl.GetAllValidScorers(ctx)
+}
+
+var _ INetworkScoreService = (*networkScoreServiceStubWrapper)(nil)
+
+// NewNetworkScoreServiceStub creates a server-side INetworkScoreService wrapping the given
+// server implementation. The returned value satisfies INetworkScoreService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNetworkScoreServiceStub(
+	impl INetworkScoreServiceServer,
+) INetworkScoreService {
+	wrapper := &networkScoreServiceStubWrapper{impl: impl}
+	stub := &NetworkScoreServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

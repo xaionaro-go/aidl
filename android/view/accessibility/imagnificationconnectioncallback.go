@@ -285,3 +285,87 @@ func (s *MagnificationConnectionCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IMagnificationConnectionCallbackServer is the server-side interface that user implementations
+// provide to NewMagnificationConnectionCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMagnificationConnectionCallbackServer interface {
+	OnWindowMagnifierBoundsChanged(ctx context.Context, displayId int32, bounds graphics.Rect) error
+	OnChangeMagnificationMode(ctx context.Context, displayId int32, magnificationMode int32) error
+	OnSourceBoundsChanged(ctx context.Context, displayId int32, sourceBounds graphics.Rect) error
+	OnPerformScaleAction(ctx context.Context, displayId int32, scale float32, updatePersistence bool) error
+	OnAccessibilityActionPerformed(ctx context.Context, displayId int32) error
+	OnMove(ctx context.Context, displayId int32) error
+}
+
+type magnificationConnectionCallbackStubWrapper struct {
+	impl       IMagnificationConnectionCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *magnificationConnectionCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *magnificationConnectionCallbackStubWrapper) OnWindowMagnifierBoundsChanged(
+	ctx context.Context,
+	displayId int32,
+	bounds graphics.Rect,
+) error {
+	return w.impl.OnWindowMagnifierBoundsChanged(ctx, displayId, bounds)
+}
+
+func (w *magnificationConnectionCallbackStubWrapper) OnChangeMagnificationMode(
+	ctx context.Context,
+	displayId int32,
+	magnificationMode int32,
+) error {
+	return w.impl.OnChangeMagnificationMode(ctx, displayId, magnificationMode)
+}
+
+func (w *magnificationConnectionCallbackStubWrapper) OnSourceBoundsChanged(
+	ctx context.Context,
+	displayId int32,
+	sourceBounds graphics.Rect,
+) error {
+	return w.impl.OnSourceBoundsChanged(ctx, displayId, sourceBounds)
+}
+
+func (w *magnificationConnectionCallbackStubWrapper) OnPerformScaleAction(
+	ctx context.Context,
+	displayId int32,
+	scale float32,
+	updatePersistence bool,
+) error {
+	return w.impl.OnPerformScaleAction(ctx, displayId, scale, updatePersistence)
+}
+
+func (w *magnificationConnectionCallbackStubWrapper) OnAccessibilityActionPerformed(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnAccessibilityActionPerformed(ctx, displayId)
+}
+
+func (w *magnificationConnectionCallbackStubWrapper) OnMove(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnMove(ctx, displayId)
+}
+
+var _ IMagnificationConnectionCallback = (*magnificationConnectionCallbackStubWrapper)(nil)
+
+// NewMagnificationConnectionCallbackStub creates a server-side IMagnificationConnectionCallback wrapping the given
+// server implementation. The returned value satisfies IMagnificationConnectionCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMagnificationConnectionCallbackStub(
+	impl IMagnificationConnectionCallbackServer,
+) IMagnificationConnectionCallback {
+	wrapper := &magnificationConnectionCallbackStubWrapper{impl: impl}
+	stub := &MagnificationConnectionCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

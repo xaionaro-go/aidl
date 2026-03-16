@@ -154,3 +154,51 @@ func (s *NfcClientCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INfcClientCallbackServer is the server-side interface that user implementations
+// provide to NewNfcClientCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INfcClientCallbackServer interface {
+	SendData(ctx context.Context, data []byte) error
+	SendEvent(ctx context.Context, event NfcEvent, status NfcStatus) error
+}
+
+type nfcClientCallbackStubWrapper struct {
+	impl       INfcClientCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *nfcClientCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *nfcClientCallbackStubWrapper) SendData(
+	ctx context.Context,
+	data []byte,
+) error {
+	return w.impl.SendData(ctx, data)
+}
+
+func (w *nfcClientCallbackStubWrapper) SendEvent(
+	ctx context.Context,
+	event NfcEvent,
+	status NfcStatus,
+) error {
+	return w.impl.SendEvent(ctx, event, status)
+}
+
+var _ INfcClientCallback = (*nfcClientCallbackStubWrapper)(nil)
+
+// NewNfcClientCallbackStub creates a server-side INfcClientCallback wrapping the given
+// server implementation. The returned value satisfies INfcClientCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNfcClientCallbackStub(
+	impl INfcClientCallbackServer,
+) INfcClientCallback {
+	wrapper := &nfcClientCallbackStubWrapper{impl: impl}
+	stub := &NfcClientCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

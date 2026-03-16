@@ -48,7 +48,7 @@ func (p *RegistrationProxy) GetKey(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRegistration)
 	_data.WriteInt32(keyId)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRegistration, "getKey")
 	if _err != nil {
@@ -65,7 +65,7 @@ func (p *RegistrationProxy) CancelGetKey(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIRegistration)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRegistration, "cancelGetKey")
 	if _err != nil {
@@ -100,7 +100,7 @@ func (p *RegistrationProxy) StoreUpgradedKeyAsync(
 			_data.WritePaddedByte(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIRegistration, "storeUpgradedKeyAsync")
 	if _err != nil {
@@ -168,4 +168,62 @@ func (s *RegistrationStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IRegistrationServer is the server-side interface that user implementations
+// provide to NewRegistrationStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRegistrationServer interface {
+	GetKey(ctx context.Context, keyId int32, callback IGetKeyCallback) error
+	CancelGetKey(ctx context.Context, callback IGetKeyCallback) error
+	StoreUpgradedKeyAsync(ctx context.Context, oldKeyBlob []byte, newKeyBlob []byte, callback IStoreUpgradedKeyCallback) error
+}
+
+type registrationStubWrapper struct {
+	impl       IRegistrationServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *registrationStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *registrationStubWrapper) GetKey(
+	ctx context.Context,
+	keyId int32,
+	callback IGetKeyCallback,
+) error {
+	return w.impl.GetKey(ctx, keyId, callback)
+}
+
+func (w *registrationStubWrapper) CancelGetKey(
+	ctx context.Context,
+	callback IGetKeyCallback,
+) error {
+	return w.impl.CancelGetKey(ctx, callback)
+}
+
+func (w *registrationStubWrapper) StoreUpgradedKeyAsync(
+	ctx context.Context,
+	oldKeyBlob []byte,
+	newKeyBlob []byte,
+	callback IStoreUpgradedKeyCallback,
+) error {
+	return w.impl.StoreUpgradedKeyAsync(ctx, oldKeyBlob, newKeyBlob, callback)
+}
+
+var _ IRegistration = (*registrationStubWrapper)(nil)
+
+// NewRegistrationStub creates a server-side IRegistration wrapping the given
+// server implementation. The returned value satisfies IRegistration
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRegistrationStub(
+	impl IRegistrationServer,
+) IRegistration {
+	wrapper := &registrationStubWrapper{impl: impl}
+	stub := &RegistrationStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

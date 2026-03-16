@@ -281,3 +281,67 @@ func (s *CameraDeviceCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICameraDeviceCallbackServer is the server-side interface that user implementations
+// provide to NewCameraDeviceCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICameraDeviceCallbackServer interface {
+	Notify(ctx context.Context, msgs []NotifyMsg) error
+	ProcessCaptureResult(ctx context.Context, results []CaptureResult) error
+	RequestStreamBuffers(ctx context.Context, bufReqs []BufferRequest, buffers []StreamBufferRet) (BufferRequestStatus, error)
+	ReturnStreamBuffers(ctx context.Context, buffers []StreamBuffer) error
+}
+
+type cameraDeviceCallbackStubWrapper struct {
+	impl       ICameraDeviceCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cameraDeviceCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cameraDeviceCallbackStubWrapper) Notify(
+	ctx context.Context,
+	msgs []NotifyMsg,
+) error {
+	return w.impl.Notify(ctx, msgs)
+}
+
+func (w *cameraDeviceCallbackStubWrapper) ProcessCaptureResult(
+	ctx context.Context,
+	results []CaptureResult,
+) error {
+	return w.impl.ProcessCaptureResult(ctx, results)
+}
+
+func (w *cameraDeviceCallbackStubWrapper) RequestStreamBuffers(
+	ctx context.Context,
+	bufReqs []BufferRequest,
+	buffers []StreamBufferRet,
+) (BufferRequestStatus, error) {
+	return w.impl.RequestStreamBuffers(ctx, bufReqs, buffers)
+}
+
+func (w *cameraDeviceCallbackStubWrapper) ReturnStreamBuffers(
+	ctx context.Context,
+	buffers []StreamBuffer,
+) error {
+	return w.impl.ReturnStreamBuffers(ctx, buffers)
+}
+
+var _ ICameraDeviceCallback = (*cameraDeviceCallbackStubWrapper)(nil)
+
+// NewCameraDeviceCallbackStub creates a server-side ICameraDeviceCallback wrapping the given
+// server implementation. The returned value satisfies ICameraDeviceCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCameraDeviceCallbackStub(
+	impl ICameraDeviceCallbackServer,
+) ICameraDeviceCallback {
+	wrapper := &cameraDeviceCallbackStubWrapper{impl: impl}
+	stub := &CameraDeviceCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

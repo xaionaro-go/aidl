@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -87,9 +86,9 @@ type IAppOpsService interface {
 	ShouldCollectNotes(ctx context.Context, opCode int32) (bool, error)
 	SetCameraAudioRestriction(ctx context.Context, mode int32) error
 	StartWatchingModeWithFlags(ctx context.Context, op int32, packageName string, flags int32, callback IAppOpsCallback) error
-	NoteProxyOperation(ctx context.Context, code int32, attributionSource content.AttributionSource, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
-	StartProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource content.AttributionSource, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
-	FinishProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource content.AttributionSource, skipProxyOperation bool) error
+	NoteProxyOperation(ctx context.Context, code int32, attributionSource interface{}, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
+	StartProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource interface{}, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource interface{}, skipProxyOperation bool) error
 	CheckPackage(ctx context.Context, uid int32, packageName string) (int32, error)
 	CollectRuntimeAppOpAccessMessage(ctx context.Context) (interface{}, error)
 	ReportRuntimeAppOpAccessMessageAndGetConfig(ctx context.Context, packageName string, appOp interface{}, message string) (MessageSamplingConfig, error)
@@ -126,9 +125,9 @@ type IAppOpsService interface {
 	CheckOperationRaw(ctx context.Context, code int32, uid int32, packageName string) (int32, error)
 	ReloadNonHistoricalState(ctx context.Context) error
 	CollectNoteOpCallsForValidation(ctx context.Context, stackTrace string, op int32, packageName string, version int64) error
-	NoteProxyOperationWithState(ctx context.Context, code int32, attributionSourceStateState content.AttributionSourceState, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
-	StartProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState content.AttributionSourceState, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
-	FinishProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState content.AttributionSourceState, skipProxyOperation bool) error
+	NoteProxyOperationWithState(ctx context.Context, code int32, attributionSourceStateState interface{}, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
+	StartProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, skipProxyOperation bool) error
 	CheckOperationRawForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
 	CheckOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
 	NoteOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool) (interface{}, error)
@@ -244,7 +243,7 @@ func (p *AppOpsServiceProxy) StartOperation(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(clientId.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
@@ -284,7 +283,7 @@ func (p *AppOpsServiceProxy) FinishOperation(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(clientId.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
@@ -318,7 +317,7 @@ func (p *AppOpsServiceProxy) StartWatchingMode(
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(op)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "startWatchingMode")
 	if _err != nil {
@@ -344,7 +343,7 @@ func (p *AppOpsServiceProxy) StopWatchingMode(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "stopWatchingMode")
 	if _err != nil {
@@ -501,7 +500,7 @@ func (p *AppOpsServiceProxy) StartWatchingModeWithFlags(
 	_data.WriteInt32(op)
 	_data.WriteString16(packageName)
 	_data.WriteInt32(flags)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "startWatchingModeWithFlags")
 	if _err != nil {
@@ -524,7 +523,7 @@ func (p *AppOpsServiceProxy) StartWatchingModeWithFlags(
 func (p *AppOpsServiceProxy) NoteProxyOperation(
 	ctx context.Context,
 	code int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 	shouldCollectAsyncNotedOp bool,
 	message string,
 	shouldCollectMessage bool,
@@ -534,10 +533,6 @@ func (p *AppOpsServiceProxy) NoteProxyOperation(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
 	_data.WriteBool(shouldCollectMessage)
@@ -565,7 +560,7 @@ func (p *AppOpsServiceProxy) StartProxyOperation(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 	startIfModeDefault bool,
 	shouldCollectAsyncNotedOp bool,
 	message string,
@@ -578,12 +573,8 @@ func (p *AppOpsServiceProxy) StartProxyOperation(
 	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(clientId.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteBool(startIfModeDefault)
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
@@ -615,17 +606,13 @@ func (p *AppOpsServiceProxy) FinishProxyOperation(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 	skipProxyOperation bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(clientId.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteBool(skipProxyOperation)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "finishProxyOperation")
@@ -1301,7 +1288,7 @@ func (p *AppOpsServiceProxy) SetUserRestrictions(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "setUserRestrictions")
@@ -1334,7 +1321,7 @@ func (p *AppOpsServiceProxy) SetUserRestriction(
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
 	_data.WriteBool(restricted)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "setUserRestriction")
@@ -1396,7 +1383,7 @@ func (p *AppOpsServiceProxy) StartWatchingActive(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "startWatchingActive")
 	if _err != nil {
@@ -1422,7 +1409,7 @@ func (p *AppOpsServiceProxy) StopWatchingActive(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "stopWatchingActive")
 	if _err != nil {
@@ -1531,7 +1518,7 @@ func (p *AppOpsServiceProxy) StartWatchingStarted(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "startWatchingStarted")
 	if _err != nil {
@@ -1557,7 +1544,7 @@ func (p *AppOpsServiceProxy) StopWatchingStarted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "stopWatchingStarted")
 	if _err != nil {
@@ -1592,7 +1579,7 @@ func (p *AppOpsServiceProxy) StartWatchingNoted(
 			_data.WriteInt32(_item)
 		}
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "startWatchingNoted")
 	if _err != nil {
@@ -1618,7 +1605,7 @@ func (p *AppOpsServiceProxy) StopWatchingNoted(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "stopWatchingNoted")
 	if _err != nil {
@@ -1646,7 +1633,7 @@ func (p *AppOpsServiceProxy) StartWatchingAsyncNoted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "startWatchingAsyncNoted")
 	if _err != nil {
@@ -1674,7 +1661,7 @@ func (p *AppOpsServiceProxy) StopWatchingAsyncNoted(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "stopWatchingAsyncNoted")
 	if _err != nil {
@@ -1827,7 +1814,7 @@ func (p *AppOpsServiceProxy) CollectNoteOpCallsForValidation(
 func (p *AppOpsServiceProxy) NoteProxyOperationWithState(
 	ctx context.Context,
 	code int32,
-	attributionSourceStateState content.AttributionSourceState,
+	attributionSourceStateState interface{},
 	shouldCollectAsyncNotedOp bool,
 	message string,
 	shouldCollectMessage bool,
@@ -1837,10 +1824,6 @@ func (p *AppOpsServiceProxy) NoteProxyOperationWithState(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
 	_data.WriteInt32(code)
-	_data.WriteInt32(1)
-	if _err := attributionSourceStateState.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
 	_data.WriteBool(shouldCollectMessage)
@@ -1868,7 +1851,7 @@ func (p *AppOpsServiceProxy) StartProxyOperationWithState(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSourceStateState content.AttributionSourceState,
+	attributionSourceStateState interface{},
 	startIfModeDefault bool,
 	shouldCollectAsyncNotedOp bool,
 	message string,
@@ -1881,12 +1864,8 @@ func (p *AppOpsServiceProxy) StartProxyOperationWithState(
 	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(clientId.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
-	_data.WriteInt32(1)
-	if _err := attributionSourceStateState.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteBool(startIfModeDefault)
 	_data.WriteBool(shouldCollectAsyncNotedOp)
 	_data.WriteString16(message)
@@ -1918,17 +1897,13 @@ func (p *AppOpsServiceProxy) FinishProxyOperationWithState(
 	ctx context.Context,
 	clientId binder.IBinder,
 	code int32,
-	attributionSourceStateState content.AttributionSourceState,
+	attributionSourceStateState interface{},
 	skipProxyOperation bool,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(clientId.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
-	_data.WriteInt32(1)
-	if _err := attributionSourceStateState.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 	_data.WriteBool(skipProxyOperation)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAppOpsService, "finishProxyOperationWithState")
@@ -2086,7 +2061,7 @@ func (p *AppOpsServiceProxy) StartOperationForDevice(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(clientId.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
@@ -2128,7 +2103,7 @@ func (p *AppOpsServiceProxy) FinishOperationForDevice(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAppOpsService)
-	_data.WriteStrongBinder(clientId.Handle())
+	binder.WriteBinderToParcel(ctx, _data, clientId, p.remote.Transport())
 	_data.WriteInt32(code)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
@@ -2515,18 +2490,7 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_arg_shouldCollectAsyncNotedOp, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -2563,18 +2527,7 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_arg_startIfModeDefault, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -2627,18 +2580,7 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		_arg_skipProxyOperation, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -3429,18 +3371,7 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSourceStateState content.AttributionSourceState
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSourceStateState.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSourceStateState interface{}
 		_arg_shouldCollectAsyncNotedOp, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -3477,18 +3408,7 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSourceStateState content.AttributionSourceState
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSourceStateState.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSourceStateState interface{}
 		_arg_startIfModeDefault, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -3541,18 +3461,7 @@ func (s *AppOpsServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSourceStateState content.AttributionSourceState
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSourceStateState.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSourceStateState interface{}
 		_arg_skipProxyOperation, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
@@ -3790,4 +3699,646 @@ func (s *AppOpsServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAppOpsServiceServer is the server-side interface that user implementations
+// provide to NewAppOpsServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAppOpsServiceServer interface {
+	CheckOperation(ctx context.Context, code int32, uid int32, packageName string) (int32, error)
+	NoteOperation(ctx context.Context, code int32, uid int32, packageName string, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool) (interface{}, error)
+	StartOperation(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, attributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishOperation(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string) error
+	StartWatchingMode(ctx context.Context, op int32, packageName string, callback IAppOpsCallback) error
+	StopWatchingMode(ctx context.Context, callback IAppOpsCallback) error
+	PermissionToOpCode(ctx context.Context, permission string) (int32, error)
+	CheckAudioOperation(ctx context.Context, code int32, usage int32, uid int32, packageName string) (int32, error)
+	ShouldCollectNotes(ctx context.Context, opCode int32) (bool, error)
+	SetCameraAudioRestriction(ctx context.Context, mode int32) error
+	StartWatchingModeWithFlags(ctx context.Context, op int32, packageName string, flags int32, callback IAppOpsCallback) error
+	NoteProxyOperation(ctx context.Context, code int32, attributionSource interface{}, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
+	StartProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource interface{}, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishProxyOperation(ctx context.Context, clientId binder.IBinder, code int32, attributionSource interface{}, skipProxyOperation bool) error
+	CheckPackage(ctx context.Context, uid int32, packageName string) (int32, error)
+	CollectRuntimeAppOpAccessMessage(ctx context.Context) (interface{}, error)
+	ReportRuntimeAppOpAccessMessageAndGetConfig(ctx context.Context, packageName string, appOp interface{}, message string) (MessageSamplingConfig, error)
+	GetPackagesForOps(ctx context.Context, ops []int32) ([]interface{}, error)
+	GetOpsForPackage(ctx context.Context, uid int32, packageName string, ops []int32) ([]interface{}, error)
+	GetHistoricalOps(ctx context.Context, uid int32, packageName string, ops []string, historyFlags int32, filter int32, beginTimeMillis int64, endTimeMillis int64, flags int32, callback interface{}) error
+	GetHistoricalOpsFromDiskRaw(ctx context.Context, uid int32, packageName string, ops []string, historyFlags int32, filter int32, beginTimeMillis int64, endTimeMillis int64, flags int32, callback interface{}) error
+	OffsetHistory(ctx context.Context, duration int64) error
+	SetHistoryParameters(ctx context.Context, mode int32, baseSnapshotInterval int64, compressionStep int32) error
+	AddHistoricalOps(ctx context.Context, ops interface{}) error
+	ResetHistoryParameters(ctx context.Context) error
+	ResetPackageOpsNoHistory(ctx context.Context, packageName string) error
+	ClearHistory(ctx context.Context) error
+	RebootHistory(ctx context.Context, offlineDurationMillis int64) error
+	GetUidOps(ctx context.Context, uid int32, ops []int32) ([]interface{}, error)
+	SetUidMode(ctx context.Context, code int32, uid int32, mode int32) error
+	SetMode(ctx context.Context, code int32, uid int32, packageName string, mode int32) error
+	ResetAllModes(ctx context.Context, reqUserId int32, reqPackageName string) error
+	SetAudioRestriction(ctx context.Context, code int32, usage int32, uid int32, mode int32, exceptionPackages []string) error
+	SetUserRestrictions(ctx context.Context, restrictions interface{}, token binder.IBinder) error
+	SetUserRestriction(ctx context.Context, code int32, restricted bool, token binder.IBinder, excludedPackageTags interface{}) error
+	RemoveUser(ctx context.Context) error
+	StartWatchingActive(ctx context.Context, ops []int32, callback IAppOpsActiveCallback) error
+	StopWatchingActive(ctx context.Context, callback IAppOpsActiveCallback) error
+	IsOperationActive(ctx context.Context, code int32, uid int32, packageName string) (bool, error)
+	IsProxying(ctx context.Context, op int32, proxyPackageName string, proxyAttributionTag string, proxiedUid int32, proxiedPackageName string) (bool, error)
+	StartWatchingStarted(ctx context.Context, ops []int32, callback IAppOpsStartedCallback) error
+	StopWatchingStarted(ctx context.Context, callback IAppOpsStartedCallback) error
+	StartWatchingNoted(ctx context.Context, ops []int32, callback IAppOpsNotedCallback) error
+	StopWatchingNoted(ctx context.Context, callback IAppOpsNotedCallback) error
+	StartWatchingAsyncNoted(ctx context.Context, packageName string, callback IAppOpsAsyncNotedCallback) error
+	StopWatchingAsyncNoted(ctx context.Context, packageName string, callback IAppOpsAsyncNotedCallback) error
+	ExtractAsyncOps(ctx context.Context, packageName string) ([]interface{}, error)
+	CheckOperationRaw(ctx context.Context, code int32, uid int32, packageName string) (int32, error)
+	ReloadNonHistoricalState(ctx context.Context) error
+	CollectNoteOpCallsForValidation(ctx context.Context, stackTrace string, op int32, packageName string, version int64) error
+	NoteProxyOperationWithState(ctx context.Context, code int32, attributionSourceStateState interface{}, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool) (interface{}, error)
+	StartProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, skipProxyOperation bool, proxyAttributionFlags int32, proxiedAttributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishProxyOperationWithState(ctx context.Context, clientId binder.IBinder, code int32, attributionSourceStateState interface{}, skipProxyOperation bool) error
+	CheckOperationRawForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
+	CheckOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32) (int32, error)
+	NoteOperationForDevice(ctx context.Context, code int32, uid int32, packageName string, virtualDeviceId int32, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool) (interface{}, error)
+	StartOperationForDevice(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, virtualDeviceId int32, startIfModeDefault bool, shouldCollectAsyncNotedOp bool, message string, shouldCollectMessage bool, attributionFlags int32, attributionChainId int32) (interface{}, error)
+	FinishOperationForDevice(ctx context.Context, clientId binder.IBinder, code int32, uid int32, packageName string, virtualDeviceId int32) error
+	GetPackagesForOpsForDevice(ctx context.Context, ops []int32, persistentDeviceId string) ([]interface{}, error)
+}
+
+type appOpsServiceStubWrapper struct {
+	impl       IAppOpsServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *appOpsServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *appOpsServiceStubWrapper) CheckOperation(
+	ctx context.Context,
+	code int32,
+	uid int32,
+	packageName string,
+) (int32, error) {
+	return w.impl.CheckOperation(ctx, code, uid, packageName)
+}
+
+func (w *appOpsServiceStubWrapper) NoteOperation(
+	ctx context.Context,
+	code int32,
+	uid int32,
+	packageName string,
+	shouldCollectAsyncNotedOp bool,
+	message string,
+	shouldCollectMessage bool,
+) (interface{}, error) {
+	return w.impl.NoteOperation(ctx, code, uid, packageName, shouldCollectAsyncNotedOp, message, shouldCollectMessage)
+}
+
+func (w *appOpsServiceStubWrapper) StartOperation(
+	ctx context.Context,
+	clientId binder.IBinder,
+	code int32,
+	uid int32,
+	packageName string,
+	startIfModeDefault bool,
+	shouldCollectAsyncNotedOp bool,
+	message string,
+	shouldCollectMessage bool,
+	attributionFlags int32,
+	attributionChainId int32,
+) (interface{}, error) {
+	return w.impl.StartOperation(ctx, clientId, code, uid, packageName, startIfModeDefault, shouldCollectAsyncNotedOp, message, shouldCollectMessage, attributionFlags, attributionChainId)
+}
+
+func (w *appOpsServiceStubWrapper) FinishOperation(
+	ctx context.Context,
+	clientId binder.IBinder,
+	code int32,
+	uid int32,
+	packageName string,
+) error {
+	return w.impl.FinishOperation(ctx, clientId, code, uid, packageName)
+}
+
+func (w *appOpsServiceStubWrapper) StartWatchingMode(
+	ctx context.Context,
+	op int32,
+	packageName string,
+	callback IAppOpsCallback,
+) error {
+	return w.impl.StartWatchingMode(ctx, op, packageName, callback)
+}
+
+func (w *appOpsServiceStubWrapper) StopWatchingMode(
+	ctx context.Context,
+	callback IAppOpsCallback,
+) error {
+	return w.impl.StopWatchingMode(ctx, callback)
+}
+
+func (w *appOpsServiceStubWrapper) PermissionToOpCode(
+	ctx context.Context,
+	permission string,
+) (int32, error) {
+	return w.impl.PermissionToOpCode(ctx, permission)
+}
+
+func (w *appOpsServiceStubWrapper) CheckAudioOperation(
+	ctx context.Context,
+	code int32,
+	usage int32,
+	uid int32,
+	packageName string,
+) (int32, error) {
+	return w.impl.CheckAudioOperation(ctx, code, usage, uid, packageName)
+}
+
+func (w *appOpsServiceStubWrapper) ShouldCollectNotes(
+	ctx context.Context,
+	opCode int32,
+) (bool, error) {
+	return w.impl.ShouldCollectNotes(ctx, opCode)
+}
+
+func (w *appOpsServiceStubWrapper) SetCameraAudioRestriction(
+	ctx context.Context,
+	mode int32,
+) error {
+	return w.impl.SetCameraAudioRestriction(ctx, mode)
+}
+
+func (w *appOpsServiceStubWrapper) StartWatchingModeWithFlags(
+	ctx context.Context,
+	op int32,
+	packageName string,
+	flags int32,
+	callback IAppOpsCallback,
+) error {
+	return w.impl.StartWatchingModeWithFlags(ctx, op, packageName, flags, callback)
+}
+
+func (w *appOpsServiceStubWrapper) NoteProxyOperation(
+	ctx context.Context,
+	code int32,
+	attributionSource interface{},
+	shouldCollectAsyncNotedOp bool,
+	message string,
+	shouldCollectMessage bool,
+	skipProxyOperation bool,
+) (interface{}, error) {
+	return w.impl.NoteProxyOperation(ctx, code, attributionSource, shouldCollectAsyncNotedOp, message, shouldCollectMessage, skipProxyOperation)
+}
+
+func (w *appOpsServiceStubWrapper) StartProxyOperation(
+	ctx context.Context,
+	clientId binder.IBinder,
+	code int32,
+	attributionSource interface{},
+	startIfModeDefault bool,
+	shouldCollectAsyncNotedOp bool,
+	message string,
+	shouldCollectMessage bool,
+	skipProxyOperation bool,
+	proxyAttributionFlags int32,
+	proxiedAttributionFlags int32,
+	attributionChainId int32,
+) (interface{}, error) {
+	return w.impl.StartProxyOperation(ctx, clientId, code, attributionSource, startIfModeDefault, shouldCollectAsyncNotedOp, message, shouldCollectMessage, skipProxyOperation, proxyAttributionFlags, proxiedAttributionFlags, attributionChainId)
+}
+
+func (w *appOpsServiceStubWrapper) FinishProxyOperation(
+	ctx context.Context,
+	clientId binder.IBinder,
+	code int32,
+	attributionSource interface{},
+	skipProxyOperation bool,
+) error {
+	return w.impl.FinishProxyOperation(ctx, clientId, code, attributionSource, skipProxyOperation)
+}
+
+func (w *appOpsServiceStubWrapper) CheckPackage(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+) (int32, error) {
+	return w.impl.CheckPackage(ctx, uid, packageName)
+}
+
+func (w *appOpsServiceStubWrapper) CollectRuntimeAppOpAccessMessage(
+	ctx context.Context,
+) (interface{}, error) {
+	return w.impl.CollectRuntimeAppOpAccessMessage(ctx)
+}
+
+func (w *appOpsServiceStubWrapper) ReportRuntimeAppOpAccessMessageAndGetConfig(
+	ctx context.Context,
+	packageName string,
+	appOp interface{},
+	message string,
+) (MessageSamplingConfig, error) {
+	return w.impl.ReportRuntimeAppOpAccessMessageAndGetConfig(ctx, packageName, appOp, message)
+}
+
+func (w *appOpsServiceStubWrapper) GetPackagesForOps(
+	ctx context.Context,
+	ops []int32,
+) ([]interface{}, error) {
+	return w.impl.GetPackagesForOps(ctx, ops)
+}
+
+func (w *appOpsServiceStubWrapper) GetOpsForPackage(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+	ops []int32,
+) ([]interface{}, error) {
+	return w.impl.GetOpsForPackage(ctx, uid, packageName, ops)
+}
+
+func (w *appOpsServiceStubWrapper) GetHistoricalOps(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+	ops []string,
+	historyFlags int32,
+	filter int32,
+	beginTimeMillis int64,
+	endTimeMillis int64,
+	flags int32,
+	callback interface{},
+) error {
+	return w.impl.GetHistoricalOps(ctx, uid, packageName, ops, historyFlags, filter, beginTimeMillis, endTimeMillis, flags, callback)
+}
+
+func (w *appOpsServiceStubWrapper) GetHistoricalOpsFromDiskRaw(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+	ops []string,
+	historyFlags int32,
+	filter int32,
+	beginTimeMillis int64,
+	endTimeMillis int64,
+	flags int32,
+	callback interface{},
+) error {
+	return w.impl.GetHistoricalOpsFromDiskRaw(ctx, uid, packageName, ops, historyFlags, filter, beginTimeMillis, endTimeMillis, flags, callback)
+}
+
+func (w *appOpsServiceStubWrapper) OffsetHistory(
+	ctx context.Context,
+	duration int64,
+) error {
+	return w.impl.OffsetHistory(ctx, duration)
+}
+
+func (w *appOpsServiceStubWrapper) SetHistoryParameters(
+	ctx context.Context,
+	mode int32,
+	baseSnapshotInterval int64,
+	compressionStep int32,
+) error {
+	return w.impl.SetHistoryParameters(ctx, mode, baseSnapshotInterval, compressionStep)
+}
+
+func (w *appOpsServiceStubWrapper) AddHistoricalOps(
+	ctx context.Context,
+	ops interface{},
+) error {
+	return w.impl.AddHistoricalOps(ctx, ops)
+}
+
+func (w *appOpsServiceStubWrapper) ResetHistoryParameters(
+	ctx context.Context,
+) error {
+	return w.impl.ResetHistoryParameters(ctx)
+}
+
+func (w *appOpsServiceStubWrapper) ResetPackageOpsNoHistory(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ResetPackageOpsNoHistory(ctx, packageName)
+}
+
+func (w *appOpsServiceStubWrapper) ClearHistory(
+	ctx context.Context,
+) error {
+	return w.impl.ClearHistory(ctx)
+}
+
+func (w *appOpsServiceStubWrapper) RebootHistory(
+	ctx context.Context,
+	offlineDurationMillis int64,
+) error {
+	return w.impl.RebootHistory(ctx, offlineDurationMillis)
+}
+
+func (w *appOpsServiceStubWrapper) GetUidOps(
+	ctx context.Context,
+	uid int32,
+	ops []int32,
+) ([]interface{}, error) {
+	return w.impl.GetUidOps(ctx, uid, ops)
+}
+
+func (w *appOpsServiceStubWrapper) SetUidMode(
+	ctx context.Context,
+	code int32,
+	uid int32,
+	mode int32,
+) error {
+	return w.impl.SetUidMode(ctx, code, uid, mode)
+}
+
+func (w *appOpsServiceStubWrapper) SetMode(
+	ctx context.Context,
+	code int32,
+	uid int32,
+	packageName string,
+	mode int32,
+) error {
+	return w.impl.SetMode(ctx, code, uid, packageName, mode)
+}
+
+func (w *appOpsServiceStubWrapper) ResetAllModes(
+	ctx context.Context,
+	reqUserId int32,
+	reqPackageName string,
+) error {
+	return w.impl.ResetAllModes(ctx, reqUserId, reqPackageName)
+}
+
+func (w *appOpsServiceStubWrapper) SetAudioRestriction(
+	ctx context.Context,
+	code int32,
+	usage int32,
+	uid int32,
+	mode int32,
+	exceptionPackages []string,
+) error {
+	return w.impl.SetAudioRestriction(ctx, code, usage, uid, mode, exceptionPackages)
+}
+
+func (w *appOpsServiceStubWrapper) SetUserRestrictions(
+	ctx context.Context,
+	restrictions interface{},
+	token binder.IBinder,
+) error {
+	return w.impl.SetUserRestrictions(ctx, restrictions, token)
+}
+
+func (w *appOpsServiceStubWrapper) SetUserRestriction(
+	ctx context.Context,
+	code int32,
+	restricted bool,
+	token binder.IBinder,
+	excludedPackageTags interface{},
+) error {
+	return w.impl.SetUserRestriction(ctx, code, restricted, token, excludedPackageTags)
+}
+
+func (w *appOpsServiceStubWrapper) RemoveUser(
+	ctx context.Context,
+) error {
+	return w.impl.RemoveUser(ctx)
+}
+
+func (w *appOpsServiceStubWrapper) StartWatchingActive(
+	ctx context.Context,
+	ops []int32,
+	callback IAppOpsActiveCallback,
+) error {
+	return w.impl.StartWatchingActive(ctx, ops, callback)
+}
+
+func (w *appOpsServiceStubWrapper) StopWatchingActive(
+	ctx context.Context,
+	callback IAppOpsActiveCallback,
+) error {
+	return w.impl.StopWatchingActive(ctx, callback)
+}
+
+func (w *appOpsServiceStubWrapper) IsOperationActive(
+	ctx context.Context,
+	code int32,
+	uid int32,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsOperationActive(ctx, code, uid, packageName)
+}
+
+func (w *appOpsServiceStubWrapper) IsProxying(
+	ctx context.Context,
+	op int32,
+	proxyPackageName string,
+	proxyAttributionTag string,
+	proxiedUid int32,
+	proxiedPackageName string,
+) (bool, error) {
+	return w.impl.IsProxying(ctx, op, proxyPackageName, proxyAttributionTag, proxiedUid, proxiedPackageName)
+}
+
+func (w *appOpsServiceStubWrapper) StartWatchingStarted(
+	ctx context.Context,
+	ops []int32,
+	callback IAppOpsStartedCallback,
+) error {
+	return w.impl.StartWatchingStarted(ctx, ops, callback)
+}
+
+func (w *appOpsServiceStubWrapper) StopWatchingStarted(
+	ctx context.Context,
+	callback IAppOpsStartedCallback,
+) error {
+	return w.impl.StopWatchingStarted(ctx, callback)
+}
+
+func (w *appOpsServiceStubWrapper) StartWatchingNoted(
+	ctx context.Context,
+	ops []int32,
+	callback IAppOpsNotedCallback,
+) error {
+	return w.impl.StartWatchingNoted(ctx, ops, callback)
+}
+
+func (w *appOpsServiceStubWrapper) StopWatchingNoted(
+	ctx context.Context,
+	callback IAppOpsNotedCallback,
+) error {
+	return w.impl.StopWatchingNoted(ctx, callback)
+}
+
+func (w *appOpsServiceStubWrapper) StartWatchingAsyncNoted(
+	ctx context.Context,
+	packageName string,
+	callback IAppOpsAsyncNotedCallback,
+) error {
+	return w.impl.StartWatchingAsyncNoted(ctx, packageName, callback)
+}
+
+func (w *appOpsServiceStubWrapper) StopWatchingAsyncNoted(
+	ctx context.Context,
+	packageName string,
+	callback IAppOpsAsyncNotedCallback,
+) error {
+	return w.impl.StopWatchingAsyncNoted(ctx, packageName, callback)
+}
+
+func (w *appOpsServiceStubWrapper) ExtractAsyncOps(
+	ctx context.Context,
+	packageName string,
+) ([]interface{}, error) {
+	return w.impl.ExtractAsyncOps(ctx, packageName)
+}
+
+func (w *appOpsServiceStubWrapper) CheckOperationRaw(
+	ctx context.Context,
+	code int32,
+	uid int32,
+	packageName string,
+) (int32, error) {
+	return w.impl.CheckOperationRaw(ctx, code, uid, packageName)
+}
+
+func (w *appOpsServiceStubWrapper) ReloadNonHistoricalState(
+	ctx context.Context,
+) error {
+	return w.impl.ReloadNonHistoricalState(ctx)
+}
+
+func (w *appOpsServiceStubWrapper) CollectNoteOpCallsForValidation(
+	ctx context.Context,
+	stackTrace string,
+	op int32,
+	packageName string,
+	version int64,
+) error {
+	return w.impl.CollectNoteOpCallsForValidation(ctx, stackTrace, op, packageName, version)
+}
+
+func (w *appOpsServiceStubWrapper) NoteProxyOperationWithState(
+	ctx context.Context,
+	code int32,
+	attributionSourceStateState interface{},
+	shouldCollectAsyncNotedOp bool,
+	message string,
+	shouldCollectMessage bool,
+	skipProxyOperation bool,
+) (interface{}, error) {
+	return w.impl.NoteProxyOperationWithState(ctx, code, attributionSourceStateState, shouldCollectAsyncNotedOp, message, shouldCollectMessage, skipProxyOperation)
+}
+
+func (w *appOpsServiceStubWrapper) StartProxyOperationWithState(
+	ctx context.Context,
+	clientId binder.IBinder,
+	code int32,
+	attributionSourceStateState interface{},
+	startIfModeDefault bool,
+	shouldCollectAsyncNotedOp bool,
+	message string,
+	shouldCollectMessage bool,
+	skipProxyOperation bool,
+	proxyAttributionFlags int32,
+	proxiedAttributionFlags int32,
+	attributionChainId int32,
+) (interface{}, error) {
+	return w.impl.StartProxyOperationWithState(ctx, clientId, code, attributionSourceStateState, startIfModeDefault, shouldCollectAsyncNotedOp, message, shouldCollectMessage, skipProxyOperation, proxyAttributionFlags, proxiedAttributionFlags, attributionChainId)
+}
+
+func (w *appOpsServiceStubWrapper) FinishProxyOperationWithState(
+	ctx context.Context,
+	clientId binder.IBinder,
+	code int32,
+	attributionSourceStateState interface{},
+	skipProxyOperation bool,
+) error {
+	return w.impl.FinishProxyOperationWithState(ctx, clientId, code, attributionSourceStateState, skipProxyOperation)
+}
+
+func (w *appOpsServiceStubWrapper) CheckOperationRawForDevice(
+	ctx context.Context,
+	code int32,
+	uid int32,
+	packageName string,
+	virtualDeviceId int32,
+) (int32, error) {
+	return w.impl.CheckOperationRawForDevice(ctx, code, uid, packageName, virtualDeviceId)
+}
+
+func (w *appOpsServiceStubWrapper) CheckOperationForDevice(
+	ctx context.Context,
+	code int32,
+	uid int32,
+	packageName string,
+	virtualDeviceId int32,
+) (int32, error) {
+	return w.impl.CheckOperationForDevice(ctx, code, uid, packageName, virtualDeviceId)
+}
+
+func (w *appOpsServiceStubWrapper) NoteOperationForDevice(
+	ctx context.Context,
+	code int32,
+	uid int32,
+	packageName string,
+	virtualDeviceId int32,
+	shouldCollectAsyncNotedOp bool,
+	message string,
+	shouldCollectMessage bool,
+) (interface{}, error) {
+	return w.impl.NoteOperationForDevice(ctx, code, uid, packageName, virtualDeviceId, shouldCollectAsyncNotedOp, message, shouldCollectMessage)
+}
+
+func (w *appOpsServiceStubWrapper) StartOperationForDevice(
+	ctx context.Context,
+	clientId binder.IBinder,
+	code int32,
+	uid int32,
+	packageName string,
+	virtualDeviceId int32,
+	startIfModeDefault bool,
+	shouldCollectAsyncNotedOp bool,
+	message string,
+	shouldCollectMessage bool,
+	attributionFlags int32,
+	attributionChainId int32,
+) (interface{}, error) {
+	return w.impl.StartOperationForDevice(ctx, clientId, code, uid, packageName, virtualDeviceId, startIfModeDefault, shouldCollectAsyncNotedOp, message, shouldCollectMessage, attributionFlags, attributionChainId)
+}
+
+func (w *appOpsServiceStubWrapper) FinishOperationForDevice(
+	ctx context.Context,
+	clientId binder.IBinder,
+	code int32,
+	uid int32,
+	packageName string,
+	virtualDeviceId int32,
+) error {
+	return w.impl.FinishOperationForDevice(ctx, clientId, code, uid, packageName, virtualDeviceId)
+}
+
+func (w *appOpsServiceStubWrapper) GetPackagesForOpsForDevice(
+	ctx context.Context,
+	ops []int32,
+	persistentDeviceId string,
+) ([]interface{}, error) {
+	return w.impl.GetPackagesForOpsForDevice(ctx, ops, persistentDeviceId)
+}
+
+var _ IAppOpsService = (*appOpsServiceStubWrapper)(nil)
+
+// NewAppOpsServiceStub creates a server-side IAppOpsService wrapping the given
+// server implementation. The returned value satisfies IAppOpsService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAppOpsServiceStub(
+	impl IAppOpsServiceServer,
+) IAppOpsService {
+	wrapper := &appOpsServiceStubWrapper{impl: impl}
+	stub := &AppOpsServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

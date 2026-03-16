@@ -166,3 +166,55 @@ func (s *FooProviderStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFooProviderServer is the server-side interface that user implementations
+// provide to NewFooProviderStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFooProviderServer interface {
+	CreateFoo(ctx context.Context) (IFoo, error)
+	IsFooGarbageCollected(ctx context.Context) (bool, error)
+	KillProcess(ctx context.Context) error
+}
+
+type fooProviderStubWrapper struct {
+	impl       IFooProviderServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fooProviderStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fooProviderStubWrapper) CreateFoo(
+	ctx context.Context,
+) (IFoo, error) {
+	return w.impl.CreateFoo(ctx)
+}
+
+func (w *fooProviderStubWrapper) IsFooGarbageCollected(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsFooGarbageCollected(ctx)
+}
+
+func (w *fooProviderStubWrapper) KillProcess(
+	ctx context.Context,
+) error {
+	return w.impl.KillProcess(ctx)
+}
+
+var _ IFooProvider = (*fooProviderStubWrapper)(nil)
+
+// NewFooProviderStub creates a server-side IFooProvider wrapping the given
+// server implementation. The returned value satisfies IFooProvider
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFooProviderStub(
+	impl IFooProviderServer,
+) IFooProvider {
+	wrapper := &fooProviderStubWrapper{impl: impl}
+	stub := &FooProviderStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

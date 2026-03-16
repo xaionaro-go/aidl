@@ -70,7 +70,7 @@ func (p *HintManagerProxy) CreateHintSessionWithConfig(
 	var _result IHintSession
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(int32(tag))
 	_data.WriteInt32(1)
 	if _err := creationConfig.MarshalParcel(_data); _err != nil {
@@ -139,7 +139,7 @@ func (p *HintManagerProxy) SetHintSessionThreads(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
-	_data.WriteStrongBinder(hintSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, hintSession.AsBinder(), p.remote.Transport())
 	if tids == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -174,7 +174,7 @@ func (p *HintManagerProxy) GetHintSessionThreadIds(
 	var _result []int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
-	_data.WriteStrongBinder(hintSession.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, hintSession.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getHintSessionThreadIds")
 	if _err != nil {
@@ -215,7 +215,7 @@ func (p *HintManagerProxy) GetSessionChannel(
 	var _result DynamicsProcessing.ChannelConfig
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "getSessionChannel")
 	if _err != nil {
@@ -430,7 +430,7 @@ func (p *HintManagerProxy) PassSessionManagerBinder(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIHintManager)
-	_data.WriteStrongBinder(sessionManager.Handle())
+	binder.WriteBinderToParcel(ctx, _data, sessionManager, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIHintManager, "passSessionManagerBinder")
 	if _err != nil {
@@ -672,4 +672,130 @@ func (s *HintManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IHintManagerServer is the server-side interface that user implementations
+// provide to NewHintManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHintManagerServer interface {
+	CreateHintSessionWithConfig(ctx context.Context, token binder.IBinder, tag power.SessionTag, creationConfig SessionCreationConfig, config power.SessionConfig) (IHintSession, error)
+	GetHintSessionPreferredRate(ctx context.Context) (int64, error)
+	SetHintSessionThreads(ctx context.Context, hintSession IHintSession, tids []int32) error
+	GetHintSessionThreadIds(ctx context.Context, hintSession IHintSession) ([]int32, error)
+	GetSessionChannel(ctx context.Context, token binder.IBinder) (DynamicsProcessing.ChannelConfig, error)
+	CloseSessionChannel(ctx context.Context) error
+	GetCpuHeadroom(ctx context.Context, params CpuHeadroomParamsInternal) (power.CpuHeadroomResult, error)
+	GetCpuHeadroomMinIntervalMillis(ctx context.Context) (int64, error)
+	GetGpuHeadroom(ctx context.Context, params GpuHeadroomParamsInternal) (power.GpuHeadroomResult, error)
+	GetGpuHeadroomMinIntervalMillis(ctx context.Context) (int64, error)
+	GetMaxGraphicsPipelineThreadsCount(ctx context.Context) (int32, error)
+	PassSessionManagerBinder(ctx context.Context, sessionManager binder.IBinder) error
+}
+
+type hintManagerStubWrapper struct {
+	impl       IHintManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hintManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hintManagerStubWrapper) CreateHintSessionWithConfig(
+	ctx context.Context,
+	token binder.IBinder,
+	tag power.SessionTag,
+	creationConfig SessionCreationConfig,
+	config power.SessionConfig,
+) (IHintSession, error) {
+	return w.impl.CreateHintSessionWithConfig(ctx, token, tag, creationConfig, config)
+}
+
+func (w *hintManagerStubWrapper) GetHintSessionPreferredRate(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetHintSessionPreferredRate(ctx)
+}
+
+func (w *hintManagerStubWrapper) SetHintSessionThreads(
+	ctx context.Context,
+	hintSession IHintSession,
+	tids []int32,
+) error {
+	return w.impl.SetHintSessionThreads(ctx, hintSession, tids)
+}
+
+func (w *hintManagerStubWrapper) GetHintSessionThreadIds(
+	ctx context.Context,
+	hintSession IHintSession,
+) ([]int32, error) {
+	return w.impl.GetHintSessionThreadIds(ctx, hintSession)
+}
+
+func (w *hintManagerStubWrapper) GetSessionChannel(
+	ctx context.Context,
+	token binder.IBinder,
+) (DynamicsProcessing.ChannelConfig, error) {
+	return w.impl.GetSessionChannel(ctx, token)
+}
+
+func (w *hintManagerStubWrapper) CloseSessionChannel(
+	ctx context.Context,
+) error {
+	return w.impl.CloseSessionChannel(ctx)
+}
+
+func (w *hintManagerStubWrapper) GetCpuHeadroom(
+	ctx context.Context,
+	params CpuHeadroomParamsInternal,
+) (power.CpuHeadroomResult, error) {
+	return w.impl.GetCpuHeadroom(ctx, params)
+}
+
+func (w *hintManagerStubWrapper) GetCpuHeadroomMinIntervalMillis(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetCpuHeadroomMinIntervalMillis(ctx)
+}
+
+func (w *hintManagerStubWrapper) GetGpuHeadroom(
+	ctx context.Context,
+	params GpuHeadroomParamsInternal,
+) (power.GpuHeadroomResult, error) {
+	return w.impl.GetGpuHeadroom(ctx, params)
+}
+
+func (w *hintManagerStubWrapper) GetGpuHeadroomMinIntervalMillis(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetGpuHeadroomMinIntervalMillis(ctx)
+}
+
+func (w *hintManagerStubWrapper) GetMaxGraphicsPipelineThreadsCount(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMaxGraphicsPipelineThreadsCount(ctx)
+}
+
+func (w *hintManagerStubWrapper) PassSessionManagerBinder(
+	ctx context.Context,
+	sessionManager binder.IBinder,
+) error {
+	return w.impl.PassSessionManagerBinder(ctx, sessionManager)
+}
+
+var _ IHintManager = (*hintManagerStubWrapper)(nil)
+
+// NewHintManagerStub creates a server-side IHintManager wrapping the given
+// server implementation. The returned value satisfies IHintManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHintManagerStub(
+	impl IHintManagerServer,
+) IHintManager {
+	wrapper := &hintManagerStubWrapper{impl: impl}
+	stub := &HintManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

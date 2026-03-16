@@ -327,3 +327,78 @@ func (s *FastbootStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IFastbootServer is the server-side interface that user implementations
+// provide to NewFastbootStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IFastbootServer interface {
+	DoOemCommand(ctx context.Context, oemCmd string) (string, error)
+	DoOemSpecificErase(ctx context.Context) error
+	GetBatteryVoltageFlashingThreshold(ctx context.Context) (int32, error)
+	GetOffModeChargeState(ctx context.Context) (bool, error)
+	GetPartitionType(ctx context.Context, partitionName string) (FileSystemType, error)
+	GetVariant(ctx context.Context) (string, error)
+}
+
+type fastbootStubWrapper struct {
+	impl       IFastbootServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *fastbootStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *fastbootStubWrapper) DoOemCommand(
+	ctx context.Context,
+	oemCmd string,
+) (string, error) {
+	return w.impl.DoOemCommand(ctx, oemCmd)
+}
+
+func (w *fastbootStubWrapper) DoOemSpecificErase(
+	ctx context.Context,
+) error {
+	return w.impl.DoOemSpecificErase(ctx)
+}
+
+func (w *fastbootStubWrapper) GetBatteryVoltageFlashingThreshold(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetBatteryVoltageFlashingThreshold(ctx)
+}
+
+func (w *fastbootStubWrapper) GetOffModeChargeState(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.GetOffModeChargeState(ctx)
+}
+
+func (w *fastbootStubWrapper) GetPartitionType(
+	ctx context.Context,
+	partitionName string,
+) (FileSystemType, error) {
+	return w.impl.GetPartitionType(ctx, partitionName)
+}
+
+func (w *fastbootStubWrapper) GetVariant(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetVariant(ctx)
+}
+
+var _ IFastboot = (*fastbootStubWrapper)(nil)
+
+// NewFastbootStub creates a server-side IFastboot wrapping the given
+// server implementation. The returned value satisfies IFastboot
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewFastbootStub(
+	impl IFastbootServer,
+) IFastboot {
+	wrapper := &fastbootStubWrapper{impl: impl}
+	stub := &FastbootStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

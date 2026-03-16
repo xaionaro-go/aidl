@@ -54,7 +54,7 @@ func (p *ThreadChipProxy) Open(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIThreadChip)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIThreadChip, "open")
 	if _err != nil {
@@ -226,4 +226,65 @@ func (s *ThreadChipStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IThreadChipServer is the server-side interface that user implementations
+// provide to NewThreadChipStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IThreadChipServer interface {
+	Open(ctx context.Context, callback IThreadChipCallback) error
+	Close(ctx context.Context) error
+	HardwareReset(ctx context.Context) error
+	SendSpinelFrame(ctx context.Context, frame []byte) error
+}
+
+type threadChipStubWrapper struct {
+	impl       IThreadChipServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *threadChipStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *threadChipStubWrapper) Open(
+	ctx context.Context,
+	callback IThreadChipCallback,
+) error {
+	return w.impl.Open(ctx, callback)
+}
+
+func (w *threadChipStubWrapper) Close(
+	ctx context.Context,
+) error {
+	return w.impl.Close(ctx)
+}
+
+func (w *threadChipStubWrapper) HardwareReset(
+	ctx context.Context,
+) error {
+	return w.impl.HardwareReset(ctx)
+}
+
+func (w *threadChipStubWrapper) SendSpinelFrame(
+	ctx context.Context,
+	frame []byte,
+) error {
+	return w.impl.SendSpinelFrame(ctx, frame)
+}
+
+var _ IThreadChip = (*threadChipStubWrapper)(nil)
+
+// NewThreadChipStub creates a server-side IThreadChip wrapping the given
+// server implementation. The returned value satisfies IThreadChip
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewThreadChipStub(
+	impl IThreadChipServer,
+) IThreadChip {
+	wrapper := &threadChipStubWrapper{impl: impl}
+	stub := &ThreadChipStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

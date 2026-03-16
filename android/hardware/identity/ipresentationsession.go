@@ -309,3 +309,72 @@ func (s *PresentationSessionStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPresentationSessionServer is the server-side interface that user implementations
+// provide to NewPresentationSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPresentationSessionServer interface {
+	GetEphemeralKeyPair(ctx context.Context) ([]byte, error)
+	GetAuthChallenge(ctx context.Context) (int64, error)
+	SetReaderEphemeralPublicKey(ctx context.Context, publicKey []byte) error
+	SetSessionTranscript(ctx context.Context, sessionTranscript []byte) error
+	GetCredential(ctx context.Context, credentialData []byte) (IIdentityCredential, error)
+}
+
+type presentationSessionStubWrapper struct {
+	impl       IPresentationSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *presentationSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *presentationSessionStubWrapper) GetEphemeralKeyPair(
+	ctx context.Context,
+) ([]byte, error) {
+	return w.impl.GetEphemeralKeyPair(ctx)
+}
+
+func (w *presentationSessionStubWrapper) GetAuthChallenge(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetAuthChallenge(ctx)
+}
+
+func (w *presentationSessionStubWrapper) SetReaderEphemeralPublicKey(
+	ctx context.Context,
+	publicKey []byte,
+) error {
+	return w.impl.SetReaderEphemeralPublicKey(ctx, publicKey)
+}
+
+func (w *presentationSessionStubWrapper) SetSessionTranscript(
+	ctx context.Context,
+	sessionTranscript []byte,
+) error {
+	return w.impl.SetSessionTranscript(ctx, sessionTranscript)
+}
+
+func (w *presentationSessionStubWrapper) GetCredential(
+	ctx context.Context,
+	credentialData []byte,
+) (IIdentityCredential, error) {
+	return w.impl.GetCredential(ctx, credentialData)
+}
+
+var _ IPresentationSession = (*presentationSessionStubWrapper)(nil)
+
+// NewPresentationSessionStub creates a server-side IPresentationSession wrapping the given
+// server implementation. The returned value satisfies IPresentationSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPresentationSessionStub(
+	impl IPresentationSessionServer,
+) IPresentationSession {
+	wrapper := &presentationSessionStubWrapper{impl: impl}
+	stub := &PresentationSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

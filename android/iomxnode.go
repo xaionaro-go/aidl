@@ -49,3 +49,34 @@ func (s *OMXNodeStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOMXNodeServer is the server-side interface that user implementations
+// provide to NewOMXNodeStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOMXNodeServer interface {
+}
+
+type oMXNodeStubWrapper struct {
+	impl       IOMXNodeServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *oMXNodeStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+var _ IOMXNode = (*oMXNodeStubWrapper)(nil)
+
+// NewOMXNodeStub creates a server-side IOMXNode wrapping the given
+// server implementation. The returned value satisfies IOMXNode
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOMXNodeStub(
+	impl IOMXNodeServer,
+) IOMXNode {
+	wrapper := &oMXNodeStubWrapper{impl: impl}
+	stub := &OMXNodeStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

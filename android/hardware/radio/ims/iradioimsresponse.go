@@ -360,3 +360,91 @@ func (s *RadioImsResponseStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRadioImsResponseServer is the server-side interface that user implementations
+// provide to NewRadioImsResponseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRadioImsResponseServer interface {
+	SetSrvccCallInfoResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	UpdateImsRegistrationInfoResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	StartImsTrafficResponse(ctx context.Context, info radio.RadioResponseInfo, failureInfo *ConnectionFailureInfo) error
+	StopImsTrafficResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	TriggerEpsFallbackResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	SendAnbrQueryResponse(ctx context.Context, info radio.RadioResponseInfo) error
+	UpdateImsCallStatusResponse(ctx context.Context, info radio.RadioResponseInfo) error
+}
+
+type radioImsResponseStubWrapper struct {
+	impl       IRadioImsResponseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *radioImsResponseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *radioImsResponseStubWrapper) SetSrvccCallInfoResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SetSrvccCallInfoResponse(ctx, info)
+}
+
+func (w *radioImsResponseStubWrapper) UpdateImsRegistrationInfoResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.UpdateImsRegistrationInfoResponse(ctx, info)
+}
+
+func (w *radioImsResponseStubWrapper) StartImsTrafficResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+	failureInfo *ConnectionFailureInfo,
+) error {
+	return w.impl.StartImsTrafficResponse(ctx, info, failureInfo)
+}
+
+func (w *radioImsResponseStubWrapper) StopImsTrafficResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.StopImsTrafficResponse(ctx, info)
+}
+
+func (w *radioImsResponseStubWrapper) TriggerEpsFallbackResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.TriggerEpsFallbackResponse(ctx, info)
+}
+
+func (w *radioImsResponseStubWrapper) SendAnbrQueryResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.SendAnbrQueryResponse(ctx, info)
+}
+
+func (w *radioImsResponseStubWrapper) UpdateImsCallStatusResponse(
+	ctx context.Context,
+	info radio.RadioResponseInfo,
+) error {
+	return w.impl.UpdateImsCallStatusResponse(ctx, info)
+}
+
+var _ IRadioImsResponse = (*radioImsResponseStubWrapper)(nil)
+
+// NewRadioImsResponseStub creates a server-side IRadioImsResponse wrapping the given
+// server implementation. The returned value satisfies IRadioImsResponse
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRadioImsResponseStub(
+	impl IRadioImsResponseServer,
+) IRadioImsResponse {
+	wrapper := &radioImsResponseStubWrapper{impl: impl}
+	stub := &RadioImsResponseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

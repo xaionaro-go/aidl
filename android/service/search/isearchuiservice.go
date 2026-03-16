@@ -88,7 +88,7 @@ func (p *SearchUiServiceProxy) OnQuery(
 	if _err := input.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISearchUiService, "onQuery")
 	if _err != nil {
@@ -140,7 +140,7 @@ func (p *SearchUiServiceProxy) OnRegisterEmptyQueryResultUpdateCallback(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISearchUiService, "onRegisterEmptyQueryResultUpdateCallback")
 	if _err != nil {
@@ -162,7 +162,7 @@ func (p *SearchUiServiceProxy) OnUnregisterEmptyQueryResultUpdateCallback(
 	if _err := sessionId.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorISearchUiService, "onUnregisterEmptyQueryResultUpdateCallback")
 	if _err != nil {
@@ -381,4 +381,90 @@ func (s *SearchUiServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// ISearchUiServiceServer is the server-side interface that user implementations
+// provide to NewSearchUiServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ISearchUiServiceServer interface {
+	OnCreateSearchSession(ctx context.Context, context_ appSearch.SearchContext, sessionId appSearch.SearchSessionId) error
+	OnQuery(ctx context.Context, sessionId appSearch.SearchSessionId, input appSearch.Query, callback appSearch.ISearchCallback) error
+	OnNotifyEvent(ctx context.Context, sessionId appSearch.SearchSessionId, input appSearch.Query, event appSearch.SearchTargetEvent) error
+	OnRegisterEmptyQueryResultUpdateCallback(ctx context.Context, sessionId appSearch.SearchSessionId, callback appSearch.ISearchCallback) error
+	OnUnregisterEmptyQueryResultUpdateCallback(ctx context.Context, sessionId appSearch.SearchSessionId, callback appSearch.ISearchCallback) error
+	OnDestroy(ctx context.Context, sessionId appSearch.SearchSessionId) error
+}
+
+type searchUiServiceStubWrapper struct {
+	impl       ISearchUiServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *searchUiServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *searchUiServiceStubWrapper) OnCreateSearchSession(
+	ctx context.Context,
+	context_ appSearch.SearchContext,
+	sessionId appSearch.SearchSessionId,
+) error {
+	return w.impl.OnCreateSearchSession(ctx, context_, sessionId)
+}
+
+func (w *searchUiServiceStubWrapper) OnQuery(
+	ctx context.Context,
+	sessionId appSearch.SearchSessionId,
+	input appSearch.Query,
+	callback appSearch.ISearchCallback,
+) error {
+	return w.impl.OnQuery(ctx, sessionId, input, callback)
+}
+
+func (w *searchUiServiceStubWrapper) OnNotifyEvent(
+	ctx context.Context,
+	sessionId appSearch.SearchSessionId,
+	input appSearch.Query,
+	event appSearch.SearchTargetEvent,
+) error {
+	return w.impl.OnNotifyEvent(ctx, sessionId, input, event)
+}
+
+func (w *searchUiServiceStubWrapper) OnRegisterEmptyQueryResultUpdateCallback(
+	ctx context.Context,
+	sessionId appSearch.SearchSessionId,
+	callback appSearch.ISearchCallback,
+) error {
+	return w.impl.OnRegisterEmptyQueryResultUpdateCallback(ctx, sessionId, callback)
+}
+
+func (w *searchUiServiceStubWrapper) OnUnregisterEmptyQueryResultUpdateCallback(
+	ctx context.Context,
+	sessionId appSearch.SearchSessionId,
+	callback appSearch.ISearchCallback,
+) error {
+	return w.impl.OnUnregisterEmptyQueryResultUpdateCallback(ctx, sessionId, callback)
+}
+
+func (w *searchUiServiceStubWrapper) OnDestroy(
+	ctx context.Context,
+	sessionId appSearch.SearchSessionId,
+) error {
+	return w.impl.OnDestroy(ctx, sessionId)
+}
+
+var _ ISearchUiService = (*searchUiServiceStubWrapper)(nil)
+
+// NewSearchUiServiceStub creates a server-side ISearchUiService wrapping the given
+// server implementation. The returned value satisfies ISearchUiService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewSearchUiServiceStub(
+	impl ISearchUiServiceServer,
+) ISearchUiService {
+	wrapper := &searchUiServiceStubWrapper{impl: impl}
+	stub := &SearchUiServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

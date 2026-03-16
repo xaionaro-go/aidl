@@ -148,3 +148,48 @@ func (s *AccessorStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IAccessorServer is the server-side interface that user implementations
+// provide to NewAccessorStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccessorServer interface {
+	AddConnection(ctx context.Context) (int32, error)
+	GetInstanceName(ctx context.Context) (string, error)
+}
+
+type accessorStubWrapper struct {
+	impl       IAccessorServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accessorStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accessorStubWrapper) AddConnection(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.AddConnection(ctx)
+}
+
+func (w *accessorStubWrapper) GetInstanceName(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetInstanceName(ctx)
+}
+
+var _ IAccessor = (*accessorStubWrapper)(nil)
+
+// NewAccessorStub creates a server-side IAccessor wrapping the given
+// server implementation. The returned value satisfies IAccessor
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccessorStub(
+	impl IAccessorServer,
+) IAccessor {
+	wrapper := &accessorStubWrapper{impl: impl}
+	stub := &AccessorStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -977,7 +977,7 @@ func (p *StatusBarProxy) ShowAuthenticationDialog(
 	if _err := promptInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(sysuiReceiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, sysuiReceiver.AsBinder(), p.remote.Transport())
 	if sensorIds == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1082,7 +1082,7 @@ func (p *StatusBarProxy) SetBiometicContextListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStatusBar)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStatusBar, "setBiometicContextListener")
 	if _err != nil {
@@ -1099,7 +1099,7 @@ func (p *StatusBarProxy) SetUdfpsRefreshRateCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStatusBar)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStatusBar, "setUdfpsRefreshRateCallback")
 	if _err != nil {
@@ -1263,10 +1263,10 @@ func (p *StatusBarProxy) ShowToast(
 	_data.WriteInterfaceToken(DescriptorIStatusBar)
 	_data.WriteInt32(uid)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteStrongBinder(windowToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, windowToken, p.remote.Transport())
 	_data.WriteInt32(duration)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(displayId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStatusBar, "showToast")
@@ -1286,7 +1286,7 @@ func (p *StatusBarProxy) HideToast(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStatusBar)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStatusBar, "hideToast")
 	if _err != nil {
@@ -1461,7 +1461,7 @@ func (p *StatusBarProxy) RequestAddTile(
 	if _err := icon.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStatusBar, "requestAddTile")
 	if _err != nil {
@@ -1502,7 +1502,7 @@ func (p *StatusBarProxy) UpdateMediaTapToTransferSenderDisplay(
 	if _err := routeInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(undoCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, undoCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStatusBar, "updateMediaTapToTransferSenderDisplay")
 	if _err != nil {
@@ -1547,7 +1547,7 @@ func (p *StatusBarProxy) RegisterNearbyMediaDevicesProvider(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStatusBar)
-	_data.WriteStrongBinder(provider.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, provider.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStatusBar, "registerNearbyMediaDevicesProvider")
 	if _err != nil {
@@ -1564,7 +1564,7 @@ func (p *StatusBarProxy) UnregisterNearbyMediaDevicesProvider(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIStatusBar)
-	_data.WriteStrongBinder(provider.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, provider.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIStatusBar, "unregisterNearbyMediaDevicesProvider")
 	if _err != nil {
@@ -2844,4 +2844,704 @@ func (s *StatusBarStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IStatusBarServer is the server-side interface that user implementations
+// provide to NewStatusBarStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStatusBarServer interface {
+	SetIcon(ctx context.Context, slot string, icon StatusBarIcon) error
+	RemoveIcon(ctx context.Context, slot string) error
+	Disable(ctx context.Context, displayId int32, state1 int32, state2 int32) error
+	AnimateExpandNotificationsPanel(ctx context.Context) error
+	AnimateExpandSettingsPanel(ctx context.Context, subPanel string) error
+	AnimateCollapsePanels(ctx context.Context) error
+	ToggleNotificationsPanel(ctx context.Context) error
+	ShowWirelessChargingAnimation(ctx context.Context, batteryLevel int32) error
+	SetImeWindowStatus(ctx context.Context, displayId int32, vis int32, backDisposition int32, showImeSwitcher bool) error
+	SetWindowState(ctx context.Context, display int32, window int32, state int32) error
+	ShowRecentApps(ctx context.Context, triggeredFromAltTab bool) error
+	HideRecentApps(ctx context.Context, triggeredFromAltTab bool, triggeredFromHomeKey bool) error
+	ToggleRecentApps(ctx context.Context) error
+	ToggleTaskbar(ctx context.Context) error
+	ToggleSplitScreen(ctx context.Context) error
+	PreloadRecentApps(ctx context.Context) error
+	CancelPreloadRecentApps(ctx context.Context) error
+	ShowScreenPinningRequest(ctx context.Context, taskId int32) error
+	ConfirmImmersivePrompt(ctx context.Context) error
+	ImmersiveModeChanged(ctx context.Context, rootDisplayAreaId int32, isImmersiveMode bool) error
+	DismissKeyboardShortcutsMenu(ctx context.Context) error
+	ToggleKeyboardShortcutsMenu(ctx context.Context, deviceId int32) error
+	AppTransitionPending(ctx context.Context, displayId int32) error
+	AppTransitionCancelled(ctx context.Context, displayId int32) error
+	AppTransitionStarting(ctx context.Context, displayId int32, statusBarAnimationsStartTime int64, statusBarAnimationsDuration int64) error
+	AppTransitionFinished(ctx context.Context, displayId int32) error
+	ShowAssistDisclosure(ctx context.Context) error
+	StartAssist(ctx context.Context, args os.Bundle) error
+	OnCameraLaunchGestureDetected(ctx context.Context, source int32) error
+	OnEmergencyActionLaunchGestureDetected(ctx context.Context) error
+	ShowPictureInPictureMenu(ctx context.Context) error
+	ShowGlobalActionsMenu(ctx context.Context) error
+	OnProposedRotationChanged(ctx context.Context, rotation int32, isValid bool) error
+	SetTopAppHidesStatusBar(ctx context.Context, hidesStatusBar bool) error
+	AddQsTile(ctx context.Context, tile content.ComponentName) error
+	AddQsTileToFrontOrEnd(ctx context.Context, tile content.ComponentName, end bool) error
+	RemQsTile(ctx context.Context, tile content.ComponentName) error
+	SetQsTiles(ctx context.Context, tiles []string) error
+	ClickQsTile(ctx context.Context, tile content.ComponentName) error
+	HandleSystemKey(ctx context.Context, key view.KeyEvent) error
+	ShowPinningEnterExitToast(ctx context.Context, entering bool) error
+	ShowPinningEscapeToast(ctx context.Context) error
+	ShowShutdownUi(ctx context.Context, isReboot bool, reason string) error
+	ShowAuthenticationDialog(ctx context.Context, promptInfo biometrics.PromptInfo, sysuiReceiver biometrics.IBiometricSysuiReceiver, sensorIds []int32, credentialAllowed bool, requireConfirmation bool, operationId int64, requestId int64) error
+	OnBiometricAuthenticated(ctx context.Context, modality int32) error
+	OnBiometricHelp(ctx context.Context, modality int32, message string) error
+	OnBiometricError(ctx context.Context, modality int32, error_ int32, vendorCode int32) error
+	HideAuthenticationDialog(ctx context.Context, requestId int64) error
+	SetBiometicContextListener(ctx context.Context, listener biometrics.IBiometricContextListener) error
+	SetUdfpsRefreshRateCallback(ctx context.Context, callback fingerprint.IUdfpsRefreshRateRequestCallback) error
+	OnDisplayReady(ctx context.Context, displayId int32) error
+	OnSystemBarAttributesChanged(ctx context.Context, displayId int32, appearance int32, appearanceRegions []internalView.AppearanceRegion, navbarColorManagedByIme bool, behavior int32, requestedVisibleTypes int32, packageName string, letterboxDetails []LetterboxDetails) error
+	ShowTransient(ctx context.Context, displayId int32, types int32, isGestureOnSystemBar bool) error
+	AbortTransient(ctx context.Context, displayId int32, types int32) error
+	ShowInattentiveSleepWarning(ctx context.Context) error
+	DismissInattentiveSleepWarning(ctx context.Context, animated bool) error
+	ShowToast(ctx context.Context, uid int32, packageName string, token binder.IBinder, text interface{}, windowToken binder.IBinder, duration int32, callback app.ITransientNotificationCallback, displayId int32) error
+	HideToast(ctx context.Context, packageName string, token binder.IBinder) error
+	StartTracing(ctx context.Context) error
+	StopTracing(ctx context.Context) error
+	SuppressAmbientDisplay(ctx context.Context, suppress bool) error
+	RequestMagnificationConnection(ctx context.Context, connect bool) error
+	PassThroughShellCommand(ctx context.Context, args []string, pfd int32) error
+	SetNavigationBarLumaSamplingEnabled(ctx context.Context, displayId int32, enable bool) error
+	RunGcForTest(ctx context.Context) error
+	RequestTileServiceListeningState(ctx context.Context, componentName content.ComponentName) error
+	RequestAddTile(ctx context.Context, componentName content.ComponentName, appName interface{}, label interface{}, icon drawable.Icon, callback IAddTileResultCallback) error
+	CancelRequestAddTile(ctx context.Context, packageName string) error
+	UpdateMediaTapToTransferSenderDisplay(ctx context.Context, displayState int32, routeInfo media.MediaRoute2Info, undoCallback IUndoMediaTransferCallback) error
+	UpdateMediaTapToTransferReceiverDisplay(ctx context.Context, displayState int32, routeInfo media.MediaRoute2Info, appIcon drawable.Icon, appName interface{}) error
+	RegisterNearbyMediaDevicesProvider(ctx context.Context, provider media.INearbyMediaDevicesProvider) error
+	UnregisterNearbyMediaDevicesProvider(ctx context.Context, provider media.INearbyMediaDevicesProvider) error
+	DumpProto(ctx context.Context, args []string, pfd int32) error
+	ShowRearDisplayDialog(ctx context.Context, currentBaseState int32) error
+	MoveFocusedTaskToFullscreen(ctx context.Context, displayId int32) error
+	MoveFocusedTaskToStageSplit(ctx context.Context, displayId int32, leftOrTop bool) error
+	SetSplitscreenFocus(ctx context.Context, leftOrTop bool) error
+	ShowMediaOutputSwitcher(ctx context.Context, targetPackageName string, targetUserHandle os.UserHandle) error
+	MoveFocusedTaskToDesktop(ctx context.Context, displayId int32) error
+}
+
+type statusBarStubWrapper struct {
+	impl       IStatusBarServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *statusBarStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *statusBarStubWrapper) SetIcon(
+	ctx context.Context,
+	slot string,
+	icon StatusBarIcon,
+) error {
+	return w.impl.SetIcon(ctx, slot, icon)
+}
+
+func (w *statusBarStubWrapper) RemoveIcon(
+	ctx context.Context,
+	slot string,
+) error {
+	return w.impl.RemoveIcon(ctx, slot)
+}
+
+func (w *statusBarStubWrapper) Disable(
+	ctx context.Context,
+	displayId int32,
+	state1 int32,
+	state2 int32,
+) error {
+	return w.impl.Disable(ctx, displayId, state1, state2)
+}
+
+func (w *statusBarStubWrapper) AnimateExpandNotificationsPanel(
+	ctx context.Context,
+) error {
+	return w.impl.AnimateExpandNotificationsPanel(ctx)
+}
+
+func (w *statusBarStubWrapper) AnimateExpandSettingsPanel(
+	ctx context.Context,
+	subPanel string,
+) error {
+	return w.impl.AnimateExpandSettingsPanel(ctx, subPanel)
+}
+
+func (w *statusBarStubWrapper) AnimateCollapsePanels(
+	ctx context.Context,
+) error {
+	return w.impl.AnimateCollapsePanels(ctx)
+}
+
+func (w *statusBarStubWrapper) ToggleNotificationsPanel(
+	ctx context.Context,
+) error {
+	return w.impl.ToggleNotificationsPanel(ctx)
+}
+
+func (w *statusBarStubWrapper) ShowWirelessChargingAnimation(
+	ctx context.Context,
+	batteryLevel int32,
+) error {
+	return w.impl.ShowWirelessChargingAnimation(ctx, batteryLevel)
+}
+
+func (w *statusBarStubWrapper) SetImeWindowStatus(
+	ctx context.Context,
+	displayId int32,
+	vis int32,
+	backDisposition int32,
+	showImeSwitcher bool,
+) error {
+	return w.impl.SetImeWindowStatus(ctx, displayId, vis, backDisposition, showImeSwitcher)
+}
+
+func (w *statusBarStubWrapper) SetWindowState(
+	ctx context.Context,
+	display int32,
+	window int32,
+	state int32,
+) error {
+	return w.impl.SetWindowState(ctx, display, window, state)
+}
+
+func (w *statusBarStubWrapper) ShowRecentApps(
+	ctx context.Context,
+	triggeredFromAltTab bool,
+) error {
+	return w.impl.ShowRecentApps(ctx, triggeredFromAltTab)
+}
+
+func (w *statusBarStubWrapper) HideRecentApps(
+	ctx context.Context,
+	triggeredFromAltTab bool,
+	triggeredFromHomeKey bool,
+) error {
+	return w.impl.HideRecentApps(ctx, triggeredFromAltTab, triggeredFromHomeKey)
+}
+
+func (w *statusBarStubWrapper) ToggleRecentApps(
+	ctx context.Context,
+) error {
+	return w.impl.ToggleRecentApps(ctx)
+}
+
+func (w *statusBarStubWrapper) ToggleTaskbar(
+	ctx context.Context,
+) error {
+	return w.impl.ToggleTaskbar(ctx)
+}
+
+func (w *statusBarStubWrapper) ToggleSplitScreen(
+	ctx context.Context,
+) error {
+	return w.impl.ToggleSplitScreen(ctx)
+}
+
+func (w *statusBarStubWrapper) PreloadRecentApps(
+	ctx context.Context,
+) error {
+	return w.impl.PreloadRecentApps(ctx)
+}
+
+func (w *statusBarStubWrapper) CancelPreloadRecentApps(
+	ctx context.Context,
+) error {
+	return w.impl.CancelPreloadRecentApps(ctx)
+}
+
+func (w *statusBarStubWrapper) ShowScreenPinningRequest(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.ShowScreenPinningRequest(ctx, taskId)
+}
+
+func (w *statusBarStubWrapper) ConfirmImmersivePrompt(
+	ctx context.Context,
+) error {
+	return w.impl.ConfirmImmersivePrompt(ctx)
+}
+
+func (w *statusBarStubWrapper) ImmersiveModeChanged(
+	ctx context.Context,
+	rootDisplayAreaId int32,
+	isImmersiveMode bool,
+) error {
+	return w.impl.ImmersiveModeChanged(ctx, rootDisplayAreaId, isImmersiveMode)
+}
+
+func (w *statusBarStubWrapper) DismissKeyboardShortcutsMenu(
+	ctx context.Context,
+) error {
+	return w.impl.DismissKeyboardShortcutsMenu(ctx)
+}
+
+func (w *statusBarStubWrapper) ToggleKeyboardShortcutsMenu(
+	ctx context.Context,
+	deviceId int32,
+) error {
+	return w.impl.ToggleKeyboardShortcutsMenu(ctx, deviceId)
+}
+
+func (w *statusBarStubWrapper) AppTransitionPending(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.AppTransitionPending(ctx, displayId)
+}
+
+func (w *statusBarStubWrapper) AppTransitionCancelled(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.AppTransitionCancelled(ctx, displayId)
+}
+
+func (w *statusBarStubWrapper) AppTransitionStarting(
+	ctx context.Context,
+	displayId int32,
+	statusBarAnimationsStartTime int64,
+	statusBarAnimationsDuration int64,
+) error {
+	return w.impl.AppTransitionStarting(ctx, displayId, statusBarAnimationsStartTime, statusBarAnimationsDuration)
+}
+
+func (w *statusBarStubWrapper) AppTransitionFinished(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.AppTransitionFinished(ctx, displayId)
+}
+
+func (w *statusBarStubWrapper) ShowAssistDisclosure(
+	ctx context.Context,
+) error {
+	return w.impl.ShowAssistDisclosure(ctx)
+}
+
+func (w *statusBarStubWrapper) StartAssist(
+	ctx context.Context,
+	args os.Bundle,
+) error {
+	return w.impl.StartAssist(ctx, args)
+}
+
+func (w *statusBarStubWrapper) OnCameraLaunchGestureDetected(
+	ctx context.Context,
+	source int32,
+) error {
+	return w.impl.OnCameraLaunchGestureDetected(ctx, source)
+}
+
+func (w *statusBarStubWrapper) OnEmergencyActionLaunchGestureDetected(
+	ctx context.Context,
+) error {
+	return w.impl.OnEmergencyActionLaunchGestureDetected(ctx)
+}
+
+func (w *statusBarStubWrapper) ShowPictureInPictureMenu(
+	ctx context.Context,
+) error {
+	return w.impl.ShowPictureInPictureMenu(ctx)
+}
+
+func (w *statusBarStubWrapper) ShowGlobalActionsMenu(
+	ctx context.Context,
+) error {
+	return w.impl.ShowGlobalActionsMenu(ctx)
+}
+
+func (w *statusBarStubWrapper) OnProposedRotationChanged(
+	ctx context.Context,
+	rotation int32,
+	isValid bool,
+) error {
+	return w.impl.OnProposedRotationChanged(ctx, rotation, isValid)
+}
+
+func (w *statusBarStubWrapper) SetTopAppHidesStatusBar(
+	ctx context.Context,
+	hidesStatusBar bool,
+) error {
+	return w.impl.SetTopAppHidesStatusBar(ctx, hidesStatusBar)
+}
+
+func (w *statusBarStubWrapper) AddQsTile(
+	ctx context.Context,
+	tile content.ComponentName,
+) error {
+	return w.impl.AddQsTile(ctx, tile)
+}
+
+func (w *statusBarStubWrapper) AddQsTileToFrontOrEnd(
+	ctx context.Context,
+	tile content.ComponentName,
+	end bool,
+) error {
+	return w.impl.AddQsTileToFrontOrEnd(ctx, tile, end)
+}
+
+func (w *statusBarStubWrapper) RemQsTile(
+	ctx context.Context,
+	tile content.ComponentName,
+) error {
+	return w.impl.RemQsTile(ctx, tile)
+}
+
+func (w *statusBarStubWrapper) SetQsTiles(
+	ctx context.Context,
+	tiles []string,
+) error {
+	return w.impl.SetQsTiles(ctx, tiles)
+}
+
+func (w *statusBarStubWrapper) ClickQsTile(
+	ctx context.Context,
+	tile content.ComponentName,
+) error {
+	return w.impl.ClickQsTile(ctx, tile)
+}
+
+func (w *statusBarStubWrapper) HandleSystemKey(
+	ctx context.Context,
+	key view.KeyEvent,
+) error {
+	return w.impl.HandleSystemKey(ctx, key)
+}
+
+func (w *statusBarStubWrapper) ShowPinningEnterExitToast(
+	ctx context.Context,
+	entering bool,
+) error {
+	return w.impl.ShowPinningEnterExitToast(ctx, entering)
+}
+
+func (w *statusBarStubWrapper) ShowPinningEscapeToast(
+	ctx context.Context,
+) error {
+	return w.impl.ShowPinningEscapeToast(ctx)
+}
+
+func (w *statusBarStubWrapper) ShowShutdownUi(
+	ctx context.Context,
+	isReboot bool,
+	reason string,
+) error {
+	return w.impl.ShowShutdownUi(ctx, isReboot, reason)
+}
+
+func (w *statusBarStubWrapper) ShowAuthenticationDialog(
+	ctx context.Context,
+	promptInfo biometrics.PromptInfo,
+	sysuiReceiver biometrics.IBiometricSysuiReceiver,
+	sensorIds []int32,
+	credentialAllowed bool,
+	requireConfirmation bool,
+	operationId int64,
+	requestId int64,
+) error {
+	return w.impl.ShowAuthenticationDialog(ctx, promptInfo, sysuiReceiver, sensorIds, credentialAllowed, requireConfirmation, operationId, requestId)
+}
+
+func (w *statusBarStubWrapper) OnBiometricAuthenticated(
+	ctx context.Context,
+	modality int32,
+) error {
+	return w.impl.OnBiometricAuthenticated(ctx, modality)
+}
+
+func (w *statusBarStubWrapper) OnBiometricHelp(
+	ctx context.Context,
+	modality int32,
+	message string,
+) error {
+	return w.impl.OnBiometricHelp(ctx, modality, message)
+}
+
+func (w *statusBarStubWrapper) OnBiometricError(
+	ctx context.Context,
+	modality int32,
+	error_ int32,
+	vendorCode int32,
+) error {
+	return w.impl.OnBiometricError(ctx, modality, error_, vendorCode)
+}
+
+func (w *statusBarStubWrapper) HideAuthenticationDialog(
+	ctx context.Context,
+	requestId int64,
+) error {
+	return w.impl.HideAuthenticationDialog(ctx, requestId)
+}
+
+func (w *statusBarStubWrapper) SetBiometicContextListener(
+	ctx context.Context,
+	listener biometrics.IBiometricContextListener,
+) error {
+	return w.impl.SetBiometicContextListener(ctx, listener)
+}
+
+func (w *statusBarStubWrapper) SetUdfpsRefreshRateCallback(
+	ctx context.Context,
+	callback fingerprint.IUdfpsRefreshRateRequestCallback,
+) error {
+	return w.impl.SetUdfpsRefreshRateCallback(ctx, callback)
+}
+
+func (w *statusBarStubWrapper) OnDisplayReady(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.OnDisplayReady(ctx, displayId)
+}
+
+func (w *statusBarStubWrapper) OnSystemBarAttributesChanged(
+	ctx context.Context,
+	displayId int32,
+	appearance int32,
+	appearanceRegions []internalView.AppearanceRegion,
+	navbarColorManagedByIme bool,
+	behavior int32,
+	requestedVisibleTypes int32,
+	packageName string,
+	letterboxDetails []LetterboxDetails,
+) error {
+	return w.impl.OnSystemBarAttributesChanged(ctx, displayId, appearance, appearanceRegions, navbarColorManagedByIme, behavior, requestedVisibleTypes, packageName, letterboxDetails)
+}
+
+func (w *statusBarStubWrapper) ShowTransient(
+	ctx context.Context,
+	displayId int32,
+	types int32,
+	isGestureOnSystemBar bool,
+) error {
+	return w.impl.ShowTransient(ctx, displayId, types, isGestureOnSystemBar)
+}
+
+func (w *statusBarStubWrapper) AbortTransient(
+	ctx context.Context,
+	displayId int32,
+	types int32,
+) error {
+	return w.impl.AbortTransient(ctx, displayId, types)
+}
+
+func (w *statusBarStubWrapper) ShowInattentiveSleepWarning(
+	ctx context.Context,
+) error {
+	return w.impl.ShowInattentiveSleepWarning(ctx)
+}
+
+func (w *statusBarStubWrapper) DismissInattentiveSleepWarning(
+	ctx context.Context,
+	animated bool,
+) error {
+	return w.impl.DismissInattentiveSleepWarning(ctx, animated)
+}
+
+func (w *statusBarStubWrapper) ShowToast(
+	ctx context.Context,
+	uid int32,
+	packageName string,
+	token binder.IBinder,
+	text interface{},
+	windowToken binder.IBinder,
+	duration int32,
+	callback app.ITransientNotificationCallback,
+	displayId int32,
+) error {
+	return w.impl.ShowToast(ctx, uid, packageName, token, text, windowToken, duration, callback, displayId)
+}
+
+func (w *statusBarStubWrapper) HideToast(
+	ctx context.Context,
+	packageName string,
+	token binder.IBinder,
+) error {
+	return w.impl.HideToast(ctx, packageName, token)
+}
+
+func (w *statusBarStubWrapper) StartTracing(
+	ctx context.Context,
+) error {
+	return w.impl.StartTracing(ctx)
+}
+
+func (w *statusBarStubWrapper) StopTracing(
+	ctx context.Context,
+) error {
+	return w.impl.StopTracing(ctx)
+}
+
+func (w *statusBarStubWrapper) SuppressAmbientDisplay(
+	ctx context.Context,
+	suppress bool,
+) error {
+	return w.impl.SuppressAmbientDisplay(ctx, suppress)
+}
+
+func (w *statusBarStubWrapper) RequestMagnificationConnection(
+	ctx context.Context,
+	connect bool,
+) error {
+	return w.impl.RequestMagnificationConnection(ctx, connect)
+}
+
+func (w *statusBarStubWrapper) PassThroughShellCommand(
+	ctx context.Context,
+	args []string,
+	pfd int32,
+) error {
+	return w.impl.PassThroughShellCommand(ctx, args, pfd)
+}
+
+func (w *statusBarStubWrapper) SetNavigationBarLumaSamplingEnabled(
+	ctx context.Context,
+	displayId int32,
+	enable bool,
+) error {
+	return w.impl.SetNavigationBarLumaSamplingEnabled(ctx, displayId, enable)
+}
+
+func (w *statusBarStubWrapper) RunGcForTest(
+	ctx context.Context,
+) error {
+	return w.impl.RunGcForTest(ctx)
+}
+
+func (w *statusBarStubWrapper) RequestTileServiceListeningState(
+	ctx context.Context,
+	componentName content.ComponentName,
+) error {
+	return w.impl.RequestTileServiceListeningState(ctx, componentName)
+}
+
+func (w *statusBarStubWrapper) RequestAddTile(
+	ctx context.Context,
+	componentName content.ComponentName,
+	appName interface{},
+	label interface{},
+	icon drawable.Icon,
+	callback IAddTileResultCallback,
+) error {
+	return w.impl.RequestAddTile(ctx, componentName, appName, label, icon, callback)
+}
+
+func (w *statusBarStubWrapper) CancelRequestAddTile(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.CancelRequestAddTile(ctx, packageName)
+}
+
+func (w *statusBarStubWrapper) UpdateMediaTapToTransferSenderDisplay(
+	ctx context.Context,
+	displayState int32,
+	routeInfo media.MediaRoute2Info,
+	undoCallback IUndoMediaTransferCallback,
+) error {
+	return w.impl.UpdateMediaTapToTransferSenderDisplay(ctx, displayState, routeInfo, undoCallback)
+}
+
+func (w *statusBarStubWrapper) UpdateMediaTapToTransferReceiverDisplay(
+	ctx context.Context,
+	displayState int32,
+	routeInfo media.MediaRoute2Info,
+	appIcon drawable.Icon,
+	appName interface{},
+) error {
+	return w.impl.UpdateMediaTapToTransferReceiverDisplay(ctx, displayState, routeInfo, appIcon, appName)
+}
+
+func (w *statusBarStubWrapper) RegisterNearbyMediaDevicesProvider(
+	ctx context.Context,
+	provider media.INearbyMediaDevicesProvider,
+) error {
+	return w.impl.RegisterNearbyMediaDevicesProvider(ctx, provider)
+}
+
+func (w *statusBarStubWrapper) UnregisterNearbyMediaDevicesProvider(
+	ctx context.Context,
+	provider media.INearbyMediaDevicesProvider,
+) error {
+	return w.impl.UnregisterNearbyMediaDevicesProvider(ctx, provider)
+}
+
+func (w *statusBarStubWrapper) DumpProto(
+	ctx context.Context,
+	args []string,
+	pfd int32,
+) error {
+	return w.impl.DumpProto(ctx, args, pfd)
+}
+
+func (w *statusBarStubWrapper) ShowRearDisplayDialog(
+	ctx context.Context,
+	currentBaseState int32,
+) error {
+	return w.impl.ShowRearDisplayDialog(ctx, currentBaseState)
+}
+
+func (w *statusBarStubWrapper) MoveFocusedTaskToFullscreen(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.MoveFocusedTaskToFullscreen(ctx, displayId)
+}
+
+func (w *statusBarStubWrapper) MoveFocusedTaskToStageSplit(
+	ctx context.Context,
+	displayId int32,
+	leftOrTop bool,
+) error {
+	return w.impl.MoveFocusedTaskToStageSplit(ctx, displayId, leftOrTop)
+}
+
+func (w *statusBarStubWrapper) SetSplitscreenFocus(
+	ctx context.Context,
+	leftOrTop bool,
+) error {
+	return w.impl.SetSplitscreenFocus(ctx, leftOrTop)
+}
+
+func (w *statusBarStubWrapper) ShowMediaOutputSwitcher(
+	ctx context.Context,
+	targetPackageName string,
+	targetUserHandle os.UserHandle,
+) error {
+	return w.impl.ShowMediaOutputSwitcher(ctx, targetPackageName, targetUserHandle)
+}
+
+func (w *statusBarStubWrapper) MoveFocusedTaskToDesktop(
+	ctx context.Context,
+	displayId int32,
+) error {
+	return w.impl.MoveFocusedTaskToDesktop(ctx, displayId)
+}
+
+var _ IStatusBar = (*statusBarStubWrapper)(nil)
+
+// NewStatusBarStub creates a server-side IStatusBar wrapping the given
+// server implementation. The returned value satisfies IStatusBar
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStatusBarStub(
+	impl IStatusBarServer,
+) IStatusBar {
+	wrapper := &statusBarStubWrapper{impl: impl}
+	stub := &StatusBarStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

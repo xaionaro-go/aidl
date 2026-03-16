@@ -82,3 +82,42 @@ func (s *HdmiSystemAudioModeChangeListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IHdmiSystemAudioModeChangeListenerServer is the server-side interface that user implementations
+// provide to NewHdmiSystemAudioModeChangeListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IHdmiSystemAudioModeChangeListenerServer interface {
+	OnStatusChanged(ctx context.Context, enabled bool) error
+}
+
+type hdmiSystemAudioModeChangeListenerStubWrapper struct {
+	impl       IHdmiSystemAudioModeChangeListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *hdmiSystemAudioModeChangeListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *hdmiSystemAudioModeChangeListenerStubWrapper) OnStatusChanged(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.OnStatusChanged(ctx, enabled)
+}
+
+var _ IHdmiSystemAudioModeChangeListener = (*hdmiSystemAudioModeChangeListenerStubWrapper)(nil)
+
+// NewHdmiSystemAudioModeChangeListenerStub creates a server-side IHdmiSystemAudioModeChangeListener wrapping the given
+// server implementation. The returned value satisfies IHdmiSystemAudioModeChangeListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewHdmiSystemAudioModeChangeListenerStub(
+	impl IHdmiSystemAudioModeChangeListenerServer,
+) IHdmiSystemAudioModeChangeListener {
+	wrapper := &hdmiSystemAudioModeChangeListenerStubWrapper{impl: impl}
+	stub := &HdmiSystemAudioModeChangeListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

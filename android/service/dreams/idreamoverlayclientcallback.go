@@ -42,7 +42,7 @@ func (p *DreamOverlayClientCallbackProxy) OnDreamOverlayClient(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIDreamOverlayClientCallback)
-	_data.WriteStrongBinder(client.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, client.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIDreamOverlayClientCallback, "onDreamOverlayClient")
 	if _err != nil {
@@ -94,4 +94,43 @@ func (s *DreamOverlayClientCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IDreamOverlayClientCallbackServer is the server-side interface that user implementations
+// provide to NewDreamOverlayClientCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IDreamOverlayClientCallbackServer interface {
+	OnDreamOverlayClient(ctx context.Context, client IDreamOverlayClient) error
+}
+
+type dreamOverlayClientCallbackStubWrapper struct {
+	impl       IDreamOverlayClientCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *dreamOverlayClientCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *dreamOverlayClientCallbackStubWrapper) OnDreamOverlayClient(
+	ctx context.Context,
+	client IDreamOverlayClient,
+) error {
+	return w.impl.OnDreamOverlayClient(ctx, client)
+}
+
+var _ IDreamOverlayClientCallback = (*dreamOverlayClientCallbackStubWrapper)(nil)
+
+// NewDreamOverlayClientCallbackStub creates a server-side IDreamOverlayClientCallback wrapping the given
+// server implementation. The returned value satisfies IDreamOverlayClientCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewDreamOverlayClientCallbackStub(
+	impl IDreamOverlayClientCallbackServer,
+) IDreamOverlayClientCallback {
+	wrapper := &dreamOverlayClientCallbackStubWrapper{impl: impl}
+	stub := &DreamOverlayClientCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

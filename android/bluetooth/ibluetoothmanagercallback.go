@@ -48,7 +48,7 @@ func (p *BluetoothManagerCallbackProxy) OnBluetoothServiceUp(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIBluetoothManagerCallback)
-	_data.WriteStrongBinder(bluetoothService.Handle())
+	binder.WriteBinderToParcel(ctx, _data, bluetoothService, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIBluetoothManagerCallback, "onBluetoothServiceUp")
 	if _err != nil {
@@ -152,4 +152,64 @@ func (s *BluetoothManagerCallbackStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IBluetoothManagerCallbackServer is the server-side interface that user implementations
+// provide to NewBluetoothManagerCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBluetoothManagerCallbackServer interface {
+	OnBluetoothServiceUp(ctx context.Context, bluetoothService binder.IBinder) error
+	OnBluetoothServiceDown(ctx context.Context) error
+	OnBluetoothOn(ctx context.Context) error
+	OnBluetoothOff(ctx context.Context) error
+}
+
+type bluetoothManagerCallbackStubWrapper struct {
+	impl       IBluetoothManagerCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *bluetoothManagerCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *bluetoothManagerCallbackStubWrapper) OnBluetoothServiceUp(
+	ctx context.Context,
+	bluetoothService binder.IBinder,
+) error {
+	return w.impl.OnBluetoothServiceUp(ctx, bluetoothService)
+}
+
+func (w *bluetoothManagerCallbackStubWrapper) OnBluetoothServiceDown(
+	ctx context.Context,
+) error {
+	return w.impl.OnBluetoothServiceDown(ctx)
+}
+
+func (w *bluetoothManagerCallbackStubWrapper) OnBluetoothOn(
+	ctx context.Context,
+) error {
+	return w.impl.OnBluetoothOn(ctx)
+}
+
+func (w *bluetoothManagerCallbackStubWrapper) OnBluetoothOff(
+	ctx context.Context,
+) error {
+	return w.impl.OnBluetoothOff(ctx)
+}
+
+var _ IBluetoothManagerCallback = (*bluetoothManagerCallbackStubWrapper)(nil)
+
+// NewBluetoothManagerCallbackStub creates a server-side IBluetoothManagerCallback wrapping the given
+// server implementation. The returned value satisfies IBluetoothManagerCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBluetoothManagerCallbackStub(
+	impl IBluetoothManagerCallbackServer,
+) IBluetoothManagerCallback {
+	wrapper := &bluetoothManagerCallbackStubWrapper{impl: impl}
+	stub := &BluetoothManagerCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -63,7 +63,7 @@ func (p *GraphicBufferSourceProxy) Configure(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGraphicBufferSource)
-	_data.WriteStrongBinder(omxNode.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, omxNode.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(dataSpace)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGraphicBufferSource, "configure")
@@ -546,4 +546,124 @@ func (s *GraphicBufferSourceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGraphicBufferSourceServer is the server-side interface that user implementations
+// provide to NewGraphicBufferSourceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGraphicBufferSourceServer interface {
+	Configure(ctx context.Context, omxNode IOMXNode, dataSpace int32) error
+	SetSuspend(ctx context.Context, suspend bool, suspendTimeUs int64) error
+	SetRepeatPreviousFrameDelayUs(ctx context.Context, repeatAfterUs int64) error
+	SetMaxFps(ctx context.Context, maxFps float32) error
+	SetTimeLapseConfig(ctx context.Context, fps float64, captureFps float64) error
+	SetStartTimeUs(ctx context.Context, startTimeUs int64) error
+	SetStopTimeUs(ctx context.Context, stopTimeUs int64) error
+	GetStopTimeOffsetUs(ctx context.Context) (int64, error)
+	SetColorAspects(ctx context.Context, aspects int32) error
+	SetTimeOffsetUs(ctx context.Context, timeOffsetsUs int64) error
+	SignalEndOfInputStream(ctx context.Context) error
+}
+
+type graphicBufferSourceStubWrapper struct {
+	impl       IGraphicBufferSourceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *graphicBufferSourceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *graphicBufferSourceStubWrapper) Configure(
+	ctx context.Context,
+	omxNode IOMXNode,
+	dataSpace int32,
+) error {
+	return w.impl.Configure(ctx, omxNode, dataSpace)
+}
+
+func (w *graphicBufferSourceStubWrapper) SetSuspend(
+	ctx context.Context,
+	suspend bool,
+	suspendTimeUs int64,
+) error {
+	return w.impl.SetSuspend(ctx, suspend, suspendTimeUs)
+}
+
+func (w *graphicBufferSourceStubWrapper) SetRepeatPreviousFrameDelayUs(
+	ctx context.Context,
+	repeatAfterUs int64,
+) error {
+	return w.impl.SetRepeatPreviousFrameDelayUs(ctx, repeatAfterUs)
+}
+
+func (w *graphicBufferSourceStubWrapper) SetMaxFps(
+	ctx context.Context,
+	maxFps float32,
+) error {
+	return w.impl.SetMaxFps(ctx, maxFps)
+}
+
+func (w *graphicBufferSourceStubWrapper) SetTimeLapseConfig(
+	ctx context.Context,
+	fps float64,
+	captureFps float64,
+) error {
+	return w.impl.SetTimeLapseConfig(ctx, fps, captureFps)
+}
+
+func (w *graphicBufferSourceStubWrapper) SetStartTimeUs(
+	ctx context.Context,
+	startTimeUs int64,
+) error {
+	return w.impl.SetStartTimeUs(ctx, startTimeUs)
+}
+
+func (w *graphicBufferSourceStubWrapper) SetStopTimeUs(
+	ctx context.Context,
+	stopTimeUs int64,
+) error {
+	return w.impl.SetStopTimeUs(ctx, stopTimeUs)
+}
+
+func (w *graphicBufferSourceStubWrapper) GetStopTimeOffsetUs(
+	ctx context.Context,
+) (int64, error) {
+	return w.impl.GetStopTimeOffsetUs(ctx)
+}
+
+func (w *graphicBufferSourceStubWrapper) SetColorAspects(
+	ctx context.Context,
+	aspects int32,
+) error {
+	return w.impl.SetColorAspects(ctx, aspects)
+}
+
+func (w *graphicBufferSourceStubWrapper) SetTimeOffsetUs(
+	ctx context.Context,
+	timeOffsetsUs int64,
+) error {
+	return w.impl.SetTimeOffsetUs(ctx, timeOffsetsUs)
+}
+
+func (w *graphicBufferSourceStubWrapper) SignalEndOfInputStream(
+	ctx context.Context,
+) error {
+	return w.impl.SignalEndOfInputStream(ctx)
+}
+
+var _ IGraphicBufferSource = (*graphicBufferSourceStubWrapper)(nil)
+
+// NewGraphicBufferSourceStub creates a server-side IGraphicBufferSource wrapping the given
+// server implementation. The returned value satisfies IGraphicBufferSource
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGraphicBufferSourceStub(
+	impl IGraphicBufferSourceServer,
+) IGraphicBufferSource {
+	wrapper := &graphicBufferSourceStubWrapper{impl: impl}
+	stub := &GraphicBufferSourceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

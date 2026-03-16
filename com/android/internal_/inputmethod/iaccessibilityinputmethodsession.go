@@ -112,7 +112,7 @@ func (p *AccessibilityInputMethodSessionProxy) InvalidateInput(
 	if _err := editorInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(sessionId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccessibilityInputMethodSession, "invalidateInput")
@@ -212,4 +212,72 @@ func (s *AccessibilityInputMethodSessionStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAccessibilityInputMethodSessionServer is the server-side interface that user implementations
+// provide to NewAccessibilityInputMethodSessionStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccessibilityInputMethodSessionServer interface {
+	UpdateSelection(ctx context.Context, oldSelStart int32, oldSelEnd int32, newSelStart int32, newSelEnd int32, candidatesStart int32, candidatesEnd int32) error
+	FinishInput(ctx context.Context) error
+	FinishSession(ctx context.Context) error
+	InvalidateInput(ctx context.Context, editorInfo viewInputmethod.EditorInfo, connection IRemoteAccessibilityInputConnection, sessionId int32) error
+}
+
+type accessibilityInputMethodSessionStubWrapper struct {
+	impl       IAccessibilityInputMethodSessionServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accessibilityInputMethodSessionStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accessibilityInputMethodSessionStubWrapper) UpdateSelection(
+	ctx context.Context,
+	oldSelStart int32,
+	oldSelEnd int32,
+	newSelStart int32,
+	newSelEnd int32,
+	candidatesStart int32,
+	candidatesEnd int32,
+) error {
+	return w.impl.UpdateSelection(ctx, oldSelStart, oldSelEnd, newSelStart, newSelEnd, candidatesStart, candidatesEnd)
+}
+
+func (w *accessibilityInputMethodSessionStubWrapper) FinishInput(
+	ctx context.Context,
+) error {
+	return w.impl.FinishInput(ctx)
+}
+
+func (w *accessibilityInputMethodSessionStubWrapper) FinishSession(
+	ctx context.Context,
+) error {
+	return w.impl.FinishSession(ctx)
+}
+
+func (w *accessibilityInputMethodSessionStubWrapper) InvalidateInput(
+	ctx context.Context,
+	editorInfo viewInputmethod.EditorInfo,
+	connection IRemoteAccessibilityInputConnection,
+	sessionId int32,
+) error {
+	return w.impl.InvalidateInput(ctx, editorInfo, connection, sessionId)
+}
+
+var _ IAccessibilityInputMethodSession = (*accessibilityInputMethodSessionStubWrapper)(nil)
+
+// NewAccessibilityInputMethodSessionStub creates a server-side IAccessibilityInputMethodSession wrapping the given
+// server implementation. The returned value satisfies IAccessibilityInputMethodSession
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccessibilityInputMethodSessionStub(
+	impl IAccessibilityInputMethodSessionServer,
+) IAccessibilityInputMethodSession {
+	wrapper := &accessibilityInputMethodSessionStubWrapper{impl: impl}
+	stub := &AccessibilityInputMethodSessionStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

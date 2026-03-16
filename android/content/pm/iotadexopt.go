@@ -298,3 +298,76 @@ func (s *OtaDexoptStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IOtaDexoptServer is the server-side interface that user implementations
+// provide to NewOtaDexoptStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IOtaDexoptServer interface {
+	Prepare(ctx context.Context) error
+	Cleanup(ctx context.Context) error
+	IsDone(ctx context.Context) (bool, error)
+	GetProgress(ctx context.Context) (float32, error)
+	DexoptNextPackage(ctx context.Context) error
+	NextDexoptCommand(ctx context.Context) (string, error)
+}
+
+type otaDexoptStubWrapper struct {
+	impl       IOtaDexoptServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *otaDexoptStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *otaDexoptStubWrapper) Prepare(
+	ctx context.Context,
+) error {
+	return w.impl.Prepare(ctx)
+}
+
+func (w *otaDexoptStubWrapper) Cleanup(
+	ctx context.Context,
+) error {
+	return w.impl.Cleanup(ctx)
+}
+
+func (w *otaDexoptStubWrapper) IsDone(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsDone(ctx)
+}
+
+func (w *otaDexoptStubWrapper) GetProgress(
+	ctx context.Context,
+) (float32, error) {
+	return w.impl.GetProgress(ctx)
+}
+
+func (w *otaDexoptStubWrapper) DexoptNextPackage(
+	ctx context.Context,
+) error {
+	return w.impl.DexoptNextPackage(ctx)
+}
+
+func (w *otaDexoptStubWrapper) NextDexoptCommand(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.NextDexoptCommand(ctx)
+}
+
+var _ IOtaDexopt = (*otaDexoptStubWrapper)(nil)
+
+// NewOtaDexoptStub creates a server-side IOtaDexopt wrapping the given
+// server implementation. The returned value satisfies IOtaDexopt
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewOtaDexoptStub(
+	impl IOtaDexoptServer,
+) IOtaDexopt {
+	wrapper := &otaDexoptStubWrapper{impl: impl}
+	stub := &OtaDexoptStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

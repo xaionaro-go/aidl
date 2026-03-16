@@ -48,7 +48,7 @@ func (p *MediaExtractorServiceProxy) MakeExtractor(
 	var _result IMediaExtractor
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIMediaExtractorService)
-	_data.WriteStrongBinder(source.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, source.AsBinder(), p.remote.Transport())
 	_data.WriteString16(mime)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIMediaExtractorService, "makeExtractor")
@@ -223,4 +223,61 @@ func (s *MediaExtractorServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IMediaExtractorServiceServer is the server-side interface that user implementations
+// provide to NewMediaExtractorServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IMediaExtractorServiceServer interface {
+	MakeExtractor(ctx context.Context, source IDataSource, mime string) (IMediaExtractor, error)
+	MakeIDataSource(ctx context.Context, fd interface{}, offset int64, length int64) (IDataSource, error)
+	GetSupportedTypes(ctx context.Context) ([]string, error)
+}
+
+type mediaExtractorServiceStubWrapper struct {
+	impl       IMediaExtractorServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *mediaExtractorServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *mediaExtractorServiceStubWrapper) MakeExtractor(
+	ctx context.Context,
+	source IDataSource,
+	mime string,
+) (IMediaExtractor, error) {
+	return w.impl.MakeExtractor(ctx, source, mime)
+}
+
+func (w *mediaExtractorServiceStubWrapper) MakeIDataSource(
+	ctx context.Context,
+	fd interface{},
+	offset int64,
+	length int64,
+) (IDataSource, error) {
+	return w.impl.MakeIDataSource(ctx, fd, offset, length)
+}
+
+func (w *mediaExtractorServiceStubWrapper) GetSupportedTypes(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetSupportedTypes(ctx)
+}
+
+var _ IMediaExtractorService = (*mediaExtractorServiceStubWrapper)(nil)
+
+// NewMediaExtractorServiceStub creates a server-side IMediaExtractorService wrapping the given
+// server implementation. The returned value satisfies IMediaExtractorService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewMediaExtractorServiceStub(
+	impl IMediaExtractorServiceServer,
+) IMediaExtractorService {
+	wrapper := &mediaExtractorServiceStubWrapper{impl: impl}
+	stub := &MediaExtractorServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -140,3 +140,50 @@ func (s *ChannelListTransferStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IChannelListTransferServer is the server-side interface that user implementations
+// provide to NewChannelListTransferStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IChannelListTransferServer interface {
+	ImportChannelList(ctx context.Context, pfd int32) error
+	ExportChannelList(ctx context.Context, pfd int32) error
+}
+
+type channelListTransferStubWrapper struct {
+	impl       IChannelListTransferServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *channelListTransferStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *channelListTransferStubWrapper) ImportChannelList(
+	ctx context.Context,
+	pfd int32,
+) error {
+	return w.impl.ImportChannelList(ctx, pfd)
+}
+
+func (w *channelListTransferStubWrapper) ExportChannelList(
+	ctx context.Context,
+	pfd int32,
+) error {
+	return w.impl.ExportChannelList(ctx, pfd)
+}
+
+var _ IChannelListTransfer = (*channelListTransferStubWrapper)(nil)
+
+// NewChannelListTransferStub creates a server-side IChannelListTransfer wrapping the given
+// server implementation. The returned value satisfies IChannelListTransfer
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewChannelListTransferStub(
+	impl IChannelListTransferServer,
+) IChannelListTransfer {
+	wrapper := &channelListTransferStubWrapper{impl: impl}
+	stub := &ChannelListTransferStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

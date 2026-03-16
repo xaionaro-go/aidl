@@ -43,8 +43,8 @@ func (p *KeyguardClientProxy) OnCreateKeyguardSurface(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIKeyguardClient)
-	_data.WriteStrongBinder(hostInputToken.Handle())
-	_data.WriteStrongBinder(keyguardCallback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, hostInputToken, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, keyguardCallback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIKeyguardClient, "onCreateKeyguardSurface")
 	if _err != nil {
@@ -85,4 +85,44 @@ func (s *KeyguardClientStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IKeyguardClientServer is the server-side interface that user implementations
+// provide to NewKeyguardClientStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IKeyguardClientServer interface {
+	OnCreateKeyguardSurface(ctx context.Context, hostInputToken binder.IBinder, keyguardCallback IKeyguardCallback) error
+}
+
+type keyguardClientStubWrapper struct {
+	impl       IKeyguardClientServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *keyguardClientStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *keyguardClientStubWrapper) OnCreateKeyguardSurface(
+	ctx context.Context,
+	hostInputToken binder.IBinder,
+	keyguardCallback IKeyguardCallback,
+) error {
+	return w.impl.OnCreateKeyguardSurface(ctx, hostInputToken, keyguardCallback)
+}
+
+var _ IKeyguardClient = (*keyguardClientStubWrapper)(nil)
+
+// NewKeyguardClientStub creates a server-side IKeyguardClient wrapping the given
+// server implementation. The returned value satisfies IKeyguardClient
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewKeyguardClientStub(
+	impl IKeyguardClientServer,
+) IKeyguardClient {
+	wrapper := &keyguardClientStubWrapper{impl: impl}
+	stub := &KeyguardClientStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -23,8 +22,8 @@ type IGrammaticalInflectionManager interface {
 	AsBinder() binder.IBinder
 	SetRequestedApplicationGrammaticalGender(ctx context.Context, appPackageName string, gender int32) error
 	SetSystemWideGrammaticalGender(ctx context.Context, gender int32) error
-	GetSystemGrammaticalGender(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
-	PeekSystemGrammaticalGenderByUserId(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
+	GetSystemGrammaticalGender(ctx context.Context, attributionSource interface{}) (int32, error)
+	PeekSystemGrammaticalGenderByUserId(ctx context.Context, attributionSource interface{}) (int32, error)
 }
 
 type GrammaticalInflectionManagerProxy struct {
@@ -103,16 +102,12 @@ func (p *GrammaticalInflectionManagerProxy) SetSystemWideGrammaticalGender(
 
 func (p *GrammaticalInflectionManagerProxy) GetSystemGrammaticalGender(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGrammaticalInflectionManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGrammaticalInflectionManager, "getSystemGrammaticalGender")
@@ -139,16 +134,12 @@ func (p *GrammaticalInflectionManagerProxy) GetSystemGrammaticalGender(
 
 func (p *GrammaticalInflectionManagerProxy) PeekSystemGrammaticalGenderByUserId(
 	ctx context.Context,
-	attributionSource content.AttributionSource,
+	attributionSource interface{},
 ) (int32, error) {
 	var _result int32
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIGrammaticalInflectionManager)
-	_data.WriteInt32(1)
-	if _err := attributionSource.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIGrammaticalInflectionManager, "peekSystemGrammaticalGenderByUserId")
@@ -233,18 +224,7 @@ func (s *GrammaticalInflectionManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -261,18 +241,7 @@ func (s *GrammaticalInflectionManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_attributionSource interface{}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -288,4 +257,68 @@ func (s *GrammaticalInflectionManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IGrammaticalInflectionManagerServer is the server-side interface that user implementations
+// provide to NewGrammaticalInflectionManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IGrammaticalInflectionManagerServer interface {
+	SetRequestedApplicationGrammaticalGender(ctx context.Context, appPackageName string, gender int32) error
+	SetSystemWideGrammaticalGender(ctx context.Context, gender int32) error
+	GetSystemGrammaticalGender(ctx context.Context, attributionSource interface{}) (int32, error)
+	PeekSystemGrammaticalGenderByUserId(ctx context.Context, attributionSource interface{}) (int32, error)
+}
+
+type grammaticalInflectionManagerStubWrapper struct {
+	impl       IGrammaticalInflectionManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *grammaticalInflectionManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *grammaticalInflectionManagerStubWrapper) SetRequestedApplicationGrammaticalGender(
+	ctx context.Context,
+	appPackageName string,
+	gender int32,
+) error {
+	return w.impl.SetRequestedApplicationGrammaticalGender(ctx, appPackageName, gender)
+}
+
+func (w *grammaticalInflectionManagerStubWrapper) SetSystemWideGrammaticalGender(
+	ctx context.Context,
+	gender int32,
+) error {
+	return w.impl.SetSystemWideGrammaticalGender(ctx, gender)
+}
+
+func (w *grammaticalInflectionManagerStubWrapper) GetSystemGrammaticalGender(
+	ctx context.Context,
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.GetSystemGrammaticalGender(ctx, attributionSource)
+}
+
+func (w *grammaticalInflectionManagerStubWrapper) PeekSystemGrammaticalGenderByUserId(
+	ctx context.Context,
+	attributionSource interface{},
+) (int32, error) {
+	return w.impl.PeekSystemGrammaticalGenderByUserId(ctx, attributionSource)
+}
+
+var _ IGrammaticalInflectionManager = (*grammaticalInflectionManagerStubWrapper)(nil)
+
+// NewGrammaticalInflectionManagerStub creates a server-side IGrammaticalInflectionManager wrapping the given
+// server implementation. The returned value satisfies IGrammaticalInflectionManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewGrammaticalInflectionManagerStub(
+	impl IGrammaticalInflectionManagerServer,
+) IGrammaticalInflectionManager {
+	wrapper := &grammaticalInflectionManagerStubWrapper{impl: impl}
+	stub := &GrammaticalInflectionManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

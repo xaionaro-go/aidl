@@ -23,8 +23,16 @@ func (s *FileSystemControlParcel) MarshalParcel(
 	if _err := s.Incremental.MarshalParcel(p); _err != nil {
 		return _err
 	}
-	p.WriteStrongBinder(s.Service.AsBinder().Handle())
-	p.WriteStrongBinder(s.Callback.AsBinder().Handle())
+	if s.Service == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Service.AsBinder().Handle())
+	}
+	if s.Callback == nil {
+		p.WriteNullStrongBinder()
+	} else {
+		p.WriteStrongBinder(s.Callback.AsBinder().Handle())
+	}
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil

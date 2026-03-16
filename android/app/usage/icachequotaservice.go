@@ -108,3 +108,43 @@ func (s *CacheQuotaServiceStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ICacheQuotaServiceServer is the server-side interface that user implementations
+// provide to NewCacheQuotaServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ICacheQuotaServiceServer interface {
+	ComputeCacheQuotaHints(ctx context.Context, callback os.RemoteCallback, requests []CacheQuotaHint) error
+}
+
+type cacheQuotaServiceStubWrapper struct {
+	impl       ICacheQuotaServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *cacheQuotaServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *cacheQuotaServiceStubWrapper) ComputeCacheQuotaHints(
+	ctx context.Context,
+	callback os.RemoteCallback,
+	requests []CacheQuotaHint,
+) error {
+	return w.impl.ComputeCacheQuotaHints(ctx, callback, requests)
+}
+
+var _ ICacheQuotaService = (*cacheQuotaServiceStubWrapper)(nil)
+
+// NewCacheQuotaServiceStub creates a server-side ICacheQuotaService wrapping the given
+// server implementation. The returned value satisfies ICacheQuotaService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewCacheQuotaServiceStub(
+	impl ICacheQuotaServiceServer,
+) ICacheQuotaService {
+	wrapper := &cacheQuotaServiceStubWrapper{impl: impl}
+	stub := &CacheQuotaServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

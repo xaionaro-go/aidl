@@ -3,7 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
-	content "github.com/xaionaro-go/binder/android/content"
+	pm "github.com/xaionaro-go/binder/android/content/pm"
 	contentRes "github.com/xaionaro-go/binder/android/content/res"
 	graphics "github.com/xaionaro-go/binder/android/graphics"
 	net "github.com/xaionaro-go/binder/android/net"
@@ -301,17 +301,17 @@ type IActivityManager interface {
 	LogFgsApiEnd(ctx context.Context, apiType int32) error
 	LogFgsApiStateChanged(ctx context.Context, apiType int32, state int32) error
 	HandleApplicationCrash(ctx context.Context, app binder.IBinder, crashInfo ApplicationErrorReportParcelableCrashInfo) error
-	StartActivity(ctx context.Context, caller IApplicationThread, intent content.Intent, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
-	StartActivityWithFeature(ctx context.Context, caller IApplicationThread, intent content.Intent, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StartActivity(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StartActivityWithFeature(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
 	UnhandledBack(ctx context.Context) error
-	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data content.Intent, finishTask int32) (bool, error)
-	RegisterReceiver(ctx context.Context, caller IApplicationThread, callerPackage string, receiver content.IIntentReceiver, filter content.IntentFilter, requiredPermission string, flags int32) (content.Intent, error)
-	RegisterReceiverWithFeature(ctx context.Context, caller IApplicationThread, callerPackage string, receiverId string, receiver content.IIntentReceiver, filter content.IntentFilter, requiredPermission string, flags int32) (content.Intent, error)
-	UnregisterReceiver(ctx context.Context, receiver content.IIntentReceiver) error
-	GetRegisteredIntentFilters(ctx context.Context, receiver content.IIntentReceiver) ([]content.IntentFilter, error)
-	BroadcastIntent(ctx context.Context, caller IApplicationThread, intent content.Intent, resolvedType string, resultTo content.IIntentReceiver, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, appOp int32, options interface{}, serialized bool, sticky bool) (int32, error)
-	BroadcastIntentWithFeature(ctx context.Context, caller IApplicationThread, intent content.Intent, resolvedType string, resultTo content.IIntentReceiver, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, excludePermissions []string, excludePackages []string, appOp int32, options interface{}, serialized bool, sticky bool) (int32, error)
-	UnbroadcastIntent(ctx context.Context, caller IApplicationThread, intent content.Intent) error
+	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data interface{}, finishTask int32) (bool, error)
+	RegisterReceiver(ctx context.Context, caller IApplicationThread, callerPackage string, receiver interface{}, filter interface{}, requiredPermission string, flags int32) (interface{}, error)
+	RegisterReceiverWithFeature(ctx context.Context, caller IApplicationThread, callerPackage string, receiverId string, receiver interface{}, filter interface{}, requiredPermission string, flags int32) (interface{}, error)
+	UnregisterReceiver(ctx context.Context, receiver interface{}) error
+	GetRegisteredIntentFilters(ctx context.Context, receiver interface{}) ([]interface{}, error)
+	BroadcastIntent(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo interface{}, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, appOp int32, options interface{}, serialized bool, sticky bool) (int32, error)
+	BroadcastIntentWithFeature(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo interface{}, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, excludePermissions []string, excludePackages []string, appOp int32, options interface{}, serialized bool, sticky bool) (int32, error)
+	UnbroadcastIntent(ctx context.Context, caller IApplicationThread, intent interface{}) error
 	FinishReceiver(ctx context.Context, who binder.IBinder, resultCode int32, resultData string, map_ interface{}, abortBroadcast bool, flags int32) error
 	AttachApplication(ctx context.Context, app IApplicationThread, startSeq int64) error
 	FinishAttachApplication(ctx context.Context, startSeq int64, timestampApplicationOnCreateNs int64) error
@@ -321,24 +321,24 @@ type IActivityManager interface {
 	GetContentProvider(ctx context.Context, caller IApplicationThread, name string, stable bool) (ContentProviderHolder, error)
 	PublishContentProviders(ctx context.Context, caller IApplicationThread, providers []ContentProviderHolder) error
 	RefContentProvider(ctx context.Context, connection binder.IBinder, stableDelta int32, unstableDelta int32) (bool, error)
-	GetRunningServiceControlPanel(ctx context.Context, service content.ComponentName) (PendingIntent, error)
-	StartService(ctx context.Context, caller IApplicationThread, service content.Intent, resolvedType string, requireForeground bool) (content.ComponentName, error)
-	StopService(ctx context.Context, caller IApplicationThread, service content.Intent, resolvedType string) (int32, error)
-	BindService(ctx context.Context, caller IApplicationThread, token binder.IBinder, service content.Intent, resolvedType string, connection IServiceConnection, flags int64) (int32, error)
-	BindServiceInstance(ctx context.Context, caller IApplicationThread, token binder.IBinder, service content.Intent, resolvedType string, connection IServiceConnection, flags int64, instanceName string) (int32, error)
+	GetRunningServiceControlPanel(ctx context.Context, service interface{}) (PendingIntent, error)
+	StartService(ctx context.Context, caller IApplicationThread, service interface{}, resolvedType string, requireForeground bool) (interface{}, error)
+	StopService(ctx context.Context, caller IApplicationThread, service interface{}, resolvedType string) (int32, error)
+	BindService(ctx context.Context, caller IApplicationThread, token binder.IBinder, service interface{}, resolvedType string, connection IServiceConnection, flags int64) (int32, error)
+	BindServiceInstance(ctx context.Context, caller IApplicationThread, token binder.IBinder, service interface{}, resolvedType string, connection IServiceConnection, flags int64, instanceName string) (int32, error)
 	UpdateServiceGroup(ctx context.Context, connection IServiceConnection, group int32, importance int32) error
 	UnbindService(ctx context.Context, connection IServiceConnection) (bool, error)
-	PublishService(ctx context.Context, token binder.IBinder, intent content.Intent, service binder.IBinder) error
+	PublishService(ctx context.Context, token binder.IBinder, intent interface{}, service binder.IBinder) error
 	SetDebugApp(ctx context.Context, packageName string, waitForDebugger bool, persistent bool) error
 	SetAgentApp(ctx context.Context, packageName string, agent string) error
 	SetAlwaysFinish(ctx context.Context, enabled bool) error
-	StartInstrumentation(ctx context.Context, className content.ComponentName, profileFile string, flags int32, arguments interface{}, watcher IInstrumentationWatcher, connection IUiAutomationConnection, abiOverride string) (bool, error)
+	StartInstrumentation(ctx context.Context, className interface{}, profileFile string, flags int32, arguments interface{}, watcher IInstrumentationWatcher, connection IUiAutomationConnection, abiOverride string) (bool, error)
 	AddInstrumentationResults(ctx context.Context, target IApplicationThread, results interface{}) error
 	FinishInstrumentation(ctx context.Context, target IApplicationThread, resultCode int32, results interface{}) error
 	GetConfiguration(ctx context.Context) (contentRes.Configuration, error)
 	UpdateConfiguration(ctx context.Context, values contentRes.Configuration) (bool, error)
 	UpdateMccMncConfiguration(ctx context.Context, mcc string, mnc string) (bool, error)
-	StopServiceToken(ctx context.Context, className content.ComponentName, token binder.IBinder, startId int32) (bool, error)
+	StopServiceToken(ctx context.Context, className interface{}, token binder.IBinder, startId int32) (bool, error)
 	SetProcessLimit(ctx context.Context, max_ int32) error
 	GetProcessLimit(ctx context.Context) (int32, error)
 	CheckUriPermission(ctx context.Context, uri net.Uri, pid int32, uid int32, mode int32, callerToken binder.IBinder) (int32, error)
@@ -349,26 +349,26 @@ type IActivityManager interface {
 	SetActivityController(ctx context.Context, watcher IActivityController, imAMonkey bool) error
 	ShowWaitingForDebugger(ctx context.Context, who IApplicationThread, waiting bool) error
 	SignalPersistentProcesses(ctx context.Context, signal int32) error
-	GetRecentTasks(ctx context.Context, maxNum int32, flags int32) (interface{}, error)
-	ServiceDoneExecuting(ctx context.Context, token binder.IBinder, type_ int32, startId int32, res int32, intent content.Intent) error
-	GetIntentSender(ctx context.Context, type_ int32, packageName string, token binder.IBinder, resultWho string, requestCode int32, intents []content.Intent, resolvedTypes []string, flags int32, options interface{}) (content.IIntentSender, error)
-	GetIntentSenderWithFeature(ctx context.Context, type_ int32, packageName string, featureId string, token binder.IBinder, resultWho string, requestCode int32, intents []content.Intent, resolvedTypes []string, flags int32, options interface{}) (content.IIntentSender, error)
-	CancelIntentSender(ctx context.Context, sender content.IIntentSender) error
-	GetInfoForIntentSender(ctx context.Context, sender content.IIntentSender) (ActivityManagerPendingIntentInfo, error)
-	RegisterIntentSenderCancelListenerEx(ctx context.Context, sender content.IIntentSender, receiver os.IResultReceiver) (bool, error)
-	UnregisterIntentSenderCancelListener(ctx context.Context, sender content.IIntentSender, receiver os.IResultReceiver) error
+	GetRecentTasks(ctx context.Context, maxNum int32, flags int32) (pm.ParceledListSlice, error)
+	ServiceDoneExecuting(ctx context.Context, token binder.IBinder, type_ int32, startId int32, res int32, intent interface{}) error
+	GetIntentSender(ctx context.Context, type_ int32, packageName string, token binder.IBinder, resultWho string, requestCode int32, intents []interface{}, resolvedTypes []string, flags int32, options interface{}) (interface{}, error)
+	GetIntentSenderWithFeature(ctx context.Context, type_ int32, packageName string, featureId string, token binder.IBinder, resultWho string, requestCode int32, intents []interface{}, resolvedTypes []string, flags int32, options interface{}) (interface{}, error)
+	CancelIntentSender(ctx context.Context, sender interface{}) error
+	GetInfoForIntentSender(ctx context.Context, sender interface{}) (ActivityManagerPendingIntentInfo, error)
+	RegisterIntentSenderCancelListenerEx(ctx context.Context, sender interface{}, receiver os.IResultReceiver) (bool, error)
+	UnregisterIntentSenderCancelListener(ctx context.Context, sender interface{}, receiver os.IResultReceiver) error
 	EnterSafeMode(ctx context.Context) error
-	NoteWakeupAlarm(ctx context.Context, sender content.IIntentSender, workSource interface{}, sourceUid int32, sourcePkg string, tag string) error
+	NoteWakeupAlarm(ctx context.Context, sender interface{}, workSource interface{}, sourceUid int32, sourcePkg string, tag string) error
 	RemoveContentProvider(ctx context.Context, connection binder.IBinder, stable bool) error
 	SetRequestedOrientation(ctx context.Context, token binder.IBinder, requestedOrientation int32) error
-	UnbindFinished(ctx context.Context, token binder.IBinder, service content.Intent) error
+	UnbindFinished(ctx context.Context, token binder.IBinder, service interface{}) error
 	SetProcessImportant(ctx context.Context, token binder.IBinder, pid int32, isForeground bool, reason string) error
-	SetServiceForeground(ctx context.Context, className content.ComponentName, token binder.IBinder, id int32, notification Notification, flags int32, foregroundServiceType int32) error
-	GetForegroundServiceType(ctx context.Context, className content.ComponentName, token binder.IBinder) (int32, error)
+	SetServiceForeground(ctx context.Context, className interface{}, token binder.IBinder, id int32, notification Notification, flags int32, foregroundServiceType int32) error
+	GetForegroundServiceType(ctx context.Context, className interface{}, token binder.IBinder) (int32, error)
 	MoveActivityTaskToBack(ctx context.Context, token binder.IBinder, nonRoot bool) (bool, error)
 	GetMemoryInfo(ctx context.Context, outInfo ActivityManagerMemoryInfo) error
 	GetProcessesInErrorState(ctx context.Context) ([]ActivityManagerProcessErrorStateInfo, error)
-	ClearApplicationUserData(ctx context.Context, packageName string, keepState bool, observer interface{}) (bool, error)
+	ClearApplicationUserData(ctx context.Context, packageName string, keepState bool, observer pm.IPackageDataObserver) (bool, error)
 	StopAppForUser(ctx context.Context, packageName string) error
 	RegisterForegroundServiceObserver(ctx context.Context, callback IForegroundServiceObserver) (bool, error)
 	ForceStopPackage(ctx context.Context, packageName string) error
@@ -376,14 +376,14 @@ type IActivityManager interface {
 	KillPids(ctx context.Context, pids []int32, reason string, secure bool) (bool, error)
 	GetServices(ctx context.Context, maxNum int32, flags int32) ([]ActivityManagerRunningServiceInfo, error)
 	GetRunningAppProcesses(ctx context.Context) ([]ActivityManagerRunningAppProcessInfo, error)
-	PeekService(ctx context.Context, service content.Intent, resolvedType string) (binder.IBinder, error)
+	PeekService(ctx context.Context, service interface{}, resolvedType string) (binder.IBinder, error)
 	ProfileControl(ctx context.Context, process string, start bool, profilerInfo ProfilerInfo, profileType int32) (bool, error)
 	Shutdown(ctx context.Context, timeout int32) (bool, error)
 	StopAppSwitches(ctx context.Context) error
 	ResumeAppSwitches(ctx context.Context) error
 	BindBackupAgent(ctx context.Context, packageName string, backupRestoreMode int32, targetUserId int32, backupDestination int32, useRestrictedMode bool) (bool, error)
 	BackupAgentCreated(ctx context.Context, packageName string, agent binder.IBinder) error
-	UnbindBackupAgent(ctx context.Context, appInfo interface{}) error
+	UnbindBackupAgent(ctx context.Context, appInfo pm.ApplicationInfo) error
 	HandleIncomingUser(ctx context.Context, allowAll bool, requireFull bool, name string, callerPackage string) (int32, error)
 	AddPackageDependency(ctx context.Context, packageName string) error
 	KillApplication(ctx context.Context, pkg string, appId int32, reason string, exitInfoReason int32) error
@@ -393,7 +393,7 @@ type IActivityManager interface {
 	HandleApplicationWtf(ctx context.Context, app binder.IBinder, tag string, system bool, crashInfo ApplicationErrorReportParcelableCrashInfo, immediateCallerPid int32) (bool, error)
 	KillBackgroundProcesses(ctx context.Context, packageName string) error
 	IsUserAMonkey(ctx context.Context) (bool, error)
-	GetRunningExternalApplications(ctx context.Context) ([]interface{}, error)
+	GetRunningExternalApplications(ctx context.Context) ([]pm.ApplicationInfo, error)
 	FinishHeavyWeightApp(ctx context.Context) error
 	HandleApplicationStrictModeViolation(ctx context.Context, app binder.IBinder, penaltyMask int32, crashInfo interface{}) error
 	RegisterStrictModeCallback(ctx context.Context, binder_ binder.IBinder) error
@@ -411,7 +411,7 @@ type IActivityManager interface {
 	RemoveTask(ctx context.Context, taskId int32) (bool, error)
 	RegisterProcessObserver(ctx context.Context, observer IProcessObserver) error
 	UnregisterProcessObserver(ctx context.Context, observer IProcessObserver) error
-	IsIntentSenderTargetedToPackage(ctx context.Context, sender content.IIntentSender) (bool, error)
+	IsIntentSenderTargetedToPackage(ctx context.Context, sender interface{}) (bool, error)
 	UpdatePersistentConfiguration(ctx context.Context, values contentRes.Configuration) error
 	UpdatePersistentConfigurationWithAttribution(ctx context.Context, values contentRes.Configuration, callingPackageName string, callingAttributionTag string) error
 	GetProcessPss(ctx context.Context, pids []int32) ([]int64, error)
@@ -422,13 +422,13 @@ type IActivityManager interface {
 	RemoveContentProviderExternalAsUser(ctx context.Context, name string, token binder.IBinder) error
 	GetMyMemoryState(ctx context.Context, outInfo ActivityManagerRunningAppProcessInfo) error
 	KillProcessesBelowForeground(ctx context.Context, reason string) (bool, error)
-	GetCurrentUser(ctx context.Context) (interface{}, error)
+	GetCurrentUser(ctx context.Context) (pm.UserInfo, error)
 	GetCurrentUserId(ctx context.Context) (int32, error)
 	GetLaunchedFromUid(ctx context.Context, activityToken binder.IBinder) (int32, error)
 	UnstableProviderDied(ctx context.Context, connection binder.IBinder) error
-	IsIntentSenderAnActivity(ctx context.Context, sender content.IIntentSender) (bool, error)
-	StartActivityAsUser(ctx context.Context, caller IApplicationThread, intent content.Intent, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
-	StartActivityAsUserWithFeature(ctx context.Context, caller IApplicationThread, intent content.Intent, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	IsIntentSenderAnActivity(ctx context.Context, sender interface{}) (bool, error)
+	StartActivityAsUser(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StartActivityAsUserWithFeature(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
 	StopUser(ctx context.Context, userid int32, stopProfileRegardlessOfParent bool, callback IStopUserCallback) (int32, error)
 	StopUserWithCallback(ctx context.Context, userid int32, callback IStopUserCallback) (int32, error)
 	StopUserExceptCertainProfiles(ctx context.Context, userid int32, stopProfileRegardlessOfParent bool, callback IStopUserCallback) (int32, error)
@@ -448,7 +448,7 @@ type IActivityManager interface {
 	RequestRemoteBugReport(ctx context.Context, nonce int64) error
 	LaunchBugReportHandlerApp(ctx context.Context) (bool, error)
 	GetBugreportWhitelistedPackages(ctx context.Context) ([]string, error)
-	GetIntentForIntentSender(ctx context.Context, sender content.IIntentSender) (content.Intent, error)
+	GetIntentForIntentSender(ctx context.Context, sender interface{}) (interface{}, error)
 	GetLaunchedFromPackage(ctx context.Context, activityToken binder.IBinder) (string, error)
 	KillUid(ctx context.Context, appId int32, reason string) error
 	SetUserIsMonkey(ctx context.Context, monkey bool) error
@@ -462,7 +462,7 @@ type IActivityManager interface {
 	AppNotRespondingViaProvider(ctx context.Context, connection binder.IBinder) error
 	GetTaskBounds(ctx context.Context, taskId int32) (graphics.Rect, error)
 	SetProcessMemoryTrimLevel(ctx context.Context, process string, level int32) (bool, error)
-	GetTagForIntentSender(ctx context.Context, sender content.IIntentSender, prefix string) (string, error)
+	GetTagForIntentSender(ctx context.Context, sender interface{}, prefix string) (string, error)
 	StartUserInBackground(ctx context.Context, userid int32) (bool, error)
 	IsInLockTaskMode(ctx context.Context) (bool, error)
 	StartActivityFromRecents(ctx context.Context, taskId int32, options interface{}) (int32, error)
@@ -479,8 +479,8 @@ type IActivityManager interface {
 	SetDumpHeapDebugLimit(ctx context.Context, processName string, uid int32, maxMemSize int64, reportPackage string) error
 	DumpHeapFinished(ctx context.Context, path string) error
 	UpdateLockTaskPackages(ctx context.Context, packages []string) error
-	NoteAlarmStart(ctx context.Context, sender content.IIntentSender, workSource interface{}, sourceUid int32, tag string) error
-	NoteAlarmFinish(ctx context.Context, sender content.IIntentSender, workSource interface{}, sourceUid int32, tag string) error
+	NoteAlarmStart(ctx context.Context, sender interface{}, workSource interface{}, sourceUid int32, tag string) error
+	NoteAlarmFinish(ctx context.Context, sender interface{}, workSource interface{}, sourceUid int32, tag string) error
 	GetPackageProcessState(ctx context.Context, packageName string) (int32, error)
 	StartBinderTracking(ctx context.Context) (bool, error)
 	StopBinderTrackingAndDump(ctx context.Context, fd int32) (bool, error)
@@ -491,11 +491,11 @@ type IActivityManager interface {
 	MakePackageIdle(ctx context.Context, packageName string) error
 	SetDeterministicUidIdle(ctx context.Context, deterministic bool) error
 	GetMemoryTrimLevel(ctx context.Context) (int32, error)
-	IsVrModePackageEnabled(ctx context.Context, packageName content.ComponentName) (bool, error)
+	IsVrModePackageEnabled(ctx context.Context, packageName interface{}) (bool, error)
 	NotifyLockedProfile(ctx context.Context) error
-	StartConfirmDeviceCredentialIntent(ctx context.Context, intent content.Intent, options interface{}) error
+	StartConfirmDeviceCredentialIntent(ctx context.Context, intent interface{}, options interface{}) error
 	SendIdleJobTrigger(ctx context.Context) error
-	SendIntentSender(ctx context.Context, caller IApplicationThread, target content.IIntentSender, whitelistToken binder.IBinder, code int32, intent content.Intent, resolvedType string, finishedReceiver content.IIntentReceiver, requiredPermission string, options interface{}) (int32, error)
+	SendIntentSender(ctx context.Context, caller IApplicationThread, target interface{}, whitelistToken binder.IBinder, code int32, intent interface{}, resolvedType string, finishedReceiver interface{}, requiredPermission string, options interface{}) (int32, error)
 	IsBackgroundRestricted(ctx context.Context, packageName string) (bool, error)
 	SetRenderThread(ctx context.Context, tid int32) error
 	SetHasTopUi(ctx context.Context, hasTopUi bool) error
@@ -511,14 +511,14 @@ type IActivityManager interface {
 	GetLifeMonitor(ctx context.Context) (int32, error)
 	StartUserInForegroundWithListener(ctx context.Context, userid int32, unlockProgressListener interface{}) (bool, error)
 	AppNotResponding(ctx context.Context, reason string) error
-	GetHistoricalProcessStartReasons(ctx context.Context, packageName string, maxNum int32) (interface{}, error)
+	GetHistoricalProcessStartReasons(ctx context.Context, packageName string, maxNum int32) (pm.ParceledListSlice, error)
 	AddApplicationStartInfoCompleteListener(ctx context.Context, listener IApplicationStartInfoCompleteListener) error
 	RemoveApplicationStartInfoCompleteListener(ctx context.Context, listener IApplicationStartInfoCompleteListener) error
 	AddStartInfoTimestamp(ctx context.Context, key int32, timestampNs int64) error
 	ReportStartInfoViewTimestamps(ctx context.Context, renderThreadDrawStartTimeNs int64, framePresentedTimeNs int64) error
-	GetHistoricalProcessExitReasons(ctx context.Context, packageName string, pid int32, maxNum int32) (interface{}, error)
+	GetHistoricalProcessExitReasons(ctx context.Context, packageName string, pid int32, maxNum int32) (pm.ParceledListSlice, error)
 	KillProcessesWhenImperceptible(ctx context.Context, pids []int32, reason string) error
-	SetActivityLocusContext(ctx context.Context, activity content.ComponentName, locusId content.LocusId, appToken binder.IBinder) error
+	SetActivityLocusContext(ctx context.Context, activity interface{}, locusId interface{}, appToken binder.IBinder) error
 	SetProcessStateSummary(ctx context.Context, state []byte) error
 	IsAppFreezerSupported(ctx context.Context) (bool, error)
 	IsAppFreezerEnabled(ctx context.Context) (bool, error)
@@ -529,7 +529,7 @@ type IActivityManager interface {
 	HoldLock(ctx context.Context, token binder.IBinder, durationMs int32) error
 	StartProfile(ctx context.Context) (bool, error)
 	StopProfile(ctx context.Context) (bool, error)
-	QueryIntentComponentsForIntentSender(ctx context.Context, sender content.IIntentSender, matchFlags int32) (interface{}, error)
+	QueryIntentComponentsForIntentSender(ctx context.Context, sender interface{}, matchFlags int32) (pm.ParceledListSlice, error)
 	GetUidProcessCapabilities(ctx context.Context, uid int32) (int32, error)
 	WaitForBroadcastIdle(ctx context.Context) error
 	WaitForBroadcastBarrier(ctx context.Context) error
@@ -540,8 +540,8 @@ type IActivityManager interface {
 	StartProfileWithListener(ctx context.Context, userid int32, unlockProgressListener interface{}) (bool, error)
 	RestartUserInBackground(ctx context.Context, userStartMode int32) (int32, error)
 	GetDisplayIdsForStartingVisibleBackgroundUsers(ctx context.Context) ([]int32, error)
-	ShouldServiceTimeOut(ctx context.Context, className content.ComponentName, token binder.IBinder) (bool, error)
-	HasServiceTimeLimitExceeded(ctx context.Context, className content.ComponentName, token binder.IBinder) (bool, error)
+	ShouldServiceTimeOut(ctx context.Context, className interface{}, token binder.IBinder) (bool, error)
+	HasServiceTimeLimitExceeded(ctx context.Context, className interface{}, token binder.IBinder) (bool, error)
 	RegisterUidFrozenStateChangedCallback(ctx context.Context, callback IUidFrozenStateChangedCallback) error
 	UnregisterUidFrozenStateChangedCallback(ctx context.Context, callback IUidFrozenStateChangedCallback) error
 	GetUidFrozenState(ctx context.Context, uids []int32) ([]int32, error)
@@ -554,7 +554,7 @@ type IActivityManager interface {
 	ClearOverridePermissionStates(ctx context.Context, originatingUid int32, uid int32) error
 	ClearAllOverridePermissionStates(ctx context.Context, originatingUid int32) error
 	NoteAppRestrictionEnabled(ctx context.Context, packageName string, uid int32, restrictionType int32, enabled bool, reason int32, subReason string, source int32, threshold int64) error
-	RefreshIntentCreatorToken(ctx context.Context, intent content.Intent) (binder.IBinder, error)
+	RefreshIntentCreatorToken(ctx context.Context, intent interface{}) (binder.IBinder, error)
 }
 
 type ActivityManagerProxy struct {
@@ -613,7 +613,7 @@ func (p *ActivityManagerProxy) RegisterUidObserver(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(which)
 	_data.WriteInt32(cutpoint)
 	_data.WriteString16(_identity.PackageName)
@@ -642,7 +642,7 @@ func (p *ActivityManagerProxy) UnregisterUidObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unregisterUidObserver")
 	if _err != nil {
@@ -673,7 +673,7 @@ func (p *ActivityManagerProxy) RegisterUidObserverForUids(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(which)
 	_data.WriteInt32(cutpoint)
 	_data.WriteString16(_identity.PackageName)
@@ -717,7 +717,7 @@ func (p *ActivityManagerProxy) AddUidToObserver(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(observerToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, observerToken, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(uid)
 
@@ -747,7 +747,7 @@ func (p *ActivityManagerProxy) RemoveUidFromObserver(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(observerToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, observerToken, p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(uid)
 
@@ -939,7 +939,7 @@ func (p *ActivityManagerProxy) HandleApplicationCrash(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(app.Handle())
+	binder.WriteBinderToParcel(ctx, _data, app, p.remote.Transport())
 	_data.WriteInt32(1)
 	if _err := crashInfo.MarshalParcel(_data); _err != nil {
 		return _err
@@ -966,7 +966,7 @@ func (p *ActivityManagerProxy) HandleApplicationCrash(
 func (p *ActivityManagerProxy) StartActivity(
 	ctx context.Context,
 	caller IApplicationThread,
-	intent content.Intent,
+	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
 	resultWho string,
@@ -979,14 +979,10 @@ func (p *ActivityManagerProxy) StartActivity(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(resultTo.Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultTo, p.remote.Transport())
 	_data.WriteString16(resultWho)
 	_data.WriteInt32(requestCode)
 	_data.WriteInt32(flags)
@@ -1020,7 +1016,7 @@ func (p *ActivityManagerProxy) StartActivity(
 func (p *ActivityManagerProxy) StartActivityWithFeature(
 	ctx context.Context,
 	caller IApplicationThread,
-	intent content.Intent,
+	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
 	resultWho string,
@@ -1033,15 +1029,11 @@ func (p *ActivityManagerProxy) StartActivityWithFeature(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(_identity.AttributionTag)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(resultTo.Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultTo, p.remote.Transport())
 	_data.WriteString16(resultWho)
 	_data.WriteInt32(requestCode)
 	_data.WriteInt32(flags)
@@ -1100,18 +1092,14 @@ func (p *ActivityManagerProxy) FinishActivity(
 	ctx context.Context,
 	token binder.IBinder,
 	code int32,
-	data content.Intent,
+	data interface{},
 	finishTask int32,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(code)
-	_data.WriteInt32(1)
-	if _err := data.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteInt32(finishTask)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "finishActivity")
@@ -1140,22 +1128,17 @@ func (p *ActivityManagerProxy) RegisterReceiver(
 	ctx context.Context,
 	caller IApplicationThread,
 	callerPackage string,
-	receiver content.IIntentReceiver,
-	filter content.IntentFilter,
+	receiver interface{},
+	filter interface{},
 	requiredPermission string,
 	flags int32,
-) (content.Intent, error) {
-	var _result content.Intent
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(callerPackage)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := filter.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(requiredPermission)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
@@ -1175,15 +1158,6 @@ func (p *ActivityManagerProxy) RegisterReceiver(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -1192,24 +1166,19 @@ func (p *ActivityManagerProxy) RegisterReceiverWithFeature(
 	caller IApplicationThread,
 	callerPackage string,
 	receiverId string,
-	receiver content.IIntentReceiver,
-	filter content.IntentFilter,
+	receiver interface{},
+	filter interface{},
 	requiredPermission string,
 	flags int32,
-) (content.Intent, error) {
-	var _result content.Intent
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(callerPackage)
 	_data.WriteString16(_identity.AttributionTag)
 	_data.WriteString16(receiverId)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := filter.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(requiredPermission)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(flags)
@@ -1229,25 +1198,15 @@ func (p *ActivityManagerProxy) RegisterReceiverWithFeature(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
 func (p *ActivityManagerProxy) UnregisterReceiver(
 	ctx context.Context,
-	receiver content.IIntentReceiver,
+	receiver interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unregisterReceiver")
 	if _err != nil {
@@ -1269,12 +1228,11 @@ func (p *ActivityManagerProxy) UnregisterReceiver(
 
 func (p *ActivityManagerProxy) GetRegisteredIntentFilters(
 	ctx context.Context,
-	receiver content.IIntentReceiver,
-) ([]content.IntentFilter, error) {
-	var _result []content.IntentFilter
+	receiver interface{},
+) ([]interface{}, error) {
+	var _result []interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getRegisteredIntentFilters")
 	if _err != nil {
@@ -1297,11 +1255,8 @@ func (p *ActivityManagerProxy) GetRegisteredIntentFilters(
 	}
 
 	if _count >= 0 {
-		_result = make([]content.IntentFilter, _count)
+		_result = make([]interface{}, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
-				return _result, _err
-			}
 		}
 	}
 	return _result, nil
@@ -1310,9 +1265,9 @@ func (p *ActivityManagerProxy) GetRegisteredIntentFilters(
 func (p *ActivityManagerProxy) BroadcastIntent(
 	ctx context.Context,
 	caller IApplicationThread,
-	intent content.Intent,
+	intent interface{},
 	resolvedType string,
-	resultTo content.IIntentReceiver,
+	resultTo interface{},
 	resultCode int32,
 	resultData string,
 	map_ interface{},
@@ -1326,13 +1281,8 @@ func (p *ActivityManagerProxy) BroadcastIntent(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(resultTo.AsBinder().Handle())
 	_data.WriteInt32(resultCode)
 	_data.WriteString16(resultData)
 	if requiredPermissions == nil {
@@ -1373,9 +1323,9 @@ func (p *ActivityManagerProxy) BroadcastIntent(
 func (p *ActivityManagerProxy) BroadcastIntentWithFeature(
 	ctx context.Context,
 	caller IApplicationThread,
-	intent content.Intent,
+	intent interface{},
 	resolvedType string,
-	resultTo content.IIntentReceiver,
+	resultTo interface{},
 	resultCode int32,
 	resultData string,
 	map_ interface{},
@@ -1391,14 +1341,9 @@ func (p *ActivityManagerProxy) BroadcastIntentWithFeature(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.AttributionTag)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(resultTo.AsBinder().Handle())
 	_data.WriteInt32(resultCode)
 	_data.WriteString16(resultData)
 	if requiredPermissions == nil {
@@ -1455,16 +1400,12 @@ func (p *ActivityManagerProxy) BroadcastIntentWithFeature(
 func (p *ActivityManagerProxy) UnbroadcastIntent(
 	ctx context.Context,
 	caller IApplicationThread,
-	intent content.Intent,
+	intent interface{},
 ) error {
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unbroadcastIntent")
@@ -1496,7 +1437,7 @@ func (p *ActivityManagerProxy) FinishReceiver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(who.Handle())
+	binder.WriteBinderToParcel(ctx, _data, who, p.remote.Transport())
 	_data.WriteInt32(resultCode)
 	_data.WriteString16(resultData)
 	_data.WriteBool(abortBroadcast)
@@ -1518,7 +1459,7 @@ func (p *ActivityManagerProxy) AttachApplication(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(app.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, app.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(startSeq)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "attachApplication")
@@ -1617,7 +1558,7 @@ func (p *ActivityManagerProxy) MoveTaskToFront(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(task)
 	_data.WriteInt32(flags)
@@ -1648,7 +1589,7 @@ func (p *ActivityManagerProxy) GetTaskForActivity(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(onlyRoot)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getTaskForActivity")
@@ -1683,7 +1624,7 @@ func (p *ActivityManagerProxy) GetContentProvider(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(name)
 	_data.WriteInt32(_identity.UserID)
@@ -1723,7 +1664,7 @@ func (p *ActivityManagerProxy) PublishContentProviders(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	if providers == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1762,7 +1703,7 @@ func (p *ActivityManagerProxy) RefContentProvider(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(connection.Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection, p.remote.Transport())
 	_data.WriteInt32(stableDelta)
 	_data.WriteInt32(unstableDelta)
 
@@ -1790,15 +1731,11 @@ func (p *ActivityManagerProxy) RefContentProvider(
 
 func (p *ActivityManagerProxy) GetRunningServiceControlPanel(
 	ctx context.Context,
-	service content.ComponentName,
+	service interface{},
 ) (PendingIntent, error) {
 	var _result PendingIntent
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := service.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getRunningServiceControlPanel")
 	if _err != nil {
@@ -1830,19 +1767,15 @@ func (p *ActivityManagerProxy) GetRunningServiceControlPanel(
 func (p *ActivityManagerProxy) StartService(
 	ctx context.Context,
 	caller IApplicationThread,
-	service content.Intent,
+	service interface{},
 	resolvedType string,
 	requireForeground bool,
-) (content.ComponentName, error) {
-	var _result content.ComponentName
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := service.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(resolvedType)
 	_data.WriteBool(requireForeground)
 	_data.WriteString16(_identity.PackageName)
@@ -1864,33 +1797,20 @@ func (p *ActivityManagerProxy) StartService(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
 func (p *ActivityManagerProxy) StopService(
 	ctx context.Context,
 	caller IApplicationThread,
-	service content.Intent,
+	service interface{},
 	resolvedType string,
 ) (int32, error) {
 	var _result int32
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteInt32(1)
-	if _err := service.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(resolvedType)
 	_data.WriteInt32(_identity.UserID)
 
@@ -1920,7 +1840,7 @@ func (p *ActivityManagerProxy) BindService(
 	ctx context.Context,
 	caller IApplicationThread,
 	token binder.IBinder,
-	service content.Intent,
+	service interface{},
 	resolvedType string,
 	connection IServiceConnection,
 	flags int64,
@@ -1929,14 +1849,10 @@ func (p *ActivityManagerProxy) BindService(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(1)
-	if _err := service.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(flags)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteInt32(_identity.UserID)
@@ -1967,7 +1883,7 @@ func (p *ActivityManagerProxy) BindServiceInstance(
 	ctx context.Context,
 	caller IApplicationThread,
 	token binder.IBinder,
-	service content.Intent,
+	service interface{},
 	resolvedType string,
 	connection IServiceConnection,
 	flags int64,
@@ -1977,14 +1893,10 @@ func (p *ActivityManagerProxy) BindServiceInstance(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(1)
-	if _err := service.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(flags)
 	_data.WriteString16(instanceName)
 	_data.WriteString16(_identity.PackageName)
@@ -2020,7 +1932,7 @@ func (p *ActivityManagerProxy) UpdateServiceGroup(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(group)
 	_data.WriteInt32(importance)
 
@@ -2049,7 +1961,7 @@ func (p *ActivityManagerProxy) UnbindService(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unbindService")
 	if _err != nil {
@@ -2076,17 +1988,13 @@ func (p *ActivityManagerProxy) UnbindService(
 func (p *ActivityManagerProxy) PublishService(
 	ctx context.Context,
 	token binder.IBinder,
-	intent content.Intent,
+	intent interface{},
 	service binder.IBinder,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(service.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, service, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "publishService")
 	if _err != nil {
@@ -2192,7 +2100,7 @@ func (p *ActivityManagerProxy) SetAlwaysFinish(
 
 func (p *ActivityManagerProxy) StartInstrumentation(
 	ctx context.Context,
-	className content.ComponentName,
+	className interface{},
 	profileFile string,
 	flags int32,
 	arguments interface{},
@@ -2204,14 +2112,10 @@ func (p *ActivityManagerProxy) StartInstrumentation(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := className.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(profileFile)
 	_data.WriteInt32(flags)
-	_data.WriteStrongBinder(watcher.AsBinder().Handle())
-	_data.WriteStrongBinder(connection.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, watcher.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, connection.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteString16(abiOverride)
 
@@ -2244,7 +2148,7 @@ func (p *ActivityManagerProxy) AddInstrumentationResults(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(target.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, target.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "addInstrumentationResults")
 	if _err != nil {
@@ -2272,7 +2176,7 @@ func (p *ActivityManagerProxy) FinishInstrumentation(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(target.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, target.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(resultCode)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "finishInstrumentation")
@@ -2396,18 +2300,14 @@ func (p *ActivityManagerProxy) UpdateMccMncConfiguration(
 
 func (p *ActivityManagerProxy) StopServiceToken(
 	ctx context.Context,
-	className content.ComponentName,
+	className interface{},
 	token binder.IBinder,
 	startId int32,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := className.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(startId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "stopServiceToken")
@@ -2507,7 +2407,7 @@ func (p *ActivityManagerProxy) CheckUriPermission(
 	_data.WriteInt32(uid)
 	_data.WriteInt32(mode)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(callerToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callerToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "checkUriPermission")
 	if _err != nil {
@@ -2599,7 +2499,7 @@ func (p *ActivityManagerProxy) CheckUriPermissions(
 	_data.WriteInt32(uid)
 	_data.WriteInt32(mode)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(callerToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, callerToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "checkUriPermissions")
 	if _err != nil {
@@ -2643,7 +2543,7 @@ func (p *ActivityManagerProxy) GrantUriPermission(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(targetPkg)
 	_data.WriteInt32(1)
 	if _err := uri.MarshalParcel(_data); _err != nil {
@@ -2680,7 +2580,7 @@ func (p *ActivityManagerProxy) RevokeUriPermission(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(targetPkg)
 	_data.WriteInt32(1)
 	if _err := uri.MarshalParcel(_data); _err != nil {
@@ -2714,7 +2614,7 @@ func (p *ActivityManagerProxy) SetActivityController(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(watcher.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, watcher.AsBinder(), p.remote.Transport())
 	_data.WriteBool(imAMonkey)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "setActivityController")
@@ -2742,7 +2642,7 @@ func (p *ActivityManagerProxy) ShowWaitingForDebugger(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(who.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, who.AsBinder(), p.remote.Transport())
 	_data.WriteBool(waiting)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "showWaitingForDebugger")
@@ -2793,8 +2693,8 @@ func (p *ActivityManagerProxy) GetRecentTasks(
 	ctx context.Context,
 	maxNum int32,
 	flags int32,
-) (interface{}, error) {
-	var _result interface{}
+) (pm.ParceledListSlice, error) {
+	var _result pm.ParceledListSlice
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
@@ -2817,6 +2717,15 @@ func (p *ActivityManagerProxy) GetRecentTasks(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -2826,18 +2735,14 @@ func (p *ActivityManagerProxy) ServiceDoneExecuting(
 	type_ int32,
 	startId int32,
 	res int32,
-	intent content.Intent,
+	intent interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(type_)
 	_data.WriteInt32(startId)
 	_data.WriteInt32(res)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "serviceDoneExecuting")
 	if _err != nil {
@@ -2855,29 +2760,24 @@ func (p *ActivityManagerProxy) GetIntentSender(
 	token binder.IBinder,
 	resultWho string,
 	requestCode int32,
-	intents []content.Intent,
+	intents []interface{},
 	resolvedTypes []string,
 	flags int32,
 	options interface{},
-) (content.IIntentSender, error) {
-	var _result content.IIntentSender
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(type_)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(resultWho)
 	_data.WriteInt32(requestCode)
 	if intents == nil {
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(intents)))
-		for _, _item := range intents {
-			if _err := _item.MarshalParcel(_data); _err != nil {
-				return _result, _err
-			}
-		}
 	}
 	if resolvedTypes == nil {
 		_data.WriteInt32(-1)
@@ -2905,11 +2805,6 @@ func (p *ActivityManagerProxy) GetIntentSender(
 		return _result, _err
 	}
 
-	_handle, _err := _reply.ReadStrongBinder()
-	if _err != nil {
-		return _result, _err
-	}
-	_result = content.NewIntentSenderProxy(binder.NewProxyBinder(p.remote.Transport(), p.remote.Identity(), _handle))
 	return _result, nil
 }
 
@@ -2921,30 +2816,25 @@ func (p *ActivityManagerProxy) GetIntentSenderWithFeature(
 	token binder.IBinder,
 	resultWho string,
 	requestCode int32,
-	intents []content.Intent,
+	intents []interface{},
 	resolvedTypes []string,
 	flags int32,
 	options interface{},
-) (content.IIntentSender, error) {
-	var _result content.IIntentSender
+) (interface{}, error) {
+	var _result interface{}
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(type_)
 	_data.WriteString16(packageName)
 	_data.WriteString16(featureId)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(resultWho)
 	_data.WriteInt32(requestCode)
 	if intents == nil {
 		_data.WriteInt32(-1)
 	} else {
 		_data.WriteInt32(int32(len(intents)))
-		for _, _item := range intents {
-			if _err := _item.MarshalParcel(_data); _err != nil {
-				return _result, _err
-			}
-		}
 	}
 	if resolvedTypes == nil {
 		_data.WriteInt32(-1)
@@ -2972,21 +2862,15 @@ func (p *ActivityManagerProxy) GetIntentSenderWithFeature(
 		return _result, _err
 	}
 
-	_handle, _err := _reply.ReadStrongBinder()
-	if _err != nil {
-		return _result, _err
-	}
-	_result = content.NewIntentSenderProxy(binder.NewProxyBinder(p.remote.Transport(), p.remote.Identity(), _handle))
 	return _result, nil
 }
 
 func (p *ActivityManagerProxy) CancelIntentSender(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "cancelIntentSender")
 	if _err != nil {
@@ -3008,12 +2892,11 @@ func (p *ActivityManagerProxy) CancelIntentSender(
 
 func (p *ActivityManagerProxy) GetInfoForIntentSender(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 ) (ActivityManagerPendingIntentInfo, error) {
 	var _result ActivityManagerPendingIntentInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getInfoForIntentSender")
 	if _err != nil {
@@ -3044,14 +2927,13 @@ func (p *ActivityManagerProxy) GetInfoForIntentSender(
 
 func (p *ActivityManagerProxy) RegisterIntentSenderCancelListenerEx(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 	receiver os.IResultReceiver,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerIntentSenderCancelListenerEx")
 	if _err != nil {
@@ -3077,13 +2959,12 @@ func (p *ActivityManagerProxy) RegisterIntentSenderCancelListenerEx(
 
 func (p *ActivityManagerProxy) UnregisterIntentSenderCancelListener(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 	receiver os.IResultReceiver,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
-	_data.WriteStrongBinder(receiver.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, receiver.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unregisterIntentSenderCancelListener")
 	if _err != nil {
@@ -3129,7 +3010,7 @@ func (p *ActivityManagerProxy) EnterSafeMode(
 
 func (p *ActivityManagerProxy) NoteWakeupAlarm(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 	workSource interface{},
 	sourceUid int32,
 	sourcePkg string,
@@ -3137,7 +3018,6 @@ func (p *ActivityManagerProxy) NoteWakeupAlarm(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 	_data.WriteInt32(sourceUid)
 	_data.WriteString16(sourcePkg)
 	_data.WriteString16(tag)
@@ -3167,7 +3047,7 @@ func (p *ActivityManagerProxy) RemoveContentProvider(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(connection.Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection, p.remote.Transport())
 	_data.WriteBool(stable)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "removeContentProvider")
@@ -3186,7 +3066,7 @@ func (p *ActivityManagerProxy) SetRequestedOrientation(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(requestedOrientation)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "setRequestedOrientation")
@@ -3210,15 +3090,11 @@ func (p *ActivityManagerProxy) SetRequestedOrientation(
 func (p *ActivityManagerProxy) UnbindFinished(
 	ctx context.Context,
 	token binder.IBinder,
-	service content.Intent,
+	service interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
-	_data.WriteInt32(1)
-	if _err := service.MarshalParcel(_data); _err != nil {
-		return _err
-	}
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unbindFinished")
 	if _err != nil {
@@ -3247,7 +3123,7 @@ func (p *ActivityManagerProxy) SetProcessImportant(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(pid)
 	_data.WriteBool(isForeground)
 	_data.WriteString16(reason)
@@ -3272,7 +3148,7 @@ func (p *ActivityManagerProxy) SetProcessImportant(
 
 func (p *ActivityManagerProxy) SetServiceForeground(
 	ctx context.Context,
-	className content.ComponentName,
+	className interface{},
 	token binder.IBinder,
 	id int32,
 	notification Notification,
@@ -3281,11 +3157,7 @@ func (p *ActivityManagerProxy) SetServiceForeground(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := className.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(id)
 	_data.WriteInt32(1)
 	if _err := notification.MarshalParcel(_data); _err != nil {
@@ -3314,17 +3186,13 @@ func (p *ActivityManagerProxy) SetServiceForeground(
 
 func (p *ActivityManagerProxy) GetForegroundServiceType(
 	ctx context.Context,
-	className content.ComponentName,
+	className interface{},
 	token binder.IBinder,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := className.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getForegroundServiceType")
 	if _err != nil {
@@ -3356,7 +3224,7 @@ func (p *ActivityManagerProxy) MoveActivityTaskToBack(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteBool(nonRoot)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "moveActivityTaskToBack")
@@ -3451,7 +3319,7 @@ func (p *ActivityManagerProxy) ClearApplicationUserData(
 	ctx context.Context,
 	packageName string,
 	keepState bool,
-	observer interface{},
+	observer pm.IPackageDataObserver,
 ) (bool, error) {
 	var _result bool
 	_identity := p.remote.Identity()
@@ -3459,6 +3327,7 @@ func (p *ActivityManagerProxy) ClearApplicationUserData(
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
 	_data.WriteBool(keepState)
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "clearApplicationUserData")
@@ -3518,7 +3387,7 @@ func (p *ActivityManagerProxy) RegisterForegroundServiceObserver(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerForegroundServiceObserver")
 	if _err != nil {
@@ -3722,17 +3591,13 @@ func (p *ActivityManagerProxy) GetRunningAppProcesses(
 
 func (p *ActivityManagerProxy) PeekService(
 	ctx context.Context,
-	service content.Intent,
+	service interface{},
 	resolvedType string,
 ) (binder.IBinder, error) {
 	var _result binder.IBinder
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := service.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(resolvedType)
 	_data.WriteString16(_identity.PackageName)
 
@@ -3928,7 +3793,7 @@ func (p *ActivityManagerProxy) BackupAgentCreated(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(packageName)
-	_data.WriteStrongBinder(agent.Handle())
+	binder.WriteBinderToParcel(ctx, _data, agent, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "backupAgentCreated")
@@ -3951,10 +3816,14 @@ func (p *ActivityManagerProxy) BackupAgentCreated(
 
 func (p *ActivityManagerProxy) UnbindBackupAgent(
 	ctx context.Context,
-	appInfo interface{},
+	appInfo pm.ApplicationInfo,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
+	_data.WriteInt32(1)
+	if _err := appInfo.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unbindBackupAgent")
 	if _err != nil {
@@ -4184,7 +4053,7 @@ func (p *ActivityManagerProxy) HandleApplicationWtf(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(app.Handle())
+	binder.WriteBinderToParcel(ctx, _data, app, p.remote.Transport())
 	_data.WriteString16(tag)
 	_data.WriteBool(system)
 	_data.WriteInt32(1)
@@ -4274,8 +4143,8 @@ func (p *ActivityManagerProxy) IsUserAMonkey(
 
 func (p *ActivityManagerProxy) GetRunningExternalApplications(
 	ctx context.Context,
-) ([]interface{}, error) {
-	var _result []interface{}
+) ([]pm.ApplicationInfo, error) {
+	var _result []pm.ApplicationInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 
@@ -4300,8 +4169,11 @@ func (p *ActivityManagerProxy) GetRunningExternalApplications(
 	}
 
 	if _count >= 0 {
-		_result = make([]interface{}, _count)
+		_result = make([]pm.ApplicationInfo, _count)
 		for _i := int32(0); _i < _count; _i++ {
+			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, _err
+			}
 		}
 	}
 	return _result, nil
@@ -4339,7 +4211,7 @@ func (p *ActivityManagerProxy) HandleApplicationStrictModeViolation(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(app.Handle())
+	binder.WriteBinderToParcel(ctx, _data, app, p.remote.Transport())
 	_data.WriteInt32(penaltyMask)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "handleApplicationStrictModeViolation")
@@ -4366,7 +4238,7 @@ func (p *ActivityManagerProxy) RegisterStrictModeCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(binder_.Handle())
+	binder.WriteBinderToParcel(ctx, _data, binder_, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerStrictModeCallback")
 	if _err != nil {
@@ -4774,7 +4646,7 @@ func (p *ActivityManagerProxy) RegisterProcessObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerProcessObserver")
 	if _err != nil {
@@ -4800,7 +4672,7 @@ func (p *ActivityManagerProxy) UnregisterProcessObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unregisterProcessObserver")
 	if _err != nil {
@@ -4822,12 +4694,11 @@ func (p *ActivityManagerProxy) UnregisterProcessObserver(
 
 func (p *ActivityManagerProxy) IsIntentSenderTargetedToPackage(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "isIntentSenderTargetedToPackage")
 	if _err != nil {
@@ -5024,7 +4895,7 @@ func (p *ActivityManagerProxy) GetContentProviderExternal(
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(name)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteString16(tag)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getContentProviderExternal")
@@ -5062,7 +4933,7 @@ func (p *ActivityManagerProxy) RemoveContentProviderExternal(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "removeContentProviderExternal")
 	if _err != nil {
@@ -5091,7 +4962,7 @@ func (p *ActivityManagerProxy) RemoveContentProviderExternalAsUser(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteString16(name)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "removeContentProviderExternalAsUser")
@@ -5173,8 +5044,8 @@ func (p *ActivityManagerProxy) KillProcessesBelowForeground(
 
 func (p *ActivityManagerProxy) GetCurrentUser(
 	ctx context.Context,
-) (interface{}, error) {
-	var _result interface{}
+) (pm.UserInfo, error) {
+	var _result pm.UserInfo
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 
@@ -5193,6 +5064,15 @@ func (p *ActivityManagerProxy) GetCurrentUser(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -5232,7 +5112,7 @@ func (p *ActivityManagerProxy) GetLaunchedFromUid(
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(activityToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getLaunchedFromUid")
 	if _err != nil {
@@ -5262,7 +5142,7 @@ func (p *ActivityManagerProxy) UnstableProviderDied(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(connection.Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unstableProviderDied")
 	if _err != nil {
@@ -5284,12 +5164,11 @@ func (p *ActivityManagerProxy) UnstableProviderDied(
 
 func (p *ActivityManagerProxy) IsIntentSenderAnActivity(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "isIntentSenderAnActivity")
 	if _err != nil {
@@ -5316,7 +5195,7 @@ func (p *ActivityManagerProxy) IsIntentSenderAnActivity(
 func (p *ActivityManagerProxy) StartActivityAsUser(
 	ctx context.Context,
 	caller IApplicationThread,
-	intent content.Intent,
+	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
 	resultWho string,
@@ -5329,14 +5208,10 @@ func (p *ActivityManagerProxy) StartActivityAsUser(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(resultTo.Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultTo, p.remote.Transport())
 	_data.WriteString16(resultWho)
 	_data.WriteInt32(requestCode)
 	_data.WriteInt32(flags)
@@ -5371,7 +5246,7 @@ func (p *ActivityManagerProxy) StartActivityAsUser(
 func (p *ActivityManagerProxy) StartActivityAsUserWithFeature(
 	ctx context.Context,
 	caller IApplicationThread,
-	intent content.Intent,
+	intent interface{},
 	resolvedType string,
 	resultTo binder.IBinder,
 	resultWho string,
@@ -5384,15 +5259,11 @@ func (p *ActivityManagerProxy) StartActivityAsUserWithFeature(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(_identity.AttributionTag)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(resultTo.Handle())
+	binder.WriteBinderToParcel(ctx, _data, resultTo, p.remote.Transport())
 	_data.WriteString16(resultWho)
 	_data.WriteInt32(requestCode)
 	_data.WriteInt32(flags)
@@ -5435,7 +5306,7 @@ func (p *ActivityManagerProxy) StopUser(
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(userid)
 	_data.WriteBool(stopProfileRegardlessOfParent)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "stopUser")
 	if _err != nil {
@@ -5468,7 +5339,7 @@ func (p *ActivityManagerProxy) StopUserWithCallback(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(userid)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "stopUserWithCallback")
 	if _err != nil {
@@ -5503,7 +5374,7 @@ func (p *ActivityManagerProxy) StopUserExceptCertainProfiles(
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(userid)
 	_data.WriteBool(stopProfileRegardlessOfParent)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "stopUserExceptCertainProfiles")
 	if _err != nil {
@@ -5536,7 +5407,7 @@ func (p *ActivityManagerProxy) StopUserWithDelayedLocking(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
 	_data.WriteInt32(userid)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "stopUserWithDelayedLocking")
 	if _err != nil {
@@ -5567,7 +5438,7 @@ func (p *ActivityManagerProxy) RegisterUserSwitchObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	_data.WriteString16(name)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerUserSwitchObserver")
@@ -5594,7 +5465,7 @@ func (p *ActivityManagerProxy) UnregisterUserSwitchObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unregisterUserSwitchObserver")
 	if _err != nil {
@@ -5996,12 +5867,11 @@ func (p *ActivityManagerProxy) GetBugreportWhitelistedPackages(
 
 func (p *ActivityManagerProxy) GetIntentForIntentSender(
 	ctx context.Context,
-	sender content.IIntentSender,
-) (content.Intent, error) {
-	var _result content.Intent
+	sender interface{},
+) (interface{}, error) {
+	var _result interface{}
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getIntentForIntentSender")
 	if _err != nil {
@@ -6018,15 +5888,6 @@ func (p *ActivityManagerProxy) GetIntentForIntentSender(
 		return _result, _err
 	}
 
-	_nullIndicator, _err := _reply.ReadInt32()
-	if _err != nil {
-		return _result, _err
-	}
-	if _nullIndicator != 0 {
-		if _err = _result.UnmarshalParcel(_reply); _err != nil {
-			return _result, _err
-		}
-	}
 	return _result, nil
 }
 
@@ -6037,7 +5898,7 @@ func (p *ActivityManagerProxy) GetLaunchedFromPackage(
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(activityToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, activityToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getLaunchedFromPackage")
 	if _err != nil {
@@ -6124,7 +5985,7 @@ func (p *ActivityManagerProxy) Hang(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(who.Handle())
+	binder.WriteBinderToParcel(ctx, _data, who, p.remote.Transport())
 	_data.WriteBool(allowRestart)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "hang")
@@ -6327,7 +6188,7 @@ func (p *ActivityManagerProxy) AppNotRespondingViaProvider(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(connection.Handle())
+	binder.WriteBinderToParcel(ctx, _data, connection, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "appNotRespondingViaProvider")
 	if _err != nil {
@@ -6420,13 +6281,12 @@ func (p *ActivityManagerProxy) SetProcessMemoryTrimLevel(
 
 func (p *ActivityManagerProxy) GetTagForIntentSender(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 	prefix string,
 ) (string, error) {
 	var _result string
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 	_data.WriteString16(prefix)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "getTagForIntentSender")
@@ -6576,7 +6436,7 @@ func (p *ActivityManagerProxy) IsTopOfTask(
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "isTopOfTask")
 	if _err != nil {
@@ -6656,7 +6516,7 @@ func (p *ActivityManagerProxy) RegisterTaskStackListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerTaskStackListener")
 	if _err != nil {
@@ -6682,7 +6542,7 @@ func (p *ActivityManagerProxy) UnregisterTaskStackListener(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unregisterTaskStackListener")
 	if _err != nil {
@@ -6922,14 +6782,13 @@ func (p *ActivityManagerProxy) UpdateLockTaskPackages(
 
 func (p *ActivityManagerProxy) NoteAlarmStart(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 	workSource interface{},
 	sourceUid int32,
 	tag string,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 	_data.WriteInt32(sourceUid)
 	_data.WriteString16(tag)
 
@@ -6953,14 +6812,13 @@ func (p *ActivityManagerProxy) NoteAlarmStart(
 
 func (p *ActivityManagerProxy) NoteAlarmFinish(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 	workSource interface{},
 	sourceUid int32,
 	tag string,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 	_data.WriteInt32(sourceUid)
 	_data.WriteString16(tag)
 
@@ -7296,15 +7154,11 @@ func (p *ActivityManagerProxy) GetMemoryTrimLevel(
 
 func (p *ActivityManagerProxy) IsVrModePackageEnabled(
 	ctx context.Context,
-	packageName content.ComponentName,
+	packageName interface{},
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := packageName.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "isVrModePackageEnabled")
 	if _err != nil {
@@ -7356,15 +7210,11 @@ func (p *ActivityManagerProxy) NotifyLockedProfile(
 
 func (p *ActivityManagerProxy) StartConfirmDeviceCredentialIntent(
 	ctx context.Context,
-	intent content.Intent,
+	intent interface{},
 	options interface{},
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "startConfirmDeviceCredentialIntent")
 	if _err != nil {
@@ -7411,28 +7261,22 @@ func (p *ActivityManagerProxy) SendIdleJobTrigger(
 func (p *ActivityManagerProxy) SendIntentSender(
 	ctx context.Context,
 	caller IApplicationThread,
-	target content.IIntentSender,
+	target interface{},
 	whitelistToken binder.IBinder,
 	code int32,
-	intent content.Intent,
+	intent interface{},
 	resolvedType string,
-	finishedReceiver content.IIntentReceiver,
+	finishedReceiver interface{},
 	requiredPermission string,
 	options interface{},
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(caller.AsBinder().Handle())
-	_data.WriteStrongBinder(target.AsBinder().Handle())
-	_data.WriteStrongBinder(whitelistToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, caller.AsBinder(), p.remote.Transport())
+	binder.WriteBinderToParcel(ctx, _data, whitelistToken, p.remote.Transport())
 	_data.WriteInt32(code)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 	_data.WriteString16(resolvedType)
-	_data.WriteStrongBinder(finishedReceiver.AsBinder().Handle())
 	_data.WriteString16(requiredPermission)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "sendIntentSender")
@@ -7900,8 +7744,8 @@ func (p *ActivityManagerProxy) GetHistoricalProcessStartReasons(
 	ctx context.Context,
 	packageName string,
 	maxNum int32,
-) (interface{}, error) {
-	var _result interface{}
+) (pm.ParceledListSlice, error) {
+	var _result pm.ParceledListSlice
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
@@ -7924,6 +7768,15 @@ func (p *ActivityManagerProxy) GetHistoricalProcessStartReasons(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -7934,7 +7787,7 @@ func (p *ActivityManagerProxy) AddApplicationStartInfoCompleteListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "addApplicationStartInfoCompleteListener")
@@ -7962,7 +7815,7 @@ func (p *ActivityManagerProxy) RemoveApplicationStartInfoCompleteListener(
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(listener.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.remote.Transport())
 	_data.WriteInt32(_identity.UserID)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "removeApplicationStartInfoCompleteListener")
@@ -8037,8 +7890,8 @@ func (p *ActivityManagerProxy) GetHistoricalProcessExitReasons(
 	packageName string,
 	pid int32,
 	maxNum int32,
-) (interface{}, error) {
-	var _result interface{}
+) (pm.ParceledListSlice, error) {
+	var _result pm.ParceledListSlice
 	_identity := p.remote.Identity()
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
@@ -8062,6 +7915,15 @@ func (p *ActivityManagerProxy) GetHistoricalProcessExitReasons(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -8102,21 +7964,13 @@ func (p *ActivityManagerProxy) KillProcessesWhenImperceptible(
 
 func (p *ActivityManagerProxy) SetActivityLocusContext(
 	ctx context.Context,
-	activity content.ComponentName,
-	locusId content.LocusId,
+	activity interface{},
+	locusId interface{},
 	appToken binder.IBinder,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := activity.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteInt32(1)
-	if _err := locusId.MarshalParcel(_data); _err != nil {
-		return _err
-	}
-	_data.WriteStrongBinder(appToken.Handle())
+	binder.WriteBinderToParcel(ctx, _data, appToken, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "setActivityLocusContext")
 	if _err != nil {
@@ -8350,7 +8204,7 @@ func (p *ActivityManagerProxy) HoldLock(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 	_data.WriteInt32(durationMs)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "holdLock")
@@ -8435,13 +8289,12 @@ func (p *ActivityManagerProxy) StopProfile(
 
 func (p *ActivityManagerProxy) QueryIntentComponentsForIntentSender(
 	ctx context.Context,
-	sender content.IIntentSender,
+	sender interface{},
 	matchFlags int32,
-) (interface{}, error) {
-	var _result interface{}
+) (pm.ParceledListSlice, error) {
+	var _result pm.ParceledListSlice
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(sender.AsBinder().Handle())
 	_data.WriteInt32(matchFlags)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "queryIntentComponentsForIntentSender")
@@ -8459,6 +8312,15 @@ func (p *ActivityManagerProxy) QueryIntentComponentsForIntentSender(
 		return _result, _err
 	}
 
+	_nullIndicator, _err := _reply.ReadInt32()
+	if _err != nil {
+		return _result, _err
+	}
+	if _nullIndicator != 0 {
+		if _err = _result.UnmarshalParcel(_reply); _err != nil {
+			return _result, _err
+		}
+	}
 	return _result, nil
 }
 
@@ -8773,17 +8635,13 @@ func (p *ActivityManagerProxy) GetDisplayIdsForStartingVisibleBackgroundUsers(
 
 func (p *ActivityManagerProxy) ShouldServiceTimeOut(
 	ctx context.Context,
-	className content.ComponentName,
+	className interface{},
 	token binder.IBinder,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := className.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "shouldServiceTimeOut")
 	if _err != nil {
@@ -8809,17 +8667,13 @@ func (p *ActivityManagerProxy) ShouldServiceTimeOut(
 
 func (p *ActivityManagerProxy) HasServiceTimeLimitExceeded(
 	ctx context.Context,
-	className content.ComponentName,
+	className interface{},
 	token binder.IBinder,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := className.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
-	_data.WriteStrongBinder(token.Handle())
+	binder.WriteBinderToParcel(ctx, _data, token, p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "hasServiceTimeLimitExceeded")
 	if _err != nil {
@@ -8849,7 +8703,7 @@ func (p *ActivityManagerProxy) RegisterUidFrozenStateChangedCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "registerUidFrozenStateChangedCallback")
 	if _err != nil {
@@ -8875,7 +8729,7 @@ func (p *ActivityManagerProxy) UnregisterUidFrozenStateChangedCallback(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "unregisterUidFrozenStateChangedCallback")
 	if _err != nil {
@@ -9227,15 +9081,11 @@ func (p *ActivityManagerProxy) NoteAppRestrictionEnabled(
 
 func (p *ActivityManagerProxy) RefreshIntentCreatorToken(
 	ctx context.Context,
-	intent content.Intent,
+	intent interface{},
 ) (binder.IBinder, error) {
 	var _result binder.IBinder
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteInt32(1)
-	if _err := intent.MarshalParcel(_data); _err != nil {
-		return _result, _err
-	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIActivityManager, "refreshIntentCreatorToken")
 	if _err != nil {
@@ -9564,18 +9414,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9630,18 +9469,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9706,18 +9534,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_data content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_data.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_data interface{}
 		_arg_finishTask, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -9742,21 +9559,8 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_receiver content.IIntentReceiver
-		_ = _arg_receiver
-		var _arg_filter content.IntentFilter
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_filter.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_receiver interface{}
+		var _arg_filter interface{}
 		_arg_requiredPermission, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9775,10 +9579,7 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIActivityManagerRegisterReceiverWithFeature:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -9798,21 +9599,8 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_receiver content.IIntentReceiver
-		_ = _arg_receiver
-		var _arg_filter content.IntentFilter
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_filter.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_receiver interface{}
+		var _arg_filter interface{}
 		_arg_requiredPermission, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -9831,18 +9619,13 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIActivityManagerUnregisterReceiver:
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_receiver content.IIntentReceiver
-		_ = _arg_receiver
+		var _arg_receiver interface{}
 		_err := s.Impl.UnregisterReceiver(ctx, _arg_receiver)
 		_reply := parcel.New()
 		if _err != nil {
@@ -9855,9 +9638,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_receiver content.IIntentReceiver
-		_ = _arg_receiver
+		var _arg_receiver interface{}
 		_result, _err := s.Impl.GetRegisteredIntentFilters(ctx, _arg_receiver)
 		_reply := parcel.New()
 		if _err != nil {
@@ -9875,25 +9656,12 @@ func (s *ActivityManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_caller IApplicationThread
 		_ = _arg_caller
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_resultTo content.IIntentReceiver
-		_ = _arg_resultTo
+		var _arg_resultTo interface{}
 		_arg_resultCode, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -9941,25 +9709,12 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_resultTo content.IIntentReceiver
-		_ = _arg_resultTo
+		var _arg_resultTo interface{}
 		_arg_resultCode, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -10010,18 +9765,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_caller IApplicationThread
 		_ = _arg_caller
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -10243,18 +9987,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_service content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_service.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_service interface{}
 		_result, _err := s.Impl.GetRunningServiceControlPanel(ctx, _arg_service)
 		_reply := parcel.New()
 		if _err != nil {
@@ -10274,18 +10007,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_caller IApplicationThread
 		_ = _arg_caller
-		var _arg_service content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_service.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_service interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -10310,10 +10032,7 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIActivityManagerStopService:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -10322,18 +10041,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_caller IApplicationThread
 		_ = _arg_caller
-		var _arg_service content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_service.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_service interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -10360,18 +10068,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_service content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_service.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_service interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -10408,18 +10105,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_service content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_service.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_service interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -10496,18 +10182,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_service binder.IBinder
 		_ = _arg_service
@@ -10583,18 +10258,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_className interface{}
 		_arg_profileFile, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -10728,18 +10392,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_className interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
@@ -11055,7 +10708,10 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIActivityManagerServiceDoneExecuting:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -11076,18 +10732,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_err = s.Impl.ServiceDoneExecuting(ctx, _arg_token, _arg_type_, _arg_startId, _arg_res, _arg_intent)
 		_ = _err
 		return nil, nil
@@ -11115,7 +10760,7 @@ func (s *ActivityManagerStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_intents []content.Intent
+		var _arg_intents []interface{}
 		_ = _arg_intents
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_resolvedTypes []string
@@ -11135,7 +10780,6 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		// TODO: interface/IBinder return marshaling not yet supported in stubs
 		_ = _result
 		return _reply, nil
 	case TransactionIActivityManagerGetIntentSenderWithFeature:
@@ -11166,7 +10810,7 @@ func (s *ActivityManagerStub) OnTransaction(
 			return nil, _err
 		}
 		// TODO: array/list param unmarshaling not yet supported in stubs
-		var _arg_intents []content.Intent
+		var _arg_intents []interface{}
 		_ = _arg_intents
 		// TODO: array/list param unmarshaling not yet supported in stubs
 		var _arg_resolvedTypes []string
@@ -11186,16 +10830,13 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		// TODO: interface/IBinder return marshaling not yet supported in stubs
 		_ = _result
 		return _reply, nil
 	case TransactionIActivityManagerCancelIntentSender:
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		_err := s.Impl.CancelIntentSender(ctx, _arg_sender)
 		_reply := parcel.New()
 		if _err != nil {
@@ -11208,9 +10849,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		_result, _err := s.Impl.GetInfoForIntentSender(ctx, _arg_sender)
 		_reply := parcel.New()
 		if _err != nil {
@@ -11227,9 +10866,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_receiver os.IResultReceiver
 		_ = _arg_receiver
@@ -11246,9 +10883,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_receiver os.IResultReceiver
 		_ = _arg_receiver
@@ -11276,9 +10911,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		var _arg_workSource interface{}
 		_arg_sourceUid, _err := _data.ReadInt32()
 		if _err != nil {
@@ -11340,18 +10973,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
-		var _arg_service content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_service.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_service interface{}
 		_err := s.Impl.UnbindFinished(ctx, _arg_token, _arg_service)
 		_reply := parcel.New()
 		if _err != nil {
@@ -11391,18 +11013,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_className interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
@@ -11442,18 +11053,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_className interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
@@ -11525,7 +11125,9 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_observer interface{}
+		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
+		var _arg_observer pm.IPackageDataObserver
+		_ = _arg_observer
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
@@ -11675,18 +11277,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_service content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_service.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_service interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -11844,7 +11435,18 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_appInfo interface{}
+		var _arg_appInfo pm.ApplicationInfo
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_appInfo.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.UnbindBackupAgent(ctx, _arg_appInfo)
 		_reply := parcel.New()
 		if _err != nil {
@@ -12435,9 +12037,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		_result, _err := s.Impl.IsIntentSenderTargetedToPackage(ctx, _arg_sender)
 		_reply := parcel.New()
 		if _err != nil {
@@ -12661,7 +12261,10 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIActivityManagerGetCurrentUserId:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -12711,9 +12314,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		_result, _err := s.Impl.IsIntentSenderAnActivity(ctx, _arg_sender)
 		_reply := parcel.New()
 		if _err != nil {
@@ -12733,18 +12334,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -12802,18 +12392,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -13192,9 +12771,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		_result, _err := s.Impl.GetIntentForIntentSender(ctx, _arg_sender)
 		_reply := parcel.New()
 		if _err != nil {
@@ -13202,10 +12779,7 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteInt32(1)
-		if _err := _result.MarshalParcel(_reply); _err != nil {
-			return nil, _err
-		}
+		_ = _result
 		return _reply, nil
 	case TransactionIActivityManagerGetLaunchedFromPackage:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -13438,9 +13012,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		_arg_prefix, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -13741,9 +13313,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		var _arg_workSource interface{}
 		_arg_sourceUid, _err := _data.ReadInt32()
 		if _err != nil {
@@ -13765,9 +13335,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		var _arg_workSource interface{}
 		_arg_sourceUid, _err := _data.ReadInt32()
 		if _err != nil {
@@ -13963,18 +13531,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_packageName content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_packageName.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_packageName interface{}
 		_result, _err := s.Impl.IsVrModePackageEnabled(ctx, _arg_packageName)
 		_reply := parcel.New()
 		if _err != nil {
@@ -14003,18 +13560,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		var _arg_options interface{}
 		_err := s.Impl.StartConfirmDeviceCredentialIntent(ctx, _arg_intent, _arg_options)
 		_reply := parcel.New()
@@ -14043,9 +13589,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_caller IApplicationThread
 		_ = _arg_caller
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_target content.IIntentSender
-		_ = _arg_target
+		var _arg_target interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_whitelistToken binder.IBinder
 		_ = _arg_whitelistToken
@@ -14053,25 +13597,12 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_arg_resolvedType, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_finishedReceiver content.IIntentReceiver
-		_ = _arg_finishedReceiver
+		var _arg_finishedReceiver interface{}
 		_arg_requiredPermission, _err := _data.ReadString16()
 		if _err != nil {
 			return nil, _err
@@ -14349,7 +13880,10 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIActivityManagerAddApplicationStartInfoCompleteListener:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -14451,7 +13985,10 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIActivityManagerKillProcessesWhenImperceptible:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -14476,30 +14013,8 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_activity content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_activity.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
-		var _arg_locusId content.LocusId
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_locusId.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_activity interface{}
+		var _arg_locusId interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_appToken binder.IBinder
 		_ = _arg_appToken
@@ -14676,9 +14191,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
-		var _arg_sender content.IIntentSender
-		_ = _arg_sender
+		var _arg_sender interface{}
 		_arg_matchFlags, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
@@ -14690,7 +14203,10 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_ = _result
+		_reply.WriteInt32(1)
+		if _err := _result.MarshalParcel(_reply); _err != nil {
+			return nil, _err
+		}
 		return _reply, nil
 	case TransactionIActivityManagerGetUidProcessCapabilities:
 		if _, _err := _data.ReadString16(); _err != nil {
@@ -14868,18 +14384,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_className interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
@@ -14896,18 +14401,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_className content.ComponentName
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_className.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_className interface{}
 		// TODO: interface/IBinder param unmarshaling not yet supported in stubs
 		var _arg_token binder.IBinder
 		_ = _arg_token
@@ -15195,18 +14689,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_intent content.Intent
-		{
-			_nullInd, _err := _data.ReadInt32()
-			if _err != nil {
-				return nil, _err
-			}
-			if _nullInd != 0 {
-				if _err = _arg_intent.UnmarshalParcel(_data); _err != nil {
-					return nil, _err
-				}
-			}
-		}
+		var _arg_intent interface{}
 		_result, _err := s.Impl.RefreshIntentCreatorToken(ctx, _arg_intent)
 		_reply := parcel.New()
 		if _err != nil {
@@ -15220,4 +14703,2456 @@ func (s *ActivityManagerStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IActivityManagerServer is the server-side interface that user implementations
+// provide to NewActivityManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IActivityManagerServer interface {
+	OpenContentUri(ctx context.Context, uriString string) (int32, error)
+	RegisterUidObserver(ctx context.Context, observer IUidObserver, which int32, cutpoint int32) error
+	UnregisterUidObserver(ctx context.Context, observer IUidObserver) error
+	RegisterUidObserverForUids(ctx context.Context, observer IUidObserver, which int32, cutpoint int32, uids []int32) (binder.IBinder, error)
+	AddUidToObserver(ctx context.Context, observerToken binder.IBinder, uid int32) error
+	RemoveUidFromObserver(ctx context.Context, observerToken binder.IBinder, uid int32) error
+	IsUidActive(ctx context.Context, uid int32) (bool, error)
+	GetUidProcessState(ctx context.Context, uid int32) (int32, error)
+	CheckPermission(ctx context.Context, permission string, pid int32, uid int32) (int32, error)
+	LogFgsApiBegin(ctx context.Context, apiType int32) error
+	LogFgsApiEnd(ctx context.Context, apiType int32) error
+	LogFgsApiStateChanged(ctx context.Context, apiType int32, state int32) error
+	HandleApplicationCrash(ctx context.Context, app binder.IBinder, crashInfo ApplicationErrorReportParcelableCrashInfo) error
+	StartActivity(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StartActivityWithFeature(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	UnhandledBack(ctx context.Context) error
+	FinishActivity(ctx context.Context, token binder.IBinder, code int32, data interface{}, finishTask int32) (bool, error)
+	RegisterReceiver(ctx context.Context, caller IApplicationThread, callerPackage string, receiver interface{}, filter interface{}, requiredPermission string, flags int32) (interface{}, error)
+	RegisterReceiverWithFeature(ctx context.Context, caller IApplicationThread, callerPackage string, receiverId string, receiver interface{}, filter interface{}, requiredPermission string, flags int32) (interface{}, error)
+	UnregisterReceiver(ctx context.Context, receiver interface{}) error
+	GetRegisteredIntentFilters(ctx context.Context, receiver interface{}) ([]interface{}, error)
+	BroadcastIntent(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo interface{}, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, appOp int32, options interface{}, serialized bool, sticky bool) (int32, error)
+	BroadcastIntentWithFeature(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo interface{}, resultCode int32, resultData string, map_ interface{}, requiredPermissions []string, excludePermissions []string, excludePackages []string, appOp int32, options interface{}, serialized bool, sticky bool) (int32, error)
+	UnbroadcastIntent(ctx context.Context, caller IApplicationThread, intent interface{}) error
+	FinishReceiver(ctx context.Context, who binder.IBinder, resultCode int32, resultData string, map_ interface{}, abortBroadcast bool, flags int32) error
+	AttachApplication(ctx context.Context, app IApplicationThread, startSeq int64) error
+	FinishAttachApplication(ctx context.Context, startSeq int64, timestampApplicationOnCreateNs int64) error
+	GetTasks(ctx context.Context, maxNum int32) ([]ActivityManagerRunningTaskInfo, error)
+	MoveTaskToFront(ctx context.Context, caller IApplicationThread, task int32, flags int32, options interface{}) error
+	GetTaskForActivity(ctx context.Context, token binder.IBinder, onlyRoot bool) (int32, error)
+	GetContentProvider(ctx context.Context, caller IApplicationThread, name string, stable bool) (ContentProviderHolder, error)
+	PublishContentProviders(ctx context.Context, caller IApplicationThread, providers []ContentProviderHolder) error
+	RefContentProvider(ctx context.Context, connection binder.IBinder, stableDelta int32, unstableDelta int32) (bool, error)
+	GetRunningServiceControlPanel(ctx context.Context, service interface{}) (PendingIntent, error)
+	StartService(ctx context.Context, caller IApplicationThread, service interface{}, resolvedType string, requireForeground bool) (interface{}, error)
+	StopService(ctx context.Context, caller IApplicationThread, service interface{}, resolvedType string) (int32, error)
+	BindService(ctx context.Context, caller IApplicationThread, token binder.IBinder, service interface{}, resolvedType string, connection IServiceConnection, flags int64) (int32, error)
+	BindServiceInstance(ctx context.Context, caller IApplicationThread, token binder.IBinder, service interface{}, resolvedType string, connection IServiceConnection, flags int64, instanceName string) (int32, error)
+	UpdateServiceGroup(ctx context.Context, connection IServiceConnection, group int32, importance int32) error
+	UnbindService(ctx context.Context, connection IServiceConnection) (bool, error)
+	PublishService(ctx context.Context, token binder.IBinder, intent interface{}, service binder.IBinder) error
+	SetDebugApp(ctx context.Context, packageName string, waitForDebugger bool, persistent bool) error
+	SetAgentApp(ctx context.Context, packageName string, agent string) error
+	SetAlwaysFinish(ctx context.Context, enabled bool) error
+	StartInstrumentation(ctx context.Context, className interface{}, profileFile string, flags int32, arguments interface{}, watcher IInstrumentationWatcher, connection IUiAutomationConnection, abiOverride string) (bool, error)
+	AddInstrumentationResults(ctx context.Context, target IApplicationThread, results interface{}) error
+	FinishInstrumentation(ctx context.Context, target IApplicationThread, resultCode int32, results interface{}) error
+	GetConfiguration(ctx context.Context) (contentRes.Configuration, error)
+	UpdateConfiguration(ctx context.Context, values contentRes.Configuration) (bool, error)
+	UpdateMccMncConfiguration(ctx context.Context, mcc string, mnc string) (bool, error)
+	StopServiceToken(ctx context.Context, className interface{}, token binder.IBinder, startId int32) (bool, error)
+	SetProcessLimit(ctx context.Context, max_ int32) error
+	GetProcessLimit(ctx context.Context) (int32, error)
+	CheckUriPermission(ctx context.Context, uri net.Uri, pid int32, uid int32, mode int32, callerToken binder.IBinder) (int32, error)
+	CheckContentUriPermissionFull(ctx context.Context, uri net.Uri, pid int32, uid int32, mode int32) (int32, error)
+	CheckUriPermissions(ctx context.Context, uris []net.Uri, pid int32, uid int32, mode int32, callerToken binder.IBinder) ([]int32, error)
+	GrantUriPermission(ctx context.Context, caller IApplicationThread, targetPkg string, uri net.Uri, mode int32) error
+	RevokeUriPermission(ctx context.Context, caller IApplicationThread, targetPkg string, uri net.Uri, mode int32) error
+	SetActivityController(ctx context.Context, watcher IActivityController, imAMonkey bool) error
+	ShowWaitingForDebugger(ctx context.Context, who IApplicationThread, waiting bool) error
+	SignalPersistentProcesses(ctx context.Context, signal int32) error
+	GetRecentTasks(ctx context.Context, maxNum int32, flags int32) (pm.ParceledListSlice, error)
+	ServiceDoneExecuting(ctx context.Context, token binder.IBinder, type_ int32, startId int32, res int32, intent interface{}) error
+	GetIntentSender(ctx context.Context, type_ int32, packageName string, token binder.IBinder, resultWho string, requestCode int32, intents []interface{}, resolvedTypes []string, flags int32, options interface{}) (interface{}, error)
+	GetIntentSenderWithFeature(ctx context.Context, type_ int32, packageName string, featureId string, token binder.IBinder, resultWho string, requestCode int32, intents []interface{}, resolvedTypes []string, flags int32, options interface{}) (interface{}, error)
+	CancelIntentSender(ctx context.Context, sender interface{}) error
+	GetInfoForIntentSender(ctx context.Context, sender interface{}) (ActivityManagerPendingIntentInfo, error)
+	RegisterIntentSenderCancelListenerEx(ctx context.Context, sender interface{}, receiver os.IResultReceiver) (bool, error)
+	UnregisterIntentSenderCancelListener(ctx context.Context, sender interface{}, receiver os.IResultReceiver) error
+	EnterSafeMode(ctx context.Context) error
+	NoteWakeupAlarm(ctx context.Context, sender interface{}, workSource interface{}, sourceUid int32, sourcePkg string, tag string) error
+	RemoveContentProvider(ctx context.Context, connection binder.IBinder, stable bool) error
+	SetRequestedOrientation(ctx context.Context, token binder.IBinder, requestedOrientation int32) error
+	UnbindFinished(ctx context.Context, token binder.IBinder, service interface{}) error
+	SetProcessImportant(ctx context.Context, token binder.IBinder, pid int32, isForeground bool, reason string) error
+	SetServiceForeground(ctx context.Context, className interface{}, token binder.IBinder, id int32, notification Notification, flags int32, foregroundServiceType int32) error
+	GetForegroundServiceType(ctx context.Context, className interface{}, token binder.IBinder) (int32, error)
+	MoveActivityTaskToBack(ctx context.Context, token binder.IBinder, nonRoot bool) (bool, error)
+	GetMemoryInfo(ctx context.Context, outInfo ActivityManagerMemoryInfo) error
+	GetProcessesInErrorState(ctx context.Context) ([]ActivityManagerProcessErrorStateInfo, error)
+	ClearApplicationUserData(ctx context.Context, packageName string, keepState bool, observer pm.IPackageDataObserver) (bool, error)
+	StopAppForUser(ctx context.Context, packageName string) error
+	RegisterForegroundServiceObserver(ctx context.Context, callback IForegroundServiceObserver) (bool, error)
+	ForceStopPackage(ctx context.Context, packageName string) error
+	ForceStopPackageEvenWhenStopping(ctx context.Context, packageName string) error
+	KillPids(ctx context.Context, pids []int32, reason string, secure bool) (bool, error)
+	GetServices(ctx context.Context, maxNum int32, flags int32) ([]ActivityManagerRunningServiceInfo, error)
+	GetRunningAppProcesses(ctx context.Context) ([]ActivityManagerRunningAppProcessInfo, error)
+	PeekService(ctx context.Context, service interface{}, resolvedType string) (binder.IBinder, error)
+	ProfileControl(ctx context.Context, process string, start bool, profilerInfo ProfilerInfo, profileType int32) (bool, error)
+	Shutdown(ctx context.Context, timeout int32) (bool, error)
+	StopAppSwitches(ctx context.Context) error
+	ResumeAppSwitches(ctx context.Context) error
+	BindBackupAgent(ctx context.Context, packageName string, backupRestoreMode int32, targetUserId int32, backupDestination int32, useRestrictedMode bool) (bool, error)
+	BackupAgentCreated(ctx context.Context, packageName string, agent binder.IBinder) error
+	UnbindBackupAgent(ctx context.Context, appInfo pm.ApplicationInfo) error
+	HandleIncomingUser(ctx context.Context, allowAll bool, requireFull bool, name string, callerPackage string) (int32, error)
+	AddPackageDependency(ctx context.Context, packageName string) error
+	KillApplication(ctx context.Context, pkg string, appId int32, reason string, exitInfoReason int32) error
+	CloseSystemDialogs(ctx context.Context, reason string) error
+	GetProcessMemoryInfo(ctx context.Context, pids []int32) ([]interface{}, error)
+	KillApplicationProcess(ctx context.Context, processName string, uid int32) error
+	HandleApplicationWtf(ctx context.Context, app binder.IBinder, tag string, system bool, crashInfo ApplicationErrorReportParcelableCrashInfo, immediateCallerPid int32) (bool, error)
+	KillBackgroundProcesses(ctx context.Context, packageName string) error
+	IsUserAMonkey(ctx context.Context) (bool, error)
+	GetRunningExternalApplications(ctx context.Context) ([]pm.ApplicationInfo, error)
+	FinishHeavyWeightApp(ctx context.Context) error
+	HandleApplicationStrictModeViolation(ctx context.Context, app binder.IBinder, penaltyMask int32, crashInfo interface{}) error
+	RegisterStrictModeCallback(ctx context.Context, binder_ binder.IBinder) error
+	IsTopActivityImmersive(ctx context.Context) (bool, error)
+	CrashApplicationWithType(ctx context.Context, uid int32, initialPid int32, packageName string, message string, force bool, exceptionTypeId int32) error
+	CrashApplicationWithTypeWithExtras(ctx context.Context, uid int32, initialPid int32, packageName string, message string, force bool, exceptionTypeId int32, extras interface{}) error
+	GetMimeTypeFilterAsync(ctx context.Context, uri net.Uri, resultCallback interface{}) error
+	DumpHeap(ctx context.Context, process string, managed bool, mallocInfo bool, runGc bool, dumpBitmaps string, path string, fd int32, finishCallback interface{}) (bool, error)
+	IsUserRunning(ctx context.Context, userid int32, flags int32) (bool, error)
+	SetPackageScreenCompatMode(ctx context.Context, packageName string, mode int32) error
+	SwitchUser(ctx context.Context, userid int32) (bool, error)
+	GetSwitchingFromUserMessage(ctx context.Context) (string, error)
+	GetSwitchingToUserMessage(ctx context.Context) (string, error)
+	SetStopUserOnSwitch(ctx context.Context, value int32) error
+	RemoveTask(ctx context.Context, taskId int32) (bool, error)
+	RegisterProcessObserver(ctx context.Context, observer IProcessObserver) error
+	UnregisterProcessObserver(ctx context.Context, observer IProcessObserver) error
+	IsIntentSenderTargetedToPackage(ctx context.Context, sender interface{}) (bool, error)
+	UpdatePersistentConfiguration(ctx context.Context, values contentRes.Configuration) error
+	UpdatePersistentConfigurationWithAttribution(ctx context.Context, values contentRes.Configuration, callingPackageName string, callingAttributionTag string) error
+	GetProcessPss(ctx context.Context, pids []int32) ([]int64, error)
+	ShowBootMessage(ctx context.Context, msg interface{}, always bool) error
+	KillAllBackgroundProcesses(ctx context.Context) error
+	GetContentProviderExternal(ctx context.Context, name string, token binder.IBinder, tag string) (ContentProviderHolder, error)
+	RemoveContentProviderExternal(ctx context.Context, name string, token binder.IBinder) error
+	RemoveContentProviderExternalAsUser(ctx context.Context, name string, token binder.IBinder) error
+	GetMyMemoryState(ctx context.Context, outInfo ActivityManagerRunningAppProcessInfo) error
+	KillProcessesBelowForeground(ctx context.Context, reason string) (bool, error)
+	GetCurrentUser(ctx context.Context) (pm.UserInfo, error)
+	GetCurrentUserId(ctx context.Context) (int32, error)
+	GetLaunchedFromUid(ctx context.Context, activityToken binder.IBinder) (int32, error)
+	UnstableProviderDied(ctx context.Context, connection binder.IBinder) error
+	IsIntentSenderAnActivity(ctx context.Context, sender interface{}) (bool, error)
+	StartActivityAsUser(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StartActivityAsUserWithFeature(ctx context.Context, caller IApplicationThread, intent interface{}, resolvedType string, resultTo binder.IBinder, resultWho string, requestCode int32, flags int32, profilerInfo ProfilerInfo, options interface{}) (int32, error)
+	StopUser(ctx context.Context, userid int32, stopProfileRegardlessOfParent bool, callback IStopUserCallback) (int32, error)
+	StopUserWithCallback(ctx context.Context, userid int32, callback IStopUserCallback) (int32, error)
+	StopUserExceptCertainProfiles(ctx context.Context, userid int32, stopProfileRegardlessOfParent bool, callback IStopUserCallback) (int32, error)
+	StopUserWithDelayedLocking(ctx context.Context, userid int32, callback IStopUserCallback) (int32, error)
+	RegisterUserSwitchObserver(ctx context.Context, observer IUserSwitchObserver, name string) error
+	UnregisterUserSwitchObserver(ctx context.Context, observer IUserSwitchObserver) error
+	GetRunningUserIds(ctx context.Context) ([]int32, error)
+	RequestSystemServerHeapDump(ctx context.Context) error
+	RequestBugReport(ctx context.Context, bugreportType int32) error
+	RequestBugReportWithDescription(ctx context.Context, shareTitle string, shareDescription string, bugreportType int32) error
+	RequestTelephonyBugReport(ctx context.Context, shareTitle string, shareDescription string) error
+	RequestWifiBugReport(ctx context.Context, shareTitle string, shareDescription string) error
+	RequestInteractiveBugReportWithDescription(ctx context.Context, shareTitle string, shareDescription string) error
+	RequestInteractiveBugReport(ctx context.Context) error
+	RequestBugReportWithExtraAttachments(ctx context.Context, extraAttachment []net.Uri) error
+	RequestFullBugReport(ctx context.Context) error
+	RequestRemoteBugReport(ctx context.Context, nonce int64) error
+	LaunchBugReportHandlerApp(ctx context.Context) (bool, error)
+	GetBugreportWhitelistedPackages(ctx context.Context) ([]string, error)
+	GetIntentForIntentSender(ctx context.Context, sender interface{}) (interface{}, error)
+	GetLaunchedFromPackage(ctx context.Context, activityToken binder.IBinder) (string, error)
+	KillUid(ctx context.Context, appId int32, reason string) error
+	SetUserIsMonkey(ctx context.Context, monkey bool) error
+	Hang(ctx context.Context, who binder.IBinder, allowRestart bool) error
+	GetAllRootTaskInfos(ctx context.Context) ([]ActivityTaskManagerRootTaskInfo, error)
+	MoveTaskToRootTask(ctx context.Context, taskId int32, rootTaskId int32, toTop bool) error
+	SetFocusedRootTask(ctx context.Context, taskId int32) error
+	GetFocusedRootTaskInfo(ctx context.Context) (ActivityTaskManagerRootTaskInfo, error)
+	Restart(ctx context.Context) error
+	PerformIdleMaintenance(ctx context.Context) error
+	AppNotRespondingViaProvider(ctx context.Context, connection binder.IBinder) error
+	GetTaskBounds(ctx context.Context, taskId int32) (graphics.Rect, error)
+	SetProcessMemoryTrimLevel(ctx context.Context, process string, level int32) (bool, error)
+	GetTagForIntentSender(ctx context.Context, sender interface{}, prefix string) (string, error)
+	StartUserInBackground(ctx context.Context, userid int32) (bool, error)
+	IsInLockTaskMode(ctx context.Context) (bool, error)
+	StartActivityFromRecents(ctx context.Context, taskId int32, options interface{}) (int32, error)
+	StartSystemLockTaskMode(ctx context.Context, taskId int32) error
+	IsTopOfTask(ctx context.Context, token binder.IBinder) (bool, error)
+	BootAnimationComplete(ctx context.Context) error
+	SetThemeOverlayReady(ctx context.Context) error
+	RegisterTaskStackListener(ctx context.Context, listener ITaskStackListener) error
+	UnregisterTaskStackListener(ctx context.Context, listener ITaskStackListener) error
+	NotifyCleartextNetwork(ctx context.Context, uid int32, firstPacket []byte) error
+	SetTaskResizeable(ctx context.Context, taskId int32, resizeableMode int32) error
+	ResizeTask(ctx context.Context, taskId int32, bounds graphics.Rect, resizeMode int32) error
+	GetLockTaskModeState(ctx context.Context) (int32, error)
+	SetDumpHeapDebugLimit(ctx context.Context, processName string, uid int32, maxMemSize int64, reportPackage string) error
+	DumpHeapFinished(ctx context.Context, path string) error
+	UpdateLockTaskPackages(ctx context.Context, packages []string) error
+	NoteAlarmStart(ctx context.Context, sender interface{}, workSource interface{}, sourceUid int32, tag string) error
+	NoteAlarmFinish(ctx context.Context, sender interface{}, workSource interface{}, sourceUid int32, tag string) error
+	GetPackageProcessState(ctx context.Context, packageName string) (int32, error)
+	StartBinderTracking(ctx context.Context) (bool, error)
+	StopBinderTrackingAndDump(ctx context.Context, fd int32) (bool, error)
+	SuppressResizeConfigChanges(ctx context.Context, suppress bool) error
+	UnlockUser(ctx context.Context, userid int32, token []byte, secret []byte, listener interface{}) (bool, error)
+	UnlockUser2(ctx context.Context, listener interface{}) (bool, error)
+	KillPackageDependents(ctx context.Context, packageName string) error
+	MakePackageIdle(ctx context.Context, packageName string) error
+	SetDeterministicUidIdle(ctx context.Context, deterministic bool) error
+	GetMemoryTrimLevel(ctx context.Context) (int32, error)
+	IsVrModePackageEnabled(ctx context.Context, packageName interface{}) (bool, error)
+	NotifyLockedProfile(ctx context.Context) error
+	StartConfirmDeviceCredentialIntent(ctx context.Context, intent interface{}, options interface{}) error
+	SendIdleJobTrigger(ctx context.Context) error
+	SendIntentSender(ctx context.Context, caller IApplicationThread, target interface{}, whitelistToken binder.IBinder, code int32, intent interface{}, resolvedType string, finishedReceiver interface{}, requiredPermission string, options interface{}) (int32, error)
+	IsBackgroundRestricted(ctx context.Context, packageName string) (bool, error)
+	SetRenderThread(ctx context.Context, tid int32) error
+	SetHasTopUi(ctx context.Context, hasTopUi bool) error
+	CancelTaskWindowTransition(ctx context.Context, taskId int32) error
+	ScheduleApplicationInfoChanged(ctx context.Context, packageNames []string) error
+	SetPersistentVrThread(ctx context.Context, tid int32) error
+	WaitForNetworkStateUpdate(ctx context.Context, procStateSeq int64) error
+	BackgroundAllowlistUid(ctx context.Context, uid int32) error
+	StartUserInBackgroundWithListener(ctx context.Context, userid int32, unlockProgressListener interface{}) (bool, error)
+	StartDelegateShellPermissionIdentity(ctx context.Context, uid int32, permissions []string) error
+	StopDelegateShellPermissionIdentity(ctx context.Context) error
+	GetDelegatedShellPermissions(ctx context.Context) ([]string, error)
+	GetLifeMonitor(ctx context.Context) (int32, error)
+	StartUserInForegroundWithListener(ctx context.Context, userid int32, unlockProgressListener interface{}) (bool, error)
+	AppNotResponding(ctx context.Context, reason string) error
+	GetHistoricalProcessStartReasons(ctx context.Context, packageName string, maxNum int32) (pm.ParceledListSlice, error)
+	AddApplicationStartInfoCompleteListener(ctx context.Context, listener IApplicationStartInfoCompleteListener) error
+	RemoveApplicationStartInfoCompleteListener(ctx context.Context, listener IApplicationStartInfoCompleteListener) error
+	AddStartInfoTimestamp(ctx context.Context, key int32, timestampNs int64) error
+	ReportStartInfoViewTimestamps(ctx context.Context, renderThreadDrawStartTimeNs int64, framePresentedTimeNs int64) error
+	GetHistoricalProcessExitReasons(ctx context.Context, packageName string, pid int32, maxNum int32) (pm.ParceledListSlice, error)
+	KillProcessesWhenImperceptible(ctx context.Context, pids []int32, reason string) error
+	SetActivityLocusContext(ctx context.Context, activity interface{}, locusId interface{}, appToken binder.IBinder) error
+	SetProcessStateSummary(ctx context.Context, state []byte) error
+	IsAppFreezerSupported(ctx context.Context) (bool, error)
+	IsAppFreezerEnabled(ctx context.Context) (bool, error)
+	KillUidForPermissionChange(ctx context.Context, appId int32, reason string) error
+	ResetAppErrors(ctx context.Context) error
+	EnableAppFreezer(ctx context.Context, enable bool) (bool, error)
+	EnableFgsNotificationRateLimit(ctx context.Context, enable bool) (bool, error)
+	HoldLock(ctx context.Context, token binder.IBinder, durationMs int32) error
+	StartProfile(ctx context.Context) (bool, error)
+	StopProfile(ctx context.Context) (bool, error)
+	QueryIntentComponentsForIntentSender(ctx context.Context, sender interface{}, matchFlags int32) (pm.ParceledListSlice, error)
+	GetUidProcessCapabilities(ctx context.Context, uid int32) (int32, error)
+	WaitForBroadcastIdle(ctx context.Context) error
+	WaitForBroadcastBarrier(ctx context.Context) error
+	ForceDelayBroadcastDelivery(ctx context.Context, targetPackage string, delayedDurationMs int64) error
+	IsProcessFrozen(ctx context.Context, pid int32) (bool, error)
+	GetBackgroundRestrictionExemptionReason(ctx context.Context, uid int32) (int32, error)
+	StartUserInBackgroundVisibleOnDisplay(ctx context.Context, userid int32, displayId int32, unlockProgressListener interface{}) (bool, error)
+	StartProfileWithListener(ctx context.Context, userid int32, unlockProgressListener interface{}) (bool, error)
+	RestartUserInBackground(ctx context.Context, userStartMode int32) (int32, error)
+	GetDisplayIdsForStartingVisibleBackgroundUsers(ctx context.Context) ([]int32, error)
+	ShouldServiceTimeOut(ctx context.Context, className interface{}, token binder.IBinder) (bool, error)
+	HasServiceTimeLimitExceeded(ctx context.Context, className interface{}, token binder.IBinder) (bool, error)
+	RegisterUidFrozenStateChangedCallback(ctx context.Context, callback IUidFrozenStateChangedCallback) error
+	UnregisterUidFrozenStateChangedCallback(ctx context.Context, callback IUidFrozenStateChangedCallback) error
+	GetUidFrozenState(ctx context.Context, uids []int32) ([]int32, error)
+	CheckPermissionForDevice(ctx context.Context, permission string, pid int32, uid int32, deviceId int32) (int32, error)
+	FrozenBinderTransactionDetected(ctx context.Context, debugPid int32, code int32, flags int32, err int32) error
+	GetBindingUidProcessState(ctx context.Context, uid int32) (int32, error)
+	GetUidLastIdleElapsedTime(ctx context.Context, uid int32) (int64, error)
+	AddOverridePermissionState(ctx context.Context, originatingUid int32, uid int32, permission string, result int32) error
+	RemoveOverridePermissionState(ctx context.Context, originatingUid int32, uid int32, permission string) error
+	ClearOverridePermissionStates(ctx context.Context, originatingUid int32, uid int32) error
+	ClearAllOverridePermissionStates(ctx context.Context, originatingUid int32) error
+	NoteAppRestrictionEnabled(ctx context.Context, packageName string, uid int32, restrictionType int32, enabled bool, reason int32, subReason string, source int32, threshold int64) error
+	RefreshIntentCreatorToken(ctx context.Context, intent interface{}) (binder.IBinder, error)
+}
+
+type activityManagerStubWrapper struct {
+	impl       IActivityManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *activityManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *activityManagerStubWrapper) OpenContentUri(
+	ctx context.Context,
+	uriString string,
+) (int32, error) {
+	return w.impl.OpenContentUri(ctx, uriString)
+}
+
+func (w *activityManagerStubWrapper) RegisterUidObserver(
+	ctx context.Context,
+	observer IUidObserver,
+	which int32,
+	cutpoint int32,
+) error {
+	return w.impl.RegisterUidObserver(ctx, observer, which, cutpoint)
+}
+
+func (w *activityManagerStubWrapper) UnregisterUidObserver(
+	ctx context.Context,
+	observer IUidObserver,
+) error {
+	return w.impl.UnregisterUidObserver(ctx, observer)
+}
+
+func (w *activityManagerStubWrapper) RegisterUidObserverForUids(
+	ctx context.Context,
+	observer IUidObserver,
+	which int32,
+	cutpoint int32,
+	uids []int32,
+) (binder.IBinder, error) {
+	return w.impl.RegisterUidObserverForUids(ctx, observer, which, cutpoint, uids)
+}
+
+func (w *activityManagerStubWrapper) AddUidToObserver(
+	ctx context.Context,
+	observerToken binder.IBinder,
+	uid int32,
+) error {
+	return w.impl.AddUidToObserver(ctx, observerToken, uid)
+}
+
+func (w *activityManagerStubWrapper) RemoveUidFromObserver(
+	ctx context.Context,
+	observerToken binder.IBinder,
+	uid int32,
+) error {
+	return w.impl.RemoveUidFromObserver(ctx, observerToken, uid)
+}
+
+func (w *activityManagerStubWrapper) IsUidActive(
+	ctx context.Context,
+	uid int32,
+) (bool, error) {
+	return w.impl.IsUidActive(ctx, uid)
+}
+
+func (w *activityManagerStubWrapper) GetUidProcessState(
+	ctx context.Context,
+	uid int32,
+) (int32, error) {
+	return w.impl.GetUidProcessState(ctx, uid)
+}
+
+func (w *activityManagerStubWrapper) CheckPermission(
+	ctx context.Context,
+	permission string,
+	pid int32,
+	uid int32,
+) (int32, error) {
+	return w.impl.CheckPermission(ctx, permission, pid, uid)
+}
+
+func (w *activityManagerStubWrapper) LogFgsApiBegin(
+	ctx context.Context,
+	apiType int32,
+) error {
+	return w.impl.LogFgsApiBegin(ctx, apiType)
+}
+
+func (w *activityManagerStubWrapper) LogFgsApiEnd(
+	ctx context.Context,
+	apiType int32,
+) error {
+	return w.impl.LogFgsApiEnd(ctx, apiType)
+}
+
+func (w *activityManagerStubWrapper) LogFgsApiStateChanged(
+	ctx context.Context,
+	apiType int32,
+	state int32,
+) error {
+	return w.impl.LogFgsApiStateChanged(ctx, apiType, state)
+}
+
+func (w *activityManagerStubWrapper) HandleApplicationCrash(
+	ctx context.Context,
+	app binder.IBinder,
+	crashInfo ApplicationErrorReportParcelableCrashInfo,
+) error {
+	return w.impl.HandleApplicationCrash(ctx, app, crashInfo)
+}
+
+func (w *activityManagerStubWrapper) StartActivity(
+	ctx context.Context,
+	caller IApplicationThread,
+	intent interface{},
+	resolvedType string,
+	resultTo binder.IBinder,
+	resultWho string,
+	requestCode int32,
+	flags int32,
+	profilerInfo ProfilerInfo,
+	options interface{},
+) (int32, error) {
+	return w.impl.StartActivity(ctx, caller, intent, resolvedType, resultTo, resultWho, requestCode, flags, profilerInfo, options)
+}
+
+func (w *activityManagerStubWrapper) StartActivityWithFeature(
+	ctx context.Context,
+	caller IApplicationThread,
+	intent interface{},
+	resolvedType string,
+	resultTo binder.IBinder,
+	resultWho string,
+	requestCode int32,
+	flags int32,
+	profilerInfo ProfilerInfo,
+	options interface{},
+) (int32, error) {
+	return w.impl.StartActivityWithFeature(ctx, caller, intent, resolvedType, resultTo, resultWho, requestCode, flags, profilerInfo, options)
+}
+
+func (w *activityManagerStubWrapper) UnhandledBack(
+	ctx context.Context,
+) error {
+	return w.impl.UnhandledBack(ctx)
+}
+
+func (w *activityManagerStubWrapper) FinishActivity(
+	ctx context.Context,
+	token binder.IBinder,
+	code int32,
+	data interface{},
+	finishTask int32,
+) (bool, error) {
+	return w.impl.FinishActivity(ctx, token, code, data, finishTask)
+}
+
+func (w *activityManagerStubWrapper) RegisterReceiver(
+	ctx context.Context,
+	caller IApplicationThread,
+	callerPackage string,
+	receiver interface{},
+	filter interface{},
+	requiredPermission string,
+	flags int32,
+) (interface{}, error) {
+	return w.impl.RegisterReceiver(ctx, caller, callerPackage, receiver, filter, requiredPermission, flags)
+}
+
+func (w *activityManagerStubWrapper) RegisterReceiverWithFeature(
+	ctx context.Context,
+	caller IApplicationThread,
+	callerPackage string,
+	receiverId string,
+	receiver interface{},
+	filter interface{},
+	requiredPermission string,
+	flags int32,
+) (interface{}, error) {
+	return w.impl.RegisterReceiverWithFeature(ctx, caller, callerPackage, receiverId, receiver, filter, requiredPermission, flags)
+}
+
+func (w *activityManagerStubWrapper) UnregisterReceiver(
+	ctx context.Context,
+	receiver interface{},
+) error {
+	return w.impl.UnregisterReceiver(ctx, receiver)
+}
+
+func (w *activityManagerStubWrapper) GetRegisteredIntentFilters(
+	ctx context.Context,
+	receiver interface{},
+) ([]interface{}, error) {
+	return w.impl.GetRegisteredIntentFilters(ctx, receiver)
+}
+
+func (w *activityManagerStubWrapper) BroadcastIntent(
+	ctx context.Context,
+	caller IApplicationThread,
+	intent interface{},
+	resolvedType string,
+	resultTo interface{},
+	resultCode int32,
+	resultData string,
+	map_ interface{},
+	requiredPermissions []string,
+	appOp int32,
+	options interface{},
+	serialized bool,
+	sticky bool,
+) (int32, error) {
+	return w.impl.BroadcastIntent(ctx, caller, intent, resolvedType, resultTo, resultCode, resultData, map_, requiredPermissions, appOp, options, serialized, sticky)
+}
+
+func (w *activityManagerStubWrapper) BroadcastIntentWithFeature(
+	ctx context.Context,
+	caller IApplicationThread,
+	intent interface{},
+	resolvedType string,
+	resultTo interface{},
+	resultCode int32,
+	resultData string,
+	map_ interface{},
+	requiredPermissions []string,
+	excludePermissions []string,
+	excludePackages []string,
+	appOp int32,
+	options interface{},
+	serialized bool,
+	sticky bool,
+) (int32, error) {
+	return w.impl.BroadcastIntentWithFeature(ctx, caller, intent, resolvedType, resultTo, resultCode, resultData, map_, requiredPermissions, excludePermissions, excludePackages, appOp, options, serialized, sticky)
+}
+
+func (w *activityManagerStubWrapper) UnbroadcastIntent(
+	ctx context.Context,
+	caller IApplicationThread,
+	intent interface{},
+) error {
+	return w.impl.UnbroadcastIntent(ctx, caller, intent)
+}
+
+func (w *activityManagerStubWrapper) FinishReceiver(
+	ctx context.Context,
+	who binder.IBinder,
+	resultCode int32,
+	resultData string,
+	map_ interface{},
+	abortBroadcast bool,
+	flags int32,
+) error {
+	return w.impl.FinishReceiver(ctx, who, resultCode, resultData, map_, abortBroadcast, flags)
+}
+
+func (w *activityManagerStubWrapper) AttachApplication(
+	ctx context.Context,
+	app IApplicationThread,
+	startSeq int64,
+) error {
+	return w.impl.AttachApplication(ctx, app, startSeq)
+}
+
+func (w *activityManagerStubWrapper) FinishAttachApplication(
+	ctx context.Context,
+	startSeq int64,
+	timestampApplicationOnCreateNs int64,
+) error {
+	return w.impl.FinishAttachApplication(ctx, startSeq, timestampApplicationOnCreateNs)
+}
+
+func (w *activityManagerStubWrapper) GetTasks(
+	ctx context.Context,
+	maxNum int32,
+) ([]ActivityManagerRunningTaskInfo, error) {
+	return w.impl.GetTasks(ctx, maxNum)
+}
+
+func (w *activityManagerStubWrapper) MoveTaskToFront(
+	ctx context.Context,
+	caller IApplicationThread,
+	task int32,
+	flags int32,
+	options interface{},
+) error {
+	return w.impl.MoveTaskToFront(ctx, caller, task, flags, options)
+}
+
+func (w *activityManagerStubWrapper) GetTaskForActivity(
+	ctx context.Context,
+	token binder.IBinder,
+	onlyRoot bool,
+) (int32, error) {
+	return w.impl.GetTaskForActivity(ctx, token, onlyRoot)
+}
+
+func (w *activityManagerStubWrapper) GetContentProvider(
+	ctx context.Context,
+	caller IApplicationThread,
+	name string,
+	stable bool,
+) (ContentProviderHolder, error) {
+	return w.impl.GetContentProvider(ctx, caller, name, stable)
+}
+
+func (w *activityManagerStubWrapper) PublishContentProviders(
+	ctx context.Context,
+	caller IApplicationThread,
+	providers []ContentProviderHolder,
+) error {
+	return w.impl.PublishContentProviders(ctx, caller, providers)
+}
+
+func (w *activityManagerStubWrapper) RefContentProvider(
+	ctx context.Context,
+	connection binder.IBinder,
+	stableDelta int32,
+	unstableDelta int32,
+) (bool, error) {
+	return w.impl.RefContentProvider(ctx, connection, stableDelta, unstableDelta)
+}
+
+func (w *activityManagerStubWrapper) GetRunningServiceControlPanel(
+	ctx context.Context,
+	service interface{},
+) (PendingIntent, error) {
+	return w.impl.GetRunningServiceControlPanel(ctx, service)
+}
+
+func (w *activityManagerStubWrapper) StartService(
+	ctx context.Context,
+	caller IApplicationThread,
+	service interface{},
+	resolvedType string,
+	requireForeground bool,
+) (interface{}, error) {
+	return w.impl.StartService(ctx, caller, service, resolvedType, requireForeground)
+}
+
+func (w *activityManagerStubWrapper) StopService(
+	ctx context.Context,
+	caller IApplicationThread,
+	service interface{},
+	resolvedType string,
+) (int32, error) {
+	return w.impl.StopService(ctx, caller, service, resolvedType)
+}
+
+func (w *activityManagerStubWrapper) BindService(
+	ctx context.Context,
+	caller IApplicationThread,
+	token binder.IBinder,
+	service interface{},
+	resolvedType string,
+	connection IServiceConnection,
+	flags int64,
+) (int32, error) {
+	return w.impl.BindService(ctx, caller, token, service, resolvedType, connection, flags)
+}
+
+func (w *activityManagerStubWrapper) BindServiceInstance(
+	ctx context.Context,
+	caller IApplicationThread,
+	token binder.IBinder,
+	service interface{},
+	resolvedType string,
+	connection IServiceConnection,
+	flags int64,
+	instanceName string,
+) (int32, error) {
+	return w.impl.BindServiceInstance(ctx, caller, token, service, resolvedType, connection, flags, instanceName)
+}
+
+func (w *activityManagerStubWrapper) UpdateServiceGroup(
+	ctx context.Context,
+	connection IServiceConnection,
+	group int32,
+	importance int32,
+) error {
+	return w.impl.UpdateServiceGroup(ctx, connection, group, importance)
+}
+
+func (w *activityManagerStubWrapper) UnbindService(
+	ctx context.Context,
+	connection IServiceConnection,
+) (bool, error) {
+	return w.impl.UnbindService(ctx, connection)
+}
+
+func (w *activityManagerStubWrapper) PublishService(
+	ctx context.Context,
+	token binder.IBinder,
+	intent interface{},
+	service binder.IBinder,
+) error {
+	return w.impl.PublishService(ctx, token, intent, service)
+}
+
+func (w *activityManagerStubWrapper) SetDebugApp(
+	ctx context.Context,
+	packageName string,
+	waitForDebugger bool,
+	persistent bool,
+) error {
+	return w.impl.SetDebugApp(ctx, packageName, waitForDebugger, persistent)
+}
+
+func (w *activityManagerStubWrapper) SetAgentApp(
+	ctx context.Context,
+	packageName string,
+	agent string,
+) error {
+	return w.impl.SetAgentApp(ctx, packageName, agent)
+}
+
+func (w *activityManagerStubWrapper) SetAlwaysFinish(
+	ctx context.Context,
+	enabled bool,
+) error {
+	return w.impl.SetAlwaysFinish(ctx, enabled)
+}
+
+func (w *activityManagerStubWrapper) StartInstrumentation(
+	ctx context.Context,
+	className interface{},
+	profileFile string,
+	flags int32,
+	arguments interface{},
+	watcher IInstrumentationWatcher,
+	connection IUiAutomationConnection,
+	abiOverride string,
+) (bool, error) {
+	return w.impl.StartInstrumentation(ctx, className, profileFile, flags, arguments, watcher, connection, abiOverride)
+}
+
+func (w *activityManagerStubWrapper) AddInstrumentationResults(
+	ctx context.Context,
+	target IApplicationThread,
+	results interface{},
+) error {
+	return w.impl.AddInstrumentationResults(ctx, target, results)
+}
+
+func (w *activityManagerStubWrapper) FinishInstrumentation(
+	ctx context.Context,
+	target IApplicationThread,
+	resultCode int32,
+	results interface{},
+) error {
+	return w.impl.FinishInstrumentation(ctx, target, resultCode, results)
+}
+
+func (w *activityManagerStubWrapper) GetConfiguration(
+	ctx context.Context,
+) (contentRes.Configuration, error) {
+	return w.impl.GetConfiguration(ctx)
+}
+
+func (w *activityManagerStubWrapper) UpdateConfiguration(
+	ctx context.Context,
+	values contentRes.Configuration,
+) (bool, error) {
+	return w.impl.UpdateConfiguration(ctx, values)
+}
+
+func (w *activityManagerStubWrapper) UpdateMccMncConfiguration(
+	ctx context.Context,
+	mcc string,
+	mnc string,
+) (bool, error) {
+	return w.impl.UpdateMccMncConfiguration(ctx, mcc, mnc)
+}
+
+func (w *activityManagerStubWrapper) StopServiceToken(
+	ctx context.Context,
+	className interface{},
+	token binder.IBinder,
+	startId int32,
+) (bool, error) {
+	return w.impl.StopServiceToken(ctx, className, token, startId)
+}
+
+func (w *activityManagerStubWrapper) SetProcessLimit(
+	ctx context.Context,
+	max_ int32,
+) error {
+	return w.impl.SetProcessLimit(ctx, max_)
+}
+
+func (w *activityManagerStubWrapper) GetProcessLimit(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetProcessLimit(ctx)
+}
+
+func (w *activityManagerStubWrapper) CheckUriPermission(
+	ctx context.Context,
+	uri net.Uri,
+	pid int32,
+	uid int32,
+	mode int32,
+	callerToken binder.IBinder,
+) (int32, error) {
+	return w.impl.CheckUriPermission(ctx, uri, pid, uid, mode, callerToken)
+}
+
+func (w *activityManagerStubWrapper) CheckContentUriPermissionFull(
+	ctx context.Context,
+	uri net.Uri,
+	pid int32,
+	uid int32,
+	mode int32,
+) (int32, error) {
+	return w.impl.CheckContentUriPermissionFull(ctx, uri, pid, uid, mode)
+}
+
+func (w *activityManagerStubWrapper) CheckUriPermissions(
+	ctx context.Context,
+	uris []net.Uri,
+	pid int32,
+	uid int32,
+	mode int32,
+	callerToken binder.IBinder,
+) ([]int32, error) {
+	return w.impl.CheckUriPermissions(ctx, uris, pid, uid, mode, callerToken)
+}
+
+func (w *activityManagerStubWrapper) GrantUriPermission(
+	ctx context.Context,
+	caller IApplicationThread,
+	targetPkg string,
+	uri net.Uri,
+	mode int32,
+) error {
+	return w.impl.GrantUriPermission(ctx, caller, targetPkg, uri, mode)
+}
+
+func (w *activityManagerStubWrapper) RevokeUriPermission(
+	ctx context.Context,
+	caller IApplicationThread,
+	targetPkg string,
+	uri net.Uri,
+	mode int32,
+) error {
+	return w.impl.RevokeUriPermission(ctx, caller, targetPkg, uri, mode)
+}
+
+func (w *activityManagerStubWrapper) SetActivityController(
+	ctx context.Context,
+	watcher IActivityController,
+	imAMonkey bool,
+) error {
+	return w.impl.SetActivityController(ctx, watcher, imAMonkey)
+}
+
+func (w *activityManagerStubWrapper) ShowWaitingForDebugger(
+	ctx context.Context,
+	who IApplicationThread,
+	waiting bool,
+) error {
+	return w.impl.ShowWaitingForDebugger(ctx, who, waiting)
+}
+
+func (w *activityManagerStubWrapper) SignalPersistentProcesses(
+	ctx context.Context,
+	signal int32,
+) error {
+	return w.impl.SignalPersistentProcesses(ctx, signal)
+}
+
+func (w *activityManagerStubWrapper) GetRecentTasks(
+	ctx context.Context,
+	maxNum int32,
+	flags int32,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetRecentTasks(ctx, maxNum, flags)
+}
+
+func (w *activityManagerStubWrapper) ServiceDoneExecuting(
+	ctx context.Context,
+	token binder.IBinder,
+	type_ int32,
+	startId int32,
+	res int32,
+	intent interface{},
+) error {
+	return w.impl.ServiceDoneExecuting(ctx, token, type_, startId, res, intent)
+}
+
+func (w *activityManagerStubWrapper) GetIntentSender(
+	ctx context.Context,
+	type_ int32,
+	packageName string,
+	token binder.IBinder,
+	resultWho string,
+	requestCode int32,
+	intents []interface{},
+	resolvedTypes []string,
+	flags int32,
+	options interface{},
+) (interface{}, error) {
+	return w.impl.GetIntentSender(ctx, type_, packageName, token, resultWho, requestCode, intents, resolvedTypes, flags, options)
+}
+
+func (w *activityManagerStubWrapper) GetIntentSenderWithFeature(
+	ctx context.Context,
+	type_ int32,
+	packageName string,
+	featureId string,
+	token binder.IBinder,
+	resultWho string,
+	requestCode int32,
+	intents []interface{},
+	resolvedTypes []string,
+	flags int32,
+	options interface{},
+) (interface{}, error) {
+	return w.impl.GetIntentSenderWithFeature(ctx, type_, packageName, featureId, token, resultWho, requestCode, intents, resolvedTypes, flags, options)
+}
+
+func (w *activityManagerStubWrapper) CancelIntentSender(
+	ctx context.Context,
+	sender interface{},
+) error {
+	return w.impl.CancelIntentSender(ctx, sender)
+}
+
+func (w *activityManagerStubWrapper) GetInfoForIntentSender(
+	ctx context.Context,
+	sender interface{},
+) (ActivityManagerPendingIntentInfo, error) {
+	return w.impl.GetInfoForIntentSender(ctx, sender)
+}
+
+func (w *activityManagerStubWrapper) RegisterIntentSenderCancelListenerEx(
+	ctx context.Context,
+	sender interface{},
+	receiver os.IResultReceiver,
+) (bool, error) {
+	return w.impl.RegisterIntentSenderCancelListenerEx(ctx, sender, receiver)
+}
+
+func (w *activityManagerStubWrapper) UnregisterIntentSenderCancelListener(
+	ctx context.Context,
+	sender interface{},
+	receiver os.IResultReceiver,
+) error {
+	return w.impl.UnregisterIntentSenderCancelListener(ctx, sender, receiver)
+}
+
+func (w *activityManagerStubWrapper) EnterSafeMode(
+	ctx context.Context,
+) error {
+	return w.impl.EnterSafeMode(ctx)
+}
+
+func (w *activityManagerStubWrapper) NoteWakeupAlarm(
+	ctx context.Context,
+	sender interface{},
+	workSource interface{},
+	sourceUid int32,
+	sourcePkg string,
+	tag string,
+) error {
+	return w.impl.NoteWakeupAlarm(ctx, sender, workSource, sourceUid, sourcePkg, tag)
+}
+
+func (w *activityManagerStubWrapper) RemoveContentProvider(
+	ctx context.Context,
+	connection binder.IBinder,
+	stable bool,
+) error {
+	return w.impl.RemoveContentProvider(ctx, connection, stable)
+}
+
+func (w *activityManagerStubWrapper) SetRequestedOrientation(
+	ctx context.Context,
+	token binder.IBinder,
+	requestedOrientation int32,
+) error {
+	return w.impl.SetRequestedOrientation(ctx, token, requestedOrientation)
+}
+
+func (w *activityManagerStubWrapper) UnbindFinished(
+	ctx context.Context,
+	token binder.IBinder,
+	service interface{},
+) error {
+	return w.impl.UnbindFinished(ctx, token, service)
+}
+
+func (w *activityManagerStubWrapper) SetProcessImportant(
+	ctx context.Context,
+	token binder.IBinder,
+	pid int32,
+	isForeground bool,
+	reason string,
+) error {
+	return w.impl.SetProcessImportant(ctx, token, pid, isForeground, reason)
+}
+
+func (w *activityManagerStubWrapper) SetServiceForeground(
+	ctx context.Context,
+	className interface{},
+	token binder.IBinder,
+	id int32,
+	notification Notification,
+	flags int32,
+	foregroundServiceType int32,
+) error {
+	return w.impl.SetServiceForeground(ctx, className, token, id, notification, flags, foregroundServiceType)
+}
+
+func (w *activityManagerStubWrapper) GetForegroundServiceType(
+	ctx context.Context,
+	className interface{},
+	token binder.IBinder,
+) (int32, error) {
+	return w.impl.GetForegroundServiceType(ctx, className, token)
+}
+
+func (w *activityManagerStubWrapper) MoveActivityTaskToBack(
+	ctx context.Context,
+	token binder.IBinder,
+	nonRoot bool,
+) (bool, error) {
+	return w.impl.MoveActivityTaskToBack(ctx, token, nonRoot)
+}
+
+func (w *activityManagerStubWrapper) GetMemoryInfo(
+	ctx context.Context,
+	outInfo ActivityManagerMemoryInfo,
+) error {
+	return w.impl.GetMemoryInfo(ctx, outInfo)
+}
+
+func (w *activityManagerStubWrapper) GetProcessesInErrorState(
+	ctx context.Context,
+) ([]ActivityManagerProcessErrorStateInfo, error) {
+	return w.impl.GetProcessesInErrorState(ctx)
+}
+
+func (w *activityManagerStubWrapper) ClearApplicationUserData(
+	ctx context.Context,
+	packageName string,
+	keepState bool,
+	observer pm.IPackageDataObserver,
+) (bool, error) {
+	return w.impl.ClearApplicationUserData(ctx, packageName, keepState, observer)
+}
+
+func (w *activityManagerStubWrapper) StopAppForUser(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.StopAppForUser(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) RegisterForegroundServiceObserver(
+	ctx context.Context,
+	callback IForegroundServiceObserver,
+) (bool, error) {
+	return w.impl.RegisterForegroundServiceObserver(ctx, callback)
+}
+
+func (w *activityManagerStubWrapper) ForceStopPackage(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ForceStopPackage(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) ForceStopPackageEvenWhenStopping(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ForceStopPackageEvenWhenStopping(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) KillPids(
+	ctx context.Context,
+	pids []int32,
+	reason string,
+	secure bool,
+) (bool, error) {
+	return w.impl.KillPids(ctx, pids, reason, secure)
+}
+
+func (w *activityManagerStubWrapper) GetServices(
+	ctx context.Context,
+	maxNum int32,
+	flags int32,
+) ([]ActivityManagerRunningServiceInfo, error) {
+	return w.impl.GetServices(ctx, maxNum, flags)
+}
+
+func (w *activityManagerStubWrapper) GetRunningAppProcesses(
+	ctx context.Context,
+) ([]ActivityManagerRunningAppProcessInfo, error) {
+	return w.impl.GetRunningAppProcesses(ctx)
+}
+
+func (w *activityManagerStubWrapper) PeekService(
+	ctx context.Context,
+	service interface{},
+	resolvedType string,
+) (binder.IBinder, error) {
+	return w.impl.PeekService(ctx, service, resolvedType)
+}
+
+func (w *activityManagerStubWrapper) ProfileControl(
+	ctx context.Context,
+	process string,
+	start bool,
+	profilerInfo ProfilerInfo,
+	profileType int32,
+) (bool, error) {
+	return w.impl.ProfileControl(ctx, process, start, profilerInfo, profileType)
+}
+
+func (w *activityManagerStubWrapper) Shutdown(
+	ctx context.Context,
+	timeout int32,
+) (bool, error) {
+	return w.impl.Shutdown(ctx, timeout)
+}
+
+func (w *activityManagerStubWrapper) StopAppSwitches(
+	ctx context.Context,
+) error {
+	return w.impl.StopAppSwitches(ctx)
+}
+
+func (w *activityManagerStubWrapper) ResumeAppSwitches(
+	ctx context.Context,
+) error {
+	return w.impl.ResumeAppSwitches(ctx)
+}
+
+func (w *activityManagerStubWrapper) BindBackupAgent(
+	ctx context.Context,
+	packageName string,
+	backupRestoreMode int32,
+	targetUserId int32,
+	backupDestination int32,
+	useRestrictedMode bool,
+) (bool, error) {
+	return w.impl.BindBackupAgent(ctx, packageName, backupRestoreMode, targetUserId, backupDestination, useRestrictedMode)
+}
+
+func (w *activityManagerStubWrapper) BackupAgentCreated(
+	ctx context.Context,
+	packageName string,
+	agent binder.IBinder,
+) error {
+	return w.impl.BackupAgentCreated(ctx, packageName, agent)
+}
+
+func (w *activityManagerStubWrapper) UnbindBackupAgent(
+	ctx context.Context,
+	appInfo pm.ApplicationInfo,
+) error {
+	return w.impl.UnbindBackupAgent(ctx, appInfo)
+}
+
+func (w *activityManagerStubWrapper) HandleIncomingUser(
+	ctx context.Context,
+	allowAll bool,
+	requireFull bool,
+	name string,
+	callerPackage string,
+) (int32, error) {
+	return w.impl.HandleIncomingUser(ctx, allowAll, requireFull, name, callerPackage)
+}
+
+func (w *activityManagerStubWrapper) AddPackageDependency(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.AddPackageDependency(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) KillApplication(
+	ctx context.Context,
+	pkg string,
+	appId int32,
+	reason string,
+	exitInfoReason int32,
+) error {
+	return w.impl.KillApplication(ctx, pkg, appId, reason, exitInfoReason)
+}
+
+func (w *activityManagerStubWrapper) CloseSystemDialogs(
+	ctx context.Context,
+	reason string,
+) error {
+	return w.impl.CloseSystemDialogs(ctx, reason)
+}
+
+func (w *activityManagerStubWrapper) GetProcessMemoryInfo(
+	ctx context.Context,
+	pids []int32,
+) ([]interface{}, error) {
+	return w.impl.GetProcessMemoryInfo(ctx, pids)
+}
+
+func (w *activityManagerStubWrapper) KillApplicationProcess(
+	ctx context.Context,
+	processName string,
+	uid int32,
+) error {
+	return w.impl.KillApplicationProcess(ctx, processName, uid)
+}
+
+func (w *activityManagerStubWrapper) HandleApplicationWtf(
+	ctx context.Context,
+	app binder.IBinder,
+	tag string,
+	system bool,
+	crashInfo ApplicationErrorReportParcelableCrashInfo,
+	immediateCallerPid int32,
+) (bool, error) {
+	return w.impl.HandleApplicationWtf(ctx, app, tag, system, crashInfo, immediateCallerPid)
+}
+
+func (w *activityManagerStubWrapper) KillBackgroundProcesses(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.KillBackgroundProcesses(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) IsUserAMonkey(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsUserAMonkey(ctx)
+}
+
+func (w *activityManagerStubWrapper) GetRunningExternalApplications(
+	ctx context.Context,
+) ([]pm.ApplicationInfo, error) {
+	return w.impl.GetRunningExternalApplications(ctx)
+}
+
+func (w *activityManagerStubWrapper) FinishHeavyWeightApp(
+	ctx context.Context,
+) error {
+	return w.impl.FinishHeavyWeightApp(ctx)
+}
+
+func (w *activityManagerStubWrapper) HandleApplicationStrictModeViolation(
+	ctx context.Context,
+	app binder.IBinder,
+	penaltyMask int32,
+	crashInfo interface{},
+) error {
+	return w.impl.HandleApplicationStrictModeViolation(ctx, app, penaltyMask, crashInfo)
+}
+
+func (w *activityManagerStubWrapper) RegisterStrictModeCallback(
+	ctx context.Context,
+	binder_ binder.IBinder,
+) error {
+	return w.impl.RegisterStrictModeCallback(ctx, binder_)
+}
+
+func (w *activityManagerStubWrapper) IsTopActivityImmersive(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsTopActivityImmersive(ctx)
+}
+
+func (w *activityManagerStubWrapper) CrashApplicationWithType(
+	ctx context.Context,
+	uid int32,
+	initialPid int32,
+	packageName string,
+	message string,
+	force bool,
+	exceptionTypeId int32,
+) error {
+	return w.impl.CrashApplicationWithType(ctx, uid, initialPid, packageName, message, force, exceptionTypeId)
+}
+
+func (w *activityManagerStubWrapper) CrashApplicationWithTypeWithExtras(
+	ctx context.Context,
+	uid int32,
+	initialPid int32,
+	packageName string,
+	message string,
+	force bool,
+	exceptionTypeId int32,
+	extras interface{},
+) error {
+	return w.impl.CrashApplicationWithTypeWithExtras(ctx, uid, initialPid, packageName, message, force, exceptionTypeId, extras)
+}
+
+func (w *activityManagerStubWrapper) GetMimeTypeFilterAsync(
+	ctx context.Context,
+	uri net.Uri,
+	resultCallback interface{},
+) error {
+	return w.impl.GetMimeTypeFilterAsync(ctx, uri, resultCallback)
+}
+
+func (w *activityManagerStubWrapper) DumpHeap(
+	ctx context.Context,
+	process string,
+	managed bool,
+	mallocInfo bool,
+	runGc bool,
+	dumpBitmaps string,
+	path string,
+	fd int32,
+	finishCallback interface{},
+) (bool, error) {
+	return w.impl.DumpHeap(ctx, process, managed, mallocInfo, runGc, dumpBitmaps, path, fd, finishCallback)
+}
+
+func (w *activityManagerStubWrapper) IsUserRunning(
+	ctx context.Context,
+	userid int32,
+	flags int32,
+) (bool, error) {
+	return w.impl.IsUserRunning(ctx, userid, flags)
+}
+
+func (w *activityManagerStubWrapper) SetPackageScreenCompatMode(
+	ctx context.Context,
+	packageName string,
+	mode int32,
+) error {
+	return w.impl.SetPackageScreenCompatMode(ctx, packageName, mode)
+}
+
+func (w *activityManagerStubWrapper) SwitchUser(
+	ctx context.Context,
+	userid int32,
+) (bool, error) {
+	return w.impl.SwitchUser(ctx, userid)
+}
+
+func (w *activityManagerStubWrapper) GetSwitchingFromUserMessage(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSwitchingFromUserMessage(ctx)
+}
+
+func (w *activityManagerStubWrapper) GetSwitchingToUserMessage(
+	ctx context.Context,
+) (string, error) {
+	return w.impl.GetSwitchingToUserMessage(ctx)
+}
+
+func (w *activityManagerStubWrapper) SetStopUserOnSwitch(
+	ctx context.Context,
+	value int32,
+) error {
+	return w.impl.SetStopUserOnSwitch(ctx, value)
+}
+
+func (w *activityManagerStubWrapper) RemoveTask(
+	ctx context.Context,
+	taskId int32,
+) (bool, error) {
+	return w.impl.RemoveTask(ctx, taskId)
+}
+
+func (w *activityManagerStubWrapper) RegisterProcessObserver(
+	ctx context.Context,
+	observer IProcessObserver,
+) error {
+	return w.impl.RegisterProcessObserver(ctx, observer)
+}
+
+func (w *activityManagerStubWrapper) UnregisterProcessObserver(
+	ctx context.Context,
+	observer IProcessObserver,
+) error {
+	return w.impl.UnregisterProcessObserver(ctx, observer)
+}
+
+func (w *activityManagerStubWrapper) IsIntentSenderTargetedToPackage(
+	ctx context.Context,
+	sender interface{},
+) (bool, error) {
+	return w.impl.IsIntentSenderTargetedToPackage(ctx, sender)
+}
+
+func (w *activityManagerStubWrapper) UpdatePersistentConfiguration(
+	ctx context.Context,
+	values contentRes.Configuration,
+) error {
+	return w.impl.UpdatePersistentConfiguration(ctx, values)
+}
+
+func (w *activityManagerStubWrapper) UpdatePersistentConfigurationWithAttribution(
+	ctx context.Context,
+	values contentRes.Configuration,
+	callingPackageName string,
+	callingAttributionTag string,
+) error {
+	return w.impl.UpdatePersistentConfigurationWithAttribution(ctx, values, callingPackageName, callingAttributionTag)
+}
+
+func (w *activityManagerStubWrapper) GetProcessPss(
+	ctx context.Context,
+	pids []int32,
+) ([]int64, error) {
+	return w.impl.GetProcessPss(ctx, pids)
+}
+
+func (w *activityManagerStubWrapper) ShowBootMessage(
+	ctx context.Context,
+	msg interface{},
+	always bool,
+) error {
+	return w.impl.ShowBootMessage(ctx, msg, always)
+}
+
+func (w *activityManagerStubWrapper) KillAllBackgroundProcesses(
+	ctx context.Context,
+) error {
+	return w.impl.KillAllBackgroundProcesses(ctx)
+}
+
+func (w *activityManagerStubWrapper) GetContentProviderExternal(
+	ctx context.Context,
+	name string,
+	token binder.IBinder,
+	tag string,
+) (ContentProviderHolder, error) {
+	return w.impl.GetContentProviderExternal(ctx, name, token, tag)
+}
+
+func (w *activityManagerStubWrapper) RemoveContentProviderExternal(
+	ctx context.Context,
+	name string,
+	token binder.IBinder,
+) error {
+	return w.impl.RemoveContentProviderExternal(ctx, name, token)
+}
+
+func (w *activityManagerStubWrapper) RemoveContentProviderExternalAsUser(
+	ctx context.Context,
+	name string,
+	token binder.IBinder,
+) error {
+	return w.impl.RemoveContentProviderExternalAsUser(ctx, name, token)
+}
+
+func (w *activityManagerStubWrapper) GetMyMemoryState(
+	ctx context.Context,
+	outInfo ActivityManagerRunningAppProcessInfo,
+) error {
+	return w.impl.GetMyMemoryState(ctx, outInfo)
+}
+
+func (w *activityManagerStubWrapper) KillProcessesBelowForeground(
+	ctx context.Context,
+	reason string,
+) (bool, error) {
+	return w.impl.KillProcessesBelowForeground(ctx, reason)
+}
+
+func (w *activityManagerStubWrapper) GetCurrentUser(
+	ctx context.Context,
+) (pm.UserInfo, error) {
+	return w.impl.GetCurrentUser(ctx)
+}
+
+func (w *activityManagerStubWrapper) GetCurrentUserId(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetCurrentUserId(ctx)
+}
+
+func (w *activityManagerStubWrapper) GetLaunchedFromUid(
+	ctx context.Context,
+	activityToken binder.IBinder,
+) (int32, error) {
+	return w.impl.GetLaunchedFromUid(ctx, activityToken)
+}
+
+func (w *activityManagerStubWrapper) UnstableProviderDied(
+	ctx context.Context,
+	connection binder.IBinder,
+) error {
+	return w.impl.UnstableProviderDied(ctx, connection)
+}
+
+func (w *activityManagerStubWrapper) IsIntentSenderAnActivity(
+	ctx context.Context,
+	sender interface{},
+) (bool, error) {
+	return w.impl.IsIntentSenderAnActivity(ctx, sender)
+}
+
+func (w *activityManagerStubWrapper) StartActivityAsUser(
+	ctx context.Context,
+	caller IApplicationThread,
+	intent interface{},
+	resolvedType string,
+	resultTo binder.IBinder,
+	resultWho string,
+	requestCode int32,
+	flags int32,
+	profilerInfo ProfilerInfo,
+	options interface{},
+) (int32, error) {
+	return w.impl.StartActivityAsUser(ctx, caller, intent, resolvedType, resultTo, resultWho, requestCode, flags, profilerInfo, options)
+}
+
+func (w *activityManagerStubWrapper) StartActivityAsUserWithFeature(
+	ctx context.Context,
+	caller IApplicationThread,
+	intent interface{},
+	resolvedType string,
+	resultTo binder.IBinder,
+	resultWho string,
+	requestCode int32,
+	flags int32,
+	profilerInfo ProfilerInfo,
+	options interface{},
+) (int32, error) {
+	return w.impl.StartActivityAsUserWithFeature(ctx, caller, intent, resolvedType, resultTo, resultWho, requestCode, flags, profilerInfo, options)
+}
+
+func (w *activityManagerStubWrapper) StopUser(
+	ctx context.Context,
+	userid int32,
+	stopProfileRegardlessOfParent bool,
+	callback IStopUserCallback,
+) (int32, error) {
+	return w.impl.StopUser(ctx, userid, stopProfileRegardlessOfParent, callback)
+}
+
+func (w *activityManagerStubWrapper) StopUserWithCallback(
+	ctx context.Context,
+	userid int32,
+	callback IStopUserCallback,
+) (int32, error) {
+	return w.impl.StopUserWithCallback(ctx, userid, callback)
+}
+
+func (w *activityManagerStubWrapper) StopUserExceptCertainProfiles(
+	ctx context.Context,
+	userid int32,
+	stopProfileRegardlessOfParent bool,
+	callback IStopUserCallback,
+) (int32, error) {
+	return w.impl.StopUserExceptCertainProfiles(ctx, userid, stopProfileRegardlessOfParent, callback)
+}
+
+func (w *activityManagerStubWrapper) StopUserWithDelayedLocking(
+	ctx context.Context,
+	userid int32,
+	callback IStopUserCallback,
+) (int32, error) {
+	return w.impl.StopUserWithDelayedLocking(ctx, userid, callback)
+}
+
+func (w *activityManagerStubWrapper) RegisterUserSwitchObserver(
+	ctx context.Context,
+	observer IUserSwitchObserver,
+	name string,
+) error {
+	return w.impl.RegisterUserSwitchObserver(ctx, observer, name)
+}
+
+func (w *activityManagerStubWrapper) UnregisterUserSwitchObserver(
+	ctx context.Context,
+	observer IUserSwitchObserver,
+) error {
+	return w.impl.UnregisterUserSwitchObserver(ctx, observer)
+}
+
+func (w *activityManagerStubWrapper) GetRunningUserIds(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetRunningUserIds(ctx)
+}
+
+func (w *activityManagerStubWrapper) RequestSystemServerHeapDump(
+	ctx context.Context,
+) error {
+	return w.impl.RequestSystemServerHeapDump(ctx)
+}
+
+func (w *activityManagerStubWrapper) RequestBugReport(
+	ctx context.Context,
+	bugreportType int32,
+) error {
+	return w.impl.RequestBugReport(ctx, bugreportType)
+}
+
+func (w *activityManagerStubWrapper) RequestBugReportWithDescription(
+	ctx context.Context,
+	shareTitle string,
+	shareDescription string,
+	bugreportType int32,
+) error {
+	return w.impl.RequestBugReportWithDescription(ctx, shareTitle, shareDescription, bugreportType)
+}
+
+func (w *activityManagerStubWrapper) RequestTelephonyBugReport(
+	ctx context.Context,
+	shareTitle string,
+	shareDescription string,
+) error {
+	return w.impl.RequestTelephonyBugReport(ctx, shareTitle, shareDescription)
+}
+
+func (w *activityManagerStubWrapper) RequestWifiBugReport(
+	ctx context.Context,
+	shareTitle string,
+	shareDescription string,
+) error {
+	return w.impl.RequestWifiBugReport(ctx, shareTitle, shareDescription)
+}
+
+func (w *activityManagerStubWrapper) RequestInteractiveBugReportWithDescription(
+	ctx context.Context,
+	shareTitle string,
+	shareDescription string,
+) error {
+	return w.impl.RequestInteractiveBugReportWithDescription(ctx, shareTitle, shareDescription)
+}
+
+func (w *activityManagerStubWrapper) RequestInteractiveBugReport(
+	ctx context.Context,
+) error {
+	return w.impl.RequestInteractiveBugReport(ctx)
+}
+
+func (w *activityManagerStubWrapper) RequestBugReportWithExtraAttachments(
+	ctx context.Context,
+	extraAttachment []net.Uri,
+) error {
+	return w.impl.RequestBugReportWithExtraAttachments(ctx, extraAttachment)
+}
+
+func (w *activityManagerStubWrapper) RequestFullBugReport(
+	ctx context.Context,
+) error {
+	return w.impl.RequestFullBugReport(ctx)
+}
+
+func (w *activityManagerStubWrapper) RequestRemoteBugReport(
+	ctx context.Context,
+	nonce int64,
+) error {
+	return w.impl.RequestRemoteBugReport(ctx, nonce)
+}
+
+func (w *activityManagerStubWrapper) LaunchBugReportHandlerApp(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.LaunchBugReportHandlerApp(ctx)
+}
+
+func (w *activityManagerStubWrapper) GetBugreportWhitelistedPackages(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetBugreportWhitelistedPackages(ctx)
+}
+
+func (w *activityManagerStubWrapper) GetIntentForIntentSender(
+	ctx context.Context,
+	sender interface{},
+) (interface{}, error) {
+	return w.impl.GetIntentForIntentSender(ctx, sender)
+}
+
+func (w *activityManagerStubWrapper) GetLaunchedFromPackage(
+	ctx context.Context,
+	activityToken binder.IBinder,
+) (string, error) {
+	return w.impl.GetLaunchedFromPackage(ctx, activityToken)
+}
+
+func (w *activityManagerStubWrapper) KillUid(
+	ctx context.Context,
+	appId int32,
+	reason string,
+) error {
+	return w.impl.KillUid(ctx, appId, reason)
+}
+
+func (w *activityManagerStubWrapper) SetUserIsMonkey(
+	ctx context.Context,
+	monkey bool,
+) error {
+	return w.impl.SetUserIsMonkey(ctx, monkey)
+}
+
+func (w *activityManagerStubWrapper) Hang(
+	ctx context.Context,
+	who binder.IBinder,
+	allowRestart bool,
+) error {
+	return w.impl.Hang(ctx, who, allowRestart)
+}
+
+func (w *activityManagerStubWrapper) GetAllRootTaskInfos(
+	ctx context.Context,
+) ([]ActivityTaskManagerRootTaskInfo, error) {
+	return w.impl.GetAllRootTaskInfos(ctx)
+}
+
+func (w *activityManagerStubWrapper) MoveTaskToRootTask(
+	ctx context.Context,
+	taskId int32,
+	rootTaskId int32,
+	toTop bool,
+) error {
+	return w.impl.MoveTaskToRootTask(ctx, taskId, rootTaskId, toTop)
+}
+
+func (w *activityManagerStubWrapper) SetFocusedRootTask(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.SetFocusedRootTask(ctx, taskId)
+}
+
+func (w *activityManagerStubWrapper) GetFocusedRootTaskInfo(
+	ctx context.Context,
+) (ActivityTaskManagerRootTaskInfo, error) {
+	return w.impl.GetFocusedRootTaskInfo(ctx)
+}
+
+func (w *activityManagerStubWrapper) Restart(
+	ctx context.Context,
+) error {
+	return w.impl.Restart(ctx)
+}
+
+func (w *activityManagerStubWrapper) PerformIdleMaintenance(
+	ctx context.Context,
+) error {
+	return w.impl.PerformIdleMaintenance(ctx)
+}
+
+func (w *activityManagerStubWrapper) AppNotRespondingViaProvider(
+	ctx context.Context,
+	connection binder.IBinder,
+) error {
+	return w.impl.AppNotRespondingViaProvider(ctx, connection)
+}
+
+func (w *activityManagerStubWrapper) GetTaskBounds(
+	ctx context.Context,
+	taskId int32,
+) (graphics.Rect, error) {
+	return w.impl.GetTaskBounds(ctx, taskId)
+}
+
+func (w *activityManagerStubWrapper) SetProcessMemoryTrimLevel(
+	ctx context.Context,
+	process string,
+	level int32,
+) (bool, error) {
+	return w.impl.SetProcessMemoryTrimLevel(ctx, process, level)
+}
+
+func (w *activityManagerStubWrapper) GetTagForIntentSender(
+	ctx context.Context,
+	sender interface{},
+	prefix string,
+) (string, error) {
+	return w.impl.GetTagForIntentSender(ctx, sender, prefix)
+}
+
+func (w *activityManagerStubWrapper) StartUserInBackground(
+	ctx context.Context,
+	userid int32,
+) (bool, error) {
+	return w.impl.StartUserInBackground(ctx, userid)
+}
+
+func (w *activityManagerStubWrapper) IsInLockTaskMode(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsInLockTaskMode(ctx)
+}
+
+func (w *activityManagerStubWrapper) StartActivityFromRecents(
+	ctx context.Context,
+	taskId int32,
+	options interface{},
+) (int32, error) {
+	return w.impl.StartActivityFromRecents(ctx, taskId, options)
+}
+
+func (w *activityManagerStubWrapper) StartSystemLockTaskMode(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.StartSystemLockTaskMode(ctx, taskId)
+}
+
+func (w *activityManagerStubWrapper) IsTopOfTask(
+	ctx context.Context,
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.IsTopOfTask(ctx, token)
+}
+
+func (w *activityManagerStubWrapper) BootAnimationComplete(
+	ctx context.Context,
+) error {
+	return w.impl.BootAnimationComplete(ctx)
+}
+
+func (w *activityManagerStubWrapper) SetThemeOverlayReady(
+	ctx context.Context,
+) error {
+	return w.impl.SetThemeOverlayReady(ctx)
+}
+
+func (w *activityManagerStubWrapper) RegisterTaskStackListener(
+	ctx context.Context,
+	listener ITaskStackListener,
+) error {
+	return w.impl.RegisterTaskStackListener(ctx, listener)
+}
+
+func (w *activityManagerStubWrapper) UnregisterTaskStackListener(
+	ctx context.Context,
+	listener ITaskStackListener,
+) error {
+	return w.impl.UnregisterTaskStackListener(ctx, listener)
+}
+
+func (w *activityManagerStubWrapper) NotifyCleartextNetwork(
+	ctx context.Context,
+	uid int32,
+	firstPacket []byte,
+) error {
+	return w.impl.NotifyCleartextNetwork(ctx, uid, firstPacket)
+}
+
+func (w *activityManagerStubWrapper) SetTaskResizeable(
+	ctx context.Context,
+	taskId int32,
+	resizeableMode int32,
+) error {
+	return w.impl.SetTaskResizeable(ctx, taskId, resizeableMode)
+}
+
+func (w *activityManagerStubWrapper) ResizeTask(
+	ctx context.Context,
+	taskId int32,
+	bounds graphics.Rect,
+	resizeMode int32,
+) error {
+	return w.impl.ResizeTask(ctx, taskId, bounds, resizeMode)
+}
+
+func (w *activityManagerStubWrapper) GetLockTaskModeState(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetLockTaskModeState(ctx)
+}
+
+func (w *activityManagerStubWrapper) SetDumpHeapDebugLimit(
+	ctx context.Context,
+	processName string,
+	uid int32,
+	maxMemSize int64,
+	reportPackage string,
+) error {
+	return w.impl.SetDumpHeapDebugLimit(ctx, processName, uid, maxMemSize, reportPackage)
+}
+
+func (w *activityManagerStubWrapper) DumpHeapFinished(
+	ctx context.Context,
+	path string,
+) error {
+	return w.impl.DumpHeapFinished(ctx, path)
+}
+
+func (w *activityManagerStubWrapper) UpdateLockTaskPackages(
+	ctx context.Context,
+	packages []string,
+) error {
+	return w.impl.UpdateLockTaskPackages(ctx, packages)
+}
+
+func (w *activityManagerStubWrapper) NoteAlarmStart(
+	ctx context.Context,
+	sender interface{},
+	workSource interface{},
+	sourceUid int32,
+	tag string,
+) error {
+	return w.impl.NoteAlarmStart(ctx, sender, workSource, sourceUid, tag)
+}
+
+func (w *activityManagerStubWrapper) NoteAlarmFinish(
+	ctx context.Context,
+	sender interface{},
+	workSource interface{},
+	sourceUid int32,
+	tag string,
+) error {
+	return w.impl.NoteAlarmFinish(ctx, sender, workSource, sourceUid, tag)
+}
+
+func (w *activityManagerStubWrapper) GetPackageProcessState(
+	ctx context.Context,
+	packageName string,
+) (int32, error) {
+	return w.impl.GetPackageProcessState(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) StartBinderTracking(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.StartBinderTracking(ctx)
+}
+
+func (w *activityManagerStubWrapper) StopBinderTrackingAndDump(
+	ctx context.Context,
+	fd int32,
+) (bool, error) {
+	return w.impl.StopBinderTrackingAndDump(ctx, fd)
+}
+
+func (w *activityManagerStubWrapper) SuppressResizeConfigChanges(
+	ctx context.Context,
+	suppress bool,
+) error {
+	return w.impl.SuppressResizeConfigChanges(ctx, suppress)
+}
+
+func (w *activityManagerStubWrapper) UnlockUser(
+	ctx context.Context,
+	userid int32,
+	token []byte,
+	secret []byte,
+	listener interface{},
+) (bool, error) {
+	return w.impl.UnlockUser(ctx, userid, token, secret, listener)
+}
+
+func (w *activityManagerStubWrapper) UnlockUser2(
+	ctx context.Context,
+	listener interface{},
+) (bool, error) {
+	return w.impl.UnlockUser2(ctx, listener)
+}
+
+func (w *activityManagerStubWrapper) KillPackageDependents(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.KillPackageDependents(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) MakePackageIdle(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.MakePackageIdle(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) SetDeterministicUidIdle(
+	ctx context.Context,
+	deterministic bool,
+) error {
+	return w.impl.SetDeterministicUidIdle(ctx, deterministic)
+}
+
+func (w *activityManagerStubWrapper) GetMemoryTrimLevel(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetMemoryTrimLevel(ctx)
+}
+
+func (w *activityManagerStubWrapper) IsVrModePackageEnabled(
+	ctx context.Context,
+	packageName interface{},
+) (bool, error) {
+	return w.impl.IsVrModePackageEnabled(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) NotifyLockedProfile(
+	ctx context.Context,
+) error {
+	return w.impl.NotifyLockedProfile(ctx)
+}
+
+func (w *activityManagerStubWrapper) StartConfirmDeviceCredentialIntent(
+	ctx context.Context,
+	intent interface{},
+	options interface{},
+) error {
+	return w.impl.StartConfirmDeviceCredentialIntent(ctx, intent, options)
+}
+
+func (w *activityManagerStubWrapper) SendIdleJobTrigger(
+	ctx context.Context,
+) error {
+	return w.impl.SendIdleJobTrigger(ctx)
+}
+
+func (w *activityManagerStubWrapper) SendIntentSender(
+	ctx context.Context,
+	caller IApplicationThread,
+	target interface{},
+	whitelistToken binder.IBinder,
+	code int32,
+	intent interface{},
+	resolvedType string,
+	finishedReceiver interface{},
+	requiredPermission string,
+	options interface{},
+) (int32, error) {
+	return w.impl.SendIntentSender(ctx, caller, target, whitelistToken, code, intent, resolvedType, finishedReceiver, requiredPermission, options)
+}
+
+func (w *activityManagerStubWrapper) IsBackgroundRestricted(
+	ctx context.Context,
+	packageName string,
+) (bool, error) {
+	return w.impl.IsBackgroundRestricted(ctx, packageName)
+}
+
+func (w *activityManagerStubWrapper) SetRenderThread(
+	ctx context.Context,
+	tid int32,
+) error {
+	return w.impl.SetRenderThread(ctx, tid)
+}
+
+func (w *activityManagerStubWrapper) SetHasTopUi(
+	ctx context.Context,
+	hasTopUi bool,
+) error {
+	return w.impl.SetHasTopUi(ctx, hasTopUi)
+}
+
+func (w *activityManagerStubWrapper) CancelTaskWindowTransition(
+	ctx context.Context,
+	taskId int32,
+) error {
+	return w.impl.CancelTaskWindowTransition(ctx, taskId)
+}
+
+func (w *activityManagerStubWrapper) ScheduleApplicationInfoChanged(
+	ctx context.Context,
+	packageNames []string,
+) error {
+	return w.impl.ScheduleApplicationInfoChanged(ctx, packageNames)
+}
+
+func (w *activityManagerStubWrapper) SetPersistentVrThread(
+	ctx context.Context,
+	tid int32,
+) error {
+	return w.impl.SetPersistentVrThread(ctx, tid)
+}
+
+func (w *activityManagerStubWrapper) WaitForNetworkStateUpdate(
+	ctx context.Context,
+	procStateSeq int64,
+) error {
+	return w.impl.WaitForNetworkStateUpdate(ctx, procStateSeq)
+}
+
+func (w *activityManagerStubWrapper) BackgroundAllowlistUid(
+	ctx context.Context,
+	uid int32,
+) error {
+	return w.impl.BackgroundAllowlistUid(ctx, uid)
+}
+
+func (w *activityManagerStubWrapper) StartUserInBackgroundWithListener(
+	ctx context.Context,
+	userid int32,
+	unlockProgressListener interface{},
+) (bool, error) {
+	return w.impl.StartUserInBackgroundWithListener(ctx, userid, unlockProgressListener)
+}
+
+func (w *activityManagerStubWrapper) StartDelegateShellPermissionIdentity(
+	ctx context.Context,
+	uid int32,
+	permissions []string,
+) error {
+	return w.impl.StartDelegateShellPermissionIdentity(ctx, uid, permissions)
+}
+
+func (w *activityManagerStubWrapper) StopDelegateShellPermissionIdentity(
+	ctx context.Context,
+) error {
+	return w.impl.StopDelegateShellPermissionIdentity(ctx)
+}
+
+func (w *activityManagerStubWrapper) GetDelegatedShellPermissions(
+	ctx context.Context,
+) ([]string, error) {
+	return w.impl.GetDelegatedShellPermissions(ctx)
+}
+
+func (w *activityManagerStubWrapper) GetLifeMonitor(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.GetLifeMonitor(ctx)
+}
+
+func (w *activityManagerStubWrapper) StartUserInForegroundWithListener(
+	ctx context.Context,
+	userid int32,
+	unlockProgressListener interface{},
+) (bool, error) {
+	return w.impl.StartUserInForegroundWithListener(ctx, userid, unlockProgressListener)
+}
+
+func (w *activityManagerStubWrapper) AppNotResponding(
+	ctx context.Context,
+	reason string,
+) error {
+	return w.impl.AppNotResponding(ctx, reason)
+}
+
+func (w *activityManagerStubWrapper) GetHistoricalProcessStartReasons(
+	ctx context.Context,
+	packageName string,
+	maxNum int32,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetHistoricalProcessStartReasons(ctx, packageName, maxNum)
+}
+
+func (w *activityManagerStubWrapper) AddApplicationStartInfoCompleteListener(
+	ctx context.Context,
+	listener IApplicationStartInfoCompleteListener,
+) error {
+	return w.impl.AddApplicationStartInfoCompleteListener(ctx, listener)
+}
+
+func (w *activityManagerStubWrapper) RemoveApplicationStartInfoCompleteListener(
+	ctx context.Context,
+	listener IApplicationStartInfoCompleteListener,
+) error {
+	return w.impl.RemoveApplicationStartInfoCompleteListener(ctx, listener)
+}
+
+func (w *activityManagerStubWrapper) AddStartInfoTimestamp(
+	ctx context.Context,
+	key int32,
+	timestampNs int64,
+) error {
+	return w.impl.AddStartInfoTimestamp(ctx, key, timestampNs)
+}
+
+func (w *activityManagerStubWrapper) ReportStartInfoViewTimestamps(
+	ctx context.Context,
+	renderThreadDrawStartTimeNs int64,
+	framePresentedTimeNs int64,
+) error {
+	return w.impl.ReportStartInfoViewTimestamps(ctx, renderThreadDrawStartTimeNs, framePresentedTimeNs)
+}
+
+func (w *activityManagerStubWrapper) GetHistoricalProcessExitReasons(
+	ctx context.Context,
+	packageName string,
+	pid int32,
+	maxNum int32,
+) (pm.ParceledListSlice, error) {
+	return w.impl.GetHistoricalProcessExitReasons(ctx, packageName, pid, maxNum)
+}
+
+func (w *activityManagerStubWrapper) KillProcessesWhenImperceptible(
+	ctx context.Context,
+	pids []int32,
+	reason string,
+) error {
+	return w.impl.KillProcessesWhenImperceptible(ctx, pids, reason)
+}
+
+func (w *activityManagerStubWrapper) SetActivityLocusContext(
+	ctx context.Context,
+	activity interface{},
+	locusId interface{},
+	appToken binder.IBinder,
+) error {
+	return w.impl.SetActivityLocusContext(ctx, activity, locusId, appToken)
+}
+
+func (w *activityManagerStubWrapper) SetProcessStateSummary(
+	ctx context.Context,
+	state []byte,
+) error {
+	return w.impl.SetProcessStateSummary(ctx, state)
+}
+
+func (w *activityManagerStubWrapper) IsAppFreezerSupported(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAppFreezerSupported(ctx)
+}
+
+func (w *activityManagerStubWrapper) IsAppFreezerEnabled(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.IsAppFreezerEnabled(ctx)
+}
+
+func (w *activityManagerStubWrapper) KillUidForPermissionChange(
+	ctx context.Context,
+	appId int32,
+	reason string,
+) error {
+	return w.impl.KillUidForPermissionChange(ctx, appId, reason)
+}
+
+func (w *activityManagerStubWrapper) ResetAppErrors(
+	ctx context.Context,
+) error {
+	return w.impl.ResetAppErrors(ctx)
+}
+
+func (w *activityManagerStubWrapper) EnableAppFreezer(
+	ctx context.Context,
+	enable bool,
+) (bool, error) {
+	return w.impl.EnableAppFreezer(ctx, enable)
+}
+
+func (w *activityManagerStubWrapper) EnableFgsNotificationRateLimit(
+	ctx context.Context,
+	enable bool,
+) (bool, error) {
+	return w.impl.EnableFgsNotificationRateLimit(ctx, enable)
+}
+
+func (w *activityManagerStubWrapper) HoldLock(
+	ctx context.Context,
+	token binder.IBinder,
+	durationMs int32,
+) error {
+	return w.impl.HoldLock(ctx, token, durationMs)
+}
+
+func (w *activityManagerStubWrapper) StartProfile(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.StartProfile(ctx)
+}
+
+func (w *activityManagerStubWrapper) StopProfile(
+	ctx context.Context,
+) (bool, error) {
+	return w.impl.StopProfile(ctx)
+}
+
+func (w *activityManagerStubWrapper) QueryIntentComponentsForIntentSender(
+	ctx context.Context,
+	sender interface{},
+	matchFlags int32,
+) (pm.ParceledListSlice, error) {
+	return w.impl.QueryIntentComponentsForIntentSender(ctx, sender, matchFlags)
+}
+
+func (w *activityManagerStubWrapper) GetUidProcessCapabilities(
+	ctx context.Context,
+	uid int32,
+) (int32, error) {
+	return w.impl.GetUidProcessCapabilities(ctx, uid)
+}
+
+func (w *activityManagerStubWrapper) WaitForBroadcastIdle(
+	ctx context.Context,
+) error {
+	return w.impl.WaitForBroadcastIdle(ctx)
+}
+
+func (w *activityManagerStubWrapper) WaitForBroadcastBarrier(
+	ctx context.Context,
+) error {
+	return w.impl.WaitForBroadcastBarrier(ctx)
+}
+
+func (w *activityManagerStubWrapper) ForceDelayBroadcastDelivery(
+	ctx context.Context,
+	targetPackage string,
+	delayedDurationMs int64,
+) error {
+	return w.impl.ForceDelayBroadcastDelivery(ctx, targetPackage, delayedDurationMs)
+}
+
+func (w *activityManagerStubWrapper) IsProcessFrozen(
+	ctx context.Context,
+	pid int32,
+) (bool, error) {
+	return w.impl.IsProcessFrozen(ctx, pid)
+}
+
+func (w *activityManagerStubWrapper) GetBackgroundRestrictionExemptionReason(
+	ctx context.Context,
+	uid int32,
+) (int32, error) {
+	return w.impl.GetBackgroundRestrictionExemptionReason(ctx, uid)
+}
+
+func (w *activityManagerStubWrapper) StartUserInBackgroundVisibleOnDisplay(
+	ctx context.Context,
+	userid int32,
+	displayId int32,
+	unlockProgressListener interface{},
+) (bool, error) {
+	return w.impl.StartUserInBackgroundVisibleOnDisplay(ctx, userid, displayId, unlockProgressListener)
+}
+
+func (w *activityManagerStubWrapper) StartProfileWithListener(
+	ctx context.Context,
+	userid int32,
+	unlockProgressListener interface{},
+) (bool, error) {
+	return w.impl.StartProfileWithListener(ctx, userid, unlockProgressListener)
+}
+
+func (w *activityManagerStubWrapper) RestartUserInBackground(
+	ctx context.Context,
+	userStartMode int32,
+) (int32, error) {
+	return w.impl.RestartUserInBackground(ctx, userStartMode)
+}
+
+func (w *activityManagerStubWrapper) GetDisplayIdsForStartingVisibleBackgroundUsers(
+	ctx context.Context,
+) ([]int32, error) {
+	return w.impl.GetDisplayIdsForStartingVisibleBackgroundUsers(ctx)
+}
+
+func (w *activityManagerStubWrapper) ShouldServiceTimeOut(
+	ctx context.Context,
+	className interface{},
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.ShouldServiceTimeOut(ctx, className, token)
+}
+
+func (w *activityManagerStubWrapper) HasServiceTimeLimitExceeded(
+	ctx context.Context,
+	className interface{},
+	token binder.IBinder,
+) (bool, error) {
+	return w.impl.HasServiceTimeLimitExceeded(ctx, className, token)
+}
+
+func (w *activityManagerStubWrapper) RegisterUidFrozenStateChangedCallback(
+	ctx context.Context,
+	callback IUidFrozenStateChangedCallback,
+) error {
+	return w.impl.RegisterUidFrozenStateChangedCallback(ctx, callback)
+}
+
+func (w *activityManagerStubWrapper) UnregisterUidFrozenStateChangedCallback(
+	ctx context.Context,
+	callback IUidFrozenStateChangedCallback,
+) error {
+	return w.impl.UnregisterUidFrozenStateChangedCallback(ctx, callback)
+}
+
+func (w *activityManagerStubWrapper) GetUidFrozenState(
+	ctx context.Context,
+	uids []int32,
+) ([]int32, error) {
+	return w.impl.GetUidFrozenState(ctx, uids)
+}
+
+func (w *activityManagerStubWrapper) CheckPermissionForDevice(
+	ctx context.Context,
+	permission string,
+	pid int32,
+	uid int32,
+	deviceId int32,
+) (int32, error) {
+	return w.impl.CheckPermissionForDevice(ctx, permission, pid, uid, deviceId)
+}
+
+func (w *activityManagerStubWrapper) FrozenBinderTransactionDetected(
+	ctx context.Context,
+	debugPid int32,
+	code int32,
+	flags int32,
+	err int32,
+) error {
+	return w.impl.FrozenBinderTransactionDetected(ctx, debugPid, code, flags, err)
+}
+
+func (w *activityManagerStubWrapper) GetBindingUidProcessState(
+	ctx context.Context,
+	uid int32,
+) (int32, error) {
+	return w.impl.GetBindingUidProcessState(ctx, uid)
+}
+
+func (w *activityManagerStubWrapper) GetUidLastIdleElapsedTime(
+	ctx context.Context,
+	uid int32,
+) (int64, error) {
+	return w.impl.GetUidLastIdleElapsedTime(ctx, uid)
+}
+
+func (w *activityManagerStubWrapper) AddOverridePermissionState(
+	ctx context.Context,
+	originatingUid int32,
+	uid int32,
+	permission string,
+	result int32,
+) error {
+	return w.impl.AddOverridePermissionState(ctx, originatingUid, uid, permission, result)
+}
+
+func (w *activityManagerStubWrapper) RemoveOverridePermissionState(
+	ctx context.Context,
+	originatingUid int32,
+	uid int32,
+	permission string,
+) error {
+	return w.impl.RemoveOverridePermissionState(ctx, originatingUid, uid, permission)
+}
+
+func (w *activityManagerStubWrapper) ClearOverridePermissionStates(
+	ctx context.Context,
+	originatingUid int32,
+	uid int32,
+) error {
+	return w.impl.ClearOverridePermissionStates(ctx, originatingUid, uid)
+}
+
+func (w *activityManagerStubWrapper) ClearAllOverridePermissionStates(
+	ctx context.Context,
+	originatingUid int32,
+) error {
+	return w.impl.ClearAllOverridePermissionStates(ctx, originatingUid)
+}
+
+func (w *activityManagerStubWrapper) NoteAppRestrictionEnabled(
+	ctx context.Context,
+	packageName string,
+	uid int32,
+	restrictionType int32,
+	enabled bool,
+	reason int32,
+	subReason string,
+	source int32,
+	threshold int64,
+) error {
+	return w.impl.NoteAppRestrictionEnabled(ctx, packageName, uid, restrictionType, enabled, reason, subReason, source, threshold)
+}
+
+func (w *activityManagerStubWrapper) RefreshIntentCreatorToken(
+	ctx context.Context,
+	intent interface{},
+) (binder.IBinder, error) {
+	return w.impl.RefreshIntentCreatorToken(ctx, intent)
+}
+
+var _ IActivityManager = (*activityManagerStubWrapper)(nil)
+
+// NewActivityManagerStub creates a server-side IActivityManager wrapping the given
+// server implementation. The returned value satisfies IActivityManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewActivityManagerStub(
+	impl IActivityManagerServer,
+) IActivityManager {
+	wrapper := &activityManagerStubWrapper{impl: impl}
+	stub := &ActivityManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

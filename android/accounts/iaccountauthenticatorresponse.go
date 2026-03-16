@@ -3,6 +3,7 @@ package accounts
 import (
 	"context"
 	"fmt"
+	os "github.com/xaionaro-go/binder/android/os"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/parcel"
 )
@@ -19,7 +20,7 @@ const (
 
 type IAccountAuthenticatorResponse interface {
 	AsBinder() binder.IBinder
-	OnResult(ctx context.Context, value interface{}) error
+	OnResult(ctx context.Context, value os.Bundle) error
 	OnRequestContinued(ctx context.Context) error
 	OnError(ctx context.Context, errorCode int32, errorMessage string) error
 }
@@ -42,10 +43,14 @@ var _ IAccountAuthenticatorResponse = (*AccountAuthenticatorResponseProxy)(nil)
 
 func (p *AccountAuthenticatorResponseProxy) OnResult(
 	ctx context.Context,
-	value interface{},
+	value os.Bundle,
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIAccountAuthenticatorResponse)
+	_data.WriteInt32(1)
+	if _err := value.MarshalParcel(_data); _err != nil {
+		return _err
+	}
 
 	_code, _err := p.remote.ResolveCode(DescriptorIAccountAuthenticatorResponse, "onResult")
 	if _err != nil {
@@ -108,7 +113,18 @@ func (s *AccountAuthenticatorResponseStub) OnTransaction(
 		if _, _err := _data.ReadString16(); _err != nil {
 			return nil, _err
 		}
-		var _arg_value interface{}
+		var _arg_value os.Bundle
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_value.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		_err := s.Impl.OnResult(ctx, _arg_value)
 		_ = _err
 		return nil, nil
@@ -137,4 +153,59 @@ func (s *AccountAuthenticatorResponseStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IAccountAuthenticatorResponseServer is the server-side interface that user implementations
+// provide to NewAccountAuthenticatorResponseStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IAccountAuthenticatorResponseServer interface {
+	OnResult(ctx context.Context, value os.Bundle) error
+	OnRequestContinued(ctx context.Context) error
+	OnError(ctx context.Context, errorCode int32, errorMessage string) error
+}
+
+type accountAuthenticatorResponseStubWrapper struct {
+	impl       IAccountAuthenticatorResponseServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *accountAuthenticatorResponseStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *accountAuthenticatorResponseStubWrapper) OnResult(
+	ctx context.Context,
+	value os.Bundle,
+) error {
+	return w.impl.OnResult(ctx, value)
+}
+
+func (w *accountAuthenticatorResponseStubWrapper) OnRequestContinued(
+	ctx context.Context,
+) error {
+	return w.impl.OnRequestContinued(ctx)
+}
+
+func (w *accountAuthenticatorResponseStubWrapper) OnError(
+	ctx context.Context,
+	errorCode int32,
+	errorMessage string,
+) error {
+	return w.impl.OnError(ctx, errorCode, errorMessage)
+}
+
+var _ IAccountAuthenticatorResponse = (*accountAuthenticatorResponseStubWrapper)(nil)
+
+// NewAccountAuthenticatorResponseStub creates a server-side IAccountAuthenticatorResponse wrapping the given
+// server implementation. The returned value satisfies IAccountAuthenticatorResponse
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewAccountAuthenticatorResponseStub(
+	impl IAccountAuthenticatorResponseServer,
+) IAccountAuthenticatorResponse {
+	wrapper := &accountAuthenticatorResponseStubWrapper{impl: impl}
+	stub := &AccountAuthenticatorResponseStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

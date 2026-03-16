@@ -123,3 +123,50 @@ func (s *RecognitionSupportCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRecognitionSupportCallbackServer is the server-side interface that user implementations
+// provide to NewRecognitionSupportCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRecognitionSupportCallbackServer interface {
+	OnSupportResult(ctx context.Context, recognitionSupport RecognitionSupport) error
+	OnError(ctx context.Context, error_ int32) error
+}
+
+type recognitionSupportCallbackStubWrapper struct {
+	impl       IRecognitionSupportCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *recognitionSupportCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *recognitionSupportCallbackStubWrapper) OnSupportResult(
+	ctx context.Context,
+	recognitionSupport RecognitionSupport,
+) error {
+	return w.impl.OnSupportResult(ctx, recognitionSupport)
+}
+
+func (w *recognitionSupportCallbackStubWrapper) OnError(
+	ctx context.Context,
+	error_ int32,
+) error {
+	return w.impl.OnError(ctx, error_)
+}
+
+var _ IRecognitionSupportCallback = (*recognitionSupportCallbackStubWrapper)(nil)
+
+// NewRecognitionSupportCallbackStub creates a server-side IRecognitionSupportCallback wrapping the given
+// server implementation. The returned value satisfies IRecognitionSupportCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRecognitionSupportCallbackStub(
+	impl IRecognitionSupportCallbackServer,
+) IRecognitionSupportCallback {
+	wrapper := &recognitionSupportCallbackStubWrapper{impl: impl}
+	stub := &RecognitionSupportCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

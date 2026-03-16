@@ -45,7 +45,7 @@ func (p *ResourceObserverServiceProxy) RegisterObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIResourceObserverService)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 	if filters == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -81,7 +81,7 @@ func (p *ResourceObserverServiceProxy) UnregisterObserver(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIResourceObserverService)
-	_data.WriteStrongBinder(observer.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, observer.AsBinder(), p.remote.Transport())
 
 	_code, _err := p.remote.ResolveCode(DescriptorIResourceObserverService, "unregisterObserver")
 	if _err != nil {
@@ -151,4 +151,52 @@ func (s *ResourceObserverServiceStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IResourceObserverServiceServer is the server-side interface that user implementations
+// provide to NewResourceObserverServiceStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IResourceObserverServiceServer interface {
+	RegisterObserver(ctx context.Context, observer IResourceObserver, filters []MediaObservableFilter) error
+	UnregisterObserver(ctx context.Context, observer IResourceObserver) error
+}
+
+type resourceObserverServiceStubWrapper struct {
+	impl       IResourceObserverServiceServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *resourceObserverServiceStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *resourceObserverServiceStubWrapper) RegisterObserver(
+	ctx context.Context,
+	observer IResourceObserver,
+	filters []MediaObservableFilter,
+) error {
+	return w.impl.RegisterObserver(ctx, observer, filters)
+}
+
+func (w *resourceObserverServiceStubWrapper) UnregisterObserver(
+	ctx context.Context,
+	observer IResourceObserver,
+) error {
+	return w.impl.UnregisterObserver(ctx, observer)
+}
+
+var _ IResourceObserverService = (*resourceObserverServiceStubWrapper)(nil)
+
+// NewResourceObserverServiceStub creates a server-side IResourceObserverService wrapping the given
+// server implementation. The returned value satisfies IResourceObserverService
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewResourceObserverServiceStub(
+	impl IResourceObserverServiceServer,
+) IResourceObserverService {
+	wrapper := &resourceObserverServiceStubWrapper{impl: impl}
+	stub := &ResourceObserverServiceStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

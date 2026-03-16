@@ -96,3 +96,41 @@ func (s *ServiceSingletonTestStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IServiceSingletonTestServer is the server-side interface that user implementations
+// provide to NewServiceSingletonTestStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IServiceSingletonTestServer interface {
+	Inc(ctx context.Context) (int32, error)
+}
+
+type serviceSingletonTestStubWrapper struct {
+	impl       IServiceSingletonTestServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *serviceSingletonTestStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *serviceSingletonTestStubWrapper) Inc(
+	ctx context.Context,
+) (int32, error) {
+	return w.impl.Inc(ctx)
+}
+
+var _ IServiceSingletonTest = (*serviceSingletonTestStubWrapper)(nil)
+
+// NewServiceSingletonTestStub creates a server-side IServiceSingletonTest wrapping the given
+// server implementation. The returned value satisfies IServiceSingletonTest
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewServiceSingletonTestStub(
+	impl IServiceSingletonTestServer,
+) IServiceSingletonTest {
+	wrapper := &serviceSingletonTestStubWrapper{impl: impl}
+	stub := &ServiceSingletonTestStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

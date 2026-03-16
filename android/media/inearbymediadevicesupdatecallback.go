@@ -90,3 +90,42 @@ func (s *NearbyMediaDevicesUpdateCallbackStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// INearbyMediaDevicesUpdateCallbackServer is the server-side interface that user implementations
+// provide to NewNearbyMediaDevicesUpdateCallbackStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type INearbyMediaDevicesUpdateCallbackServer interface {
+	OnDevicesUpdated(ctx context.Context, nearbyDevices []NearbyDevice) error
+}
+
+type nearbyMediaDevicesUpdateCallbackStubWrapper struct {
+	impl       INearbyMediaDevicesUpdateCallbackServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *nearbyMediaDevicesUpdateCallbackStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *nearbyMediaDevicesUpdateCallbackStubWrapper) OnDevicesUpdated(
+	ctx context.Context,
+	nearbyDevices []NearbyDevice,
+) error {
+	return w.impl.OnDevicesUpdated(ctx, nearbyDevices)
+}
+
+var _ INearbyMediaDevicesUpdateCallback = (*nearbyMediaDevicesUpdateCallbackStubWrapper)(nil)
+
+// NewNearbyMediaDevicesUpdateCallbackStub creates a server-side INearbyMediaDevicesUpdateCallback wrapping the given
+// server implementation. The returned value satisfies INearbyMediaDevicesUpdateCallback
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewNearbyMediaDevicesUpdateCallbackStub(
+	impl INearbyMediaDevicesUpdateCallbackServer,
+) INearbyMediaDevicesUpdateCallback {
+	wrapper := &nearbyMediaDevicesUpdateCallbackStubWrapper{impl: impl}
+	stub := &NearbyMediaDevicesUpdateCallbackStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

@@ -148,3 +148,58 @@ func (s *TkgsInfoListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// ITkgsInfoListenerServer is the server-side interface that user implementations
+// provide to NewTkgsInfoListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type ITkgsInfoListenerServer interface {
+	OnServiceList(ctx context.Context, serviceList []string) error
+	OnTableVersionUpdate(ctx context.Context, tableVersion int32) error
+	OnUserMessage(ctx context.Context, strMessage string) error
+}
+
+type tkgsInfoListenerStubWrapper struct {
+	impl       ITkgsInfoListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *tkgsInfoListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *tkgsInfoListenerStubWrapper) OnServiceList(
+	ctx context.Context,
+	serviceList []string,
+) error {
+	return w.impl.OnServiceList(ctx, serviceList)
+}
+
+func (w *tkgsInfoListenerStubWrapper) OnTableVersionUpdate(
+	ctx context.Context,
+	tableVersion int32,
+) error {
+	return w.impl.OnTableVersionUpdate(ctx, tableVersion)
+}
+
+func (w *tkgsInfoListenerStubWrapper) OnUserMessage(
+	ctx context.Context,
+	strMessage string,
+) error {
+	return w.impl.OnUserMessage(ctx, strMessage)
+}
+
+var _ ITkgsInfoListener = (*tkgsInfoListenerStubWrapper)(nil)
+
+// NewTkgsInfoListenerStub creates a server-side ITkgsInfoListener wrapping the given
+// server implementation. The returned value satisfies ITkgsInfoListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewTkgsInfoListenerStub(
+	impl ITkgsInfoListenerServer,
+) ITkgsInfoListener {
+	wrapper := &tkgsInfoListenerStubWrapper{impl: impl}
+	stub := &TkgsInfoListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

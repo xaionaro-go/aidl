@@ -118,3 +118,51 @@ func (s *PinnedTaskListenerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPinnedTaskListenerServer is the server-side interface that user implementations
+// provide to NewPinnedTaskListenerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPinnedTaskListenerServer interface {
+	OnMovementBoundsChanged(ctx context.Context, fromImeAdjustment bool) error
+	OnImeVisibilityChanged(ctx context.Context, imeVisible bool, imeHeight int32) error
+}
+
+type pinnedTaskListenerStubWrapper struct {
+	impl       IPinnedTaskListenerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *pinnedTaskListenerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *pinnedTaskListenerStubWrapper) OnMovementBoundsChanged(
+	ctx context.Context,
+	fromImeAdjustment bool,
+) error {
+	return w.impl.OnMovementBoundsChanged(ctx, fromImeAdjustment)
+}
+
+func (w *pinnedTaskListenerStubWrapper) OnImeVisibilityChanged(
+	ctx context.Context,
+	imeVisible bool,
+	imeHeight int32,
+) error {
+	return w.impl.OnImeVisibilityChanged(ctx, imeVisible, imeHeight)
+}
+
+var _ IPinnedTaskListener = (*pinnedTaskListenerStubWrapper)(nil)
+
+// NewPinnedTaskListenerStub creates a server-side IPinnedTaskListener wrapping the given
+// server implementation. The returned value satisfies IPinnedTaskListener
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPinnedTaskListenerStub(
+	impl IPinnedTaskListenerServer,
+) IPinnedTaskListener {
+	wrapper := &pinnedTaskListenerStubWrapper{impl: impl}
+	stub := &PinnedTaskListenerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

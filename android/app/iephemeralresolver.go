@@ -47,7 +47,7 @@ func (p *EphemeralResolverProxy) GetEphemeralResolveInfoList(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEphemeralResolver)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	if digestPrefix == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -75,7 +75,7 @@ func (p *EphemeralResolverProxy) GetEphemeralIntentFilterList(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIEphemeralResolver)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteString16(hostName)
 	_data.WriteInt32(sequence)
 
@@ -140,4 +140,55 @@ func (s *EphemeralResolverStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IEphemeralResolverServer is the server-side interface that user implementations
+// provide to NewEphemeralResolverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IEphemeralResolverServer interface {
+	GetEphemeralResolveInfoList(ctx context.Context, callback ondeviceintelligence.IRemoteCallback, digestPrefix []int32, sequence int32) error
+	GetEphemeralIntentFilterList(ctx context.Context, callback ondeviceintelligence.IRemoteCallback, hostName string, sequence int32) error
+}
+
+type ephemeralResolverStubWrapper struct {
+	impl       IEphemeralResolverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *ephemeralResolverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *ephemeralResolverStubWrapper) GetEphemeralResolveInfoList(
+	ctx context.Context,
+	callback ondeviceintelligence.IRemoteCallback,
+	digestPrefix []int32,
+	sequence int32,
+) error {
+	return w.impl.GetEphemeralResolveInfoList(ctx, callback, digestPrefix, sequence)
+}
+
+func (w *ephemeralResolverStubWrapper) GetEphemeralIntentFilterList(
+	ctx context.Context,
+	callback ondeviceintelligence.IRemoteCallback,
+	hostName string,
+	sequence int32,
+) error {
+	return w.impl.GetEphemeralIntentFilterList(ctx, callback, hostName, sequence)
+}
+
+var _ IEphemeralResolver = (*ephemeralResolverStubWrapper)(nil)
+
+// NewEphemeralResolverStub creates a server-side IEphemeralResolver wrapping the given
+// server implementation. The returned value satisfies IEphemeralResolver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewEphemeralResolverStub(
+	impl IEphemeralResolverServer,
+) IEphemeralResolver {
+	wrapper := &ephemeralResolverStubWrapper{impl: impl}
+	stub := &EphemeralResolverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

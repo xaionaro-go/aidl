@@ -52,7 +52,7 @@ func (p *UsbGadgetProxy) SetCurrentUsbFunctions(
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbGadget)
 	_data.WriteInt64(functions)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(timeoutMs)
 	_data.WriteInt64(transactionId)
 
@@ -72,7 +72,7 @@ func (p *UsbGadgetProxy) GetCurrentUsbFunctions(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbGadget)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(transactionId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbGadget, "getCurrentUsbFunctions")
@@ -91,7 +91,7 @@ func (p *UsbGadgetProxy) GetUsbSpeed(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbGadget)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(transactionId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbGadget, "getUsbSpeed")
@@ -110,7 +110,7 @@ func (p *UsbGadgetProxy) Reset(
 ) error {
 	_data := parcel.New()
 	_data.WriteInterfaceToken(DescriptorIUsbGadget)
-	_data.WriteStrongBinder(callback.AsBinder().Handle())
+	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.remote.Transport())
 	_data.WriteInt64(transactionId)
 
 	_code, _err := p.remote.ResolveCode(DescriptorIUsbGadget, "reset")
@@ -203,4 +203,73 @@ func (s *UsbGadgetStub) OnTransaction(
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
+}
+
+// IUsbGadgetServer is the server-side interface that user implementations
+// provide to NewUsbGadgetStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IUsbGadgetServer interface {
+	SetCurrentUsbFunctions(ctx context.Context, functions int64, callback IUsbGadgetCallback, timeoutMs int64, transactionId int64) error
+	GetCurrentUsbFunctions(ctx context.Context, callback IUsbGadgetCallback, transactionId int64) error
+	GetUsbSpeed(ctx context.Context, callback IUsbGadgetCallback, transactionId int64) error
+	Reset(ctx context.Context, callback IUsbGadgetCallback, transactionId int64) error
+}
+
+type usbGadgetStubWrapper struct {
+	impl       IUsbGadgetServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *usbGadgetStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *usbGadgetStubWrapper) SetCurrentUsbFunctions(
+	ctx context.Context,
+	functions int64,
+	callback IUsbGadgetCallback,
+	timeoutMs int64,
+	transactionId int64,
+) error {
+	return w.impl.SetCurrentUsbFunctions(ctx, functions, callback, timeoutMs, transactionId)
+}
+
+func (w *usbGadgetStubWrapper) GetCurrentUsbFunctions(
+	ctx context.Context,
+	callback IUsbGadgetCallback,
+	transactionId int64,
+) error {
+	return w.impl.GetCurrentUsbFunctions(ctx, callback, transactionId)
+}
+
+func (w *usbGadgetStubWrapper) GetUsbSpeed(
+	ctx context.Context,
+	callback IUsbGadgetCallback,
+	transactionId int64,
+) error {
+	return w.impl.GetUsbSpeed(ctx, callback, transactionId)
+}
+
+func (w *usbGadgetStubWrapper) Reset(
+	ctx context.Context,
+	callback IUsbGadgetCallback,
+	transactionId int64,
+) error {
+	return w.impl.Reset(ctx, callback, transactionId)
+}
+
+var _ IUsbGadget = (*usbGadgetStubWrapper)(nil)
+
+// NewUsbGadgetStub creates a server-side IUsbGadget wrapping the given
+// server implementation. The returned value satisfies IUsbGadget
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewUsbGadgetStub(
+	impl IUsbGadgetServer,
+) IUsbGadget {
+	wrapper := &usbGadgetStubWrapper{impl: impl}
+	stub := &UsbGadgetStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
 }

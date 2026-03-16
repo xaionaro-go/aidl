@@ -96,3 +96,42 @@ func (s *StorageShutdownObserverStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IStorageShutdownObserverServer is the server-side interface that user implementations
+// provide to NewStorageShutdownObserverStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IStorageShutdownObserverServer interface {
+	OnShutDownComplete(ctx context.Context, statusCode int32) error
+}
+
+type storageShutdownObserverStubWrapper struct {
+	impl       IStorageShutdownObserverServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *storageShutdownObserverStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *storageShutdownObserverStubWrapper) OnShutDownComplete(
+	ctx context.Context,
+	statusCode int32,
+) error {
+	return w.impl.OnShutDownComplete(ctx, statusCode)
+}
+
+var _ IStorageShutdownObserver = (*storageShutdownObserverStubWrapper)(nil)
+
+// NewStorageShutdownObserverStub creates a server-side IStorageShutdownObserver wrapping the given
+// server implementation. The returned value satisfies IStorageShutdownObserver
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewStorageShutdownObserverStub(
+	impl IStorageShutdownObserverServer,
+) IStorageShutdownObserver {
+	wrapper := &storageShutdownObserverStubWrapper{impl: impl}
+	stub := &StorageShutdownObserverStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

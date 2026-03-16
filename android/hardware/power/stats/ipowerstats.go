@@ -412,3 +412,79 @@ func (s *PowerStatsStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IPowerStatsServer is the server-side interface that user implementations
+// provide to NewPowerStatsStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IPowerStatsServer interface {
+	GetPowerEntityInfo(ctx context.Context) ([]PowerEntity, error)
+	GetStateResidency(ctx context.Context, powerEntityIds []int32) ([]StateResidencyResult, error)
+	GetEnergyConsumerInfo(ctx context.Context) ([]EnergyConsumer, error)
+	GetEnergyConsumed(ctx context.Context, energyConsumerIds []int32) ([]EnergyConsumerResult, error)
+	GetEnergyMeterInfo(ctx context.Context) ([]Channel, error)
+	ReadEnergyMeter(ctx context.Context, channelIds []int32) ([]EnergyMeasurement, error)
+}
+
+type powerStatsStubWrapper struct {
+	impl       IPowerStatsServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *powerStatsStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *powerStatsStubWrapper) GetPowerEntityInfo(
+	ctx context.Context,
+) ([]PowerEntity, error) {
+	return w.impl.GetPowerEntityInfo(ctx)
+}
+
+func (w *powerStatsStubWrapper) GetStateResidency(
+	ctx context.Context,
+	powerEntityIds []int32,
+) ([]StateResidencyResult, error) {
+	return w.impl.GetStateResidency(ctx, powerEntityIds)
+}
+
+func (w *powerStatsStubWrapper) GetEnergyConsumerInfo(
+	ctx context.Context,
+) ([]EnergyConsumer, error) {
+	return w.impl.GetEnergyConsumerInfo(ctx)
+}
+
+func (w *powerStatsStubWrapper) GetEnergyConsumed(
+	ctx context.Context,
+	energyConsumerIds []int32,
+) ([]EnergyConsumerResult, error) {
+	return w.impl.GetEnergyConsumed(ctx, energyConsumerIds)
+}
+
+func (w *powerStatsStubWrapper) GetEnergyMeterInfo(
+	ctx context.Context,
+) ([]Channel, error) {
+	return w.impl.GetEnergyMeterInfo(ctx)
+}
+
+func (w *powerStatsStubWrapper) ReadEnergyMeter(
+	ctx context.Context,
+	channelIds []int32,
+) ([]EnergyMeasurement, error) {
+	return w.impl.ReadEnergyMeter(ctx, channelIds)
+}
+
+var _ IPowerStats = (*powerStatsStubWrapper)(nil)
+
+// NewPowerStatsStub creates a server-side IPowerStats wrapping the given
+// server implementation. The returned value satisfies IPowerStats
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewPowerStatsStub(
+	impl IPowerStatsServer,
+) IPowerStats {
+	wrapper := &powerStatsStubWrapper{impl: impl}
+	stub := &PowerStatsStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

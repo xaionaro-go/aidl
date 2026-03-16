@@ -100,3 +100,43 @@ func (s *RuntimePermissionPresenterStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IRuntimePermissionPresenterServer is the server-side interface that user implementations
+// provide to NewRuntimePermissionPresenterStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IRuntimePermissionPresenterServer interface {
+	GetAppPermissions(ctx context.Context, packageName string, callback os.RemoteCallback) error
+}
+
+type runtimePermissionPresenterStubWrapper struct {
+	impl       IRuntimePermissionPresenterServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *runtimePermissionPresenterStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *runtimePermissionPresenterStubWrapper) GetAppPermissions(
+	ctx context.Context,
+	packageName string,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.GetAppPermissions(ctx, packageName, callback)
+}
+
+var _ IRuntimePermissionPresenter = (*runtimePermissionPresenterStubWrapper)(nil)
+
+// NewRuntimePermissionPresenterStub creates a server-side IRuntimePermissionPresenter wrapping the given
+// server implementation. The returned value satisfies IRuntimePermissionPresenter
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewRuntimePermissionPresenterStub(
+	impl IRuntimePermissionPresenterServer,
+) IRuntimePermissionPresenter {
+	wrapper := &runtimePermissionPresenterStubWrapper{impl: impl}
+	stub := &RuntimePermissionPresenterStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}

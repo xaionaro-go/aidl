@@ -818,3 +818,147 @@ func (s *BlobStoreManagerStub) OnTransaction(
 		return nil, fmt.Errorf("unknown transaction code %d", code)
 	}
 }
+
+// IBlobStoreManagerServer is the server-side interface that user implementations
+// provide to NewBlobStoreManagerStub. It contains only the business methods,
+// without AsBinder (which is provided by the stub itself).
+type IBlobStoreManagerServer interface {
+	CreateSession(ctx context.Context, handle BlobHandle, packageName string) (int64, error)
+	OpenSession(ctx context.Context, sessionId int64, packageName string) (IBlobStoreSession, error)
+	OpenBlob(ctx context.Context, handle BlobHandle, packageName string) (int32, error)
+	AbandonSession(ctx context.Context, sessionId int64, packageName string) error
+	AcquireLease(ctx context.Context, handle BlobHandle, descriptionResId int32, description interface{}, leaseTimeoutMillis int64, packageName string) error
+	ReleaseLease(ctx context.Context, handle BlobHandle, packageName string) error
+	ReleaseAllLeases(ctx context.Context, packageName string) error
+	GetRemainingLeaseQuotaBytes(ctx context.Context, packageName string) (int64, error)
+	WaitForIdle(ctx context.Context, callback os.RemoteCallback) error
+	QueryBlobsForUser(ctx context.Context) ([]BlobInfo, error)
+	DeleteBlob(ctx context.Context, blobId int64) error
+	GetLeasedBlobs(ctx context.Context, packageName string) ([]BlobHandle, error)
+	GetLeaseInfo(ctx context.Context, blobHandle BlobHandle, packageName string) (LeaseInfo, error)
+}
+
+type blobStoreManagerStubWrapper struct {
+	impl       IBlobStoreManagerServer
+	stubBinder *binder.StubBinder
+}
+
+func (w *blobStoreManagerStubWrapper) AsBinder() binder.IBinder {
+	return w.stubBinder
+}
+
+func (w *blobStoreManagerStubWrapper) CreateSession(
+	ctx context.Context,
+	handle BlobHandle,
+	packageName string,
+) (int64, error) {
+	return w.impl.CreateSession(ctx, handle, packageName)
+}
+
+func (w *blobStoreManagerStubWrapper) OpenSession(
+	ctx context.Context,
+	sessionId int64,
+	packageName string,
+) (IBlobStoreSession, error) {
+	return w.impl.OpenSession(ctx, sessionId, packageName)
+}
+
+func (w *blobStoreManagerStubWrapper) OpenBlob(
+	ctx context.Context,
+	handle BlobHandle,
+	packageName string,
+) (int32, error) {
+	return w.impl.OpenBlob(ctx, handle, packageName)
+}
+
+func (w *blobStoreManagerStubWrapper) AbandonSession(
+	ctx context.Context,
+	sessionId int64,
+	packageName string,
+) error {
+	return w.impl.AbandonSession(ctx, sessionId, packageName)
+}
+
+func (w *blobStoreManagerStubWrapper) AcquireLease(
+	ctx context.Context,
+	handle BlobHandle,
+	descriptionResId int32,
+	description interface{},
+	leaseTimeoutMillis int64,
+	packageName string,
+) error {
+	return w.impl.AcquireLease(ctx, handle, descriptionResId, description, leaseTimeoutMillis, packageName)
+}
+
+func (w *blobStoreManagerStubWrapper) ReleaseLease(
+	ctx context.Context,
+	handle BlobHandle,
+	packageName string,
+) error {
+	return w.impl.ReleaseLease(ctx, handle, packageName)
+}
+
+func (w *blobStoreManagerStubWrapper) ReleaseAllLeases(
+	ctx context.Context,
+	packageName string,
+) error {
+	return w.impl.ReleaseAllLeases(ctx, packageName)
+}
+
+func (w *blobStoreManagerStubWrapper) GetRemainingLeaseQuotaBytes(
+	ctx context.Context,
+	packageName string,
+) (int64, error) {
+	return w.impl.GetRemainingLeaseQuotaBytes(ctx, packageName)
+}
+
+func (w *blobStoreManagerStubWrapper) WaitForIdle(
+	ctx context.Context,
+	callback os.RemoteCallback,
+) error {
+	return w.impl.WaitForIdle(ctx, callback)
+}
+
+func (w *blobStoreManagerStubWrapper) QueryBlobsForUser(
+	ctx context.Context,
+) ([]BlobInfo, error) {
+	return w.impl.QueryBlobsForUser(ctx)
+}
+
+func (w *blobStoreManagerStubWrapper) DeleteBlob(
+	ctx context.Context,
+	blobId int64,
+) error {
+	return w.impl.DeleteBlob(ctx, blobId)
+}
+
+func (w *blobStoreManagerStubWrapper) GetLeasedBlobs(
+	ctx context.Context,
+	packageName string,
+) ([]BlobHandle, error) {
+	return w.impl.GetLeasedBlobs(ctx, packageName)
+}
+
+func (w *blobStoreManagerStubWrapper) GetLeaseInfo(
+	ctx context.Context,
+	blobHandle BlobHandle,
+	packageName string,
+) (LeaseInfo, error) {
+	return w.impl.GetLeaseInfo(ctx, blobHandle, packageName)
+}
+
+var _ IBlobStoreManager = (*blobStoreManagerStubWrapper)(nil)
+
+// NewBlobStoreManagerStub creates a server-side IBlobStoreManager wrapping the given
+// server implementation. The returned value satisfies IBlobStoreManager
+// and can be passed to proxy methods; its AsBinder() returns a
+// *binder.StubBinder that is auto-registered with the binder
+// driver on first use.
+func NewBlobStoreManagerStub(
+	impl IBlobStoreManagerServer,
+) IBlobStoreManager {
+	wrapper := &blobStoreManagerStubWrapper{impl: impl}
+	stub := &BlobStoreManagerStub{Impl: wrapper}
+	wrapper.stubBinder = binder.NewStubBinder(stub)
+	return wrapper
+}
