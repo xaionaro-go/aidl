@@ -133,12 +133,17 @@ func (p *Parcel) ReadStrongBinder() (uint32, error) {
 	return handle, nil
 }
 
-// WriteNullStrongBinder writes a null flat_binder_object (all zeros)
-// followed by the UNDECLARED stability level.
+// WriteNullStrongBinder writes a null flat_binder_object.
+// Android's flattenBinder(nullptr) writes type=BINDER_TYPE_BINDER with
+// binder=0 and cookie=0. The null object is NOT recorded in the objects
+// array (Parcel::writeObject skips it when binder==0 && !nullMetaData).
+// Followed by UNDECLARED stability level (finishFlattenBinder).
 func (p *Parcel) WriteNullStrongBinder() {
-	offset := uint64(p.Len())
-	p.objects = append(p.objects, offset)
-	p.grow(flatBinderObjectSize)
+	buf := p.grow(flatBinderObjectSize)
+
+	// type must be BINDER_TYPE_BINDER even for null (Android convention).
+	binary.LittleEndian.PutUint32(buf[0:], binderTypeBinder)
+	// flags, binder, cookie are all zero (from grow's zero-fill).
 
 	// Null binder uses UNDECLARED stability.
 	p.WriteInt32(StabilityUndeclared)
