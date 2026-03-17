@@ -1,5 +1,5 @@
-.PHONY: generate genversions test e2e e2e-bindercli vet build build-examples lint clean readme smoke \
-       bindercli genbindercli genservicemap genaccessors genparcelspec genparcelgo genconstants list-commands check-generated release
+.PHONY: specs generate cli readme test e2e e2e-bindercli vet build lint clean \
+       bindercli list-commands check-generated release
 
 # Generated top-level directories.
 GENERATED_DIRS := android com fuzztest libgui_test_server parcelables src
@@ -7,30 +7,47 @@ GENERATED_DIRS := android com fuzztest libgui_test_server parcelables src
 # All non-3rdparty Go packages.
 GO_PACKAGES = $(shell go list -e ./... | grep -v /3rdparty/)
 
-# Regenerate version-aware transaction code tables from AOSP tags.
-genversions:
-	go run ./tools/cmd/genaidl -3rdparty tools/pkg/3rdparty -output . -codes-output binder/versionaware/codes_gen.go -versions
+# --- Spec-first pipeline ---
 
-# Generate all Go code from AOSP AIDL definitions.
-generate:
-	go run ./tools/cmd/genaidl -3rdparty tools/pkg/3rdparty -output . -smoke-tests
+# Extract specs from AIDL sources.
+specs:
+	go run ./tools/cmd/aidl2spec -3rdparty tools/pkg/3rdparty -output specs/
+	go run ./tools/cmd/java2spec -3rdparty tools/pkg/3rdparty -config tools/cmd/java2spec/constants.yaml -output specs/
 
-# Run unit tests (compiler + runtime packages).
+# Extract specs with multi-version AOSP transaction code tables.
+specs-versions:
+	go run ./tools/cmd/aidl2spec -3rdparty tools/pkg/3rdparty -output specs/ -versions
+	go run ./tools/cmd/java2spec -3rdparty tools/pkg/3rdparty -config tools/cmd/java2spec/constants.yaml -output specs/
+
+# Generate all Go code from specs.
+generate: specs
+	go run ./tools/cmd/spec2go -specs specs/ -output . -smoke-tests -codes-output binder/versionaware/codes_gen.go
+
+# Generate bindercli commands from specs.
+cli: specs
+	go run ./tools/cmd/spec2cli -specs specs/ -output cmd/bindercli/
+
+# Generate README from specs.
+readme: specs
+	go run ./tools/cmd/spec2readme -specs specs/ -output README.md
+
+# --- Testing ---
+
+# Run unit tests.
 test:
 	go test -v -race $(GO_PACKAGES)
 
 # Run E2E tests on a connected device via adb.
-# Cross-compiles the test binary, pushes it, and runs on the device.
-# bindercli tests are skipped (they require an emulator); on-device tests
-# open /dev/binder directly.
 e2e:
 	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go test -tags e2e -c -o build/e2e_test ./tests/e2e/
 	adb push build/e2e_test /data/local/tmp/
 	adb shell /data/local/tmp/e2e_test -test.v -test.timeout 300s
 
-# Run bindercli E2E tests via emulator (starts emulator if needed).
+# Run bindercli E2E tests via emulator.
 e2e-bindercli:
 	go test -tags e2e ./tests/e2e/... -run TestBindercli -v -timeout 300s
+
+# --- Build ---
 
 # Run go vet on all packages.
 vet:
@@ -43,61 +60,20 @@ build:
 	@for d in cmd/*/; do echo "Building $$d..."; go build -o "build/$$(basename $$d)" "./$$d"; done
 	@for d in examples/*/; do echo "Building $$d..."; go build -o "build/$$(basename $$d)" "./$$d"; done
 
-# Build bindercli release binaries for arm64 and amd64.
+# Build bindercli release binaries.
 release:
 	@mkdir -p build
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o build/bindercli-linux-arm64 ./cmd/bindercli/
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/bindercli-linux-amd64 ./cmd/bindercli/
 
-# Run linter.
-lint:
-	golangci-lint run ./...
-
-# Regenerate README package table.
-readme:
-	go run ./tools/cmd/genreadme
-
-# Regenerate E2E smoke tests.
-smoke:
-	go run ./tools/cmd/gen_e2e_smoke .
-
-# Generate service name constants and JSON service map from AOSP Java sources.
-genservicemap:
-	go run ./tools/cmd/genservicemap \
-		-frameworks-base tools/pkg/3rdparty/frameworks-base \
-		-go-constants servicemanager/service_names_gen.go \
-		-output /tmp/servicemap.json
-
-# Generate typed service accessor functions from the service map.
-genaccessors:
-	go run ./tools/cmd/genaccessors \
-		-service-map /tmp/servicemap.json \
-		-output .
-
-# Extract Java Parcelable wire formats into YAML specs.
-genparcelspec:
-	go run ./tools/cmd/genparcelspec \
-		-frameworks-base tools/pkg/3rdparty/frameworks-base \
-		-output parcelspecs/
-
-# Generate Go marshal/unmarshal from Parcelable specs.
-genparcelgo:
-	go run ./tools/cmd/genparcelgo \
-		-specs parcelspecs/ \
-		-output .
-
-# Generate typed Go constants from Java source files.
-genconstants:
-	go run ./tools/cmd/genconstants
-
-# Regenerate bindercli registry and command dispatch code.
-genbindercli:
-	go run ./tools/cmd/genbindercli
-
 # Build the bindercli tool.
 bindercli:
 	@mkdir -p build
 	go build -o build/bindercli ./cmd/bindercli
+
+# Run linter.
+lint:
+	golangci-lint run ./...
 
 # List all available bindercli subcommands.
 list-commands:
@@ -107,17 +83,12 @@ list-commands:
 check-generated:
 	make clean
 	make generate
-	make genparcelspec
-	make genparcelgo
-	make genservicemap
-	make genaccessors
-	make genconstants
-	make smoke
+	make cli
 	make readme
 	git diff --exit-code
 
-# Remove all generated code.
+# Remove all generated code and specs.
 clean:
-	rm -rf $(GENERATED_DIRS) parcelspecs
+	rm -rf $(GENERATED_DIRS) specs
 	find . -maxdepth 1 -name '*.go' -exec grep -l 'Code generated' {} \; | xargs -r rm -f
 	rm -f servicemanager/service_names_gen.go
