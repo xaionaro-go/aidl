@@ -19,6 +19,10 @@ const (
 	ExceptionServiceSpecific      ExceptionCode = -8
 	ExceptionParcelable           ExceptionCode = -9
 	ExceptionTransactionFailed    ExceptionCode = -129
+
+	// Fat reply header codes — internal protocol, not real exceptions.
+	ExHasNotedAppOpsHeader ExceptionCode = -127
+	ExHasReplyHeader       ExceptionCode = -128
 )
 
 // String returns a human-readable name for the exception code.

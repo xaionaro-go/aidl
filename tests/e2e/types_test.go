@@ -23,12 +23,13 @@ func TestType_IntArray(t *testing.T) {
 
 	const descriptor = "android.hardware.display.IDisplayManager"
 
-	// IDisplayManager::getDisplayIds(false) (code 2) -> int[].
+	// IDisplayManager::getDisplayIds(false) -> int[].
+	codeGetDisplayIds := resolveCode(ctx, t, svc, descriptor, "getDisplayIds")
 	data := parcel.New()
 	data.WriteInterfaceToken(descriptor)
 	data.WriteBool(false)
 
-	reply, err := svc.Transact(ctx, 2, 0, data)
+	reply, err := svc.Transact(ctx, codeGetDisplayIds, 0, data)
 	requireOrSkip(t, err)
 	requireOrSkip(t, binder.ReadStatus(reply))
 
@@ -55,8 +56,8 @@ func TestType_IntArray_Vibrator(t *testing.T) {
 
 	const descriptor = "android.os.IVibratorManagerService"
 
-	// IVibratorManagerService::getVibratorIds (code 1) -> int[].
-	reply := transactNoArg(ctx, t, svc, descriptor, 1)
+	// IVibratorManagerService::getVibratorIds -> int[].
+	reply := transactNoArg(ctx, t, svc, descriptor, "getVibratorIds")
 
 	count, err := reply.ReadInt32()
 	require.NoError(t, err, "failed to read array count")
@@ -78,8 +79,8 @@ func TestType_LongArray(t *testing.T) {
 	driver := openBinder(t)
 	sf := getSurfaceFlingerAIDL(ctx, t, driver)
 
-	// ISurfaceComposer::getPhysicalDisplayIds (code 6) -> long[].
-	reply := transactNoArg(ctx, t, sf, surfaceComposerDescriptor, 6)
+	// ISurfaceComposer::getPhysicalDisplayIds -> long[].
+	reply := transactNoArg(ctx, t, sf, surfaceComposerDescriptor, "getPhysicalDisplayIds")
 
 	count, err := reply.ReadInt32()
 	require.NoError(t, err, "failed to read array count")
@@ -106,8 +107,8 @@ func TestType_String16Return(t *testing.T) {
 
 	const descriptor = "android.location.ICountryDetector"
 
-	// ICountryDetector::detectCountry (code 1) -> Country parcelable.
-	reply := transactNoArg(ctx, t, svc, descriptor, 1)
+	// ICountryDetector::detectCountry -> Country parcelable.
+	reply := transactNoArg(ctx, t, svc, descriptor, "detectCountry")
 
 	// Reply is a nullable parcelable: int32 flag (1=present, 0=null).
 	flag, err := reply.ReadInt32()
@@ -137,12 +138,13 @@ func TestType_NullableParcelable(t *testing.T) {
 
 	const descriptor = "android.app.IAlarmManager"
 
-	// IAlarmManager::getNextAlarmClock (code 7) -> nullable AlarmClockInfo.
+	// IAlarmManager::getNextAlarmClock -> nullable AlarmClockInfo.
+	codeNextAlarm := resolveCode(ctx, t, svc, descriptor, "getNextAlarmClock")
 	data := parcel.New()
 	data.WriteInterfaceToken(descriptor)
 	data.WriteInt32(0) // userId
 
-	reply, err := svc.Transact(ctx, 7, 0, data)
+	reply, err := svc.Transact(ctx, codeNextAlarm, 0, data)
 	requireOrSkip(t, err)
 	requireOrSkip(t, binder.ReadStatus(reply))
 
@@ -165,12 +167,13 @@ func TestType_NestedParcelable(t *testing.T) {
 
 	const knownDisplayID = int64(4619827259835644672)
 
-	// ISurfaceComposer::getDynamicDisplayInfoFromId (code 13) -> DynamicDisplayInfo.
+	// ISurfaceComposer::getDynamicDisplayInfoFromId -> DynamicDisplayInfo.
+	codeDynInfo := resolveCode(ctx, t, sf, surfaceComposerDescriptor, "getDynamicDisplayInfoFromId")
 	data := parcel.New()
 	data.WriteInterfaceToken(surfaceComposerDescriptor)
 	data.WriteInt64(knownDisplayID)
 
-	reply, err := sf.Transact(ctx, 13, 0, data)
+	reply, err := sf.Transact(ctx, codeDynInfo, 0, data)
 	requireOrSkip(t, err)
 	requireOrSkip(t, binder.ReadStatus(reply))
 
@@ -255,8 +258,8 @@ func TestType_EnumValue(t *testing.T) {
 
 	const descriptor = "android.app.IUiModeManager"
 
-	// IUiModeManager::getCurrentModeType (code 7) -> int32 (UI_MODE_TYPE enum).
-	reply := transactNoArg(ctx, t, svc, descriptor, 7)
+	// IUiModeManager::getCurrentModeType -> int32 (UI_MODE_TYPE enum).
+	reply := transactNoArg(ctx, t, svc, descriptor, "getCurrentModeType")
 
 	val, err := reply.ReadInt32()
 	require.NoError(t, err, "failed to read enum value")
@@ -275,12 +278,13 @@ func TestType_LargeParcelable(t *testing.T) {
 
 	const descriptor = "android.hardware.display.IDisplayManager"
 
-	// IDisplayManager::getDisplayInfo(0) (code 1) -> DisplayInfo parcelable.
+	// IDisplayManager::getDisplayInfo(0) -> DisplayInfo parcelable.
+	codeGetDisplayInfo := resolveCode(ctx, t, svc, descriptor, "getDisplayInfo")
 	data := parcel.New()
 	data.WriteInterfaceToken(descriptor)
 	data.WriteInt32(0) // display 0
 
-	reply, err := svc.Transact(ctx, 1, 0, data)
+	reply, err := svc.Transact(ctx, codeGetDisplayInfo, 0, data)
 	requireOrSkip(t, err)
 	requireOrSkip(t, binder.ReadStatus(reply))
 
@@ -311,14 +315,15 @@ func TestType_MultipleStringParams(t *testing.T) {
 
 	const descriptor = "com.android.internal.app.IAppOpsService"
 
-	// IAppOpsService::checkOperation(int op, int uid, String packageName) (code 1) -> int32.
+	// IAppOpsService::checkOperation(int op, int uid, String packageName) -> int32.
+	codeCheckOp := resolveCode(ctx, t, svc, descriptor, "checkOperation")
 	data := parcel.New()
 	data.WriteInterfaceToken(descriptor)
 	data.WriteInt32(24) // OP_SYSTEM_ALERT_WINDOW
 	data.WriteInt32(0)  // uid 0 (root)
 	data.WriteString16("com.android.systemui")
 
-	reply, err := svc.Transact(ctx, 1, 0, data)
+	reply, err := svc.Transact(ctx, codeCheckOp, 0, data)
 	requireOrSkip(t, err)
 	requireOrSkip(t, binder.ReadStatus(reply))
 

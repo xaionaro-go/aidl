@@ -88,6 +88,7 @@ type structInfo struct {
 	Fields     []structField
 	ImportPath string
 	PkgName    string
+	Promoted   bool // true if promoted from knownGoTypes (not in spec)
 }
 
 // typeKind classifies a parameter type for code generation.
@@ -106,7 +107,6 @@ const (
 	kindMap               // map[K]V
 	kindComplexArray      // []SomeStruct, []interface{}, etc.
 	kindNullablePrimitive // *int32, *string, etc.
-	kindJSONFallback      // anything else: accept JSON string
 )
 
 // knownStructs maps "importPath:TypeName" -> structInfo.
@@ -145,10 +145,15 @@ var knownGoProxyMethods map[string]int
 // every proxy constructor found in the Go source.
 var knownGoProxyConstructors map[string]bool
 
+// goProxyMethodsWithInterfaceParams maps "importPath:MethodName" -> true
+// for proxy methods that have at least one parameter using interface{} or
+// []interface{} in the Go source.
+var goProxyMethodsWithInterfaceParams map[string]bool
+
 // knownGoTypes maps "importPath:TypeName" -> true for every type
 // declaration found in Go source files. Used to validate that spec
 // types (structs, enums) actually exist in Go code.
-var knownGoTypes map[string]bool
+var knownGoTypes map[string]string
 
 func main() {
 	specsDir := flag.String("specs", "specs/", "Directory containing spec YAML files")
@@ -188,7 +193,8 @@ func scanGoProxyMethods(
 ) error {
 	knownGoProxyMethods = map[string]int{}
 	knownGoProxyConstructors = map[string]bool{}
-	knownGoTypes = map[string]bool{}
+	goProxyMethodsWithInterfaceParams = map[string]bool{}
+	knownGoTypes = map[string]string{}
 	return filepath.Walk(moduleRoot, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil
@@ -239,7 +245,12 @@ func scanGoProxyMethods(
 				// Each param is on its own line; ctx is the first.
 				paramCount := countMethodParams(lines, i)
 
-				knownGoProxyMethods[importPath+":"+methodName] = paramCount
+				methodKey := importPath + ":" + methodName
+				knownGoProxyMethods[methodKey] = paramCount
+				// Check if any param uses interface{} or []interface{}.
+				if methodHasInterfaceParam(lines, i) {
+					goProxyMethodsWithInterfaceParams[methodKey] = true
+				}
 
 			case strings.HasPrefix(line, "func "):
 				// Proxy constructor: func NewFooProxy(
@@ -264,7 +275,14 @@ func scanGoProxyMethods(
 				if typeName == "" || typeName[0] < 'A' || typeName[0] > 'Z' {
 					continue
 				}
-				knownGoTypes[importPath+":"+typeName] = true
+				typeKeyword := strings.TrimSpace(rest[spaceIdx+1:])
+				if idx := strings.IndexByte(typeKeyword, ' '); idx >= 0 {
+					typeKeyword = typeKeyword[:idx]
+				}
+				if idx := strings.IndexByte(typeKeyword, '{'); idx >= 0 {
+					typeKeyword = typeKeyword[:idx]
+				}
+				knownGoTypes[importPath+":"+typeName] = typeKeyword
 			}
 		}
 		return nil
@@ -324,6 +342,33 @@ func countMethodParams(
 	return count
 }
 
+// methodHasInterfaceParam checks whether a proxy method declaration (starting
+// at funcLineIdx) has any parameter typed as interface{} or []interface{}.
+func methodHasInterfaceParam(
+	lines []string,
+	funcLineIdx int,
+) bool {
+	line := lines[funcLineIdx]
+	lastOpen := strings.LastIndex(line, "(")
+	if lastOpen < 0 {
+		return false
+	}
+	paramPart := line[lastOpen+1:]
+	if idx := strings.Index(paramPart, ")"); idx >= 0 {
+		return strings.Contains(paramPart[:idx], "interface{}")
+	}
+	for j := funcLineIdx + 1; j < len(lines); j++ {
+		trimmed := strings.TrimSpace(lines[j])
+		if strings.HasPrefix(trimmed, ")") {
+			break
+		}
+		if strings.Contains(trimmed, "interface{}") {
+			return true
+		}
+	}
+	return false
+}
+
 func run(
 	specsDir string,
 	outputDir string,
@@ -363,12 +408,12 @@ func run(
 	// Validate spec types against actual Go source: remove structs
 	// and enums that don't have corresponding Go type declarations.
 	for key := range knownStructs {
-		if !knownGoTypes[key] {
+		if knownGoTypes[key] == "" {
 			delete(knownStructs, key)
 		}
 	}
 	for key := range knownEnums {
-		if !knownGoTypes[key] {
+		if knownGoTypes[key] == "" {
 			delete(knownEnums, key)
 		}
 	}
@@ -435,6 +480,41 @@ func run(
 		}
 	}
 	fmt.Fprintf(os.Stderr, "Sub-interfaces (excluded from CLI): %d\n", len(subInterfaceDescriptors))
+
+	// Phase 3: promote unclassified Go types.
+	//
+	// Some Go types exist in knownGoTypes but aren't in knownStructs,
+	// knownEnums, or knownInterfaceGoTypes. These are typically Java
+	// parcelables with no AIDL-defined fields (generated as empty
+	// structs in Go) or cross-package interface references. Promote
+	// them to the appropriate classification so they don't fall
+	// through to an unhandled case.
+	promotedStructs := 0
+	promotedInterfaces := 0
+	for key, typeKeyword := range knownGoTypes {
+		if knownStructs[key] != nil || knownEnums[key] || knownInterfaceGoTypes[key] {
+			continue
+		}
+		parts := strings.SplitN(key, ":", 2)
+		if len(parts) != 2 {
+			continue
+		}
+		importPath := parts[0]
+		pkgName := filepath.Base(importPath)
+		switch typeKeyword {
+		case "struct":
+			knownStructs[key] = &structInfo{
+				ImportPath: importPath,
+				PkgName:    pkgName,
+				Promoted:   true,
+			}
+			promotedStructs++
+		case "interface":
+			knownInterfaceGoTypes[key] = true
+			promotedInterfaces++
+		}
+	}
+	fmt.Fprintf(os.Stderr, "Promoted unclassified Go types: %d structs, %d interfaces\n", promotedStructs, promotedInterfaces)
 
 	totalMethods := 0
 	commandableMethods := 0
@@ -840,10 +920,7 @@ func classifyType(
 		return kindInterfaceType
 	}
 
-	// Unknown type — no Go struct, enum, or interface exists for
-	// this AIDL type. Returning kindUnsupported causes the method
-	// to be skipped rather than generating code that references
-	// undefined types.
+	// Unknown type — no Go type exists at all. Skip the method.
 	return kindUnsupported
 }
 
@@ -857,6 +934,40 @@ func allParamsSupported(
 		}
 	}
 	return true
+}
+
+// hasPromotedParam returns true if any non-out parameter resolves to
+// a promoted struct (or a slice/pointer of one).
+func hasPromotedParam(
+	m methodInfo,
+	iface *interfaceInfo,
+) bool {
+	for _, p := range m.Params {
+		if p.IsOut {
+			continue
+		}
+		if isPromotedType(p.Type, iface) {
+			return true
+		}
+	}
+	return false
+}
+
+// isPromotedType returns true if a type resolves to a promoted struct,
+// including through pointer/slice wrappers.
+func isPromotedType(
+	typeStr string,
+	iface *interfaceInfo,
+) bool {
+	if strings.HasPrefix(typeStr, "*") {
+		return isPromotedType(typeStr[1:], iface)
+	}
+	if strings.HasPrefix(typeStr, "[]") {
+		return isPromotedType(typeStr[2:], iface)
+	}
+	key := resolveTypeKey(typeStr, iface.ImportPath)
+	si := knownStructs[key]
+	return si != nil && si.Promoted
 }
 
 // classifyFieldType classifies a struct field's type using the struct's
@@ -1122,7 +1233,7 @@ func (n *needsTracker) paramNeeds(
 		}
 	case kindEnum:
 		// enum uses GetInt32 then cast -- no extra imports
-	case kindInterface, kindMap, kindComplexArray, kindJSONFallback:
+	case kindInterface, kindMap, kindComplexArray:
 		n.json = true
 	case kindNullable:
 		inner := typeStr[1:]
@@ -1182,7 +1293,7 @@ func (n *needsTracker) fieldNeeds(
 		}
 	case kindEnum:
 		n.strconv = true
-	case kindInterface, kindMap, kindComplexArray, kindJSONFallback,
+	case kindInterface, kindMap, kindComplexArray,
 		kindBinderIBinder, kindInterfaceType, kindNullable, kindNullablePrimitive:
 		n.json = true
 	}
@@ -1298,6 +1409,11 @@ func writeCommandsGen(
 				continue
 			}
 			if goParamCount >= 0 && goParamCount != len(m.Params) {
+				continue
+			}
+			// Skip methods where the Go proxy uses interface{} params
+			// but the spec has concrete promoted types.
+			if goProxyMethodsWithInterfaceParams[methodKey] && hasPromotedParam(m, iface) {
 				continue
 			}
 			cmdMethods = append(cmdMethods, m)
@@ -1672,7 +1788,7 @@ func writeParamFlag(
 		inner := p.Type[1:]
 		fmt.Fprintf(buf, "\tcmd.Flags().String(%q, \"\", %q)\n", flagName, p.Name+" (optional "+inner+")")
 
-	case kindMap, kindComplexArray, kindJSONFallback:
+	case kindMap, kindComplexArray:
 		fmt.Fprintf(buf, "\tcmd.Flags().String(%q, \"\", %q)\n", flagName, p.Name+" (JSON "+p.Type+")")
 		fmt.Fprintf(buf, "\t_ = cmd.MarkFlagRequired(%q)\n", flagName)
 	}
@@ -1773,8 +1889,9 @@ func writeParamExtraction(
 	case kindNullablePrimitive:
 		writeNullablePrimitiveExtraction(buf, p.Type, flagName, varName)
 
-	case kindMap, kindComplexArray, kindJSONFallback:
-		writeJSONFallbackExtraction(buf, p.Type, flagName, varName, gc)
+	case kindMap, kindComplexArray:
+		writeJSONExtraction(buf, p.Type, flagName, varName, gc)
+
 	}
 }
 
@@ -1865,7 +1982,7 @@ func writeStructExtraction(
 	key := resolveTypeKey(typeStr, gc.iface.ImportPath)
 	si := knownStructs[key]
 	if si == nil || depth > 3 {
-		writeJSONFallbackExtraction(buf, typeStr, prefix, varName, gc)
+		writeJSONExtraction(buf, typeStr, prefix, varName, gc)
 		return
 	}
 
@@ -2085,7 +2202,7 @@ func writeNullableExtraction(
 		key := resolveTypeKey(inner, gc.iface.ImportPath)
 		si := knownStructs[key]
 		if si == nil {
-			writeJSONFallbackExtraction(buf, typeStr, flagName, varName, gc)
+			writeJSONExtraction(buf, typeStr, flagName, varName, gc)
 			return
 		}
 		qualifiedType := gc.resolveGoType(inner)
@@ -2112,7 +2229,7 @@ func writeNullableExtraction(
 		buf.WriteString("\t\t\t}\n\n")
 
 	default:
-		writeJSONFallbackExtraction(buf, typeStr, flagName, varName, gc)
+		writeJSONExtraction(buf, typeStr, flagName, varName, gc)
 	}
 }
 
@@ -2176,7 +2293,7 @@ func writeNullablePrimitiveExtraction(
 	buf.WriteString("\t\t\t}\n\n")
 }
 
-func writeJSONFallbackExtraction(
+func writeJSONExtraction(
 	buf *bytes.Buffer,
 	typeStr string,
 	flagName string,
@@ -2196,6 +2313,7 @@ func writeJSONFallbackExtraction(
 	buf.WriteString("\t\t\t\t}\n")
 	buf.WriteString("\t\t\t}\n\n")
 }
+
 
 // ---- Helpers ----
 

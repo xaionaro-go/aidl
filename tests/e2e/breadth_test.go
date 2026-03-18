@@ -71,7 +71,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 	type serviceSpec struct {
 		name       string
 		descriptor string
-		code       binder.TransactionCode
+		method     string
 		writeArgs  func(data *parcel.Parcel)
 		readResult func(t *testing.T, reply *parcel.Parcel)
 	}
@@ -80,7 +80,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "power",
 			descriptor: "android.os.IPowerManager",
-			code:       17, // isPowerSaveMode → bool
+			method:     "isPowerSaveMode",
 			readResult: func(t *testing.T, reply *parcel.Parcel) {
 				t.Helper()
 				val, err := reply.ReadBool()
@@ -91,7 +91,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "window",
 			descriptor: "android.view.IWindowManager",
-			code:       77,
+			method:     "isKeyguardLocked",
 			readResult: func(t *testing.T, reply *parcel.Parcel) {
 				t.Helper()
 				val, err := reply.ReadBool()
@@ -102,7 +102,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "uimode",
 			descriptor: "android.app.IUiModeManager",
-			code:       7,
+			method:     "getCurrentModeType",
 			readResult: func(t *testing.T, reply *parcel.Parcel) {
 				t.Helper()
 				val, err := reply.ReadInt32()
@@ -113,7 +113,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "display",
 			descriptor: "android.hardware.display.IDisplayManager",
-			code:       2,
+			method:     "getDisplayIds",
 			writeArgs: func(data *parcel.Parcel) {
 				data.WriteBool(false)
 			},
@@ -133,7 +133,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "notification",
 			descriptor: "android.app.INotificationManager",
-			code:       59,
+			method:     "getZenMode",
 			readResult: func(t *testing.T, reply *parcel.Parcel) {
 				t.Helper()
 				val, err := reply.ReadInt32()
@@ -144,7 +144,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "clipboard",
 			descriptor: "android.content.IClipboard",
-			code:       5,
+			method:     "hasClipboardText",
 			writeArgs: func(data *parcel.Parcel) {
 				data.WriteString16("com.android.shell")
 				data.WriteInt32(0)
@@ -160,7 +160,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "connectivity",
 			descriptor: "android.net.IConnectivityManager",
-			code:       3,
+			method:     "isNetworkSupported",
 			writeArgs: func(data *parcel.Parcel) {
 				data.WriteInt32(1)
 			},
@@ -174,7 +174,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "appops",
 			descriptor: "com.android.internal.app.IAppOpsService",
-			code:       1,
+			method:     "checkOperation",
 			writeArgs: func(data *parcel.Parcel) {
 				data.WriteInt32(24)
 				data.WriteInt32(0)
@@ -190,7 +190,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "vibrator_manager",
 			descriptor: "android.os.IVibratorManagerService",
-			code:       1,
+			method:     "getVibratorIds",
 			readResult: func(t *testing.T, reply *parcel.Parcel) {
 				t.Helper()
 				count, err := reply.ReadInt32()
@@ -207,7 +207,7 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 		{
 			name:       "user",
 			descriptor: "android.os.IUserManager",
-			code:       1,
+			method:     "getCredentialOwnerProfile",
 			writeArgs: func(data *parcel.Parcel) {
 				data.WriteInt32(0)
 			},
@@ -230,20 +230,23 @@ func TestServiceBreadth_TransactAcrossCategories(t *testing.T) {
 			require.NoError(t, err, "GetService(%s) failed", spec.name)
 			require.NotNil(t, svc, "GetService(%s) returned nil", spec.name)
 
+			code, err := svc.ResolveCode(ctx, spec.descriptor, spec.method)
+			requireOrSkip(t, err)
+
 			data := parcel.New()
 			data.WriteInterfaceToken(spec.descriptor)
 			if spec.writeArgs != nil {
 				spec.writeArgs(data)
 			}
 
-			reply, err := svc.Transact(ctx, spec.code, 0, data)
-			require.NoError(t, err, "Transact failed for %s code %d", spec.name, spec.code)
+			reply, err := svc.Transact(ctx, code, 0, data)
+			require.NoError(t, err, "Transact failed for %s method %s", spec.name, spec.method)
 			if statusErr := binder.ReadStatus(reply); statusErr != nil {
 				var se *aidlerrors.StatusError
 				if errors.As(statusErr, &se) && se.Exception == aidlerrors.ExceptionSecurity {
-					t.Skipf("%s code %d: %v", spec.name, spec.code, se)
+					t.Skipf("%s method %s: %v", spec.name, spec.method, se)
 				}
-				require.NoError(t, statusErr, "AIDL status error for %s code %d", spec.name, spec.code)
+				require.NoError(t, statusErr, "AIDL status error for %s method %s", spec.name, spec.method)
 			}
 
 			spec.readResult(t, reply)

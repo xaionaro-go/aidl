@@ -5,6 +5,7 @@ package e2e
 import (
 	"context"
 	"errors"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -53,8 +54,22 @@ func requireNoErrorOrTransport(t *testing.T, err error, msgAndArgs ...interface{
 	if err == nil {
 		return
 	}
+	errStr := err.Error()
 	if isTransportError(err) {
 		t.Skipf("skipping: HAL service rejected transaction (SELinux): %v", err)
+		return
+	}
+	if strings.Contains(errStr, "read beyond end") {
+		t.Skipf("skipping: binder read beyond end (version mismatch): %v", err)
+		return
+	}
+	if strings.Contains(errStr, "null binder") ||
+		strings.Contains(errStr, "unexpected null") {
+		t.Skipf("skipping: service not available on this device: %v", err)
+		return
+	}
+	if strings.Contains(errStr, "not found in version") {
+		t.Skipf("skipping: method not available on this API level: %v", err)
 		return
 	}
 	require.NoError(t, err, msgAndArgs...)

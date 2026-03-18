@@ -86,6 +86,11 @@ func (p *Parcel) grow(
 func (p *Parcel) read(
 	n int,
 ) ([]byte, error) {
+	if n < 0 || p.pos < 0 {
+		return nil, fmt.Errorf(
+			"parcel: invalid read: n=%d, pos=%d", n, p.pos,
+		)
+	}
 	aligned := (n + 3) &^ 3
 	if p.pos+aligned > len(p.data) {
 		return nil, fmt.Errorf(
