@@ -160,8 +160,4 @@ func printApIfaceInfo(
 		fmt.Printf("      Bridged instances: %v\n", bridged)
 	}
 
-	mlo, err := apIface.UsesMlo(ctx)
-	if err == nil {
-		fmt.Printf("      Uses MLO: %v\n", mlo)
-	}
 }
