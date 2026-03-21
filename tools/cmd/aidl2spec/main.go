@@ -346,7 +346,7 @@ func convertParam(
 	}
 
 	switch p.Direction {
-	case parser.DirectionIn, parser.DirectionNone:
+	case parser.DirectionIn:
 		ps.Direction = spec.DirectionIn
 	case parser.DirectionOut:
 		ps.Direction = spec.DirectionOut
