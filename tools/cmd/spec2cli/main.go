@@ -702,7 +702,11 @@ func run(
 			continue
 		}
 		shortName := parts[1]
-		if _, ok := typeByShortName[shortName]; !ok {
+		if existing, ok := typeByShortName[shortName]; ok {
+			if existing != key {
+				typeByShortName[shortName] = "" // ambiguous
+			}
+		} else {
 			typeByShortName[shortName] = key
 		}
 	}
@@ -1222,6 +1226,20 @@ func resolveTypeKey(
 			}
 		}
 		for key := range knownEnums {
+			parts := strings.SplitN(key, ":", 2)
+			if len(parts) == 2 && parts[1] == bare {
+				prefix := commonPrefixLen(ifaceImportPath, parts[0])
+				depth := strings.Count(parts[0], "/") + 1
+				if prefix > bestPrefix ||
+					(prefix == bestPrefix && depth < bestDepth) ||
+					(prefix == bestPrefix && depth == bestDepth && key < bestKey) {
+					bestPrefix = prefix
+					bestDepth = depth
+					bestKey = key
+				}
+			}
+		}
+		for key := range knownInterfaceGoTypes {
 			parts := strings.SplitN(key, ":", 2)
 			if len(parts) == 2 && parts[1] == bare {
 				prefix := commonPrefixLen(ifaceImportPath, parts[0])

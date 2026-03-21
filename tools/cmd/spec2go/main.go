@@ -818,7 +818,7 @@ func tryParseTernaryExpr(
 	}
 
 	rest := value[qIdx+3:]
-	cIdx := strings.Index(rest, " : ")
+	cIdx := lastIndexAtDepthZero(rest, " : ")
 	if cIdx < 0 {
 		return nil
 	}
@@ -1035,7 +1035,7 @@ func generateAccessorFiles(
 // IFoo -> FooProxy, Foo -> FooProxy. This mirrors the codegen convention.
 func deriveProxyName(interfaceName string) string {
 	base := interfaceName
-	if strings.HasPrefix(interfaceName, "I") && len(interfaceName) > 1 {
+	if len(interfaceName) >= 2 && interfaceName[0] == 'I' && interfaceName[1] >= 'A' && interfaceName[1] <= 'Z' {
 		base = interfaceName[1:]
 	}
 	return base + "Proxy"
