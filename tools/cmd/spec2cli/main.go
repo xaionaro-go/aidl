@@ -1014,6 +1014,22 @@ func convertMethodSpec(
 // key ("importPath:TypeName") using the interface's import context.
 // When the type is not found in the interface's own package, it falls
 // back to the global typeByShortName index for cross-package resolution.
+func commonPrefixLen(
+	a string,
+	b string,
+) int {
+	n := len(a)
+	if len(b) < n {
+		n = len(b)
+	}
+	for i := 0; i < n; i++ {
+		if a[i] != b[i] {
+			return i
+		}
+	}
+	return n
+}
+
 func resolveTypeKey(
 	typeStr string,
 	ifaceImportPath string,
@@ -1045,6 +1061,37 @@ func resolveTypeKey(
 		return globalKey
 	}
 
+	// Ambiguous short name (exists in multiple packages) — pick the
+	// entry whose import path shares the longest prefix with the
+	// calling interface's package, so types resolve to nearby packages.
+	if _, ok := typeByShortName[bare]; ok {
+		bestKey := ""
+		bestPrefix := 0
+		for key := range knownStructs {
+			parts := strings.SplitN(key, ":", 2)
+			if len(parts) == 2 && parts[1] == bare {
+				prefix := commonPrefixLen(ifaceImportPath, parts[0])
+				if prefix > bestPrefix {
+					bestPrefix = prefix
+					bestKey = key
+				}
+			}
+		}
+		for key := range knownEnums {
+			parts := strings.SplitN(key, ":", 2)
+			if len(parts) == 2 && parts[1] == bare {
+				prefix := commonPrefixLen(ifaceImportPath, parts[0])
+				if prefix > bestPrefix {
+					bestPrefix = prefix
+					bestKey = key
+				}
+			}
+		}
+		if bestKey != "" {
+			return bestKey
+		}
+	}
+
 	return localKey
 }
 
@@ -1068,6 +1115,9 @@ func classifyType(
 			// Fall through to nullable wrapping a JSON-serializable type
 			// rather than rejecting the entire method.
 			return kindNullable
+		case kindInterfaceType, kindInterface:
+			// Go interfaces are inherently nilable — strip the pointer.
+			return innerKind
 		default:
 			return kindNullable
 		}
@@ -1097,6 +1147,12 @@ func classifyType(
 	}
 
 	if strings.HasPrefix(typeStr, "[]") {
+		// Propagate unsupported element types so the method is skipped
+		// instead of generating broken array serialization code.
+		elemKind := classifyType(typeStr[2:], iface)
+		if elemKind == kindUnsupported {
+			return kindUnsupported
+		}
 		return kindComplexArray
 	}
 
@@ -1157,10 +1213,9 @@ func classifyType(
 		return kindUnsupported
 	}
 
-	// Unknown type: fall back to JSON serialization rather than
-	// rejecting the method. The type may exist in Go but not be
-	// in the spec's type registry (e.g., Java-only parcelables).
-	return kindInterface
+	// Truly unknown type — skip the method to avoid generating broken
+	// JSON-based `any` code for types we cannot resolve.
+	return kindUnsupported
 }
 
 // isAIDLInterfaceName returns true if the name follows the AIDL
@@ -1329,7 +1384,14 @@ func classifyFieldType(
 		if _, ok := primitiveTypes[inner]; ok {
 			return kindNullablePrimitive
 		}
-		return kindNullable
+		innerKind := classifyFieldType(inner, si)
+		switch innerKind {
+		case kindInterfaceType, kindInterface:
+			// Go interfaces are inherently nilable — strip the pointer.
+			return innerKind
+		default:
+			return kindNullable
+		}
 	}
 
 	switch typeStr {
@@ -1353,6 +1415,12 @@ func classifyFieldType(
 		return kindMap
 	}
 	if strings.HasPrefix(typeStr, "[]") {
+		// Propagate unsupported element types so the field is skipped
+		// instead of generating broken array serialization code.
+		elemKind := classifyFieldType(typeStr[2:], si)
+		if elemKind == kindUnsupported {
+			return kindUnsupported
+		}
 		return kindComplexArray
 	}
 
@@ -2500,6 +2568,9 @@ func writeInterfaceTypeExtraction(
 	varName string,
 	gc *genContext,
 ) {
+	// Nullable interface types (*IFoo) arrive here after classifyType
+	// strips the pointer (Go interfaces are inherently nilable).
+	typeStr = strings.TrimPrefix(typeStr, "*")
 	qualType := gc.resolveGoType(typeStr)
 
 	bareName := typeStr
