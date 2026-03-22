@@ -22,7 +22,7 @@ Includes a complete AIDL compiler that parses Android Interface Definition Langu
 
 <!-- BEGIN GENERATED QUICK_START -->
 
-**Go library** — `go get github.com/xaionaro-go/binder` and call any service:
+**Go library** — `go get github.com/xaionaro-go/binder` — live GPS location via binder IPC:
 
 ```go
 package main
@@ -30,31 +30,59 @@ package main
 import (
     "context"
     "fmt"
-    "log"
+    "math"
+    "os"
+    "time"
 
     "github.com/xaionaro-go/binder/android/location"
+    androidos "github.com/xaionaro-go/binder/android/os"
     "github.com/xaionaro-go/binder/binder"
     "github.com/xaionaro-go/binder/binder/versionaware"
     "github.com/xaionaro-go/binder/kernelbinder"
     "github.com/xaionaro-go/binder/servicemanager"
 )
 
+// gpsListener receives location callbacks from the LocationManager.
+type gpsListener struct{ fixCh chan location.Location }
+
+func (l *gpsListener) OnLocationChanged(_ context.Context, locs []location.Location, _ androidos.IRemoteCallback) error {
+    for _, loc := range locs { select { case l.fixCh <- loc: default: } }
+    return nil
+}
+func (l *gpsListener) OnProviderEnabledChanged(_ context.Context, _ string, _ bool) error { return nil }
+func (l *gpsListener) OnFlushComplete(_ context.Context, _ int32) error                   { return nil }
+
 func main() {
     ctx := context.Background()
-    driver, _ := kernelbinder.Open(ctx, binder.WithMapSize(128*1024))
-    defer driver.Close(ctx)
-    transport, _ := versionaware.NewTransport(ctx, driver, 0)
+    drv, _ := kernelbinder.Open(ctx, binder.WithMapSize(128*1024))
+    defer drv.Close(ctx)
+    transport, _ := versionaware.NewTransport(ctx, drv, 0)
     sm := servicemanager.New(transport)
 
     lm, _ := location.GetLocationManager(ctx, sm)
-    loc, err := lm.GetLastLocation(ctx, location.FusedProvider, location.LastLocationRequest{}, binder.DefaultCallerIdentity().PackageName)
-    if err != nil {
-        log.Fatal(err)
+
+    impl := &gpsListener{fixCh: make(chan location.Location, 1)}
+    listener := location.NewLocationListenerStub(impl)
+
+    request := location.LocationRequest{
+        Provider: location.GpsProvider, IntervalMillis: 1000,
+        ExpireAtRealtimeMillis: math.MaxInt64, DurationMillis: math.MaxInt64,
     }
-    fmt.Printf("Lat: %f, Lon: %f, Alt: %f\n",
-        loc.LatitudeDegrees, loc.LongitudeDegrees, loc.AltitudeMeters)
+    pkg := binder.DefaultCallerIdentity().PackageName
+    _ = lm.RegisterLocationListener(ctx, location.GpsProvider, request, listener, pkg, "gps")
+    defer lm.UnregisterLocationListener(ctx, listener)
+
+    select {
+    case loc := <-impl.fixCh:
+        fmt.Printf("Lat: %.6f  Lon: %.6f  Alt: %.1f m  Accuracy: %.1f m\n",
+            loc.LatitudeDegrees, loc.LongitudeDegrees, loc.AltitudeMeters, loc.HorizontalAccuracyMeters)
+    case <-time.After(30 * time.Second):
+        fmt.Fprintln(os.Stderr, "timed out")
+    }
 }
 ```
+
+Full runnable example: [`examples/gps_location/`](examples/gps_location/)
 
 Or query power state:
 
@@ -273,6 +301,7 @@ More examples: [`examples/`](examples/)
 | [`camera_connect`](examples/camera_connect/) | Camera device connection with callback stub |
 | [`device_info`](examples/device_info/) | Device properties, build info |
 | [`display_info`](examples/display_info/) | Display IDs, brightness, night mode |
+| [`gps_location`](examples/gps_location/) | Live GPS fix via ILocationListener callback |
 | [`list_services`](examples/list_services/) | Enumerate all binder services, ping each |
 | [`package_query`](examples/package_query/) | Package list, installation info |
 | [`power_status`](examples/power_status/) | Power supply state, charging info |
@@ -1797,6 +1826,6 @@ A [weekly workflow](.github/workflows/check-aosp-updates.yml) checks for new AOS
 │   ├── hardware/             HAL interfaces
 │   └── ...                   666 packages total
 ├── com/                      AOSP com.android.* service proxies
-├── examples/                 13 runnable examples
+├── examples/                 14 runnable examples
 └── .github/workflows/        CI configuration
 ```
