@@ -126,7 +126,7 @@ func ReadStatus(p *parcel.Parcel) error {
 		}
 	}
 
-	return statusErr
+	return enrichWithSELinuxContext(statusErr)
 }
 
 // WriteStatus writes an AIDL Status to a parcel.
