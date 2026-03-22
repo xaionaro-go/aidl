@@ -10,6 +10,7 @@ type ImsRegistrationAttributes struct {
 	RegistrationTech  int32
 	TransportType     int32
 	ImsAttributeFlags int32
+	SipDetails        *SipDetails
 }
 
 var _ parcel.Parcelable = (*ImsRegistrationAttributes)(nil)
@@ -21,7 +22,14 @@ func (s *ImsRegistrationAttributes) MarshalParcel(
 	p.WriteInt32(s.TransportType)
 	p.WriteInt32(s.ImsAttributeFlags)
 	p.WriteInt32(0) // null FeatureTags
-	p.WriteInt32(0) // null SipDetails
+	if s.SipDetails != nil {
+		p.WriteInt32(1)
+		if _err := s.SipDetails.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -51,12 +59,15 @@ func (s *ImsRegistrationAttributes) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null SipDetails: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.SipDetails = &SipDetails{}
+			if _err = s.SipDetails.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

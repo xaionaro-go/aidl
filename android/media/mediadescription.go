@@ -1,6 +1,7 @@
 package media
 
 import (
+	drawable "github.com/xaionaro-go/binder/android/graphics/drawable"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,6 +9,7 @@ import (
 
 type MediaDescription struct {
 	MediaId string
+	Icon    *drawable.Icon
 }
 
 var _ parcel.Parcelable = (*MediaDescription)(nil)
@@ -16,10 +18,17 @@ func (s *MediaDescription) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.MediaId)
-	p.WriteInt32(0)  // null Title
-	p.WriteInt32(0)  // null Subtitle
-	p.WriteInt32(0)  // null Description
-	p.WriteInt32(0)  // null Icon
+	p.WriteInt32(0) // null Title
+	p.WriteInt32(0) // null Subtitle
+	p.WriteInt32(0) // null Description
+	if s.Icon != nil {
+		p.WriteInt32(1)
+		if _err := s.Icon.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0)  // null IconUri
 	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteInt32(0)  // null MediaUri
@@ -62,12 +71,15 @@ func (s *MediaDescription) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Icon: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Icon = &drawable.Icon{}
+			if _err = s.Icon.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

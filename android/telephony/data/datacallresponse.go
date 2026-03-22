@@ -1,6 +1,7 @@
 package data
 
 import (
+	radioData "github.com/xaionaro-go/binder/android/hardware/radio/data"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -19,6 +20,7 @@ type DataCallResponse struct {
 	HandoverFailureMode     int32
 	PduSessionId            int32
 	NetworkValidationStatus int32
+	SliceInfo               *radioData.SliceInfo
 }
 
 var _ parcel.Parcelable = (*DataCallResponse)(nil)
@@ -43,7 +45,14 @@ func (s *DataCallResponse) MarshalParcel(
 	p.WriteInt32(s.PduSessionId)
 	p.WriteInt32(0) // null DefaultQos
 	p.WriteInt32(0) // null QosBearerSessions
-	p.WriteInt32(0) // null SliceInfo
+	if s.SliceInfo != nil {
+		p.WriteInt32(1)
+		if _err := s.SliceInfo.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null TrafficDescriptors
 	p.WriteInt32(s.NetworkValidationStatus)
 	return nil
@@ -152,12 +161,15 @@ func (s *DataCallResponse) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null SliceInfo: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.SliceInfo = &radioData.SliceInfo{}
+			if _err = s.SliceInfo.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

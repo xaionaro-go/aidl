@@ -62,6 +62,18 @@ func GenerateParcelable(
 		goFieldName := AIDLToGoName(field.FieldName)
 		f.P("\t%s %s", goFieldName, goType)
 	}
+	// Emit struct fields for typed_object JavaWireFormat fields that
+	// have a resolved parcelable type. These fields are not in
+	// decl.Fields (to avoid perturbing the import graph), so the
+	// codegen generates them directly from the wire field metadata.
+	for _, wf := range decl.JavaWireFormat {
+		if wf.WriteMethod != "typed_object" || wf.GoType == "" {
+			continue
+		}
+		goName := AIDLToGoName(wf.Name)
+		goType := resolveJavaWireGoType(typeRef, wf.GoType)
+		f.P("\t%s *%s", goName, goType)
+	}
 	f.P("}")
 	f.P("")
 
@@ -80,8 +92,8 @@ func GenerateParcelable(
 	if len(decl.JavaWireFormat) > 0 {
 		// Java wire format: generate marshal/unmarshal from the extracted
 		// writeToParcel() layout, handling conditional fields and opaque skips.
-		writeJavaWireMarshalParcel(f, structName, decl.JavaWireFormat)
-		writeJavaWireUnmarshalParcel(f, structName, decl.JavaWireFormat)
+		writeJavaWireMarshalParcel(f, structName, decl.JavaWireFormat, typeRef)
+		writeJavaWireUnmarshalParcel(f, structName, decl.JavaWireFormat, typeRef)
 	} else {
 		// Standard AIDL field-based marshal/unmarshal.
 		writeMarshalParcel(f, structName, decl.Fields, opts, typeRef, recFields)
@@ -800,12 +812,28 @@ func writeJavaWireMarshalParcel(
 	f *GoFile,
 	structName string,
 	wireFields []parser.JavaWireField,
+	typeRef *TypeRefResolver,
 ) {
 	f.P("func (s *%s) MarshalParcel(", structName)
 	f.P("\tp *parcel.Parcel,")
 	f.P(") error {")
 
 	for _, wf := range wireFields {
+		// typed_object field with a resolved parcelable type:
+		// generate nullable marshal (int32 flag + MarshalParcel).
+		if wf.WriteMethod == "typed_object" && wf.GoType != "" {
+			goName := AIDLToGoName(wf.Name)
+			f.P("\tif s.%s != nil {", goName)
+			f.P("\t\tp.WriteInt32(1)")
+			f.P("\t\tif _err := s.%s.MarshalParcel(p); _err != nil {", goName)
+			f.P("\t\t\treturn _err")
+			f.P("\t\t}")
+			f.P("\t} else {")
+			f.P("\t\tp.WriteInt32(0)")
+			f.P("\t}")
+			continue
+		}
+
 		info, ok := javaWireMethodMap[wf.WriteMethod]
 		if !ok {
 			switch wf.WriteMethod {
@@ -842,24 +870,49 @@ func writeJavaWireUnmarshalParcel(
 	f *GoFile,
 	structName string,
 	wireFields []parser.JavaWireField,
+	typeRef *TypeRefResolver,
 ) {
 	f.P("func (s *%s) UnmarshalParcel(", structName)
 	f.P("\tp *parcel.Parcel,")
 	f.P(") error {")
 
-	// Only declare _err if there is at least one non-opaque field that uses it.
-	hasNonOpaque := false
+	// Only declare _err if there is at least one primitive field that uses it.
+	// typed_object fields with GoType use block-scoped _err, not the outer one.
+	hasPrimitiveField := false
 	for _, wf := range wireFields {
 		if _, ok := javaWireMethodMap[wf.WriteMethod]; ok {
-			hasNonOpaque = true
+			hasPrimitiveField = true
 			break
 		}
 	}
-	if hasNonOpaque {
+	if hasPrimitiveField {
 		f.P("\tvar _err error")
 	}
 
 	for _, wf := range wireFields {
+		// typed_object field with a resolved parcelable type:
+		// generate nullable unmarshal (read int32 flag, allocate and
+		// UnmarshalParcel if non-null).
+		if wf.WriteMethod == "typed_object" && wf.GoType != "" {
+			goName := AIDLToGoName(wf.Name)
+			// Resolve the Go type through the TypeRefResolver to get
+			// the properly qualified name and add imports.
+			goType := resolveJavaWireGoType(typeRef, wf.GoType)
+			f.P("\t{")
+			f.P("\t\t_flag, _err := p.ReadInt32()")
+			f.P("\t\tif _err != nil {")
+			f.P("\t\t\treturn _err")
+			f.P("\t\t}")
+			f.P("\t\tif _flag != 0 {")
+			f.P("\t\t\ts.%s = &%s{}", goName, goType)
+			f.P("\t\t\tif _err = s.%s.UnmarshalParcel(p); _err != nil {", goName)
+			f.P("\t\t\t\treturn _err")
+			f.P("\t\t\t}")
+			f.P("\t\t}")
+			f.P("\t}")
+			continue
+		}
+
 		info, ok := javaWireMethodMap[wf.WriteMethod]
 
 		if !ok {
@@ -918,4 +971,57 @@ func writeJavaWireUnmarshalParcel(
 	f.P("\treturn nil")
 	f.P("}")
 	f.P("")
+}
+
+// resolveJavaWireGoType resolves an AIDL qualified name to a Go type string,
+// using the TypeRefResolver for cross-package import handling.
+//
+// For cycle detection, this uses SCC membership rather than the DFS
+// back-edge check. The import graph is intentionally not augmented with
+// typed_object edges (to avoid destabilizing the DFS back-edge selection
+// for other packages). Instead, if the source and target packages are in
+// the same SCC, the import always goes through a types sub-package.
+func resolveJavaWireGoType(
+	typeRef *TypeRefResolver,
+	aidlQualifiedName string,
+) string {
+	if typeRef != nil {
+		// Typed_object field references are not in the import graph
+		// (to avoid destabilizing the DFS back-edge selection). Check
+		// whether importing the target package would create a cycle
+		// by testing for a path from target back to source. If so,
+		// redirect to a types sub-package.
+		if typeRef.ImportGraph != nil {
+			typePkg := extractPackage(aidlQualifiedName)
+			if typePkg != typeRef.CurrentPkg && typeRef.ImportGraph.WouldCreateCycle(typeRef.CurrentPkg, typePkg) {
+				typesPkg := typePkg + ".types"
+				goTypeName := AIDLToGoName(aidlQualifiedName[strings.LastIndex(aidlQualifiedName, ".")+1:])
+				alias := typeRef.ensureImport(typesPkg)
+				if typeRef.CycleTypeCallback != nil {
+					typeRef.CycleTypeCallback(aidlQualifiedName, typesPkg)
+				}
+				return alias + "." + goTypeName
+			}
+		}
+
+		ts := &parser.TypeSpecifier{Name: aidlQualifiedName}
+		goType := typeRef.GoTypeRef(ts)
+		// Strip pointer prefix — the caller handles nullability.
+		goType = strings.TrimPrefix(goType, "*")
+		return goType
+	}
+
+	// Fallback: extract the short name and convert to Go.
+	parts := strings.Split(aidlQualifiedName, ".")
+	return AIDLToGoName(parts[len(parts)-1])
+}
+
+// extractPackage returns the AIDL package from a fully qualified name.
+// e.g., "android.os.WorkSource" → "android.os"
+func extractPackage(qualifiedName string) string {
+	lastDot := strings.LastIndex(qualifiedName, ".")
+	if lastDot < 0 {
+		return ""
+	}
+	return qualifiedName[:lastDot]
 }

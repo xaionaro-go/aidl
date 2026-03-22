@@ -1,6 +1,7 @@
 package face
 
 import (
+	biometricsFace "github.com/xaionaro-go/binder/android/hardware/biometrics/face"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,6 +9,7 @@ import (
 
 type FaceEnrollFrame struct {
 	Stage int32
+	Cell  *biometricsFace.Cell
 }
 
 var _ parcel.Parcelable = (*FaceEnrollFrame)(nil)
@@ -15,7 +17,14 @@ var _ parcel.Parcelable = (*FaceEnrollFrame)(nil)
 func (s *FaceEnrollFrame) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // null Cell
+	if s.Cell != nil {
+		p.WriteInt32(1)
+		if _err := s.Cell.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.Stage)
 	p.WriteInt32(0) // null Data
 	return nil
@@ -26,12 +35,15 @@ func (s *FaceEnrollFrame) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Cell: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Cell = &biometricsFace.Cell{}
+			if _err = s.Cell.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.Stage, _err = p.ReadInt32()

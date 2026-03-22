@@ -11,6 +11,7 @@ type TaskFragmentOperation struct {
 	IsolatedNav                   bool
 	DimOnTask                     bool
 	MoveToBottomIfClearWhenLaunch bool
+	TaskFragmentCreationParams    *TaskFragmentCreationParams
 }
 
 var _ parcel.Parcelable = (*TaskFragmentOperation)(nil)
@@ -19,7 +20,14 @@ func (s *TaskFragmentOperation) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.OpType)
-	p.WriteInt32(0)  // null TaskFragmentCreationParams
+	if s.TaskFragmentCreationParams != nil {
+		p.WriteInt32(1)
+		if _err := s.TaskFragmentCreationParams.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0)  // null ActivityToken
 	p.WriteInt32(0)  // null ActivityIntent
 	p.WriteInt32(-1) // null Bundle (Bundle)
@@ -40,12 +48,15 @@ func (s *TaskFragmentOperation) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null TaskFragmentCreationParams: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.TaskFragmentCreationParams = &TaskFragmentCreationParams{}
+			if _err = s.TaskFragmentCreationParams.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

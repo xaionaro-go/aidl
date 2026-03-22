@@ -1,6 +1,7 @@
 package contentcapture
 
 import (
+	types "github.com/xaionaro-go/binder/android/content/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type DataShareRequest struct {
 	Flg         int32
 	PackageName string
 	MimeType    string
+	LocusId     *types.LocusId
 }
 
 var _ parcel.Parcelable = (*DataShareRequest)(nil)
@@ -19,7 +21,14 @@ func (s *DataShareRequest) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Flg)
 	p.WriteString16(s.PackageName)
-	p.WriteInt32(0) // null LocusId
+	if s.LocusId != nil {
+		p.WriteInt32(1)
+		if _err := s.LocusId.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString16(s.MimeType)
 	return nil
 }
@@ -37,12 +46,15 @@ func (s *DataShareRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null LocusId: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.LocusId = &types.LocusId{}
+			if _err = s.LocusId.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.MimeType, _err = p.ReadString16()

@@ -1,6 +1,7 @@
 package telecom
 
 import (
+	location "github.com/xaionaro-go/binder/android/location"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -9,6 +10,7 @@ import (
 type ConnectionRequest struct {
 	VideoState    int32
 	TelecomCallId string
+	Address       *location.Address
 }
 
 var _ parcel.Parcelable = (*ConnectionRequest)(nil)
@@ -17,7 +19,14 @@ func (s *ConnectionRequest) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(0) // null AccountHandle
-	p.WriteInt32(0) // null Address
+	if s.Address != nil {
+		p.WriteInt32(1)
+		if _err := s.Address.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null Extras
 	p.WriteInt32(s.VideoState)
 	p.WriteString16(s.TelecomCallId)
@@ -43,12 +52,15 @@ func (s *ConnectionRequest) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Address: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Address = &location.Address{}
+			if _err = s.Address.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

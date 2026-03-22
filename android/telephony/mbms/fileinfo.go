@@ -1,6 +1,7 @@
 package mbms
 
 import (
+	net "github.com/xaionaro-go/binder/android/net"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,6 +9,7 @@ import (
 
 type FileInfo struct {
 	MimeType string
+	Uri      *net.Uri
 }
 
 var _ parcel.Parcelable = (*FileInfo)(nil)
@@ -15,7 +17,14 @@ var _ parcel.Parcelable = (*FileInfo)(nil)
 func (s *FileInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // null Uri
+	if s.Uri != nil {
+		p.WriteInt32(1)
+		if _err := s.Uri.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString16(s.MimeType)
 	return nil
 }
@@ -25,12 +34,15 @@ func (s *FileInfo) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Uri: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Uri = &net.Uri{}
+			if _err = s.Uri.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.MimeType, _err = p.ReadString16()

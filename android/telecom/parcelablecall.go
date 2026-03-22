@@ -23,6 +23,9 @@ type ParcelableCall struct {
 	CallerNumberVerificationStatus int32
 	ContactDisplayName             string
 	ActiveChildCallId              string
+	DisconnectCause                *DisconnectCause
+	GatewayInfo                    *GatewayInfo
+	StatusHints                    *StatusHints
 }
 
 var _ parcel.Parcelable = (*ParcelableCall)(nil)
@@ -32,7 +35,14 @@ func (s *ParcelableCall) MarshalParcel(
 ) error {
 	p.WriteString16(s.Id)
 	p.WriteInt32(s.State)
-	p.WriteInt32(0) // null DisconnectCause
+	if s.DisconnectCause != nil {
+		p.WriteInt32(1)
+		if _err := s.DisconnectCause.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null CannedSmsResponses
 	p.WriteInt32(s.Capabilities)
 	p.WriteInt32(s.Properties)
@@ -41,13 +51,27 @@ func (s *ParcelableCall) MarshalParcel(
 	p.WriteInt32(s.HandlePresentation)
 	p.WriteString16(s.CallerDisplayName)
 	p.WriteInt32(s.CallerDisplayNamePresentation)
-	p.WriteInt32(0) // null GatewayInfo
+	if s.GatewayInfo != nil {
+		p.WriteInt32(1)
+		if _err := s.GatewayInfo.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null AccountHandle
 	p.WriteInt32(0) // null (byte)(mIsVideoCallProviderChanged?1:0)
 	p.WriteInt32(0) // null VideoCallProvider!=null?mVideoCallProvider.asBinder():null
 	p.WriteString16(s.ParentCallId)
 	p.WriteInt32(0) // null ChildCallIds
-	p.WriteInt32(0) // null StatusHints
+	if s.StatusHints != nil {
+		p.WriteInt32(1)
+		if _err := s.StatusHints.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.VideoState)
 	p.WriteInt32(0)  // null ConferenceableCallIds
 	p.WriteInt32(-1) // null IntentExtras (Bundle)
@@ -77,12 +101,15 @@ func (s *ParcelableCall) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DisconnectCause: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.DisconnectCause = &DisconnectCause{}
+			if _err = s.DisconnectCause.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
@@ -128,12 +155,15 @@ func (s *ParcelableCall) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null GatewayInfo: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.GatewayInfo = &GatewayInfo{}
+			if _err = s.GatewayInfo.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
@@ -177,12 +207,15 @@ func (s *ParcelableCall) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null StatusHints: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.StatusHints = &StatusHints{}
+			if _err = s.StatusHints.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.VideoState, _err = p.ReadInt32()

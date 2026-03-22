@@ -1,6 +1,7 @@
 package telecom
 
 import (
+	ims "github.com/xaionaro-go/binder/android/telephony/ims"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -12,6 +13,7 @@ type DisconnectCause struct {
 	ToneToPlay                      int32
 	TelephonyDisconnectCause        int32
 	TelephonyPreciseDisconnectCause int32
+	ImsReasonInfo                   *ims.ImsReasonInfo
 }
 
 var _ parcel.Parcelable = (*DisconnectCause)(nil)
@@ -26,7 +28,14 @@ func (s *DisconnectCause) MarshalParcel(
 	p.WriteInt32(s.ToneToPlay)
 	p.WriteInt32(s.TelephonyDisconnectCause)
 	p.WriteInt32(s.TelephonyPreciseDisconnectCause)
-	p.WriteInt32(0) // null ImsReasonInfo
+	if s.ImsReasonInfo != nil {
+		p.WriteInt32(1)
+		if _err := s.ImsReasonInfo.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -73,12 +82,15 @@ func (s *DisconnectCause) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null ImsReasonInfo: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.ImsReasonInfo = &ims.ImsReasonInfo{}
+			if _err = s.ImsReasonInfo.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

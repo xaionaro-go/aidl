@@ -1,6 +1,7 @@
 package printservice
 
 import (
+	pm "github.com/xaionaro-go/binder/android/content/pm"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -11,6 +12,7 @@ type PrintServiceInfo struct {
 	SettingsActivityName             string
 	AddPrintersActivityName          string
 	AdvancedPrintOptionsActivityName string
+	ResolveInfo                      *pm.ResolveInfo
 }
 
 var _ parcel.Parcelable = (*PrintServiceInfo)(nil)
@@ -20,7 +22,14 @@ func (s *PrintServiceInfo) MarshalParcel(
 ) error {
 	p.WriteString16(s.Id)
 	p.WriteInt32(0) // null (byte)(mIsEnabled?1:0)
-	p.WriteInt32(0) // null ResolveInfo
+	if s.ResolveInfo != nil {
+		p.WriteInt32(1)
+		if _err := s.ResolveInfo.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString16(s.SettingsActivityName)
 	p.WriteString16(s.AddPrintersActivityName)
 	p.WriteString16(s.AdvancedPrintOptionsActivityName)
@@ -45,12 +54,15 @@ func (s *PrintServiceInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null ResolveInfo: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.ResolveInfo = &pm.ResolveInfo{}
+			if _err = s.ResolveInfo.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.SettingsActivityName, _err = p.ReadString16()

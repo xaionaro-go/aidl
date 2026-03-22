@@ -10,6 +10,7 @@ type VerificationToken struct {
 	LocalBindingType   int32
 	VerificationResult int32
 	Uid                int32
+	AttestationProfile *AttestationProfile
 }
 
 var _ parcel.Parcelable = (*VerificationToken)(nil)
@@ -17,7 +18,14 @@ var _ parcel.Parcelable = (*VerificationToken)(nil)
 func (s *VerificationToken) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // null AttestationProfile
+	if s.AttestationProfile != nil {
+		p.WriteInt32(1)
+		if _err := s.AttestationProfile.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.LocalBindingType)
 	p.WriteInt32(-1) // null Requirements (Bundle)
 	p.WriteInt32(s.VerificationResult)
@@ -31,12 +39,15 @@ func (s *VerificationToken) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null AttestationProfile: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.AttestationProfile = &AttestationProfile{}
+			if _err = s.AttestationProfile.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.LocalBindingType, _err = p.ReadInt32()

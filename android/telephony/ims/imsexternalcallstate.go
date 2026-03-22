@@ -1,6 +1,7 @@
 package ims
 
 import (
+	location "github.com/xaionaro-go/binder/android/location"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type ImsExternalCallState struct {
 	CallId    int32
 	CallState int32
 	CallType  int32
+	Address   *location.Address
 }
 
 var _ parcel.Parcelable = (*ImsExternalCallState)(nil)
@@ -18,7 +20,14 @@ func (s *ImsExternalCallState) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.CallId)
-	p.WriteInt32(0) // null Address
+	if s.Address != nil {
+		p.WriteInt32(1)
+		if _err := s.Address.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null LocalAddress
 	p.WriteInt32(0) // null IsPullable?1:0
 	p.WriteInt32(s.CallState)
@@ -36,12 +45,15 @@ func (s *ImsExternalCallState) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Address: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Address = &location.Address{}
+			if _err = s.Address.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

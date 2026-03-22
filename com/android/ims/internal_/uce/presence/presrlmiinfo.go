@@ -13,6 +13,7 @@ type PresRlmiInfo struct {
 	RequestId                    int32
 	SubscriptionExpireTime       int32
 	SubscriptionTerminatedReason string
+	PresSubscriptionState        *PresSubscriptionState
 }
 
 var _ parcel.Parcelable = (*PresRlmiInfo)(nil)
@@ -25,7 +26,14 @@ func (s *PresRlmiInfo) MarshalParcel(
 	p.WriteInt32(0) // null FullState?1:0
 	p.WriteString16(s.ListName)
 	p.WriteInt32(s.RequestId)
-	p.WriteInt32(0) // null PresSubscriptionState
+	if s.PresSubscriptionState != nil {
+		p.WriteInt32(1)
+		if _err := s.PresSubscriptionState.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.SubscriptionExpireTime)
 	p.WriteString16(s.SubscriptionTerminatedReason)
 	return nil
@@ -61,12 +69,15 @@ func (s *PresRlmiInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null PresSubscriptionState: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.PresSubscriptionState = &PresSubscriptionState{}
+			if _err = s.PresSubscriptionState.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.SubscriptionExpireTime, _err = p.ReadInt32()

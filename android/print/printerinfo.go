@@ -1,6 +1,7 @@
 package print
 
 import (
+	neuralnetworks "github.com/xaionaro-go/binder/android/hardware/neuralnetworks"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -12,6 +13,7 @@ type PrinterInfo struct {
 	Description          string
 	IconResourceId       int32
 	CustomPrinterIconGen int32
+	Capabilities         *neuralnetworks.Capabilities
 }
 
 var _ parcel.Parcelable = (*PrinterInfo)(nil)
@@ -23,7 +25,14 @@ func (s *PrinterInfo) MarshalParcel(
 	p.WriteString16(s.Name)
 	p.WriteInt32(s.Status)
 	p.WriteString16(s.Description)
-	p.WriteInt32(0) // null Capabilities
+	if s.Capabilities != nil {
+		p.WriteInt32(1)
+		if _err := s.Capabilities.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.IconResourceId)
 	p.WriteInt32(0) // null (byte)(mHasCustomPrinterIcon?1:0)
 	p.WriteInt32(s.CustomPrinterIconGen)
@@ -57,12 +66,15 @@ func (s *PrinterInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Capabilities: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Capabilities = &neuralnetworks.Capabilities{}
+			if _err = s.Capabilities.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.IconResourceId, _err = p.ReadInt32()

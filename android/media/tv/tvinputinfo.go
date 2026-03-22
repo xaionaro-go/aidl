@@ -1,6 +1,8 @@
 package tv
 
 import (
+	drawable "github.com/xaionaro-go/binder/android/graphics/drawable"
+	hdmi "github.com/xaionaro-go/binder/android/hardware/hdmi"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -14,6 +16,8 @@ type TvInputInfo struct {
 	TunerCount                     int32
 	HdmiConnectionRelativePosition int32
 	ParentId                       string
+	Icon                           *drawable.Icon
+	HdmiDeviceInfo                 *hdmi.HdmiDeviceInfo
 }
 
 var _ parcel.Parcelable = (*TvInputInfo)(nil)
@@ -28,14 +32,28 @@ func (s *TvInputInfo) MarshalParcel(
 	p.WriteInt32(0) // null Label
 	p.WriteInt32(0) // null IconUri
 	p.WriteInt32(s.LabelResId)
-	p.WriteInt32(0) // null Icon
+	if s.Icon != nil {
+		p.WriteInt32(1)
+		if _err := s.Icon.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null IconStandby
 	p.WriteInt32(0) // null IconDisconnected
 	p.WriteString16(s.SetupActivity)
 	p.WriteInt32(0) // null CanRecord?(byte)1:0
 	p.WriteInt32(0) // null CanPauseRecording?(byte)1:0
 	p.WriteInt32(s.TunerCount)
-	p.WriteInt32(0) // null HdmiDeviceInfo
+	if s.HdmiDeviceInfo != nil {
+		p.WriteInt32(1)
+		if _err := s.HdmiDeviceInfo.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null IsConnectedToHdmiSwitch?(byte)1:0
 	p.WriteInt32(s.HdmiConnectionRelativePosition)
 	p.WriteString16(s.ParentId)
@@ -96,12 +114,15 @@ func (s *TvInputInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Icon: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Icon = &drawable.Icon{}
+			if _err = s.Icon.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
@@ -149,12 +170,15 @@ func (s *TvInputInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null HdmiDeviceInfo: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.HdmiDeviceInfo = &hdmi.HdmiDeviceInfo{}
+			if _err = s.HdmiDeviceInfo.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

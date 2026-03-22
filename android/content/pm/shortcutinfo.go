@@ -1,6 +1,8 @@
 package pm
 
 import (
+	types "github.com/xaionaro-go/binder/android/content/types"
+	drawable "github.com/xaionaro-go/binder/android/graphics/drawable"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -26,6 +28,8 @@ type ShortcutInfo struct {
 	IconUri                string
 	StartingThemeResName   string
 	ExcludedSurfaces       int32
+	Icon                   *drawable.Icon
+	LocusId                *types.LocusId
 }
 
 var _ parcel.Parcelable = (*ShortcutInfo)(nil)
@@ -43,7 +47,14 @@ func (s *ShortcutInfo) MarshalParcel(
 	p.WriteInt32(s.DisabledReason)
 	p.WriteInt32(0) // null 0
 	p.WriteInt32(0) // null 1
-	p.WriteInt32(0) // null Icon
+	if s.Icon != nil {
+		p.WriteInt32(1)
+		if _err := s.Icon.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null Title
 	p.WriteInt32(s.TitleResId)
 	p.WriteInt32(0) // null Text
@@ -61,7 +72,14 @@ func (s *ShortcutInfo) MarshalParcel(
 	p.WriteString(s.DisabledMessageResName)
 	p.WriteInt32(0) // null N
 	p.WriteInt32(0) // null Persons
-	p.WriteInt32(0) // null LocusId
+	if s.LocusId != nil {
+		p.WriteInt32(1)
+		if _err := s.LocusId.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString(s.IconUri)
 	p.WriteString(s.StartingThemeResName)
 	p.WriteInt32(s.ExcludedSurfaces)
@@ -129,12 +147,15 @@ func (s *ShortcutInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Icon: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Icon = &drawable.Icon{}
+			if _err = s.Icon.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
@@ -246,12 +267,15 @@ func (s *ShortcutInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null LocusId: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.LocusId = &types.LocusId{}
+			if _err = s.LocusId.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.IconUri, _err = p.ReadString()

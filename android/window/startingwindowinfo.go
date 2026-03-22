@@ -11,6 +11,7 @@ type StartingWindowInfo struct {
 	SplashScreenThemeResId      int32
 	IsKeyguardOccluded          bool
 	RequestedVisibleTypes       int32
+	TaskSnapshot                *TaskSnapshot
 }
 
 var _ parcel.Parcelable = (*StartingWindowInfo)(nil)
@@ -26,7 +27,14 @@ func (s *StartingWindowInfo) MarshalParcel(
 	p.WriteInt32(0) // null MainWindowLayoutParams
 	p.WriteInt32(s.SplashScreenThemeResId)
 	p.WriteBool(s.IsKeyguardOccluded)
-	p.WriteInt32(0) // null TaskSnapshot
+	if s.TaskSnapshot != nil {
+		p.WriteInt32(1)
+		if _err := s.TaskSnapshot.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.RequestedVisibleTypes)
 	p.WriteInt32(0) // null AppToken
 	p.WriteInt32(0) // null WindowlessStartingSurfaceCallback
@@ -96,12 +104,15 @@ func (s *StartingWindowInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null TaskSnapshot: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.TaskSnapshot = &TaskSnapshot{}
+			if _err = s.TaskSnapshot.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.RequestedVisibleTypes, _err = p.ReadInt32()

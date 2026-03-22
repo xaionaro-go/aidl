@@ -61,10 +61,14 @@ func run(
 	}
 	fmt.Fprintf(os.Stderr, "Read %d package specs\n", len(specs))
 
+	// Build an index of parcelable short names → AIDL qualified names
+	// so that typed_object fields can be resolved to concrete Go types.
+	parcelableIndex := buildParcelableIndex(specs)
+
 	// Convert specs to parser AST and register in a type registry.
 	registry := resolver.NewTypeRegistry()
 	for _, ps := range specs {
-		registerPackageSpec(registry, ps)
+		registerPackageSpec(registry, ps, parcelableIndex)
 	}
 
 	allDefs := registry.All()
@@ -123,11 +127,41 @@ func run(
 	return generateCodesFile(specs, codesOutput, defaultAPI)
 }
 
+// parcelableIndex maps a short parcelable name (e.g., "WorkSource") to its
+// AIDL qualified name (e.g., "android.os.WorkSource"). When multiple
+// parcelables share the same short name, none is stored (ambiguous).
+type parcelableIndex map[string]string
+
+// buildParcelableIndex scans all specs and builds a short name → qualified
+// name index for parcelables that have a JavaWireFormat (i.e., are concrete
+// types with marshal/unmarshal support).
+func buildParcelableIndex(
+	specs map[string]*spec.PackageSpec,
+) parcelableIndex {
+	idx := parcelableIndex{}
+	for _, ps := range specs {
+		for _, parc := range ps.Parcelables {
+			shortName := parc.Name
+			qualifiedName := ps.AIDLPackage + "." + parc.Name
+			if existing, ok := idx[shortName]; ok {
+				if existing != qualifiedName {
+					// Ambiguous: multiple parcelables with same short name.
+					idx[shortName] = ""
+				}
+			} else {
+				idx[shortName] = qualifiedName
+			}
+		}
+	}
+	return idx
+}
+
 // registerPackageSpec converts all definitions in a PackageSpec to parser
 // AST types and registers them in the type registry.
 func registerPackageSpec(
 	registry *resolver.TypeRegistry,
 	ps *spec.PackageSpec,
+	parcIdx parcelableIndex,
 ) {
 	for _, iface := range ps.Interfaces {
 		qualifiedName := ps.AIDLPackage + "." + iface.Name
@@ -137,7 +171,7 @@ func registerPackageSpec(
 
 	for _, parc := range ps.Parcelables {
 		qualifiedName := ps.AIDLPackage + "." + parc.Name
-		def := convertParcelableToAST(parc)
+		def := convertParcelableToAST(parc, ps.AIDLPackage, parcIdx)
 		registry.Register(qualifiedName, def)
 	}
 
@@ -297,8 +331,13 @@ func isResolvableJavaWireCondition(condition string) bool {
 }
 
 // convertParcelableToAST converts a ParcelableSpec back to a parser.ParcelableDecl.
+// currentPkg is the AIDL package of the parcelable being converted.
+// parcIdx maps short parcelable names to AIDL qualified names, used
+// to resolve typed_object fields to concrete struct fields.
 func convertParcelableToAST(
 	parc spec.ParcelableSpec,
+	currentPkg string,
+	parcIdx parcelableIndex,
 ) *parser.ParcelableDecl {
 	decl := &parser.ParcelableDecl{
 		ParcName: parc.Name,
@@ -320,7 +359,35 @@ func convertParcelableToAST(
 			validName := isValidJavaWireFieldName(jwf.Name)
 			resolvableCond := isResolvableJavaWireCondition(jwf.Condition)
 			_, knownType := javaWireTypeToAIDL[jwf.WriteMethod]
-			isOpaque := !knownType
+
+			// For typed_object fields with a valid name, check if the
+			// field name corresponds to a known parcelable in the specs.
+			// If found, store the AIDL qualified name in GoType so the
+			// codegen can generate a *ParcelableType struct field with
+			// proper nullable marshal/unmarshal.
+			//
+			// The struct field is NOT added to decl.Fields here — it's
+			// generated directly by the codegen from JavaWireField.GoType.
+			// This avoids adding import graph edges that could destabilize
+			// the cycle-breaking back-edge computation for unrelated packages.
+			if jwf.WriteMethod == "typed_object" && validName {
+				qualifiedName := parcIdx[jwf.Name]
+				if qualifiedName != "" {
+					goName := codegen.AIDLToGoName(jwf.Name)
+					seenNames[goName]++
+					dedupName := jwf.Name
+					if seenNames[goName] > 1 {
+						dedupName = fmt.Sprintf("%s%d", jwf.Name, seenNames[goName])
+					}
+
+					wireFields = append(wireFields, parser.JavaWireField{
+						Name:        dedupName,
+						WriteMethod: "typed_object",
+						GoType:      qualifiedName,
+					})
+					continue
+				}
+			}
 
 			// Treat fields with invalid names, unresolvable conditions,
 			// or non-primitive types as opaque in the wire format.
@@ -330,7 +397,7 @@ func convertParcelableToAST(
 			// field guarded by "hasGainmap()"), use the specific write_method
 			// but clear the condition — the codegen can't translate Java
 			// method calls to Go, and the field has no corresponding struct field.
-			if !validName || !resolvableCond || isOpaque {
+			if !validName || !resolvableCond || !knownType {
 				wm := jwf.WriteMethod
 				// If the write method is a known primitive type (bool, int32, etc.),
 				// but the field can't become a struct field (invalid name or
@@ -360,11 +427,6 @@ func convertParcelableToAST(
 				WriteMethod: jwf.WriteMethod,
 				Condition:   jwf.Condition,
 			})
-
-			// Skip opaque fields — they don't produce struct fields.
-			if isOpaque {
-				continue
-			}
 
 			aidlType := javaWireTypeToAIDL[jwf.WriteMethod]
 			decl.Fields = append(decl.Fields, &parser.FieldDecl{

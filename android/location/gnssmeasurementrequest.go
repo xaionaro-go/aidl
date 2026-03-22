@@ -1,6 +1,7 @@
 package location
 
 import (
+	types "github.com/xaionaro-go/binder/android/os/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type GnssMeasurementRequest struct {
 	FullTracking                    bool
 	CorrelationVectorOutputsEnabled bool
 	IntervalMillis                  int32
+	WorkSource                      *types.WorkSource
 }
 
 var _ parcel.Parcelable = (*GnssMeasurementRequest)(nil)
@@ -20,7 +22,14 @@ func (s *GnssMeasurementRequest) MarshalParcel(
 	p.WriteBool(s.FullTracking)
 	p.WriteBool(s.CorrelationVectorOutputsEnabled)
 	p.WriteInt32(s.IntervalMillis)
-	p.WriteInt32(0) // null WorkSource
+	if s.WorkSource != nil {
+		p.WriteInt32(1)
+		if _err := s.WorkSource.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -41,12 +50,15 @@ func (s *GnssMeasurementRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null WorkSource: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.WorkSource = &types.WorkSource{}
+			if _err = s.WorkSource.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

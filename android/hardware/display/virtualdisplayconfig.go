@@ -1,6 +1,7 @@
 package display
 
 import (
+	view "github.com/xaionaro-go/binder/android/view"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -17,6 +18,7 @@ type VirtualDisplayConfig struct {
 	WindowManagerMirroringEnabled bool
 	RequestedRefreshRate          float32
 	IsHomeSupported               bool
+	Surface                       *view.Surface
 }
 
 var _ parcel.Parcelable = (*VirtualDisplayConfig)(nil)
@@ -29,7 +31,14 @@ func (s *VirtualDisplayConfig) MarshalParcel(
 	p.WriteInt32(s.Height)
 	p.WriteInt32(s.DensityDpi)
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(0) // null Surface
+	if s.Surface != nil {
+		p.WriteInt32(1)
+		if _err := s.Surface.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString(s.UniqueId)
 	p.WriteInt32(s.DisplayIdToMirror)
 	p.WriteBool(s.WindowManagerMirroringEnabled)
@@ -64,12 +73,15 @@ func (s *VirtualDisplayConfig) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Surface: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Surface = &view.Surface{}
+			if _err = s.Surface.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.UniqueId, _err = p.ReadString()

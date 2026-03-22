@@ -1,6 +1,7 @@
 package credentials
 
 import (
+	types "github.com/xaionaro-go/binder/android/app/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type PrepareGetCredentialResponseInternal struct {
 	HasQueryApiPermission    bool
 	HasAuthenticationResults bool
 	HasRemoteResults         bool
+	PendingIntent            *types.PendingIntent
 }
 
 var _ parcel.Parcelable = (*PrepareGetCredentialResponseInternal)(nil)
@@ -21,7 +23,14 @@ func (s *PrepareGetCredentialResponseInternal) MarshalParcel(
 	p.WriteInt32(0) // null CredentialResultTypes
 	p.WriteBool(s.HasAuthenticationResults)
 	p.WriteBool(s.HasRemoteResults)
-	p.WriteInt32(0) // null PendingIntent
+	if s.PendingIntent != nil {
+		p.WriteInt32(1)
+		if _err := s.PendingIntent.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -51,12 +60,15 @@ func (s *PrepareGetCredentialResponseInternal) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null PendingIntent: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.PendingIntent = &types.PendingIntent{}
+			if _err = s.PendingIntent.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

@@ -15,6 +15,7 @@ import (
 
 	"github.com/xaionaro-go/binder/android/location"
 	androidos "github.com/xaionaro-go/binder/android/os"
+	osTypes "github.com/xaionaro-go/binder/android/os/types"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/binder/versionaware"
 	"github.com/xaionaro-go/binder/kernelbinder"
@@ -87,6 +88,9 @@ func main() {
 		IntervalMillis:         1000,
 		ExpireAtRealtimeMillis: math.MaxInt64,
 		DurationMillis:         math.MaxInt64,
+		// WorkSource must be non-null; Java's LocationRequest always
+		// initializes it to an empty WorkSource (Num=0).
+		WorkSource: &osTypes.WorkSource{},
 	}
 
 	packageName := binder.DefaultCallerIdentity().PackageName

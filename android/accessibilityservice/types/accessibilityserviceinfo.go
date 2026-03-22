@@ -1,6 +1,8 @@
 package types
 
 import (
+	pmTypes "github.com/xaionaro-go/binder/android/content/pm/types"
+	contentTypes "github.com/xaionaro-go/binder/android/content/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -26,6 +28,8 @@ type AccessibilityServiceInfo struct {
 	IntroResId                 int32
 	MotionEventSources         int32
 	ObservedMotionEventSources int32
+	ComponentName              *contentTypes.ComponentName
+	ResolveInfo                *pmTypes.ResolveInfo
 }
 
 var _ parcel.Parcelable = (*AccessibilityServiceInfo)(nil)
@@ -41,8 +45,22 @@ func (s *AccessibilityServiceInfo) MarshalParcel(
 	p.WriteInt32(s.InteractiveUiTimeout)
 	p.WriteInt32(s.Flags)
 	p.WriteInt32(0) // null Crashed?1:0
-	p.WriteInt32(0) // null ComponentName
-	p.WriteInt32(0) // null ResolveInfo
+	if s.ComponentName != nil {
+		p.WriteInt32(1)
+		if _err := s.ComponentName.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
+	if s.ResolveInfo != nil {
+		p.WriteInt32(1)
+		if _err := s.ResolveInfo.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString16(s.SettingsActivityName)
 	p.WriteInt32(s.Capabilities)
 	p.WriteInt32(s.SummaryResId)
@@ -106,21 +124,27 @@ func (s *AccessibilityServiceInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null ComponentName: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.ComponentName = &contentTypes.ComponentName{}
+			if _err = s.ComponentName.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null ResolveInfo: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.ResolveInfo = &pmTypes.ResolveInfo{}
+			if _err = s.ResolveInfo.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.SettingsActivityName, _err = p.ReadString16()

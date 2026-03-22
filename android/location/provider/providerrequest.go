@@ -1,6 +1,7 @@
 package provider
 
 import (
+	types "github.com/xaionaro-go/binder/android/os/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,6 +9,7 @@ import (
 
 type ProviderRequest struct {
 	IntervalMillis int64
+	WorkSource     *types.WorkSource
 }
 
 var _ parcel.Parcelable = (*ProviderRequest)(nil)
@@ -21,7 +23,14 @@ func (s *ProviderRequest) MarshalParcel(
 	p.WriteInt32(0) // null LowPower
 	p.WriteInt32(0) // null AdasGnssBypass
 	p.WriteInt32(0) // null LocationSettingsIgnored
-	p.WriteInt32(0) // null WorkSource
+	if s.WorkSource != nil {
+		p.WriteInt32(1)
+		if _err := s.WorkSource.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -79,12 +88,15 @@ func (s *ProviderRequest) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null WorkSource: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.WorkSource = &types.WorkSource{}
+			if _err = s.WorkSource.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

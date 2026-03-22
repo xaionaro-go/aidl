@@ -1,6 +1,7 @@
 package inputmethod
 
 import (
+	types "github.com/xaionaro-go/binder/android/view/autofill/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -21,6 +22,7 @@ type EditorInfo struct {
 	FieldName                               string
 	SupportedHandwritingGestureTypes        int32
 	SupportedHandwritingGesturePreviewTypes int32
+	AutofillId                              *types.AutofillId
 }
 
 var _ parcel.Parcelable = (*EditorInfo)(nil)
@@ -41,7 +43,14 @@ func (s *EditorInfo) MarshalParcel(
 	p.WriteInt32(0) // null HintText
 	p.WriteInt32(0) // null Label
 	p.WriteString16(s.PackageName)
-	p.WriteInt32(0) // null AutofillId
+	if s.AutofillId != nil {
+		p.WriteInt32(1)
+		if _err := s.AutofillId.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.FieldId)
 	p.WriteString16(s.FieldName)
 	p.WriteInt32(-1) // null Extras (Bundle)
@@ -128,12 +137,15 @@ func (s *EditorInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null AutofillId: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.AutofillId = &types.AutofillId{}
+			if _err = s.AutofillId.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.FieldId, _err = p.ReadInt32()

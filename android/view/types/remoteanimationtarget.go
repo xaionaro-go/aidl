@@ -1,6 +1,7 @@
 package types
 
 import (
+	appTypes "github.com/xaionaro-go/binder/android/app/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -19,6 +20,7 @@ type RemoteAnimationTarget struct {
 	ShowBackdrop        bool
 	WillShowImeOnTarget bool
 	RotationChange      int32
+	WindowConfiguration *appTypes.WindowConfiguration
 }
 
 var _ parcel.Parcelable = (*RemoteAnimationTarget)(nil)
@@ -37,7 +39,14 @@ func (s *RemoteAnimationTarget) MarshalParcel(
 	p.WriteInt32(0) // null LocalBounds
 	p.WriteInt32(0) // null SourceContainerBounds
 	p.WriteInt32(0) // null ScreenSpaceBounds
-	p.WriteInt32(0) // null WindowConfiguration
+	if s.WindowConfiguration != nil {
+		p.WriteInt32(1)
+		if _err := s.WindowConfiguration.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteBool(s.IsNotInRecents)
 	p.WriteInt32(0) // null StartLeash
 	p.WriteInt32(0) // null StartBounds
@@ -136,12 +145,15 @@ func (s *RemoteAnimationTarget) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null WindowConfiguration: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.WindowConfiguration = &appTypes.WindowConfiguration{}
+			if _err = s.WindowConfiguration.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.IsNotInRecents, _err = p.ReadBool()

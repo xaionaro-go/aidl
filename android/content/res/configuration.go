@@ -1,6 +1,7 @@
 package res
 
 import (
+	types "github.com/xaionaro-go/binder/android/os/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -31,6 +32,7 @@ type Configuration struct {
 	Seq                         int32
 	FontWeightAdjustment        int32
 	GrammaticalGender           int32
+	LocaleList                  *types.LocaleList
 }
 
 var _ parcel.Parcelable = (*Configuration)(nil)
@@ -41,7 +43,14 @@ func (s *Configuration) MarshalParcel(
 	p.WriteFloat32(s.FontScale)
 	p.WriteInt32(s.Mcc)
 	p.WriteInt32(s.Mnc)
-	p.WriteInt32(0) // null LocaleList
+	if s.LocaleList != nil {
+		p.WriteInt32(1)
+		if _err := s.LocaleList.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null 1
 	p.WriteInt32(s.Touchscreen)
 	p.WriteInt32(s.Keyboard)
@@ -85,12 +94,15 @@ func (s *Configuration) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null LocaleList: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.LocaleList = &types.LocaleList{}
+			if _err = s.LocaleList.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

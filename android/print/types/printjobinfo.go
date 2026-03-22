@@ -16,6 +16,7 @@ type PrintJobInfo struct {
 	Copies       int32
 	Progress     float32
 	StatusRes    int32
+	PrinterId    *PrinterId
 }
 
 var _ parcel.Parcelable = (*PrintJobInfo)(nil)
@@ -25,7 +26,14 @@ func (s *PrintJobInfo) MarshalParcel(
 ) error {
 	p.WriteInt32(0) // null Id
 	p.WriteString16(s.Label)
-	p.WriteInt32(0) // null PrinterId
+	if s.PrinterId != nil {
+		p.WriteInt32(1)
+		if _err := s.PrinterId.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString16(s.PrinterName)
 	p.WriteInt32(s.State)
 	p.WriteInt32(s.AppId)
@@ -62,12 +70,15 @@ func (s *PrintJobInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null PrinterId: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.PrinterId = &PrinterId{}
+			if _err = s.PrinterId.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.PrinterName, _err = p.ReadString16()

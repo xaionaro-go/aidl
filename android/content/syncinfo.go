@@ -1,6 +1,7 @@
 package content
 
 import (
+	types "github.com/xaionaro-go/binder/android/accounts/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type SyncInfo struct {
 	AuthorityId int32
 	Authority   string
 	StartTime   int64
+	Account     *types.Account
 }
 
 var _ parcel.Parcelable = (*SyncInfo)(nil)
@@ -18,7 +20,14 @@ func (s *SyncInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.AuthorityId)
-	p.WriteInt32(0) // null Account
+	if s.Account != nil {
+		p.WriteInt32(1)
+		if _err := s.Account.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString16(s.Authority)
 	p.WriteInt64(s.StartTime)
 	return nil
@@ -33,12 +42,15 @@ func (s *SyncInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Account: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Account = &types.Account{}
+			if _err = s.Account.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.Authority, _err = p.ReadString16()

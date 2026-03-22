@@ -8,11 +8,16 @@ type JavaWireField struct {
 	// Name is the PascalCase field name (matches the struct field name).
 	Name string
 	// WriteMethod is the spec type: bool, int32, int64, float32, float64,
-	// string8, string16, or opaque.
+	// string8, string16, typed_object, or opaque.
 	WriteMethod string
 	// Condition, if non-empty, is a bitmask expression like "FieldsMask & 256"
 	// meaning the field is only serialized when that bit is set.
 	Condition string
+	// GoType, if non-empty, is the qualified Go type for a typed_object field
+	// whose parcelable was found in the spec registry (e.g., "os.WorkSource").
+	// The codegen uses this to generate a *GoType struct field with proper
+	// nullable marshal/unmarshal instead of an opaque null marker.
+	GoType string
 }
 
 // ParcelableDecl represents an AIDL parcelable declaration.

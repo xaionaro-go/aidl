@@ -1,6 +1,7 @@
 package telephony
 
 import (
+	types "github.com/xaionaro-go/binder/android/telephony/data/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -13,6 +14,7 @@ type PreciseDataConnectionState struct {
 	NetworkType             int32
 	FailCause               int32
 	NetworkValidationStatus int32
+	ApnSetting              *types.ApnSetting
 }
 
 var _ parcel.Parcelable = (*PreciseDataConnectionState)(nil)
@@ -26,7 +28,14 @@ func (s *PreciseDataConnectionState) MarshalParcel(
 	p.WriteInt32(s.NetworkType)
 	p.WriteInt32(0) // null LinkProperties
 	p.WriteInt32(s.FailCause)
-	p.WriteInt32(0) // null ApnSetting
+	if s.ApnSetting != nil {
+		p.WriteInt32(1)
+		if _err := s.ApnSetting.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null DefaultQos
 	p.WriteInt32(s.NetworkValidationStatus)
 	return nil
@@ -66,12 +75,15 @@ func (s *PreciseDataConnectionState) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null ApnSetting: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.ApnSetting = &types.ApnSetting{}
+			if _err = s.ApnSetting.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

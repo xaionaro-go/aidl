@@ -19,6 +19,7 @@ type NetworkRegistrationInfo struct {
 	Rplmn                     string
 	IsUsingCarrierAggregation bool
 	IsNonTerrestrialNetwork   bool
+	CellIdentity              *CellIdentity
 }
 
 var _ parcel.Parcelable = (*NetworkRegistrationInfo)(nil)
@@ -35,7 +36,14 @@ func (s *NetworkRegistrationInfo) MarshalParcel(
 	p.WriteInt32(s.RejectCause)
 	p.WriteBool(s.EmergencyOnly)
 	p.WriteInt32(0) // null AvailableServices
-	p.WriteInt32(0) // null CellIdentity
+	if s.CellIdentity != nil {
+		p.WriteInt32(1)
+		if _err := s.CellIdentity.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null VoiceSpecificInfo
 	p.WriteInt32(0) // null DataSpecificInfo
 	p.WriteInt32(s.NrState)
@@ -91,12 +99,15 @@ func (s *NetworkRegistrationInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null CellIdentity: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.CellIdentity = &CellIdentity{}
+			if _err = s.CellIdentity.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

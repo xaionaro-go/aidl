@@ -1,6 +1,7 @@
 package ims
 
 import (
+	net "github.com/xaionaro-go/binder/android/net"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,6 +9,7 @@ import (
 
 type RtpHeaderExtensionType struct {
 	LocalIdentifier int32
+	Uri             *net.Uri
 }
 
 var _ parcel.Parcelable = (*RtpHeaderExtensionType)(nil)
@@ -16,7 +18,14 @@ func (s *RtpHeaderExtensionType) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.LocalIdentifier)
-	p.WriteInt32(0) // null Uri
+	if s.Uri != nil {
+		p.WriteInt32(1)
+		if _err := s.Uri.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -29,12 +38,15 @@ func (s *RtpHeaderExtensionType) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Uri: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Uri = &net.Uri{}
+			if _err = s.Uri.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

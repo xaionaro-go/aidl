@@ -1,6 +1,7 @@
 package telecom
 
 import (
+	location "github.com/xaionaro-go/binder/android/location"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -17,6 +18,10 @@ type ParcelableConference struct {
 	CallerDisplayName             string
 	CallerDisplayNamePresentation int32
 	CallDirection                 int32
+	PhoneAccount                  *PhoneAccount
+	StatusHints                   *StatusHints
+	Address                       *location.Address
+	DisconnectCause               *DisconnectCause
 }
 
 var _ parcel.Parcelable = (*ParcelableConference)(nil)
@@ -24,22 +29,50 @@ var _ parcel.Parcelable = (*ParcelableConference)(nil)
 func (s *ParcelableConference) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // null PhoneAccount
+	if s.PhoneAccount != nil {
+		p.WriteInt32(1)
+		if _err := s.PhoneAccount.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.State)
 	p.WriteInt32(s.ConnectionCapabilities)
 	p.WriteInt32(0) // null ConnectionIds
 	p.WriteInt64(s.ConnectTimeMillis)
 	p.WriteInt32(0) // null VideoProvider!=null?mVideoProvider.asBinder():null
 	p.WriteInt32(s.VideoState)
-	p.WriteInt32(0)  // null StatusHints
+	if s.StatusHints != nil {
+		p.WriteInt32(1)
+		if _err := s.StatusHints.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteInt32(s.ConnectionProperties)
 	p.WriteInt64(s.ConnectElapsedTimeMillis)
-	p.WriteInt32(0) // null Address
+	if s.Address != nil {
+		p.WriteInt32(1)
+		if _err := s.Address.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.AddressPresentation)
 	p.WriteString16(s.CallerDisplayName)
 	p.WriteInt32(s.CallerDisplayNamePresentation)
-	p.WriteInt32(0) // null DisconnectCause
+	if s.DisconnectCause != nil {
+		p.WriteInt32(1)
+		if _err := s.DisconnectCause.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null RingbackRequested?1:0
 	p.WriteInt32(s.CallDirection)
 	return nil
@@ -50,12 +83,15 @@ func (s *ParcelableConference) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null PhoneAccount: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.PhoneAccount = &PhoneAccount{}
+			if _err = s.PhoneAccount.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.State, _err = p.ReadInt32()
@@ -93,12 +129,15 @@ func (s *ParcelableConference) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null StatusHints: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.StatusHints = &StatusHints{}
+			if _err = s.StatusHints.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
@@ -119,12 +158,15 @@ func (s *ParcelableConference) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Address: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Address = &location.Address{}
+			if _err = s.Address.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.AddressPresentation, _err = p.ReadInt32()
@@ -140,12 +182,15 @@ func (s *ParcelableConference) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DisconnectCause: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.DisconnectCause = &DisconnectCause{}
+			if _err = s.DisconnectCause.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

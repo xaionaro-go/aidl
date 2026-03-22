@@ -1,6 +1,8 @@
 package view
 
 import (
+	gui "github.com/xaionaro-go/binder/android/gui"
+	types "github.com/xaionaro-go/binder/android/location/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -45,6 +47,10 @@ type DisplayInfo struct {
 	InstallOrientation                int32
 	HdrSdrRatio                       float32
 	ThermalBrightnessThrottlingDataId string
+	Address                           *types.Address
+	DeviceProductInfo                 *gui.DeviceProductInfo
+	RoundedCorners                    *RoundedCorners
+	DisplayShape                      *DisplayShape
 }
 
 var _ parcel.Parcelable = (*DisplayInfo)(nil)
@@ -57,8 +63,22 @@ func (s *DisplayInfo) MarshalParcel(
 	p.WriteInt32(s.Type)
 	p.WriteInt32(s.DisplayId)
 	p.WriteInt32(s.DisplayGroupId)
-	p.WriteInt32(0) // null Address
-	p.WriteInt32(0) // null DeviceProductInfo
+	if s.Address != nil {
+		p.WriteInt32(1)
+		if _err := s.Address.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
+	if s.DeviceProductInfo != nil {
+		p.WriteInt32(1)
+		if _err := s.DeviceProductInfo.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString(s.Name)
 	p.WriteInt32(s.AppWidth)
 	p.WriteInt32(s.AppHeight)
@@ -94,10 +114,24 @@ func (s *DisplayInfo) MarshalParcel(
 	p.WriteFloat32(s.BrightnessMinimum)
 	p.WriteFloat32(s.BrightnessMaximum)
 	p.WriteFloat32(s.BrightnessDefault)
-	p.WriteInt32(0) // null RoundedCorners
+	if s.RoundedCorners != nil {
+		p.WriteInt32(1)
+		if _err := s.RoundedCorners.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null UserDisabledHdrTypes.length
 	p.WriteInt32(s.InstallOrientation)
-	p.WriteInt32(0) // null DisplayShape
+	if s.DisplayShape != nil {
+		p.WriteInt32(1)
+		if _err := s.DisplayShape.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null LayoutLimitedRefreshRate
 	p.WriteFloat32(s.HdrSdrRatio)
 	p.WriteInt32(0) // null ThermalRefreshRateThrottling
@@ -135,21 +169,27 @@ func (s *DisplayInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Address: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Address = &types.Address{}
+			if _err = s.Address.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DeviceProductInfo: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.DeviceProductInfo = &gui.DeviceProductInfo{}
+			if _err = s.DeviceProductInfo.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.Name, _err = p.ReadString()
@@ -313,12 +353,15 @@ func (s *DisplayInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null RoundedCorners: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.RoundedCorners = &RoundedCorners{}
+			if _err = s.RoundedCorners.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
@@ -335,12 +378,15 @@ func (s *DisplayInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DisplayShape: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.DisplayShape = &DisplayShape{}
+			if _err = s.DisplayShape.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

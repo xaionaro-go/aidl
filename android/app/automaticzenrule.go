@@ -1,6 +1,7 @@
 package app
 
 import (
+	types "github.com/xaionaro-go/binder/android/service/notification/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type AutomaticZenRule struct {
 	InterruptionFilter int32
 	CreationTime       int64
 	Pkg                string
+	ZenPolicy          *types.ZenPolicy
 }
 
 var _ parcel.Parcelable = (*AutomaticZenRule)(nil)
@@ -25,7 +27,14 @@ func (s *AutomaticZenRule) MarshalParcel(
 	p.WriteInt32(0) // null Owner
 	p.WriteInt32(0) // null ConfigurationActivity
 	p.WriteInt64(s.CreationTime)
-	p.WriteInt32(0) // null ZenPolicy
+	if s.ZenPolicy != nil {
+		p.WriteInt32(1)
+		if _err := s.ZenPolicy.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null Modified?ENABLED:DISABLED
 	p.WriteString16(s.Pkg)
 	p.WriteInt32(0) // null DeviceEffects
@@ -103,12 +112,15 @@ func (s *AutomaticZenRule) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null ZenPolicy: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.ZenPolicy = &types.ZenPolicy{}
+			if _err = s.ZenPolicy.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

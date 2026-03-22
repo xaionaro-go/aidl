@@ -9,6 +9,7 @@ import (
 type SmartspaceTargetEvent struct {
 	SmartspaceActionId string
 	EventType          int32
+	SmartspaceTarget   *SmartspaceTarget
 }
 
 var _ parcel.Parcelable = (*SmartspaceTargetEvent)(nil)
@@ -16,7 +17,14 @@ var _ parcel.Parcelable = (*SmartspaceTargetEvent)(nil)
 func (s *SmartspaceTargetEvent) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // null SmartspaceTarget
+	if s.SmartspaceTarget != nil {
+		p.WriteInt32(1)
+		if _err := s.SmartspaceTarget.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteString16(s.SmartspaceActionId)
 	p.WriteInt32(s.EventType)
 	return nil
@@ -27,12 +35,15 @@ func (s *SmartspaceTargetEvent) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null SmartspaceTarget: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.SmartspaceTarget = &SmartspaceTarget{}
+			if _err = s.SmartspaceTarget.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.SmartspaceActionId, _err = p.ReadString16()

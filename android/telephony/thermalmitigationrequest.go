@@ -8,6 +8,7 @@ import (
 
 type ThermalMitigationRequest struct {
 	ThermalMitigationAction int32
+	DataThrottlingRequest   *DataThrottlingRequest
 }
 
 var _ parcel.Parcelable = (*ThermalMitigationRequest)(nil)
@@ -16,7 +17,14 @@ func (s *ThermalMitigationRequest) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.ThermalMitigationAction)
-	p.WriteInt32(0) // null DataThrottlingRequest
+	if s.DataThrottlingRequest != nil {
+		p.WriteInt32(1)
+		if _err := s.DataThrottlingRequest.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -29,12 +37,15 @@ func (s *ThermalMitigationRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DataThrottlingRequest: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.DataThrottlingRequest = &DataThrottlingRequest{}
+			if _err = s.DataThrottlingRequest.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

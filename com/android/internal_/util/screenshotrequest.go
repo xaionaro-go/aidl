@@ -1,6 +1,7 @@
 package util
 
 import (
+	graphics "github.com/xaionaro-go/binder/android/graphics"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -11,6 +12,7 @@ type ScreenshotRequest struct {
 	Source int32
 	TaskId int32
 	UserId int32
+	Insets *graphics.Insets
 }
 
 var _ parcel.Parcelable = (*ScreenshotRequest)(nil)
@@ -25,7 +27,14 @@ func (s *ScreenshotRequest) MarshalParcel(
 	p.WriteInt32(s.UserId)
 	p.WriteInt32(0) // null HardwareBitmapBundler.hardwareBitmapToBundle(mBitmap)
 	p.WriteInt32(0) // null BoundsInScreen
-	p.WriteInt32(0) // null Insets
+	if s.Insets != nil {
+		p.WriteInt32(1)
+		if _err := s.Insets.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -77,12 +86,15 @@ func (s *ScreenshotRequest) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Insets: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Insets = &graphics.Insets{}
+			if _err = s.Insets.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

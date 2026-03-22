@@ -8,6 +8,7 @@ import (
 
 type AntennaPosition struct {
 	SuggestedHoldPosition int32
+	AntennaDirection      *AntennaDirection
 }
 
 var _ parcel.Parcelable = (*AntennaPosition)(nil)
@@ -15,7 +16,14 @@ var _ parcel.Parcelable = (*AntennaPosition)(nil)
 func (s *AntennaPosition) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // null AntennaDirection
+	if s.AntennaDirection != nil {
+		p.WriteInt32(1)
+		if _err := s.AntennaDirection.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(s.SuggestedHoldPosition)
 	return nil
 }
@@ -25,12 +33,15 @@ func (s *AntennaPosition) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null AntennaDirection: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.AntennaDirection = &AntennaDirection{}
+			if _err = s.AntennaDirection.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.SuggestedHoldPosition, _err = p.ReadInt32()

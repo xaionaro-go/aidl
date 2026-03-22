@@ -1,6 +1,7 @@
 package contentcapture
 
 import (
+	graphics "github.com/xaionaro-go/binder/android/graphics"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type ContentCaptureEvent struct {
 	SessionId int32
 	Type      int32
 	EventTime int64
+	Insets    *graphics.Insets
 }
 
 var _ parcel.Parcelable = (*ContentCaptureEvent)(nil)
@@ -26,7 +28,14 @@ func (s *ContentCaptureEvent) MarshalParcel(
 	p.WriteInt32(0) // null Text
 	p.WriteInt32(0) // null ParentSessionId
 	p.WriteInt32(0) // null ClientContext
-	p.WriteInt32(0) // null Insets
+	if s.Insets != nil {
+		p.WriteInt32(1)
+		if _err := s.Insets.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null Bounds
 	p.WriteInt32(0) // null ComposingStart
 	p.WriteInt32(0) // null ComposingEnd
@@ -106,12 +115,15 @@ func (s *ContentCaptureEvent) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Insets: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Insets = &graphics.Insets{}
+			if _err = s.Insets.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

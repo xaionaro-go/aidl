@@ -1,6 +1,7 @@
 package location
 
 import (
+	types "github.com/xaionaro-go/binder/android/location/types"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type GeofenceHardwareMonitorEvent struct {
 	MonitoringType     int32
 	MonitoringStatus   int32
 	SourceTechnologies int32
+	Location           *types.Location
 }
 
 var _ parcel.Parcelable = (*GeofenceHardwareMonitorEvent)(nil)
@@ -20,7 +22,14 @@ func (s *GeofenceHardwareMonitorEvent) MarshalParcel(
 	p.WriteInt32(s.MonitoringType)
 	p.WriteInt32(s.MonitoringStatus)
 	p.WriteInt32(s.SourceTechnologies)
-	p.WriteInt32(0) // null Location
+	if s.Location != nil {
+		p.WriteInt32(1)
+		if _err := s.Location.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -41,12 +50,15 @@ func (s *GeofenceHardwareMonitorEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Location: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Location = &types.Location{}
+			if _err = s.Location.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

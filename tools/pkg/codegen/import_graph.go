@@ -86,12 +86,46 @@ func (g *ImportGraph) WouldCauseCycle(srcPkg, targetPkg string) bool {
 		return g.BackEdges[srcPkg] != nil && g.BackEdges[srcPkg][targetPkg]
 	}
 	// Fallback to SCC membership check when back-edges haven't been computed.
+	return g.SameSCC(srcPkg, targetPkg)
+}
+
+// SameSCC returns true if srcPkg and targetPkg are in the same strongly
+// connected component.
+func (g *ImportGraph) SameSCC(srcPkg, targetPkg string) bool {
 	srcSCC, srcOK := g.CyclePkgs[srcPkg]
 	targetSCC, targetOK := g.CyclePkgs[targetPkg]
 	if !srcOK || !targetOK {
 		return false
 	}
 	return srcSCC == targetSCC
+}
+
+// WouldCreateCycle returns true if adding an edge from srcPkg to targetPkg
+// would create an import cycle, considering the current edge set. This
+// checks whether there is a path from targetPkg back to srcPkg in the
+// existing graph. Used for edges not captured in the import graph (e.g.,
+// typed_object field references from JavaWireFormat).
+func (g *ImportGraph) WouldCreateCycle(srcPkg, targetPkg string) bool {
+	if srcPkg == targetPkg {
+		return true
+	}
+	// BFS from targetPkg to see if we can reach srcPkg.
+	visited := map[string]bool{targetPkg: true}
+	queue := []string{targetPkg}
+	for len(queue) > 0 {
+		current := queue[0]
+		queue = queue[1:]
+		for next := range g.Edges[current] {
+			if next == srcPkg {
+				return true
+			}
+			if !visited[next] {
+				visited[next] = true
+				queue = append(queue, next)
+			}
+		}
+	}
+	return false
 }
 
 // computeSCCs finds strongly connected components using Tarjan's algorithm

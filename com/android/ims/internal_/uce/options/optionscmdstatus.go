@@ -1,6 +1,7 @@
 package options
 
 import (
+	common "github.com/xaionaro-go/binder/com/android/ims/internal_/uce/common"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -8,6 +9,7 @@ import (
 
 type OptionsCmdStatus struct {
 	UserData int32
+	CapInfo  *common.CapInfo
 }
 
 var _ parcel.Parcelable = (*OptionsCmdStatus)(nil)
@@ -18,7 +20,14 @@ func (s *OptionsCmdStatus) MarshalParcel(
 	p.WriteInt32(s.UserData)
 	p.WriteInt32(0) // null CmdId
 	p.WriteInt32(0) // null Status
-	p.WriteInt32(0) // null CapInfo
+	if s.CapInfo != nil {
+		p.WriteInt32(1)
+		if _err := s.CapInfo.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 
@@ -49,12 +58,15 @@ func (s *OptionsCmdStatus) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null CapInfo: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.CapInfo = &common.CapInfo{}
+			if _err = s.CapInfo.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	return nil

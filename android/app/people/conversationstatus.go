@@ -1,6 +1,7 @@
 package people
 
 import (
+	drawable "github.com/xaionaro-go/binder/android/graphics/drawable"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -12,6 +13,7 @@ type ConversationStatus struct {
 	Availability int32
 	StartTimeMs  int64
 	EndTimeMs    int64
+	Icon         *drawable.Icon
 }
 
 var _ parcel.Parcelable = (*ConversationStatus)(nil)
@@ -23,7 +25,14 @@ func (s *ConversationStatus) MarshalParcel(
 	p.WriteInt32(s.Activity)
 	p.WriteInt32(s.Availability)
 	p.WriteInt32(0) // null Description
-	p.WriteInt32(0) // null Icon
+	if s.Icon != nil {
+		p.WriteInt32(1)
+		if _err := s.Icon.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt64(s.StartTimeMs)
 	p.WriteInt64(s.EndTimeMs)
 	return nil
@@ -55,12 +64,15 @@ func (s *ConversationStatus) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Icon: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.Icon = &drawable.Icon{}
+			if _err = s.Icon.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	s.StartTimeMs, _err = p.ReadInt64()

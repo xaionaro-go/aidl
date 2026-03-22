@@ -1,6 +1,7 @@
 package musicrecognition
 
 import (
+	media "github.com/xaionaro-go/binder/android/media"
 	"github.com/xaionaro-go/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type RecognitionRequest struct {
 	CaptureSession        int32
 	MaxAudioLengthSeconds int32
 	IgnoreBeginningFrames int32
+	AudioFormat           *media.AudioFormat
 }
 
 var _ parcel.Parcelable = (*RecognitionRequest)(nil)
@@ -17,7 +19,14 @@ var _ parcel.Parcelable = (*RecognitionRequest)(nil)
 func (s *RecognitionRequest) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // null AudioFormat
+	if s.AudioFormat != nil {
+		p.WriteInt32(1)
+		if _err := s.AudioFormat.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null AudioAttributes
 	p.WriteInt32(s.CaptureSession)
 	p.WriteInt32(s.MaxAudioLengthSeconds)
@@ -30,12 +39,15 @@ func (s *RecognitionRequest) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null AudioFormat: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.AudioFormat = &media.AudioFormat{}
+			if _err = s.AudioFormat.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{

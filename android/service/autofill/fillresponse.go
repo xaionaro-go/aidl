@@ -14,6 +14,8 @@ type FillResponse struct {
 	ShowSaveDialogIcon           bool
 	Flags                        int32
 	RequestId                    int32
+	InlinePresentation           *InlinePresentation
+	UserData                     *UserData
 }
 
 var _ parcel.Parcelable = (*FillResponse)(nil)
@@ -27,7 +29,14 @@ func (s *FillResponse) MarshalParcel(
 	p.WriteInt32(0) // null AuthenticationIds
 	p.WriteInt32(0) // null Authentication
 	p.WriteInt32(0) // null Presentation
-	p.WriteInt32(0) // null InlinePresentation
+	if s.InlinePresentation != nil {
+		p.WriteInt32(1)
+		if _err := s.InlinePresentation.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null InlineTooltipPresentation
 	p.WriteInt32(0) // null DialogPresentation
 	p.WriteInt32(0) // null DialogHeader
@@ -35,7 +44,14 @@ func (s *FillResponse) MarshalParcel(
 	p.WriteInt32(0) // null FillDialogTriggerIds
 	p.WriteInt32(0) // null Header
 	p.WriteInt32(0) // null Footer
-	p.WriteInt32(0) // null UserData
+	if s.UserData != nil {
+		p.WriteInt32(1)
+		if _err := s.UserData.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(0) // null IgnoredIds
 	p.WriteInt64(s.DisableDuration)
 	p.WriteInt32(0) // null FieldClassificationIds
@@ -109,12 +125,15 @@ func (s *FillResponse) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null InlinePresentation: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.InlinePresentation = &InlinePresentation{}
+			if _err = s.InlinePresentation.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
@@ -181,12 +200,15 @@ func (s *FillResponse) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
 		}
-		if _opaqueFlag != 0 {
-			return nil // non-null UserData: cannot skip unknown-size typed object
+		if _flag != 0 {
+			s.UserData = &UserData{}
+			if _err = s.UserData.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
 		}
 	}
 	{
