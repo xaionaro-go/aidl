@@ -32,6 +32,10 @@ const (
 	// concatenation so that automated sweeps do not break source
 	// scanning logic that must still match existing generated code.
 	legacyInterfaceType = "interface" + "{}"
+
+	// svcProxyVarPrefix is the "svcProxy." prefix used when scanning
+	// generated Go source to locate proxy method calls.
+	svcProxyVarPrefix = "svcProxy."
 )
 
 // primitiveTypes maps Go type names to cobra flag helpers.
@@ -831,9 +835,9 @@ func findMethodKeyForLine(lines []string, lineNo int) string {
 	for i := lineNo - 1; i < len(lines) && i < lineNo+200; i++ {
 		line := strings.TrimSpace(lines[i])
 		if strings.HasPrefix(line, "result") || strings.HasPrefix(line, "err") || strings.HasPrefix(line, "_, err") {
-			if strings.Contains(line, "svcProxy.") {
-				idx := strings.Index(line, "svcProxy.")
-				rest := line[idx+len("svcProxy."):]
+			if strings.Contains(line, svcProxyVarPrefix) {
+				idx := strings.Index(line, svcProxyVarPrefix)
+				rest := line[idx+len(svcProxyVarPrefix):]
 				if paren := strings.Index(rest, "("); paren > 0 {
 					methodName = rest[:paren]
 					break
@@ -846,9 +850,9 @@ func findMethodKeyForLine(lines []string, lineNo int) string {
 	if methodName == "" {
 		for i := lineNo - 1; i >= 0 && i > lineNo-200; i-- {
 			line := strings.TrimSpace(lines[i])
-			if strings.Contains(line, "svcProxy.") && !strings.HasPrefix(line, "svcProxy :=") {
-				idx := strings.Index(line, "svcProxy.")
-				rest := line[idx+len("svcProxy."):]
+			if strings.Contains(line, svcProxyVarPrefix) && !strings.HasPrefix(line, "svcProxy :=") {
+				idx := strings.Index(line, svcProxyVarPrefix)
+				rest := line[idx+len(svcProxyVarPrefix):]
 				if paren := strings.Index(rest, "("); paren > 0 {
 					methodName = rest[:paren]
 					break
@@ -955,31 +959,6 @@ func typeRefToGoType(
 	ts := typeRefToTypeSpecifier(tr)
 	goType := codegen.AIDLTypeToGo(ts)
 
-	// If the type is a user-defined type (not primitive, not generic),
-	// we need to check if it's a cross-package reference. The AIDL type
-	// name in the spec is fully qualified (e.g., "android.app.ProcessMemoryState")
-	// for cross-package types, or short (e.g., "ProcessMemoryState") for same-package.
-	if goType != "" && !isPrimitiveGoType(goType) {
-		// Strip pointer/slice prefixes for analysis.
-		bare := goType
-		prefix := ""
-		for strings.HasPrefix(bare, "*") || strings.HasPrefix(bare, "[]") {
-			if strings.HasPrefix(bare, "*") {
-				prefix += "*"
-				bare = bare[1:]
-			} else {
-				prefix += "[]"
-				bare = bare[2:]
-			}
-		}
-
-		// If the bare type doesn't contain a dot but the original AIDL name
-		// was fully qualified and from a different package, we just use the
-		// Go-converted name as-is since the generated Go proxy file will
-		// use unqualified names for same-package types.
-		_ = prefix
-	}
-
 	return goType
 }
 
@@ -1066,6 +1045,7 @@ func convertInterfaceSpec(
 // identityParamNames maps AIDL parameter names that represent caller
 // identity to their expected AIDL types. These parameters are auto-filled
 // by the generated Go proxy and are NOT included in the Go method signature.
+// TODO: unify with codegen.identityParamNames
 var identityParamNames = map[string]string{
 	"callingPackage":  "String",
 	"opPackageName":   "String",
