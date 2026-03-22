@@ -73,13 +73,13 @@ var javaWriteMethodToSpecType = map[string]string{
 	"writeFloat":        "float32",
 	"writeDouble":       "float64",
 	"writeBoolean":      "bool",
-	"writeBundle":       "opaque",
-	"writeParcelable":   "opaque",
-	"writeTypedObject":  "opaque",
+	"writeBundle":       "bundle",
+	"writeParcelable":   "typed_object",
+	"writeTypedObject":  "typed_object",
 	"writeByte":         "int32",
-	"writeByteArray":    "opaque",
-	"writeBlob":         "opaque",
-	"writeStrongBinder": "opaque",
+	"writeByteArray":    "byte_array",
+	"writeBlob":         "blob",
+	"writeStrongBinder": "binder",
 }
 
 // deriveFieldName converts a Java field name to a spec field name

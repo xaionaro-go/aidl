@@ -76,7 +76,7 @@ public class AllTypes implements Parcelable {
 		{"Latitude", "float64"},
 		{"Label", "string8"},
 		{"Description", "string16"},
-		{"Extras", "opaque"},
+		{"Extras", "bundle"},
 	}
 
 	for i, exp := range expected {
@@ -246,7 +246,7 @@ func TestExtractSpec_Location(t *testing.T) {
 	// The last field should be Extras (opaque, unconditional).
 	lastField := spec.Fields[len(spec.Fields)-1]
 	require.Equal(t, "Extras", lastField.Name)
-	require.Equal(t, "opaque", lastField.Type)
+	require.Equal(t, "bundle", lastField.Type)
 	require.Empty(t, lastField.Condition)
 }
 

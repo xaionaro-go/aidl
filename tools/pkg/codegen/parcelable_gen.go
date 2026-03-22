@@ -808,9 +808,12 @@ func writeJavaWireMarshalParcel(
 	for _, wf := range wireFields {
 		info, ok := javaWireMethodMap[wf.WriteMethod]
 		if !ok {
-			// Opaque field (Bundle, Parcelable, etc.) — write null marker.
-			// Android's writeBundle(null) writes int32(-1).
-			f.P("\tp.WriteInt32(-1) // null %s", wf.Name)
+			switch wf.WriteMethod {
+			case "bundle":
+				f.P("\tp.WriteInt32(-1) // null %s (Bundle)", wf.Name)
+			default:
+				f.P("\tp.WriteInt32(0) // null %s", wf.Name)
+			}
 			continue
 		}
 
@@ -860,18 +863,38 @@ func writeJavaWireUnmarshalParcel(
 		info, ok := javaWireMethodMap[wf.WriteMethod]
 
 		if !ok {
-			// Opaque field: skip by reading length-prefixed data.
-			// Android's writeBundle/writeParcelable writes int32(length)
-			// followed by <length> bytes.
-			f.P("\t{")
-			f.P("\t\t_opaqueLen, _opaqueErr := p.ReadInt32()")
-			f.P("\t\tif _opaqueErr != nil {")
-			f.P("\t\t\treturn _opaqueErr")
-			f.P("\t\t}")
-			f.P("\t\tif _opaqueLen > 0 {")
-			f.P("\t\t\tp.SetPosition(p.Position() + int(_opaqueLen))")
-			f.P("\t\t}")
-			f.P("\t}")
+			switch wf.WriteMethod {
+			case "bundle":
+				f.P("\t{")
+				f.P("\t\t_opaqueLen, _opaqueErr := p.ReadInt32()")
+				f.P("\t\tif _opaqueErr != nil {")
+				f.P("\t\t\treturn _opaqueErr")
+				f.P("\t\t}")
+				f.P("\t\tif _opaqueLen > 0 {")
+				f.P("\t\t\tp.SetPosition(p.Position() + int(_opaqueLen))")
+				f.P("\t\t}")
+				f.P("\t}")
+			case "typed_object":
+				f.P("\t{")
+				f.P("\t\t_opaqueFlag, _opaqueErr := p.ReadInt32()")
+				f.P("\t\tif _opaqueErr != nil {")
+				f.P("\t\t\treturn _opaqueErr")
+				f.P("\t\t}")
+				f.P("\t\tif _opaqueFlag != 0 {")
+				f.P("\t\t\treturn nil // non-null %s: cannot skip unknown-size typed object", wf.Name)
+				f.P("\t\t}")
+				f.P("\t}")
+			default:
+				f.P("\t{")
+				f.P("\t\t_opaqueLen, _opaqueErr := p.ReadInt32()")
+				f.P("\t\tif _opaqueErr != nil {")
+				f.P("\t\t\treturn _opaqueErr")
+				f.P("\t\t}")
+				f.P("\t\tif _opaqueLen > 0 {")
+				f.P("\t\t\tp.SetPosition(p.Position() + int(_opaqueLen))")
+				f.P("\t\t}")
+				f.P("\t}")
+			}
 			continue
 		}
 

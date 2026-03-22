@@ -320,14 +320,15 @@ func convertParcelableToAST(
 			validName := isValidJavaWireFieldName(jwf.Name)
 			resolvableCond := isResolvableJavaWireCondition(jwf.Condition)
 			_, knownType := javaWireTypeToAIDL[jwf.WriteMethod]
-			isOpaque := jwf.WriteMethod == "opaque"
+			isOpaque := !knownType
 
 			// Treat fields with invalid names, unresolvable conditions,
 			// or unknown types as opaque in the wire format.
-			if !validName || !resolvableCond || (!knownType && !isOpaque) {
+			if !validName || !resolvableCond || isOpaque {
 				wireFields = append(wireFields, parser.JavaWireField{
 					Name:        jwf.Name,
-					WriteMethod: "opaque",
+					WriteMethod: jwf.WriteMethod,
+					Condition:   jwf.Condition,
 				})
 				continue
 			}
