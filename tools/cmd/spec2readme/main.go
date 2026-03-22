@@ -448,9 +448,13 @@ import (
 
 ### Toggle Flashlight
 
+Requires ` + "`android.permission.CAMERA`" + `; see [` + "`examples/flashlight_torch/`" + `](examples/flashlight_torch/) for the full runnable example with permission handling.
+
 ` + "```go" + `
 import (
     "github.com/AndroidGoLab/binder/android/hardware"
+    "github.com/AndroidGoLab/binder/binder"
+    "github.com/AndroidGoLab/binder/parcel"
     "github.com/AndroidGoLab/binder/servicemanager"
 )
 
@@ -460,14 +464,23 @@ import (
     }
     camera := hardware.NewCameraServiceProxy(svc)
 
+    // The camera service requires a non-null client binder token.
+    type token struct{}
+    func (t *token) Descriptor() string { return "torch.client" }
+    func (t *token) OnTransaction(_ context.Context, _ binder.TransactionCode, _ *parcel.Parcel) (*parcel.Parcel, error) {
+        return parcel.New(), nil
+    }
+    clientToken := binder.NewStubBinder(&token{})
+    clientToken.RegisterWithTransport(ctx, transport)
+
     // Turn torch on for camera "0"
-    if err := camera.SetTorchMode(ctx, "0", true, nil); err != nil {
+    if err := camera.SetTorchMode(ctx, "0", true, clientToken); err != nil {
         log.Fatal(err)
     }
     fmt.Println("Torch ON")
 
     // Turn torch off
-    _ = camera.SetTorchMode(ctx, "0", false, nil)
+    _ = camera.SetTorchMode(ctx, "0", false, clientToken)
 ` + "```" + `
 
 ### List All Installed Packages

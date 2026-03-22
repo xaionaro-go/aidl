@@ -4,6 +4,11 @@
 // By default, turns the torch ON for 3 seconds, then turns it OFF.
 // Pass "on" or "off" as a command-line argument to set a specific state.
 //
+// Note: the framework camera service (media.camera) requires the caller
+// to hold android.permission.CAMERA. From the adb shell context this
+// typically fails with a permission error. Run from an app context or
+// with elevated privileges for full functionality.
+//
 // Build:
 //
 //	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o build/flashlight_torch ./examples/flashlight_torch/
@@ -20,8 +25,24 @@ import (
 	"github.com/AndroidGoLab/binder/binder"
 	"github.com/AndroidGoLab/binder/binder/versionaware"
 	"github.com/AndroidGoLab/binder/kernelbinder"
+	"github.com/AndroidGoLab/binder/parcel"
 	"github.com/AndroidGoLab/binder/servicemanager"
 )
+
+// torchClientToken is a minimal TransactionReceiver used as the client
+// binder token for SetTorchMode. The camera service requires a non-null
+// binder to track torch ownership.
+type torchClientToken struct{}
+
+func (t *torchClientToken) Descriptor() string { return "torch.client" }
+
+func (t *torchClientToken) OnTransaction(
+	_ context.Context,
+	_ binder.TransactionCode,
+	_ *parcel.Parcel,
+) (*parcel.Parcel, error) {
+	return parcel.New(), nil
+}
 
 func main() {
 	ctx := context.Background()
@@ -49,13 +70,14 @@ func main() {
 
 	cam := hardware.NewCameraServiceProxy(svc)
 
-	// Report the number of available cameras.
+	// Report the number of available cameras (informational; may fail
+	// if the caller lacks android.permission.CAMERA).
 	numCameras, err := cam.GetNumberOfCameras(ctx, hardware.ICameraServiceCameraTypeBackwardCompatible)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "GetNumberOfCameras: %v\n", err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "GetNumberOfCameras: %v (continuing anyway)\n", err)
+	} else {
+		fmt.Printf("Number of cameras: %d\n", numCameras)
 	}
-	fmt.Printf("Number of cameras: %d\n", numCameras)
 
 	// Determine the desired action from command-line arguments.
 	action := "toggle" // default: on, wait, off
@@ -71,40 +93,46 @@ func main() {
 		}
 	}
 
+	// The camera service requires a non-null client binder token to
+	// track torch ownership. Create a stub and register it with the
+	// transport so it gets a valid cookie.
+	clientToken := binder.NewStubBinder(&torchClientToken{})
+	clientToken.RegisterWithTransport(ctx, transport)
+
 	const cameraID = "0"
 
 	switch action {
 	case "on":
-		fmt.Printf("Turning torch ON for camera %s\n", cameraID)
-		if err := cam.SetTorchMode(ctx, cameraID, true, nil); err != nil {
-			fmt.Fprintf(os.Stderr, "SetTorchMode(on): %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Println("Torch is ON.")
+		setTorch(ctx, cam, cameraID, true, clientToken)
 
 	case "off":
-		fmt.Printf("Turning torch OFF for camera %s\n", cameraID)
-		if err := cam.SetTorchMode(ctx, cameraID, false, nil); err != nil {
-			fmt.Fprintf(os.Stderr, "SetTorchMode(off): %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Println("Torch is OFF.")
+		setTorch(ctx, cam, cameraID, false, clientToken)
 
 	default: // toggle
-		fmt.Printf("Turning torch ON for camera %s\n", cameraID)
-		if err := cam.SetTorchMode(ctx, cameraID, true, nil); err != nil {
-			fmt.Fprintf(os.Stderr, "SetTorchMode(on): %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Println("Torch is ON. Waiting 3 seconds...")
-
+		setTorch(ctx, cam, cameraID, true, clientToken)
+		fmt.Println("Waiting 3 seconds...")
 		time.Sleep(3 * time.Second)
-
-		fmt.Printf("Turning torch OFF for camera %s\n", cameraID)
-		if err := cam.SetTorchMode(ctx, cameraID, false, nil); err != nil {
-			fmt.Fprintf(os.Stderr, "SetTorchMode(off): %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Println("Torch is OFF.")
+		setTorch(ctx, cam, cameraID, false, clientToken)
 	}
+}
+
+func setTorch(
+	ctx context.Context,
+	cam *hardware.CameraServiceProxy,
+	cameraID string,
+	enabled bool,
+	clientToken binder.IBinder,
+) {
+	state := "OFF"
+	if enabled {
+		state = "ON"
+	}
+
+	fmt.Printf("Turning torch %s for camera %s\n", state, cameraID)
+	if err := cam.SetTorchMode(ctx, cameraID, enabled, clientToken); err != nil {
+		fmt.Fprintf(os.Stderr, "SetTorchMode(%s): %v\n", state, err)
+		fmt.Fprintf(os.Stderr, "Hint: this requires android.permission.CAMERA; from adb shell, try running as root.\n")
+		os.Exit(1)
+	}
+	fmt.Printf("Torch is %s.\n", state)
 }

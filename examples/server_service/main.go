@@ -1,18 +1,26 @@
 // Register a Go service with the ServiceManager and call it back.
 //
+// Demonstrates implementing binder.TransactionReceiver — the server-side
+// binder interface — and registering it via AddService. When running in
+// a restricted SELinux context (e.g. shell), AddService will be denied;
+// in that case the example falls back to an in-process self-test that
+// exercises the same OnTransaction code path.
+//
 // Build:
 //
-//	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o build/server_service ./examples/server_service/
-//	adb push server_service /data/local/tmp/ && adb shell /data/local/tmp/server_service
+//	GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o build/server_service ./examples/server_service/
+//	adb push build/server_service /data/local/tmp/ && adb shell /data/local/tmp/server_service
 package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 
 	"github.com/AndroidGoLab/binder/binder"
 	"github.com/AndroidGoLab/binder/binder/versionaware"
+	aidlerrors "github.com/AndroidGoLab/binder/errors"
 	"github.com/AndroidGoLab/binder/kernelbinder"
 	"github.com/AndroidGoLab/binder/parcel"
 	"github.com/AndroidGoLab/binder/servicemanager"
@@ -88,71 +96,148 @@ func main() {
 
 	// Register our ping service with the service manager.
 	svc := &pingService{}
-	if err := sm.AddService(ctx, servicemanager.ServiceName(pingServiceName), svc, false, 0); err != nil {
-		fmt.Fprintf(os.Stderr, "add service: %v\n", err)
-		os.Exit(1)
-	}
-	fmt.Printf("Registered service %q\n", pingServiceName)
+	err = sm.AddService(ctx, servicemanager.ServiceName(pingServiceName), svc, false, 0)
 
-	// Self-test: look up the service we just registered and call it.
+	switch {
+	case err == nil:
+		fmt.Printf("Registered service %q\n", pingServiceName)
+		remoteTest(ctx, sm)
+
+	default:
+		// AddService typically fails from the shell SELinux context.
+		// Show the error and fall back to an in-process self-test.
+		var se *aidlerrors.StatusError
+		if errors.As(err, &se) && se.Exception == aidlerrors.ExceptionSecurity {
+			fmt.Printf("AddService denied by SELinux (expected from shell context).\n")
+			fmt.Printf("Falling back to in-process self-test.\n\n")
+		} else {
+			fmt.Fprintf(os.Stderr, "add service: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Falling back to in-process self-test.\n\n")
+		}
+		inProcessTest(ctx, svc)
+	}
+}
+
+// remoteTest looks up the service via the ServiceManager and calls it
+// through the binder driver, exercising the full IPC path.
+func remoteTest(ctx context.Context, sm *servicemanager.ServiceManager) {
 	remote, err := sm.GetService(ctx, servicemanager.ServiceName(pingServiceName))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get service: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Call Ping (codePing).
+	callPing(ctx, remote)
+	callEcho(ctx, remote, "hello from Go")
+	fmt.Println("All remote self-tests passed.")
+}
+
+// inProcessTest calls OnTransaction directly, verifying the handler
+// logic without requiring ServiceManager registration.
+func inProcessTest(ctx context.Context, svc *pingService) {
+	// Ping
 	{
 		data := parcel.New()
 		defer data.Recycle()
 		data.WriteInterfaceToken(pingServiceDescriptor)
 
-		reply, err := remote.Transact(ctx, codePing, 0, data)
+		reply, err := svc.OnTransaction(ctx, codePing, data)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "ping transact: %v\n", err)
+			fmt.Fprintf(os.Stderr, "in-process ping: %v\n", err)
 			os.Exit(1)
 		}
 		defer reply.Recycle()
 
 		if err := binder.ReadStatus(reply); err != nil {
-			fmt.Fprintf(os.Stderr, "ping status: %v\n", err)
+			fmt.Fprintf(os.Stderr, "in-process ping status: %v\n", err)
 			os.Exit(1)
 		}
 
 		result, err := reply.ReadString16()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "ping read result: %v\n", err)
+			fmt.Fprintf(os.Stderr, "in-process ping read: %v\n", err)
 			os.Exit(1)
 		}
 		fmt.Printf("Ping -> %q\n", result)
 	}
 
-	// Call Echo (codeEcho).
+	// Echo
 	{
 		data := parcel.New()
 		defer data.Recycle()
 		data.WriteInterfaceToken(pingServiceDescriptor)
 		data.WriteString16("hello from Go")
 
-		reply, err := remote.Transact(ctx, codeEcho, 0, data)
+		reply, err := svc.OnTransaction(ctx, codeEcho, data)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "echo transact: %v\n", err)
+			fmt.Fprintf(os.Stderr, "in-process echo: %v\n", err)
 			os.Exit(1)
 		}
 		defer reply.Recycle()
 
 		if err := binder.ReadStatus(reply); err != nil {
-			fmt.Fprintf(os.Stderr, "echo status: %v\n", err)
+			fmt.Fprintf(os.Stderr, "in-process echo status: %v\n", err)
 			os.Exit(1)
 		}
 
 		result, err := reply.ReadString16()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "echo read result: %v\n", err)
+			fmt.Fprintf(os.Stderr, "in-process echo read: %v\n", err)
 			os.Exit(1)
 		}
 		fmt.Printf("Echo -> %q\n", result)
 	}
 
-	fmt.Println("All self-tests passed.")
+	fmt.Println("All in-process self-tests passed.")
+}
+
+func callPing(ctx context.Context, remote binder.IBinder) {
+	data := parcel.New()
+	defer data.Recycle()
+	data.WriteInterfaceToken(pingServiceDescriptor)
+
+	reply, err := remote.Transact(ctx, codePing, 0, data)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ping transact: %v\n", err)
+		os.Exit(1)
+	}
+	defer reply.Recycle()
+
+	if err := binder.ReadStatus(reply); err != nil {
+		fmt.Fprintf(os.Stderr, "ping status: %v\n", err)
+		os.Exit(1)
+	}
+
+	result, err := reply.ReadString16()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "ping read result: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Ping -> %q\n", result)
+}
+
+func callEcho(ctx context.Context, remote binder.IBinder, msg string) {
+	data := parcel.New()
+	defer data.Recycle()
+	data.WriteInterfaceToken(pingServiceDescriptor)
+	data.WriteString16(msg)
+
+	reply, err := remote.Transact(ctx, codeEcho, 0, data)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "echo transact: %v\n", err)
+		os.Exit(1)
+	}
+	defer reply.Recycle()
+
+	if err := binder.ReadStatus(reply); err != nil {
+		fmt.Fprintf(os.Stderr, "echo status: %v\n", err)
+		os.Exit(1)
+	}
+
+	result, err := reply.ReadString16()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "echo read result: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Printf("Echo -> %q\n", result)
 }
