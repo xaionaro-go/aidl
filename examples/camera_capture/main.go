@@ -25,7 +25,7 @@ import (
 	fwkService "github.com/xaionaro-go/binder/android/frameworks/cameraservice/service"
 	"github.com/xaionaro-go/binder/binder"
 	"github.com/xaionaro-go/binder/binder/versionaware"
-	"github.com/xaionaro-go/binder/android/gui/igbp"
+	"github.com/xaionaro-go/binder/igbp"
 	"github.com/xaionaro-go/binder/kernelbinder"
 	"github.com/xaionaro-go/binder/parcel"
 	"github.com/xaionaro-go/binder/servicemanager"
