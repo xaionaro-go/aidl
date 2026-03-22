@@ -38,7 +38,8 @@ func main() {
 
 	svc, err := sm.GetService(ctx, servicemanager.ServiceName("android.hardware.health.IHealth/default"))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "get health HAL: %v (may be blocked by SELinux)\n", err)
+		fmt.Fprintf(os.Stderr, "get health HAL: %v\n", err)
+		fmt.Fprintf(os.Stderr, "(health HAL may not be available on this device, or access may be blocked by SELinux)\n")
 		os.Exit(1)
 	}
 
@@ -46,14 +47,14 @@ func main() {
 
 	capacity, err := h.GetCapacity(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "GetCapacity: %v\n", err)
+		fmt.Fprintf(os.Stderr, "GetCapacity: %v (health HAL may have died or returned an error)\n", err)
 	} else {
 		fmt.Printf("Battery level:    %d%%\n", capacity)
 	}
 
 	status, err := h.GetChargeStatus(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "GetChargeStatus: %v\n", err)
+		fmt.Fprintf(os.Stderr, "GetChargeStatus: %v (health HAL may have died or returned an error)\n", err)
 	} else {
 		statusName := "unknown"
 		switch status {
@@ -73,14 +74,14 @@ func main() {
 
 	current, err := h.GetCurrentNowMicroamps(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "GetCurrentNowMicroamps: %v\n", err)
+		fmt.Fprintf(os.Stderr, "GetCurrentNowMicroamps: %v (health HAL may have died or returned an error)\n", err)
 	} else {
 		fmt.Printf("Current draw:     %d µA\n", current)
 	}
 
 	counter, err := h.GetChargeCounterUah(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "GetChargeCounterUah: %v\n", err)
+		fmt.Fprintf(os.Stderr, "GetChargeCounterUah: %v (health HAL may have died or returned an error)\n", err)
 	} else {
 		fmt.Printf("Charge counter:   %d µAh\n", counter)
 	}

@@ -62,6 +62,7 @@ func main() {
 	started, err := wifiHal.IsStarted(ctx)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "IsStarted: %v\n", err)
+		fmt.Fprintf(os.Stderr, "(WiFi HAL may have died or access may be restricted by SELinux)\n")
 	} else {
 		fmt.Printf("WiFi HAL started: %v\n", started)
 	}
@@ -69,7 +70,7 @@ func main() {
 	// List available WiFi chips.
 	chipIds, err := wifiHal.GetChipIds(ctx)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "GetChipIds: %v\n", err)
+		fmt.Fprintf(os.Stderr, "GetChipIds: %v (WiFi HAL may have died or access may be restricted by SELinux)\n", err)
 		return
 	}
 
