@@ -3,6 +3,7 @@ module github.com/AndroidGoLab/binder
 go 1.25.0
 
 require (
+	github.com/electricbubble/gadb v0.1.0
 	github.com/facebookincubator/go-belt v0.0.0-20250308011339-62fb7027b11f
 	github.com/opencontainers/selinux v1.13.1
 	github.com/spf13/cobra v1.10.2
