@@ -22,7 +22,7 @@ func (s *NativeHandle) MarshalParcel(
 	} else {
 		p.WriteInt32(int32(len(s.Fds)))
 		for _, _item := range s.Fds {
-			p.WriteFileDescriptor(_item)
+			p.WriteParcelFileDescriptor(_item)
 		}
 	}
 	if s.Ints == nil {
@@ -59,7 +59,7 @@ func (s *NativeHandle) UnmarshalParcel(
 	if _count0 >= 0 {
 		s.Fds = make([]int32, _count0)
 		for _i := int32(0); _i < _count0; _i++ {
-			s.Fds[_i], _err = p.ReadFileDescriptor()
+			s.Fds[_i], _err = p.ReadParcelFileDescriptor()
 			if _err != nil {
 				return _err
 			}

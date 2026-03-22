@@ -53,7 +53,7 @@ func (p *DataShareReadAdapterProxy) Start(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIDataShareReadAdapter)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIDataShareReadAdapter, MethodIDataShareReadAdapterStart)
 	if _err != nil {
@@ -122,7 +122,7 @@ func (s *DataShareReadAdapterStub) OnTransaction(
 
 	switch code {
 	case TransactionIDataShareReadAdapterStart:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

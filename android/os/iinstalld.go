@@ -2079,7 +2079,7 @@ func (p *InstalldProxy) CreateFsveritySetupAuthToken(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIInstalld)
-	_data.WriteFileDescriptor(authFd)
+	_data.WriteParcelFileDescriptor(authFd)
 	_data.WriteInt32(uid)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIInstalld, MethodIInstalldCreateFsveritySetupAuthToken)
@@ -3531,7 +3531,7 @@ func (s *InstalldStub) OnTransaction(
 		_reply.WriteInt32(_result)
 		return _reply, nil
 	case TransactionIInstalldCreateFsveritySetupAuthToken:
-		_arg_authFd, _err := _data.ReadFileDescriptor()
+		_arg_authFd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

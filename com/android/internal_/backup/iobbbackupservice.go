@@ -55,7 +55,7 @@ func (p *ObbBackupServiceProxy) BackupObbs(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIObbBackupService)
 	_data.WriteString16(packageName)
-	_data.WriteFileDescriptor(data)
+	_data.WriteParcelFileDescriptor(data)
 	_data.WriteInt32(token)
 	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.Remote.Transport())
 
@@ -84,7 +84,7 @@ func (p *ObbBackupServiceProxy) RestoreObbFile(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIObbBackupService)
 	_data.WriteString16(pkgName)
-	_data.WriteFileDescriptor(data)
+	_data.WriteParcelFileDescriptor(data)
 	_data.WriteInt64(fileSize)
 	_data.WriteInt32(type_)
 	_data.WriteString16(path)
@@ -130,7 +130,7 @@ func (s *ObbBackupServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_data, _err := _data.ReadFileDescriptor()
+		_arg_data, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -153,7 +153,7 @@ func (s *ObbBackupServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_data, _err := _data.ReadFileDescriptor()
+		_arg_data, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

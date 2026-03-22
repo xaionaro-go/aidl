@@ -65,7 +65,7 @@ func (p *DumpstateDeviceProxy) DumpstateBoard(
 	} else {
 		_data.WriteInt32(int32(len(fd)))
 		for _, _item := range fd {
-			_data.WriteFileDescriptor(_item)
+			_data.WriteParcelFileDescriptor(_item)
 		}
 	}
 	_data.WriteInt32(int32(mode))
@@ -182,7 +182,7 @@ func (s *DumpstateDeviceStub) OnTransaction(
 			if _count >= 0 {
 				_arg_fd = make([]int32, _count)
 				for _i := int32(0); _i < _count; _i++ {
-					_arg_fd[_i], _err = _data.ReadFileDescriptor()
+					_arg_fd[_i], _err = _data.ReadParcelFileDescriptor()
 					if _err != nil {
 						return nil, _err
 					}

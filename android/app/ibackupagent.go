@@ -87,9 +87,9 @@ func (p *BackupAgentProxy) DoBackup(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBackupAgent)
-	_data.WriteFileDescriptor(oldState)
-	_data.WriteFileDescriptor(data)
-	_data.WriteFileDescriptor(newState)
+	_data.WriteParcelFileDescriptor(oldState)
+	_data.WriteParcelFileDescriptor(data)
+	_data.WriteParcelFileDescriptor(newState)
 	_data.WriteInt64(quotaBytes)
 	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.Remote.Transport())
 	_data.WriteInt32(transportFlags)
@@ -114,9 +114,9 @@ func (p *BackupAgentProxy) DoRestore(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBackupAgent)
-	_data.WriteFileDescriptor(data)
+	_data.WriteParcelFileDescriptor(data)
 	_data.WriteInt64(appVersionCode)
-	_data.WriteFileDescriptor(newState)
+	_data.WriteParcelFileDescriptor(newState)
 	_data.WriteInt32(token)
 	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.Remote.Transport())
 
@@ -141,9 +141,9 @@ func (p *BackupAgentProxy) DoRestoreWithExcludedKeys(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBackupAgent)
-	_data.WriteFileDescriptor(data)
+	_data.WriteParcelFileDescriptor(data)
 	_data.WriteInt64(appVersionCode)
-	_data.WriteFileDescriptor(newState)
+	_data.WriteParcelFileDescriptor(newState)
 	_data.WriteInt32(token)
 	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.Remote.Transport())
 	if excludedKeys == nil {
@@ -175,7 +175,7 @@ func (p *BackupAgentProxy) DoFullBackup(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBackupAgent)
-	_data.WriteFileDescriptor(data)
+	_data.WriteParcelFileDescriptor(data)
 	_data.WriteInt64(quotaBytes)
 	_data.WriteInt32(token)
 	binder.WriteBinderToParcel(ctx, _data, callbackBinder.AsBinder(), p.Remote.Transport())
@@ -251,7 +251,7 @@ func (p *BackupAgentProxy) DoRestoreFile(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBackupAgent)
-	_data.WriteFileDescriptor(data)
+	_data.WriteParcelFileDescriptor(data)
 	_data.WriteInt64(size)
 	_data.WriteInt32(type_)
 	_data.WriteString16(domain)
@@ -390,15 +390,15 @@ func (s *BackupAgentStub) OnTransaction(
 
 	switch code {
 	case TransactionIBackupAgentDoBackup:
-		_arg_oldState, _err := _data.ReadFileDescriptor()
+		_arg_oldState, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_data, _err := _data.ReadFileDescriptor()
+		_arg_data, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_newState, _err := _data.ReadFileDescriptor()
+		_arg_newState, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -421,7 +421,7 @@ func (s *BackupAgentStub) OnTransaction(
 		_err = s.Impl.DoBackup(ctx, _arg_oldState, _arg_data, _arg_newState, _arg_quotaBytes, _arg_callbackBinder, _arg_transportFlags)
 		return nil, _err
 	case TransactionIBackupAgentDoRestore:
-		_arg_data, _err := _data.ReadFileDescriptor()
+		_arg_data, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -429,7 +429,7 @@ func (s *BackupAgentStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_newState, _err := _data.ReadFileDescriptor()
+		_arg_newState, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -448,7 +448,7 @@ func (s *BackupAgentStub) OnTransaction(
 		_err = s.Impl.DoRestore(ctx, _arg_data, _arg_appVersionCode, _arg_newState, _arg_token, _arg_callbackBinder)
 		return nil, _err
 	case TransactionIBackupAgentDoRestoreWithExcludedKeys:
-		_arg_data, _err := _data.ReadFileDescriptor()
+		_arg_data, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -456,7 +456,7 @@ func (s *BackupAgentStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_newState, _err := _data.ReadFileDescriptor()
+		_arg_newState, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -494,7 +494,7 @@ func (s *BackupAgentStub) OnTransaction(
 		_err = s.Impl.DoRestoreWithExcludedKeys(ctx, _arg_data, _arg_appVersionCode, _arg_newState, _arg_token, _arg_callbackBinder, _arg_excludedKeys)
 		return nil, _err
 	case TransactionIBackupAgentDoFullBackup:
-		_arg_data, _err := _data.ReadFileDescriptor()
+		_arg_data, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -563,7 +563,7 @@ func (s *BackupAgentStub) OnTransaction(
 		_err = s.Impl.DoQuotaExceeded(ctx, _arg_backupDataBytes, _arg_quotaBytes, _arg_callbackBinder)
 		return nil, _err
 	case TransactionIBackupAgentDoRestoreFile:
-		_arg_data, _err := _data.ReadFileDescriptor()
+		_arg_data, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

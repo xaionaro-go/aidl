@@ -298,6 +298,7 @@ More examples: [`examples/`](examples/)
 | [`activity_manager`](examples/activity_manager/) | Process limits, monkey test flag, permission checks |
 | [`audio_status`](examples/audio_status/) | Audio device info, volume state |
 | [`battery_health`](examples/battery_health/) | Capacity, charge status, current draw |
+| [`camera_capture`](examples/camera_capture/) | Camera frame capture using gralloc-allocated buffers. |
 | [`camera_connect`](examples/camera_connect/) | Camera device connection with callback stub |
 | [`device_info`](examples/device_info/) | Device properties, build info |
 | [`display_info`](examples/display_info/) | Display IDs, brightness, night mode |
@@ -1826,6 +1827,6 @@ A [weekly workflow](.github/workflows/check-aosp-updates.yml) checks for new AOS
 │   ├── hardware/             HAL interfaces
 │   └── ...                   666 packages total
 ├── com/                      AOSP com.android.* service proxies
-├── examples/                 14 runnable examples
+├── examples/                 15 runnable examples
 └── .github/workflows/        CI configuration
 ```

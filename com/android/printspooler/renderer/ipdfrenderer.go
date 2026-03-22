@@ -55,7 +55,7 @@ func (p *PdfRendererProxy) OpenDocument(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIPdfRenderer)
-	_data.WriteFileDescriptor(source)
+	_data.WriteParcelFileDescriptor(source)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIPdfRenderer, MethodIPdfRendererOpenDocument)
 	if _err != nil {
@@ -97,7 +97,7 @@ func (p *PdfRendererProxy) RenderPage(
 	if _err := attributes.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteFileDescriptor(destination)
+	_data.WriteParcelFileDescriptor(destination)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIPdfRenderer, MethodIPdfRendererRenderPage)
 	if _err != nil {
@@ -148,7 +148,7 @@ func (s *PdfRendererStub) OnTransaction(
 
 	switch code {
 	case TransactionIPdfRendererOpenDocument:
-		_arg_source, _err := _data.ReadFileDescriptor()
+		_arg_source, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -186,7 +186,7 @@ func (s *PdfRendererStub) OnTransaction(
 				}
 			}
 		}
-		_arg_destination, _err := _data.ReadFileDescriptor()
+		_arg_destination, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

@@ -100,7 +100,7 @@ func (p *BlobStoreSessionProxy) OpenWrite(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -130,7 +130,7 @@ func (p *BlobStoreSessionProxy) OpenRead(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -456,7 +456,7 @@ func (s *BlobStoreSessionStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIBlobStoreSessionOpenRead:
 		_result, _err := s.Impl.OpenRead(ctx)
@@ -466,7 +466,7 @@ func (s *BlobStoreSessionStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIBlobStoreSessionAllowPackageAccess:
 		_arg_packageName, _err := _data.ReadString16()

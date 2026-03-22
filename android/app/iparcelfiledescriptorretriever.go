@@ -63,7 +63,7 @@ func (p *ParcelFileDescriptorRetrieverProxy) GetPfd(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -101,7 +101,7 @@ func (s *ParcelFileDescriptorRetrieverStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)

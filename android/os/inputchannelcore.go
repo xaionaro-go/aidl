@@ -20,7 +20,7 @@ func (s *InputChannelCore) MarshalParcel(
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteString16(s.Name)
-	p.WriteFileDescriptor(s.Fd)
+	p.WriteParcelFileDescriptor(s.Fd)
 	if s.Token == nil {
 		p.WriteNullStrongBinder()
 	} else {
@@ -54,7 +54,7 @@ func (s *InputChannelCore) UnmarshalParcel(
 		return nil
 	}
 
-	s.Fd, _err = p.ReadFileDescriptor()
+	s.Fd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

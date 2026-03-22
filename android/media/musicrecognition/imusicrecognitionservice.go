@@ -53,7 +53,7 @@ func (p *MusicRecognitionServiceProxy) OnAudioStreamStarted(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIMusicRecognitionService)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt32(1)
 	if _err := audioFormat.MarshalParcel(_data); _err != nil {
 		return _err
@@ -111,7 +111,7 @@ func (s *MusicRecognitionServiceStub) OnTransaction(
 
 	switch code {
 	case TransactionIMusicRecognitionServiceOnAudioStreamStarted:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

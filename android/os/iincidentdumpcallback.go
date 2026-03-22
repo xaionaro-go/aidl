@@ -47,7 +47,7 @@ func (p *IncidentDumpCallbackProxy) OnDumpSection(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIIncidentDumpCallback)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIIncidentDumpCallback, MethodIIncidentDumpCallbackOnDumpSection)
 	if _err != nil {
@@ -82,7 +82,7 @@ func (s *IncidentDumpCallbackStub) OnTransaction(
 
 	switch code {
 	case TransactionIIncidentDumpCallbackOnDumpSection:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

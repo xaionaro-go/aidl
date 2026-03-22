@@ -38,7 +38,7 @@ func (s *GenericDataParcelable) MarshalParcel(
 	} else {
 		p.WriteStrongBinder(s.Binder.Handle())
 	}
-	p.WriteFileDescriptor(s.FileDescriptor)
+	p.WriteParcelFileDescriptor(s.FileDescriptor)
 	if s.Array == nil {
 		p.WriteInt32(-1)
 	} else {
@@ -112,7 +112,7 @@ func (s *GenericDataParcelable) UnmarshalParcel(
 		return nil
 	}
 
-	s.FileDescriptor, _err = p.ReadFileDescriptor()
+	s.FileDescriptor, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

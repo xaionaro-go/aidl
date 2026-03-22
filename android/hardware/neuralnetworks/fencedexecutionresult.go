@@ -23,7 +23,7 @@ func (s *FencedExecutionResult) MarshalParcel(
 	} else {
 		p.WriteStrongBinder(s.Callback.AsBinder().Handle())
 	}
-	p.WriteFileDescriptor(s.SyncFence)
+	p.WriteParcelFileDescriptor(s.SyncFence)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -53,7 +53,7 @@ func (s *FencedExecutionResult) UnmarshalParcel(
 		return nil
 	}
 
-	s.SyncFence, _err = p.ReadFileDescriptor()
+	s.SyncFence, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

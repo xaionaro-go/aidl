@@ -5887,7 +5887,7 @@ func (p *TelephonyProxy) UploadCallComposerPicture(
 	_data.WriteInt32(subscriptionId)
 	_data.WriteString16(_identity.PackageName)
 	_data.WriteString16(contentType)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt32(1)
 	if _err := callback.MarshalParcel(_data); _err != nil {
 		return _err
@@ -10036,7 +10036,7 @@ func (p *TelephonyProxy) UpdateOtaEmergencyNumberDbFilePath(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorITelephony)
-	_data.WriteFileDescriptor(otaParcelFileDescriptor)
+	_data.WriteParcelFileDescriptor(otaParcelFileDescriptor)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorITelephony, MethodITelephonyUpdateOtaEmergencyNumberDbFilePath)
 	if _err != nil {
@@ -17818,7 +17818,7 @@ func (s *TelephonyStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -20125,7 +20125,7 @@ func (s *TelephonyStub) OnTransaction(
 		binder.WriteStatus(_reply, nil)
 		return _reply, nil
 	case TransactionITelephonyUpdateOtaEmergencyNumberDbFilePath:
-		_arg_otaParcelFileDescriptor, _err := _data.ReadFileDescriptor()
+		_arg_otaParcelFileDescriptor, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

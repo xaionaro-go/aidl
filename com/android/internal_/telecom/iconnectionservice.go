@@ -1060,8 +1060,8 @@ func (p *ConnectionServiceProxy) StartRtt(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIConnectionService)
 	_data.WriteString16(callId)
-	_data.WriteFileDescriptor(fromInCall)
-	_data.WriteFileDescriptor(toInCall)
+	_data.WriteParcelFileDescriptor(fromInCall)
+	_data.WriteParcelFileDescriptor(toInCall)
 	// WARNING: param sessionInfo (type any) cannot be serialized — type not resolved
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIConnectionService, MethodIConnectionServiceStartRtt)
@@ -1104,8 +1104,8 @@ func (p *ConnectionServiceProxy) RespondToRttUpgradeRequest(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIConnectionService)
 	_data.WriteString16(callId)
-	_data.WriteFileDescriptor(fromInCall)
-	_data.WriteFileDescriptor(toInCall)
+	_data.WriteParcelFileDescriptor(fromInCall)
+	_data.WriteParcelFileDescriptor(toInCall)
 	// WARNING: param sessionInfo (type any) cannot be serialized — type not resolved
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIConnectionService, MethodIConnectionServiceRespondToRttUpgradeRequest)
@@ -1863,11 +1863,11 @@ func (s *ConnectionServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fromInCall, _err := _data.ReadFileDescriptor()
+		_arg_fromInCall, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_toInCall, _err := _data.ReadFileDescriptor()
+		_arg_toInCall, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1887,11 +1887,11 @@ func (s *ConnectionServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fromInCall, _err := _data.ReadFileDescriptor()
+		_arg_fromInCall, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_toInCall, _err := _data.ReadFileDescriptor()
+		_arg_toInCall, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

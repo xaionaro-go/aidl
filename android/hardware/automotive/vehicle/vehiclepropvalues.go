@@ -30,7 +30,7 @@ func (s *VehiclePropValues) MarshalParcel(
 		}
 	}
 	p.WriteInt64(s.SharedMemoryId)
-	p.WriteFileDescriptor(s.SharedMemoryFd)
+	p.WriteParcelFileDescriptor(s.SharedMemoryFd)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -81,7 +81,7 @@ func (s *VehiclePropValues) UnmarshalParcel(
 		return nil
 	}
 
-	s.SharedMemoryFd, _err = p.ReadFileDescriptor()
+	s.SharedMemoryFd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

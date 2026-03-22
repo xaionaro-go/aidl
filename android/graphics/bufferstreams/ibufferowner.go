@@ -50,7 +50,7 @@ func (p *BufferOwnerProxy) OnBufferReleased(
 	_data.WriteInterfaceToken(DescriptorIBufferOwner)
 	_data.WriteInt64(bufferId)
 	if releaseFence != nil {
-		_data.WriteFileDescriptor((*releaseFence))
+		_data.WriteParcelFileDescriptor((*releaseFence))
 	} else {
 		_data.WriteInt32(-1)
 	}
@@ -92,7 +92,7 @@ func (s *BufferOwnerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_raw_releaseFence, _err := _data.ReadFileDescriptor()
+		_raw_releaseFence, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

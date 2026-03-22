@@ -122,7 +122,7 @@ func (p *FileIntegrityServiceProxy) CreateAuthToken(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIFileIntegrityService)
-	_data.WriteFileDescriptor(authFd)
+	_data.WriteParcelFileDescriptor(authFd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIFileIntegrityService, MethodIFileIntegrityServiceCreateAuthToken)
 	if _err != nil {
@@ -239,7 +239,7 @@ func (s *FileIntegrityServiceStub) OnTransaction(
 		_reply.WriteBool(_result)
 		return _reply, nil
 	case TransactionIFileIntegrityServiceCreateAuthToken:
-		_arg_authFd, _err := _data.ReadFileDescriptor()
+		_arg_authFd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

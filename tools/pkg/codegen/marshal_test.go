@@ -73,8 +73,8 @@ func TestMarshalForType_Primitives(t *testing.T) {
 		{
 			name:      "ParcelFileDescriptor",
 			aidlType:  "ParcelFileDescriptor",
-			writeExpr: "_data.WriteFileDescriptor(%s)",
-			readExpr:  "_reply.ReadFileDescriptor()",
+			writeExpr: "_data.WriteParcelFileDescriptor(%s)",
+			readExpr:  "_reply.ReadParcelFileDescriptor()",
 		},
 	}
 

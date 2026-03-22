@@ -20,7 +20,7 @@ func (s *Frame) MarshalParcel(
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteInt64(s.BufferId)
 	p.WriteInt64(s.PresentTimeNs)
-	p.WriteFileDescriptor(s.Fence)
+	p.WriteParcelFileDescriptor(s.Fence)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -59,7 +59,7 @@ func (s *Frame) UnmarshalParcel(
 		return nil
 	}
 
-	s.Fence, _err = p.ReadFileDescriptor()
+	s.Fence, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

@@ -23,7 +23,7 @@ func (s *SoundModel) MarshalParcel(
 	p.WriteInt32(int32(s.Type))
 	p.WriteString16(s.Uuid)
 	p.WriteString16(s.VendorUuid)
-	p.WriteFileDescriptor(s.Data)
+	p.WriteParcelFileDescriptor(s.Data)
 	p.WriteInt32(s.DataSize)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
@@ -74,7 +74,7 @@ func (s *SoundModel) UnmarshalParcel(
 		return nil
 	}
 
-	s.Data, _err = p.ReadFileDescriptor()
+	s.Data, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

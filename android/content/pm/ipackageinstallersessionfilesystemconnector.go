@@ -53,7 +53,7 @@ func (p *PackageInstallerSessionFileSystemConnectorProxy) WriteData(
 	_data.WriteString16(name)
 	_data.WriteInt64(offsetBytes)
 	_data.WriteInt64(lengthBytes)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIPackageInstallerSessionFileSystemConnector, MethodIPackageInstallerSessionFileSystemConnectorWriteData)
 	if _err != nil {
@@ -109,7 +109,7 @@ func (s *PackageInstallerSessionFileSystemConnectorStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

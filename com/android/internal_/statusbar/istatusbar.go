@@ -1544,7 +1544,7 @@ func (p *StatusBarProxy) PassThroughShellCommand(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteFileDescriptor(pfd)
+	_data.WriteParcelFileDescriptor(pfd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIStatusBar, MethodIStatusBarPassThroughShellCommand)
 	if _err != nil {
@@ -1771,7 +1771,7 @@ func (p *StatusBarProxy) DumpProto(
 			_data.WriteString16(_item)
 		}
 	}
-	_data.WriteFileDescriptor(pfd)
+	_data.WriteParcelFileDescriptor(pfd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIStatusBar, MethodIStatusBarDumpProto)
 	if _err != nil {
@@ -2622,7 +2622,7 @@ func (s *StatusBarStub) OnTransaction(
 				}
 			}
 		}
-		_arg_pfd, _err := _data.ReadFileDescriptor()
+		_arg_pfd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2814,7 +2814,7 @@ func (s *StatusBarStub) OnTransaction(
 				}
 			}
 		}
-		_arg_pfd, _err := _data.ReadFileDescriptor()
+		_arg_pfd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

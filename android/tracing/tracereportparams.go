@@ -23,7 +23,7 @@ func (s *TraceReportParams) MarshalParcel(
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteString16(s.ReporterPackageName)
 	p.WriteString16(s.ReporterClassName)
-	p.WriteFileDescriptor(s.Fd)
+	p.WriteParcelFileDescriptor(s.Fd)
 	p.WriteInt64(s.UuidLsb)
 	p.WriteInt64(s.UuidMsb)
 	p.WriteBool(s.UsePipeForTesting)
@@ -65,7 +65,7 @@ func (s *TraceReportParams) UnmarshalParcel(
 		return nil
 	}
 
-	s.Fd, _err = p.ReadFileDescriptor()
+	s.Fd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

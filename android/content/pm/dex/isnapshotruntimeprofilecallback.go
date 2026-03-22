@@ -50,7 +50,7 @@ func (p *SnapshotRuntimeProfileCallbackProxy) OnSuccess(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorISnapshotRuntimeProfileCallback)
-	_data.WriteFileDescriptor(profileReadFd)
+	_data.WriteParcelFileDescriptor(profileReadFd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorISnapshotRuntimeProfileCallback, MethodISnapshotRuntimeProfileCallbackOnSuccess)
 	if _err != nil {
@@ -103,7 +103,7 @@ func (s *SnapshotRuntimeProfileCallbackStub) OnTransaction(
 
 	switch code {
 	case TransactionISnapshotRuntimeProfileCallbackOnSuccess:
-		_arg_profileReadFd, _err := _data.ReadFileDescriptor()
+		_arg_profileReadFd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

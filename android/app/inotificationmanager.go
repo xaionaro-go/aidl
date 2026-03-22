@@ -5655,7 +5655,7 @@ func (p *NotificationManagerProxy) PullStats(
 	if _outCount0 >= 0 {
 		stats = make([]int32, _outCount0)
 		for _i := int32(0); _i < _outCount0; _i++ {
-			stats[_i], _err = _reply.ReadFileDescriptor()
+			stats[_i], _err = _reply.ReadParcelFileDescriptor()
 			if _err != nil {
 				return _result, _err
 			}
@@ -9106,7 +9106,7 @@ func (s *NotificationManagerStub) OnTransaction(
 		} else {
 			_reply.WriteInt32(int32(len(_arg_stats)))
 			for _, _item := range _arg_stats {
-				_reply.WriteFileDescriptor(_item)
+				_reply.WriteParcelFileDescriptor(_item)
 			}
 		}
 		return _reply, nil

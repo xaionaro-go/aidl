@@ -114,7 +114,7 @@ func (p *SandboxedDetectionServiceProxy) DetectFromMicrophoneSource(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorISandboxedDetectionService)
-	_data.WriteFileDescriptor(audioStream)
+	_data.WriteParcelFileDescriptor(audioStream)
 	_data.WriteInt32(audioSource)
 	_data.WriteInt32(1)
 	if _err := audioFormat.MarshalParcel(_data); _err != nil {
@@ -355,7 +355,7 @@ func (s *SandboxedDetectionServiceStub) OnTransaction(
 		_err = s.Impl.DetectFromDspSource(ctx, _arg_event, _arg_audioFormat, _arg_timeoutMillis, _arg_callback)
 		return nil, _err
 	case TransactionISandboxedDetectionServiceDetectFromMicrophoneSource:
-		_arg_audioStream, _err := _data.ReadFileDescriptor()
+		_arg_audioStream, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

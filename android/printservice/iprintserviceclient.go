@@ -237,7 +237,7 @@ func (p *PrintServiceClientProxy) WritePrintJobData(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIPrintServiceClient)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	// WARNING: param printJobId (type types.PrintJobId) cannot be serialized — type not resolved
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIPrintServiceClient, MethodIPrintServiceClientWritePrintJobData)
@@ -513,7 +513,7 @@ func (s *PrintServiceClientStub) OnTransaction(
 		_reply.WriteBool(_result)
 		return _reply, nil
 	case TransactionIPrintServiceClientWritePrintJobData:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

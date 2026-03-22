@@ -18,7 +18,7 @@ func (s *IPooledGraphicBufferAllocatorAllocation) MarshalParcel(
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteInt32(s.BufferId)
-	p.WriteFileDescriptor(s.Fence)
+	p.WriteParcelFileDescriptor(s.Fence)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -47,7 +47,7 @@ func (s *IPooledGraphicBufferAllocatorAllocation) UnmarshalParcel(
 		return nil
 	}
 
-	s.Fence, _err = p.ReadFileDescriptor()
+	s.Fence, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

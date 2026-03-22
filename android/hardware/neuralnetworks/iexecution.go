@@ -95,7 +95,7 @@ func (p *ExecutionProxy) ExecuteFenced(
 	} else {
 		_data.WriteInt32(int32(len(waitFor)))
 		for _, _item := range waitFor {
-			_data.WriteFileDescriptor(_item)
+			_data.WriteParcelFileDescriptor(_item)
 		}
 	}
 	_data.WriteInt64(deadlineNs)
@@ -181,7 +181,7 @@ func (s *ExecutionStub) OnTransaction(
 			if _count >= 0 {
 				_arg_waitFor = make([]int32, _count)
 				for _i := int32(0); _i < _count; _i++ {
-					_arg_waitFor[_i], _err = _data.ReadFileDescriptor()
+					_arg_waitFor[_i], _err = _data.ReadParcelFileDescriptor()
 					if _err != nil {
 						return nil, _err
 					}

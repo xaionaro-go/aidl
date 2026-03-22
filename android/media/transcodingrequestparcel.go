@@ -31,9 +31,9 @@ func (s *TranscodingRequestParcel) MarshalParcel(
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteString16(s.SourceFilePath)
-	p.WriteFileDescriptor(s.SourceFd)
+	p.WriteParcelFileDescriptor(s.SourceFd)
 	p.WriteString16(s.DestinationFilePath)
-	p.WriteFileDescriptor(s.DestinationFd)
+	p.WriteParcelFileDescriptor(s.DestinationFd)
 	p.WriteInt32(s.ClientUid)
 	p.WriteInt32(s.ClientPid)
 	p.WriteString16(s.ClientPackageName)
@@ -87,7 +87,7 @@ func (s *TranscodingRequestParcel) UnmarshalParcel(
 		return nil
 	}
 
-	s.SourceFd, _err = p.ReadFileDescriptor()
+	s.SourceFd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}
@@ -107,7 +107,7 @@ func (s *TranscodingRequestParcel) UnmarshalParcel(
 		return nil
 	}
 
-	s.DestinationFd, _err = p.ReadFileDescriptor()
+	s.DestinationFd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

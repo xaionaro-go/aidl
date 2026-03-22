@@ -17,7 +17,7 @@ func (s *Ashmem) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteFileDescriptor(s.Fd)
+	p.WriteParcelFileDescriptor(s.Fd)
 	p.WriteInt64(s.Size)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
@@ -37,7 +37,7 @@ func (s *Ashmem) UnmarshalParcel(
 		return nil
 	}
 
-	s.Fd, _err = p.ReadFileDescriptor()
+	s.Fd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

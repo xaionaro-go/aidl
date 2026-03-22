@@ -88,7 +88,7 @@ func (p *ProcessStatsProxy) GetCurrentStats(
 	if _outCount0 >= 0 {
 		historic = make([]int32, _outCount0)
 		for _i := int32(0); _i < _outCount0; _i++ {
-			historic[_i], _err = _reply.ReadFileDescriptor()
+			historic[_i], _err = _reply.ReadParcelFileDescriptor()
 			if _err != nil {
 				return _result, _err
 			}
@@ -127,7 +127,7 @@ func (p *ProcessStatsProxy) GetStatsOverTime(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -203,7 +203,7 @@ func (p *ProcessStatsProxy) GetCommittedStats(
 	if _outCount0 >= 0 {
 		committedStats = make([]int32, _outCount0)
 		for _i := int32(0); _i < _outCount0; _i++ {
-			committedStats[_i], _err = _reply.ReadFileDescriptor()
+			committedStats[_i], _err = _reply.ReadParcelFileDescriptor()
 			if _err != nil {
 				return _result, _err
 			}
@@ -257,7 +257,7 @@ func (p *ProcessStatsProxy) GetCommittedStatsMerged(
 	if _outCount0 >= 0 {
 		committedStats = make([]int32, _outCount0)
 		for _i := int32(0); _i < _outCount0; _i++ {
-			committedStats[_i], _err = _reply.ReadFileDescriptor()
+			committedStats[_i], _err = _reply.ReadParcelFileDescriptor()
 			if _err != nil {
 				return _result, _err
 			}
@@ -350,7 +350,7 @@ func (s *ProcessStatsStub) OnTransaction(
 		} else {
 			_reply.WriteInt32(int32(len(_arg_historic)))
 			for _, _item := range _arg_historic {
-				_reply.WriteFileDescriptor(_item)
+				_reply.WriteParcelFileDescriptor(_item)
 			}
 		}
 		return _reply, nil
@@ -366,7 +366,7 @@ func (s *ProcessStatsStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIProcessStatsGetCurrentMemoryState:
 		_result, _err := s.Impl.GetCurrentMemoryState(ctx)
@@ -405,7 +405,7 @@ func (s *ProcessStatsStub) OnTransaction(
 		} else {
 			_reply.WriteInt32(int32(len(_arg_committedStats)))
 			for _, _item := range _arg_committedStats {
-				_reply.WriteFileDescriptor(_item)
+				_reply.WriteParcelFileDescriptor(_item)
 			}
 		}
 		return _reply, nil
@@ -437,7 +437,7 @@ func (s *ProcessStatsStub) OnTransaction(
 		} else {
 			_reply.WriteInt32(int32(len(_arg_committedStats)))
 			for _, _item := range _arg_committedStats {
-				_reply.WriteFileDescriptor(_item)
+				_reply.WriteParcelFileDescriptor(_item)
 			}
 		}
 		_reply.WriteInt32(1)

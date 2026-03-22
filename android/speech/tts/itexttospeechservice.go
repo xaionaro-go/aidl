@@ -141,7 +141,7 @@ func (p *TextToSpeechServiceProxy) SynthesizeToFileDescriptor(
 	_data.WriteInterfaceToken(DescriptorITextToSpeechService)
 	binder.WriteBinderToParcel(ctx, _data, callingInstance, p.Remote.Transport())
 	_data.WriteString16(text)
-	_data.WriteFileDescriptor(fileDescriptor)
+	_data.WriteParcelFileDescriptor(fileDescriptor)
 	_data.WriteInt32(1)
 	if _err := params.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -747,7 +747,7 @@ func (s *TextToSpeechServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fileDescriptor, _err := _data.ReadFileDescriptor()
+		_arg_fileDescriptor, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

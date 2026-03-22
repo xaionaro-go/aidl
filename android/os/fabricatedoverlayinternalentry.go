@@ -28,7 +28,7 @@ func (s *FabricatedOverlayInternalEntry) MarshalParcel(
 	p.WriteInt32(s.DataType)
 	p.WriteInt32(s.Data)
 	p.WriteString16(s.StringData)
-	p.WriteFileDescriptor(s.BinaryData)
+	p.WriteParcelFileDescriptor(s.BinaryData)
 	p.WriteString16(s.Configuration)
 	p.WriteInt64(s.BinaryDataOffset)
 	p.WriteInt64(s.BinaryDataSize)
@@ -91,7 +91,7 @@ func (s *FabricatedOverlayInternalEntry) UnmarshalParcel(
 		return nil
 	}
 
-	s.BinaryData, _err = p.ReadFileDescriptor()
+	s.BinaryData, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

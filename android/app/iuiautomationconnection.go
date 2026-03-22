@@ -502,8 +502,8 @@ func (p *UiAutomationConnectionProxy) ExecuteShellCommand(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteString16(command)
-	_data.WriteFileDescriptor(sink)
-	_data.WriteFileDescriptor(source)
+	_data.WriteParcelFileDescriptor(sink)
+	_data.WriteParcelFileDescriptor(source)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIUiAutomationConnection, MethodIUiAutomationConnectionExecuteShellCommand)
 	if _err != nil {
@@ -673,9 +673,9 @@ func (p *UiAutomationConnectionProxy) ExecuteShellCommandWithStderr(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIUiAutomationConnection)
 	_data.WriteString16(command)
-	_data.WriteFileDescriptor(sink)
-	_data.WriteFileDescriptor(source)
-	_data.WriteFileDescriptor(stderrSink)
+	_data.WriteParcelFileDescriptor(sink)
+	_data.WriteParcelFileDescriptor(source)
+	_data.WriteParcelFileDescriptor(stderrSink)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIUiAutomationConnection, MethodIUiAutomationConnectionExecuteShellCommandWithStderr)
 	if _err != nil {
@@ -988,11 +988,11 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_sink, _err := _data.ReadFileDescriptor()
+		_arg_sink, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_source, _err := _data.ReadFileDescriptor()
+		_arg_source, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1093,15 +1093,15 @@ func (s *UiAutomationConnectionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_sink, _err := _data.ReadFileDescriptor()
+		_arg_sink, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_source, _err := _data.ReadFileDescriptor()
+		_arg_source, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_stderrSink, _err := _data.ReadFileDescriptor()
+		_arg_stderrSink, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

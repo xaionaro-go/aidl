@@ -68,7 +68,7 @@ func (p *ExternalStorageServiceProxy) StartSession(
 	_data.WriteInterfaceToken(DescriptorIExternalStorageService)
 	_data.WriteString16(sessionId)
 	_data.WriteInt32(type_)
-	_data.WriteFileDescriptor(deviceFd)
+	_data.WriteParcelFileDescriptor(deviceFd)
 	_data.WriteString16(upperPath)
 	_data.WriteString16(lowerPath)
 	_data.WriteInt32(1)
@@ -219,7 +219,7 @@ func (s *ExternalStorageServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_deviceFd, _err := _data.ReadFileDescriptor()
+		_arg_deviceFd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

@@ -74,8 +74,8 @@ func (p *OffloadProxy) InitOffload(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIOffload)
-	_data.WriteFileDescriptor(fd1)
-	_data.WriteFileDescriptor(fd2)
+	_data.WriteParcelFileDescriptor(fd1)
+	_data.WriteParcelFileDescriptor(fd2)
 	binder.WriteBinderToParcel(ctx, _data, cb.AsBinder(), p.Remote.Transport())
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIOffload, MethodIOffloadInitOffload)
@@ -345,11 +345,11 @@ func (s *OffloadStub) OnTransaction(
 
 	switch code {
 	case TransactionIOffloadInitOffload:
-		_arg_fd1, _err := _data.ReadFileDescriptor()
+		_arg_fd1, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fd2, _err := _data.ReadFileDescriptor()
+		_arg_fd2, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

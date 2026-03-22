@@ -625,7 +625,7 @@ func (p *ApplicationThreadProxy) DumpService(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	binder.WriteBinderToParcel(ctx, _data, servicetoken, p.Remote.Transport())
 	if args == nil {
 		_data.WriteInt32(-1)
@@ -901,7 +901,7 @@ func (p *ApplicationThreadProxy) DumpHeap(
 	_data.WriteBool(mallocInfo)
 	_data.WriteBool(runGc)
 	_data.WriteString16(path)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt32(1)
 	if _err := finishCallback.MarshalParcel(_data); _err != nil {
 		return _err
@@ -926,7 +926,7 @@ func (p *ApplicationThreadProxy) DumpActivity(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	binder.WriteBinderToParcel(ctx, _data, servicetoken, p.Remote.Transport())
 	_data.WriteString16(prefix)
 	if args == nil {
@@ -955,7 +955,7 @@ func (p *ApplicationThreadProxy) DumpResources(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt32(1)
 	if _err := finishCallback.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1079,7 +1079,7 @@ func (p *ApplicationThreadProxy) DumpMemInfo(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt32(1)
 	if _err := mem.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1121,7 +1121,7 @@ func (p *ApplicationThreadProxy) DumpMemInfoProto(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt32(1)
 	if _err := mem.MarshalParcel(_data); _err != nil {
 		return _err
@@ -1156,7 +1156,7 @@ func (p *ApplicationThreadProxy) DumpGfxInfo(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	if args == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1183,7 +1183,7 @@ func (p *ApplicationThreadProxy) DumpCacheInfo(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	if args == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1211,7 +1211,7 @@ func (p *ApplicationThreadProxy) DumpProvider(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	binder.WriteBinderToParcel(ctx, _data, servicetoken, p.Remote.Transport())
 	if args == nil {
 		_data.WriteInt32(-1)
@@ -1239,7 +1239,7 @@ func (p *ApplicationThreadProxy) DumpDbInfo(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	if args == nil {
 		_data.WriteInt32(-1)
 	} else {
@@ -1435,7 +1435,7 @@ func (p *ApplicationThreadProxy) StopBinderTrackingAndDump(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIApplicationThread)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIApplicationThread, MethodIApplicationThreadStopBinderTrackingAndDump)
 	if _err != nil {
@@ -2313,7 +2313,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err := s.Impl.ScheduleUnbindService(ctx, _arg_token, _arg_intent)
 		return nil, _err
 	case TransactionIApplicationThreadDumpService:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2564,7 +2564,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2583,7 +2583,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err = s.Impl.DumpHeap(ctx, _arg_managed, _arg_mallocInfo, _arg_runGc, _arg_path, _arg_fd, _arg_finishCallback)
 		return nil, _err
 	case TransactionIApplicationThreadDumpActivity:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2621,7 +2621,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err = s.Impl.DumpActivity(ctx, _arg_fd, _arg_servicetoken, _arg_prefix, _arg_args)
 		return nil, _err
 	case TransactionIApplicationThreadDumpResources:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2687,7 +2687,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err = s.Impl.ScheduleTrimMemory(ctx, _arg_level)
 		return nil, _err
 	case TransactionIApplicationThreadDumpMemInfo:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2749,7 +2749,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err = s.Impl.DumpMemInfo(ctx, _arg_fd, _arg_mem, _arg_checkin, _arg_dumpInfo, _arg_dumpDalvik, _arg_dumpSummaryOnly, _arg_dumpUnreachable, _arg_dumpAllocatorLogs, _arg_args)
 		return nil, _err
 	case TransactionIApplicationThreadDumpMemInfoProto:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2803,7 +2803,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err = s.Impl.DumpMemInfoProto(ctx, _arg_fd, _arg_mem, _arg_dumpInfo, _arg_dumpDalvik, _arg_dumpSummaryOnly, _arg_dumpUnreachable, _arg_args)
 		return nil, _err
 	case TransactionIApplicationThreadDumpGfxInfo:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2829,7 +2829,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err = s.Impl.DumpGfxInfo(ctx, _arg_fd, _arg_args)
 		return nil, _err
 	case TransactionIApplicationThreadDumpCacheInfo:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2855,7 +2855,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err = s.Impl.DumpCacheInfo(ctx, _arg_fd, _arg_args)
 		return nil, _err
 	case TransactionIApplicationThreadDumpProvider:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2889,7 +2889,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err = s.Impl.DumpProvider(ctx, _arg_fd, _arg_servicetoken, _arg_args)
 		return nil, _err
 	case TransactionIApplicationThreadDumpDbInfo:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -3015,7 +3015,7 @@ func (s *ApplicationThreadStub) OnTransaction(
 		_err := s.Impl.StartBinderTracking(ctx)
 		return nil, _err
 	case TransactionIApplicationThreadStopBinderTrackingAndDump:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

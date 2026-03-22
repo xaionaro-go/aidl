@@ -1054,7 +1054,7 @@ func (p *ComposerClientProxy) GetReadbackBufferFence(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -1575,7 +1575,7 @@ func (p *ComposerClientProxy) SetReadbackBuffer(
 		return _err
 	}
 	if releaseFence != nil {
-		_data.WriteFileDescriptor((*releaseFence))
+		_data.WriteParcelFileDescriptor((*releaseFence))
 	} else {
 		_data.WriteInt32(-1)
 	}
@@ -2331,7 +2331,7 @@ func (s *ComposerClientStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIComposerClientGetRenderIntents:
 		_arg_display, _err := _data.ReadInt64()
@@ -2644,7 +2644,7 @@ func (s *ComposerClientStub) OnTransaction(
 				}
 			}
 		}
-		_raw_releaseFence, _err := _data.ReadFileDescriptor()
+		_raw_releaseFence, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

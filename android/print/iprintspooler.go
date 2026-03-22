@@ -390,7 +390,7 @@ func (p *PrintSpoolerProxy) WritePrintJobData(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIPrintSpooler)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt32(1)
 	if _err := printJobId.MarshalParcel(_data); _err != nil {
 		return _err
@@ -790,7 +790,7 @@ func (s *PrintSpoolerStub) OnTransaction(
 		_err = s.Impl.SetPrintJobTag(ctx, _arg_printJobId, _arg_tag, _arg_callback, _arg_sequence)
 		return nil, _err
 	case TransactionIPrintSpoolerWritePrintJobData:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

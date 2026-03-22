@@ -61,7 +61,7 @@ func (p *PdfEditorProxy) OpenDocument(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIPdfEditor)
-	_data.WriteFileDescriptor(source)
+	_data.WriteParcelFileDescriptor(source)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIPdfEditor, MethodIPdfEditorOpenDocument)
 	if _err != nil {
@@ -159,7 +159,7 @@ func (p *PdfEditorProxy) Write(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIPdfEditor)
-	_data.WriteFileDescriptor(destination)
+	_data.WriteParcelFileDescriptor(destination)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIPdfEditor, MethodIPdfEditorWrite)
 	if _err != nil {
@@ -228,7 +228,7 @@ func (s *PdfEditorStub) OnTransaction(
 
 	switch code {
 	case TransactionIPdfEditorOpenDocument:
-		_arg_source, _err := _data.ReadFileDescriptor()
+		_arg_source, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -293,7 +293,7 @@ func (s *PdfEditorStub) OnTransaction(
 		binder.WriteStatus(_reply, nil)
 		return _reply, nil
 	case TransactionIPdfEditorWrite:
-		_arg_destination, _err := _data.ReadFileDescriptor()
+		_arg_destination, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

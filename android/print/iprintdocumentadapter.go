@@ -146,7 +146,7 @@ func (p *PrintDocumentAdapterProxy) Write(
 			}
 		}
 	}
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.Remote.Transport())
 	_data.WriteInt32(sequence)
 
@@ -303,7 +303,7 @@ func (s *PrintDocumentAdapterStub) OnTransaction(
 				}
 			}
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

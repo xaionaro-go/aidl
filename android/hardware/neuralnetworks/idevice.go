@@ -402,7 +402,7 @@ func (p *DeviceProxy) PrepareModel(
 	} else {
 		_data.WriteInt32(int32(len(modelCache)))
 		for _, _item := range modelCache {
-			_data.WriteFileDescriptor(_item)
+			_data.WriteParcelFileDescriptor(_item)
 		}
 	}
 	if dataCache == nil {
@@ -410,7 +410,7 @@ func (p *DeviceProxy) PrepareModel(
 	} else {
 		_data.WriteInt32(int32(len(dataCache)))
 		for _, _item := range dataCache {
-			_data.WriteFileDescriptor(_item)
+			_data.WriteParcelFileDescriptor(_item)
 		}
 	}
 	_data.WriteByteArray(token)
@@ -451,7 +451,7 @@ func (p *DeviceProxy) PrepareModelFromCache(
 	} else {
 		_data.WriteInt32(int32(len(modelCache)))
 		for _, _item := range modelCache {
-			_data.WriteFileDescriptor(_item)
+			_data.WriteParcelFileDescriptor(_item)
 		}
 	}
 	if dataCache == nil {
@@ -459,7 +459,7 @@ func (p *DeviceProxy) PrepareModelFromCache(
 	} else {
 		_data.WriteInt32(int32(len(dataCache)))
 		for _, _item := range dataCache {
-			_data.WriteFileDescriptor(_item)
+			_data.WriteParcelFileDescriptor(_item)
 		}
 	}
 	_data.WriteByteArray(token)
@@ -765,7 +765,7 @@ func (s *DeviceStub) OnTransaction(
 			if _count >= 0 {
 				_arg_modelCache = make([]int32, _count)
 				for _i := int32(0); _i < _count; _i++ {
-					_arg_modelCache[_i], _err = _data.ReadFileDescriptor()
+					_arg_modelCache[_i], _err = _data.ReadParcelFileDescriptor()
 					if _err != nil {
 						return nil, _err
 					}
@@ -784,7 +784,7 @@ func (s *DeviceStub) OnTransaction(
 			if _count >= 0 {
 				_arg_dataCache = make([]int32, _count)
 				for _i := int32(0); _i < _count; _i++ {
-					_arg_dataCache[_i], _err = _data.ReadFileDescriptor()
+					_arg_dataCache[_i], _err = _data.ReadParcelFileDescriptor()
 					if _err != nil {
 						return nil, _err
 					}
@@ -832,7 +832,7 @@ func (s *DeviceStub) OnTransaction(
 			if _count >= 0 {
 				_arg_modelCache = make([]int32, _count)
 				for _i := int32(0); _i < _count; _i++ {
-					_arg_modelCache[_i], _err = _data.ReadFileDescriptor()
+					_arg_modelCache[_i], _err = _data.ReadParcelFileDescriptor()
 					if _err != nil {
 						return nil, _err
 					}
@@ -851,7 +851,7 @@ func (s *DeviceStub) OnTransaction(
 			if _count >= 0 {
 				_arg_dataCache = make([]int32, _count)
 				for _i := int32(0); _i < _count; _i++ {
-					_arg_dataCache[_i], _err = _data.ReadFileDescriptor()
+					_arg_dataCache[_i], _err = _data.ReadParcelFileDescriptor()
 					if _err != nil {
 						return nil, _err
 					}

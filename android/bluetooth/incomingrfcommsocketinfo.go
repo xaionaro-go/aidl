@@ -18,7 +18,7 @@ func (s *IncomingRfcommSocketInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteFileDescriptor(s.Pfd)
+	p.WriteParcelFileDescriptor(s.Pfd)
 	if _err := s.BluetoothDevice.MarshalParcel(p); _err != nil {
 		return _err
 	}
@@ -41,7 +41,7 @@ func (s *IncomingRfcommSocketInfo) UnmarshalParcel(
 		return nil
 	}
 
-	s.Pfd, _err = p.ReadFileDescriptor()
+	s.Pfd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

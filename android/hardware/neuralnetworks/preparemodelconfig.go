@@ -35,7 +35,7 @@ func (s *PrepareModelConfig) MarshalParcel(
 	} else {
 		p.WriteInt32(int32(len(s.ModelCache)))
 		for _, _item := range s.ModelCache {
-			p.WriteFileDescriptor(_item)
+			p.WriteParcelFileDescriptor(_item)
 		}
 	}
 	if s.DataCache == nil {
@@ -43,7 +43,7 @@ func (s *PrepareModelConfig) MarshalParcel(
 	} else {
 		p.WriteInt32(int32(len(s.DataCache)))
 		for _, _item := range s.DataCache {
-			p.WriteFileDescriptor(_item)
+			p.WriteParcelFileDescriptor(_item)
 		}
 	}
 	p.WriteFixedByteArray(s.CacheToken, int(PrepareModelConfigByteSizeOfCacheToken))
@@ -127,7 +127,7 @@ func (s *PrepareModelConfig) UnmarshalParcel(
 	if _count0 >= 0 {
 		s.ModelCache = make([]int32, _count0)
 		for _i := int32(0); _i < _count0; _i++ {
-			s.ModelCache[_i], _err = p.ReadFileDescriptor()
+			s.ModelCache[_i], _err = p.ReadParcelFileDescriptor()
 			if _err != nil {
 				return _err
 			}
@@ -147,7 +147,7 @@ func (s *PrepareModelConfig) UnmarshalParcel(
 	if _count1 >= 0 {
 		s.DataCache = make([]int32, _count1)
 		for _i := int32(0); _i < _count1; _i++ {
-			s.DataCache[_i], _err = p.ReadFileDescriptor()
+			s.DataCache[_i], _err = p.ReadParcelFileDescriptor()
 			if _err != nil {
 				return _err
 			}

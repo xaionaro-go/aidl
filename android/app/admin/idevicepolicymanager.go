@@ -13009,7 +13009,7 @@ func (p *DevicePolicyManagerProxy) InstallUpdateFromFile(
 		return _err
 	}
 	_data.WriteString16(callerPackageName)
-	_data.WriteFileDescriptor(updateFileDescriptor)
+	_data.WriteParcelFileDescriptor(updateFileDescriptor)
 	binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.Remote.Transport())
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIDevicePolicyManager, MethodIDevicePolicyManagerInstallUpdateFromFile)
@@ -23748,7 +23748,7 @@ func (s *DevicePolicyManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_updateFileDescriptor, _err := _data.ReadFileDescriptor()
+		_arg_updateFileDescriptor, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

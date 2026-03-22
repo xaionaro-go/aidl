@@ -52,7 +52,7 @@ func (p *ResourcesManagerProxy) DumpResources(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIResourcesManager)
 	_data.WriteString16(process)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	// WARNING: param finishCallback (type types.RemoteCallback) cannot be serialized — type not resolved
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIResourcesManager, MethodIResourcesManagerDumpResources)
@@ -105,7 +105,7 @@ func (s *ResourcesManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

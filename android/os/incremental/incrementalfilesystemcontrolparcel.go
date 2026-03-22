@@ -19,10 +19,10 @@ func (s *IncrementalFileSystemControlParcel) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteFileDescriptor(s.Cmd)
-	p.WriteFileDescriptor(s.PendingReads)
-	p.WriteFileDescriptor(s.Log)
-	p.WriteFileDescriptor(s.BlocksWritten)
+	p.WriteParcelFileDescriptor(s.Cmd)
+	p.WriteParcelFileDescriptor(s.PendingReads)
+	p.WriteParcelFileDescriptor(s.Log)
+	p.WriteParcelFileDescriptor(s.BlocksWritten)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
 	return nil
@@ -41,7 +41,7 @@ func (s *IncrementalFileSystemControlParcel) UnmarshalParcel(
 		return nil
 	}
 
-	s.Cmd, _err = p.ReadFileDescriptor()
+	s.Cmd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}
@@ -51,7 +51,7 @@ func (s *IncrementalFileSystemControlParcel) UnmarshalParcel(
 		return nil
 	}
 
-	s.PendingReads, _err = p.ReadFileDescriptor()
+	s.PendingReads, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}
@@ -61,7 +61,7 @@ func (s *IncrementalFileSystemControlParcel) UnmarshalParcel(
 		return nil
 	}
 
-	s.Log, _err = p.ReadFileDescriptor()
+	s.Log, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}
@@ -71,7 +71,7 @@ func (s *IncrementalFileSystemControlParcel) UnmarshalParcel(
 		return nil
 	}
 
-	s.BlocksWritten, _err = p.ReadFileDescriptor()
+	s.BlocksWritten, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

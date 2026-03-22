@@ -64,7 +64,7 @@ func (p *MicrophoneHotwordDetectionVoiceInteractionCallbackProxy) OnDetected(
 	if _err := audioFormat.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteFileDescriptor(audioStream)
+	_data.WriteParcelFileDescriptor(audioStream)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIMicrophoneHotwordDetectionVoiceInteractionCallback, MethodIMicrophoneHotwordDetectionVoiceInteractionCallbackOnDetected)
 	if _err != nil {
@@ -165,7 +165,7 @@ func (s *MicrophoneHotwordDetectionVoiceInteractionCallbackStub) OnTransaction(
 				}
 			}
 		}
-		_arg_audioStream, _err := _data.ReadFileDescriptor()
+		_arg_audioStream, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

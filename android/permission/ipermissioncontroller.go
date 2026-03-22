@@ -137,7 +137,7 @@ func (p *PermissionControllerProxy) GetRuntimePermissionBackup(
 	if _err := user.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteFileDescriptor(pipe)
+	_data.WriteParcelFileDescriptor(pipe)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIPermissionController, MethodIPermissionControllerGetRuntimePermissionBackup)
 	if _err != nil {
@@ -160,7 +160,7 @@ func (p *PermissionControllerProxy) StageAndApplyRuntimePermissionsBackup(
 	if _err := user.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteFileDescriptor(pipe)
+	_data.WriteParcelFileDescriptor(pipe)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIPermissionController, MethodIPermissionControllerStageAndApplyRuntimePermissionsBackup)
 	if _err != nil {
@@ -613,7 +613,7 @@ func (s *PermissionControllerStub) OnTransaction(
 				}
 			}
 		}
-		_arg_pipe, _err := _data.ReadFileDescriptor()
+		_arg_pipe, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -632,7 +632,7 @@ func (s *PermissionControllerStub) OnTransaction(
 				}
 			}
 		}
-		_arg_pipe, _err := _data.ReadFileDescriptor()
+		_arg_pipe, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

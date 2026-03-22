@@ -21,7 +21,7 @@ func (s *MappableFile) MarshalParcel(
 	_headerPos := parcel.WriteParcelableHeader(p)
 	p.WriteInt64(s.Length)
 	p.WriteInt32(s.Prot)
-	p.WriteFileDescriptor(s.Fd)
+	p.WriteParcelFileDescriptor(s.Fd)
 	p.WriteInt64(s.Offset)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
@@ -61,7 +61,7 @@ func (s *MappableFile) UnmarshalParcel(
 		return nil
 	}
 
-	s.Fd, _err = p.ReadFileDescriptor()
+	s.Fd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

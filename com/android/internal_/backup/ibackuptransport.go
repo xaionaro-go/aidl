@@ -302,7 +302,7 @@ func (p *BackupTransportProxy) PerformBackup(
 	if _err := packageInfo.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteFileDescriptor(inFd)
+	_data.WriteParcelFileDescriptor(inFd)
 	_data.WriteInt32(flags)
 	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.Remote.Transport())
 
@@ -459,7 +459,7 @@ func (p *BackupTransportProxy) GetRestoreData(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
-	_data.WriteFileDescriptor(outFd)
+	_data.WriteParcelFileDescriptor(outFd)
 	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.Remote.Transport())
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIBackupTransport, MethodIBackupTransportGetRestoreData)
@@ -524,7 +524,7 @@ func (p *BackupTransportProxy) PerformFullBackup(
 	if _err := targetPackage.MarshalParcel(_data); _err != nil {
 		return _err
 	}
-	_data.WriteFileDescriptor(socket)
+	_data.WriteParcelFileDescriptor(socket)
 	_data.WriteInt32(flags)
 	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.Remote.Transport())
 
@@ -656,7 +656,7 @@ func (p *BackupTransportProxy) GetNextFullRestoreDataChunk(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBackupTransport)
-	_data.WriteFileDescriptor(socket)
+	_data.WriteParcelFileDescriptor(socket)
 	binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.Remote.Transport())
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIBackupTransport, MethodIBackupTransportGetNextFullRestoreDataChunk)
@@ -880,7 +880,7 @@ func (s *BackupTransportStub) OnTransaction(
 				}
 			}
 		}
-		_arg_inFd, _err := _data.ReadFileDescriptor()
+		_arg_inFd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1014,7 +1014,7 @@ func (s *BackupTransportStub) OnTransaction(
 		_err := s.Impl.NextRestorePackage(ctx, _arg_resultFuture)
 		return nil, _err
 	case TransactionIBackupTransportGetRestoreData:
-		_arg_outFd, _err := _data.ReadFileDescriptor()
+		_arg_outFd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1067,7 +1067,7 @@ func (s *BackupTransportStub) OnTransaction(
 				}
 			}
 		}
-		_arg_socket, _err := _data.ReadFileDescriptor()
+		_arg_socket, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1181,7 +1181,7 @@ func (s *BackupTransportStub) OnTransaction(
 		_err = s.Impl.GetBackupQuota(ctx, _arg_packageName, _arg_isFullBackup, _arg_resultFuture)
 		return nil, _err
 	case TransactionIBackupTransportGetNextFullRestoreDataChunk:
-		_arg_socket, _err := _data.ReadFileDescriptor()
+		_arg_socket, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

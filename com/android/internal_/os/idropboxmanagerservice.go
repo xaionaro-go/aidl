@@ -94,7 +94,7 @@ func (p *DropBoxManagerServiceProxy) AddFile(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIDropBoxManagerService)
 	_data.WriteString16(tag)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt32(flags)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIDropBoxManagerService, MethodIDropBoxManagerServiceAddFile)
@@ -288,7 +288,7 @@ func (s *DropBoxManagerServiceStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

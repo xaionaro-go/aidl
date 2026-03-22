@@ -972,7 +972,7 @@ func (p *CompanionDeviceManagerProxy) AttachSystemDataTransport(
 	_data.WriteString16(packageName)
 	_data.WriteInt32(_identity.UserID)
 	_data.WriteInt32(associationId)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorICompanionDeviceManager, MethodICompanionDeviceManagerAttachSystemDataTransport)
 	if _err != nil {
@@ -2018,7 +2018,7 @@ func (s *CompanionDeviceManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

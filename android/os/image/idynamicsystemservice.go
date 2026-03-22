@@ -443,7 +443,7 @@ func (p *DynamicSystemServiceProxy) SetAshmem(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIDynamicSystemService)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt64(size)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIDynamicSystemService, MethodIDynamicSystemServiceSetAshmem)
@@ -749,7 +749,7 @@ func (s *DynamicSystemServiceStub) OnTransaction(
 		_reply.WriteBool(_result)
 		return _reply, nil
 	case TransactionIDynamicSystemServiceSetAshmem:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

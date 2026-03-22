@@ -19,7 +19,7 @@ func (s *IComponentPooledGbAllocator) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteFileDescriptor(s.WaitableFd)
+	p.WriteParcelFileDescriptor(s.WaitableFd)
 	p.WriteInt64(s.ReceiverId)
 	if s.Ipgba == nil {
 		p.WriteNullStrongBinder()
@@ -44,7 +44,7 @@ func (s *IComponentPooledGbAllocator) UnmarshalParcel(
 		return nil
 	}
 
-	s.WaitableFd, _err = p.ReadFileDescriptor()
+	s.WaitableFd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

@@ -1694,7 +1694,7 @@ func (p *VoiceInteractionManagerServiceProxy) StartListeningFromExternalSource(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIVoiceInteractionManagerService)
-	_data.WriteFileDescriptor(audioStream)
+	_data.WriteParcelFileDescriptor(audioStream)
 	_data.WriteInt32(1)
 	if _err := audioFormat.MarshalParcel(_data); _err != nil {
 		return _err
@@ -2977,7 +2977,7 @@ func (s *VoiceInteractionManagerServiceStub) OnTransaction(
 		binder.WriteStatus(_reply, nil)
 		return _reply, nil
 	case TransactionIVoiceInteractionManagerServiceStartListeningFromExternalSource:
-		_arg_audioStream, _err := _data.ReadFileDescriptor()
+		_arg_audioStream, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

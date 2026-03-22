@@ -892,7 +892,7 @@ func (p *BackupManagerProxy) AdbBackup(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteBool(includeApks)
 	_data.WriteBool(includeObbs)
 	_data.WriteBool(includeShared)
@@ -973,7 +973,7 @@ func (p *BackupManagerProxy) AdbRestore(
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBackupManager)
 	_data.WriteInt32(_identity.UserID)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIBackupManager, MethodIBackupManagerAdbRestore)
 	if _err != nil {
@@ -2726,7 +2726,7 @@ func (s *BackupManagerStub) OnTransaction(
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -2824,7 +2824,7 @@ func (s *BackupManagerStub) OnTransaction(
 		if _, _err := _data.ReadInt32(); _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

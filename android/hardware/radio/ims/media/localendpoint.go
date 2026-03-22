@@ -18,8 +18,8 @@ func (s *LocalEndPoint) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	_headerPos := parcel.WriteParcelableHeader(p)
-	p.WriteFileDescriptor(s.RtpFd)
-	p.WriteFileDescriptor(s.RtcpFd)
+	p.WriteParcelFileDescriptor(s.RtpFd)
+	p.WriteParcelFileDescriptor(s.RtcpFd)
 	p.WriteInt32(s.ModemId)
 
 	parcel.WriteParcelableFooter(p, _headerPos)
@@ -39,7 +39,7 @@ func (s *LocalEndPoint) UnmarshalParcel(
 		return nil
 	}
 
-	s.RtpFd, _err = p.ReadFileDescriptor()
+	s.RtpFd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}
@@ -49,7 +49,7 @@ func (s *LocalEndPoint) UnmarshalParcel(
 		return nil
 	}
 
-	s.RtcpFd, _err = p.ReadFileDescriptor()
+	s.RtcpFd, _err = p.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _err
 	}

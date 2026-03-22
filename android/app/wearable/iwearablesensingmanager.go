@@ -69,7 +69,7 @@ func (p *WearableSensingManagerProxy) ProvideConnection(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIWearableSensingManager)
-	_data.WriteFileDescriptor(parcelFileDescriptor)
+	_data.WriteParcelFileDescriptor(parcelFileDescriptor)
 	_data.WriteInt32(1)
 	if _err := callback.MarshalParcel(_data); _err != nil {
 		return _err
@@ -101,7 +101,7 @@ func (p *WearableSensingManagerProxy) ProvideDataStream(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIWearableSensingManager)
-	_data.WriteFileDescriptor(parcelFileDescriptor)
+	_data.WriteParcelFileDescriptor(parcelFileDescriptor)
 	_data.WriteInt32(1)
 	if _err := callback.MarshalParcel(_data); _err != nil {
 		return _err
@@ -328,7 +328,7 @@ func (s *WearableSensingManagerStub) OnTransaction(
 
 	switch code {
 	case TransactionIWearableSensingManagerProvideConnection:
-		_arg_parcelFileDescriptor, _err := _data.ReadFileDescriptor()
+		_arg_parcelFileDescriptor, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -353,7 +353,7 @@ func (s *WearableSensingManagerStub) OnTransaction(
 		binder.WriteStatus(_reply, nil)
 		return _reply, nil
 	case TransactionIWearableSensingManagerProvideDataStream:
-		_arg_parcelFileDescriptor, _err := _data.ReadFileDescriptor()
+		_arg_parcelFileDescriptor, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

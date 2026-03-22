@@ -79,8 +79,8 @@ var marshalPrimitiveMap = map[string]MarshalInfo{
 		IsIBinder: true,
 	},
 	"ParcelFileDescriptor": {
-		WriteExpr: "_data.WriteFileDescriptor(%s)",
-		ReadExpr:  "_reply.ReadFileDescriptor()",
+		WriteExpr: "_data.WriteParcelFileDescriptor(%s)",
+		ReadExpr:  "_reply.ReadParcelFileDescriptor()",
 	},
 	"FileDescriptor": {
 		WriteExpr: "_data.WriteFileDescriptor(%s)",

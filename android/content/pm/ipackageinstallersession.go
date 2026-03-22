@@ -267,7 +267,7 @@ func (p *PackageInstallerSessionProxy) OpenWrite(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -299,7 +299,7 @@ func (p *PackageInstallerSessionProxy) OpenRead(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -319,7 +319,7 @@ func (p *PackageInstallerSessionProxy) Write(
 	_data.WriteString16(name)
 	_data.WriteInt64(offsetBytes)
 	_data.WriteInt64(lengthBytes)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIPackageInstallerSession, MethodIPackageInstallerSessionWrite)
 	if _err != nil {
@@ -1084,7 +1084,7 @@ func (p *PackageInstallerSessionProxy) GetAppMetadataFd(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -1114,7 +1114,7 @@ func (p *PackageInstallerSessionProxy) OpenWriteAppMetadata(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -1297,7 +1297,7 @@ func (s *PackageInstallerSessionStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIPackageInstallerSessionOpenRead:
 		_arg_name, _err := _data.ReadString16()
@@ -1311,7 +1311,7 @@ func (s *PackageInstallerSessionStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIPackageInstallerSessionWrite:
 		_arg_name, _err := _data.ReadString16()
@@ -1326,7 +1326,7 @@ func (s *PackageInstallerSessionStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -1741,7 +1741,7 @@ func (s *PackageInstallerSessionStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIPackageInstallerSessionOpenWriteAppMetadata:
 		_result, _err := s.Impl.OpenWriteAppMetadata(ctx)
@@ -1751,7 +1751,7 @@ func (s *PackageInstallerSessionStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIPackageInstallerSessionRemoveAppMetadata:
 		_err := s.Impl.RemoveAppMetadata(ctx)

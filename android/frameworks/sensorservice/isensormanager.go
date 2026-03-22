@@ -144,7 +144,7 @@ func (p *SensorManagerProxy) CreateGrallocDirectChannel(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorISensorManager)
-	_data.WriteFileDescriptor(buffer)
+	_data.WriteParcelFileDescriptor(buffer)
 	_data.WriteInt64(size)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorISensorManager, MethodISensorManagerCreateGrallocDirectChannel)
@@ -320,7 +320,7 @@ func (s *SensorManagerStub) OnTransaction(
 		binder.WriteBinderToParcel(ctx, _reply, _result.AsBinder(), s.Transport)
 		return _reply, nil
 	case TransactionISensorManagerCreateGrallocDirectChannel:
-		_arg_buffer, _err := _data.ReadFileDescriptor()
+		_arg_buffer, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

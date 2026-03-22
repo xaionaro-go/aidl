@@ -101,7 +101,7 @@ func (p *WindowProxy) ExecuteCommand(
 	_data.WriteInterfaceToken(DescriptorIWindow)
 	_data.WriteString16(command)
 	_data.WriteString16(parameters)
-	_data.WriteFileDescriptor(descriptor)
+	_data.WriteParcelFileDescriptor(descriptor)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIWindow, MethodIWindowExecuteCommand)
 	if _err != nil {
@@ -504,7 +504,7 @@ func (s *WindowStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_descriptor, _err := _data.ReadFileDescriptor()
+		_arg_descriptor, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}

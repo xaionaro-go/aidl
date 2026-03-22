@@ -212,7 +212,7 @@ func (p *WallpaperManagerProxy) SetWallpaper(
 		}
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -327,7 +327,7 @@ func (p *WallpaperManagerProxy) GetWallpaper(
 		}
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -380,7 +380,7 @@ func (p *WallpaperManagerProxy) GetWallpaperWithFeature(
 		}
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -717,7 +717,7 @@ func (p *WallpaperManagerProxy) GetWallpaperInfoFile(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -1550,7 +1550,7 @@ func (s *WallpaperManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		_reply.WriteInt32(1)
 		if _err := _arg_extras.MarshalParcel(_reply); _err != nil {
 			return nil, _err
@@ -1636,7 +1636,7 @@ func (s *WallpaperManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		_reply.WriteInt32(1)
 		if _err := _arg_outParams.MarshalParcel(_reply); _err != nil {
 			return nil, _err
@@ -1677,7 +1677,7 @@ func (s *WallpaperManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		_reply.WriteInt32(1)
 		if _err := _arg_outParams.MarshalParcel(_reply); _err != nil {
 			return nil, _err
@@ -1945,7 +1945,7 @@ func (s *WallpaperManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIWallpaperManagerClearWallpaper:
 		if _, _err := _data.ReadString16(); _err != nil {

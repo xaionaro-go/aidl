@@ -837,7 +837,7 @@ func (p *ActivityManagerProxy) OpenContentUri(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -4985,7 +4985,7 @@ func (p *ActivityManagerProxy) DumpHeap(
 	_data.WriteBool(mallocInfo)
 	_data.WriteBool(runGc)
 	_data.WriteString16(path)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 	_data.WriteInt32(1)
 	if _err := finishCallback.MarshalParcel(_data); _err != nil {
 		return _result, _err
@@ -7529,7 +7529,7 @@ func (p *ActivityManagerProxy) StopBinderTrackingAndDump(
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIActivityManager)
-	_data.WriteFileDescriptor(fd)
+	_data.WriteParcelFileDescriptor(fd)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIActivityManager, MethodIActivityManagerStopBinderTrackingAndDump)
 	if _err != nil {
@@ -8334,7 +8334,7 @@ func (p *ActivityManagerProxy) GetLifeMonitor(
 		return _result, _err
 	}
 
-	_result, _err = _reply.ReadFileDescriptor()
+	_result, _err = _reply.ReadParcelFileDescriptor()
 	if _err != nil {
 		return _result, _err
 	}
@@ -9658,7 +9658,7 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIActivityManagerRegisterUidObserver:
 		var _arg_observer IUidObserver
@@ -13093,7 +13093,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -14625,7 +14625,7 @@ func (s *ActivityManagerStub) OnTransaction(
 		_reply.WriteBool(_result)
 		return _reply, nil
 	case TransactionIActivityManagerStopBinderTrackingAndDump:
-		_arg_fd, _err := _data.ReadFileDescriptor()
+		_arg_fd, _err := _data.ReadParcelFileDescriptor()
 		if _err != nil {
 			return nil, _err
 		}
@@ -15130,7 +15130,7 @@ func (s *ActivityManagerStub) OnTransaction(
 			return _reply, nil
 		}
 		binder.WriteStatus(_reply, nil)
-		_reply.WriteFileDescriptor(_result)
+		_reply.WriteParcelFileDescriptor(_result)
 		return _reply, nil
 	case TransactionIActivityManagerStartUserInForegroundWithListener:
 		_arg_userid, _err := _data.ReadInt32()
