@@ -32,6 +32,31 @@ func (ts *ToolSet) Register(s *server.MCPServer) {
 	ts.registerGetDeviceInfo(s)
 	ts.registerGetLocation(s)
 	ts.registerCheckPermissions(s)
+
+	// Power & display.
+	ts.registerIsScreenOn(s)
+	ts.registerWakeScreen(s)
+	ts.registerSleepScreen(s)
+	ts.registerGetBrightness(s)
+	ts.registerSetBrightness(s)
+	ts.registerGetDisplaySize(s)
+
+	// Package management.
+	ts.registerListPackages(s)
+	ts.registerGetPackageInfo(s)
+
+	// App management (binder-based).
+	ts.registerStopApp(s)
+
+	// Camera.
+	ts.registerListCameras(s)
+
+	// Audio.
+	ts.registerGetMediaVolume(s)
+	ts.registerSetMediaVolume(s)
+
+	// Bluetooth.
+	ts.registerGetBluetoothState(s)
 }
 
 // RegisterShellTools adds all shell-based MCP tools to the given server.
@@ -59,4 +84,23 @@ func RegisterShellTools(s *server.MCPServer) {
 	registerDumpService(s)
 	registerOpenURL(s)
 	registerStartActivity(s)
+
+	// Clipboard (shell-based due to complex ClipData parcelable).
+	registerGetClipboard(s)
+	registerSetClipboard(s)
+
+	// App management (shell-based).
+	registerLaunchApp(s)
+	registerGetCurrentApp(s)
+	registerGetFocusedActivity(s)
+
+	// Network & telephony (shell-based).
+	registerGetWifiState(s)
+	registerGetTelephonyInfo(s)
+
+	// Notifications (shell-based, StatusBarNotification parcelable incomplete).
+	registerListNotifications(s)
+
+	// Battery (sysfs-based, more reliable than binder for shell UID).
+	registerGetBatteryInfo(s)
 }
