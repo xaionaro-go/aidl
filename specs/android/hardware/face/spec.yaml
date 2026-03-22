@@ -794,15 +794,15 @@ parcelables:
     - name: FaceAuthenticationFrame
       java_wire_format:
         - name: Data
-          write_method: opaque
+          write_method: typed_object
     - name: FaceEnrollFrame
       java_wire_format:
         - name: Cell
-          write_method: opaque
+          write_method: typed_object
         - name: Stage
           write_method: int32
         - name: Data
-          write_method: opaque
+          write_method: typed_object
     - name: FaceEnrollOptions
       java_wire_format:
         - name: EnrollReason

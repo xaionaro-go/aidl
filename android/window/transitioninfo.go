@@ -20,9 +20,9 @@ func (s *TransitionInfo) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Type)
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(-1) // null Changes
-	p.WriteInt32(-1) // null Roots
-	p.WriteInt32(-1) // null Options
+	p.WriteInt32(0) // null Changes
+	p.WriteInt32(0) // null Roots
+	p.WriteInt32(0) // null Options
 	p.WriteInt32(s.DebugId)
 	p.WriteInt32(s.Track)
 	return nil
@@ -59,12 +59,12 @@ func (s *TransitionInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Options: cannot skip unknown-size typed object
 		}
 	}
 	s.DebugId, _err = p.ReadInt32()

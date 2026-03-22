@@ -15,38 +15,38 @@ var _ parcel.Parcelable = (*CapInfo)(nil)
 func (s *CapInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null ImSupported?1:0
-	p.WriteInt32(-1) // null FtSupported?1:0
-	p.WriteInt32(-1) // null FtThumbSupported?1:0
-	p.WriteInt32(-1) // null FtSnFSupported?1:0
-	p.WriteInt32(-1) // null FtHttpSupported?1:0
-	p.WriteInt32(-1) // null IsSupported?1:0
-	p.WriteInt32(-1) // null VsDuringCSSupported?1:0
-	p.WriteInt32(-1) // null VsSupported?1:0
-	p.WriteInt32(-1) // null SpSupported?1:0
-	p.WriteInt32(-1) // null CdViaPresenceSupported?1:0
-	p.WriteInt32(-1) // null IpVoiceSupported?1:0
-	p.WriteInt32(-1) // null IpVideoSupported?1:0
-	p.WriteInt32(-1) // null GeoPullFtSupported?1:0
-	p.WriteInt32(-1) // null GeoPullSupported?1:0
-	p.WriteInt32(-1) // null GeoPushSupported?1:0
-	p.WriteInt32(-1) // null SmSupported?1:0
-	p.WriteInt32(-1) // null FullSnFGroupChatSupported?1:0
-	p.WriteInt32(-1) // null GeoSmsSupported?1:0
-	p.WriteInt32(-1) // null CallComposerSupported?1:0
-	p.WriteInt32(-1) // null PostCallSupported?1:0
-	p.WriteInt32(-1) // null SharedMapSupported?1:0
-	p.WriteInt32(-1) // null SharedSketchSupported?1:0
-	p.WriteInt32(-1) // null ChatbotSupported?1:0
-	p.WriteInt32(-1) // null ChatbotRoleSupported?1:0
-	p.WriteInt32(-1) // null SmChatbotSupported?1:0
-	p.WriteInt32(-1) // null MmtelCallComposerSupported?1:0
-	p.WriteInt32(-1) // null RcsIpVoiceCallSupported?1:0
-	p.WriteInt32(-1) // null RcsIpVideoCallSupported?1:0
-	p.WriteInt32(-1) // null RcsIpVideoOnlyCallSupported?1:0
-	p.WriteInt32(-1) // null Exts
+	p.WriteInt32(0) // null ImSupported?1:0
+	p.WriteInt32(0) // null FtSupported?1:0
+	p.WriteInt32(0) // null FtThumbSupported?1:0
+	p.WriteInt32(0) // null FtSnFSupported?1:0
+	p.WriteInt32(0) // null FtHttpSupported?1:0
+	p.WriteInt32(0) // null IsSupported?1:0
+	p.WriteInt32(0) // null VsDuringCSSupported?1:0
+	p.WriteInt32(0) // null VsSupported?1:0
+	p.WriteInt32(0) // null SpSupported?1:0
+	p.WriteInt32(0) // null CdViaPresenceSupported?1:0
+	p.WriteInt32(0) // null IpVoiceSupported?1:0
+	p.WriteInt32(0) // null IpVideoSupported?1:0
+	p.WriteInt32(0) // null GeoPullFtSupported?1:0
+	p.WriteInt32(0) // null GeoPullSupported?1:0
+	p.WriteInt32(0) // null GeoPushSupported?1:0
+	p.WriteInt32(0) // null SmSupported?1:0
+	p.WriteInt32(0) // null FullSnFGroupChatSupported?1:0
+	p.WriteInt32(0) // null GeoSmsSupported?1:0
+	p.WriteInt32(0) // null CallComposerSupported?1:0
+	p.WriteInt32(0) // null PostCallSupported?1:0
+	p.WriteInt32(0) // null SharedMapSupported?1:0
+	p.WriteInt32(0) // null SharedSketchSupported?1:0
+	p.WriteInt32(0) // null ChatbotSupported?1:0
+	p.WriteInt32(0) // null ChatbotRoleSupported?1:0
+	p.WriteInt32(0) // null SmChatbotSupported?1:0
+	p.WriteInt32(0) // null MmtelCallComposerSupported?1:0
+	p.WriteInt32(0) // null RcsIpVoiceCallSupported?1:0
+	p.WriteInt32(0) // null RcsIpVideoCallSupported?1:0
+	p.WriteInt32(0) // null RcsIpVideoOnlyCallSupported?1:0
+	p.WriteInt32(0) // null Exts
 	p.WriteInt64(s.CapTimestamp)
-	p.WriteInt32(-1) // null CapInfoBundle
+	p.WriteInt32(-1) // null CapInfoBundle (Bundle)
 	return nil
 }
 
@@ -55,264 +55,264 @@ func (s *CapInfo) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ImSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FtSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FtThumbSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FtSnFSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FtHttpSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null VsDuringCSSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null VsSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SpSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CdViaPresenceSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IpVoiceSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IpVideoSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GeoPullFtSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GeoPullSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GeoPushSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SmSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FullSnFGroupChatSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GeoSmsSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CallComposerSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PostCallSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SharedMapSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SharedSketchSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ChatbotSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ChatbotRoleSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SmChatbotSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null MmtelCallComposerSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RcsIpVoiceCallSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RcsIpVideoCallSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RcsIpVideoOnlyCallSupported?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{

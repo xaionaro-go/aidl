@@ -19,14 +19,14 @@ var _ parcel.Parcelable = (*ManagedProfileProvisioningParams)(nil)
 func (s *ManagedProfileProvisioningParams) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null ProfileAdminComponentName
+	p.WriteInt32(0) // null ProfileAdminComponentName
 	p.WriteString16(s.OwnerName)
 	p.WriteString16(s.ProfileName)
-	p.WriteInt32(-1) // null AccountToMigrate
+	p.WriteInt32(0) // null AccountToMigrate
 	p.WriteBool(s.LeaveAllSystemAppsEnabled)
 	p.WriteBool(s.OrganizationOwnedProvisioning)
 	p.WriteBool(s.KeepAccountOnMigration)
-	p.WriteInt32(-1) // null AdminExtras
+	p.WriteInt32(0) // null AdminExtras
 	return nil
 }
 
@@ -35,12 +35,12 @@ func (s *ManagedProfileProvisioningParams) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ProfileAdminComponentName: cannot skip unknown-size typed object
 		}
 	}
 	s.OwnerName, _err = p.ReadString16()
@@ -52,12 +52,12 @@ func (s *ManagedProfileProvisioningParams) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AccountToMigrate: cannot skip unknown-size typed object
 		}
 	}
 	s.LeaveAllSystemAppsEnabled, _err = p.ReadBool()

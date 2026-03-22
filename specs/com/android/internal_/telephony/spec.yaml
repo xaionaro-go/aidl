@@ -8658,4 +8658,4 @@ parcelables:
         - name: Data.length
           write_method: int32
         - name: Data
-          write_method: opaque
+          write_method: byte_array

@@ -32,35 +32,35 @@ func (s *ParcelableCall) MarshalParcel(
 ) error {
 	p.WriteString16(s.Id)
 	p.WriteInt32(s.State)
-	p.WriteInt32(-1) // null DisconnectCause
-	p.WriteInt32(-1) // null CannedSmsResponses
+	p.WriteInt32(0) // null DisconnectCause
+	p.WriteInt32(0) // null CannedSmsResponses
 	p.WriteInt32(s.Capabilities)
 	p.WriteInt32(s.Properties)
 	p.WriteInt64(s.ConnectTimeMillis)
-	p.WriteInt32(-1) // null Destination
+	p.WriteInt32(0) // null Destination
 	p.WriteInt32(s.HandlePresentation)
 	p.WriteString16(s.CallerDisplayName)
 	p.WriteInt32(s.CallerDisplayNamePresentation)
-	p.WriteInt32(-1) // null GatewayInfo
-	p.WriteInt32(-1) // null AccountHandle
-	p.WriteInt32(-1) // null (byte)(mIsVideoCallProviderChanged?1:0)
-	p.WriteInt32(-1) // null VideoCallProvider!=null?mVideoCallProvider.asBinder():null
+	p.WriteInt32(0) // null GatewayInfo
+	p.WriteInt32(0) // null AccountHandle
+	p.WriteInt32(0) // null (byte)(mIsVideoCallProviderChanged?1:0)
+	p.WriteInt32(0) // null VideoCallProvider!=null?mVideoCallProvider.asBinder():null
 	p.WriteString16(s.ParentCallId)
-	p.WriteInt32(-1) // null ChildCallIds
-	p.WriteInt32(-1) // null StatusHints
+	p.WriteInt32(0) // null ChildCallIds
+	p.WriteInt32(0) // null StatusHints
 	p.WriteInt32(s.VideoState)
-	p.WriteInt32(-1) // null ConferenceableCallIds
-	p.WriteInt32(-1) // null IntentExtras
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(0)  // null ConferenceableCallIds
+	p.WriteInt32(-1) // null IntentExtras (Bundle)
+	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteInt32(s.SupportedAudioRoutes)
-	p.WriteInt32(-1) // null (byte)(mIsRttCallChanged?1:0)
-	p.WriteInt32(-1) // null RttCall
+	p.WriteInt32(0) // null (byte)(mIsRttCallChanged?1:0)
+	p.WriteInt32(0) // null RttCall
 	p.WriteInt64(s.CreationTimeMillis)
 	p.WriteInt32(s.CallDirection)
 	p.WriteInt32(s.CallerNumberVerificationStatus)
 	p.WriteString16(s.ContactDisplayName)
 	p.WriteString16(s.ActiveChildCallId)
-	p.WriteInt32(-1) // null ContactPhotoUri
+	p.WriteInt32(0) // null ContactPhotoUri
 	return nil
 }
 
@@ -77,12 +77,12 @@ func (s *ParcelableCall) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DisconnectCause: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -128,30 +128,30 @@ func (s *ParcelableCall) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GatewayInfo: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AccountHandle: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(mIsVideoCallProviderChanged?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -177,12 +177,12 @@ func (s *ParcelableCall) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StatusHints: cannot skip unknown-size typed object
 		}
 	}
 	s.VideoState, _err = p.ReadInt32()
@@ -221,21 +221,21 @@ func (s *ParcelableCall) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(mIsRttCallChanged?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RttCall: cannot skip unknown-size typed object
 		}
 	}
 	s.CreationTimeMillis, _err = p.ReadInt64()
@@ -259,12 +259,12 @@ func (s *ParcelableCall) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ContactPhotoUri: cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -20,11 +20,11 @@ func (s *Feature) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Flg)
 	p.WriteInt32(s.Id)
-	p.WriteInt32(-1) // null Name
-	p.WriteInt32(-1) // null ModelName
+	p.WriteInt32(0) // null Name
+	p.WriteInt32(0) // null ModelName
 	p.WriteInt32(s.Type)
 	p.WriteInt32(s.Variant)
-	p.WriteInt32(-1) // null FeatureParams
+	p.WriteInt32(0) // null FeatureParams
 	return nil
 }
 
@@ -41,21 +41,21 @@ func (s *Feature) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Name: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ModelName: cannot skip unknown-size typed object
 		}
 	}
 	s.Type, _err = p.ReadInt32()
@@ -67,12 +67,12 @@ func (s *Feature) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FeatureParams: cannot skip unknown-size typed object
 		}
 	}
 	return nil

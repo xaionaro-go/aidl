@@ -49,9 +49,9 @@ parcelables:
           write_method: int32
           condition: algoSpec==null
         - name: Spec.getCertificateSubject().getEncoded()
-          write_method: opaque
+          write_method: byte_array
         - name: Spec.getCertificateSerialNumber().toByteArray()
-          write_method: opaque
+          write_method: byte_array
         - name: Spec.getCertificateNotBefore().getTime()
           write_method: int64
         - name: Spec.getCertificateNotAfter().getTime()
@@ -79,7 +79,7 @@ parcelables:
         - name: Spec.isUserPresenceRequired()
           write_method: bool
         - name: Spec.getAttestationChallenge()
-          write_method: opaque
+          write_method: byte_array
         - name: Spec.isDevicePropertiesAttestationIncluded()
           write_method: bool
         - name: Spec.getAttestationIds()

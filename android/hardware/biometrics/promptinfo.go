@@ -29,24 +29,24 @@ func (s *PromptInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.LogoRes)
-	p.WriteInt32(-1) // null LogoBitmap
+	p.WriteInt32(0) // null LogoBitmap
 	p.WriteString16(s.LogoDescription)
-	p.WriteInt32(-1) // null Title
+	p.WriteInt32(0) // null Title
 	p.WriteBool(s.UseDefaultTitle)
-	p.WriteInt32(-1) // null Subtitle
+	p.WriteInt32(0) // null Subtitle
 	p.WriteBool(s.UseDefaultSubtitle)
-	p.WriteInt32(-1) // null Description
-	p.WriteInt32(-1) // null ContentView
-	p.WriteInt32(-1) // null DeviceCredentialTitle
-	p.WriteInt32(-1) // null DeviceCredentialSubtitle
-	p.WriteInt32(-1) // null DeviceCredentialDescription
-	p.WriteInt32(-1) // null NegativeButtonText
+	p.WriteInt32(0) // null Description
+	p.WriteInt32(0) // null ContentView
+	p.WriteInt32(0) // null DeviceCredentialTitle
+	p.WriteInt32(0) // null DeviceCredentialSubtitle
+	p.WriteInt32(0) // null DeviceCredentialDescription
+	p.WriteInt32(0) // null NegativeButtonText
 	p.WriteBool(s.ConfirmationRequested)
 	p.WriteBool(s.DeviceCredentialAllowed)
 	p.WriteInt32(s.Authenticators)
 	p.WriteBool(s.DisallowBiometricsIfPolicyExists)
 	p.WriteBool(s.ReceiveSystemEvents)
-	p.WriteInt32(-1) // null AllowedSensorIds
+	p.WriteInt32(0) // null AllowedSensorIds
 	p.WriteBool(s.AllowBackgroundAuthentication)
 	p.WriteBool(s.IgnoreEnrollmentState)
 	p.WriteBool(s.IsForLegacyFingerprintManager)
@@ -64,12 +64,12 @@ func (s *PromptInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null LogoBitmap: cannot skip unknown-size typed object
 		}
 	}
 	s.LogoDescription, _err = p.ReadString16()
@@ -112,12 +112,12 @@ func (s *PromptInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ContentView: cannot skip unknown-size typed object
 		}
 	}
 	{

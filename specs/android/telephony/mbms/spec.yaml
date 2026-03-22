@@ -239,9 +239,9 @@ parcelables:
         - name: FileServiceId
           write_method: string16
         - name: SourceUri
-          write_method: opaque
+          write_method: typed_object
         - name: DestinationUri
-          write_method: opaque
+          write_method: typed_object
         - name: SubscriptionId
           write_method: int32
         - name: SerializedResultIntentForApp
@@ -251,7 +251,7 @@ parcelables:
     - name: FileInfo
       java_wire_format:
         - name: Uri
-          write_method: opaque
+          write_method: typed_object
         - name: MimeType
           write_method: string16
     - name: FileServiceInfo
@@ -281,6 +281,6 @@ parcelables:
     - name: UriPathPair
       java_wire_format:
         - name: FilePathUri
-          write_method: opaque
+          write_method: typed_object
         - name: ContentUri
-          write_method: opaque
+          write_method: typed_object

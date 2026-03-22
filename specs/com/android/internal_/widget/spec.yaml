@@ -787,7 +787,7 @@ parcelables:
         - name: Type
           write_method: int32
         - name: Credential
-          write_method: opaque
+          write_method: byte_array
         - name: HasInvalidChars
           write_method: bool
     - name: VerifyCredentialResponse
@@ -797,6 +797,6 @@ parcelables:
         - name: Timeout
           write_method: int32
         - name: GatekeeperHAT
-          write_method: opaque
+          write_method: byte_array
         - name: GatekeeperPasswordHandle
           write_method: int64

@@ -18,13 +18,13 @@ var _ parcel.Parcelable = (*RcsContactPresenceTuple)(nil)
 func (s *RcsContactPresenceTuple) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null ContactUri
-	p.WriteInt32(-1) // null ConvertInstantToStringFormat(mTimestamp)
+	p.WriteInt32(0) // null ContactUri
+	p.WriteInt32(0) // null ConvertInstantToStringFormat(mTimestamp)
 	p.WriteString16(s.Status)
 	p.WriteString16(s.ServiceId)
 	p.WriteString16(s.ServiceVersion)
 	p.WriteString16(s.ServiceDescription)
-	p.WriteInt32(-1) // null ServiceCapabilities
+	p.WriteInt32(0) // null ServiceCapabilities
 	return nil
 }
 
@@ -33,21 +33,21 @@ func (s *RcsContactPresenceTuple) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ContactUri: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ConvertInstantToStringFormat(mTimestamp): cannot skip unknown-size typed object
 		}
 	}
 	s.Status, _err = p.ReadString16()
@@ -67,12 +67,12 @@ func (s *RcsContactPresenceTuple) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ServiceCapabilities: cannot skip unknown-size typed object
 		}
 	}
 	return nil

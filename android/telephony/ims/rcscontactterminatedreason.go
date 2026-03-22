@@ -15,7 +15,7 @@ var _ parcel.Parcelable = (*RcsContactTerminatedReason)(nil)
 func (s *RcsContactTerminatedReason) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null ContactUri
+	p.WriteInt32(0) // null ContactUri
 	p.WriteString16(s.Reason)
 	return nil
 }
@@ -25,12 +25,12 @@ func (s *RcsContactTerminatedReason) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ContactUri: cannot skip unknown-size typed object
 		}
 	}
 	s.Reason, _err = p.ReadString16()

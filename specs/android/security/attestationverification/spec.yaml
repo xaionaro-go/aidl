@@ -94,14 +94,14 @@ parcelables:
     - name: VerificationToken
       java_wire_format:
         - name: AttestationProfile
-          write_method: opaque
+          write_method: typed_object
         - name: LocalBindingType
           write_method: int32
         - name: Requirements
-          write_method: opaque
+          write_method: bundle
         - name: VerificationResult
           write_method: int32
         - name: Hmac
-          write_method: opaque
+          write_method: byte_array
         - name: Uid
           write_method: int32

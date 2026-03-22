@@ -14,14 +14,14 @@ var _ parcel.Parcelable = (*ContentCaptureContext)(nil)
 func (s *ContentCaptureContext) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null HasClientContext?1:0
-	p.WriteInt32(-1) // null Id
-	p.WriteInt32(-1) // null Extras
-	p.WriteInt32(-1) // null ComponentName
-	p.WriteInt32(-1) // null DisplayId
-	p.WriteInt32(-1) // null WindowToken
-	p.WriteInt32(-1) // null Flags
-	p.WriteInt32(-1) // null Parcel
+	p.WriteInt32(0)  // null HasClientContext?1:0
+	p.WriteInt32(0)  // null Id
+	p.WriteInt32(-1) // null Extras (Bundle)
+	p.WriteInt32(0)  // null ComponentName
+	p.WriteInt32(0)  // null DisplayId
+	p.WriteInt32(0)  // null WindowToken
+	p.WriteInt32(0)  // null Flags
+	p.WriteInt32(0)  // null Parcel
 	return nil
 }
 
@@ -29,12 +29,21 @@ func (s *ContentCaptureContext) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HasClientContext?1:0: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Id: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -47,12 +56,21 @@ func (s *ContentCaptureContext) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ComponentName: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null DisplayId: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -65,30 +83,12 @@ func (s *ContentCaptureContext) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Flags: cannot skip unknown-size typed object
 		}
 	}
 	{

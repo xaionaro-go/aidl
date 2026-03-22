@@ -18,11 +18,11 @@ func (s *Voice) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.Name)
-	p.WriteInt32(-1) // null Locale
+	p.WriteInt32(0) // null Locale
 	p.WriteInt32(s.Quality)
 	p.WriteInt32(s.Latency)
-	p.WriteInt32(-1) // null (byte)(mRequiresNetworkConnection?1:0)
-	p.WriteInt32(-1) // null NewArrayList<String>(mFeatures)
+	p.WriteInt32(0) // null (byte)(mRequiresNetworkConnection?1:0)
+	p.WriteInt32(0) // null NewArrayList<String>(mFeatures)
 	return nil
 }
 
@@ -52,12 +52,12 @@ func (s *Voice) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(mRequiresNetworkConnection?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{

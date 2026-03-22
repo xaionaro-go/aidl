@@ -14,11 +14,11 @@ var _ parcel.Parcelable = (*NotificationVisibility)(nil)
 func (s *NotificationVisibility) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null This.key
-	p.WriteInt32(-1) // null This.rank
-	p.WriteInt32(-1) // null This.count
-	p.WriteInt32(-1) // null This.visible?1:0
-	p.WriteInt32(-1) // null This.location.name()
+	p.WriteInt32(0) // null This.key
+	p.WriteInt32(0) // null This.rank
+	p.WriteInt32(0) // null This.count
+	p.WriteInt32(0) // null This.visible?1:0
+	p.WriteInt32(0) // null This.location.name()
 	return nil
 }
 
@@ -26,48 +26,48 @@ func (s *NotificationVisibility) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.key: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.rank: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.count: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.visible?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.location.name(): cannot skip unknown-size typed object
 		}
 	}
 	return nil

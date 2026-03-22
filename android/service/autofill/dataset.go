@@ -16,23 +16,23 @@ var _ parcel.Parcelable = (*Dataset)(nil)
 func (s *Dataset) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Presentation
-	p.WriteInt32(-1) // null DialogPresentation
-	p.WriteInt32(-1) // null InlinePresentation
-	p.WriteInt32(-1) // null InlineTooltipPresentation
-	p.WriteInt32(-1) // null FieldIds
-	p.WriteInt32(-1) // null FieldValues
-	p.WriteInt32(-1) // null FieldPresentations
-	p.WriteInt32(-1) // null FieldDialogPresentations
-	p.WriteInt32(-1) // null FieldInlinePresentations
-	p.WriteInt32(-1) // null FieldInlineTooltipPresentations
-	p.WriteInt32(-1) // null FieldFilters
-	p.WriteInt32(-1) // null AutofillDatatypes
-	p.WriteInt32(-1) // null FieldContent
-	p.WriteInt32(-1) // null Authentication
+	p.WriteInt32(0) // null Presentation
+	p.WriteInt32(0) // null DialogPresentation
+	p.WriteInt32(0) // null InlinePresentation
+	p.WriteInt32(0) // null InlineTooltipPresentation
+	p.WriteInt32(0) // null FieldIds
+	p.WriteInt32(0) // null FieldValues
+	p.WriteInt32(0) // null FieldPresentations
+	p.WriteInt32(0) // null FieldDialogPresentations
+	p.WriteInt32(0) // null FieldInlinePresentations
+	p.WriteInt32(0) // null FieldInlineTooltipPresentations
+	p.WriteInt32(0) // null FieldFilters
+	p.WriteInt32(0) // null AutofillDatatypes
+	p.WriteInt32(0) // null FieldContent
+	p.WriteInt32(0) // null Authentication
 	p.WriteString16(s.Id)
 	p.WriteInt32(s.EligibleReason)
-	p.WriteInt32(-1) // null CredentialFillInIntent
+	p.WriteInt32(0) // null CredentialFillInIntent
 	return nil
 }
 
@@ -41,12 +41,39 @@ func (s *Dataset) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Presentation: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null DialogPresentation: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null InlinePresentation: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null InlineTooltipPresentation: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -122,48 +149,21 @@ func (s *Dataset) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FieldContent: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Authentication: cannot skip unknown-size typed object
 		}
 	}
 	s.Id, _err = p.ReadString16()
@@ -175,12 +175,12 @@ func (s *Dataset) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CredentialFillInIntent: cannot skip unknown-size typed object
 		}
 	}
 	return nil

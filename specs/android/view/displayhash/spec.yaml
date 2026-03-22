@@ -6,20 +6,20 @@ parcelables:
         - name: TimeMillis
           write_method: int64
         - name: BoundsInWindow
-          write_method: opaque
+          write_method: typed_object
         - name: HashAlgorithm
           write_method: string16
         - name: ImageHash
-          write_method: opaque
+          write_method: byte_array
         - name: Hmac
-          write_method: opaque
+          write_method: byte_array
     - name: VerifiedDisplayHash
       java_wire_format:
         - name: TimeMillis
           write_method: int64
         - name: BoundsInWindow
-          write_method: opaque
+          write_method: typed_object
         - name: HashAlgorithm
           write_method: string16
         - name: ImageHash
-          write_method: opaque
+          write_method: byte_array

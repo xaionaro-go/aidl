@@ -20,8 +20,8 @@ func (s *SipMessage) MarshalParcel(
 ) error {
 	p.WriteString16(s.StartLine)
 	p.WriteString16(s.HeaderSection)
-	p.WriteInt32(-1) // null Content.length
-	p.WriteInt32(-1) // null Content
+	p.WriteInt32(0) // null Content.length
+	p.WriteInt32(0) // null Content
 	p.WriteString16(s.ViaBranchParam)
 	p.WriteString16(s.CallIdParam)
 	return nil
@@ -40,12 +40,12 @@ func (s *SipMessage) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Content.length: cannot skip unknown-size typed object
 		}
 	}
 	{

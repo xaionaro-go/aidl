@@ -32,13 +32,13 @@ func (s *CaptureResultExtras) MarshalParcel(
 	p.WriteInt64(s.FrameNumber)
 	p.WriteInt32(s.PartialResultCount)
 	p.WriteInt32(s.ErrorStreamId)
-	p.WriteInt32(-1) // null True
-	p.WriteInt32(-1) // null ErrorPhysicalCameraId
+	p.WriteInt32(0) // null True
+	p.WriteInt32(0) // null ErrorPhysicalCameraId
 	p.WriteInt64(s.LastCompletedRegularFrameNumber)
 	p.WriteInt64(s.LastCompletedReprocessFrameNumber)
 	p.WriteInt64(s.LastCompletedZslFrameNumber)
 	p.WriteBool(s.HasReadoutTimestamp)
-	p.WriteInt32(-1) // null ReadoutTimestamp
+	p.WriteInt32(0) // null ReadoutTimestamp
 	return nil
 }
 
@@ -75,21 +75,21 @@ func (s *CaptureResultExtras) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null True: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ErrorPhysicalCameraId: cannot skip unknown-size typed object
 		}
 	}
 	s.LastCompletedRegularFrameNumber, _err = p.ReadInt64()
@@ -109,12 +109,12 @@ func (s *CaptureResultExtras) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ReadoutTimestamp: cannot skip unknown-size typed object
 		}
 	}
 	return nil

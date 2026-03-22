@@ -16,8 +16,8 @@ func (s *InlineSuggestion) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Flg)
-	p.WriteInt32(-1) // null Info
-	p.WriteInt32(-1) // null ContentProvider
+	p.WriteInt32(0) // null Info
+	p.WriteInt32(0) // null ContentProvider
 	return nil
 }
 
@@ -30,12 +30,12 @@ func (s *InlineSuggestion) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Info: cannot skip unknown-size typed object
 		}
 	}
 	{

@@ -19,14 +19,14 @@ var _ parcel.Parcelable = (*Condition)(nil)
 func (s *Condition) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Id
+	p.WriteInt32(0) // null Id
 	p.WriteString16(s.Summary)
 	p.WriteString16(s.Line1)
 	p.WriteString16(s.Line2)
 	p.WriteInt32(s.Icon)
 	p.WriteInt32(s.State)
-	p.WriteInt32(-1) // null This.source
-	p.WriteInt32(-1) // null This.flags
+	p.WriteInt32(0) // null This.source
+	p.WriteInt32(0) // null This.flags
 	return nil
 }
 
@@ -35,12 +35,12 @@ func (s *Condition) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Id: cannot skip unknown-size typed object
 		}
 	}
 	s.Summary, _err = p.ReadString16()
@@ -64,21 +64,21 @@ func (s *Condition) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.source: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.flags: cannot skip unknown-size typed object
 		}
 	}
 	return nil

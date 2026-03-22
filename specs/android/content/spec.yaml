@@ -1178,7 +1178,7 @@ parcelables:
         - name: ClassificationStatus
           write_method: int32
         - name: ConfidencesToBundle()
-          write_method: opaque
+          write_method: bundle
     - name: ComponentName
       java_wire_format:
         - name: Out
@@ -1254,7 +1254,7 @@ parcelables:
         - name: ContentUserHint
           write_method: int32
         - name: Extras
-          write_method: opaque
+          write_method: bundle
         - name: "1"
           write_method: int32
           condition: mOriginalIntent!=null
@@ -1328,7 +1328,7 @@ parcelables:
     - name: IntentSender
       java_wire_format:
         - name: Target.asBinder()
-          write_method: opaque
+          write_method: binder
     - name: LocusId
       java_wire_format:
         - name: Id
@@ -1336,11 +1336,11 @@ parcelables:
     - name: PeriodicSync
       java_wire_format:
         - name: Account
-          write_method: opaque
+          write_method: typed_object
         - name: Authority
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
         - name: Period
           write_method: int64
         - name: FlexTime
@@ -1388,7 +1388,7 @@ parcelables:
         - name: AuthorityId
           write_method: int32
         - name: Account
-          write_method: opaque
+          write_method: typed_object
         - name: Authority
           write_method: string16
         - name: StartTime
@@ -1396,7 +1396,7 @@ parcelables:
     - name: SyncRequest
       java_wire_format:
         - name: Extras
-          write_method: opaque
+          write_method: bundle
         - name: SyncFlexTimeSecs
           write_method: int64
         - name: SyncRunTimeSecs
@@ -1412,7 +1412,7 @@ parcelables:
         - name: IsScheduledAsExpeditedJob?1:0
           write_method: int32
         - name: AccountToSync
-          write_method: opaque
+          write_method: typed_object
         - name: Authority
           write_method: string16
     - name: SyncResult

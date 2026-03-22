@@ -18,10 +18,10 @@ func (s *PrepareGetCredentialResponseInternal) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteBool(s.HasQueryApiPermission)
-	p.WriteInt32(-1) // null CredentialResultTypes
+	p.WriteInt32(0) // null CredentialResultTypes
 	p.WriteBool(s.HasAuthenticationResults)
 	p.WriteBool(s.HasRemoteResults)
-	p.WriteInt32(-1) // null PendingIntent
+	p.WriteInt32(0) // null PendingIntent
 	return nil
 }
 
@@ -51,12 +51,12 @@ func (s *PrepareGetCredentialResponseInternal) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PendingIntent: cannot skip unknown-size typed object
 		}
 	}
 	return nil

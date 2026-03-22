@@ -22,7 +22,7 @@ func (s *CallState) MarshalParcel(
 ) error {
 	p.WriteInt32(s.PreciseCallState)
 	p.WriteInt32(s.NetworkType)
-	p.WriteInt32(-1) // null CallQuality
+	p.WriteInt32(0) // null CallQuality
 	p.WriteInt32(s.CallClassification)
 	p.WriteString16(s.ImsCallId)
 	p.WriteInt32(s.ImsCallServiceType)
@@ -43,12 +43,12 @@ func (s *CallState) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CallQuality: cannot skip unknown-size typed object
 		}
 	}
 	s.CallClassification, _err = p.ReadInt32()

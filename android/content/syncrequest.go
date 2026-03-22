@@ -17,15 +17,15 @@ var _ parcel.Parcelable = (*SyncRequest)(nil)
 func (s *SyncRequest) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteInt64(s.SyncFlexTimeSecs)
 	p.WriteInt64(s.SyncRunTimeSecs)
-	p.WriteInt32(-1) // null (mIsPeriodic?1:0)
-	p.WriteInt32(-1) // null (mDisallowMetered?1:0)
-	p.WriteInt32(-1) // null (mIsAuthority?1:0)
-	p.WriteInt32(-1) // null (mIsExpedited?1:0)
-	p.WriteInt32(-1) // null IsScheduledAsExpeditedJob?1:0
-	p.WriteInt32(-1) // null AccountToSync
+	p.WriteInt32(0) // null (mIsPeriodic?1:0)
+	p.WriteInt32(0) // null (mDisallowMetered?1:0)
+	p.WriteInt32(0) // null (mIsAuthority?1:0)
+	p.WriteInt32(0) // null (mIsExpedited?1:0)
+	p.WriteInt32(0) // null IsScheduledAsExpeditedJob?1:0
+	p.WriteInt32(0) // null AccountToSync
 	p.WriteString16(s.Authority)
 	return nil
 }
@@ -52,57 +52,57 @@ func (s *SyncRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (mIsPeriodic?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (mDisallowMetered?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (mIsAuthority?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (mIsExpedited?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsScheduledAsExpeditedJob?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AccountToSync: cannot skip unknown-size typed object
 		}
 	}
 	s.Authority, _err = p.ReadString16()

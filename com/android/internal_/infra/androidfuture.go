@@ -16,8 +16,8 @@ func (s *AndroidFuture) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteBool(s.Done)
-	p.WriteInt32(-1) // null False
-	p.WriteInt32(-1) // null Result
+	p.WriteInt32(0) // null False
+	p.WriteInt32(0) // null Result
 	return nil
 }
 
@@ -30,12 +30,12 @@ func (s *AndroidFuture) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null False: cannot skip unknown-size typed object
 		}
 	}
 	{

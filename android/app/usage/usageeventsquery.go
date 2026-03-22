@@ -19,11 +19,11 @@ func (s *UsageEventsQuery) MarshalParcel(
 ) error {
 	p.WriteInt64(s.BeginTimeMillis)
 	p.WriteInt64(s.EndTimeMillis)
-	p.WriteInt32(-1) // null EventTypes.length
-	p.WriteInt32(-1) // null EventTypes
+	p.WriteInt32(0) // null EventTypes.length
+	p.WriteInt32(0) // null EventTypes
 	p.WriteInt32(s.UserId)
-	p.WriteInt32(-1) // null PackageNames.length
-	p.WriteInt32(-1) // null PackageNames
+	p.WriteInt32(0) // null PackageNames.length
+	p.WriteInt32(0) // null PackageNames
 	return nil
 }
 
@@ -40,12 +40,12 @@ func (s *UsageEventsQuery) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null EventTypes.length: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -62,12 +62,12 @@ func (s *UsageEventsQuery) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PackageNames.length: cannot skip unknown-size typed object
 		}
 	}
 	{

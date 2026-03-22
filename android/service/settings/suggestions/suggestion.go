@@ -17,11 +17,11 @@ func (s *Suggestion) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.Id)
-	p.WriteInt32(-1) // null Title
-	p.WriteInt32(-1) // null Summary
-	p.WriteInt32(-1) // null Icon
+	p.WriteInt32(0) // null Title
+	p.WriteInt32(0) // null Summary
+	p.WriteInt32(0) // null Icon
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(-1) // null PendingIntent
+	p.WriteInt32(0) // null PendingIntent
 	return nil
 }
 
@@ -52,12 +52,12 @@ func (s *Suggestion) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Icon: cannot skip unknown-size typed object
 		}
 	}
 	s.Flags, _err = p.ReadInt32()
@@ -65,12 +65,12 @@ func (s *Suggestion) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PendingIntent: cannot skip unknown-size typed object
 		}
 	}
 	return nil

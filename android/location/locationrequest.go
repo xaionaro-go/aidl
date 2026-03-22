@@ -40,13 +40,7 @@ func (s *LocationRequest) MarshalParcel(
 	p.WriteBool(s.AdasGnssBypass)
 	p.WriteBool(s.Bypass)
 	p.WriteBool(s.LowPower)
-	// WorkSource uses writeTypedObject (0 = null, 1 = non-null).
-	// The LocationManager NPEs on null, so write an empty WorkSource.
-	p.WriteInt32(1)  // non-null WorkSource
-	p.WriteInt32(0)  // mNum = 0
-	p.WriteInt32(-1) // mUids = null (writeIntArray)
-	p.WriteInt32(-1) // mNames = null (writeStringArray)
-	p.WriteInt32(-1) // mChains = null
+	p.WriteInt32(0) // null WorkSource
 	return nil
 }
 
@@ -107,12 +101,12 @@ func (s *LocationRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null WorkSource: cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -34,10 +34,10 @@ func (s *NetworkRegistrationInfo) MarshalParcel(
 	p.WriteInt32(s.AccessNetworkTechnology)
 	p.WriteInt32(s.RejectCause)
 	p.WriteBool(s.EmergencyOnly)
-	p.WriteInt32(-1) // null AvailableServices
-	p.WriteInt32(-1) // null CellIdentity
-	p.WriteInt32(-1) // null VoiceSpecificInfo
-	p.WriteInt32(-1) // null DataSpecificInfo
+	p.WriteInt32(0) // null AvailableServices
+	p.WriteInt32(0) // null CellIdentity
+	p.WriteInt32(0) // null VoiceSpecificInfo
+	p.WriteInt32(0) // null DataSpecificInfo
 	p.WriteInt32(s.NrState)
 	p.WriteString16(s.Rplmn)
 	p.WriteBool(s.IsUsingCarrierAggregation)
@@ -91,30 +91,30 @@ func (s *NetworkRegistrationInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CellIdentity: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null VoiceSpecificInfo: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DataSpecificInfo: cannot skip unknown-size typed object
 		}
 	}
 	s.NrState, _err = p.ReadInt32()

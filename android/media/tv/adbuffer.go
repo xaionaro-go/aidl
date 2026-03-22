@@ -22,7 +22,7 @@ func (s *AdBuffer) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Id)
 	p.WriteString16(s.MimeType)
-	p.WriteInt32(-1) // null Buffer
+	p.WriteInt32(0) // null Buffer
 	p.WriteInt32(s.Offset)
 	p.WriteInt32(s.Length)
 	p.WriteInt64(s.PresentationTimeUs)
@@ -43,12 +43,12 @@ func (s *AdBuffer) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Buffer: cannot skip unknown-size typed object
 		}
 	}
 	s.Offset, _err = p.ReadInt32()

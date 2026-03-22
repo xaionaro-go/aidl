@@ -28,7 +28,7 @@ func (s *BackMotionEvent) MarshalParcel(
 	p.WriteFloat32(s.VelocityY)
 	p.WriteBool(s.TriggerBack)
 	p.WriteInt32(s.SwipeEdge)
-	p.WriteInt32(-1) // null DepartingAnimationTarget
+	p.WriteInt32(0) // null DepartingAnimationTarget
 	return nil
 }
 
@@ -65,12 +65,12 @@ func (s *BackMotionEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DepartingAnimationTarget: cannot skip unknown-size typed object
 		}
 	}
 	return nil

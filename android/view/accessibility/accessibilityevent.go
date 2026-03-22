@@ -23,18 +23,18 @@ var _ parcel.Parcelable = (*AccessibilityEvent)(nil)
 func (s *AccessibilityEvent) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null IsSealed()?1:0
+	p.WriteInt32(0) // null IsSealed()?1:0
 	p.WriteInt32(s.EventType)
 	p.WriteInt32(s.MovementGranularity)
 	p.WriteInt32(s.Action)
 	p.WriteInt32(s.ContentChangeTypes)
 	p.WriteInt32(s.WindowChangeTypes)
 	p.WriteInt32(s.SpeechStateChangeTypes)
-	p.WriteInt32(-1) // null PackageName
+	p.WriteInt32(0) // null PackageName
 	p.WriteInt64(s.EventTime)
 	p.WriteInt32(s.ConnectionId)
 	p.WriteInt32(s.RecordCount)
-	p.WriteInt32(-1) // null OriginStackTrace.length
+	p.WriteInt32(0) // null OriginStackTrace.length
 	return nil
 }
 
@@ -43,12 +43,12 @@ func (s *AccessibilityEvent) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsSealed()?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.EventType, _err = p.ReadInt32()
@@ -97,12 +97,12 @@ func (s *AccessibilityEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null OriginStackTrace.length: cannot skip unknown-size typed object
 		}
 	}
 	return nil

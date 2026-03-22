@@ -25,31 +25,31 @@ func (s *SyncStatusInfo) MarshalParcel(
 ) error {
 	p.WriteInt32(s.VERSION)
 	p.WriteInt32(s.AuthorityId)
-	p.WriteInt32(-1) // null TotalStats.totalElapsedTime
-	p.WriteInt32(-1) // null TotalStats.numSyncs
-	p.WriteInt32(-1) // null TotalStats.numSourcePoll
-	p.WriteInt32(-1) // null TotalStats.numSourceOther
-	p.WriteInt32(-1) // null TotalStats.numSourceLocal
-	p.WriteInt32(-1) // null TotalStats.numSourceUser
+	p.WriteInt32(0) // null TotalStats.totalElapsedTime
+	p.WriteInt32(0) // null TotalStats.numSyncs
+	p.WriteInt32(0) // null TotalStats.numSourcePoll
+	p.WriteInt32(0) // null TotalStats.numSourceOther
+	p.WriteInt32(0) // null TotalStats.numSourceLocal
+	p.WriteInt32(0) // null TotalStats.numSourceUser
 	p.WriteInt64(s.LastSuccessTime)
 	p.WriteInt32(s.LastSuccessSource)
 	p.WriteInt64(s.LastFailureTime)
 	p.WriteInt32(s.LastFailureSource)
 	p.WriteString16(s.LastFailureMesg)
 	p.WriteInt64(s.InitialFailureTime)
-	p.WriteInt32(-1) // null Pending?1:0
-	p.WriteInt32(-1) // null Initialize?1:0
-	p.WriteInt32(-1) // null PeriodicSyncTimes.size()
-	p.WriteInt32(-1) // null LastEventTimes.size()
-	p.WriteInt32(-1) // null TotalStats.numSourcePeriodic
-	p.WriteInt32(-1) // null TotalStats.numSourceFeed
-	p.WriteInt32(-1) // null TotalStats.numFailures
-	p.WriteInt32(-1) // null TotalStats.numCancels
+	p.WriteInt32(0) // null Pending?1:0
+	p.WriteInt32(0) // null Initialize?1:0
+	p.WriteInt32(0) // null PeriodicSyncTimes.size()
+	p.WriteInt32(0) // null LastEventTimes.size()
+	p.WriteInt32(0) // null TotalStats.numSourcePeriodic
+	p.WriteInt32(0) // null TotalStats.numSourceFeed
+	p.WriteInt32(0) // null TotalStats.numFailures
+	p.WriteInt32(0) // null TotalStats.numCancels
 	p.WriteInt64(s.LastTodayResetTime)
-	p.WriteInt32(-1) // null Parcel
-	p.WriteInt32(-1) // null Parcel2
-	p.WriteInt32(-1) // null PerSourceLastSuccessTimes
-	p.WriteInt32(-1) // null PerSourceLastFailureTimes
+	p.WriteInt32(0) // null Parcel
+	p.WriteInt32(0) // null Parcel
+	p.WriteInt32(0) // null PerSourceLastSuccessTimes
+	p.WriteInt32(0) // null PerSourceLastFailureTimes
 	return nil
 }
 
@@ -66,57 +66,57 @@ func (s *SyncStatusInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.totalElapsedTime: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.numSyncs: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.numSourcePoll: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.numSourceOther: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.numSourceLocal: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.numSourceUser: cannot skip unknown-size typed object
 		}
 	}
 	s.LastSuccessTime, _err = p.ReadInt64()
@@ -144,75 +144,75 @@ func (s *SyncStatusInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Pending?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Initialize?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PeriodicSyncTimes.size(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null LastEventTimes.size(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.numSourcePeriodic: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.numSourceFeed: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.numFailures: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TotalStats.numCancels: cannot skip unknown-size typed object
 		}
 	}
 	s.LastTodayResetTime, _err = p.ReadInt64()

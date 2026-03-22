@@ -17,29 +17,29 @@ var _ parcel.Parcelable = (*IntentFilter)(nil)
 func (s *IntentFilter) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Actions.toArray(newString[mActions.size()])
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Categories
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null DataSchemes
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null StaticDataTypes
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null DataTypes
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null MimeGroups
-	p.WriteInt32(-1) // null N
-	p.WriteInt32(-1) // null N
-	p.WriteInt32(-1) // null N
+	p.WriteInt32(0) // null Actions.toArray(newString[mActions.size()])
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Categories
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null DataSchemes
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null StaticDataTypes
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null DataTypes
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null MimeGroups
+	p.WriteInt32(0) // null N
+	p.WriteInt32(0) // null N
+	p.WriteInt32(0) // null N
 	p.WriteInt32(s.Priority)
-	p.WriteInt32(-1) // null HasStaticPartialTypes?1:0
-	p.WriteInt32(-1) // null HasDynamicPartialTypes?1:0
-	p.WriteInt32(-1) // null GetAutoVerify()?1:0
+	p.WriteInt32(0) // null HasStaticPartialTypes?1:0
+	p.WriteInt32(0) // null HasDynamicPartialTypes?1:0
+	p.WriteInt32(0) // null GetAutoVerify()?1:0
 	p.WriteInt32(s.InstantAppVisibility)
 	p.WriteInt32(s.Order)
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Dest
-	p.WriteInt32(-1) // null N
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Dest
+	p.WriteInt32(0) // null N
 	return nil
 }
 
@@ -57,12 +57,12 @@ func (s *IntentFilter) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -75,12 +75,12 @@ func (s *IntentFilter) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -93,12 +93,12 @@ func (s *IntentFilter) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -111,12 +111,12 @@ func (s *IntentFilter) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -129,12 +129,12 @@ func (s *IntentFilter) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -147,30 +147,30 @@ func (s *IntentFilter) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null N: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null N: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null N: cannot skip unknown-size typed object
 		}
 	}
 	s.Priority, _err = p.ReadInt32()
@@ -178,30 +178,30 @@ func (s *IntentFilter) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HasStaticPartialTypes?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HasDynamicPartialTypes?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GetAutoVerify()?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.InstantAppVisibility, _err = p.ReadInt32()
@@ -213,12 +213,12 @@ func (s *IntentFilter) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -231,12 +231,12 @@ func (s *IntentFilter) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null N: cannot skip unknown-size typed object
 		}
 	}
 	return nil

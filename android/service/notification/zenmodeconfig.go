@@ -20,23 +20,23 @@ var _ parcel.Parcelable = (*ZenModeConfig)(nil)
 func (s *ZenModeConfig) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null AllowCalls?1:0
-	p.WriteInt32(-1) // null AllowRepeatCallers?1:0
-	p.WriteInt32(-1) // null AllowMessages?1:0
-	p.WriteInt32(-1) // null AllowReminders?1:0
-	p.WriteInt32(-1) // null AllowEvents?1:0
+	p.WriteInt32(0) // null AllowCalls?1:0
+	p.WriteInt32(0) // null AllowRepeatCallers?1:0
+	p.WriteInt32(0) // null AllowMessages?1:0
+	p.WriteInt32(0) // null AllowReminders?1:0
+	p.WriteInt32(0) // null AllowEvents?1:0
 	p.WriteInt32(s.AllowCallsFrom)
 	p.WriteInt32(s.AllowMessagesFrom)
 	p.WriteInt32(s.User)
-	p.WriteInt32(-1) // null ManualRule
-	p.WriteInt32(-1) // null AllowAlarms?1:0
-	p.WriteInt32(-1) // null AllowMedia?1:0
-	p.WriteInt32(-1) // null AllowSystem?1:0
+	p.WriteInt32(0) // null ManualRule
+	p.WriteInt32(0) // null AllowAlarms?1:0
+	p.WriteInt32(0) // null AllowMedia?1:0
+	p.WriteInt32(0) // null AllowSystem?1:0
 	p.WriteInt32(s.SuppressedVisualEffects)
-	p.WriteInt32(-1) // null AreChannelsBypassingDnd?1:0
+	p.WriteInt32(0) // null AreChannelsBypassingDnd?1:0
 	p.WriteBool(s.AllowConversations)
 	p.WriteInt32(s.AllowConversationsFrom)
-	p.WriteInt32(-1) // null AllowPriorityChannels
+	p.WriteInt32(0) // null AllowPriorityChannels
 	return nil
 }
 
@@ -45,48 +45,48 @@ func (s *ZenModeConfig) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowCalls?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowRepeatCallers?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowMessages?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowReminders?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowEvents?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.AllowCallsFrom, _err = p.ReadInt32()
@@ -102,39 +102,39 @@ func (s *ZenModeConfig) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ManualRule: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowAlarms?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowMedia?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowSystem?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.SuppressedVisualEffects, _err = p.ReadInt32()
@@ -142,12 +142,12 @@ func (s *ZenModeConfig) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AreChannelsBypassingDnd?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.AllowConversations, _err = p.ReadBool()
@@ -159,12 +159,12 @@ func (s *ZenModeConfig) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowPriorityChannels: cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -15,10 +15,10 @@ var _ parcel.Parcelable = (*RecommendationInfo)(nil)
 func (s *RecommendationInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null PackageName
-	p.WriteInt32(-1) // null Name
+	p.WriteInt32(0) // null PackageName
+	p.WriteInt32(0) // null Name
 	p.WriteInt32(s.NumDiscoveredPrinters)
-	p.WriteInt32(-1) // null (byte)(mRecommendsMultiVendorService?1:0)
+	p.WriteInt32(0) // null (byte)(mRecommendsMultiVendorService?1:0)
 	return nil
 }
 
@@ -49,12 +49,12 @@ func (s *RecommendationInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(mRecommendsMultiVendorService?1:0): cannot skip unknown-size typed object
 		}
 	}
 	return nil

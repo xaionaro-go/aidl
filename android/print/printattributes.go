@@ -16,12 +16,12 @@ var _ parcel.Parcelable = (*PrintAttributes)(nil)
 func (s *PrintAttributes) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Parcel
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Parcel
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Parcel
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Parcel
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Parcel
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Parcel
 	p.WriteInt32(s.ColorMode)
 	p.WriteInt32(s.DuplexMode)
 	return nil
@@ -32,12 +32,12 @@ func (s *PrintAttributes) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -50,12 +50,12 @@ func (s *PrintAttributes) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -68,12 +68,12 @@ func (s *PrintAttributes) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{

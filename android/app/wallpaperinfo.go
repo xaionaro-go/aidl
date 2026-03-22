@@ -27,12 +27,12 @@ func (s *WallpaperInfo) MarshalParcel(
 	p.WriteInt32(s.DescriptionResource)
 	p.WriteInt32(s.ContextUriResource)
 	p.WriteInt32(s.ContextDescriptionResource)
-	p.WriteInt32(-1) // null ShowMetadataInPreview?1:0
-	p.WriteInt32(-1) // null SupportsAmbientMode?1:0
+	p.WriteInt32(0) // null ShowMetadataInPreview?1:0
+	p.WriteInt32(0) // null SupportsAmbientMode?1:0
 	p.WriteString16(s.SettingsSliceUri)
-	p.WriteInt32(-1) // null SupportMultipleDisplays?1:0
-	p.WriteInt32(-1) // null ShouldUseDefaultUnfoldTransition?1:0
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null SupportMultipleDisplays?1:0
+	p.WriteInt32(0) // null ShouldUseDefaultUnfoldTransition?1:0
+	p.WriteInt32(0) // null Dest
 	return nil
 }
 
@@ -65,21 +65,21 @@ func (s *WallpaperInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ShowMetadataInPreview?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SupportsAmbientMode?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.SettingsSliceUri, _err = p.ReadString16()
@@ -87,21 +87,21 @@ func (s *WallpaperInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SupportMultipleDisplays?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ShouldUseDefaultUnfoldTransition?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{

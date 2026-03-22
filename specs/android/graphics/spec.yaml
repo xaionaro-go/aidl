@@ -7,7 +7,7 @@ parcelables:
           write_method: bool
           condition: hasGainmap()
         - name: Gainmap
-          write_method: opaque
+          write_method: typed_object
           condition: hasGainmap()
     - name: GraphicBuffer
       java_wire_format:

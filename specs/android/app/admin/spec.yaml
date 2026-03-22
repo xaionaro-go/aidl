@@ -4836,7 +4836,7 @@ parcelables:
         - name: ResourceIdInCallingPackage
           write_method: int32
         - name: Resource
-          write_method: opaque
+          write_method: typed_object
     - name: DevicePolicyState
       java_wire_format:
         - name: Policies.size()
@@ -4848,7 +4848,7 @@ parcelables:
         - name: ResourceIdInCallingPackage
           write_method: int32
         - name: Resource
-          write_method: opaque
+          write_method: typed_object
     - name: DnsEvent
       java_wire_format:
         - name: PARCEL_TOKEN_DNS_EVENT
@@ -4872,9 +4872,9 @@ parcelables:
         - name: UserHandle.getIdentifier()
           write_method: int32
         - name: Authority
-          write_method: opaque
+          write_method: typed_object
         - name: ComponentName
-          write_method: opaque
+          write_method: typed_object
     - name: FactoryResetProtectionPolicy
       java_wire_format:
         - name: AccountsCount
@@ -4884,7 +4884,7 @@ parcelables:
     - name: FullyManagedDeviceProvisioningParams
       java_wire_format:
         - name: DeviceAdminComponentName
-          write_method: opaque
+          write_method: typed_object
         - name: OwnerName
           write_method: string16
         - name: LeaveAllSystemAppsEnabled
@@ -4904,13 +4904,13 @@ parcelables:
     - name: ManagedProfileProvisioningParams
       java_wire_format:
         - name: ProfileAdminComponentName
-          write_method: opaque
+          write_method: typed_object
         - name: OwnerName
           write_method: string16
         - name: ProfileName
           write_method: string16
         - name: AccountToMigrate
-          write_method: opaque
+          write_method: typed_object
         - name: LeaveAllSystemAppsEnabled
           write_method: bool
         - name: OrganizationOwnedProvisioning

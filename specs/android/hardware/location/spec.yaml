@@ -804,7 +804,7 @@ parcelables:
         - name: Data.length
           write_method: int32
         - name: Data
-          write_method: opaque
+          write_method: byte_array
     - name: GeofenceHardwareMonitorEvent
       java_wire_format:
         - name: MonitoringType
@@ -814,7 +814,7 @@ parcelables:
         - name: SourceTechnologies
           write_method: int32
         - name: Location
-          write_method: opaque
+          write_method: typed_object
     - name: GeofenceHardwareRequestParcelable
       java_wire_format:
         - name: GetType()
@@ -864,13 +864,13 @@ parcelables:
         - name: AppBinary.length
           write_method: int32
         - name: AppBinary
-          write_method: opaque
+          write_method: byte_array
     - name: NanoAppBinary
       java_wire_format:
         - name: NanoAppBinary.length
           write_method: int32
         - name: NanoAppBinary
-          write_method: opaque
+          write_method: byte_array
     - name: NanoAppFilter
       java_wire_format:
         - name: AppId
@@ -920,7 +920,7 @@ parcelables:
         - name: MessageBody.length
           write_method: int32
         - name: MessageBody
-          write_method: opaque
+          write_method: byte_array
         - name: IsReliable?1:0
           write_method: int32
         - name: MessageSequenceNumber

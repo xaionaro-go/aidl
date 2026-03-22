@@ -17,14 +17,14 @@ var _ parcel.Parcelable = (*CarrierRestrictionRules)(nil)
 func (s *CarrierRestrictionRules) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null AllowedCarriers
-	p.WriteInt32(-1) // null ExcludedCarriers
+	p.WriteInt32(0) // null AllowedCarriers
+	p.WriteInt32(0) // null ExcludedCarriers
 	p.WriteInt32(s.CarrierRestrictionDefault)
 	p.WriteInt32(s.MultiSimPolicy)
 	p.WriteInt32(s.CarrierRestrictionStatus)
-	p.WriteInt32(-1) // null AllowedCarrierInfo
-	p.WriteInt32(-1) // null ExcludedCarrierInfo
-	p.WriteInt32(-1) // null UseCarrierLockInfo
+	p.WriteInt32(0) // null AllowedCarrierInfo
+	p.WriteInt32(0) // null ExcludedCarrierInfo
+	p.WriteInt32(0) // null UseCarrierLockInfo
 	return nil
 }
 
@@ -81,12 +81,12 @@ func (s *CarrierRestrictionRules) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null UseCarrierLockInfo: cannot skip unknown-size typed object
 		}
 	}
 	return nil

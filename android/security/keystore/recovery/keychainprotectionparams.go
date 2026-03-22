@@ -18,8 +18,8 @@ func (s *KeyChainProtectionParams) MarshalParcel(
 ) error {
 	p.WriteInt32(s.UserSecretType)
 	p.WriteInt32(s.LockScreenUiFormat)
-	p.WriteInt32(-1) // null KeyDerivationParams
-	p.WriteInt32(-1) // null Secret
+	p.WriteInt32(0) // null KeyDerivationParams
+	p.WriteInt32(0) // null Secret
 	return nil
 }
 
@@ -36,12 +36,12 @@ func (s *KeyChainProtectionParams) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null KeyDerivationParams: cannot skip unknown-size typed object
 		}
 	}
 	{

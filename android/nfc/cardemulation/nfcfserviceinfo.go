@@ -19,14 +19,14 @@ var _ parcel.Parcelable = (*NfcFServiceInfo)(nil)
 func (s *NfcFServiceInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null Dest
 	p.WriteString16(s.Description)
 	p.WriteString16(s.SystemCode)
-	p.WriteInt32(-1) // null DynamicSystemCode!=null?1:0
-	p.WriteInt32(-1) // null DynamicSystemCode
+	p.WriteInt32(0) // null DynamicSystemCode!=null?1:0
+	p.WriteInt32(0) // null DynamicSystemCode
 	p.WriteString16(s.Nfcid2)
-	p.WriteInt32(-1) // null DynamicNfcid2!=null?1:0
-	p.WriteInt32(-1) // null DynamicNfcid2
+	p.WriteInt32(0) // null DynamicNfcid2!=null?1:0
+	p.WriteInt32(0) // null DynamicNfcid2
 	p.WriteInt32(s.Uid)
 	p.WriteString16(s.T3tPmm)
 	return nil
@@ -54,21 +54,21 @@ func (s *NfcFServiceInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DynamicSystemCode!=null?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DynamicSystemCode: cannot skip unknown-size typed object
 		}
 	}
 	s.Nfcid2, _err = p.ReadString16()
@@ -76,21 +76,21 @@ func (s *NfcFServiceInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DynamicNfcid2!=null?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DynamicNfcid2: cannot skip unknown-size typed object
 		}
 	}
 	s.Uid, _err = p.ReadInt32()

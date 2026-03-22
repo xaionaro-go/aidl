@@ -16,10 +16,10 @@ func (s *InstantAppInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.PackageName)
-	p.WriteInt32(-1) // null LabelText
-	p.WriteInt32(-1) // null RequestedPermissions
-	p.WriteInt32(-1) // null GrantedPermissions
-	p.WriteInt32(-1) // null ApplicationInfo
+	p.WriteInt32(0) // null LabelText
+	p.WriteInt32(0) // null RequestedPermissions
+	p.WriteInt32(0) // null GrantedPermissions
+	p.WriteInt32(0) // null ApplicationInfo
 	return nil
 }
 
@@ -59,12 +59,12 @@ func (s *InstantAppInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ApplicationInfo: cannot skip unknown-size typed object
 		}
 	}
 	return nil

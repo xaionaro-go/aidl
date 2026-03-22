@@ -140,4 +140,4 @@ parcelables:
         - name: PackageName
           write_method: string16
         - name: User
-          write_method: opaque
+          write_method: typed_object

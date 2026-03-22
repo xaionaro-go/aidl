@@ -1095,7 +1095,7 @@ parcelables:
         - name: LogoRes
           write_method: int32
         - name: LogoBitmap
-          write_method: opaque
+          write_method: typed_object
         - name: LogoDescription
           write_method: string16
         - name: Title
@@ -1109,7 +1109,7 @@ parcelables:
         - name: Description
           write_method: opaque
         - name: ContentView
-          write_method: opaque
+          write_method: typed_object
         - name: DeviceCredentialTitle
           write_method: opaque
         - name: DeviceCredentialSubtitle

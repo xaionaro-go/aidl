@@ -1161,7 +1161,7 @@ parcelables:
         - name: Url
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: Country
       java_wire_format:
         - name: CountryIso
@@ -1217,11 +1217,11 @@ parcelables:
         - name: CarrierFrequencyMHz
           write_method: float64
         - name: PhaseCenterOffset
-          write_method: opaque
+          write_method: typed_object
         - name: PhaseCenterVariationCorrections
-          write_method: opaque
+          write_method: typed_object
         - name: SignalGainCorrections
-          write_method: opaque
+          write_method: typed_object
     - name: GnssAutomaticGainControl
       java_wire_format:
         - name: LevelDb
@@ -1275,13 +1275,13 @@ parcelables:
         - name: IntervalMillis
           write_method: int32
         - name: WorkSource
-          write_method: opaque
+          write_method: typed_object
     - name: GnssMeasurementsEvent
       java_wire_format:
         - name: Flag
           write_method: int32
         - name: Clock
-          write_method: opaque
+          write_method: typed_object
         - name: Measurements
           write_method: opaque
         - name: GnssAgcs
@@ -1301,7 +1301,7 @@ parcelables:
         - name: Data.length
           write_method: int32
         - name: Data
-          write_method: opaque
+          write_method: byte_array
         - name: Status
           write_method: int32
     - name: GnssRequest
@@ -1373,7 +1373,7 @@ parcelables:
           write_method: float32
           condition: FieldsMask & 1024
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: LocationRequest
       java_wire_format:
         - name: Provider
@@ -1403,7 +1403,7 @@ parcelables:
         - name: LowPower
           write_method: bool
         - name: WorkSource
-          write_method: opaque
+          write_method: typed_object
     - name: LocationResult
       java_wire_format:
         - name: Locations

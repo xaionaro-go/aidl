@@ -19,9 +19,9 @@ func (s *TimeZoneProviderEvent) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Type)
 	p.WriteInt64(s.CreationElapsedMillis)
-	p.WriteInt32(-1) // null Suggestion
+	p.WriteInt32(0) // null Suggestion
 	p.WriteString(s.FailureCause)
-	p.WriteInt32(-1) // null TimeZoneProviderStatus
+	p.WriteInt32(0) // null TimeZoneProviderStatus
 	return nil
 }
 
@@ -38,12 +38,12 @@ func (s *TimeZoneProviderEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Suggestion: cannot skip unknown-size typed object
 		}
 	}
 	s.FailureCause, _err = p.ReadString()
@@ -51,12 +51,12 @@ func (s *TimeZoneProviderEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TimeZoneProviderStatus: cannot skip unknown-size typed object
 		}
 	}
 	return nil

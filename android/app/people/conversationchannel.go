@@ -18,14 +18,14 @@ var _ parcel.Parcelable = (*ConversationChannel)(nil)
 func (s *ConversationChannel) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null ShortcutInfo
+	p.WriteInt32(0) // null ShortcutInfo
 	p.WriteInt32(s.Uid)
-	p.WriteInt32(-1) // null NotificationChannel
-	p.WriteInt32(-1) // null NotificationChannelGroup
+	p.WriteInt32(0) // null NotificationChannel
+	p.WriteInt32(0) // null NotificationChannelGroup
 	p.WriteInt64(s.LastEventTimestamp)
 	p.WriteBool(s.HasActiveNotifications)
 	p.WriteBool(s.HasBirthdayToday)
-	p.WriteInt32(-1) // null Statuses
+	p.WriteInt32(0) // null Statuses
 	return nil
 }
 
@@ -34,12 +34,12 @@ func (s *ConversationChannel) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ShortcutInfo: cannot skip unknown-size typed object
 		}
 	}
 	s.Uid, _err = p.ReadInt32()
@@ -47,21 +47,21 @@ func (s *ConversationChannel) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null NotificationChannel: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null NotificationChannelGroup: cannot skip unknown-size typed object
 		}
 	}
 	s.LastEventTimestamp, _err = p.ReadInt64()

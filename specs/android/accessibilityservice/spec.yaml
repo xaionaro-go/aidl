@@ -929,7 +929,7 @@ parcelables:
         - name: DisplayId
           write_method: int32
         - name: NewParceledListSlice<MotionEvent>(mMotionEvents)
-          write_method: opaque
+          write_method: typed_object
     - name: AccessibilityServiceInfo
       java_wire_format:
         - name: EventTypes
@@ -949,9 +949,9 @@ parcelables:
         - name: Crashed?1:0
           write_method: int32
         - name: ComponentName
-          write_method: opaque
+          write_method: typed_object
         - name: ResolveInfo
-          write_method: opaque
+          write_method: typed_object
         - name: SettingsActivityName
           write_method: string16
         - name: Capabilities

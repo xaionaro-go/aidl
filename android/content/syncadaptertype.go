@@ -20,10 +20,10 @@ func (s *SyncAdapterType) MarshalParcel(
 ) error {
 	p.WriteString16(s.Authority)
 	p.WriteString16(s.AccountType)
-	p.WriteInt32(-1) // null UserVisible?1:0
-	p.WriteInt32(-1) // null SupportsUploading?1:0
-	p.WriteInt32(-1) // null IsAlwaysSyncable?1:0
-	p.WriteInt32(-1) // null AllowParallelSyncs?1:0
+	p.WriteInt32(0) // null UserVisible?1:0
+	p.WriteInt32(0) // null SupportsUploading?1:0
+	p.WriteInt32(0) // null IsAlwaysSyncable?1:0
+	p.WriteInt32(0) // null AllowParallelSyncs?1:0
 	p.WriteString16(s.SettingsActivity)
 	p.WriteString16(s.PackageName)
 	return nil
@@ -42,39 +42,39 @@ func (s *SyncAdapterType) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null UserVisible?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SupportsUploading?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsAlwaysSyncable?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowParallelSyncs?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.SettingsActivity, _err = p.ReadString16()

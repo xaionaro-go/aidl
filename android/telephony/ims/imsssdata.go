@@ -14,14 +14,14 @@ var _ parcel.Parcelable = (*ImsSsData)(nil)
 func (s *ImsSsData) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null GetServiceType()
-	p.WriteInt32(-1) // null GetRequestType()
-	p.WriteInt32(-1) // null GetTeleserviceType()
-	p.WriteInt32(-1) // null GetServiceClass()
-	p.WriteInt32(-1) // null GetResult()
-	p.WriteInt32(-1) // null SsInfo
-	p.WriteInt32(-1) // null CfInfo
-	p.WriteInt32(-1) // null ImsSsInfo
+	p.WriteInt32(0) // null GetServiceType()
+	p.WriteInt32(0) // null GetRequestType()
+	p.WriteInt32(0) // null GetTeleserviceType()
+	p.WriteInt32(0) // null GetServiceClass()
+	p.WriteInt32(0) // null GetResult()
+	p.WriteInt32(0) // null SsInfo
+	p.WriteInt32(0) // null CfInfo
+	p.WriteInt32(0) // null ImsSsInfo
 	return nil
 }
 
@@ -29,48 +29,48 @@ func (s *ImsSsData) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GetServiceType(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GetRequestType(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GetTeleserviceType(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GetServiceClass(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GetResult(): cannot skip unknown-size typed object
 		}
 	}
 	{

@@ -16,7 +16,7 @@ func (s *ThermalMitigationRequest) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.ThermalMitigationAction)
-	p.WriteInt32(-1) // null DataThrottlingRequest
+	p.WriteInt32(0) // null DataThrottlingRequest
 	return nil
 }
 
@@ -29,12 +29,12 @@ func (s *ThermalMitigationRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DataThrottlingRequest: cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -24,16 +24,16 @@ func (s *ImsCallProfile) MarshalParcel(
 ) error {
 	p.WriteInt32(s.ServiceType)
 	p.WriteInt32(s.CallType)
-	p.WriteInt32(-1) // null FilteredExtras
-	p.WriteInt32(-1) // null MediaProfile
+	p.WriteInt32(-1) // null FilteredExtras (Bundle)
+	p.WriteInt32(0)  // null MediaProfile
 	p.WriteInt32(s.EmergencyServiceCategories)
-	p.WriteInt32(-1) // null EmergencyUrns
+	p.WriteInt32(0) // null EmergencyUrns
 	p.WriteInt32(s.EmergencyCallRouting)
 	p.WriteBool(s.EmergencyCallTesting)
 	p.WriteBool(s.HasKnownUserIntentEmergency)
 	p.WriteInt32(s.RestrictCause)
 	p.WriteInt32(s.CallerNumberVerificationStatus)
-	p.WriteInt32(-1) // null AcceptedRtpHeaderExtensionTypes.toArray()
+	p.WriteInt32(0) // null AcceptedRtpHeaderExtensionTypes.toArray()
 	return nil
 }
 
@@ -59,12 +59,12 @@ func (s *ImsCallProfile) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null MediaProfile: cannot skip unknown-size typed object
 		}
 	}
 	s.EmergencyServiceCategories, _err = p.ReadInt32()

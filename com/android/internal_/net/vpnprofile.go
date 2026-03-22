@@ -47,16 +47,16 @@ func (s *VpnProfile) MarshalParcel(
 	p.WriteString16(s.DnsServers)
 	p.WriteString16(s.SearchDomains)
 	p.WriteString16(s.Routes)
-	p.WriteInt32(-1) // null Mppe?1:0
+	p.WriteInt32(0) // null Mppe?1:0
 	p.WriteString16(s.L2tpSecret)
 	p.WriteString16(s.IpsecIdentifier)
 	p.WriteString16(s.IpsecSecret)
 	p.WriteString16(s.IpsecUserCert)
 	p.WriteString16(s.IpsecCaCert)
 	p.WriteString16(s.IpsecServerCert)
-	p.WriteInt32(-1) // null SaveLogin?1:0
-	p.WriteInt32(-1) // null Proxy
-	p.WriteInt32(-1) // null AllowedAlgorithms
+	p.WriteInt32(0) // null SaveLogin?1:0
+	p.WriteInt32(0) // null Proxy
+	p.WriteInt32(0) // null AllowedAlgorithms
 	p.WriteBool(s.IsBypassable)
 	p.WriteBool(s.IsMetered)
 	p.WriteInt32(s.MaxMtu)
@@ -64,7 +64,7 @@ func (s *VpnProfile) MarshalParcel(
 	p.WriteBool(s.IsRestrictedToTestNetworks)
 	p.WriteBool(s.ExcludeLocalRoutes)
 	p.WriteBool(s.RequiresInternetValidation)
-	p.WriteInt32(-1) // null IkeTunConnParams==null?null:TunnelConnectionParamsUtils.toPersistableBundle(ikeTunConnParams)
+	p.WriteInt32(0) // null IkeTunConnParams==null?null:TunnelConnectionParamsUtils.toPersistableBundle(ikeTunConnParams)
 	p.WriteBool(s.AutomaticNattKeepaliveTimerEnabled)
 	p.WriteBool(s.AutomaticIpVersionSelectionEnabled)
 	return nil
@@ -111,12 +111,12 @@ func (s *VpnProfile) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Mppe?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.L2tpSecret, _err = p.ReadString16()
@@ -144,21 +144,21 @@ func (s *VpnProfile) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SaveLogin?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Proxy: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -199,12 +199,12 @@ func (s *VpnProfile) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IkeTunConnParams==null?null:TunnelConnectionParamsUtils.toPersistableBundle(ikeTunConnParams): cannot skip unknown-size typed object
 		}
 	}
 	s.AutomaticNattKeepaliveTimerEnabled, _err = p.ReadBool()

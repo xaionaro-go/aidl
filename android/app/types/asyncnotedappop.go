@@ -22,7 +22,7 @@ func (s *AsyncNotedAppOp) MarshalParcel(
 	p.WriteInt32(s.Flg)
 	p.WriteInt32(s.OpCode)
 	p.WriteInt32(s.NotingUid)
-	p.WriteInt32(-1) // null AttributionTag
+	p.WriteInt32(0) // null AttributionTag
 	p.WriteString16(s.Message)
 	p.WriteInt64(s.Time)
 	return nil
@@ -45,12 +45,12 @@ func (s *AsyncNotedAppOp) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AttributionTag: cannot skip unknown-size typed object
 		}
 	}
 	s.Message, _err = p.ReadString16()

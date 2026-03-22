@@ -673,7 +673,7 @@ parcelables:
     - name: VirtualDevice
       java_wire_format:
         - name: VirtualDevice.asBinder()
-          write_method: opaque
+          write_method: binder
         - name: Id
           write_method: int32
         - name: PersistentId
@@ -703,12 +703,12 @@ parcelables:
         - name: VirtualSensorConfigs
           write_method: opaque
         - name: VirtualSensorCallback!=null?mVirtualSensorCallback.asBinder():null
-          write_method: opaque
+          write_method: binder
         - name: AudioPlaybackSessionId
           write_method: int32
         - name: AudioRecordingSessionId
           write_method: int32
         - name: HomeComponent
-          write_method: opaque
+          write_method: typed_object
         - name: InputMethodComponent
-          write_method: opaque
+          write_method: typed_object

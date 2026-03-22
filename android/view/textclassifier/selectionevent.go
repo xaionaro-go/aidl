@@ -34,8 +34,8 @@ func (s *SelectionEvent) MarshalParcel(
 	p.WriteInt32(s.AbsoluteEnd)
 	p.WriteInt32(s.EventType)
 	p.WriteString16(s.EntityType)
-	p.WriteInt32(-1) // null WidgetVersion!=null?1:0
-	p.WriteInt32(-1) // null WidgetVersion
+	p.WriteInt32(0) // null WidgetVersion!=null?1:0
+	p.WriteInt32(0) // null WidgetVersion
 	p.WriteString16(s.PackageName)
 	p.WriteString16(s.WidgetType)
 	p.WriteInt32(s.InvocationMethod)
@@ -44,13 +44,13 @@ func (s *SelectionEvent) MarshalParcel(
 	p.WriteInt64(s.DurationSinceSessionStart)
 	p.WriteInt64(s.DurationSincePreviousEvent)
 	p.WriteInt32(s.EventIndex)
-	p.WriteInt32(-1) // null SessionId!=null?1:0
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null SessionId!=null?1:0
+	p.WriteInt32(0) // null Dest
 	p.WriteInt32(s.Start)
 	p.WriteInt32(s.End)
 	p.WriteInt32(s.SmartStart)
 	p.WriteInt32(s.SmartEnd)
-	p.WriteInt32(-1) // null SystemTcMetadata
+	p.WriteInt32(0) // null SystemTcMetadata
 	return nil
 }
 
@@ -75,21 +75,21 @@ func (s *SelectionEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null WidgetVersion!=null?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null WidgetVersion: cannot skip unknown-size typed object
 		}
 	}
 	s.PackageName, _err = p.ReadString16()
@@ -125,12 +125,12 @@ func (s *SelectionEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SessionId!=null?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -159,12 +159,12 @@ func (s *SelectionEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SystemTcMetadata: cannot skip unknown-size typed object
 		}
 	}
 	return nil

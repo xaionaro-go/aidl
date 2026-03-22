@@ -850,7 +850,7 @@ parcelables:
         - name: MaxFileSize
           write_method: int64
         - name: Owner
-          write_method: opaque
+          write_method: typed_object
         - name: "1"
           write_method: int32
           condition: mUuid!=null

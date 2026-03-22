@@ -28,20 +28,20 @@ func (s *TvTrackInfo) MarshalParcel(
 	p.WriteInt32(s.Type)
 	p.WriteString16(s.Id)
 	p.WriteString16(s.Language)
-	p.WriteInt32(-1) // null Description!=null?mDescription.toString():null
+	p.WriteInt32(0) // null Description!=null?mDescription.toString():null
 	p.WriteString16(s.Encoding)
-	p.WriteInt32(-1) // null Encrypted?1:0
+	p.WriteInt32(0) // null Encrypted?1:0
 	p.WriteInt32(s.AudioChannelCount)
 	p.WriteInt32(s.AudioSampleRate)
-	p.WriteInt32(-1) // null AudioDescription?1:0
-	p.WriteInt32(-1) // null HardOfHearing?1:0
-	p.WriteInt32(-1) // null SpokenSubtitle?1:0
+	p.WriteInt32(0) // null AudioDescription?1:0
+	p.WriteInt32(0) // null HardOfHearing?1:0
+	p.WriteInt32(0) // null SpokenSubtitle?1:0
 	p.WriteInt32(s.VideoWidth)
 	p.WriteInt32(s.VideoHeight)
 	p.WriteFloat32(s.VideoFrameRate)
 	p.WriteFloat32(s.VideoPixelAspectRatio)
 	p.WriteInt32(s.VideoActiveFormatDescription)
-	p.WriteInt32(-1) // null Extra
+	p.WriteInt32(-1) // null Extra (Bundle)
 	return nil
 }
 
@@ -62,12 +62,12 @@ func (s *TvTrackInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Description!=null?mDescription.toString():null: cannot skip unknown-size typed object
 		}
 	}
 	s.Encoding, _err = p.ReadString16()
@@ -75,12 +75,12 @@ func (s *TvTrackInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Encrypted?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.AudioChannelCount, _err = p.ReadInt32()
@@ -92,30 +92,30 @@ func (s *TvTrackInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AudioDescription?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HardOfHearing?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SpokenSubtitle?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.VideoWidth, _err = p.ReadInt32()

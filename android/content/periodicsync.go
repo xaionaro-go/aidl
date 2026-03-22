@@ -17,9 +17,9 @@ var _ parcel.Parcelable = (*PeriodicSync)(nil)
 func (s *PeriodicSync) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Account
+	p.WriteInt32(0) // null Account
 	p.WriteString16(s.Authority)
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteInt64(s.Period)
 	p.WriteInt64(s.FlexTime)
 	return nil
@@ -30,12 +30,12 @@ func (s *PeriodicSync) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Account: cannot skip unknown-size typed object
 		}
 	}
 	s.Authority, _err = p.ReadString16()

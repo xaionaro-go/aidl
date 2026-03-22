@@ -14,12 +14,12 @@ var _ parcel.Parcelable = (*SnoozeCriterion)(nil)
 func (s *SnoozeCriterion) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null (byte)1
-	p.WriteInt32(-1) // null Id
-	p.WriteInt32(-1) // null (byte)1
-	p.WriteInt32(-1) // null Explanation
-	p.WriteInt32(-1) // null (byte)1
-	p.WriteInt32(-1) // null Confirmation
+	p.WriteInt32(0) // null (byte)1
+	p.WriteInt32(0) // null Id
+	p.WriteInt32(0) // null (byte)1
+	p.WriteInt32(0) // null Explanation
+	p.WriteInt32(0) // null (byte)1
+	p.WriteInt32(0) // null Confirmation
 	return nil
 }
 
@@ -27,12 +27,30 @@ func (s *SnoozeCriterion) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)1: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Id: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -45,30 +63,12 @@ func (s *SnoozeCriterion) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)1: cannot skip unknown-size typed object
 		}
 	}
 	{

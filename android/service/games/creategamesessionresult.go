@@ -14,8 +14,8 @@ var _ parcel.Parcelable = (*CreateGameSessionResult)(nil)
 func (s *CreateGameSessionResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null GameSession.asBinder()
-	p.WriteInt32(-1) // null SurfacePackage
+	p.WriteInt32(0) // null GameSession.asBinder()
+	p.WriteInt32(0) // null SurfacePackage
 	return nil
 }
 
@@ -32,12 +32,12 @@ func (s *CreateGameSessionResult) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SurfacePackage: cannot skip unknown-size typed object
 		}
 	}
 	return nil

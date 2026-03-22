@@ -90,7 +90,7 @@ parcelables:
         - name: Dest
           write_method: opaque
         - name: Token
-          write_method: opaque
+          write_method: binder
     - name: AudioMixingRule
       java_wire_format:
         - name: AllowPrivilegedPlaybackCapture

@@ -53,7 +53,7 @@ parcelables:
         - name: SmartEnd
           write_method: int32
         - name: SystemTcMetadata
-          write_method: opaque
+          write_method: typed_object
     - name: SystemTextClassifierMetadata
       java_wire_format:
         - name: CallingPackageName
@@ -73,7 +73,7 @@ parcelables:
         - name: Id
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: TextClassification.Request
     - name: TextClassificationContext
       java_wire_format:
@@ -84,13 +84,13 @@ parcelables:
         - name: WidgetVersion
           write_method: string16
         - name: SystemTcMetadata
-          write_method: opaque
+          write_method: typed_object
     - name: TextClassificationSessionId
       java_wire_format:
         - name: Value
           write_method: string16
         - name: Token
-          write_method: opaque
+          write_method: binder
     - name: TextClassifierEvent
       java_wire_format:
         - name: GetParcelToken()
@@ -102,7 +102,7 @@ parcelables:
         - name: EntityTypes
           write_method: opaque
         - name: EventContext
-          write_method: opaque
+          write_method: typed_object
         - name: ResultId
           write_method: string16
         - name: EventIndex
@@ -118,7 +118,7 @@ parcelables:
         - name: Locale==null?null:mLocale.toLanguageTag()
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: TextLanguage
       java_wire_format:
         - name: Id
@@ -126,7 +126,7 @@ parcelables:
         - name: Dest
           write_method: opaque
         - name: Bundle
-          write_method: opaque
+          write_method: bundle
     - name: TextLanguage.Request
     - name: TextLinks
       java_wire_format:
@@ -135,7 +135,7 @@ parcelables:
         - name: Links
           write_method: opaque
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: TextLinks.Request
     - name: TextSelection
       java_wire_format:
@@ -148,7 +148,7 @@ parcelables:
         - name: Id
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
         - name: TextClassification
-          write_method: opaque
+          write_method: typed_object
     - name: TextSelection.Request

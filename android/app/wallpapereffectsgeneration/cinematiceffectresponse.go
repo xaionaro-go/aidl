@@ -20,9 +20,9 @@ func (s *CinematicEffectResponse) MarshalParcel(
 	p.WriteInt32(s.StatusCode)
 	p.WriteString16(s.TaskId)
 	p.WriteInt32(s.ImageContentType)
-	p.WriteInt32(-1) // null TexturedMeshes
-	p.WriteInt32(-1) // null StartKeyFrame
-	p.WriteInt32(-1) // null EndKeyFrame
+	p.WriteInt32(0) // null TexturedMeshes
+	p.WriteInt32(0) // null StartKeyFrame
+	p.WriteInt32(0) // null EndKeyFrame
 	return nil
 }
 
@@ -52,21 +52,21 @@ func (s *CinematicEffectResponse) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StartKeyFrame: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null EndKeyFrame: cannot skip unknown-size typed object
 		}
 	}
 	return nil

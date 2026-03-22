@@ -93,6 +93,6 @@ parcelables:
         - name: SlotIndex
           write_method: int32
         - name: UnixEpochTime
-          write_method: opaque
+          write_method: typed_object
         - name: DebugInfo
           write_method: opaque

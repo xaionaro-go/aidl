@@ -33,9 +33,9 @@ func (s *ApplicationStartInfo) MarshalParcel(
 	p.WriteString16(s.PackageName)
 	p.WriteString16(s.ProcessName)
 	p.WriteInt32(s.Reason)
-	p.WriteInt32(-1) // null StartupTimestampsNs==null?0:mStartupTimestampsNs.size()
+	p.WriteInt32(0) // null StartupTimestampsNs==null?0:mStartupTimestampsNs.size()
 	p.WriteInt32(s.StartType)
-	p.WriteInt32(-1) // null StartIntent
+	p.WriteInt32(0) // null StartIntent
 	p.WriteInt32(s.LaunchMode)
 	p.WriteBool(s.WasForceStopped)
 	return nil
@@ -78,12 +78,12 @@ func (s *ApplicationStartInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StartupTimestampsNs==null?0:mStartupTimestampsNs.size(): cannot skip unknown-size typed object
 		}
 	}
 	s.StartType, _err = p.ReadInt32()
@@ -91,12 +91,12 @@ func (s *ApplicationStartInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StartIntent: cannot skip unknown-size typed object
 		}
 	}
 	s.LaunchMode, _err = p.ReadInt32()

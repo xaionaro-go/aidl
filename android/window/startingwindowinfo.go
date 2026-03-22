@@ -18,19 +18,19 @@ var _ parcel.Parcelable = (*StartingWindowInfo)(nil)
 func (s *StartingWindowInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null TaskInfo
-	p.WriteInt32(-1) // null TargetActivityInfo
+	p.WriteInt32(0) // null TaskInfo
+	p.WriteInt32(0) // null TargetActivityInfo
 	p.WriteInt32(s.StartingWindowTypeParameter)
-	p.WriteInt32(-1) // null TopOpaqueWindowInsetsState
-	p.WriteInt32(-1) // null TopOpaqueWindowLayoutParams
-	p.WriteInt32(-1) // null MainWindowLayoutParams
+	p.WriteInt32(0) // null TopOpaqueWindowInsetsState
+	p.WriteInt32(0) // null TopOpaqueWindowLayoutParams
+	p.WriteInt32(0) // null MainWindowLayoutParams
 	p.WriteInt32(s.SplashScreenThemeResId)
 	p.WriteBool(s.IsKeyguardOccluded)
-	p.WriteInt32(-1) // null TaskSnapshot
+	p.WriteInt32(0) // null TaskSnapshot
 	p.WriteInt32(s.RequestedVisibleTypes)
-	p.WriteInt32(-1) // null AppToken
-	p.WriteInt32(-1) // null WindowlessStartingSurfaceCallback
-	p.WriteInt32(-1) // null RootSurface
+	p.WriteInt32(0) // null AppToken
+	p.WriteInt32(0) // null WindowlessStartingSurfaceCallback
+	p.WriteInt32(0) // null RootSurface
 	return nil
 }
 
@@ -39,21 +39,21 @@ func (s *StartingWindowInfo) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TaskInfo: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TargetActivityInfo: cannot skip unknown-size typed object
 		}
 	}
 	s.StartingWindowTypeParameter, _err = p.ReadInt32()
@@ -61,30 +61,30 @@ func (s *StartingWindowInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TopOpaqueWindowInsetsState: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TopOpaqueWindowLayoutParams: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null MainWindowLayoutParams: cannot skip unknown-size typed object
 		}
 	}
 	s.SplashScreenThemeResId, _err = p.ReadInt32()
@@ -96,12 +96,12 @@ func (s *StartingWindowInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TaskSnapshot: cannot skip unknown-size typed object
 		}
 	}
 	s.RequestedVisibleTypes, _err = p.ReadInt32()
@@ -127,12 +127,12 @@ func (s *StartingWindowInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RootSurface: cannot skip unknown-size typed object
 		}
 	}
 	return nil

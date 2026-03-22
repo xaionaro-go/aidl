@@ -27,10 +27,10 @@ func (s *EuiccProfileInfo) MarshalParcel(
 	p.WriteString16(s.ProfileName)
 	p.WriteInt32(s.ProfileClass)
 	p.WriteInt32(s.State)
-	p.WriteInt32(-1) // null (byte)1
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null (byte)1
+	p.WriteInt32(0) // null Dest
 	p.WriteInt32(s.PolicyRules)
-	p.WriteInt32(-1) // null AccessRules
+	p.WriteInt32(0) // null AccessRules
 	return nil
 }
 
@@ -63,12 +63,12 @@ func (s *EuiccProfileInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)1: cannot skip unknown-size typed object
 		}
 	}
 	{

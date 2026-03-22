@@ -495,16 +495,16 @@ parcelables:
         - name: Flg
           write_method: int32
         - name: AudioFormat
-          write_method: opaque
+          write_method: typed_object
         - name: AudioStreamParcelFileDescriptor
-          write_method: opaque
+          write_method: typed_object
         - name: Timestamp
-          write_method: opaque
+          write_method: typed_object
           condition: mTimestamp!=null
         - name: Metadata
-          write_method: opaque
+          write_method: typed_object
         - name: InitialAudio
-          write_method: opaque
+          write_method: byte_array
     - name: HotwordDetectedResult
       java_wire_format:
         - name: Flg
@@ -514,7 +514,7 @@ parcelables:
         - name: ConfidenceLevel
           write_method: int32
         - name: MediaSyncEvent
-          write_method: opaque
+          write_method: typed_object
           condition: mMediaSyncEvent!=null
         - name: HotwordOffsetMillis
           write_method: int32
@@ -531,7 +531,7 @@ parcelables:
         - name: AudioStreams
           write_method: opaque
         - name: Extras
-          write_method: opaque
+          write_method: typed_object
         - name: BackgroundAudioPower
           write_method: int32
     - name: HotwordDetectionServiceFailure
@@ -555,7 +555,7 @@ parcelables:
         - name: TaskId
           write_method: int32
         - name: AssistToken
-          write_method: opaque
+          write_method: binder
     - name: VisualQueryAttentionResult
       java_wire_format:
         - name: InteractionIntention
@@ -569,7 +569,7 @@ parcelables:
         - name: SpeakerId
           write_method: int32
         - name: AccessibilityDetectionData
-          write_method: opaque
+          write_method: byte_array
     - name: VisualQueryDetectionServiceFailure
       java_wire_format:
         - name: ErrorCode

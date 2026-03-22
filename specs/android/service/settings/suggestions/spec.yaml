@@ -38,8 +38,8 @@ parcelables:
         - name: Summary
           write_method: opaque
         - name: Icon
-          write_method: opaque
+          write_method: typed_object
         - name: Flags
           write_method: int32
         - name: PendingIntent
-          write_method: opaque
+          write_method: typed_object

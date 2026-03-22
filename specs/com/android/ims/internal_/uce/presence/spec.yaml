@@ -242,7 +242,7 @@ parcelables:
         - name: ContactUri
           write_method: string16
         - name: CapInfo
-          write_method: opaque
+          write_method: typed_object
     - name: PresCmdID
     - name: PresCmdStatus
       java_wire_format:
@@ -251,9 +251,9 @@ parcelables:
         - name: RequestId
           write_method: int32
         - name: CmdId
-          write_method: opaque
+          write_method: typed_object
         - name: Status
-          write_method: opaque
+          write_method: typed_object
     - name: PresPublishTriggerType
       java_wire_format:
         - name: PublishTriggerType
@@ -265,7 +265,7 @@ parcelables:
         - name: DisplayName
           write_method: string16
         - name: InstanceInfo
-          write_method: opaque
+          write_method: typed_object
     - name: PresResInstanceInfo
       java_wire_format:
         - name: Id
@@ -291,7 +291,7 @@ parcelables:
         - name: RequestId
           write_method: int32
         - name: PresSubscriptionState
-          write_method: opaque
+          write_method: typed_object
         - name: SubscriptionExpireTime
           write_method: int32
         - name: SubscriptionTerminatedReason
@@ -315,7 +315,7 @@ parcelables:
         - name: ReasonPhrase
           write_method: string16
         - name: CmdId
-          write_method: opaque
+          write_method: typed_object
         - name: RetryAfter
           write_method: int32
         - name: ReasonHeader

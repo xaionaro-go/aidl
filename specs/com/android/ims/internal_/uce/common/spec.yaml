@@ -66,7 +66,7 @@ parcelables:
         - name: CapTimestamp
           write_method: int64
         - name: CapInfoBundle
-          write_method: opaque
+          write_method: bundle
     - name: StatusCode
       java_wire_format:
         - name: StatusCode

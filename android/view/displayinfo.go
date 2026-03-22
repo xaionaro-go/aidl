@@ -53,12 +53,12 @@ func (s *DisplayInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.LayerStack)
-	p.WriteInt32(-1) // null This.flags
+	p.WriteInt32(0) // null This.flags
 	p.WriteInt32(s.Type)
 	p.WriteInt32(s.DisplayId)
 	p.WriteInt32(s.DisplayGroupId)
-	p.WriteInt32(-1) // null Address
-	p.WriteInt32(-1) // null DeviceProductInfo
+	p.WriteInt32(0) // null Address
+	p.WriteInt32(0) // null DeviceProductInfo
 	p.WriteString(s.Name)
 	p.WriteInt32(s.AppWidth)
 	p.WriteInt32(s.AppHeight)
@@ -68,16 +68,16 @@ func (s *DisplayInfo) MarshalParcel(
 	p.WriteInt32(s.LargestNominalAppHeight)
 	p.WriteInt32(s.LogicalWidth)
 	p.WriteInt32(s.LogicalHeight)
-	p.WriteInt32(-1) // null DisplayCutout
+	p.WriteInt32(0) // null DisplayCutout
 	p.WriteInt32(s.Rotation)
 	p.WriteInt32(s.ModeId)
 	p.WriteFloat32(s.RenderFrameRate)
 	p.WriteInt32(s.DefaultModeId)
 	p.WriteInt32(s.UserPreferredModeId)
-	p.WriteInt32(-1) // null SupportedModes.length
+	p.WriteInt32(0) // null SupportedModes.length
 	p.WriteInt32(s.ColorMode)
-	p.WriteInt32(-1) // null SupportedColorModes.length
-	p.WriteInt32(-1) // null HdrCapabilities
+	p.WriteInt32(0) // null SupportedColorModes.length
+	p.WriteInt32(0) // null HdrCapabilities
 	p.WriteBool(s.MinimalPostProcessingSupported)
 	p.WriteInt32(s.LogicalDensityDpi)
 	p.WriteFloat32(s.PhysicalXDpi)
@@ -94,13 +94,13 @@ func (s *DisplayInfo) MarshalParcel(
 	p.WriteFloat32(s.BrightnessMinimum)
 	p.WriteFloat32(s.BrightnessMaximum)
 	p.WriteFloat32(s.BrightnessDefault)
-	p.WriteInt32(-1) // null RoundedCorners
-	p.WriteInt32(-1) // null UserDisabledHdrTypes.length
+	p.WriteInt32(0) // null RoundedCorners
+	p.WriteInt32(0) // null UserDisabledHdrTypes.length
 	p.WriteInt32(s.InstallOrientation)
-	p.WriteInt32(-1) // null DisplayShape
-	p.WriteInt32(-1) // null LayoutLimitedRefreshRate
+	p.WriteInt32(0) // null DisplayShape
+	p.WriteInt32(0) // null LayoutLimitedRefreshRate
 	p.WriteFloat32(s.HdrSdrRatio)
-	p.WriteInt32(-1) // null ThermalRefreshRateThrottling
+	p.WriteInt32(0) // null ThermalRefreshRateThrottling
 	p.WriteString(s.ThermalBrightnessThrottlingDataId)
 	return nil
 }
@@ -114,12 +114,12 @@ func (s *DisplayInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.flags: cannot skip unknown-size typed object
 		}
 	}
 	s.Type, _err = p.ReadInt32()
@@ -135,21 +135,21 @@ func (s *DisplayInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Address: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DeviceProductInfo: cannot skip unknown-size typed object
 		}
 	}
 	s.Name, _err = p.ReadString()
@@ -218,12 +218,12 @@ func (s *DisplayInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SupportedModes.length: cannot skip unknown-size typed object
 		}
 	}
 	s.ColorMode, _err = p.ReadInt32()
@@ -231,21 +231,21 @@ func (s *DisplayInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SupportedColorModes.length: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HdrCapabilities: cannot skip unknown-size typed object
 		}
 	}
 	s.MinimalPostProcessingSupported, _err = p.ReadBool()
@@ -313,21 +313,21 @@ func (s *DisplayInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RoundedCorners: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null UserDisabledHdrTypes.length: cannot skip unknown-size typed object
 		}
 	}
 	s.InstallOrientation, _err = p.ReadInt32()
@@ -335,21 +335,21 @@ func (s *DisplayInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DisplayShape: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null LayoutLimitedRefreshRate: cannot skip unknown-size typed object
 		}
 	}
 	s.HdrSdrRatio, _err = p.ReadFloat32()

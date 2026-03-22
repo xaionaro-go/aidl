@@ -20,7 +20,7 @@ func (s *AmbientContextEvent) MarshalParcel(
 	p.WriteInt32(s.EventType)
 	p.WriteInt32(s.ConfidenceLevel)
 	p.WriteInt32(s.DensityLevel)
-	p.WriteInt32(-1) // null VendorData
+	p.WriteInt32(0) // null VendorData
 	return nil
 }
 
@@ -41,12 +41,12 @@ func (s *AmbientContextEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null VendorData: cannot skip unknown-size typed object
 		}
 	}
 	return nil

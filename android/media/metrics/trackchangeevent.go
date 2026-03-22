@@ -28,20 +28,20 @@ func (s *TrackChangeEvent) MarshalParcel(
 	p.WriteInt32(s.Flg)
 	p.WriteInt32(s.State)
 	p.WriteInt32(s.Reason)
-	p.WriteInt32(-1) // null ContainerMimeType
-	p.WriteInt32(-1) // null SampleMimeType
-	p.WriteInt32(-1) // null CodecName
+	p.WriteInt32(0) // null ContainerMimeType
+	p.WriteInt32(0) // null SampleMimeType
+	p.WriteInt32(0) // null CodecName
 	p.WriteInt32(s.Bitrate)
 	p.WriteInt64(s.TimeSinceCreatedMillis)
 	p.WriteInt32(s.Type)
-	p.WriteInt32(-1) // null Language
-	p.WriteInt32(-1) // null LanguageRegion
+	p.WriteInt32(0) // null Language
+	p.WriteInt32(0) // null LanguageRegion
 	p.WriteInt32(s.ChannelCount)
 	p.WriteInt32(s.AudioSampleRate)
 	p.WriteInt32(s.Width)
 	p.WriteInt32(s.Height)
 	p.WriteFloat32(s.VideoFrameRate)
-	p.WriteInt32(-1) // null MetricsBundle
+	p.WriteInt32(-1) // null MetricsBundle (Bundle)
 	return nil
 }
 
@@ -62,30 +62,30 @@ func (s *TrackChangeEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ContainerMimeType: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SampleMimeType: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CodecName: cannot skip unknown-size typed object
 		}
 	}
 	s.Bitrate, _err = p.ReadInt32()
@@ -101,21 +101,21 @@ func (s *TrackChangeEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Language: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null LanguageRegion: cannot skip unknown-size typed object
 		}
 	}
 	s.ChannelCount, _err = p.ReadInt32()

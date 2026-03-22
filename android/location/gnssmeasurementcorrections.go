@@ -27,10 +27,10 @@ func (s *GnssMeasurementCorrections) MarshalParcel(
 	p.WriteFloat64(s.HorizontalPositionUncertaintyMeters)
 	p.WriteFloat64(s.VerticalPositionUncertaintyMeters)
 	p.WriteInt64(s.ToaGpsNanosecondsOfWeek)
-	p.WriteInt32(-1) // null SingleSatCorrectionList
+	p.WriteInt32(0) // null SingleSatCorrectionList
 	p.WriteBool(s.HasEnvironmentBearing)
-	p.WriteInt32(-1) // null EnvironmentBearingDegrees
-	p.WriteInt32(-1) // null EnvironmentBearingUncertaintyDegrees
+	p.WriteInt32(0) // null EnvironmentBearingDegrees
+	p.WriteInt32(0) // null EnvironmentBearingUncertaintyDegrees
 	return nil
 }
 
@@ -76,21 +76,21 @@ func (s *GnssMeasurementCorrections) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null EnvironmentBearingDegrees: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null EnvironmentBearingUncertaintyDegrees: cannot skip unknown-size typed object
 		}
 	}
 	return nil

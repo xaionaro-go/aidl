@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*VcnUnderlyingNetworkPolicy)(nil)
 func (s *VcnUnderlyingNetworkPolicy) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null VcnNetworkPolicyResult
+	p.WriteInt32(0) // null VcnNetworkPolicyResult
 	return nil
 }
 
@@ -22,12 +22,12 @@ func (s *VcnUnderlyingNetworkPolicy) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null VcnNetworkPolicyResult: cannot skip unknown-size typed object
 		}
 	}
 	return nil

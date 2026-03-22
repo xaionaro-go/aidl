@@ -15,9 +15,9 @@ var _ parcel.Parcelable = (*VolumePolicy)(nil)
 func (s *VolumePolicy) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null VolumeDownToEnterSilent?1:0
-	p.WriteInt32(-1) // null VolumeUpToExitSilent?1:0
-	p.WriteInt32(-1) // null DoNotDisturbWhenSilent?1:0
+	p.WriteInt32(0) // null VolumeDownToEnterSilent?1:0
+	p.WriteInt32(0) // null VolumeUpToExitSilent?1:0
+	p.WriteInt32(0) // null DoNotDisturbWhenSilent?1:0
 	p.WriteInt32(s.VibrateToSilentDebounce)
 	return nil
 }
@@ -27,30 +27,30 @@ func (s *VolumePolicy) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null VolumeDownToEnterSilent?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null VolumeUpToExitSilent?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DoNotDisturbWhenSilent?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.VibrateToSilentDebounce, _err = p.ReadInt32()

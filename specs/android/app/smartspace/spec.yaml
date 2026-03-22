@@ -102,21 +102,21 @@ parcelables:
         - name: PackageName
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: SmartspaceSessionId
       java_wire_format:
         - name: Id
           write_method: string16
         - name: This.mUserHandle
-          write_method: opaque
+          write_method: typed_object
     - name: SmartspaceTarget
       java_wire_format:
         - name: This.mSmartspaceTargetId
           write_method: string16
         - name: This.mHeaderAction
-          write_method: opaque
+          write_method: typed_object
         - name: This.mBaseAction
-          write_method: opaque
+          write_method: typed_object
         - name: This.mCreationTimeMillis
           write_method: int64
         - name: This.mExpiryTimeMillis
@@ -136,23 +136,23 @@ parcelables:
         - name: This.mSourceNotificationKey
           write_method: string16
         - name: This.mComponentName
-          write_method: opaque
+          write_method: typed_object
         - name: This.mUserHandle
-          write_method: opaque
+          write_method: typed_object
         - name: This.mAssociatedSmartspaceTargetId
           write_method: string16
         - name: This.mSliceUri
-          write_method: opaque
+          write_method: typed_object
         - name: This.mWidget
-          write_method: opaque
+          write_method: typed_object
         - name: This.mTemplateData
-          write_method: opaque
+          write_method: typed_object
         - name: This.mRemoteViews
-          write_method: opaque
+          write_method: typed_object
     - name: SmartspaceTargetEvent
       java_wire_format:
         - name: SmartspaceTarget
-          write_method: opaque
+          write_method: typed_object
         - name: SmartspaceActionId
           write_method: string16
         - name: EventType

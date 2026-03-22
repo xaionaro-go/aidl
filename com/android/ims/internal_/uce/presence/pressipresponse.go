@@ -22,7 +22,7 @@ func (s *PresSipResponse) MarshalParcel(
 	p.WriteInt32(s.RequestId)
 	p.WriteInt32(s.SipResponseCode)
 	p.WriteString16(s.ReasonPhrase)
-	p.WriteInt32(-1) // null CmdId
+	p.WriteInt32(0) // null CmdId
 	p.WriteInt32(s.RetryAfter)
 	p.WriteString16(s.ReasonHeader)
 	return nil
@@ -45,12 +45,12 @@ func (s *PresSipResponse) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CmdId: cannot skip unknown-size typed object
 		}
 	}
 	s.RetryAfter, _err = p.ReadInt32()

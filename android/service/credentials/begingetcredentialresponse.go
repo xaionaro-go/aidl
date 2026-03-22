@@ -14,10 +14,10 @@ var _ parcel.Parcelable = (*BeginGetCredentialResponse)(nil)
 func (s *BeginGetCredentialResponse) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null CredentialEntries
-	p.WriteInt32(-1) // null AuthenticationEntries
-	p.WriteInt32(-1) // null Actions
-	p.WriteInt32(-1) // null RemoteCredentialEntry
+	p.WriteInt32(0) // null CredentialEntries
+	p.WriteInt32(0) // null AuthenticationEntries
+	p.WriteInt32(0) // null Actions
+	p.WriteInt32(0) // null RemoteCredentialEntry
 	return nil
 }
 
@@ -25,39 +25,39 @@ func (s *BeginGetCredentialResponse) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CredentialEntries: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AuthenticationEntries: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Actions: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RemoteCredentialEntry: cannot skip unknown-size typed object
 		}
 	}
 	return nil

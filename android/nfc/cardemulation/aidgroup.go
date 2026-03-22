@@ -16,8 +16,8 @@ func (s *AidGroup) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString(s.Category)
-	p.WriteInt32(-1) // null Aids.size()
-	p.WriteInt32(-1) // null Aids
+	p.WriteInt32(0) // null Aids.size()
+	p.WriteInt32(0) // null Aids
 	return nil
 }
 
@@ -30,12 +30,12 @@ func (s *AidGroup) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Aids.size(): cannot skip unknown-size typed object
 		}
 	}
 	{

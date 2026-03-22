@@ -16,10 +16,10 @@ func (s *ApkChecksum) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Flg)
-	p.WriteInt32(-1) // null SplitName
-	p.WriteInt32(-1) // null Checksum
-	p.WriteInt32(-1) // null InstallerPackageName
-	p.WriteInt32(-1) // null InstallerCertificate
+	p.WriteInt32(0) // null SplitName
+	p.WriteInt32(0) // null Checksum
+	p.WriteInt32(0) // null InstallerPackageName
+	p.WriteInt32(0) // null InstallerCertificate
 	return nil
 }
 
@@ -32,30 +32,30 @@ func (s *ApkChecksum) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SplitName: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Checksum: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InstallerPackageName: cannot skip unknown-size typed object
 		}
 	}
 	{

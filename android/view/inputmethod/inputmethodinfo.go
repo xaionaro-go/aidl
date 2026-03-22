@@ -30,16 +30,16 @@ func (s *InputMethodInfo) MarshalParcel(
 	p.WriteString16(s.SettingsActivityName)
 	p.WriteString(s.LanguageSettingsActivityName)
 	p.WriteInt32(s.IsDefaultResId)
-	p.WriteInt32(-1) // null IsAuxIme?1:0
-	p.WriteInt32(-1) // null SupportsSwitchingToNextInputMethod?1:0
-	p.WriteInt32(-1) // null InlineSuggestionsEnabled?1:0
-	p.WriteInt32(-1) // null SupportsInlineSuggestionsWithTouchExploration?1:0
+	p.WriteInt32(0) // null IsAuxIme?1:0
+	p.WriteInt32(0) // null SupportsSwitchingToNextInputMethod?1:0
+	p.WriteInt32(0) // null InlineSuggestionsEnabled?1:0
+	p.WriteInt32(0) // null SupportsInlineSuggestionsWithTouchExploration?1:0
 	p.WriteBool(s.SuppressesSpellChecker)
 	p.WriteBool(s.ShowInInputMethodPicker)
 	p.WriteBool(s.IsVrOnly)
 	p.WriteBool(s.IsVirtualDeviceOnly)
-	p.WriteInt32(-1) // null Dest
-	p.WriteInt32(-1) // null Dest2
+	p.WriteInt32(0) // null Dest
+	p.WriteInt32(0) // null Dest
 	p.WriteInt32(s.HandledConfigChanges)
 	p.WriteBool(s.SupportsStylusHandwriting)
 	p.WriteBool(s.SupportsConnectionlessStylusHandwriting)
@@ -68,39 +68,39 @@ func (s *InputMethodInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsAuxIme?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SupportsSwitchingToNextInputMethod?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InlineSuggestionsEnabled?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SupportsInlineSuggestionsWithTouchExploration?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.SuppressesSpellChecker, _err = p.ReadBool()

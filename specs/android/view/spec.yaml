@@ -3458,9 +3458,9 @@ parcelables:
         - name: TaskId
           write_method: int32
         - name: Rect
-          write_method: opaque
+          write_method: typed_object
         - name: Buffer
-          write_method: opaque
+          write_method: typed_object
     - name: ContentRecordingSession
       java_wire_format:
         - name: Flg
@@ -3472,7 +3472,7 @@ parcelables:
         - name: DisplayToRecord
           write_method: int32
         - name: TokenToRecord
-          write_method: opaque
+          write_method: binder
           condition: mTokenToRecord!=null
         - name: TargetUid
           write_method: int32
@@ -3491,9 +3491,9 @@ parcelables:
         - name: DisplayGroupId
           write_method: int32
         - name: Address
-          write_method: opaque
+          write_method: typed_object
         - name: DeviceProductInfo
-          write_method: opaque
+          write_method: typed_object
         - name: Name
           write_method: string8
         - name: AppWidth
@@ -3531,7 +3531,7 @@ parcelables:
         - name: SupportedColorModes.length
           write_method: int32
         - name: HdrCapabilities
-          write_method: opaque
+          write_method: typed_object
         - name: MinimalPostProcessingSupported
           write_method: bool
         - name: LogicalDensityDpi
@@ -3565,15 +3565,15 @@ parcelables:
         - name: BrightnessDefault
           write_method: float32
         - name: RoundedCorners
-          write_method: opaque
+          write_method: typed_object
         - name: UserDisabledHdrTypes.length
           write_method: int32
         - name: InstallOrientation
           write_method: int32
         - name: DisplayShape
-          write_method: opaque
+          write_method: typed_object
         - name: LayoutLimitedRefreshRate
-          write_method: opaque
+          write_method: typed_object
         - name: HdrSdrRatio
           write_method: float32
         - name: ThermalRefreshRateThrottling
@@ -3677,11 +3677,11 @@ parcelables:
     - name: InputMonitor
       java_wire_format:
         - name: InputChannel
-          write_method: opaque
+          write_method: typed_object
         - name: Host
           write_method: opaque
         - name: Surface
-          write_method: opaque
+          write_method: typed_object
     - name: InsetsSourceControl
       java_wire_format:
         - name: Id
@@ -3689,13 +3689,13 @@ parcelables:
         - name: Type
           write_method: int32
         - name: Leash
-          write_method: opaque
+          write_method: typed_object
         - name: InitiallyVisible
           write_method: bool
         - name: SurfacePosition
-          write_method: opaque
+          write_method: typed_object
         - name: InsetsHint
-          write_method: opaque
+          write_method: typed_object
         - name: SkipAnimationOnce
           write_method: bool
     - name: InsetsSourceControl.Array
@@ -3706,13 +3706,13 @@ parcelables:
         - name: Dest
           write_method: opaque
         - name: RoundedCorners
-          write_method: opaque
+          write_method: typed_object
         - name: Dest
           write_method: opaque
         - name: PrivacyIndicatorBounds
-          write_method: opaque
+          write_method: typed_object
         - name: DisplayShape
-          write_method: opaque
+          write_method: typed_object
         - name: Size
           write_method: int32
     - name: KeyCharacterMap
@@ -3731,7 +3731,7 @@ parcelables:
         - name: DisplayId
           write_method: int32
         - name: Hmac
-          write_method: opaque
+          write_method: byte_array
         - name: Action
           write_method: int32
         - name: KeyCode
@@ -3797,33 +3797,33 @@ parcelables:
         - name: Mode
           write_method: int32
         - name: Leash
-          write_method: opaque
+          write_method: typed_object
         - name: IsTranslucent
           write_method: bool
         - name: ClipRect
-          write_method: opaque
+          write_method: typed_object
         - name: ContentInsets
-          write_method: opaque
+          write_method: typed_object
         - name: PrefixOrderIndex
           write_method: int32
         - name: Position
-          write_method: opaque
+          write_method: typed_object
         - name: LocalBounds
-          write_method: opaque
+          write_method: typed_object
         - name: SourceContainerBounds
-          write_method: opaque
+          write_method: typed_object
         - name: ScreenSpaceBounds
-          write_method: opaque
+          write_method: typed_object
         - name: WindowConfiguration
-          write_method: opaque
+          write_method: typed_object
         - name: IsNotInRecents
           write_method: bool
         - name: StartLeash
-          write_method: opaque
+          write_method: typed_object
         - name: StartBounds
-          write_method: opaque
+          write_method: typed_object
         - name: TaskInfo
-          write_method: opaque
+          write_method: typed_object
         - name: AllowEnterPip
           write_method: bool
         - name: WindowType
@@ -3853,10 +3853,10 @@ parcelables:
           write_method: opaque
           condition: mConnection!=null
         - name: WindowBounds
-          write_method: opaque
+          write_method: typed_object
           condition: mWindowBounds!=null
         - name: BoundsInWindow
-          write_method: opaque
+          write_method: typed_object
           condition: mBoundsInWindow!=null
         - name: WindowTitle
           write_method: string16
@@ -3963,11 +3963,11 @@ parcelables:
         - name: Layer
           write_method: int32
         - name: Token
-          write_method: opaque
+          write_method: binder
         - name: ParentToken
-          write_method: opaque
+          write_method: binder
         - name: ActivityToken
-          write_method: opaque
+          write_method: binder
         - name: Focused?1:0
           write_method: int32
         - name: Parcel
@@ -3991,7 +3991,7 @@ parcelables:
         - name: Parcel
           write_method: opaque
         - name: Locales
-          write_method: opaque
+          write_method: typed_object
     - name: WindowManager.LayoutParams
     - name: WindowManager.TaskSnapshot
 enums:

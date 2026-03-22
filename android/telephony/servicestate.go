@@ -37,18 +37,18 @@ func (s *ServiceState) MarshalParcel(
 	p.WriteString16(s.OperatorAlphaLong)
 	p.WriteString16(s.OperatorAlphaShort)
 	p.WriteString16(s.OperatorNumeric)
-	p.WriteInt32(-1) // null IsManualNetworkSelection?1:0
-	p.WriteInt32(-1) // null CssIndicator?1:0
+	p.WriteInt32(0) // null IsManualNetworkSelection?1:0
+	p.WriteInt32(0) // null CssIndicator?1:0
 	p.WriteInt32(s.NetworkId)
 	p.WriteInt32(s.SystemId)
 	p.WriteInt32(s.CdmaRoamingIndicator)
 	p.WriteInt32(s.CdmaDefaultRoamingIndicator)
 	p.WriteInt32(s.CdmaEriIconIndex)
 	p.WriteInt32(s.CdmaEriIconMode)
-	p.WriteInt32(-1) // null IsEmergencyOnly?1:0
+	p.WriteInt32(0) // null IsEmergencyOnly?1:0
 	p.WriteInt32(s.ArfcnRsrpBoost)
 	p.WriteInt32(s.ChannelNumber)
-	p.WriteInt32(-1) // null CellBandwidths
+	p.WriteInt32(0) // null CellBandwidths
 	p.WriteInt32(s.NrFrequencyRange)
 	p.WriteString16(s.OperatorAlphaLongRaw)
 	p.WriteString16(s.OperatorAlphaShortRaw)
@@ -82,21 +82,21 @@ func (s *ServiceState) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsManualNetworkSelection?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CssIndicator?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.NetworkId, _err = p.ReadInt32()
@@ -124,12 +124,12 @@ func (s *ServiceState) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsEmergencyOnly?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.ArfcnRsrpBoost, _err = p.ReadInt32()

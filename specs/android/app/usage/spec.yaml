@@ -803,7 +803,7 @@ parcelables:
         - name: Quota
           write_method: int64
         - name: UsageStats
-          write_method: opaque
+          write_method: typed_object
     - name: ExternalStorageStats
       java_wire_format:
         - name: TotalBytes
@@ -827,7 +827,7 @@ parcelables:
           write_method: int32
           condition: N>0 && i<N
         - name: Retriever
-          write_method: opaque
+          write_method: binder
           condition: N>0 && i<N
     - name: StorageStats
       java_wire_format:

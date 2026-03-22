@@ -22,10 +22,10 @@ func (s *PresRlmiInfo) MarshalParcel(
 ) error {
 	p.WriteString16(s.Uri)
 	p.WriteInt32(s.Version)
-	p.WriteInt32(-1) // null FullState?1:0
+	p.WriteInt32(0) // null FullState?1:0
 	p.WriteString16(s.ListName)
 	p.WriteInt32(s.RequestId)
-	p.WriteInt32(-1) // null PresSubscriptionState
+	p.WriteInt32(0) // null PresSubscriptionState
 	p.WriteInt32(s.SubscriptionExpireTime)
 	p.WriteString16(s.SubscriptionTerminatedReason)
 	return nil
@@ -44,12 +44,12 @@ func (s *PresRlmiInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FullState?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.ListName, _err = p.ReadString16()
@@ -61,12 +61,12 @@ func (s *PresRlmiInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PresSubscriptionState: cannot skip unknown-size typed object
 		}
 	}
 	s.SubscriptionExpireTime, _err = p.ReadInt32()

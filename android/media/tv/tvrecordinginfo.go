@@ -32,10 +32,10 @@ func (s *TvRecordingInfo) MarshalParcel(
 	p.WriteString16(s.Description)
 	p.WriteInt64(s.ScheduledStartTimeMillis)
 	p.WriteInt64(s.ScheduledDurationMillis)
-	p.WriteInt32(-1) // null ChannelUri==null?null:mChannelUri.toString()
-	p.WriteInt32(-1) // null ProgramUri==null?null:mProgramUri.toString()
-	p.WriteInt32(-1) // null ContentRatings
-	p.WriteInt32(-1) // null RecordingUri==null?null:mProgramUri.toString()
+	p.WriteInt32(0) // null ChannelUri==null?null:mChannelUri.toString()
+	p.WriteInt32(0) // null ProgramUri==null?null:mProgramUri.toString()
+	p.WriteInt32(0) // null ContentRatings
+	p.WriteInt32(0) // null RecordingUri==null?null:mProgramUri.toString()
 	p.WriteInt64(s.RecordingDurationMillis)
 	p.WriteInt64(s.RecordingStartTimeMillis)
 	return nil
@@ -78,12 +78,21 @@ func (s *TvRecordingInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ChannelUri==null?null:mChannelUri.toString(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null ProgramUri==null?null:mProgramUri.toString(): cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -96,21 +105,12 @@ func (s *TvRecordingInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RecordingUri==null?null:mProgramUri.toString(): cannot skip unknown-size typed object
 		}
 	}
 	s.RecordingDurationMillis, _err = p.ReadInt64()

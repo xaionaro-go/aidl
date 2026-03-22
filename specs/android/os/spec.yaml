@@ -5941,9 +5941,9 @@ parcelables:
         - name: Pkg
           write_method: string16
         - name: Controller.asBinder()
-          write_method: opaque
+          write_method: binder
         - name: Token
-          write_method: opaque
+          write_method: binder
     - name: ExternalVibrationScale
       fields:
         - name: scaleLevel
@@ -6127,7 +6127,7 @@ parcelables:
         - name: When
           write_method: int64
         - name: Data
-          write_method: opaque
+          write_method: bundle
         - name: ReplyTo
           write_method: opaque
         - name: SendingUid
@@ -6137,7 +6137,7 @@ parcelables:
     - name: Messenger
       java_wire_format:
         - name: Target.asBinder()
-          write_method: opaque
+          write_method: binder
     - name: PackageTagsList
       java_wire_format:
         - name: Count
@@ -6238,7 +6238,7 @@ parcelables:
     - name: RemoteCallback
       java_wire_format:
         - name: Callback.asBinder()
-          write_method: opaque
+          write_method: binder
     - name: ResultReceiver
       annotations:
         - JavaOnlyStableParcelable

@@ -15,10 +15,10 @@ var _ parcel.Parcelable = (*StreamingCall)(nil)
 func (s *StreamingCall) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null ComponentName
-	p.WriteInt32(-1) // null DisplayName
-	p.WriteInt32(-1) // null Address
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(0)  // null ComponentName
+	p.WriteInt32(0)  // null DisplayName
+	p.WriteInt32(0)  // null Address
+	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteInt32(s.State)
 	return nil
 }
@@ -28,12 +28,12 @@ func (s *StreamingCall) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ComponentName: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -46,12 +46,12 @@ func (s *StreamingCall) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Address: cannot skip unknown-size typed object
 		}
 	}
 	{

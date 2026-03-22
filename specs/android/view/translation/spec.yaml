@@ -208,9 +208,9 @@ parcelables:
         - name: State
           write_method: int32
         - name: SourceSpec
-          write_method: opaque
+          write_method: typed_object
         - name: TargetSpec
-          write_method: opaque
+          write_method: typed_object
         - name: SupportedTranslationFlags
           write_method: int32
     - name: TranslationContext
@@ -218,9 +218,9 @@ parcelables:
         - name: Flg
           write_method: int32
         - name: SourceSpec
-          write_method: opaque
+          write_method: typed_object
         - name: TargetSpec
-          write_method: opaque
+          write_method: typed_object
         - name: TranslationFlags
           write_method: int32
     - name: TranslationRequest
@@ -258,7 +258,7 @@ parcelables:
           write_method: opaque
           condition: mText!=null
         - name: Extras
-          write_method: opaque
+          write_method: bundle
         - name: Transliteration
           write_method: opaque
           condition: mTransliteration!=null
@@ -275,12 +275,12 @@ parcelables:
     - name: ViewTranslationRequest
       java_wire_format:
         - name: AutofillId
-          write_method: opaque
+          write_method: typed_object
         - name: TranslationRequestValues
           write_method: opaque
     - name: ViewTranslationResponse
       java_wire_format:
         - name: AutofillId
-          write_method: opaque
+          write_method: typed_object
         - name: TranslationResponseValues
           write_method: opaque

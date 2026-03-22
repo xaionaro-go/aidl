@@ -17,10 +17,10 @@ func (s *DisplayHash) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt64(s.TimeMillis)
-	p.WriteInt32(-1) // null BoundsInWindow
+	p.WriteInt32(0) // null BoundsInWindow
 	p.WriteString16(s.HashAlgorithm)
-	p.WriteInt32(-1) // null ImageHash
-	p.WriteInt32(-1) // null Hmac
+	p.WriteInt32(0) // null ImageHash
+	p.WriteInt32(0) // null Hmac
 	return nil
 }
 
@@ -33,12 +33,12 @@ func (s *DisplayHash) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null BoundsInWindow: cannot skip unknown-size typed object
 		}
 	}
 	s.HashAlgorithm, _err = p.ReadString16()

@@ -509,7 +509,7 @@ parcelables:
         - name: Result
           write_method: int32
         - name: This.mSubscription
-          write_method: opaque
+          write_method: typed_object
     - name: GetEuiccProfileInfoListResult
       java_wire_format:
         - name: Result

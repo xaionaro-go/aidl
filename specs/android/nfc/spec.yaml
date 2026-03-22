@@ -1171,15 +1171,15 @@ parcelables:
         - name: Type.length
           write_method: int32
         - name: Type
-          write_method: opaque
+          write_method: byte_array
         - name: Id.length
           write_method: int32
         - name: Id
-          write_method: opaque
+          write_method: byte_array
         - name: Payload.length
           write_method: int32
         - name: Payload
-          write_method: opaque
+          write_method: byte_array
     - name: NfcAntennaInfo
       java_wire_format:
         - name: DeviceWidth
@@ -1205,7 +1205,7 @@ parcelables:
         - name: IsMock
           write_method: int32
         - name: TagService.asBinder()
-          write_method: opaque
+          write_method: binder
           condition: isMock==0
     - name: TechListParcel
       java_wire_format:
@@ -1219,7 +1219,7 @@ parcelables:
           write_method: int32
           condition: mResult==RESULT_SUCCESS
         - name: ResponseData
-          write_method: opaque
+          write_method: byte_array
           condition: mResult==RESULT_SUCCESS
     - name: WlcListenerDeviceInfo
       java_wire_format:

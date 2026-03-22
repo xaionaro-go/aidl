@@ -23,24 +23,24 @@ var _ parcel.Parcelable = (*PrintJobInfo)(nil)
 func (s *PrintJobInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Id
+	p.WriteInt32(0) // null Id
 	p.WriteString16(s.Label)
-	p.WriteInt32(-1) // null PrinterId
+	p.WriteInt32(0) // null PrinterId
 	p.WriteString16(s.PrinterName)
 	p.WriteInt32(s.State)
 	p.WriteInt32(s.AppId)
 	p.WriteString16(s.Tag)
 	p.WriteInt64(s.CreationTime)
 	p.WriteInt32(s.Copies)
-	p.WriteInt32(-1) // null PageRanges
-	p.WriteInt32(-1) // null Attributes
-	p.WriteInt32(-1) // null DocumentInfo
+	p.WriteInt32(0) // null PageRanges
+	p.WriteInt32(0) // null Attributes
+	p.WriteInt32(0) // null DocumentInfo
 	p.WriteFloat32(s.Progress)
-	p.WriteInt32(-1) // null Status
+	p.WriteInt32(0) // null Status
 	p.WriteInt32(s.StatusRes)
-	p.WriteInt32(-1) // null StatusResAppPackageName
-	p.WriteInt32(-1) // null Canceling?1:0
-	p.WriteInt32(-1) // null AdvancedOptions
+	p.WriteInt32(0)  // null StatusResAppPackageName
+	p.WriteInt32(0)  // null Canceling?1:0
+	p.WriteInt32(-1) // null AdvancedOptions (Bundle)
 	return nil
 }
 
@@ -49,12 +49,12 @@ func (s *PrintJobInfo) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Id: cannot skip unknown-size typed object
 		}
 	}
 	s.Label, _err = p.ReadString16()
@@ -62,12 +62,12 @@ func (s *PrintJobInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PrinterId: cannot skip unknown-size typed object
 		}
 	}
 	s.PrinterName, _err = p.ReadString16()
@@ -104,21 +104,21 @@ func (s *PrintJobInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Attributes: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DocumentInfo: cannot skip unknown-size typed object
 		}
 	}
 	s.Progress, _err = p.ReadFloat32()
@@ -148,12 +148,12 @@ func (s *PrintJobInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Canceling?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{

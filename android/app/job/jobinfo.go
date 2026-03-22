@@ -32,34 +32,34 @@ func (s *JobInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.JobId)
-	p.WriteInt32(-1) // null Extras
-	p.WriteInt32(-1) // null TransientExtras
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Out
-	p.WriteInt32(-1) // null ClipGrantFlags
-	p.WriteInt32(-1) // null Service
+	p.WriteInt32(0)  // null Extras
+	p.WriteInt32(-1) // null TransientExtras (Bundle)
+	p.WriteInt32(0)  // null 1
+	p.WriteInt32(0)  // null Out
+	p.WriteInt32(0)  // null ClipGrantFlags
+	p.WriteInt32(0)  // null Service
 	p.WriteInt32(s.ConstraintFlags)
-	p.WriteInt32(-1) // null TriggerContentUris
+	p.WriteInt32(0) // null TriggerContentUris
 	p.WriteInt64(s.TriggerContentUpdateDelay)
 	p.WriteInt64(s.TriggerContentMaxDelay)
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Out
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Out
 	p.WriteInt64(s.NetworkDownloadBytes)
 	p.WriteInt64(s.NetworkUploadBytes)
 	p.WriteInt64(s.MinimumNetworkChunkBytes)
 	p.WriteInt64(s.MinLatencyMillis)
 	p.WriteInt64(s.MaxExecutionDelayMillis)
-	p.WriteInt32(-1) // null IsPeriodic?1:0
-	p.WriteInt32(-1) // null IsPersisted?1:0
+	p.WriteInt32(0) // null IsPeriodic?1:0
+	p.WriteInt32(0) // null IsPersisted?1:0
 	p.WriteInt64(s.IntervalMillis)
 	p.WriteInt64(s.FlexMillis)
 	p.WriteInt64(s.InitialBackoffMillis)
 	p.WriteInt32(s.BackoffPolicy)
-	p.WriteInt32(-1) // null HasEarlyConstraint?1:0
-	p.WriteInt32(-1) // null HasLateConstraint?1:0
+	p.WriteInt32(0) // null HasEarlyConstraint?1:0
+	p.WriteInt32(0) // null HasLateConstraint?1:0
 	p.WriteInt32(s.Bias)
 	p.WriteInt32(s.Priority)
-	p.WriteInt32(-1) // null This.flags
+	p.WriteInt32(0) // null This.flags
 	p.WriteInt32(s.NumDebugTags)
 	p.WriteString16(s.TraceTag)
 	return nil
@@ -92,12 +92,12 @@ func (s *JobInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -110,21 +110,21 @@ func (s *JobInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ClipGrantFlags: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Service: cannot skip unknown-size typed object
 		}
 	}
 	s.ConstraintFlags, _err = p.ReadInt32()
@@ -149,12 +149,12 @@ func (s *JobInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -187,21 +187,21 @@ func (s *JobInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsPeriodic?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsPersisted?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.IntervalMillis, _err = p.ReadInt64()
@@ -221,21 +221,21 @@ func (s *JobInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HasEarlyConstraint?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HasLateConstraint?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.Bias, _err = p.ReadInt32()
@@ -247,12 +247,12 @@ func (s *JobInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.flags: cannot skip unknown-size typed object
 		}
 	}
 	s.NumDebugTags, _err = p.ReadInt32()

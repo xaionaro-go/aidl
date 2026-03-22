@@ -23,7 +23,7 @@ func (s *TvInputHardwareInfo) MarshalParcel(
 	p.WriteInt32(s.Type)
 	p.WriteInt32(s.AudioType)
 	p.WriteString16(s.AudioAddress)
-	p.WriteInt32(-1) // null HdmiPortId
+	p.WriteInt32(0) // null HdmiPortId
 	p.WriteInt32(s.CableConnectionStatus)
 	return nil
 }
@@ -49,12 +49,12 @@ func (s *TvInputHardwareInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HdmiPortId: cannot skip unknown-size typed object
 		}
 	}
 	s.CableConnectionStatus, _err = p.ReadInt32()

@@ -18,7 +18,7 @@ func (s *SrvccCall) MarshalParcel(
 ) error {
 	p.WriteString16(s.CallId)
 	p.WriteInt32(s.CallState)
-	p.WriteInt32(-1) // null ImsCallProfile
+	p.WriteInt32(0) // null ImsCallProfile
 	return nil
 }
 
@@ -35,12 +35,12 @@ func (s *SrvccCall) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ImsCallProfile: cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -27,15 +27,15 @@ func (s *HotwordDetectedResult) MarshalParcel(
 	p.WriteInt32(s.Flg)
 	p.WriteInt32(s.SpeakerId)
 	p.WriteInt32(s.ConfidenceLevel)
-	p.WriteInt32(-1) // null MediaSyncEvent
+	p.WriteInt32(0) // null MediaSyncEvent
 	p.WriteInt32(s.HotwordOffsetMillis)
 	p.WriteInt32(s.HotwordDurationMillis)
 	p.WriteInt32(s.AudioChannel)
 	p.WriteInt32(s.Score)
 	p.WriteInt32(s.PersonalizedScore)
 	p.WriteInt32(s.HotwordPhraseId)
-	p.WriteInt32(-1) // null AudioStreams
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(0) // null AudioStreams
+	p.WriteInt32(0) // null Extras
 	p.WriteInt32(s.BackgroundAudioPower)
 	return nil
 }
@@ -57,12 +57,12 @@ func (s *HotwordDetectedResult) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null MediaSyncEvent: cannot skip unknown-size typed object
 		}
 	}
 	s.HotwordOffsetMillis, _err = p.ReadInt32()
@@ -99,12 +99,12 @@ func (s *HotwordDetectedResult) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Extras: cannot skip unknown-size typed object
 		}
 	}
 	s.BackgroundAudioPower, _err = p.ReadInt32()

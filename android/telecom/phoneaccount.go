@@ -18,20 +18,20 @@ var _ parcel.Parcelable = (*PhoneAccount)(nil)
 func (s *PhoneAccount) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null 0
-	p.WriteInt32(-1) // null 0
-	p.WriteInt32(-1) // null 0
+	p.WriteInt32(0) // null 0
+	p.WriteInt32(0) // null 0
+	p.WriteInt32(0) // null 0
 	p.WriteInt32(s.Capabilities)
 	p.WriteInt32(s.HighlightColor)
-	p.WriteInt32(-1) // null Label
-	p.WriteInt32(-1) // null ShortDescription
-	p.WriteInt32(-1) // null SupportedUriSchemes
-	p.WriteInt32(-1) // null 0
-	p.WriteInt32(-1) // null (byte)(mIsEnabled?1:0)
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(0)  // null Label
+	p.WriteInt32(0)  // null ShortDescription
+	p.WriteInt32(0)  // null SupportedUriSchemes
+	p.WriteInt32(0)  // null 0
+	p.WriteInt32(0)  // null (byte)(mIsEnabled?1:0)
+	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteString16(s.GroupId)
 	p.WriteInt32(s.SupportedAudioRoutes)
-	p.WriteInt32(-1) // null False
+	p.WriteInt32(0) // null False
 	return nil
 }
 
@@ -40,30 +40,30 @@ func (s *PhoneAccount) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 0: cannot skip unknown-size typed object
 		}
 	}
 	s.Capabilities, _err = p.ReadInt32()
@@ -102,21 +102,21 @@ func (s *PhoneAccount) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(mIsEnabled?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -137,12 +137,12 @@ func (s *PhoneAccount) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null False: cannot skip unknown-size typed object
 		}
 	}
 	return nil

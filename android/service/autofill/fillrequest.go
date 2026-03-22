@@ -19,12 +19,12 @@ func (s *FillRequest) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Flg)
 	p.WriteInt32(s.Id)
-	p.WriteInt32(-1) // null FillContexts
-	p.WriteInt32(-1) // null Hints
-	p.WriteInt32(-1) // null ClientState
+	p.WriteInt32(0)  // null FillContexts
+	p.WriteInt32(0)  // null Hints
+	p.WriteInt32(-1) // null ClientState (Bundle)
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(-1) // null InlineSuggestionsRequest
-	p.WriteInt32(-1) // null DelayedFillIntentSender
+	p.WriteInt32(0) // null InlineSuggestionsRequest
+	p.WriteInt32(0) // null DelayedFillIntentSender
 	return nil
 }
 
@@ -72,21 +72,21 @@ func (s *FillRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InlineSuggestionsRequest: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DelayedFillIntentSender: cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -423,7 +423,7 @@ parcelables:
         - name: ProxyPort
           write_method: int32
         - name: Mmsc
-          write_method: opaque
+          write_method: typed_object
         - name: MmsProxyAddress
           write_method: string16
         - name: MmsProxyPort
@@ -511,11 +511,11 @@ parcelables:
         - name: PduSessionId
           write_method: int32
         - name: DefaultQos
-          write_method: opaque
+          write_method: typed_object
         - name: QosBearerSessions
           write_method: opaque
         - name: SliceInfo
-          write_method: opaque
+          write_method: typed_object
         - name: TrafficDescriptors
           write_method: opaque
         - name: NetworkValidationStatus
@@ -525,9 +525,9 @@ parcelables:
         - name: Type
           write_method: int32
         - name: ApnSetting
-          write_method: opaque
+          write_method: typed_object
         - name: TrafficDescriptor
-          write_method: opaque
+          write_method: typed_object
         - name: Preferred
           write_method: bool
         - name: SetupTimestamp
@@ -613,7 +613,7 @@ parcelables:
         - name: Dnn
           write_method: string16
         - name: OsAppId!=null?mOsAppId.getBytes():null
-          write_method: opaque
+          write_method: byte_array
     - name: UrspRule
       java_wire_format:
         - name: Precedence

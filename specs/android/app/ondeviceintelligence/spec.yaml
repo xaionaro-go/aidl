@@ -397,7 +397,7 @@ parcelables:
     - name: Content
       java_wire_format:
         - name: Data
-          write_method: opaque
+          write_method: bundle
     - name: Feature
       java_wire_format:
         - name: Flg
@@ -415,10 +415,10 @@ parcelables:
         - name: Variant
           write_method: int32
         - name: FeatureParams
-          write_method: opaque
+          write_method: typed_object
     - name: FeatureDetails
       java_wire_format:
         - name: Status
           write_method: int32
         - name: FeatureDetailParams
-          write_method: opaque
+          write_method: typed_object

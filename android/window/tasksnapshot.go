@@ -24,14 +24,14 @@ func (s *TaskSnapshot) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt64(s.Id)
-	p.WriteInt32(-1) // null TopActivityComponent
-	p.WriteInt32(-1) // null Snapshot!=null&&!mSnapshot.isClosed()?mSnapshot:null
-	p.WriteInt32(-1) // null ColorSpace.getId()
+	p.WriteInt32(0) // null TopActivityComponent
+	p.WriteInt32(0) // null Snapshot!=null&&!mSnapshot.isClosed()?mSnapshot:null
+	p.WriteInt32(0) // null ColorSpace.getId()
 	p.WriteInt32(s.Orientation)
 	p.WriteInt32(s.Rotation)
-	p.WriteInt32(-1) // null TaskSize
-	p.WriteInt32(-1) // null ContentInsets
-	p.WriteInt32(-1) // null LetterboxInsets
+	p.WriteInt32(0) // null TaskSize
+	p.WriteInt32(0) // null ContentInsets
+	p.WriteInt32(0) // null LetterboxInsets
 	p.WriteBool(s.IsLowResolution)
 	p.WriteBool(s.IsRealSnapshot)
 	p.WriteInt32(s.WindowingMode)
@@ -59,21 +59,21 @@ func (s *TaskSnapshot) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Snapshot!=null&&!mSnapshot.isClosed()?mSnapshot:null: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ColorSpace.getId(): cannot skip unknown-size typed object
 		}
 	}
 	s.Orientation, _err = p.ReadInt32()
@@ -85,30 +85,30 @@ func (s *TaskSnapshot) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TaskSize: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ContentInsets: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null LetterboxInsets: cannot skip unknown-size typed object
 		}
 	}
 	s.IsLowResolution, _err = p.ReadBool()

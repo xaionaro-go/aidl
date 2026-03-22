@@ -76,6 +76,6 @@ parcelables:
     - name: WebViewProviderResponse
       java_wire_format:
         - name: PackageInfo
-          write_method: opaque
+          write_method: typed_object
         - name: Status
           write_method: int32

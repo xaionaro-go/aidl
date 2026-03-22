@@ -22,8 +22,8 @@ func (s *ConversationStatus) MarshalParcel(
 	p.WriteString16(s.Id)
 	p.WriteInt32(s.Activity)
 	p.WriteInt32(s.Availability)
-	p.WriteInt32(-1) // null Description
-	p.WriteInt32(-1) // null Icon
+	p.WriteInt32(0) // null Description
+	p.WriteInt32(0) // null Icon
 	p.WriteInt64(s.StartTimeMs)
 	p.WriteInt64(s.EndTimeMs)
 	return nil
@@ -55,12 +55,12 @@ func (s *ConversationStatus) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Icon: cannot skip unknown-size typed object
 		}
 	}
 	s.StartTimeMs, _err = p.ReadInt64()

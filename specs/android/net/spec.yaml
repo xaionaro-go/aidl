@@ -1106,7 +1106,7 @@ parcelables:
         - name: Ifname
           write_method: string16
         - name: Data
-          write_method: opaque
+          write_method: typed_object
     - name: InterfaceConfiguration
       java_wire_format:
         - name: HwAddr
@@ -1115,7 +1115,7 @@ parcelables:
           write_method: int32
           condition: mAddr!=null
         - name: Addr
-          write_method: opaque
+          write_method: typed_object
           condition: mAddr!=null
         - name: Flags.size()
           write_method: int32
@@ -1151,9 +1151,9 @@ parcelables:
     - name: NetworkPolicy
       java_wire_format:
         - name: Template
-          write_method: opaque
+          write_method: typed_object
         - name: CycleRule
-          write_method: opaque
+          write_method: typed_object
         - name: WarningBytes
           write_method: int64
         - name: LimitBytes
@@ -1195,7 +1195,7 @@ parcelables:
         - name: (byte)(meteredHint?1:0)
           write_method: int32
         - name: Attributes
-          write_method: opaque
+          write_method: bundle
     - name: TcpKeepalivePacketData
       annotations:
         - JavaOnlyStableParcelable

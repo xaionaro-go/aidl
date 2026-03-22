@@ -42,7 +42,7 @@ func (s *SipDelegateConfiguration) MarshalParcel(
 	p.WriteString16(s.PrivateUserIdentifier)
 	p.WriteString16(s.HomeDomain)
 	p.WriteString16(s.Imei)
-	p.WriteInt32(-1) // null Gruu
+	p.WriteInt32(0) // null Gruu
 	p.WriteString16(s.SipAuthHeader)
 	p.WriteString16(s.SipAuthNonce)
 	p.WriteString16(s.ServiceRouteHeader)
@@ -53,8 +53,8 @@ func (s *SipDelegateConfiguration) MarshalParcel(
 	p.WriteString16(s.PlaniHeader)
 	p.WriteString16(s.CniHeader)
 	p.WriteString16(s.AssociatedUriHeader)
-	p.WriteInt32(-1) // null IpSecConfiguration!=null
-	p.WriteInt32(-1) // null NatAddress!=null
+	p.WriteInt32(0) // null IpSecConfiguration!=null
+	p.WriteInt32(0) // null NatAddress!=null
 	return nil
 }
 
@@ -99,12 +99,12 @@ func (s *SipDelegateConfiguration) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Gruu: cannot skip unknown-size typed object
 		}
 	}
 	s.SipAuthHeader, _err = p.ReadString16()
@@ -148,21 +148,21 @@ func (s *SipDelegateConfiguration) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IpSecConfiguration!=null: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null NatAddress!=null: cannot skip unknown-size typed object
 		}
 	}
 	return nil

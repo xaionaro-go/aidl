@@ -28,12 +28,12 @@ func (s *SearchTarget) MarshalParcel(
 	p.WriteFloat32(s.Score)
 	p.WriteBool(s.Hidden)
 	p.WriteString16(s.PackageName)
-	p.WriteInt32(-1) // null UserHandle.getIdentifier()
-	p.WriteInt32(-1) // null SearchAction
-	p.WriteInt32(-1) // null ShortcutInfo
-	p.WriteInt32(-1) // null AppWidgetProviderInfo
-	p.WriteInt32(-1) // null SliceUri
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(0)  // null UserHandle.getIdentifier()
+	p.WriteInt32(0)  // null SearchAction
+	p.WriteInt32(0)  // null ShortcutInfo
+	p.WriteInt32(0)  // null AppWidgetProviderInfo
+	p.WriteInt32(0)  // null SliceUri
+	p.WriteInt32(-1) // null Extras (Bundle)
 	return nil
 }
 
@@ -70,48 +70,48 @@ func (s *SearchTarget) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null UserHandle.getIdentifier(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SearchAction: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ShortcutInfo: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AppWidgetProviderInfo: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SliceUri: cannot skip unknown-size typed object
 		}
 	}
 	{

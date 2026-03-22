@@ -18,7 +18,7 @@ func (s *PresResInfo) MarshalParcel(
 ) error {
 	p.WriteString16(s.ResUri)
 	p.WriteString16(s.DisplayName)
-	p.WriteInt32(-1) // null InstanceInfo
+	p.WriteInt32(0) // null InstanceInfo
 	return nil
 }
 
@@ -35,12 +35,12 @@ func (s *PresResInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InstanceInfo: cannot skip unknown-size typed object
 		}
 	}
 	return nil

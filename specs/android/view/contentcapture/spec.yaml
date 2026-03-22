@@ -222,7 +222,7 @@ parcelables:
     - name: ContentCaptureCondition
       java_wire_format:
         - name: LocusId
-          write_method: opaque
+          write_method: typed_object
         - name: Flags
           write_method: int32
     - name: ContentCaptureContext
@@ -230,18 +230,18 @@ parcelables:
         - name: HasClientContext?1:0
           write_method: int32
         - name: Id
-          write_method: opaque
+          write_method: typed_object
           condition: mHasClientContext
         - name: Extras
-          write_method: opaque
+          write_method: bundle
           condition: mHasClientContext
         - name: ComponentName
-          write_method: opaque
+          write_method: typed_object
         - name: DisplayId
           write_method: int32
           condition: fromServer()
         - name: WindowToken
-          write_method: opaque
+          write_method: binder
           condition: fromServer()
         - name: Flags
           write_method: int32
@@ -258,7 +258,7 @@ parcelables:
         - name: EventTime
           write_method: int64
         - name: Id
-          write_method: opaque
+          write_method: typed_object
         - name: Ids
           write_method: opaque
         - name: Parcel
@@ -269,13 +269,13 @@ parcelables:
           write_method: int32
           condition: mType==TYPE_SESSION_STARTED||mType==TYPE_SESSION_FINISHED
         - name: ClientContext
-          write_method: opaque
+          write_method: typed_object
           condition: mType==TYPE_SESSION_STARTED||mType==TYPE_CONTEXT_UPDATED
         - name: Insets
-          write_method: opaque
+          write_method: typed_object
           condition: mType==TYPE_VIEW_INSETS_CHANGED
         - name: Bounds
-          write_method: opaque
+          write_method: typed_object
           condition: mType==TYPE_WINDOW_BOUNDS_CHANGED
         - name: ComposingStart
           write_method: int32
@@ -305,7 +305,7 @@ parcelables:
         - name: PackageName
           write_method: string16
         - name: LocusId
-          write_method: opaque
+          write_method: typed_object
           condition: mLocusId!=null
         - name: MimeType
           write_method: string16

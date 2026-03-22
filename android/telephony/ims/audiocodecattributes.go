@@ -17,11 +17,11 @@ func (s *AudioCodecAttributes) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteFloat32(s.BitrateKbps)
-	p.WriteInt32(-1) // null BitrateRangeKbps.getLower()
-	p.WriteInt32(-1) // null BitrateRangeKbps.getUpper()
+	p.WriteInt32(0) // null BitrateRangeKbps.getLower()
+	p.WriteInt32(0) // null BitrateRangeKbps.getUpper()
 	p.WriteFloat32(s.BandwidthKhz)
-	p.WriteInt32(-1) // null BandwidthRangeKhz.getLower()
-	p.WriteInt32(-1) // null BandwidthRangeKhz.getUpper()
+	p.WriteInt32(0) // null BandwidthRangeKhz.getLower()
+	p.WriteInt32(0) // null BandwidthRangeKhz.getUpper()
 	return nil
 }
 
@@ -34,21 +34,21 @@ func (s *AudioCodecAttributes) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null BitrateRangeKbps.getLower(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null BitrateRangeKbps.getUpper(): cannot skip unknown-size typed object
 		}
 	}
 	s.BandwidthKhz, _err = p.ReadFloat32()
@@ -56,21 +56,21 @@ func (s *AudioCodecAttributes) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null BandwidthRangeKhz.getLower(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null BandwidthRangeKhz.getUpper(): cannot skip unknown-size typed object
 		}
 	}
 	return nil

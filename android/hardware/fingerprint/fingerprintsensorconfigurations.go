@@ -14,8 +14,8 @@ var _ parcel.Parcelable = (*FingerprintSensorConfigurations)(nil)
 func (s *FingerprintSensorConfigurations) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null (byte)(mResetLockoutRequiresHardwareAuthToken?1:0)
-	p.WriteInt32(-1) // null SensorPropsMap
+	p.WriteInt32(0) // null (byte)(mResetLockoutRequiresHardwareAuthToken?1:0)
+	p.WriteInt32(0) // null SensorPropsMap
 	return nil
 }
 
@@ -23,12 +23,12 @@ func (s *FingerprintSensorConfigurations) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(mResetLockoutRequiresHardwareAuthToken?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{

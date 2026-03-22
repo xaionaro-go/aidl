@@ -19,15 +19,15 @@ var _ parcel.Parcelable = (*PrinterInfo)(nil)
 func (s *PrinterInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Id
+	p.WriteInt32(0) // null Id
 	p.WriteString16(s.Name)
 	p.WriteInt32(s.Status)
 	p.WriteString16(s.Description)
-	p.WriteInt32(-1) // null Capabilities
+	p.WriteInt32(0) // null Capabilities
 	p.WriteInt32(s.IconResourceId)
-	p.WriteInt32(-1) // null (byte)(mHasCustomPrinterIcon?1:0)
+	p.WriteInt32(0) // null (byte)(mHasCustomPrinterIcon?1:0)
 	p.WriteInt32(s.CustomPrinterIconGen)
-	p.WriteInt32(-1) // null InfoIntent
+	p.WriteInt32(0) // null InfoIntent
 	return nil
 }
 
@@ -36,12 +36,12 @@ func (s *PrinterInfo) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Id: cannot skip unknown-size typed object
 		}
 	}
 	s.Name, _err = p.ReadString16()
@@ -57,12 +57,12 @@ func (s *PrinterInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Capabilities: cannot skip unknown-size typed object
 		}
 	}
 	s.IconResourceId, _err = p.ReadInt32()
@@ -70,12 +70,12 @@ func (s *PrinterInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(mHasCustomPrinterIcon?1:0): cannot skip unknown-size typed object
 		}
 	}
 	s.CustomPrinterIconGen, _err = p.ReadInt32()
@@ -83,12 +83,12 @@ func (s *PrinterInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InfoIntent: cannot skip unknown-size typed object
 		}
 	}
 	return nil

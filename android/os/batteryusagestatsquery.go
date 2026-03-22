@@ -20,13 +20,13 @@ func (s *BatteryUsageStatsQuery) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(-1) // null UserIds.length
-	p.WriteInt32(-1) // null UserIds
+	p.WriteInt32(0) // null UserIds.length
+	p.WriteInt32(0) // null UserIds
 	p.WriteInt64(s.MaxStatsAgeMs)
 	p.WriteFloat64(s.MinConsumedPowerThreshold)
 	p.WriteInt64(s.FromTimestamp)
 	p.WriteInt64(s.ToTimestamp)
-	p.WriteInt32(-1) // null PowerComponents
+	p.WriteInt32(0) // null PowerComponents
 	return nil
 }
 
@@ -39,12 +39,12 @@ func (s *BatteryUsageStatsQuery) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null UserIds.length: cannot skip unknown-size typed object
 		}
 	}
 	{

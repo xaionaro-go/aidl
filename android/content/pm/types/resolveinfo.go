@@ -23,26 +23,26 @@ var _ parcel.Parcelable = (*ResolveInfo)(nil)
 func (s *ResolveInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Dest
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Dest
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Dest
 	p.WriteInt32(s.Priority)
 	p.WriteInt32(s.PreferredOrder)
 	p.WriteInt32(s.Match)
 	p.WriteInt32(s.SpecificIndex)
 	p.WriteInt32(s.LabelRes)
-	p.WriteInt32(-1) // null NonLocalizedLabel
+	p.WriteInt32(0) // null NonLocalizedLabel
 	p.WriteInt32(s.Icon)
 	p.WriteString(s.ResolvePackageName)
 	p.WriteInt32(s.TargetUserId)
-	p.WriteInt32(-1) // null System?1:0
-	p.WriteInt32(-1) // null NoResourceId?1:0
+	p.WriteInt32(0) // null System?1:0
+	p.WriteInt32(0) // null NoResourceId?1:0
 	p.WriteInt32(s.IconResourceId)
-	p.WriteInt32(-1) // null HandleAllWebDataURI?1:0
-	p.WriteInt32(-1) // null AutoResolutionAllowed?1:0
-	p.WriteInt32(-1) // null IsInstantAppAvailable?1:0
-	p.WriteInt32(-1) // null UserHandle!=null?userHandle.getIdentifier():UserHandle.USER_CURRENT
+	p.WriteInt32(0) // null HandleAllWebDataURI?1:0
+	p.WriteInt32(0) // null AutoResolutionAllowed?1:0
+	p.WriteInt32(0) // null IsInstantAppAvailable?1:0
+	p.WriteInt32(0) // null UserHandle!=null?userHandle.getIdentifier():UserHandle.USER_CURRENT
 	return nil
 }
 
@@ -51,12 +51,12 @@ func (s *ResolveInfo) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -69,12 +69,12 @@ func (s *ResolveInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -128,21 +128,21 @@ func (s *ResolveInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null System?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null NoResourceId?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.IconResourceId, _err = p.ReadInt32()
@@ -150,39 +150,39 @@ func (s *ResolveInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HandleAllWebDataURI?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AutoResolutionAllowed?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsInstantAppAvailable?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null UserHandle!=null?userHandle.getIdentifier():UserHandle.USER_CURRENT: cannot skip unknown-size typed object
 		}
 	}
 	return nil

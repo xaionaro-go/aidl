@@ -20,7 +20,7 @@ func (s *RecognitionPart) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Flg)
 	p.WriteString16(s.RawText)
-	p.WriteInt32(-1) // null FormattedText
+	p.WriteInt32(0) // null FormattedText
 	p.WriteInt64(s.TimestampMillis)
 	p.WriteInt32(s.ConfidenceLevel)
 	return nil
@@ -39,12 +39,12 @@ func (s *RecognitionPart) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FormattedText: cannot skip unknown-size typed object
 		}
 	}
 	s.TimestampMillis, _err = p.ReadInt64()

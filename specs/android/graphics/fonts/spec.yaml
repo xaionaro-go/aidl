@@ -6,8 +6,8 @@ parcelables:
         - name: Type
           write_method: int32
         - name: Fd
-          write_method: opaque
+          write_method: typed_object
         - name: Signature
-          write_method: opaque
+          write_method: blob
         - name: FontFamily
-          write_method: opaque
+          write_method: typed_object

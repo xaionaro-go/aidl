@@ -4,7 +4,7 @@ parcelables:
     - name: AppWidgetProviderInfo
       java_wire_format:
         - name: This.provider
-          write_method: opaque
+          write_method: typed_object
         - name: This.minWidth
           write_method: int32
         - name: This.minHeight
@@ -28,7 +28,7 @@ parcelables:
         - name: This.initialKeyguardLayout
           write_method: int32
         - name: This.configure
-          write_method: opaque
+          write_method: typed_object
         - name: This.label
           write_method: string16
         - name: This.icon
@@ -44,7 +44,7 @@ parcelables:
         - name: This.widgetCategory
           write_method: int32
         - name: This.providerInfo
-          write_method: opaque
+          write_method: typed_object
         - name: This.widgetFeatures
           write_method: int32
         - name: This.descriptionRes

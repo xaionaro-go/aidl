@@ -35,16 +35,16 @@ func (s *SearchableInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.LabelId)
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null Dest
 	p.WriteInt32(s.HintId)
 	p.WriteInt32(s.SearchMode)
 	p.WriteInt32(s.IconId)
 	p.WriteInt32(s.SearchButtonText)
 	p.WriteInt32(s.SearchInputType)
 	p.WriteInt32(s.SearchImeOptions)
-	p.WriteInt32(-1) // null IncludeInGlobalSearch?1:0
-	p.WriteInt32(-1) // null QueryAfterZeroResults?1:0
-	p.WriteInt32(-1) // null AutoUrlDetect?1:0
+	p.WriteInt32(0) // null IncludeInGlobalSearch?1:0
+	p.WriteInt32(0) // null QueryAfterZeroResults?1:0
+	p.WriteInt32(0) // null AutoUrlDetect?1:0
 	p.WriteInt32(s.SettingsDescriptionId)
 	p.WriteString16(s.SuggestAuthority)
 	p.WriteString16(s.SuggestPath)
@@ -52,7 +52,7 @@ func (s *SearchableInfo) MarshalParcel(
 	p.WriteString16(s.SuggestIntentAction)
 	p.WriteString16(s.SuggestIntentData)
 	p.WriteInt32(s.SuggestThreshold)
-	p.WriteInt32(-1) // null 0
+	p.WriteInt32(0) // null 0
 	p.WriteString16(s.SuggestProviderPackage)
 	p.WriteInt32(s.VoiceSearchMode)
 	p.WriteInt32(s.VoiceLanguageModeId)
@@ -104,30 +104,30 @@ func (s *SearchableInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IncludeInGlobalSearch?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null QueryAfterZeroResults?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AutoUrlDetect?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.SettingsDescriptionId, _err = p.ReadInt32()
@@ -159,12 +159,12 @@ func (s *SearchableInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 0: cannot skip unknown-size typed object
 		}
 	}
 	s.SuggestProviderPackage, _err = p.ReadString16()

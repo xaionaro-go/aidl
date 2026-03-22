@@ -28,12 +28,12 @@ func (s *MediaRoute2Info) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.Id)
-	p.WriteInt32(-1) // null Name
-	p.WriteInt32(-1) // null Features
+	p.WriteInt32(0) // null Name
+	p.WriteInt32(0) // null Features
 	p.WriteInt32(s.Type)
 	p.WriteBool(s.IsSystem)
-	p.WriteInt32(-1) // null IconUri
-	p.WriteInt32(-1) // null Description
+	p.WriteInt32(0) // null IconUri
+	p.WriteInt32(0) // null Description
 	p.WriteInt32(s.ConnectionState)
 	p.WriteString16(s.ClientPackageName)
 	p.WriteString16(s.PackageName)
@@ -41,11 +41,11 @@ func (s *MediaRoute2Info) MarshalParcel(
 	p.WriteInt32(s.VolumeMax)
 	p.WriteInt32(s.Volume)
 	p.WriteString16(s.Address)
-	p.WriteInt32(-1) // null DeduplicationIds.toArray(newString[mDeduplicationIds.size()])
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(0)  // null DeduplicationIds.toArray(newString[mDeduplicationIds.size()])
+	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteString16(s.ProviderId)
 	p.WriteBool(s.IsVisibilityRestricted)
-	p.WriteInt32(-1) // null AllowedPackages.toArray(newString[0])
+	p.WriteInt32(0) // null AllowedPackages.toArray(newString[0])
 	p.WriteInt32(s.SuitabilityStatus)
 	return nil
 }
@@ -85,12 +85,12 @@ func (s *MediaRoute2Info) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IconUri: cannot skip unknown-size typed object
 		}
 	}
 	{

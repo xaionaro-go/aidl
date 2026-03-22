@@ -22,7 +22,7 @@ func (s *ImsStreamMediaProfile) MarshalParcel(
 ) error {
 	p.WriteInt32(s.AudioQuality)
 	p.WriteInt32(s.AudioDirection)
-	p.WriteInt32(-1) // null AudioCodecAttributes
+	p.WriteInt32(0) // null AudioCodecAttributes
 	p.WriteInt32(s.VideoQuality)
 	p.WriteInt32(s.VideoDirection)
 	p.WriteInt32(s.RttMode)
@@ -43,12 +43,12 @@ func (s *ImsStreamMediaProfile) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AudioCodecAttributes: cannot skip unknown-size typed object
 		}
 	}
 	s.VideoQuality, _err = p.ReadInt32()

@@ -24,10 +24,10 @@ func (s *Criteria) MarshalParcel(
 	p.WriteInt32(s.SpeedAccuracy)
 	p.WriteInt32(s.BearingAccuracy)
 	p.WriteInt32(s.PowerRequirement)
-	p.WriteInt32(-1) // null AltitudeRequired?1:0
-	p.WriteInt32(-1) // null BearingRequired?1:0
-	p.WriteInt32(-1) // null SpeedRequired?1:0
-	p.WriteInt32(-1) // null CostAllowed?1:0
+	p.WriteInt32(0) // null AltitudeRequired?1:0
+	p.WriteInt32(0) // null BearingRequired?1:0
+	p.WriteInt32(0) // null SpeedRequired?1:0
+	p.WriteInt32(0) // null CostAllowed?1:0
 	return nil
 }
 
@@ -56,39 +56,39 @@ func (s *Criteria) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AltitudeRequired?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null BearingRequired?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SpeedRequired?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CostAllowed?1:0: cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -20,11 +20,11 @@ func (s *ProfilerInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.ProfileFile)
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Out
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Out
 	p.WriteInt32(s.SamplingInterval)
-	p.WriteInt32(-1) // null AutoStopProfiler?1:0
-	p.WriteInt32(-1) // null StreamingOutput?1:0
+	p.WriteInt32(0) // null AutoStopProfiler?1:0
+	p.WriteInt32(0) // null StreamingOutput?1:0
 	p.WriteString16(s.Agent)
 	p.WriteBool(s.AttachAgentDuringBind)
 	p.WriteInt32(s.ClockType)
@@ -40,12 +40,12 @@ func (s *ProfilerInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -62,21 +62,21 @@ func (s *ProfilerInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AutoStopProfiler?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StreamingOutput?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.Agent, _err = p.ReadString16()

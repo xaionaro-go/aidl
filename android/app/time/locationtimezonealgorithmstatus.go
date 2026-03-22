@@ -19,9 +19,9 @@ func (s *LocationTimeZoneAlgorithmStatus) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Status)
 	p.WriteInt32(s.PrimaryProviderStatus)
-	p.WriteInt32(-1) // null PrimaryProviderReportedStatus
+	p.WriteInt32(0) // null PrimaryProviderReportedStatus
 	p.WriteInt32(s.SecondaryProviderStatus)
-	p.WriteInt32(-1) // null SecondaryProviderReportedStatus
+	p.WriteInt32(0) // null SecondaryProviderReportedStatus
 	return nil
 }
 
@@ -38,12 +38,12 @@ func (s *LocationTimeZoneAlgorithmStatus) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PrimaryProviderReportedStatus: cannot skip unknown-size typed object
 		}
 	}
 	s.SecondaryProviderStatus, _err = p.ReadInt32()
@@ -51,12 +51,12 @@ func (s *LocationTimeZoneAlgorithmStatus) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SecondaryProviderReportedStatus: cannot skip unknown-size typed object
 		}
 	}
 	return nil

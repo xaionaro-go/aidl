@@ -143,9 +143,9 @@ parcelables:
     - name: CreateGameSessionResult
       java_wire_format:
         - name: GameSession.asBinder()
-          write_method: opaque
+          write_method: binder
         - name: SurfacePackage
-          write_method: opaque
+          write_method: typed_object
     - name: GameSessionViewHostConfiguration
       java_wire_format:
         - name: DisplayId

@@ -962,7 +962,7 @@ parcelables:
           write_method: string16
           condition: mAttributionTag!=null
         - name: VendorReason
-          write_method: opaque
+          write_method: typed_object
           condition: mVendorReason!=null
     - name: FingerprintEnrollOptions
       java_wire_format:

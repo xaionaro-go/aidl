@@ -960,11 +960,11 @@ parcelables:
     - name: PrintJobInfo
       java_wire_format:
         - name: Id
-          write_method: opaque
+          write_method: typed_object
         - name: Label
           write_method: string16
         - name: PrinterId
-          write_method: opaque
+          write_method: typed_object
         - name: PrinterName
           write_method: string16
         - name: State
@@ -980,9 +980,9 @@ parcelables:
         - name: PageRanges
           write_method: opaque
         - name: Attributes
-          write_method: opaque
+          write_method: typed_object
         - name: DocumentInfo
-          write_method: opaque
+          write_method: typed_object
         - name: Progress
           write_method: float32
         - name: Status
@@ -994,7 +994,7 @@ parcelables:
         - name: Canceling?1:0
           write_method: int32
         - name: AdvancedOptions
-          write_method: opaque
+          write_method: bundle
     - name: PrinterCapabilitiesInfo
       java_wire_format:
         - name: ColorModes
@@ -1004,13 +1004,13 @@ parcelables:
     - name: PrinterId
       java_wire_format:
         - name: ServiceName
-          write_method: opaque
+          write_method: typed_object
         - name: LocalId
           write_method: string16
     - name: PrinterInfo
       java_wire_format:
         - name: Id
-          write_method: opaque
+          write_method: typed_object
         - name: Name
           write_method: string16
         - name: Status
@@ -1018,7 +1018,7 @@ parcelables:
         - name: Description
           write_method: string16
         - name: Capabilities
-          write_method: opaque
+          write_method: typed_object
         - name: IconResourceId
           write_method: int32
         - name: (byte)(mHasCustomPrinterIcon?1:0)
@@ -1026,4 +1026,4 @@ parcelables:
         - name: CustomPrinterIconGen
           write_method: int32
         - name: InfoIntent
-          write_method: opaque
+          write_method: typed_object

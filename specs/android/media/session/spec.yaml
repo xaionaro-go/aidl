@@ -1486,4 +1486,4 @@ parcelables:
         - name: ErrorMessage
           write_method: opaque
         - name: Extras
-          write_method: opaque
+          write_method: bundle

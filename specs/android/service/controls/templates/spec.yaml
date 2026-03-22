@@ -10,4 +10,4 @@ parcelables:
     - name: ControlTemplateWrapper
       java_wire_format:
         - name: ControlTemplate.getDataBundle()
-          write_method: opaque
+          write_method: bundle

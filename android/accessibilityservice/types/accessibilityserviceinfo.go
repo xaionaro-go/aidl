@@ -34,15 +34,15 @@ func (s *AccessibilityServiceInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.EventTypes)
-	p.WriteInt32(-1) // null PackageNames
+	p.WriteInt32(0) // null PackageNames
 	p.WriteInt32(s.FeedbackType)
 	p.WriteInt64(s.NotificationTimeout)
 	p.WriteInt32(s.NonInteractiveUiTimeout)
 	p.WriteInt32(s.InteractiveUiTimeout)
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(-1) // null Crashed?1:0
-	p.WriteInt32(-1) // null ComponentName
-	p.WriteInt32(-1) // null ResolveInfo
+	p.WriteInt32(0) // null Crashed?1:0
+	p.WriteInt32(0) // null ComponentName
+	p.WriteInt32(0) // null ResolveInfo
 	p.WriteString16(s.SettingsActivityName)
 	p.WriteInt32(s.Capabilities)
 	p.WriteInt32(s.SummaryResId)
@@ -97,30 +97,30 @@ func (s *AccessibilityServiceInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Crashed?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ComponentName: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ResolveInfo: cannot skip unknown-size typed object
 		}
 	}
 	s.SettingsActivityName, _err = p.ReadString16()

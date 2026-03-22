@@ -28,7 +28,7 @@ func (s *FaceAuthenticateOptions) MarshalParcel(
 	p.WriteInt32(s.AuthenticateReason)
 	p.WriteInt32(s.WakeReason)
 	p.WriteString16(s.OpPackageName)
-	p.WriteInt32(-1) // null AttributionTag
+	p.WriteInt32(0) // null AttributionTag
 	return nil
 }
 
@@ -65,12 +65,12 @@ func (s *FaceAuthenticateOptions) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AttributionTag: cannot skip unknown-size typed object
 		}
 	}
 	return nil

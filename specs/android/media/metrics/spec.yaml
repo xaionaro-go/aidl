@@ -186,11 +186,11 @@ parcelables:
         - name: InputMediaItemInfos
           write_method: opaque
         - name: OutputMediaItemInfo
-          write_method: opaque
+          write_method: typed_object
         - name: OperationTypes
           write_method: int64
         - name: MetricsBundle
-          write_method: opaque
+          write_method: bundle
     - name: NetworkEvent
       java_wire_format:
         - name: NetworkType
@@ -198,7 +198,7 @@ parcelables:
         - name: TimeSinceCreatedMillis
           write_method: int64
         - name: MetricsBundle
-          write_method: opaque
+          write_method: bundle
     - name: PlaybackErrorEvent
       java_wire_format:
         - name: Flg
@@ -213,7 +213,7 @@ parcelables:
         - name: TimeSinceCreatedMillis
           write_method: int64
         - name: MetricsBundle
-          write_method: opaque
+          write_method: bundle
     - name: PlaybackMetrics
       java_wire_format:
         - name: Flg
@@ -253,9 +253,9 @@ parcelables:
         - name: DrmSessionId.length
           write_method: int32
         - name: DrmSessionId
-          write_method: opaque
+          write_method: byte_array
         - name: MetricsBundle
-          write_method: opaque
+          write_method: bundle
     - name: PlaybackStateEvent
       java_wire_format:
         - name: State
@@ -263,7 +263,7 @@ parcelables:
         - name: TimeSinceCreatedMillis
           write_method: int64
         - name: MetricsBundle
-          write_method: opaque
+          write_method: bundle
     - name: TrackChangeEvent
       java_wire_format:
         - name: Flg
@@ -304,4 +304,4 @@ parcelables:
         - name: VideoFrameRate
           write_method: float32
         - name: MetricsBundle
-          write_method: opaque
+          write_method: bundle

@@ -20,12 +20,12 @@ func (s *InlineSuggestionsRequest) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Flg)
 	p.WriteInt32(s.MaxSuggestionCount)
-	p.WriteInt32(-1) // null InlinePresentationSpecs
+	p.WriteInt32(0) // null InlinePresentationSpecs
 	p.WriteString16(s.HostPackageName)
-	p.WriteInt32(-1) // null SupportedLocales
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(0)  // null SupportedLocales
+	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteInt32(s.HostDisplayId)
-	p.WriteInt32(-1) // null InlineTooltipPresentationSpec
+	p.WriteInt32(0) // null InlineTooltipPresentationSpec
 	return nil
 }
 
@@ -55,12 +55,12 @@ func (s *InlineSuggestionsRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SupportedLocales: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -77,12 +77,12 @@ func (s *InlineSuggestionsRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InlineTooltipPresentationSpec: cannot skip unknown-size typed object
 		}
 	}
 	return nil

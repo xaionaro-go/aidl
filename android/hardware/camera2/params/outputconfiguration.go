@@ -26,20 +26,20 @@ func (s *OutputConfiguration) MarshalParcel(
 	p.WriteInt32(s.Rotation)
 	p.WriteInt32(s.SurfaceGroupId)
 	p.WriteInt32(s.SurfaceType)
-	p.WriteInt32(-1) // null ConfiguredSize.getWidth()
-	p.WriteInt32(-1) // null ConfiguredSize.getHeight()
-	p.WriteInt32(-1) // null IsDeferredConfig?1:0
-	p.WriteInt32(-1) // null IsShared?1:0
-	p.WriteInt32(-1) // null Surfaces
+	p.WriteInt32(0) // null ConfiguredSize.getWidth()
+	p.WriteInt32(0) // null ConfiguredSize.getHeight()
+	p.WriteInt32(0) // null IsDeferredConfig?1:0
+	p.WriteInt32(0) // null IsShared?1:0
+	p.WriteInt32(0) // null Surfaces
 	p.WriteString16(s.PhysicalCameraId)
-	p.WriteInt32(-1) // null IsMultiResolution?1:0
-	p.WriteInt32(-1) // null ConvertIntegerToIntList(mSensorPixelModesUsed)
+	p.WriteInt32(0) // null IsMultiResolution?1:0
+	p.WriteInt32(0) // null ConvertIntegerToIntList(mSensorPixelModesUsed)
 	p.WriteInt64(s.DynamicRangeProfile)
 	p.WriteInt32(s.ColorSpace)
 	p.WriteInt64(s.StreamUseCase)
 	p.WriteInt32(s.TimestampBase)
 	p.WriteInt32(s.MirrorMode)
-	p.WriteInt32(-1) // null ReadoutTimestampEnabled?1:0
+	p.WriteInt32(0) // null ReadoutTimestampEnabled?1:0
 	return nil
 }
 
@@ -60,39 +60,39 @@ func (s *OutputConfiguration) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ConfiguredSize.getWidth(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ConfiguredSize.getHeight(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsDeferredConfig?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsShared?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -109,12 +109,12 @@ func (s *OutputConfiguration) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsMultiResolution?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -147,12 +147,12 @@ func (s *OutputConfiguration) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ReadoutTimestampEnabled?1:0: cannot skip unknown-size typed object
 		}
 	}
 	return nil

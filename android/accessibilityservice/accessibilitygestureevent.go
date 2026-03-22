@@ -18,7 +18,7 @@ func (s *AccessibilityGestureEvent) MarshalParcel(
 ) error {
 	p.WriteInt32(s.GestureId)
 	p.WriteInt32(s.DisplayId)
-	p.WriteInt32(-1) // null NewParceledListSlice<MotionEvent>(mMotionEvents)
+	p.WriteInt32(0) // null NewParceledListSlice<MotionEvent>(mMotionEvents)
 	return nil
 }
 
@@ -35,12 +35,12 @@ func (s *AccessibilityGestureEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null NewParceledListSlice<MotionEvent>(mMotionEvents): cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -32,19 +32,19 @@ func (s *DataCallResponse) MarshalParcel(
 	p.WriteInt32(s.LinkStatus)
 	p.WriteInt32(s.ProtocolType)
 	p.WriteString16(s.InterfaceName)
-	p.WriteInt32(-1) // null Addresses
-	p.WriteInt32(-1) // null DnsAddresses
-	p.WriteInt32(-1) // null GatewayAddresses
-	p.WriteInt32(-1) // null PcscfAddresses
+	p.WriteInt32(0) // null Addresses
+	p.WriteInt32(0) // null DnsAddresses
+	p.WriteInt32(0) // null GatewayAddresses
+	p.WriteInt32(0) // null PcscfAddresses
 	p.WriteInt32(s.Mtu)
 	p.WriteInt32(s.MtuV4)
 	p.WriteInt32(s.MtuV6)
 	p.WriteInt32(s.HandoverFailureMode)
 	p.WriteInt32(s.PduSessionId)
-	p.WriteInt32(-1) // null DefaultQos
-	p.WriteInt32(-1) // null QosBearerSessions
-	p.WriteInt32(-1) // null SliceInfo
-	p.WriteInt32(-1) // null TrafficDescriptors
+	p.WriteInt32(0) // null DefaultQos
+	p.WriteInt32(0) // null QosBearerSessions
+	p.WriteInt32(0) // null SliceInfo
+	p.WriteInt32(0) // null TrafficDescriptors
 	p.WriteInt32(s.NetworkValidationStatus)
 	return nil
 }
@@ -134,12 +134,12 @@ func (s *DataCallResponse) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DefaultQos: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -152,12 +152,12 @@ func (s *DataCallResponse) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SliceInfo: cannot skip unknown-size typed object
 		}
 	}
 	{

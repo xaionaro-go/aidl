@@ -47,11 +47,11 @@ parcelables:
         - name: CreationElapsedMillis
           write_method: int64
         - name: Suggestion
-          write_method: opaque
+          write_method: typed_object
         - name: FailureCause
           write_method: string8
         - name: TimeZoneProviderStatus
-          write_method: opaque
+          write_method: typed_object
     - name: TimeZoneProviderStatus
       java_wire_format:
         - name: LocationDetectionDependencyStatus

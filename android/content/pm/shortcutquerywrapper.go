@@ -19,10 +19,10 @@ func (s *ShortcutQueryWrapper) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Flg)
 	p.WriteInt64(s.ChangedSince)
-	p.WriteInt32(-1) // null Package
-	p.WriteInt32(-1) // null ShortcutIds
-	p.WriteInt32(-1) // null LocusIds
-	p.WriteInt32(-1) // null Activity
+	p.WriteInt32(0) // null Package
+	p.WriteInt32(0) // null ShortcutIds
+	p.WriteInt32(0) // null LocusIds
+	p.WriteInt32(0) // null Activity
 	p.WriteInt32(s.QueryFlags)
 	return nil
 }
@@ -40,12 +40,12 @@ func (s *ShortcutQueryWrapper) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Package: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -67,12 +67,12 @@ func (s *ShortcutQueryWrapper) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Activity: cannot skip unknown-size typed object
 		}
 	}
 	s.QueryFlags, _err = p.ReadInt32()

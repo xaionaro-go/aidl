@@ -873,7 +873,7 @@ parcelables:
         - name: Flags
           write_method: int32
         - name: Surface
-          write_method: opaque
+          write_method: typed_object
         - name: UniqueId
           write_method: string8
         - name: DisplayIdToMirror

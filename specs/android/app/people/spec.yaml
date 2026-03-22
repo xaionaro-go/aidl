@@ -194,13 +194,13 @@ parcelables:
     - name: ConversationChannel
       java_wire_format:
         - name: ShortcutInfo
-          write_method: opaque
+          write_method: typed_object
         - name: Uid
           write_method: int32
         - name: NotificationChannel
-          write_method: opaque
+          write_method: typed_object
         - name: NotificationChannelGroup
-          write_method: opaque
+          write_method: typed_object
         - name: LastEventTimestamp
           write_method: int64
         - name: HasActiveNotifications
@@ -220,7 +220,7 @@ parcelables:
         - name: Description
           write_method: opaque
         - name: Icon
-          write_method: opaque
+          write_method: typed_object
         - name: StartTimeMs
           write_method: int64
         - name: EndTimeMs

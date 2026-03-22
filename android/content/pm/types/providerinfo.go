@@ -19,18 +19,18 @@ var _ parcel.Parcelable = (*ProviderInfo)(nil)
 func (s *ProviderInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Out
+	p.WriteInt32(0) // null Out
 	p.WriteString(s.Authority)
 	p.WriteString(s.ReadPermission)
 	p.WriteString(s.WritePermission)
-	p.WriteInt32(-1) // null GrantUriPermissions?1:0
-	p.WriteInt32(-1) // null ForceUriPermissions?1:0
-	p.WriteInt32(-1) // null UriPermissionPatterns
-	p.WriteInt32(-1) // null PathPermissions
-	p.WriteInt32(-1) // null Multiprocess?1:0
+	p.WriteInt32(0) // null GrantUriPermissions?1:0
+	p.WriteInt32(0) // null ForceUriPermissions?1:0
+	p.WriteInt32(0) // null UriPermissionPatterns
+	p.WriteInt32(0) // null PathPermissions
+	p.WriteInt32(0) // null Multiprocess?1:0
 	p.WriteInt32(s.InitOrder)
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(-1) // null IsSyncable?1:0
+	p.WriteInt32(0) // null IsSyncable?1:0
 	return nil
 }
 
@@ -60,12 +60,21 @@ func (s *ProviderInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GrantUriPermissions?1:0: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null ForceUriPermissions?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -87,21 +96,12 @@ func (s *ProviderInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Multiprocess?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.InitOrder, _err = p.ReadInt32()
@@ -113,12 +113,12 @@ func (s *ProviderInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsSyncable?1:0: cannot skip unknown-size typed object
 		}
 	}
 	return nil

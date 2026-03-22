@@ -26,11 +26,11 @@ parcelables:
         - name: PrimaryProviderStatus
           write_method: int32
         - name: PrimaryProviderReportedStatus
-          write_method: opaque
+          write_method: typed_object
         - name: SecondaryProviderStatus
           write_method: int32
         - name: SecondaryProviderReportedStatus
-          write_method: opaque
+          write_method: typed_object
     - name: TelephonyTimeZoneAlgorithmStatus
       java_wire_format:
         - name: AlgorithmStatus
@@ -46,17 +46,17 @@ parcelables:
     - name: TimeCapabilitiesAndConfig
       java_wire_format:
         - name: Capabilities
-          write_method: opaque
+          write_method: typed_object
         - name: Configuration
-          write_method: opaque
+          write_method: typed_object
     - name: TimeConfiguration
       java_wire_format:
         - name: Bundle
-          write_method: opaque
+          write_method: bundle
     - name: TimeState
       java_wire_format:
         - name: UnixEpochTime
-          write_method: opaque
+          write_method: typed_object
         - name: UserShouldConfirmTime
           write_method: bool
     - name: TimeZoneCapabilities
@@ -74,23 +74,23 @@ parcelables:
     - name: TimeZoneCapabilitiesAndConfig
       java_wire_format:
         - name: DetectorStatus
-          write_method: opaque
+          write_method: typed_object
         - name: Capabilities
-          write_method: opaque
+          write_method: typed_object
         - name: Configuration
-          write_method: opaque
+          write_method: typed_object
     - name: TimeZoneConfiguration
       java_wire_format:
         - name: Bundle
-          write_method: opaque
+          write_method: bundle
     - name: TimeZoneDetectorStatus
       java_wire_format:
         - name: DetectorStatus
           write_method: int32
         - name: TelephonyTimeZoneAlgorithmStatus
-          write_method: opaque
+          write_method: typed_object
         - name: LocationTimeZoneAlgorithmStatus
-          write_method: opaque
+          write_method: typed_object
     - name: TimeZoneState
       java_wire_format:
         - name: Id

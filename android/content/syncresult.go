@@ -15,15 +15,15 @@ var _ parcel.Parcelable = (*SyncResult)(nil)
 func (s *SyncResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null SyncAlreadyInProgress?1:0
-	p.WriteInt32(-1) // null TooManyDeletions?1:0
-	p.WriteInt32(-1) // null TooManyRetries?1:0
-	p.WriteInt32(-1) // null DatabaseError?1:0
-	p.WriteInt32(-1) // null FullSyncRequested?1:0
-	p.WriteInt32(-1) // null PartialSyncUnavailable?1:0
-	p.WriteInt32(-1) // null MoreRecordsToGet?1:0
+	p.WriteInt32(0) // null SyncAlreadyInProgress?1:0
+	p.WriteInt32(0) // null TooManyDeletions?1:0
+	p.WriteInt32(0) // null TooManyRetries?1:0
+	p.WriteInt32(0) // null DatabaseError?1:0
+	p.WriteInt32(0) // null FullSyncRequested?1:0
+	p.WriteInt32(0) // null PartialSyncUnavailable?1:0
+	p.WriteInt32(0) // null MoreRecordsToGet?1:0
 	p.WriteInt64(s.DelayUntil)
-	p.WriteInt32(-1) // null Parcel
+	p.WriteInt32(0) // null Parcel
 	return nil
 }
 
@@ -32,66 +32,66 @@ func (s *SyncResult) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SyncAlreadyInProgress?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TooManyDeletions?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TooManyRetries?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DatabaseError?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null FullSyncRequested?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PartialSyncUnavailable?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null MoreRecordsToGet?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.DelayUntil, _err = p.ReadInt64()

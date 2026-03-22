@@ -232,7 +232,7 @@ parcelables:
         - name: (byte)(mIsEnabled?1:0)
           write_method: int32
         - name: ResolveInfo
-          write_method: opaque
+          write_method: typed_object
         - name: SettingsActivityName
           write_method: string16
         - name: AddPrintersActivityName

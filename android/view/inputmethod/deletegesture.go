@@ -18,7 +18,7 @@ func (s *DeleteGesture) MarshalParcel(
 ) error {
 	p.WriteString(s.FallbackText)
 	p.WriteInt32(s.Granularity)
-	p.WriteInt32(-1) // null Area
+	p.WriteInt32(0) // null Area
 	return nil
 }
 
@@ -35,12 +35,12 @@ func (s *DeleteGesture) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Area: cannot skip unknown-size typed object
 		}
 	}
 	return nil

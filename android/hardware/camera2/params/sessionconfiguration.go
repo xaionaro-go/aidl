@@ -16,13 +16,13 @@ func (s *SessionConfiguration) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.SessionType)
-	p.WriteInt32(-1) // null InputConfig.getWidth()
-	p.WriteInt32(-1) // null InputConfig.getHeight()
-	p.WriteInt32(-1) // null InputConfig.getFormat()
-	p.WriteInt32(-1) // null InputConfig.isMultiResolution()
-	p.WriteInt32(-1) // null OutputConfigurations
-	p.WriteInt32(-1) // null True
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null InputConfig.getWidth()
+	p.WriteInt32(0) // null InputConfig.getHeight()
+	p.WriteInt32(0) // null InputConfig.getFormat()
+	p.WriteInt32(0) // null InputConfig.isMultiResolution()
+	p.WriteInt32(0) // null OutputConfigurations
+	p.WriteInt32(0) // null True
+	p.WriteInt32(0) // null Dest
 	return nil
 }
 
@@ -35,12 +35,39 @@ func (s *SessionConfiguration) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InputConfig.getWidth(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null InputConfig.getHeight(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null InputConfig.getFormat(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null InputConfig.isMultiResolution(): cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -53,39 +80,12 @@ func (s *SessionConfiguration) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null True: cannot skip unknown-size typed object
 		}
 	}
 	{

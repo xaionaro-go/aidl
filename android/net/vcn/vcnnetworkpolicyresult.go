@@ -16,7 +16,7 @@ func (s *VcnNetworkPolicyResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteBool(s.IsTearDownRequested)
-	p.WriteInt32(-1) // null NetworkCapabilities
+	p.WriteInt32(0) // null NetworkCapabilities
 	return nil
 }
 
@@ -29,12 +29,12 @@ func (s *VcnNetworkPolicyResult) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null NetworkCapabilities: cannot skip unknown-size typed object
 		}
 	}
 	return nil

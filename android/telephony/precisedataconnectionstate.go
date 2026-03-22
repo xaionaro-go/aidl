@@ -24,10 +24,10 @@ func (s *PreciseDataConnectionState) MarshalParcel(
 	p.WriteInt32(s.Id)
 	p.WriteInt32(s.State)
 	p.WriteInt32(s.NetworkType)
-	p.WriteInt32(-1) // null LinkProperties
+	p.WriteInt32(0) // null LinkProperties
 	p.WriteInt32(s.FailCause)
-	p.WriteInt32(-1) // null ApnSetting
-	p.WriteInt32(-1) // null DefaultQos
+	p.WriteInt32(0) // null ApnSetting
+	p.WriteInt32(0) // null DefaultQos
 	p.WriteInt32(s.NetworkValidationStatus)
 	return nil
 }
@@ -53,12 +53,12 @@ func (s *PreciseDataConnectionState) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null LinkProperties: cannot skip unknown-size typed object
 		}
 	}
 	s.FailCause, _err = p.ReadInt32()
@@ -66,21 +66,21 @@ func (s *PreciseDataConnectionState) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ApnSetting: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DefaultQos: cannot skip unknown-size typed object
 		}
 	}
 	s.NetworkValidationStatus, _err = p.ReadInt32()

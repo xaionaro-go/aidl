@@ -19,10 +19,10 @@ var _ parcel.Parcelable = (*BrightnessConfiguration)(nil)
 func (s *BrightnessConfiguration) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Lux
-	p.WriteInt32(-1) // null Nits
-	p.WriteInt32(-1) // null CorrectionsByPackageName.size()
-	p.WriteInt32(-1) // null CorrectionsByCategory.size()
+	p.WriteInt32(0) // null Lux
+	p.WriteInt32(0) // null Nits
+	p.WriteInt32(0) // null CorrectionsByPackageName.size()
+	p.WriteInt32(0) // null CorrectionsByCategory.size()
 	p.WriteString16(s.Description)
 	p.WriteBool(s.ShouldCollectColorSamples)
 	p.WriteInt64(s.ShortTermModelTimeout)
@@ -54,21 +54,21 @@ func (s *BrightnessConfiguration) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CorrectionsByPackageName.size(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CorrectionsByCategory.size(): cannot skip unknown-size typed object
 		}
 	}
 	s.Description, _err = p.ReadString16()

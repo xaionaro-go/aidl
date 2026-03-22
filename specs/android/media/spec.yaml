@@ -7798,7 +7798,7 @@ parcelables:
     - name: AudioHalVersionInfo
       java_wire_format:
         - name: HalVersion
-          write_method: opaque
+          write_method: typed_object
     - name: AudioHwModule
       fields:
         - name: handle
@@ -7899,7 +7899,7 @@ parcelables:
     - name: AudioMixerAttributes
       java_wire_format:
         - name: Format
-          write_method: opaque
+          write_method: typed_object
         - name: MixerBehavior
           write_method: int32
     - name: AudioMixerAttributesInternal
@@ -8594,19 +8594,19 @@ parcelables:
         - name: Description
           write_method: opaque
         - name: Icon
-          write_method: opaque
+          write_method: typed_object
         - name: IconUri
-          write_method: opaque
+          write_method: typed_object
         - name: Extras
-          write_method: opaque
+          write_method: bundle
         - name: MediaUri
-          write_method: opaque
+          write_method: typed_object
     - name: MediaMetadata
       annotations:
         - JavaOnlyStableParcelable
       java_wire_format:
         - name: Bundle
-          write_method: opaque
+          write_method: bundle
         - name: BitmapDimensionLimit
           write_method: int32
     - name: MediaObservableFilter
@@ -8669,7 +8669,7 @@ parcelables:
         - name: IsSystem
           write_method: bool
         - name: IconUri
-          write_method: opaque
+          write_method: typed_object
         - name: Description
           write_method: opaque
         - name: ConnectionState
@@ -8689,7 +8689,7 @@ parcelables:
         - name: DeduplicationIds.toArray(newString[mDeduplicationIds.size()])
           write_method: opaque
         - name: Extras
-          write_method: opaque
+          write_method: bundle
         - name: ProviderId
           write_method: string16
         - name: IsVisibilityRestricted
@@ -8849,7 +8849,7 @@ parcelables:
         - name: ShouldPerformActiveScan
           write_method: bool
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: RouteListingPreference
       java_wire_format:
         - name: Items
@@ -8885,7 +8885,7 @@ parcelables:
         - name: Volume
           write_method: int32
         - name: ControlHints
-          write_method: opaque
+          write_method: bundle
         - name: IsSystemSession
           write_method: bool
         - name: TransferReason

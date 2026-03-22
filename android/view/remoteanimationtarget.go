@@ -28,20 +28,20 @@ func (s *RemoteAnimationTarget) MarshalParcel(
 ) error {
 	p.WriteInt32(s.TaskId)
 	p.WriteInt32(s.Mode)
-	p.WriteInt32(-1) // null Leash
+	p.WriteInt32(0) // null Leash
 	p.WriteBool(s.IsTranslucent)
-	p.WriteInt32(-1) // null ClipRect
-	p.WriteInt32(-1) // null ContentInsets
+	p.WriteInt32(0) // null ClipRect
+	p.WriteInt32(0) // null ContentInsets
 	p.WriteInt32(s.PrefixOrderIndex)
-	p.WriteInt32(-1) // null Position
-	p.WriteInt32(-1) // null LocalBounds
-	p.WriteInt32(-1) // null SourceContainerBounds
-	p.WriteInt32(-1) // null ScreenSpaceBounds
-	p.WriteInt32(-1) // null WindowConfiguration
+	p.WriteInt32(0) // null Position
+	p.WriteInt32(0) // null LocalBounds
+	p.WriteInt32(0) // null SourceContainerBounds
+	p.WriteInt32(0) // null ScreenSpaceBounds
+	p.WriteInt32(0) // null WindowConfiguration
 	p.WriteBool(s.IsNotInRecents)
-	p.WriteInt32(-1) // null StartLeash
-	p.WriteInt32(-1) // null StartBounds
-	p.WriteInt32(-1) // null TaskInfo
+	p.WriteInt32(0) // null StartLeash
+	p.WriteInt32(0) // null StartBounds
+	p.WriteInt32(0) // null TaskInfo
 	p.WriteBool(s.AllowEnterPip)
 	p.WriteInt32(s.WindowType)
 	p.WriteBool(s.HasAnimatingParent)
@@ -65,12 +65,12 @@ func (s *RemoteAnimationTarget) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Leash: cannot skip unknown-size typed object
 		}
 	}
 	s.IsTranslucent, _err = p.ReadBool()
@@ -78,21 +78,21 @@ func (s *RemoteAnimationTarget) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ClipRect: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ContentInsets: cannot skip unknown-size typed object
 		}
 	}
 	s.PrefixOrderIndex, _err = p.ReadInt32()
@@ -100,48 +100,48 @@ func (s *RemoteAnimationTarget) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Position: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null LocalBounds: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SourceContainerBounds: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ScreenSpaceBounds: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null WindowConfiguration: cannot skip unknown-size typed object
 		}
 	}
 	s.IsNotInRecents, _err = p.ReadBool()
@@ -149,30 +149,30 @@ func (s *RemoteAnimationTarget) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StartLeash: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StartBounds: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TaskInfo: cannot skip unknown-size typed object
 		}
 	}
 	s.AllowEnterPip, _err = p.ReadBool()

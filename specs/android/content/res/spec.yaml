@@ -45,7 +45,7 @@ parcelables:
         - name: Mnc
           write_method: int32
         - name: LocaleList
-          write_method: opaque
+          write_method: typed_object
         - name: "1"
           write_method: int32
           condition: userSetLocale
@@ -104,4 +104,4 @@ parcelables:
         - name: Flags
           write_method: int32
         - name: Salt
-          write_method: opaque
+          write_method: byte_array

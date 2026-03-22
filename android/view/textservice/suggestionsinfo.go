@@ -18,10 +18,10 @@ func (s *SuggestionsInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.SuggestionsAttributes)
-	p.WriteInt32(-1) // null Suggestions
+	p.WriteInt32(0) // null Suggestions
 	p.WriteInt32(s.Cookie)
 	p.WriteInt32(s.Sequence)
-	p.WriteInt32(-1) // null SuggestionsAvailable?1:0
+	p.WriteInt32(0) // null SuggestionsAvailable?1:0
 	return nil
 }
 
@@ -51,12 +51,12 @@ func (s *SuggestionsInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SuggestionsAvailable?1:0: cannot skip unknown-size typed object
 		}
 	}
 	return nil

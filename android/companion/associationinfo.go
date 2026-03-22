@@ -30,10 +30,10 @@ func (s *AssociationInfo) MarshalParcel(
 	p.WriteInt32(s.UserId)
 	p.WriteString16(s.PackageName)
 	p.WriteString16(s.Tag)
-	p.WriteInt32(-1) // null DeviceMacAddress
-	p.WriteInt32(-1) // null DisplayName
+	p.WriteInt32(0) // null DeviceMacAddress
+	p.WriteInt32(0) // null DisplayName
 	p.WriteString16(s.DeviceProfile)
-	p.WriteInt32(-1) // null AssociatedDevice
+	p.WriteInt32(0) // null AssociatedDevice
 	p.WriteBool(s.SelfManaged)
 	p.WriteBool(s.NotifyOnDeviceNearby)
 	p.WriteBool(s.Revoked)
@@ -65,12 +65,12 @@ func (s *AssociationInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DeviceMacAddress: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -87,12 +87,12 @@ func (s *AssociationInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AssociatedDevice: cannot skip unknown-size typed object
 		}
 	}
 	s.SelfManaged, _err = p.ReadBool()

@@ -323,13 +323,13 @@ parcelables:
         - name: DefaultProtocol
           write_method: int32
         - name: GetBasicProperties(newString[]{PROPERTY_NAME,PROPERTY_MANUFACTURER,PROPERTY_PRODUCT,PROPERTY_VERSION,PROPERTY_SERIAL_NUMBER,PROPERTY_ALSA_CARD,PROPERTY_ALSA_DEVICE})
-          write_method: opaque
+          write_method: bundle
         - name: Properties
-          write_method: opaque
+          write_method: bundle
     - name: MidiDeviceStatus
       java_wire_format:
         - name: DeviceInfo
-          write_method: opaque
+          write_method: typed_object
         - name: InputPortOpen
           write_method: opaque
         - name: OutputPortOpenCount

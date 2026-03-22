@@ -1156,7 +1156,7 @@ parcelables:
         - name: WindowTitle
           write_method: opaque
         - name: Locales
-          write_method: opaque
+          write_method: typed_object
     - name: AccessibilityWindowInfo
       java_wire_format:
         - name: DisplayId
@@ -1187,7 +1187,7 @@ parcelables:
         - name: ConnectionId
           write_method: int32
         - name: Locales
-          write_method: opaque
+          write_method: typed_object
     - name: AccessibilityWindowInfo.WindowListSparseArray
     - name: IAccessibilityManager.WindowTransformationSpec
       fields:

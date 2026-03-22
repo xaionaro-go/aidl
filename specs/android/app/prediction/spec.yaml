@@ -148,7 +148,7 @@ parcelables:
         - name: PackageName
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: AppPredictionSessionId
       java_wire_format:
         - name: Id
@@ -158,9 +158,9 @@ parcelables:
     - name: AppTarget
       java_wire_format:
         - name: Id
-          write_method: opaque
+          write_method: typed_object
         - name: ShortcutInfo
-          write_method: opaque
+          write_method: typed_object
         - name: PackageName
           write_method: string16
           condition: mShortcutInfo==null
@@ -174,7 +174,7 @@ parcelables:
     - name: AppTargetEvent
       java_wire_format:
         - name: Target
-          write_method: opaque
+          write_method: typed_object
         - name: Location
           write_method: string16
         - name: Action

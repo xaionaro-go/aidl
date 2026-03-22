@@ -239,7 +239,7 @@ parcelables:
           write_method: bool
           condition: mIntervalMillis!=INTERVAL_DISABLED
         - name: WorkSource
-          write_method: opaque
+          write_method: typed_object
           condition: mIntervalMillis!=INTERVAL_DISABLED
     - name: ReverseGeocodeRequest
       java_wire_format:

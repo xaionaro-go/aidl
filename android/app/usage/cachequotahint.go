@@ -20,7 +20,7 @@ func (s *CacheQuotaHint) MarshalParcel(
 	p.WriteString16(s.Uuid)
 	p.WriteInt32(s.Uid)
 	p.WriteInt64(s.Quota)
-	p.WriteInt32(-1) // null UsageStats
+	p.WriteInt32(0) // null UsageStats
 	return nil
 }
 
@@ -41,12 +41,12 @@ func (s *CacheQuotaHint) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null UsageStats: cannot skip unknown-size typed object
 		}
 	}
 	return nil

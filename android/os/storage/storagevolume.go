@@ -20,18 +20,18 @@ func (s *StorageVolume) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString(s.Id)
-	p.WriteInt32(-1) // null Path.toString()
-	p.WriteInt32(-1) // null InternalPath.toString()
+	p.WriteInt32(0) // null Path.toString()
+	p.WriteInt32(0) // null InternalPath.toString()
 	p.WriteString(s.Description)
-	p.WriteInt32(-1) // null Primary?1:0
-	p.WriteInt32(-1) // null Removable?1:0
-	p.WriteInt32(-1) // null Emulated?1:0
-	p.WriteInt32(-1) // null ExternallyManaged?1:0
-	p.WriteInt32(-1) // null AllowMassStorage?1:0
+	p.WriteInt32(0) // null Primary?1:0
+	p.WriteInt32(0) // null Removable?1:0
+	p.WriteInt32(0) // null Emulated?1:0
+	p.WriteInt32(0) // null ExternallyManaged?1:0
+	p.WriteInt32(0) // null AllowMassStorage?1:0
 	p.WriteInt64(s.MaxFileSize)
-	p.WriteInt32(-1) // null Owner
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null StorageManager.convert(mUuid)
+	p.WriteInt32(0) // null Owner
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null StorageManager.convert(mUuid)
 	p.WriteString(s.FsUuid)
 	p.WriteString(s.State)
 	return nil
@@ -46,21 +46,21 @@ func (s *StorageVolume) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Path.toString(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InternalPath.toString(): cannot skip unknown-size typed object
 		}
 	}
 	s.Description, _err = p.ReadString()
@@ -68,48 +68,48 @@ func (s *StorageVolume) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Primary?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Removable?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Emulated?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ExternallyManaged?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowMassStorage?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.MaxFileSize, _err = p.ReadInt64()
@@ -117,30 +117,30 @@ func (s *StorageVolume) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Owner: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StorageManager.convert(mUuid): cannot skip unknown-size typed object
 		}
 	}
 	s.FsUuid, _err = p.ReadString()

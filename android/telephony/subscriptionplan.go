@@ -18,14 +18,14 @@ var _ parcel.Parcelable = (*SubscriptionPlan)(nil)
 func (s *SubscriptionPlan) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null CycleRule
-	p.WriteInt32(-1) // null Title
-	p.WriteInt32(-1) // null Summary
+	p.WriteInt32(0) // null CycleRule
+	p.WriteInt32(0) // null Title
+	p.WriteInt32(0) // null Summary
 	p.WriteInt64(s.DataLimitBytes)
 	p.WriteInt32(s.DataLimitBehavior)
 	p.WriteInt64(s.DataUsageBytes)
 	p.WriteInt64(s.DataUsageTime)
-	p.WriteInt32(-1) // null NetworkTypes
+	p.WriteInt32(0) // null NetworkTypes
 	return nil
 }
 
@@ -34,12 +34,12 @@ func (s *SubscriptionPlan) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CycleRule: cannot skip unknown-size typed object
 		}
 	}
 	{

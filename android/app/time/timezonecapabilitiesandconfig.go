@@ -14,9 +14,9 @@ var _ parcel.Parcelable = (*TimeZoneCapabilitiesAndConfig)(nil)
 func (s *TimeZoneCapabilitiesAndConfig) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null DetectorStatus
-	p.WriteInt32(-1) // null Capabilities
-	p.WriteInt32(-1) // null Configuration
+	p.WriteInt32(0) // null DetectorStatus
+	p.WriteInt32(0) // null Capabilities
+	p.WriteInt32(0) // null Configuration
 	return nil
 }
 
@@ -24,30 +24,30 @@ func (s *TimeZoneCapabilitiesAndConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DetectorStatus: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Capabilities: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Configuration: cannot skip unknown-size typed object
 		}
 	}
 	return nil

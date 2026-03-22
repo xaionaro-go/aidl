@@ -20,7 +20,7 @@ func (s *GeofenceHardwareMonitorEvent) MarshalParcel(
 	p.WriteInt32(s.MonitoringType)
 	p.WriteInt32(s.MonitoringStatus)
 	p.WriteInt32(s.SourceTechnologies)
-	p.WriteInt32(-1) // null Location
+	p.WriteInt32(0) // null Location
 	return nil
 }
 
@@ -41,12 +41,12 @@ func (s *GeofenceHardwareMonitorEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Location: cannot skip unknown-size typed object
 		}
 	}
 	return nil

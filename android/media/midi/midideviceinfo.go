@@ -23,12 +23,12 @@ func (s *MidiDeviceInfo) MarshalParcel(
 	p.WriteInt32(s.Id)
 	p.WriteInt32(s.InputPortCount)
 	p.WriteInt32(s.OutputPortCount)
-	p.WriteInt32(-1) // null InputPortNames
-	p.WriteInt32(-1) // null OutputPortNames
-	p.WriteInt32(-1) // null IsPrivate?1:0
+	p.WriteInt32(0) // null InputPortNames
+	p.WriteInt32(0) // null OutputPortNames
+	p.WriteInt32(0) // null IsPrivate?1:0
 	p.WriteInt32(s.DefaultProtocol)
-	p.WriteInt32(-1) // null GetBasicProperties(newString[]{PROPERTY_NAME,PROPERTY_MANUFACTURER,PROPERTY_PRODUCT,PROPERTY_VERSION,PROPERTY_SERIAL_NUMBER,PROPERTY_ALSA_CARD,PROPERTY_ALSA_DEVICE})
-	p.WriteInt32(-1) // null Properties
+	p.WriteInt32(-1) // null GetBasicProperties(newString[]{PROPERTY_NAME,PROPERTY_MANUFACTURER,PROPERTY_PRODUCT,PROPERTY_VERSION,PROPERTY_SERIAL_NUMBER,PROPERTY_ALSA_CARD,PROPERTY_ALSA_DEVICE}) (Bundle)
+	p.WriteInt32(-1) // null Properties (Bundle)
 	return nil
 }
 
@@ -71,12 +71,12 @@ func (s *MidiDeviceInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsPrivate?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.DefaultProtocol, _err = p.ReadInt32()

@@ -15,7 +15,7 @@ var _ parcel.Parcelable = (*FileInfo)(nil)
 func (s *FileInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Uri
+	p.WriteInt32(0) // null Uri
 	p.WriteString16(s.MimeType)
 	return nil
 }
@@ -25,12 +25,12 @@ func (s *FileInfo) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Uri: cannot skip unknown-size typed object
 		}
 	}
 	s.MimeType, _err = p.ReadString16()

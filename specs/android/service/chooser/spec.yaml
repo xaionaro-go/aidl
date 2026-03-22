@@ -52,4 +52,4 @@ parcelables:
         - name: ComponentName
           write_method: opaque
         - name: IntentExtras
-          write_method: opaque
+          write_method: bundle

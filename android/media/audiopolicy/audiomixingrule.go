@@ -20,7 +20,7 @@ func (s *AudioMixingRule) MarshalParcel(
 	p.WriteBool(s.AllowPrivilegedPlaybackCapture)
 	p.WriteBool(s.VoiceCommunicationCaptureAllowed)
 	p.WriteInt32(s.TargetMixType)
-	p.WriteInt32(-1) // null Criteria.size()
+	p.WriteInt32(0) // null Criteria.size()
 	return nil
 }
 
@@ -41,12 +41,12 @@ func (s *AudioMixingRule) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Criteria.size(): cannot skip unknown-size typed object
 		}
 	}
 	return nil

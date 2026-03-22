@@ -20,7 +20,7 @@ func (s *InstallSourceInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.InitiatingPackageName)
-	p.WriteInt32(-1) // null InitiatingPackageSigningInfo
+	p.WriteInt32(0) // null InitiatingPackageSigningInfo
 	p.WriteString16(s.OriginatingPackageName)
 	p.WriteString16(s.InstallingPackageName)
 	p.WriteString(s.UpdateOwnerPackageName)
@@ -37,12 +37,12 @@ func (s *InstallSourceInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InitiatingPackageSigningInfo: cannot skip unknown-size typed object
 		}
 	}
 	s.OriginatingPackageName, _err = p.ReadString16()

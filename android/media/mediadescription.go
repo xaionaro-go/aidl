@@ -16,13 +16,13 @@ func (s *MediaDescription) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.MediaId)
-	p.WriteInt32(-1) // null Title
-	p.WriteInt32(-1) // null Subtitle
-	p.WriteInt32(-1) // null Description
-	p.WriteInt32(-1) // null Icon
-	p.WriteInt32(-1) // null IconUri
-	p.WriteInt32(-1) // null Extras
-	p.WriteInt32(-1) // null MediaUri
+	p.WriteInt32(0)  // null Title
+	p.WriteInt32(0)  // null Subtitle
+	p.WriteInt32(0)  // null Description
+	p.WriteInt32(0)  // null Icon
+	p.WriteInt32(0)  // null IconUri
+	p.WriteInt32(-1) // null Extras (Bundle)
+	p.WriteInt32(0)  // null MediaUri
 	return nil
 }
 
@@ -62,12 +62,21 @@ func (s *MediaDescription) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Icon: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null IconUri: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -80,21 +89,12 @@ func (s *MediaDescription) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null MediaUri: cannot skip unknown-size typed object
 		}
 	}
 	return nil

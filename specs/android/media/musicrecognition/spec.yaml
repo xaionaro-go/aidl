@@ -118,9 +118,9 @@ parcelables:
     - name: RecognitionRequest
       java_wire_format:
         - name: AudioFormat
-          write_method: opaque
+          write_method: typed_object
         - name: AudioAttributes
-          write_method: opaque
+          write_method: typed_object
         - name: CaptureSession
           write_method: int32
         - name: MaxAudioLengthSeconds

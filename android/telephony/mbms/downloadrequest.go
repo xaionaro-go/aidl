@@ -19,8 +19,8 @@ func (s *DownloadRequest) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.FileServiceId)
-	p.WriteInt32(-1) // null SourceUri
-	p.WriteInt32(-1) // null DestinationUri
+	p.WriteInt32(0) // null SourceUri
+	p.WriteInt32(0) // null DestinationUri
 	p.WriteInt32(s.SubscriptionId)
 	p.WriteString16(s.SerializedResultIntentForApp)
 	p.WriteInt32(s.Version)
@@ -36,21 +36,21 @@ func (s *DownloadRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SourceUri: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DestinationUri: cannot skip unknown-size typed object
 		}
 	}
 	s.SubscriptionId, _err = p.ReadInt32()

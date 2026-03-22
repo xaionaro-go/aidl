@@ -64,7 +64,7 @@ parcelables:
     - name: ImsFeatureContainer
       java_wire_format:
         - name: ImsFeature
-          write_method: opaque
+          write_method: binder
         - name: ImsConfig
           write_method: opaque
         - name: ImsRegistration

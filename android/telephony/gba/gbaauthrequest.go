@@ -21,11 +21,11 @@ func (s *GbaAuthRequest) MarshalParcel(
 	p.WriteInt32(s.Token)
 	p.WriteInt32(s.SubId)
 	p.WriteInt32(s.AppType)
-	p.WriteInt32(-1) // null NafUrl
-	p.WriteInt32(-1) // null SecurityProtocol.length
-	p.WriteInt32(-1) // null SecurityProtocol
+	p.WriteInt32(0) // null NafUrl
+	p.WriteInt32(0) // null SecurityProtocol.length
+	p.WriteInt32(0) // null SecurityProtocol
 	p.WriteBool(s.ForceBootStrapping)
-	p.WriteInt32(-1) // null Callback
+	p.WriteInt32(0) // null Callback
 	return nil
 }
 
@@ -46,21 +46,21 @@ func (s *GbaAuthRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null NafUrl: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SecurityProtocol.length: cannot skip unknown-size typed object
 		}
 	}
 	{

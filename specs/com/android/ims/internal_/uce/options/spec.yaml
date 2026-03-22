@@ -225,7 +225,7 @@ parcelables:
         - name: Sdp
           write_method: string16
         - name: CapInfo
-          write_method: opaque
+          write_method: typed_object
     - name: OptionsCmdId
       java_wire_format:
         - name: CmdId
@@ -235,11 +235,11 @@ parcelables:
         - name: UserData
           write_method: int32
         - name: CmdId
-          write_method: opaque
+          write_method: typed_object
         - name: Status
-          write_method: opaque
+          write_method: typed_object
         - name: CapInfo
-          write_method: opaque
+          write_method: typed_object
     - name: OptionsSipResponse
       java_wire_format:
         - name: RequestId
@@ -249,7 +249,7 @@ parcelables:
         - name: ReasonPhrase
           write_method: string16
         - name: CmdId
-          write_method: opaque
+          write_method: typed_object
         - name: RetryAfter
           write_method: int32
         - name: ReasonHeader

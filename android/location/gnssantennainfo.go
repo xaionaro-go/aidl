@@ -16,9 +16,9 @@ func (s *GnssAntennaInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteFloat64(s.CarrierFrequencyMHz)
-	p.WriteInt32(-1) // null PhaseCenterOffset
-	p.WriteInt32(-1) // null PhaseCenterVariationCorrections
-	p.WriteInt32(-1) // null SignalGainCorrections
+	p.WriteInt32(0) // null PhaseCenterOffset
+	p.WriteInt32(0) // null PhaseCenterVariationCorrections
+	p.WriteInt32(0) // null SignalGainCorrections
 	return nil
 }
 
@@ -31,30 +31,30 @@ func (s *GnssAntennaInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PhaseCenterOffset: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PhaseCenterVariationCorrections: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SignalGainCorrections: cannot skip unknown-size typed object
 		}
 	}
 	return nil

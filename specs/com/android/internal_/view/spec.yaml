@@ -602,4 +602,4 @@ parcelables:
         - name: Appearance
           write_method: int32
         - name: Bounds
-          write_method: opaque
+          write_method: typed_object

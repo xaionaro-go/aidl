@@ -71,9 +71,9 @@ parcelables:
         - name: Name
           write_method: string8
         - name: VirtualDevice.asBinder()
-          write_method: opaque
+          write_method: binder
         - name: Token
-          write_method: opaque
+          write_method: binder
     - name: VirtualSensorConfig
       java_wire_format:
         - name: Type

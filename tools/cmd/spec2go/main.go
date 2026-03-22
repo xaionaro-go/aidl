@@ -323,12 +323,26 @@ func convertParcelableToAST(
 			isOpaque := !knownType
 
 			// Treat fields with invalid names, unresolvable conditions,
-			// or unknown types as opaque in the wire format.
+			// or non-primitive types as opaque in the wire format.
+			// For non-primitive types (bundle, typed_object, etc.), preserve
+			// the specific write_method for correct null marker generation.
+			// For primitive types with unresolvable conditions (e.g., a bool
+			// field guarded by "hasGainmap()"), use the specific write_method
+			// but clear the condition — the codegen can't translate Java
+			// method calls to Go, and the field has no corresponding struct field.
 			if !validName || !resolvableCond || isOpaque {
+				wm := jwf.WriteMethod
+				// If the write method is a known primitive type (bool, int32, etc.),
+				// but the field can't become a struct field (invalid name or
+				// unresolvable condition), force it to "typed_object" so the
+				// codegen writes a null marker instead of accessing a
+				// non-existent struct field.
+				if knownType {
+					wm = "typed_object"
+				}
 				wireFields = append(wireFields, parser.JavaWireField{
 					Name:        jwf.Name,
-					WriteMethod: jwf.WriteMethod,
-					Condition:   jwf.Condition,
+					WriteMethod: wm,
 				})
 				continue
 			}

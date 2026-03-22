@@ -25,7 +25,7 @@ func (s *InputMethodSubtype) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.SubtypeNameResId)
-	p.WriteInt32(-1) // null SubtypeNameOverride
+	p.WriteInt32(0) // null SubtypeNameOverride
 	p.WriteString(s.PkLanguageTag)
 	p.WriteString(s.PkLayoutType)
 	p.WriteInt32(s.SubtypeIconResId)
@@ -33,11 +33,11 @@ func (s *InputMethodSubtype) MarshalParcel(
 	p.WriteString16(s.SubtypeLanguageTag)
 	p.WriteString16(s.SubtypeMode)
 	p.WriteString16(s.SubtypeExtraValue)
-	p.WriteInt32(-1) // null IsAuxiliary?1:0
-	p.WriteInt32(-1) // null OverridesImplicitlyEnabledSubtype?1:0
+	p.WriteInt32(0) // null IsAuxiliary?1:0
+	p.WriteInt32(0) // null OverridesImplicitlyEnabledSubtype?1:0
 	p.WriteInt32(s.SubtypeHashCode)
 	p.WriteInt32(s.SubtypeId)
-	p.WriteInt32(-1) // null IsAsciiCapable?1:0
+	p.WriteInt32(0) // null IsAsciiCapable?1:0
 	return nil
 }
 
@@ -87,21 +87,21 @@ func (s *InputMethodSubtype) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsAuxiliary?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null OverridesImplicitlyEnabledSubtype?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.SubtypeHashCode, _err = p.ReadInt32()
@@ -113,12 +113,12 @@ func (s *InputMethodSubtype) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsAsciiCapable?1:0: cannot skip unknown-size typed object
 		}
 	}
 	return nil

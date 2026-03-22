@@ -24,8 +24,8 @@ func (s *FingerprintAuthenticateOptions) MarshalParcel(
 	p.WriteInt32(s.SensorId)
 	p.WriteInt32(s.DisplayState)
 	p.WriteString16(s.OpPackageName)
-	p.WriteInt32(-1) // null AttributionTag
-	p.WriteInt32(-1) // null VendorReason
+	p.WriteInt32(0) // null AttributionTag
+	p.WriteInt32(0) // null VendorReason
 	return nil
 }
 
@@ -54,21 +54,21 @@ func (s *FingerprintAuthenticateOptions) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AttributionTag: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null VendorReason: cannot skip unknown-size typed object
 		}
 	}
 	return nil

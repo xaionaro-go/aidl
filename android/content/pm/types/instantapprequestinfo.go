@@ -17,9 +17,9 @@ func (s *InstantAppRequestInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Flg)
-	p.WriteInt32(-1) // null Intent
-	p.WriteInt32(-1) // null HostDigestPrefix
-	p.WriteInt32(-1) // null UserHandle
+	p.WriteInt32(0) // null Intent
+	p.WriteInt32(0) // null HostDigestPrefix
+	p.WriteInt32(0) // null UserHandle
 	p.WriteString16(s.Token)
 	return nil
 }
@@ -33,12 +33,12 @@ func (s *InstantAppRequestInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Intent: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -51,12 +51,12 @@ func (s *InstantAppRequestInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null UserHandle: cannot skip unknown-size typed object
 		}
 	}
 	s.Token, _err = p.ReadString16()

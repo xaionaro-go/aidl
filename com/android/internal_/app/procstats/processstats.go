@@ -48,7 +48,7 @@ func (s *ProcessStats) MarshalParcel(
 	p.WriteInt32(s.AdjCount)
 	p.WriteInt32(s.PssCount)
 	p.WriteInt32(s.SysMemUsageCount)
-	p.WriteInt32(-1) // null SparseMappingTable.ARRAY_SIZE
+	p.WriteInt32(0) // null SparseMappingTable.ARRAY_SIZE
 	p.WriteInt32(s.NumAggregated)
 	p.WriteInt64(s.TimePeriodStartClock)
 	p.WriteInt64(s.TimePeriodStartRealtime)
@@ -66,10 +66,10 @@ func (s *ProcessStats) MarshalParcel(
 	p.WriteInt64(s.ExternalSlowPssCount)
 	p.WriteInt64(s.ExternalSlowPssTime)
 	p.WriteString16(s.Runtime)
-	p.WriteInt32(-1) // null HasSwappedOutPss?1:0
+	p.WriteInt32(0) // null HasSwappedOutPss?1:0
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(-1) // null Out
-	p.WriteInt32(-1) // null Out2
+	p.WriteInt32(0) // null Out
+	p.WriteInt32(0) // null Out
 	p.WriteInt32(s.NumOfUids)
 	p.WriteInt32(s.NPROC)
 	p.WriteInt32(s.NPKG)
@@ -106,12 +106,12 @@ func (s *ProcessStats) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SparseMappingTable.ARRAY_SIZE: cannot skip unknown-size typed object
 		}
 	}
 	s.NumAggregated, _err = p.ReadInt32()
@@ -183,12 +183,12 @@ func (s *ProcessStats) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HasSwappedOutPss?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.Flags, _err = p.ReadInt32()

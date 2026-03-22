@@ -14,8 +14,8 @@ var _ parcel.Parcelable = (*ParcelableHandwritingGesture)(nil)
 func (s *ParcelableHandwritingGesture) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Gesture.getGestureType()
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null Gesture.getGestureType()
+	p.WriteInt32(0) // null Dest
 	return nil
 }
 
@@ -23,12 +23,12 @@ func (s *ParcelableHandwritingGesture) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Gesture.getGestureType(): cannot skip unknown-size typed object
 		}
 	}
 	{

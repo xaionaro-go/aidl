@@ -17,22 +17,22 @@ var _ parcel.Parcelable = (*AutomaticZenRule)(nil)
 func (s *AutomaticZenRule) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Enabled?ENABLED:DISABLED
-	p.WriteInt32(-1) // null 1
-	p.WriteInt32(-1) // null Name
+	p.WriteInt32(0) // null Enabled?ENABLED:DISABLED
+	p.WriteInt32(0) // null 1
+	p.WriteInt32(0) // null Name
 	p.WriteInt32(s.InterruptionFilter)
-	p.WriteInt32(-1) // null ConditionId
-	p.WriteInt32(-1) // null Owner
-	p.WriteInt32(-1) // null ConfigurationActivity
+	p.WriteInt32(0) // null ConditionId
+	p.WriteInt32(0) // null Owner
+	p.WriteInt32(0) // null ConfigurationActivity
 	p.WriteInt64(s.CreationTime)
-	p.WriteInt32(-1) // null ZenPolicy
-	p.WriteInt32(-1) // null Modified?ENABLED:DISABLED
+	p.WriteInt32(0) // null ZenPolicy
+	p.WriteInt32(0) // null Modified?ENABLED:DISABLED
 	p.WriteString16(s.Pkg)
-	p.WriteInt32(-1) // null DeviceEffects
-	p.WriteInt32(-1) // null AllowManualInvocation
-	p.WriteInt32(-1) // null IconResId
-	p.WriteInt32(-1) // null TriggerDescription
-	p.WriteInt32(-1) // null Type
+	p.WriteInt32(0) // null DeviceEffects
+	p.WriteInt32(0) // null AllowManualInvocation
+	p.WriteInt32(0) // null IconResId
+	p.WriteInt32(0) // null TriggerDescription
+	p.WriteInt32(0) // null Type
 	return nil
 }
 
@@ -41,30 +41,30 @@ func (s *AutomaticZenRule) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Enabled?ENABLED:DISABLED: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Name: cannot skip unknown-size typed object
 		}
 	}
 	s.InterruptionFilter, _err = p.ReadInt32()
@@ -72,30 +72,30 @@ func (s *AutomaticZenRule) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ConditionId: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Owner: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ConfigurationActivity: cannot skip unknown-size typed object
 		}
 	}
 	s.CreationTime, _err = p.ReadInt64()
@@ -103,21 +103,21 @@ func (s *AutomaticZenRule) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ZenPolicy: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Modified?ENABLED:DISABLED: cannot skip unknown-size typed object
 		}
 	}
 	s.Pkg, _err = p.ReadString16()
@@ -125,48 +125,48 @@ func (s *AutomaticZenRule) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DeviceEffects: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowManualInvocation: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IconResId: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TriggerDescription: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Type: cannot skip unknown-size typed object
 		}
 	}
 	return nil

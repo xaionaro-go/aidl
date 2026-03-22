@@ -27,10 +27,10 @@ func (s *TelephonyHistogram) MarshalParcel(
 	p.WriteInt32(s.MaxTimeMs)
 	p.WriteInt32(s.AverageTimeMs)
 	p.WriteInt32(s.SampleCount)
-	p.WriteInt32(-1) // null ABSENT
+	p.WriteInt32(0) // null ABSENT
 	p.WriteInt32(s.BucketCount)
-	p.WriteInt32(-1) // null BucketEndPoints
-	p.WriteInt32(-1) // null BucketCounters
+	p.WriteInt32(0) // null BucketEndPoints
+	p.WriteInt32(0) // null BucketCounters
 	return nil
 }
 
@@ -63,12 +63,12 @@ func (s *TelephonyHistogram) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ABSENT: cannot skip unknown-size typed object
 		}
 	}
 	s.BucketCount, _err = p.ReadInt32()

@@ -27,17 +27,17 @@ func (s *CursorAnchorInfo) MarshalParcel(
 	p.WriteInt32(s.SelectionStart)
 	p.WriteInt32(s.SelectionEnd)
 	p.WriteInt32(s.ComposingTextStart)
-	p.WriteInt32(-1) // null ComposingText
+	p.WriteInt32(0) // null ComposingText
 	p.WriteInt32(s.InsertionMarkerFlags)
 	p.WriteFloat32(s.InsertionMarkerHorizontal)
 	p.WriteFloat32(s.InsertionMarkerTop)
 	p.WriteFloat32(s.InsertionMarkerBaseline)
 	p.WriteFloat32(s.InsertionMarkerBottom)
-	p.WriteInt32(-1) // null CharacterBoundsArray
-	p.WriteInt32(-1) // null EditorBoundsInfo
-	p.WriteInt32(-1) // null MatrixValues
-	p.WriteInt32(-1) // null VisibleLineBounds
-	p.WriteInt32(-1) // null TextAppearanceInfo
+	p.WriteInt32(0) // null CharacterBoundsArray
+	p.WriteInt32(0) // null EditorBoundsInfo
+	p.WriteInt32(0) // null MatrixValues
+	p.WriteInt32(0) // null VisibleLineBounds
+	p.WriteInt32(0) // null TextAppearanceInfo
 	return nil
 }
 
@@ -91,12 +91,21 @@ func (s *CursorAnchorInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CharacterBoundsArray: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null EditorBoundsInfo: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -118,21 +127,12 @@ func (s *CursorAnchorInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TextAppearanceInfo: cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -24,7 +24,7 @@ parcelables:
         - name: Event
           write_method: int32
         - name: Data
-          write_method: opaque
+          write_method: byte_array
     - name: EuiccRulesAuthTable
       java_wire_format:
         - name: PolicyRules

@@ -58,6 +58,6 @@ parcelables:
         - name: TexturedMeshes
           write_method: opaque
         - name: StartKeyFrame
-          write_method: opaque
+          write_method: typed_object
         - name: EndKeyFrame
-          write_method: opaque
+          write_method: typed_object

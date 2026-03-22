@@ -2446,7 +2446,7 @@ parcelables:
         - name: MimeType
           write_method: string16
         - name: Buffer
-          write_method: opaque
+          write_method: typed_object
         - name: Offset
           write_method: int32
         - name: Length
@@ -2476,7 +2476,7 @@ parcelables:
         - name: MediaFileType
           write_method: string16
         - name: Metadata
-          write_method: opaque
+          write_method: bundle
     - name: AdResponse
       java_wire_format:
         - name: Id
@@ -2562,9 +2562,9 @@ parcelables:
     - name: TvContentRatingSystemInfo
       java_wire_format:
         - name: XmlUri
-          write_method: opaque
+          write_method: typed_object
         - name: ApplicationInfo
-          write_method: opaque
+          write_method: typed_object
     - name: TvInputHardwareInfo
       java_wire_format:
         - name: DeviceId
@@ -2593,15 +2593,15 @@ parcelables:
         - name: Label
           write_method: opaque
         - name: IconUri
-          write_method: opaque
+          write_method: typed_object
         - name: LabelResId
           write_method: int32
         - name: Icon
-          write_method: opaque
+          write_method: typed_object
         - name: IconStandby
-          write_method: opaque
+          write_method: typed_object
         - name: IconDisconnected
-          write_method: opaque
+          write_method: typed_object
         - name: SetupActivity
           write_method: string16
         - name: CanRecord?(byte)1:0
@@ -2611,7 +2611,7 @@ parcelables:
         - name: TunerCount
           write_method: int32
         - name: HdmiDeviceInfo
-          write_method: opaque
+          write_method: typed_object
         - name: IsConnectedToHdmiSwitch?(byte)1:0
           write_method: int32
         - name: HdmiConnectionRelativePosition
@@ -2619,7 +2619,7 @@ parcelables:
         - name: ParentId
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: TvRecordingInfo
       java_wire_format:
         - name: RecordingId
@@ -2697,4 +2697,4 @@ parcelables:
         - name: VideoActiveFormatDescription
           write_method: int32
         - name: Extra
-          write_method: opaque
+          write_method: bundle

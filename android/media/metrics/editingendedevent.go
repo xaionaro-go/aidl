@@ -27,10 +27,10 @@ func (s *EditingEndedEvent) MarshalParcel(
 	p.WriteInt64(s.TimeSinceCreatedMillis)
 	p.WriteString16(s.ExporterName)
 	p.WriteString16(s.MuxerName)
-	p.WriteInt32(-1) // null InputMediaItemInfos
-	p.WriteInt32(-1) // null OutputMediaItemInfo
+	p.WriteInt32(0) // null InputMediaItemInfos
+	p.WriteInt32(0) // null OutputMediaItemInfo
 	p.WriteInt64(s.OperationTypes)
-	p.WriteInt32(-1) // null MetricsBundle
+	p.WriteInt32(-1) // null MetricsBundle (Bundle)
 	return nil
 }
 
@@ -72,12 +72,12 @@ func (s *EditingEndedEvent) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null OutputMediaItemInfo: cannot skip unknown-size typed object
 		}
 	}
 	s.OperationTypes, _err = p.ReadInt64()

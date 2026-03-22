@@ -20,10 +20,10 @@ func (s *InsetsSourceControl) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Id)
 	p.WriteInt32(s.Type)
-	p.WriteInt32(-1) // null Leash
+	p.WriteInt32(0) // null Leash
 	p.WriteBool(s.InitiallyVisible)
-	p.WriteInt32(-1) // null SurfacePosition
-	p.WriteInt32(-1) // null InsetsHint
+	p.WriteInt32(0) // null SurfacePosition
+	p.WriteInt32(0) // null InsetsHint
 	p.WriteBool(s.SkipAnimationOnce)
 	return nil
 }
@@ -41,12 +41,12 @@ func (s *InsetsSourceControl) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Leash: cannot skip unknown-size typed object
 		}
 	}
 	s.InitiallyVisible, _err = p.ReadBool()
@@ -54,21 +54,21 @@ func (s *InsetsSourceControl) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SurfacePosition: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null InsetsHint: cannot skip unknown-size typed object
 		}
 	}
 	s.SkipAnimationOnce, _err = p.ReadBool()

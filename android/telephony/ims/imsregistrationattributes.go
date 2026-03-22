@@ -20,8 +20,8 @@ func (s *ImsRegistrationAttributes) MarshalParcel(
 	p.WriteInt32(s.RegistrationTech)
 	p.WriteInt32(s.TransportType)
 	p.WriteInt32(s.ImsAttributeFlags)
-	p.WriteInt32(-1) // null FeatureTags
-	p.WriteInt32(-1) // null SipDetails
+	p.WriteInt32(0) // null FeatureTags
+	p.WriteInt32(0) // null SipDetails
 	return nil
 }
 
@@ -51,12 +51,12 @@ func (s *ImsRegistrationAttributes) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SipDetails: cannot skip unknown-size typed object
 		}
 	}
 	return nil

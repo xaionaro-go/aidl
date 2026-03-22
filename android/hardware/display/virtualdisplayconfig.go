@@ -29,11 +29,11 @@ func (s *VirtualDisplayConfig) MarshalParcel(
 	p.WriteInt32(s.Height)
 	p.WriteInt32(s.DensityDpi)
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(-1) // null Surface
+	p.WriteInt32(0) // null Surface
 	p.WriteString(s.UniqueId)
 	p.WriteInt32(s.DisplayIdToMirror)
 	p.WriteBool(s.WindowManagerMirroringEnabled)
-	p.WriteInt32(-1) // null DisplayCategories
+	p.WriteInt32(0) // null DisplayCategories
 	p.WriteFloat32(s.RequestedRefreshRate)
 	p.WriteBool(s.IsHomeSupported)
 	return nil
@@ -64,12 +64,12 @@ func (s *VirtualDisplayConfig) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Surface: cannot skip unknown-size typed object
 		}
 	}
 	s.UniqueId, _err = p.ReadString()

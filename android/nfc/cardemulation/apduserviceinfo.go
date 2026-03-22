@@ -20,23 +20,23 @@ var _ parcel.Parcelable = (*ApduServiceInfo)(nil)
 func (s *ApduServiceInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null Dest
 	p.WriteString16(s.Description)
-	p.WriteInt32(-1) // null OnHost?1:0
+	p.WriteInt32(0) // null OnHost?1:0
 	p.WriteString16(s.OffHostName)
 	p.WriteString16(s.StaticOffHostName)
-	p.WriteInt32(-1) // null StaticAidGroups.size()
-	p.WriteInt32(-1) // null NewArrayList<AidGroup>(mStaticAidGroups.values())
-	p.WriteInt32(-1) // null DynamicAidGroups.size()
-	p.WriteInt32(-1) // null NewArrayList<AidGroup>(mDynamicAidGroups.values())
-	p.WriteInt32(-1) // null RequiresDeviceUnlock?1:0
-	p.WriteInt32(-1) // null RequiresDeviceScreenOn?1:0
+	p.WriteInt32(0) // null StaticAidGroups.size()
+	p.WriteInt32(0) // null NewArrayList<AidGroup>(mStaticAidGroups.values())
+	p.WriteInt32(0) // null DynamicAidGroups.size()
+	p.WriteInt32(0) // null NewArrayList<AidGroup>(mDynamicAidGroups.values())
+	p.WriteInt32(0) // null RequiresDeviceUnlock?1:0
+	p.WriteInt32(0) // null RequiresDeviceScreenOn?1:0
 	p.WriteInt32(s.BannerResourceId)
 	p.WriteInt32(s.Uid)
 	p.WriteString16(s.SettingsActivityName)
-	p.WriteInt32(-1) // null CategoryOtherServiceEnabled?1:0
-	p.WriteInt32(-1) // null AutoTransact.size()
-	p.WriteInt32(-1) // null AutoTransact
+	p.WriteInt32(0) // null CategoryOtherServiceEnabled?1:0
+	p.WriteInt32(0) // null AutoTransact.size()
+	p.WriteInt32(0) // null AutoTransact
 	return nil
 }
 
@@ -58,12 +58,12 @@ func (s *ApduServiceInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null OnHost?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.OffHostName, _err = p.ReadString16()
@@ -75,12 +75,12 @@ func (s *ApduServiceInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StaticAidGroups.size(): cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -93,12 +93,12 @@ func (s *ApduServiceInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DynamicAidGroups.size(): cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -111,21 +111,21 @@ func (s *ApduServiceInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RequiresDeviceUnlock?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RequiresDeviceScreenOn?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.BannerResourceId, _err = p.ReadInt32()
@@ -141,21 +141,21 @@ func (s *ApduServiceInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CategoryOtherServiceEnabled?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AutoTransact.size(): cannot skip unknown-size typed object
 		}
 	}
 	{

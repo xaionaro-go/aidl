@@ -41,8 +41,8 @@ func (s *Configuration) MarshalParcel(
 	p.WriteFloat32(s.FontScale)
 	p.WriteInt32(s.Mcc)
 	p.WriteInt32(s.Mnc)
-	p.WriteInt32(-1) // null LocaleList
-	p.WriteInt32(-1) // null 1
+	p.WriteInt32(0) // null LocaleList
+	p.WriteInt32(0) // null 1
 	p.WriteInt32(s.Touchscreen)
 	p.WriteInt32(s.Keyboard)
 	p.WriteInt32(s.KeyboardHidden)
@@ -60,7 +60,7 @@ func (s *Configuration) MarshalParcel(
 	p.WriteInt32(s.CompatScreenWidthDp)
 	p.WriteInt32(s.CompatScreenHeightDp)
 	p.WriteInt32(s.CompatSmallestScreenWidthDp)
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null Dest
 	p.WriteInt32(s.AssetsSeq)
 	p.WriteInt32(s.Seq)
 	p.WriteInt32(s.FontWeightAdjustment)
@@ -85,21 +85,21 @@ func (s *Configuration) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null LocaleList: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 1: cannot skip unknown-size typed object
 		}
 	}
 	s.Touchscreen, _err = p.ReadInt32()

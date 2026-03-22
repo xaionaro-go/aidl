@@ -330,7 +330,7 @@ parcelables:
           write_method: opaque
           condition: mExplanation!=null
         - name: Signals
-          write_method: opaque
+          write_method: bundle
         - name: User
           write_method: int32
         - name: Issuer
@@ -338,7 +338,7 @@ parcelables:
     - name: Condition
       java_wire_format:
         - name: Id
-          write_method: opaque
+          write_method: typed_object
         - name: Summary
           write_method: string16
         - name: Line1
@@ -357,13 +357,13 @@ parcelables:
     - name: ConversationChannelWrapper
       java_wire_format:
         - name: NotificationChannel
-          write_method: opaque
+          write_method: typed_object
         - name: GroupLabel
           write_method: opaque
         - name: ParentChannelLabel
           write_method: opaque
         - name: ShortcutInfo
-          write_method: opaque
+          write_method: typed_object
         - name: Pkg
           write_method: opaque
         - name: Uid
@@ -479,7 +479,7 @@ parcelables:
         - name: User
           write_method: int32
         - name: ManualRule
-          write_method: opaque
+          write_method: typed_object
         - name: AllowAlarms?1:0
           write_method: int32
         - name: AllowMedia?1:0

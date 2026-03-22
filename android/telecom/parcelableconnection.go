@@ -27,22 +27,22 @@ var _ parcel.Parcelable = (*ParcelableConnection)(nil)
 func (s *ParcelableConnection) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null PhoneAccount
+	p.WriteInt32(0) // null PhoneAccount
 	p.WriteInt32(s.State)
 	p.WriteInt32(s.ConnectionCapabilities)
-	p.WriteInt32(-1) // null Address
+	p.WriteInt32(0) // null Address
 	p.WriteInt32(s.AddressPresentation)
 	p.WriteString16(s.CallerDisplayName)
 	p.WriteInt32(s.CallerDisplayNamePresentation)
-	p.WriteInt32(-1) // null VideoProvider!=null?mVideoProvider.asBinder():null
+	p.WriteInt32(0) // null VideoProvider!=null?mVideoProvider.asBinder():null
 	p.WriteInt32(s.VideoState)
-	p.WriteInt32(-1) // null (byte)(mRingbackRequested?1:0)
-	p.WriteInt32(-1) // null (byte)(mIsVoipAudioMode?1:0)
+	p.WriteInt32(0) // null (byte)(mRingbackRequested?1:0)
+	p.WriteInt32(0) // null (byte)(mIsVoipAudioMode?1:0)
 	p.WriteInt64(s.ConnectTimeMillis)
-	p.WriteInt32(-1) // null StatusHints
-	p.WriteInt32(-1) // null DisconnectCause
-	p.WriteInt32(-1) // null ConferenceableConnectionIds
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(0)  // null StatusHints
+	p.WriteInt32(0)  // null DisconnectCause
+	p.WriteInt32(0)  // null ConferenceableConnectionIds
+	p.WriteInt32(-1) // null Extras (Bundle)
 	p.WriteInt32(s.ConnectionProperties)
 	p.WriteInt32(s.SupportedAudioRoutes)
 	p.WriteString16(s.ParentCallId)
@@ -57,12 +57,12 @@ func (s *ParcelableConnection) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PhoneAccount: cannot skip unknown-size typed object
 		}
 	}
 	s.State, _err = p.ReadInt32()
@@ -74,12 +74,12 @@ func (s *ParcelableConnection) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Address: cannot skip unknown-size typed object
 		}
 	}
 	s.AddressPresentation, _err = p.ReadInt32()
@@ -108,21 +108,21 @@ func (s *ParcelableConnection) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(mRingbackRequested?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(mIsVoipAudioMode?1:0): cannot skip unknown-size typed object
 		}
 	}
 	s.ConnectTimeMillis, _err = p.ReadInt64()
@@ -130,21 +130,21 @@ func (s *ParcelableConnection) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null StatusHints: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DisconnectCause: cannot skip unknown-size typed object
 		}
 	}
 	{

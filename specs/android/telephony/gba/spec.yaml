@@ -24,11 +24,11 @@ parcelables:
         - name: AppType
           write_method: int32
         - name: NafUrl
-          write_method: opaque
+          write_method: typed_object
         - name: SecurityProtocol.length
           write_method: int32
         - name: SecurityProtocol
-          write_method: opaque
+          write_method: byte_array
         - name: ForceBootStrapping
           write_method: bool
         - name: Callback

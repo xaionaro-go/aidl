@@ -16,9 +16,9 @@ func (s *InterfaceConfiguration) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.HwAddr)
-	p.WriteInt32(-1) // null (byte)1
-	p.WriteInt32(-1) // null Addr
-	p.WriteInt32(-1) // null Flags.size()
+	p.WriteInt32(0) // null (byte)1
+	p.WriteInt32(0) // null Addr
+	p.WriteInt32(0) // null Flags.size()
 	return nil
 }
 
@@ -31,30 +31,30 @@ func (s *InterfaceConfiguration) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)1: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Addr: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Flags.size(): cannot skip unknown-size typed object
 		}
 	}
 	return nil

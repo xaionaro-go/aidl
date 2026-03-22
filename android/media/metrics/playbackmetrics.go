@@ -34,18 +34,18 @@ func (s *PlaybackMetrics) MarshalParcel(
 	p.WriteInt32(s.PlaybackType)
 	p.WriteInt32(s.DrmType)
 	p.WriteInt32(s.ContentType)
-	p.WriteInt32(-1) // null PlayerName
-	p.WriteInt32(-1) // null PlayerVersion
-	p.WriteInt32(-1) // null ExperimentIds
+	p.WriteInt32(0) // null PlayerName
+	p.WriteInt32(0) // null PlayerVersion
+	p.WriteInt32(0) // null ExperimentIds
 	p.WriteInt32(s.VideoFramesPlayed)
 	p.WriteInt32(s.VideoFramesDropped)
 	p.WriteInt32(s.AudioUnderrunCount)
 	p.WriteInt64(s.NetworkBytesRead)
 	p.WriteInt64(s.LocalBytesRead)
 	p.WriteInt64(s.NetworkTransferDurationMillis)
-	p.WriteInt32(-1) // null DrmSessionId.length
-	p.WriteInt32(-1) // null DrmSessionId
-	p.WriteInt32(-1) // null MetricsBundle
+	p.WriteInt32(0)  // null DrmSessionId.length
+	p.WriteInt32(0)  // null DrmSessionId
+	p.WriteInt32(-1) // null MetricsBundle (Bundle)
 	return nil
 }
 
@@ -82,21 +82,21 @@ func (s *PlaybackMetrics) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PlayerName: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PlayerVersion: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -133,12 +133,12 @@ func (s *PlaybackMetrics) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DrmSessionId.length: cannot skip unknown-size typed object
 		}
 	}
 	{

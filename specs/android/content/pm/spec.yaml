@@ -5505,12 +5505,12 @@ parcelables:
           write_method: string16
           condition: mSplitName!=null
         - name: Checksum
-          write_method: opaque
+          write_method: typed_object
         - name: InstallerPackageName
           write_method: string16
           condition: mInstallerPackageName!=null
         - name: InstallerCertificate
-          write_method: opaque
+          write_method: byte_array
           condition: mInstallerCertificate!=null
     - name: ApplicationInfo
       java_wire_format:
@@ -5740,7 +5740,7 @@ parcelables:
         - name: Type
           write_method: int32
         - name: Value
-          write_method: opaque
+          write_method: byte_array
     - name: ConfigurationInfo
       java_wire_format:
         - name: ReqTouchScreen
@@ -5814,7 +5814,7 @@ parcelables:
         - name: InitiatingPackageName
           write_method: string16
         - name: InitiatingPackageSigningInfo
-          write_method: opaque
+          write_method: typed_object
         - name: OriginatingPackageName
           write_method: string16
         - name: InstallingPackageName
@@ -5855,18 +5855,18 @@ parcelables:
         - name: GrantedPermissions
           write_method: opaque
         - name: ApplicationInfo
-          write_method: opaque
+          write_method: typed_object
     - name: InstantAppRequestInfo
       java_wire_format:
         - name: Flg
           write_method: int32
         - name: Intent
-          write_method: opaque
+          write_method: typed_object
         - name: HostDigestPrefix
           write_method: opaque
           condition: mHostDigestPrefix!=null
         - name: UserHandle
-          write_method: opaque
+          write_method: typed_object
         - name: Token
           write_method: string16
     - name: InstrumentationInfo
@@ -5918,7 +5918,7 @@ parcelables:
     - name: KeySet
       java_wire_format:
         - name: Token
-          write_method: opaque
+          write_method: binder
     - name: LabeledIntent
       java_wire_format:
         - name: Dest
@@ -5934,11 +5934,11 @@ parcelables:
     - name: LauncherActivityInfoInternal
       java_wire_format:
         - name: ActivityInfo
-          write_method: opaque
+          write_method: typed_object
         - name: IncrementalStatesInfo
-          write_method: opaque
+          write_method: typed_object
         - name: User
-          write_method: opaque
+          write_method: typed_object
     - name: LauncherApps.AppUsageLimit
     - name: LauncherUserInfo
       java_wire_format:
@@ -6267,7 +6267,7 @@ parcelables:
         - name: Type
           write_method: int32
         - name: DeclaringPackage
-          write_method: opaque
+          write_method: typed_object
         - name: DependentPackages
           write_method: opaque
         - name: Dependencies
@@ -6285,7 +6285,7 @@ parcelables:
         - name: PackageName
           write_method: string8
         - name: Activity
-          write_method: opaque
+          write_method: typed_object
         - name: Flags
           write_method: int32
         - name: IconResId
@@ -6300,7 +6300,7 @@ parcelables:
         - name: "1"
           write_method: int32
         - name: Icon
-          write_method: opaque
+          write_method: typed_object
         - name: Title
           write_method: opaque
         - name: TitleResId
@@ -6320,7 +6320,7 @@ parcelables:
         - name: Rank
           write_method: int32
         - name: Extras
-          write_method: opaque
+          write_method: typed_object
         - name: BitmapPath
           write_method: string8
         - name: IconResName
@@ -6337,7 +6337,7 @@ parcelables:
         - name: Persons
           write_method: opaque
         - name: LocusId
-          write_method: opaque
+          write_method: typed_object
         - name: IconUri
           write_method: string8
         - name: StartingThemeResName
@@ -6362,7 +6362,7 @@ parcelables:
           write_method: opaque
           condition: mLocusIds!=null
         - name: Activity
-          write_method: opaque
+          write_method: typed_object
           condition: mActivity!=null
         - name: QueryFlags
           write_method: int32

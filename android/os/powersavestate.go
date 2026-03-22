@@ -17,8 +17,8 @@ var _ parcel.Parcelable = (*PowerSaveState)(nil)
 func (s *PowerSaveState) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null (byte)(batterySaverEnabled?1:0)
-	p.WriteInt32(-1) // null (byte)(globalBatterySaverEnabled?1:0)
+	p.WriteInt32(0) // null (byte)(batterySaverEnabled?1:0)
+	p.WriteInt32(0) // null (byte)(globalBatterySaverEnabled?1:0)
 	p.WriteInt32(s.LocationMode)
 	p.WriteInt32(s.SoundTriggerMode)
 	p.WriteFloat32(s.BrightnessFactor)
@@ -30,21 +30,21 @@ func (s *PowerSaveState) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(batterySaverEnabled?1:0): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null (byte)(globalBatterySaverEnabled?1:0): cannot skip unknown-size typed object
 		}
 	}
 	s.LocationMode, _err = p.ReadInt32()

@@ -1676,9 +1676,9 @@ parcelables:
     - name: LetterboxDetails
       java_wire_format:
         - name: LetterboxInnerBounds
-          write_method: opaque
+          write_method: typed_object
         - name: LetterboxFullBounds
-          write_method: opaque
+          write_method: typed_object
         - name: AppAppearance
           write_method: int32
     - name: NotificationVisibility
@@ -1712,7 +1712,7 @@ parcelables:
         - name: DisabledFlags2
           write_method: int32
         - name: ImeToken
-          write_method: opaque
+          write_method: binder
         - name: NavbarColorManagedByIme
           write_method: bool
         - name: Behavior
@@ -1728,11 +1728,11 @@ parcelables:
     - name: StatusBarIcon
       java_wire_format:
         - name: This.icon
-          write_method: opaque
+          write_method: typed_object
         - name: This.pkg
           write_method: string16
         - name: This.user
-          write_method: opaque
+          write_method: typed_object
         - name: This.iconLevel
           write_method: int32
         - name: This.visible?1:0

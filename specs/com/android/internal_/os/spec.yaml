@@ -175,7 +175,7 @@ parcelables:
         - name: This.mountPointId
           write_method: int32
         - name: Fd
-          write_method: opaque
+          write_method: typed_object
     - name: IBinaryTransparencyService.ApexInfo
       fields:
         - name: packageName

@@ -20,7 +20,7 @@ func (s *AppPredictionContext) MarshalParcel(
 	p.WriteString16(s.UiSurface)
 	p.WriteInt32(s.PredictedTargetCount)
 	p.WriteString16(s.PackageName)
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(-1) // null Extras (Bundle)
 	return nil
 }
 

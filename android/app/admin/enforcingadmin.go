@@ -16,9 +16,9 @@ func (s *EnforcingAdmin) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.PackageName)
-	p.WriteInt32(-1) // null UserHandle.getIdentifier()
-	p.WriteInt32(-1) // null Authority
-	p.WriteInt32(-1) // null ComponentName
+	p.WriteInt32(0) // null UserHandle.getIdentifier()
+	p.WriteInt32(0) // null Authority
+	p.WriteInt32(0) // null ComponentName
 	return nil
 }
 
@@ -31,30 +31,30 @@ func (s *EnforcingAdmin) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null UserHandle.getIdentifier(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Authority: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ComponentName: cannot skip unknown-size typed object
 		}
 	}
 	return nil

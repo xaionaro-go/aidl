@@ -20,9 +20,9 @@ func (s *TunedInfo) MarshalParcel(
 ) error {
 	p.WriteString16(s.InputId)
 	p.WriteString16(s.UriString)
-	p.WriteInt32(-1) // null IsRecordingSession?1:0
-	p.WriteInt32(-1) // null IsVisible?1:0
-	p.WriteInt32(-1) // null IsMainSession?1:0
+	p.WriteInt32(0) // null IsRecordingSession?1:0
+	p.WriteInt32(0) // null IsVisible?1:0
+	p.WriteInt32(0) // null IsMainSession?1:0
 	p.WriteInt32(s.AppType)
 	p.WriteInt32(s.AppTag)
 	return nil
@@ -41,30 +41,30 @@ func (s *TunedInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsRecordingSession?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsVisible?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsMainSession?1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.AppType, _err = p.ReadInt32()

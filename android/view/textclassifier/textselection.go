@@ -19,10 +19,10 @@ func (s *TextSelection) MarshalParcel(
 ) error {
 	p.WriteInt32(s.StartIndex)
 	p.WriteInt32(s.EndIndex)
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null Dest
 	p.WriteString16(s.Id)
-	p.WriteInt32(-1) // null Extras
-	p.WriteInt32(-1) // null TextClassification
+	p.WriteInt32(-1) // null Extras (Bundle)
+	p.WriteInt32(0)  // null TextClassification
 	return nil
 }
 
@@ -61,12 +61,12 @@ func (s *TextSelection) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TextClassification: cannot skip unknown-size typed object
 		}
 	}
 	return nil

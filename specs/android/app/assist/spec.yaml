@@ -11,6 +11,6 @@ parcelables:
         - name: IsHomeActivity?1:0
           write_method: int32
         - name: SendChannel
-          write_method: opaque
+          write_method: binder
           condition: mHaveData
     - name: AssistStructure.ViewNodeParcelable

@@ -259,7 +259,7 @@ parcelables:
         - name: Algorithm
           write_method: string16
         - name: Digest
-          write_method: opaque
+          write_method: byte_array
         - name: Label
           write_method: opaque
         - name: ExpiryTimeMillis

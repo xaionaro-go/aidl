@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*FieldClassification)(nil)
 func (s *FieldClassification) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null AutofillId
+	p.WriteInt32(0) // null AutofillId
 	return nil
 }
 
@@ -22,12 +22,12 @@ func (s *FieldClassification) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null AutofillId: cannot skip unknown-size typed object
 		}
 	}
 	return nil

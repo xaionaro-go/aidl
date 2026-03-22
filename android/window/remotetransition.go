@@ -16,9 +16,9 @@ func (s *RemoteTransition) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Flg)
-	p.WriteInt32(-1) // null RemoteTransition
-	p.WriteInt32(-1) // null AppThread
-	p.WriteInt32(-1) // null DebugName
+	p.WriteInt32(0) // null RemoteTransition
+	p.WriteInt32(0) // null AppThread
+	p.WriteInt32(0) // null DebugName
 	return nil
 }
 
@@ -49,12 +49,12 @@ func (s *RemoteTransition) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DebugName: cannot skip unknown-size typed object
 		}
 	}
 	return nil

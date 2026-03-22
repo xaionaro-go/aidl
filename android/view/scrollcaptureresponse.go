@@ -18,12 +18,12 @@ func (s *ScrollCaptureResponse) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Flg)
 	p.WriteString16(s.Description)
-	p.WriteInt32(-1) // null Connection
-	p.WriteInt32(-1) // null WindowBounds
-	p.WriteInt32(-1) // null BoundsInWindow
-	p.WriteInt32(-1) // null WindowTitle
-	p.WriteInt32(-1) // null PackageName
-	p.WriteInt32(-1) // null Messages
+	p.WriteInt32(0) // null Connection
+	p.WriteInt32(0) // null WindowBounds
+	p.WriteInt32(0) // null BoundsInWindow
+	p.WriteInt32(0) // null WindowTitle
+	p.WriteInt32(0) // null PackageName
+	p.WriteInt32(0) // null Messages
 	return nil
 }
 
@@ -49,39 +49,39 @@ func (s *ScrollCaptureResponse) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null WindowBounds: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null BoundsInWindow: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null WindowTitle: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PackageName: cannot skip unknown-size typed object
 		}
 	}
 	{

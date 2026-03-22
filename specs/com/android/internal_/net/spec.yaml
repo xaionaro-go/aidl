@@ -56,7 +56,7 @@ parcelables:
         - name: State
           write_method: int32
         - name: Intent
-          write_method: opaque
+          write_method: typed_object
     - name: VpnConfig
       java_wire_format:
         - name: User
@@ -80,7 +80,7 @@ parcelables:
         - name: DisallowedApplications
           write_method: opaque
         - name: ConfigureIntent
-          write_method: opaque
+          write_method: typed_object
         - name: StartTime
           write_method: int64
         - name: Legacy?1:0
@@ -102,7 +102,7 @@ parcelables:
         - name: UnderlyingNetworks
           write_method: opaque
         - name: ProxyInfo
-          write_method: opaque
+          write_method: typed_object
     - name: VpnProfile
       java_wire_format:
         - name: Key
@@ -140,7 +140,7 @@ parcelables:
         - name: SaveLogin?1:0
           write_method: int32
         - name: Proxy
-          write_method: opaque
+          write_method: typed_object
         - name: AllowedAlgorithms
           write_method: opaque
         - name: IsBypassable
@@ -158,7 +158,7 @@ parcelables:
         - name: RequiresInternetValidation
           write_method: bool
         - name: IkeTunConnParams==null?null:TunnelConnectionParamsUtils.toPersistableBundle(ikeTunConnParams)
-          write_method: opaque
+          write_method: typed_object
         - name: AutomaticNattKeepaliveTimerEnabled
           write_method: bool
         - name: AutomaticIpVersionSelectionEnabled

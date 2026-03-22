@@ -21,25 +21,25 @@ var _ parcel.Parcelable = (*TvInputInfo)(nil)
 func (s *TvInputInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Dest
+	p.WriteInt32(0) // null Dest
 	p.WriteString16(s.Id)
 	p.WriteInt32(s.Type)
-	p.WriteInt32(-1) // null IsHardwareInput?(byte)1:0
-	p.WriteInt32(-1) // null Label
-	p.WriteInt32(-1) // null IconUri
+	p.WriteInt32(0) // null IsHardwareInput?(byte)1:0
+	p.WriteInt32(0) // null Label
+	p.WriteInt32(0) // null IconUri
 	p.WriteInt32(s.LabelResId)
-	p.WriteInt32(-1) // null Icon
-	p.WriteInt32(-1) // null IconStandby
-	p.WriteInt32(-1) // null IconDisconnected
+	p.WriteInt32(0) // null Icon
+	p.WriteInt32(0) // null IconStandby
+	p.WriteInt32(0) // null IconDisconnected
 	p.WriteString16(s.SetupActivity)
-	p.WriteInt32(-1) // null CanRecord?(byte)1:0
-	p.WriteInt32(-1) // null CanPauseRecording?(byte)1:0
+	p.WriteInt32(0) // null CanRecord?(byte)1:0
+	p.WriteInt32(0) // null CanPauseRecording?(byte)1:0
 	p.WriteInt32(s.TunerCount)
-	p.WriteInt32(-1) // null HdmiDeviceInfo
-	p.WriteInt32(-1) // null IsConnectedToHdmiSwitch?(byte)1:0
+	p.WriteInt32(0) // null HdmiDeviceInfo
+	p.WriteInt32(0) // null IsConnectedToHdmiSwitch?(byte)1:0
 	p.WriteInt32(s.HdmiConnectionRelativePosition)
 	p.WriteString16(s.ParentId)
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(-1) // null Extras (Bundle)
 	return nil
 }
 
@@ -65,12 +65,12 @@ func (s *TvInputInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsHardwareInput?(byte)1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -83,12 +83,12 @@ func (s *TvInputInfo) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IconUri: cannot skip unknown-size typed object
 		}
 	}
 	s.LabelResId, _err = p.ReadInt32()
@@ -96,30 +96,30 @@ func (s *TvInputInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Icon: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IconStandby: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IconDisconnected: cannot skip unknown-size typed object
 		}
 	}
 	s.SetupActivity, _err = p.ReadString16()
@@ -127,21 +127,21 @@ func (s *TvInputInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CanRecord?(byte)1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null CanPauseRecording?(byte)1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.TunerCount, _err = p.ReadInt32()
@@ -149,21 +149,21 @@ func (s *TvInputInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HdmiDeviceInfo: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null IsConnectedToHdmiSwitch?(byte)1:0: cannot skip unknown-size typed object
 		}
 	}
 	s.HdmiConnectionRelativePosition, _err = p.ReadInt32()

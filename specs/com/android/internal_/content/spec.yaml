@@ -8,4 +8,4 @@ parcelables:
         - name: Referrer
           write_method: string16
         - name: CallerToken
-          write_method: opaque
+          write_method: binder

@@ -70,9 +70,9 @@ parcelables:
     - name: FieldClassification
       java_wire_format:
         - name: AutofillId
-          write_method: opaque
+          write_method: typed_object
     - name: FieldClassificationRequest
       java_wire_format:
         - name: AssistStructure
-          write_method: opaque
+          write_method: typed_object
     - name: FieldClassificationResponse

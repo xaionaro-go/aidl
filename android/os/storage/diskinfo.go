@@ -20,7 +20,7 @@ func (s *DiskInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.Id)
-	p.WriteInt32(-1) // null This.flags
+	p.WriteInt32(0) // null This.flags
 	p.WriteInt64(s.Size)
 	p.WriteString16(s.Label)
 	p.WriteInt32(s.VolumeCount)
@@ -37,12 +37,12 @@ func (s *DiskInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null This.flags: cannot skip unknown-size typed object
 		}
 	}
 	s.Size, _err = p.ReadInt64()

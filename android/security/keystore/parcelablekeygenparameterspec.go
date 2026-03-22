@@ -14,38 +14,38 @@ var _ parcel.Parcelable = (*ParcelableKeyGenParameterSpec)(nil)
 func (s *ParcelableKeyGenParameterSpec) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Spec.getKeystoreAlias()
-	p.WriteInt32(-1) // null Spec.getPurposes()
-	p.WriteInt32(-1) // null Spec.getNamespace()
-	p.WriteInt32(-1) // null Spec.getKeySize()
-	p.WriteInt32(-1) // null ALGORITHM_PARAMETER_SPEC_NONE
-	p.WriteInt32(-1) // null Spec.getCertificateSubject().getEncoded()
-	p.WriteInt32(-1) // null Spec.getCertificateSerialNumber().toByteArray()
-	p.WriteInt32(-1) // null Spec.getCertificateNotBefore().getTime()
-	p.WriteInt32(-1) // null Spec.getCertificateNotAfter().getTime()
-	p.WriteInt32(-1) // null Spec.getDigests()
-	p.WriteInt32(-1) // null List.copyOf(mSpec.getMgf1Digests())
-	p.WriteInt32(-1) // null Spec.getEncryptionPaddings()
-	p.WriteInt32(-1) // null Spec.getSignaturePaddings()
-	p.WriteInt32(-1) // null Spec.getBlockModes()
-	p.WriteInt32(-1) // null Spec.isRandomizedEncryptionRequired()
-	p.WriteInt32(-1) // null Spec.isUserAuthenticationRequired()
-	p.WriteInt32(-1) // null Spec.getUserAuthenticationValidityDurationSeconds()
-	p.WriteInt32(-1) // null Spec.getUserAuthenticationType()
-	p.WriteInt32(-1) // null Spec.isUserPresenceRequired()
-	p.WriteInt32(-1) // null Spec.getAttestationChallenge()
-	p.WriteInt32(-1) // null Spec.isDevicePropertiesAttestationIncluded()
-	p.WriteInt32(-1) // null Spec.getAttestationIds()
-	p.WriteInt32(-1) // null Spec.isUniqueIdIncluded()
-	p.WriteInt32(-1) // null Spec.isUserAuthenticationValidWhileOnBody()
-	p.WriteInt32(-1) // null Spec.isInvalidatedByBiometricEnrollment()
-	p.WriteInt32(-1) // null Spec.isStrongBoxBacked()
-	p.WriteInt32(-1) // null Spec.isUserConfirmationRequired()
-	p.WriteInt32(-1) // null Spec.isUnlockedDeviceRequired()
-	p.WriteInt32(-1) // null Spec.isCriticalToDeviceEncryption()
-	p.WriteInt32(-1) // null Spec.getMaxUsageCount()
-	p.WriteInt32(-1) // null Spec.getAttestKeyAlias()
-	p.WriteInt32(-1) // null Spec.getBoundToSpecificSecureUserId()
+	p.WriteInt32(0) // null Spec.getKeystoreAlias()
+	p.WriteInt32(0) // null Spec.getPurposes()
+	p.WriteInt32(0) // null Spec.getNamespace()
+	p.WriteInt32(0) // null Spec.getKeySize()
+	p.WriteInt32(0) // null ALGORITHM_PARAMETER_SPEC_NONE
+	p.WriteInt32(0) // null Spec.getCertificateSubject().getEncoded()
+	p.WriteInt32(0) // null Spec.getCertificateSerialNumber().toByteArray()
+	p.WriteInt32(0) // null Spec.getCertificateNotBefore().getTime()
+	p.WriteInt32(0) // null Spec.getCertificateNotAfter().getTime()
+	p.WriteInt32(0) // null Spec.getDigests()
+	p.WriteInt32(0) // null List.copyOf(mSpec.getMgf1Digests())
+	p.WriteInt32(0) // null Spec.getEncryptionPaddings()
+	p.WriteInt32(0) // null Spec.getSignaturePaddings()
+	p.WriteInt32(0) // null Spec.getBlockModes()
+	p.WriteInt32(0) // null Spec.isRandomizedEncryptionRequired()
+	p.WriteInt32(0) // null Spec.isUserAuthenticationRequired()
+	p.WriteInt32(0) // null Spec.getUserAuthenticationValidityDurationSeconds()
+	p.WriteInt32(0) // null Spec.getUserAuthenticationType()
+	p.WriteInt32(0) // null Spec.isUserPresenceRequired()
+	p.WriteInt32(0) // null Spec.getAttestationChallenge()
+	p.WriteInt32(0) // null Spec.isDevicePropertiesAttestationIncluded()
+	p.WriteInt32(0) // null Spec.getAttestationIds()
+	p.WriteInt32(0) // null Spec.isUniqueIdIncluded()
+	p.WriteInt32(0) // null Spec.isUserAuthenticationValidWhileOnBody()
+	p.WriteInt32(0) // null Spec.isInvalidatedByBiometricEnrollment()
+	p.WriteInt32(0) // null Spec.isStrongBoxBacked()
+	p.WriteInt32(0) // null Spec.isUserConfirmationRequired()
+	p.WriteInt32(0) // null Spec.isUnlockedDeviceRequired()
+	p.WriteInt32(0) // null Spec.isCriticalToDeviceEncryption()
+	p.WriteInt32(0) // null Spec.getMaxUsageCount()
+	p.WriteInt32(0) // null Spec.getAttestKeyAlias()
+	p.WriteInt32(0) // null Spec.getBoundToSpecificSecureUserId()
 	return nil
 }
 
@@ -53,12 +53,84 @@ func (s *ParcelableKeyGenParameterSpec) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getKeystoreAlias(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getPurposes(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getNamespace(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getKeySize(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null ALGORITHM_PARAMETER_SPEC_NONE: cannot skip unknown-size typed object
+		}
+	}
+	{
 		_opaqueLen, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
 		if _opaqueLen > 0 {
 			p.SetPosition(p.Position() + int(_opaqueLen))
+		}
+	}
+	{
+		_opaqueLen, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueLen > 0 {
+			p.SetPosition(p.Position() + int(_opaqueLen))
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getCertificateNotBefore().getTime(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getCertificateNotAfter().getTime(): cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -107,12 +179,48 @@ func (s *ParcelableKeyGenParameterSpec) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isRandomizedEncryptionRequired(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isUserAuthenticationRequired(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getUserAuthenticationValidityDurationSeconds(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getUserAuthenticationType(): cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isUserPresenceRequired(): cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -125,12 +233,12 @@ func (s *ParcelableKeyGenParameterSpec) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isDevicePropertiesAttestationIncluded(): cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -143,201 +251,93 @@ func (s *ParcelableKeyGenParameterSpec) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isUniqueIdIncluded(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isUserAuthenticationValidWhileOnBody(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isInvalidatedByBiometricEnrollment(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isStrongBoxBacked(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isUserConfirmationRequired(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isUnlockedDeviceRequired(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.isCriticalToDeviceEncryption(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getMaxUsageCount(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getAttestKeyAlias(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Spec.getBoundToSpecificSecureUserId(): cannot skip unknown-size typed object
 		}
 	}
 	return nil

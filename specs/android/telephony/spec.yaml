@@ -254,17 +254,17 @@ parcelables:
     - name: BarringInfo
       java_wire_format:
         - name: CellIdentity
-          write_method: opaque
+          write_method: typed_object
         - name: BarringServiceInfos
           write_method: opaque
     - name: CallAttributes
       java_wire_format:
         - name: PreciseCallState
-          write_method: opaque
+          write_method: typed_object
         - name: NetworkType
           write_method: int32
         - name: CallQuality
-          write_method: opaque
+          write_method: typed_object
     - name: CallForwardingInfo
       java_wire_format:
         - name: Number
@@ -326,7 +326,7 @@ parcelables:
         - name: NetworkType
           write_method: int32
         - name: CallQuality
-          write_method: opaque
+          write_method: typed_object
         - name: CallClassification
           write_method: int32
         - name: ImsCallId
@@ -425,7 +425,7 @@ parcelables:
         - name: AdditionalPlmns
           write_method: opaque
         - name: CsgInfo
-          write_method: opaque
+          write_method: typed_object
     - name: CellIdentityTdscdma
       java_wire_format:
         - name: Dest
@@ -441,7 +441,7 @@ parcelables:
         - name: AdditionalPlmns
           write_method: opaque
         - name: CsgInfo
-          write_method: opaque
+          write_method: typed_object
     - name: CellIdentityWcdma
       java_wire_format:
         - name: Dest
@@ -457,7 +457,7 @@ parcelables:
         - name: AdditionalPlmns
           write_method: opaque
         - name: CsgInfo
-          write_method: opaque
+          write_method: typed_object
     - name: CellInfo
       java_wire_format:
         - name: Type
@@ -535,14 +535,14 @@ parcelables:
           write_method: int32
           condition: mSelectResponse!=null&&mSelectResponse.length>0
         - name: SelectResponse
-          write_method: opaque
+          write_method: byte_array
           condition: mSelectResponse!=null&&mSelectResponse.length>0
     - name: ImsiEncryptionInfo
       java_wire_format:
         - name: B.length
           write_method: int32
         - name: b
-          write_method: opaque
+          write_method: byte_array
         - name: Mcc
           write_method: string16
         - name: Mnc
@@ -614,11 +614,11 @@ parcelables:
         - name: AvailableServices
           write_method: opaque
         - name: CellIdentity
-          write_method: opaque
+          write_method: typed_object
         - name: VoiceSpecificInfo
-          write_method: opaque
+          write_method: typed_object
         - name: DataSpecificInfo
-          write_method: opaque
+          write_method: typed_object
         - name: NrState
           write_method: int32
         - name: Rplmn
@@ -662,7 +662,7 @@ parcelables:
         - name: PcoId
           write_method: int32
         - name: Contents
-          write_method: opaque
+          write_method: byte_array
     - name: PhoneCapability
       java_wire_format:
         - name: MaxActiveVoiceSubscriptions
@@ -730,13 +730,13 @@ parcelables:
         - name: NetworkType
           write_method: int32
         - name: LinkProperties
-          write_method: opaque
+          write_method: typed_object
         - name: FailCause
           write_method: int32
         - name: ApnSetting
-          write_method: opaque
+          write_method: typed_object
         - name: DefaultQos
-          write_method: opaque
+          write_method: typed_object
         - name: NetworkValidationStatus
           write_method: int32
     - name: RadioAccessFamily
@@ -802,17 +802,17 @@ parcelables:
     - name: SignalStrength
       java_wire_format:
         - name: Cdma
-          write_method: opaque
+          write_method: typed_object
         - name: Gsm
-          write_method: opaque
+          write_method: typed_object
         - name: Wcdma
-          write_method: opaque
+          write_method: typed_object
         - name: Tdscdma
-          write_method: opaque
+          write_method: typed_object
         - name: Lte
-          write_method: opaque
+          write_method: typed_object
         - name: Nr
-          write_method: opaque
+          write_method: typed_object
         - name: TimestampMillis
           write_method: int64
     - name: SignalStrengthUpdateRequest
@@ -824,7 +824,7 @@ parcelables:
         - name: IsSystemThresholdReportingRequestedWhileIdle
           write_method: bool
         - name: LiveToken
-          write_method: opaque
+          write_method: binder
     - name: SubscriptionInfo
       java_wire_format:
         - name: Id
@@ -894,7 +894,7 @@ parcelables:
     - name: SubscriptionPlan
       java_wire_format:
         - name: CycleRule
-          write_method: opaque
+          write_method: typed_object
         - name: Title
           write_method: opaque
         - name: Summary
@@ -945,11 +945,11 @@ parcelables:
         - name: ThermalMitigationAction
           write_method: int32
         - name: DataThrottlingRequest
-          write_method: opaque
+          write_method: typed_object
     - name: UiccAccessRule
       java_wire_format:
         - name: CertificateHash
-          write_method: opaque
+          write_method: byte_array
         - name: PackageName
           write_method: string16
         - name: AccessType

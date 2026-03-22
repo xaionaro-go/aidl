@@ -11588,18 +11588,18 @@ parcelables:
         - name: Description
           write_method: string16
         - name: State
-          write_method: opaque
+          write_method: byte_array
         - name: "1"
           write_method: int32
           condition: mAppTraceRetriever!=null
         - name: AppTraceRetriever.asBinder()
-          write_method: opaque
+          write_method: binder
           condition: mAppTraceRetriever!=null
         - name: "1"
           write_method: int32
           condition: mNativeTombstoneRetriever!=null
         - name: NativeTombstoneRetriever.asBinder()
-          write_method: opaque
+          write_method: binder
           condition: mNativeTombstoneRetriever!=null
     - name: ApplicationStartInfo
       java_wire_format:
@@ -11624,7 +11624,7 @@ parcelables:
         - name: StartType
           write_method: int32
         - name: StartIntent
-          write_method: opaque
+          write_method: typed_object
         - name: LaunchMode
           write_method: int32
         - name: WasForceStopped
@@ -11657,21 +11657,21 @@ parcelables:
         - name: InterruptionFilter
           write_method: int32
         - name: ConditionId
-          write_method: opaque
+          write_method: typed_object
         - name: Owner
-          write_method: opaque
+          write_method: typed_object
         - name: ConfigurationActivity
-          write_method: opaque
+          write_method: typed_object
         - name: CreationTime
           write_method: int64
         - name: ZenPolicy
-          write_method: opaque
+          write_method: typed_object
         - name: Modified?ENABLED:DISABLED
           write_method: int32
         - name: Pkg
           write_method: string16
         - name: DeviceEffects
-          write_method: opaque
+          write_method: typed_object
           condition: Flags.modesApi()
         - name: AllowManualInvocation
           write_method: bool
@@ -11690,10 +11690,10 @@ parcelables:
         - name: Dest
           write_method: opaque
         - name: Provider.asBinder()
-          write_method: opaque
+          write_method: binder
           condition: provider!=null
         - name: Connection
-          write_method: opaque
+          write_method: binder
         - name: NoReleaseNeeded?1:0
           write_method: int32
         - name: Local?1:0
@@ -11732,7 +11732,7 @@ parcelables:
     - name: GrantedUriPermission
       java_wire_format:
         - name: Uri
-          write_method: opaque
+          write_method: typed_object
         - name: PackageName
           write_method: string16
     - name: InstantAppResolveInfo
@@ -11741,7 +11741,7 @@ parcelables:
         - name: Status
           write_method: int32
         - name: Locales
-          write_method: opaque
+          write_method: typed_object
     - name: Notification
     - name: Notification.Action
     - name: NotificationChannel
@@ -11852,7 +11852,7 @@ parcelables:
           write_method: int32
           condition: mChannels!=null
         - name: NewParceledListSlice<>(mChannels)
-          write_method: opaque
+          write_method: typed_object
           condition: mChannels!=null
         - name: Blocked
           write_method: bool
@@ -11868,12 +11868,12 @@ parcelables:
           write_method: opaque
           condition: mHistoryCount>0
         - name: Data.marshall()
-          write_method: opaque
+          write_method: blob
     - name: NotificationManager.Policy
     - name: PendingIntent
       java_wire_format:
         - name: Target.asBinder()
-          write_method: opaque
+          write_method: binder
     - name: PictureInPictureParams
       java_wire_format:
         - name: "1"
@@ -11883,7 +11883,7 @@ parcelables:
           write_method: opaque
           condition: mUserActions!=null
         - name: CloseAction
-          write_method: opaque
+          write_method: typed_object
         - name: "1"
           write_method: int32
           condition: mSourceRectHint!=null
@@ -12024,7 +12024,7 @@ parcelables:
         - name: LockType
           write_method: int32
         - name: SourcePublicKey
-          write_method: opaque
+          write_method: byte_array
         - name: RemainingAttempts
           write_method: int32
     - name: ResultInfo
@@ -12042,7 +12042,7 @@ parcelables:
           write_method: opaque
           condition: mData!=null
         - name: CallerToken
-          write_method: opaque
+          write_method: binder
     - name: RuntimeAppOpAccessMessage
       java_wire_format:
         - name: Flg
@@ -12206,7 +12206,7 @@ parcelables:
         - name: Dest
           write_method: opaque
         - name: AppBounds
-          write_method: opaque
+          write_method: typed_object
         - name: Dest
           write_method: opaque
         - name: WindowingMode

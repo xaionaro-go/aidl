@@ -8,4 +8,4 @@ parcelables:
         - name: MaxSize
           write_method: opaque
         - name: Style
-          write_method: opaque
+          write_method: bundle

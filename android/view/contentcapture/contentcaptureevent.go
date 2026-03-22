@@ -20,18 +20,18 @@ func (s *ContentCaptureEvent) MarshalParcel(
 	p.WriteInt32(s.SessionId)
 	p.WriteInt32(s.Type)
 	p.WriteInt64(s.EventTime)
-	p.WriteInt32(-1) // null Id
-	p.WriteInt32(-1) // null Ids
-	p.WriteInt32(-1) // null Parcel
-	p.WriteInt32(-1) // null Text
-	p.WriteInt32(-1) // null ParentSessionId
-	p.WriteInt32(-1) // null ClientContext
-	p.WriteInt32(-1) // null Insets
-	p.WriteInt32(-1) // null Bounds
-	p.WriteInt32(-1) // null ComposingStart
-	p.WriteInt32(-1) // null ComposingEnd
-	p.WriteInt32(-1) // null SelectionStartIndex
-	p.WriteInt32(-1) // null SelectionEndIndex
+	p.WriteInt32(0) // null Id
+	p.WriteInt32(0) // null Ids
+	p.WriteInt32(0) // null Parcel
+	p.WriteInt32(0) // null Text
+	p.WriteInt32(0) // null ParentSessionId
+	p.WriteInt32(0) // null ClientContext
+	p.WriteInt32(0) // null Insets
+	p.WriteInt32(0) // null Bounds
+	p.WriteInt32(0) // null ComposingStart
+	p.WriteInt32(0) // null ComposingEnd
+	p.WriteInt32(0) // null SelectionStartIndex
+	p.WriteInt32(0) // null SelectionEndIndex
 	return nil
 }
 
@@ -52,12 +52,12 @@ func (s *ContentCaptureEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Id: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -88,75 +88,75 @@ func (s *ContentCaptureEvent) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ParentSessionId: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ClientContext: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Insets: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Bounds: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ComposingStart: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null ComposingEnd: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SelectionStartIndex: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SelectionEndIndex: cannot skip unknown-size typed object
 		}
 	}
 	return nil

@@ -20,12 +20,12 @@ func (s *ScreenshotRequest) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Type)
 	p.WriteInt32(s.Source)
-	p.WriteInt32(-1) // null TopComponent
+	p.WriteInt32(0) // null TopComponent
 	p.WriteInt32(s.TaskId)
 	p.WriteInt32(s.UserId)
-	p.WriteInt32(-1) // null HardwareBitmapBundler.hardwareBitmapToBundle(mBitmap)
-	p.WriteInt32(-1) // null BoundsInScreen
-	p.WriteInt32(-1) // null Insets
+	p.WriteInt32(0) // null HardwareBitmapBundler.hardwareBitmapToBundle(mBitmap)
+	p.WriteInt32(0) // null BoundsInScreen
+	p.WriteInt32(0) // null Insets
 	return nil
 }
 
@@ -42,12 +42,12 @@ func (s *ScreenshotRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TopComponent: cannot skip unknown-size typed object
 		}
 	}
 	s.TaskId, _err = p.ReadInt32()
@@ -59,30 +59,30 @@ func (s *ScreenshotRequest) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HardwareBitmapBundler.hardwareBitmapToBundle(mBitmap): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null BoundsInScreen: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Insets: cannot skip unknown-size typed object
 		}
 	}
 	return nil

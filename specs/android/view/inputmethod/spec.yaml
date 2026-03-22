@@ -42,15 +42,15 @@ parcelables:
         - name: InsertionMarkerBottom
           write_method: float32
         - name: CharacterBoundsArray
-          write_method: opaque
+          write_method: typed_object
         - name: EditorBoundsInfo
-          write_method: opaque
+          write_method: typed_object
         - name: MatrixValues
           write_method: opaque
         - name: VisibleLineBounds
           write_method: opaque
         - name: TextAppearanceInfo
-          write_method: opaque
+          write_method: typed_object
     - name: DeleteGesture
       java_wire_format:
         - name: FallbackText
@@ -58,7 +58,7 @@ parcelables:
         - name: Granularity
           write_method: int32
         - name: Area
-          write_method: opaque
+          write_method: typed_object
     - name: DeleteRangeGesture
       java_wire_format:
         - name: FallbackText
@@ -66,9 +66,9 @@ parcelables:
         - name: Granularity
           write_method: int32
         - name: StartArea
-          write_method: opaque
+          write_method: typed_object
         - name: EndArea
-          write_method: opaque
+          write_method: typed_object
     - name: EditorInfo
       java_wire_format:
         - name: InputType
@@ -98,13 +98,13 @@ parcelables:
         - name: PackageName
           write_method: string16
         - name: AutofillId
-          write_method: opaque
+          write_method: typed_object
         - name: FieldId
           write_method: int32
         - name: FieldName
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
         - name: SupportedHandwritingGestureTypes
           write_method: int32
         - name: SupportedHandwritingGesturePreviewTypes
@@ -158,7 +158,7 @@ parcelables:
         - name: Flg
           write_method: int32
         - name: Info
-          write_method: opaque
+          write_method: typed_object
         - name: ContentProvider
           write_method: opaque
           condition: mContentProvider!=null
@@ -167,7 +167,7 @@ parcelables:
         - name: Flg
           write_method: int32
         - name: InlinePresentationSpec
-          write_method: opaque
+          write_method: typed_object
         - name: Source
           write_method: string16
         - name: AutofillHints
@@ -176,7 +176,7 @@ parcelables:
         - name: Type
           write_method: string16
         - name: Tooltip
-          write_method: opaque
+          write_method: typed_object
           condition: mTooltip!=null
     - name: InlineSuggestionsRequest
       java_wire_format:
@@ -189,13 +189,13 @@ parcelables:
         - name: HostPackageName
           write_method: string16
         - name: SupportedLocales
-          write_method: opaque
+          write_method: typed_object
         - name: Extras
-          write_method: opaque
+          write_method: bundle
         - name: HostDisplayId
           write_method: int32
         - name: InlineTooltipPresentationSpec
-          write_method: opaque
+          write_method: typed_object
           condition: mInlineTooltipPresentationSpec!=null
     - name: InlineSuggestionsResponse
       java_wire_format:
@@ -204,7 +204,7 @@ parcelables:
     - name: InputBinding
       java_wire_format:
         - name: ConnectionToken
-          write_method: opaque
+          write_method: binder
         - name: Uid
           write_method: int32
         - name: Pid
@@ -223,7 +223,7 @@ parcelables:
           write_method: int32
           condition: mUriToken!=null
         - name: UriToken.asBinder()
-          write_method: opaque
+          write_method: binder
           condition: mUriToken!=null
     - name: InputMethodInfo
       java_wire_format:
@@ -300,19 +300,19 @@ parcelables:
         - name: TextToInsert
           write_method: string8
         - name: Point
-          write_method: opaque
+          write_method: typed_object
     - name: InsertModeGesture
       java_wire_format:
         - name: FallbackText
           write_method: string8
         - name: Point
-          write_method: opaque
+          write_method: typed_object
         - name: CancellationSignalBeamer.Sender.beamFromScope(mCancellationSignal)
-          write_method: opaque
+          write_method: binder
     - name: JoinOrSplitGesture
       java_wire_format:
         - name: Point
-          write_method: opaque
+          write_method: typed_object
         - name: FallbackText
           write_method: string8
     - name: ParcelableHandwritingGesture
@@ -324,9 +324,9 @@ parcelables:
     - name: RemoveSpaceGesture
       java_wire_format:
         - name: StartPoint
-          write_method: opaque
+          write_method: typed_object
         - name: EndPoint
-          write_method: opaque
+          write_method: typed_object
         - name: FallbackText
           write_method: string8
     - name: SelectGesture
@@ -336,7 +336,7 @@ parcelables:
         - name: Granularity
           write_method: int32
         - name: Area
-          write_method: opaque
+          write_method: typed_object
     - name: SelectRangeGesture
       java_wire_format:
         - name: FallbackText
@@ -344,9 +344,9 @@ parcelables:
         - name: Granularity
           write_method: int32
         - name: StartArea
-          write_method: opaque
+          write_method: typed_object
         - name: EndArea
-          write_method: opaque
+          write_method: typed_object
     - name: SurroundingText
       java_wire_format:
         - name: Text

@@ -20,10 +20,10 @@ func (s *TransitionRequestInfo) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Flg)
 	p.WriteInt32(s.Type)
-	p.WriteInt32(-1) // null TriggerTask
-	p.WriteInt32(-1) // null PipTask
-	p.WriteInt32(-1) // null RemoteTransition
-	p.WriteInt32(-1) // null DisplayChange
+	p.WriteInt32(0) // null TriggerTask
+	p.WriteInt32(0) // null PipTask
+	p.WriteInt32(0) // null RemoteTransition
+	p.WriteInt32(0) // null DisplayChange
 	p.WriteInt32(s.Flags)
 	p.WriteInt32(s.DebugId)
 	return nil
@@ -42,39 +42,39 @@ func (s *TransitionRequestInfo) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null TriggerTask: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null PipTask: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null RemoteTransition: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null DisplayChange: cannot skip unknown-size typed object
 		}
 	}
 	s.Flags, _err = p.ReadInt32()

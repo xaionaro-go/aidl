@@ -27,9 +27,9 @@ var _ parcel.Parcelable = (*Address)(nil)
 func (s *Address) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Locale.getLanguage()
-	p.WriteInt32(-1) // null Locale.getCountry()
-	p.WriteInt32(-1) // null 0
+	p.WriteInt32(0) // null Locale.getLanguage()
+	p.WriteInt32(0) // null Locale.getCountry()
+	p.WriteInt32(0) // null 0
 	p.WriteString16(s.FeatureName)
 	p.WriteString16(s.AdminArea)
 	p.WriteString16(s.SubAdminArea)
@@ -41,13 +41,13 @@ func (s *Address) MarshalParcel(
 	p.WriteString16(s.PostalCode)
 	p.WriteString16(s.CountryCode)
 	p.WriteString16(s.CountryName)
-	p.WriteInt32(-1) // null HasLatitude?1:0
-	p.WriteInt32(-1) // null Latitude
-	p.WriteInt32(-1) // null HasLongitude?1:0
-	p.WriteInt32(-1) // null Longitude
+	p.WriteInt32(0) // null HasLatitude?1:0
+	p.WriteInt32(0) // null Latitude
+	p.WriteInt32(0) // null HasLongitude?1:0
+	p.WriteInt32(0) // null Longitude
 	p.WriteString16(s.Phone)
 	p.WriteString16(s.Url)
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(-1) // null Extras (Bundle)
 	return nil
 }
 
@@ -56,30 +56,30 @@ func (s *Address) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Locale.getLanguage(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Locale.getCountry(): cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null 0: cannot skip unknown-size typed object
 		}
 	}
 	s.FeatureName, _err = p.ReadString16()
@@ -127,39 +127,39 @@ func (s *Address) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HasLatitude?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Latitude: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null HasLongitude?1:0: cannot skip unknown-size typed object
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Longitude: cannot skip unknown-size typed object
 		}
 	}
 	s.Phone, _err = p.ReadString16()

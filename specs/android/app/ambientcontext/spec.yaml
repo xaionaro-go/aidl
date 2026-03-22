@@ -116,10 +116,10 @@ parcelables:
         - name: DensityLevel
           write_method: int32
         - name: VendorData
-          write_method: opaque
+          write_method: typed_object
     - name: AmbientContextEventRequest
       java_wire_format:
         - name: NewArraySet<>(mEventTypes)
           write_method: opaque
         - name: Options
-          write_method: opaque
+          write_method: typed_object

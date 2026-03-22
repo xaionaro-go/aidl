@@ -22,7 +22,7 @@ func (s *ConnectivityMetricsEvent) MarshalParcel(
 	p.WriteInt64(s.Transports)
 	p.WriteInt32(s.NetId)
 	p.WriteString16(s.Ifname)
-	p.WriteInt32(-1) // null Data
+	p.WriteInt32(0) // null Data
 	return nil
 }
 
@@ -47,12 +47,12 @@ func (s *ConnectivityMetricsEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Data: cannot skip unknown-size typed object
 		}
 	}
 	return nil

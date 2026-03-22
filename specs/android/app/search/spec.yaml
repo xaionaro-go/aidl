@@ -111,7 +111,7 @@ parcelables:
         - name: TimestampMillis
           write_method: int64
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: SearchContext
       java_wire_format:
         - name: ResultTypes
@@ -121,7 +121,7 @@ parcelables:
         - name: PackageName
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: SearchSessionId
       java_wire_format:
         - name: Id
@@ -147,15 +147,15 @@ parcelables:
         - name: UserHandle.getIdentifier()
           write_method: int32
         - name: SearchAction
-          write_method: opaque
+          write_method: typed_object
         - name: ShortcutInfo
-          write_method: opaque
+          write_method: typed_object
         - name: AppWidgetProviderInfo
-          write_method: opaque
+          write_method: typed_object
         - name: SliceUri
-          write_method: opaque
+          write_method: typed_object
         - name: Extras
-          write_method: opaque
+          write_method: bundle
     - name: SearchTargetEvent
       java_wire_format:
         - name: TargetIds

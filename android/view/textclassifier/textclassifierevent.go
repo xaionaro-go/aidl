@@ -19,19 +19,19 @@ var _ parcel.Parcelable = (*TextClassifierEvent)(nil)
 func (s *TextClassifierEvent) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null GetParcelToken()
+	p.WriteInt32(0) // null GetParcelToken()
 	p.WriteInt32(s.EventCategory)
 	p.WriteInt32(s.EventType)
-	p.WriteInt32(-1) // null EntityTypes
-	p.WriteInt32(-1) // null EventContext
+	p.WriteInt32(0) // null EntityTypes
+	p.WriteInt32(0) // null EventContext
 	p.WriteString16(s.ResultId)
 	p.WriteInt32(s.EventIndex)
-	p.WriteInt32(-1) // null Scores.length
-	p.WriteInt32(-1) // null Scores
+	p.WriteInt32(0) // null Scores.length
+	p.WriteInt32(0) // null Scores
 	p.WriteString16(s.ModelName)
-	p.WriteInt32(-1) // null ActionIndices
-	p.WriteInt32(-1) // null Locale==null?null:mLocale.toLanguageTag()
-	p.WriteInt32(-1) // null Extras
+	p.WriteInt32(0)  // null ActionIndices
+	p.WriteInt32(0)  // null Locale==null?null:mLocale.toLanguageTag()
+	p.WriteInt32(-1) // null Extras (Bundle)
 	return nil
 }
 
@@ -40,12 +40,12 @@ func (s *TextClassifierEvent) UnmarshalParcel(
 ) error {
 	var _err error
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null GetParcelToken(): cannot skip unknown-size typed object
 		}
 	}
 	s.EventCategory, _err = p.ReadInt32()
@@ -66,12 +66,12 @@ func (s *TextClassifierEvent) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null EventContext: cannot skip unknown-size typed object
 		}
 	}
 	s.ResultId, _err = p.ReadString16()
@@ -83,12 +83,12 @@ func (s *TextClassifierEvent) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Scores.length: cannot skip unknown-size typed object
 		}
 	}
 	{
@@ -114,12 +114,12 @@ func (s *TextClassifierEvent) UnmarshalParcel(
 		}
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null Locale==null?null:mLocale.toLanguageTag(): cannot skip unknown-size typed object
 		}
 	}
 	{

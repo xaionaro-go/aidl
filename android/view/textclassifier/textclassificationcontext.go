@@ -20,7 +20,7 @@ func (s *TextClassificationContext) MarshalParcel(
 	p.WriteString16(s.PackageName)
 	p.WriteString16(s.WidgetType)
 	p.WriteString16(s.WidgetVersion)
-	p.WriteInt32(-1) // null SystemTcMetadata
+	p.WriteInt32(0) // null SystemTcMetadata
 	return nil
 }
 
@@ -41,12 +41,12 @@ func (s *TextClassificationContext) UnmarshalParcel(
 		return _err
 	}
 	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
 			return _opaqueErr
 		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
+		if _opaqueFlag != 0 {
+			return nil // non-null SystemTcMetadata: cannot skip unknown-size typed object
 		}
 	}
 	return nil

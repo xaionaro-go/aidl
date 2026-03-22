@@ -52,9 +52,9 @@ parcelables:
         - name: CallType
           write_method: int32
         - name: FilteredExtras
-          write_method: opaque
+          write_method: bundle
         - name: MediaProfile
-          write_method: opaque
+          write_method: typed_object
         - name: EmergencyServiceCategories
           write_method: int32
         - name: EmergencyUrns
@@ -80,9 +80,9 @@ parcelables:
         - name: CallId
           write_method: int32
         - name: Address
-          write_method: opaque
+          write_method: typed_object
         - name: LocalAddress
-          write_method: opaque
+          write_method: typed_object
         - name: IsPullable?1:0
           write_method: int32
         - name: CallState
@@ -110,7 +110,7 @@ parcelables:
         - name: FeatureTags
           write_method: opaque
         - name: SipDetails
-          write_method: opaque
+          write_method: typed_object
     - name: ImsSsData
       java_wire_format:
         - name: GetServiceType()
@@ -148,7 +148,7 @@ parcelables:
         - name: AudioDirection
           write_method: int32
         - name: AudioCodecAttributes
-          write_method: opaque
+          write_method: typed_object
         - name: VideoQuality
           write_method: int32
         - name: VideoDirection
@@ -200,7 +200,7 @@ parcelables:
         - name: PresenceTuples
           write_method: opaque
         - name: SipDetails
-          write_method: opaque
+          write_method: typed_object
     - name: RcsClientConfiguration
       java_wire_format:
         - name: RcsVersion
@@ -216,7 +216,7 @@ parcelables:
     - name: RcsContactPresenceTuple
       java_wire_format:
         - name: ContactUri
-          write_method: opaque
+          write_method: typed_object
         - name: ConvertInstantToStringFormat(mTimestamp)
           write_method: string16
         - name: Status
@@ -228,17 +228,17 @@ parcelables:
         - name: ServiceDescription
           write_method: string16
         - name: ServiceCapabilities
-          write_method: opaque
+          write_method: typed_object
     - name: RcsContactTerminatedReason
       java_wire_format:
         - name: ContactUri
-          write_method: opaque
+          write_method: typed_object
         - name: Reason
           write_method: string16
     - name: RcsContactUceCapability
       java_wire_format:
         - name: ContactUri
-          write_method: opaque
+          write_method: typed_object
         - name: CapabilityMechanism
           write_method: int32
         - name: SourceType
@@ -246,7 +246,7 @@ parcelables:
         - name: RequestResult
           write_method: int32
         - name: EntityUri
-          write_method: opaque
+          write_method: typed_object
         - name: NewArrayList<>(mFeatureTags)
           write_method: opaque
         - name: PresenceTuples
@@ -256,13 +256,13 @@ parcelables:
         - name: LocalIdentifier
           write_method: int32
         - name: ExtensionData
-          write_method: opaque
+          write_method: byte_array
     - name: RtpHeaderExtensionType
       java_wire_format:
         - name: LocalIdentifier
           write_method: int32
         - name: Uri
-          write_method: opaque
+          write_method: typed_object
     - name: SipDelegateConfiguration
       java_wire_format:
         - name: Version
@@ -284,7 +284,7 @@ parcelables:
         - name: Imei
           write_method: string16
         - name: Gruu
-          write_method: opaque
+          write_method: typed_object
         - name: SipAuthHeader
           write_method: string16
         - name: SipAuthNonce
@@ -344,7 +344,7 @@ parcelables:
         - name: Content.length
           write_method: int32
         - name: Content
-          write_method: opaque
+          write_method: byte_array
         - name: ViaBranchParam
           write_method: string16
         - name: CallIdParam
@@ -356,4 +356,4 @@ parcelables:
         - name: CallState
           write_method: int32
         - name: ImsCallProfile
-          write_method: opaque
+          write_method: typed_object

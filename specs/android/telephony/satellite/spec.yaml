@@ -157,7 +157,7 @@ parcelables:
     - name: AntennaPosition
       java_wire_format:
         - name: AntennaDirection
-          write_method: opaque
+          write_method: typed_object
         - name: SuggestedHoldPosition
           write_method: int32
     - name: NtnSignalStrength
@@ -185,7 +185,7 @@ parcelables:
     - name: SatelliteDatagram
       java_wire_format:
         - name: Data
-          write_method: opaque
+          write_method: byte_array
     - name: SatelliteSessionStats
       java_wire_format:
         - name: CountOfSuccessfulUserMessages
