@@ -39,7 +39,7 @@ func main() {
 	sm := servicemanager.New(transport)
 
 	// Storage Manager
-	mountSvc, err := sm.GetService(ctx, servicemanager.ServiceName("mount"))
+	mountSvc, err := sm.GetService(ctx, servicemanager.MountService)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get mount service: %v\n", err)
 	} else {

@@ -1,0 +1,18 @@
+package: android.os
+go_package: servicemanager
+services:
+    - service_name: batteryproperties
+      constant_name: BATTERY_PROPERTIES_SERVICE
+      descriptor: android.os.IBatteryPropertiesRegistrar
+    - service_name: media.camera
+      constant_name: MEDIA_CAMERA_SERVICE
+      descriptor: android.hardware.ICameraService
+    - service_name: mount
+      constant_name: MOUNT_SERVICE
+      descriptor: android.os.storage.IStorageManager
+    - service_name: package
+      constant_name: PACKAGE_SERVICE
+      descriptor: android.content.pm.IPackageManager
+    - service_name: package_native
+      constant_name: PACKAGE_NATIVE_SERVICE
+      descriptor: android.content.pm.IPackageManagerNative

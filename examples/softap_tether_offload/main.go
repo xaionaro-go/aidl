@@ -16,6 +16,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 
 	genOs "github.com/AndroidGoLab/binder/android/os"
 	"github.com/AndroidGoLab/binder/binder"
@@ -123,7 +124,7 @@ func printNetStats(ifaces []string) {
 	fmt.Printf("  %-15s %15s %15s\n", "Interface", "RX bytes", "TX bytes")
 	fmt.Printf("  %-15s %15s %15s\n", "---------", "--------", "--------")
 
-	lines := splitLines(string(data))
+	lines := strings.Split(string(data), "\n")
 	for _, line := range lines[2:] { // skip header lines
 		var iface string
 		var rxBytes, txBytes int64
@@ -148,17 +149,3 @@ func printNetStats(ifaces []string) {
 	}
 }
 
-func splitLines(s string) []string {
-	var lines []string
-	start := 0
-	for i := 0; i < len(s); i++ {
-		if s[i] == '\n' {
-			lines = append(lines, s[start:i])
-			start = i + 1
-		}
-	}
-	if start < len(s) {
-		lines = append(lines, s[start:])
-	}
-	return lines
-}

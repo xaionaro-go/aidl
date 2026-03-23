@@ -52,7 +52,7 @@ func main() {
 
 	sm := servicemanager.New(transport)
 
-	svc, err := sm.GetService(ctx, servicemanager.ServiceName("batteryproperties"))
+	svc, err := sm.GetService(ctx, servicemanager.BatteryPropertiesService)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get batteryproperties service: %v\n", err)
 		fmt.Fprintln(os.Stderr, "Falling back to sysfs...")

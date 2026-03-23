@@ -84,15 +84,15 @@ func main() {
 	// Open binder driver
 	driver, err := kernelbinder.Open(ctx, binder.WithMapSize(128*1024))
 	if err != nil {
-		fmt.Printf("FATAL: /dev/binder open failed: %v\n", err)
+		fmt.Fprintf(os.Stderr, "open binder: %v\n", err)
 		os.Exit(1)
 	}
 	defer driver.Close(ctx)
-	fmt.Println("/dev/binder: OPEN OK")
+	fmt.Println("/dev/binder: OK")
 
 	transport, err := versionaware.NewTransport(ctx, driver, 0)
 	if err != nil {
-		fmt.Printf("FATAL: VersionAwareTransport failed: %v\n", err)
+		fmt.Fprintf(os.Stderr, "version-aware transport: %v\n", err)
 		os.Exit(1)
 	}
 	defer transport.Close(ctx)

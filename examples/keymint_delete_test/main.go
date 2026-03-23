@@ -20,14 +20,14 @@ func main() {
 
 	driver, err := kernelbinder.Open(ctx, binder.WithMapSize(128*1024))
 	if err != nil {
-		fmt.Printf("FATAL: /dev/binder open failed: %v\n", err)
+		fmt.Fprintf(os.Stderr, "open binder: %v\n", err)
 		os.Exit(1)
 	}
 	defer driver.Close(ctx)
 
 	transport, err := versionaware.NewTransport(ctx, driver, 0)
 	if err != nil {
-		fmt.Printf("FATAL: VersionAwareTransport failed: %v\n", err)
+		fmt.Fprintf(os.Stderr, "version-aware transport: %v\n", err)
 		os.Exit(1)
 	}
 	defer transport.Close(ctx)
@@ -37,17 +37,17 @@ func main() {
 	const svcName = "android.hardware.security.keymint.IKeyMintDevice/default"
 	svc, err := sm.GetService(ctx, servicemanager.ServiceName(svcName))
 	if err != nil {
-		fmt.Printf("GetService FAILED: %v\n", err)
+		fmt.Fprintf(os.Stderr, "get service: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("GetService: OK (handle=%d)\n", svc.Handle())
+	fmt.Printf("GetService OK (handle=%d)\n", svc.Handle())
 
 	proxy := keymint.NewKeyMintDeviceProxy(svc)
 
 	err = proxy.DeleteAllKeys(ctx)
 	if err != nil {
-		fmt.Printf("DeleteAllKeys: FAILED: %v\n", err)
+		fmt.Fprintf(os.Stderr, "DeleteAllKeys: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Println("DeleteAllKeys: SUCCESS")
+	fmt.Println("DeleteAllKeys: success")
 }

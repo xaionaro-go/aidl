@@ -294,25 +294,37 @@ Requires `android.permission.CAMERA`; see [`examples/flashlight_torch/`](example
 
 ```go
 import (
+    "context"
+
     "github.com/AndroidGoLab/binder/android/hardware"
     "github.com/AndroidGoLab/binder/binder"
     "github.com/AndroidGoLab/binder/parcel"
     "github.com/AndroidGoLab/binder/servicemanager"
 )
 
-    svc, err := sm.GetService(ctx, servicemanager.ServiceName("media.camera"))
+// torchToken is a minimal TransactionReceiver for SetTorchMode's client binder.
+type torchToken struct{}
+
+func (t *torchToken) Descriptor() string { return "torch.client" }
+
+func (t *torchToken) OnTransaction(
+    _ context.Context,
+    _ binder.TransactionCode,
+    _ *parcel.Parcel,
+) (*parcel.Parcel, error) {
+    return parcel.New(), nil
+}
+```
+
+```go
+    svc, err := sm.GetService(ctx, servicemanager.MediaCameraService)
     if err != nil {
         log.Fatal(err)
     }
     camera := hardware.NewCameraServiceProxy(svc)
 
     // The camera service requires a non-null client binder token.
-    type token struct{}
-    func (t *token) Descriptor() string { return "torch.client" }
-    func (t *token) OnTransaction(_ context.Context, _ binder.TransactionCode, _ *parcel.Parcel) (*parcel.Parcel, error) {
-        return parcel.New(), nil
-    }
-    clientToken := binder.NewStubBinder(&token{})
+    clientToken := binder.NewStubBinder(&torchToken{})
     clientToken.RegisterWithTransport(ctx, transport)
 
     // Turn torch on for camera "0"
@@ -333,7 +345,7 @@ import (
     "github.com/AndroidGoLab/binder/servicemanager"
 )
 
-    svc, err := sm.GetService(ctx, servicemanager.ServiceName("package"))
+    svc, err := sm.GetService(ctx, servicemanager.PackageService)
     if err != nil {
         log.Fatal(err)
     }
@@ -360,7 +372,7 @@ import (
 )
 
     // Non-blocking service check (returns nil if not found)
-    svc, err := sm.CheckService(ctx, servicemanager.ServiceName("media.camera"))
+    svc, err := sm.CheckService(ctx, servicemanager.MediaCameraService)
     if err != nil {
         log.Fatal(err)
     }
@@ -384,7 +396,37 @@ import (
     }
 ```
 
-### Register a Server-Side Service
+### Query Battery Level
+
+```go
+import (
+    "github.com/AndroidGoLab/binder/android/hardware/health"
+    "github.com/AndroidGoLab/binder/servicemanager"
+)
+
+    svc, err := sm.GetService(ctx, servicemanager.ServiceName(health.DescriptorIHealth+"/default"))
+    if err != nil {
+        log.Fatal(err)
+    }
+    h := health.NewHealthProxy(svc)
+
+    capacity, err := h.GetCapacity(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("Battery level: %d%%\n", capacity)
+
+    info, err := h.GetHealthInfo(ctx)
+    if err != nil {
+        log.Fatal(err)
+    }
+    fmt.Printf("Status: %v, Temperature: %.1f °C\n",
+        info.BatteryStatus, float64(info.BatteryTemperatureTenthsCelsius)/10)
+    fmt.Printf("Voltage: %d mV, Current: %d µA\n",
+        info.BatteryVoltageMillivolts, info.BatteryCurrentMicroamps)
+```
+
+### Send a Raw Binder Transaction
 
 ```go
 import (
@@ -393,25 +435,105 @@ import (
     "github.com/AndroidGoLab/binder/servicemanager"
 )
 
-    // Implement the TransactionReceiver interface
-    type myService struct{}
-
-    func (s *myService) Descriptor() string { return "com.example.IPingService" }
-
-    func (s *myService) OnTransaction(
-        ctx context.Context,
-        code binder.TransactionCode,
-        data *parcel.Parcel,
-    ) (*parcel.Parcel, error) {
-        reply := parcel.New()
-        binder.WriteStatus(reply, nil)
-        reply.WriteString16("pong")
-        return reply, nil
+    svc, err := sm.GetService(ctx, servicemanager.ActivityService)
+    if err != nil {
+        log.Fatal(err)
     }
 
+    // Build the request parcel.
+    data := parcel.New()
+    defer data.Recycle()
+    data.WriteInterfaceToken("android.app.IActivityManager")
+    data.WriteString16("android.permission.INTERNET")
+    data.WriteInt32(int32(os.Getpid()))
+    data.WriteInt32(int32(os.Getuid()))
+
+    // Resolve the method's transaction code and send.
+    code, err := svc.ResolveCode(ctx, "android.app.IActivityManager", "checkPermission")
+    if err != nil {
+        log.Fatal(err)
+    }
+    reply, err := svc.Transact(ctx, code, 0, data)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer reply.Recycle()
+
+    // Read the AIDL status header, then the return value.
+    if err := binder.ReadStatus(reply); err != nil {
+        log.Fatal(err)
+    }
+    result, _ := reply.ReadInt32()
+    fmt.Printf("checkPermission returned: %d\n", result)
+```
+
+### Register a Server-Side Service
+
+```go
+import (
+    "context"
+
+    "github.com/AndroidGoLab/binder/binder"
+    "github.com/AndroidGoLab/binder/parcel"
+    "github.com/AndroidGoLab/binder/servicemanager"
+)
+
+// myService implements binder.TransactionReceiver for a simple ping service.
+type myService struct{}
+
+func (s *myService) Descriptor() string { return "com.example.IPingService" }
+
+func (s *myService) OnTransaction(
+    ctx context.Context,
+    code binder.TransactionCode,
+    data *parcel.Parcel,
+) (*parcel.Parcel, error) {
+    reply := parcel.New()
+    binder.WriteStatus(reply, nil)
+    reply.WriteString16("pong")
+    return reply, nil
+}
+```
+
+```go
     // Register with ServiceManager
     err := sm.AddService(ctx, servicemanager.ServiceName("my.service"), &myService{}, false, 0)
 ```
+
+<details>
+<summary><strong>Using other services</strong></summary>
+
+The examples above cover specific subsystems, but the library supports **all** Android binder services — over 1,500 interfaces. To work with a service not shown above:
+
+1. **Find the service name.** Run `bindercli service list` on the device, or check `servicemanager/service_names_gen.go` for well-known constants.
+
+2. **Find the generated proxy.** Browse the `android/` and `com/` packages on [pkg.go.dev](https://pkg.go.dev/github.com/AndroidGoLab/binder) or use `grep`:
+
+```bash
+# Find the proxy for a known AIDL interface
+grep -r 'DescriptorI.*= "android.os.IVibratorService"' android/
+```
+
+3. **Connect and call methods:**
+
+```go
+    svc, err := sm.GetService(ctx, servicemanager.VibratorService)
+    if err != nil {
+        log.Fatal(err)
+    }
+    proxy := genOs.NewVibratorServiceProxy(svc)
+    result, err := proxy.SomeMethod(ctx, args...)
+```
+
+4. **For HAL services** (hardware abstraction layers), the service name is the AIDL descriptor plus `/default`:
+
+```go
+    svc, err := sm.GetService(ctx, servicemanager.ServiceName(health.DescriptorIHealth+"/default"))
+```
+
+5. **For services without a generated proxy**, use raw transactions (see [Send a Raw Binder Transaction](#send-a-raw-binder-transaction) above).
+
+</details>
 
 More examples: [`examples/`](examples/)
 
@@ -1838,7 +1960,7 @@ git submodule update --init --depth 1
 go run ./tools/cmd/aospgen -3rdparty tools/pkg/3rdparty -output . -smoke-tests
 ```
 
-This discovers all AIDL files across `frameworks-base`, `frameworks-native`, `hardware-interfaces`, and `system-hardware-interfaces`, infers search roots from package declarations, and generates Go proxies for all AOSP services. The current AOSP snapshot produces **5,092 Go files** across **399 packages**.
+This discovers all AIDL files across `frameworks-base`, `frameworks-native`, `hardware-interfaces`, and `system-hardware-interfaces`, infers search roots from package declarations, and generates Go proxies for all AOSP services. The current AOSP snapshot produces **5,097 Go files** across **399 packages**.
 
 ### Transaction Code Resolution
 
@@ -2130,7 +2252,7 @@ See the example app at [`examples/gomobile/`](examples/gomobile/).
 │   └── driver.go             Open, mmap, ioctl BINDER_WRITE_READ
 ├── servicemanager/           ServiceManager client
 ├── errors/                   AIDL exception types (ExceptionCode, StatusError)
-├── android/                  Pre-generated AOSP service proxies (5,092 files)
+├── android/                  Pre-generated AOSP service proxies (5,097 files)
 │   ├── app/                  ActivityManager, AlarmManager, ...
 │   ├── os/                   ServiceManager, PowerManager, ...
 │   ├── hardware/             HAL interfaces

@@ -36,7 +36,7 @@ func main() {
 
 	sm := servicemanager.New(transport)
 
-	svc, err := sm.GetService(ctx, servicemanager.ServiceName("package"))
+	svc, err := sm.GetService(ctx, servicemanager.PackageService)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get package service: %v\n", err)
 		os.Exit(1)

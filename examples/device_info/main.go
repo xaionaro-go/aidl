@@ -160,7 +160,7 @@ func main() {
 	}
 
 	// Screensaver / Dreams
-	dreamSvc, err := sm.GetService(ctx, servicemanager.ServiceName("dreams"))
+	dreamSvc, err := sm.GetService(ctx, servicemanager.DreamService)
 	if err == nil {
 		dream := dreams.NewDreamManagerProxy(dreamSvc)
 

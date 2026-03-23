@@ -62,7 +62,7 @@ func main() {
 
 	sm := servicemanager.New(transport)
 
-	svc, err := sm.GetService(ctx, "media.camera")
+	svc, err := sm.GetService(ctx, servicemanager.MediaCameraService)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get media.camera service: %v\n", err)
 		os.Exit(1)
