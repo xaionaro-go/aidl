@@ -23,6 +23,4 @@ func (s *FileServiceInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Super: cannot skip without known wire format
-	return nil // opaque Files: cannot skip without known wire format
-	return nil
 }

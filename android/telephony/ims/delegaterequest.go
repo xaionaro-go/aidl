@@ -22,5 +22,4 @@ func (s *DelegateRequest) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque FeatureTags: cannot skip without known wire format
-	return nil
 }

@@ -60,22 +60,5 @@ func (s *StatusBarNotification) UnmarshalParcel(
 	if _, _err = p.ReadInt32(); _err != nil { // skip This.initialPid
 		return _err
 	}
-	return nil                                // opaque This.notification: cannot skip without known wire format
-	return nil                                // opaque User: cannot skip without known wire format
-	if _, _err = p.ReadInt64(); _err != nil { // skip This.postTime
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadString16(); _err != nil { // skip This.overrideGroupKey
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	if _err := s.InstanceId.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	return nil
+	return nil // opaque This.notification: cannot skip without known wire format
 }

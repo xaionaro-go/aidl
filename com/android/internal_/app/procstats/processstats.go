@@ -186,22 +186,4 @@ func (s *ProcessStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TableData: cannot skip without known wire format
-	return nil // opaque SysMemUsage: cannot skip without known wire format
-	s.NumOfUids, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.NPROC, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.NPKG, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.NPAGETYPES, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

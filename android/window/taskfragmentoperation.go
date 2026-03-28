@@ -60,45 +60,4 @@ func (s *TaskFragmentOperation) UnmarshalParcel(
 		}
 	}
 	return nil // opaque ActivityToken: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null ActivityIntent: cannot skip unknown-size typed object
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	return nil // opaque SecondaryFragmentToken: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null AnimationParams: cannot skip unknown-size typed object
-		}
-	}
-	s.IsolatedNav, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.DimOnTask, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.MoveToBottomIfClearWhenLaunch, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

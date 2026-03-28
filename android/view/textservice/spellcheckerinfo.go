@@ -42,6 +42,4 @@ func (s *SpellCheckerInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Service: cannot skip without known wire format
-	return nil // opaque Subtypes: cannot skip without known wire format
-	return nil
 }

@@ -72,6 +72,4 @@ func (s *ContentCaptureOptions) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ContentProtectionOptions: cannot skip without known wire format
-	return nil // opaque WhitelistedComponents: cannot skip without known wire format
-	return nil
 }

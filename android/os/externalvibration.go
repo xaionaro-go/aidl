@@ -36,6 +36,4 @@ func (s *ExternalVibration) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Controller.asBinder(): cannot skip without known wire format
-	return nil // opaque Token: cannot skip without known wire format
-	return nil
 }

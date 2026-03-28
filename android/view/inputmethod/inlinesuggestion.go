@@ -39,5 +39,4 @@ func (s *InlineSuggestion) UnmarshalParcel(
 		}
 	}
 	return nil // opaque ContentProvider: cannot skip without known wire format
-	return nil
 }

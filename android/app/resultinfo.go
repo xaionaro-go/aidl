@@ -46,6 +46,4 @@ func (s *ResultInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Data: cannot skip without known wire format
-	return nil // opaque CallerToken: cannot skip without known wire format
-	return nil
 }

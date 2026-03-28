@@ -47,5 +47,4 @@ func (s *TelephonyTimeZoneSuggestion) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque DebugInfo: cannot skip without known wire format
-	return nil
 }

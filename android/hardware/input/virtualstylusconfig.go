@@ -22,5 +22,4 @@ func (s *VirtualStylusConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Super: cannot skip without known wire format
-	return nil
 }

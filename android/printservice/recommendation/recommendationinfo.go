@@ -25,15 +25,5 @@ func (s *RecommendationInfo) MarshalParcel(
 func (s *RecommendationInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque PackageName: cannot skip without known wire format
-	return nil // opaque Name: cannot skip without known wire format
-	s.NumDiscoveredPrinters, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)(mRecommendsMultiVendorService?1:0)
-		return _err
-	}
-	return nil
 }

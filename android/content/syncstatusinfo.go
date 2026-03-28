@@ -140,8 +140,4 @@ func (s *SyncStatusInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TodayStats: cannot skip without known wire format
-	return nil // opaque YesterdayStats: cannot skip without known wire format
-	return nil // opaque PerSourceLastSuccessTimes: cannot skip without known wire format
-	return nil // opaque PerSourceLastFailureTimes: cannot skip without known wire format
-	return nil
 }

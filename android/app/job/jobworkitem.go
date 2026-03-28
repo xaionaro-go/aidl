@@ -45,25 +45,4 @@ func (s *JobWorkItem) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Extras: cannot skip without known wire format
-	s.NetworkDownloadBytes, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.NetworkUploadBytes, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.MinimumChunkBytes, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.DeliveryCount, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.WorkId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

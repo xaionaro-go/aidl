@@ -22,5 +22,4 @@ func (s *UserHandle) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque h: cannot skip without known wire format
-	return nil
 }

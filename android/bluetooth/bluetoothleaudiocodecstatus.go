@@ -45,8 +45,4 @@ func (s *BluetoothLeAudioCodecStatus) UnmarshalParcel(
 		}
 	}
 	return nil // opaque InputCodecsLocalCapabilities: cannot skip without known wire format
-	return nil // opaque OutputCodecsLocalCapabilities: cannot skip without known wire format
-	return nil // opaque InputCodecsSelectableCapabilities: cannot skip without known wire format
-	return nil // opaque OutputCodecsSelectableCapabilities: cannot skip without known wire format
-	return nil
 }

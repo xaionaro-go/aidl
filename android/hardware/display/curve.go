@@ -23,6 +23,4 @@ func (s *Curve) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque X: cannot skip without known wire format
-	return nil // opaque Y: cannot skip without known wire format
-	return nil
 }

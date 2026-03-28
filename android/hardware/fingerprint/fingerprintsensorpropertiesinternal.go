@@ -26,16 +26,5 @@ func (s *FingerprintSensorPropertiesInternal) MarshalParcel(
 func (s *FingerprintSensorPropertiesInternal) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.SensorType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.HalControlsIllumination, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque SensorLocations: cannot skip without known wire format
-	return nil
 }

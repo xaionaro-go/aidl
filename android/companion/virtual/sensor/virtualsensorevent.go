@@ -29,9 +29,4 @@ func (s *VirtualSensorEvent) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Values: cannot skip without known wire format
-	s.TimestampNanos, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

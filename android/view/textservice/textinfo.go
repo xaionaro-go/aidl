@@ -25,15 +25,5 @@ func (s *TextInfo) MarshalParcel(
 func (s *TextInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque TextUtils: cannot skip without known wire format
-	s.Cookie, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SequenceNumber, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

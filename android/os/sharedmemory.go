@@ -22,5 +22,4 @@ func (s *SharedMemory) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque FileDescriptor: cannot skip without known wire format
-	return nil
 }

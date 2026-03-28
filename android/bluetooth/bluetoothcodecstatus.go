@@ -33,6 +33,4 @@ func (s *BluetoothCodecStatus) UnmarshalParcel(
 		}
 	}
 	return nil // opaque CodecsLocalCapabilities: cannot skip without known wire format
-	return nil // opaque CodecsSelectableCapabilities: cannot skip without known wire format
-	return nil
 }

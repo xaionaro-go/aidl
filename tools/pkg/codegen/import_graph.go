@@ -501,6 +501,24 @@ func collectTypeNames(def parser.Definition) []string {
 	return names
 }
 
+// collectTypeNamesForCycleExpansion is like collectTypeNames but also
+// includes types referenced by JavaWireFormat delegate and typed_object
+// fields. These fields generate struct fields in cycle-type sub-packages
+// and must be expanded into the same types sub-package to avoid undefined
+// type errors. This must NOT be used for import graph construction because
+// the extra edges create import cycles.
+func collectTypeNamesForCycleExpansion(def parser.Definition) []string {
+	names := collectTypeNames(def)
+	if d, ok := def.(*parser.ParcelableDecl); ok {
+		for _, wf := range d.JavaWireFormat {
+			if wf.GoType != "" && (wf.WriteMethod == "delegate" || wf.WriteMethod == "typed_object") {
+				names = append(names, wf.GoType)
+			}
+		}
+	}
+	return names
+}
+
 // collectTypeSpecNames extracts type names from a TypeSpecifier, including
 // type arguments (e.g., List<Foo> yields both "List" and "Foo").
 func collectTypeSpecNames(ts *parser.TypeSpecifier) []string {

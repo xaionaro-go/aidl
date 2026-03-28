@@ -27,5 +27,4 @@ func (s *ParcelableHandwritingGesture) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque GestureAsParcelable: cannot skip without known wire format
-	return nil
 }

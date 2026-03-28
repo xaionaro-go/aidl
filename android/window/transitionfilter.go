@@ -45,5 +45,4 @@ func (s *TransitionFilter) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Requirements: cannot skip without known wire format
-	return nil
 }

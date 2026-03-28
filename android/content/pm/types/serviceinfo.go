@@ -27,19 +27,5 @@ func (s *ServiceInfo) MarshalParcel(
 func (s *ServiceInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.Permission, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ForegroundServiceType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

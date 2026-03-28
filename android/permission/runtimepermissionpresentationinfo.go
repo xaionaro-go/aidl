@@ -23,11 +23,5 @@ func (s *RuntimePermissionPresentationInfo) MarshalParcel(
 func (s *RuntimePermissionPresentationInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Label: cannot skip without known wire format
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

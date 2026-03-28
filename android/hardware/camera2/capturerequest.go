@@ -39,15 +39,4 @@ func (s *CaptureRequest) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque LogicalCameraSettings: cannot skip without known wire format
-	s.IsReprocess, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadString16(); _err != nil { // skip UserTagStr.substring(SET_TAG_STRING_PREFIX.length())
-		return _err
-	}
-	return nil
 }

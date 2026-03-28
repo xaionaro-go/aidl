@@ -38,22 +38,4 @@ func (s *NetworkScanRequest) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Specifiers: cannot skip without known wire format
-	s.SearchPeriodicity, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.MaxSearchTime, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.IncrementalResults, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.IncrementalResultsPeriodicity, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque MccMncs: cannot skip without known wire format
-	return nil
 }

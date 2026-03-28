@@ -50,17 +50,4 @@ func (s *ImsRegistrationAttributes) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque FeatureTags: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.SipDetails = &SipDetails{}
-			if _err = s.SipDetails.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	return nil
 }

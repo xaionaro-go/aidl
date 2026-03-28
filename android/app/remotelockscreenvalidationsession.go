@@ -31,9 +31,4 @@ func (s *RemoteLockscreenValidationSession) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SourcePublicKey: cannot skip without known wire format
-	s.RemainingAttempts, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

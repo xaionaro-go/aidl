@@ -42,26 +42,4 @@ func (s *InputBindResult) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Method: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	if _err := s.Channel.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	s.Id, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.Sequence, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.IsInputMethodSuppressingSpellChecker, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

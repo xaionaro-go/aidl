@@ -27,5 +27,4 @@ func (s *ActivityChangedEvent) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ActivityRecognitionEventArray: cannot skip without known wire format
-	return nil
 }

@@ -44,46 +44,5 @@ func (s *InsetsState) MarshalParcel(
 func (s *InsetsState) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque DisplayFrame: cannot skip without known wire format
-	return nil // opaque DisplayCutout: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.RoundedCorners = &RoundedCorners{}
-			if _err = s.RoundedCorners.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	return nil // opaque RoundedCornerFrame: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null PrivacyIndicatorBounds: cannot skip unknown-size typed object
-		}
-	}
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.DisplayShape = &DisplayShape{}
-			if _err = s.DisplayShape.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	s.Size, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

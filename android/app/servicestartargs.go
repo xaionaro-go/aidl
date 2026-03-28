@@ -43,5 +43,4 @@ func (s *ServiceStartArgs) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Args: cannot skip without known wire format
-	return nil
 }

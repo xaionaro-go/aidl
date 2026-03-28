@@ -22,5 +22,4 @@ func (s *LocationResult) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Locations: cannot skip without known wire format
-	return nil
 }

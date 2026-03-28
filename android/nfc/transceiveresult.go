@@ -33,5 +33,4 @@ func (s *TransceiveResult) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ResponseData: cannot skip without known wire format
-	return nil
 }

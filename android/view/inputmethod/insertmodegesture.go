@@ -39,5 +39,4 @@ func (s *InsertModeGesture) UnmarshalParcel(
 		}
 	}
 	return nil // opaque CancellationSignalBeamer.Sender.beamFromScope(mCancellationSignal): cannot skip without known wire format
-	return nil
 }

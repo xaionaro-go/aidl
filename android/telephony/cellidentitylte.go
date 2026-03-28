@@ -34,46 +34,5 @@ func (s *CellIdentityLte) MarshalParcel(
 func (s *CellIdentityLte) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.Ci, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Pci, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Tac, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Earfcn, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		if _arrLen > 0 {
-			p.SetPosition(p.Position() + int(_arrLen)*4)
-		}
-	}
-	s.Bandwidth, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque AdditionalPlmns: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null CsgInfo: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

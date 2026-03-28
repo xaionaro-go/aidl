@@ -35,41 +35,5 @@ func (s *WindowConfiguration) MarshalParcel(
 func (s *WindowConfiguration) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Bounds: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null AppBounds: cannot skip unknown-size typed object
-		}
-	}
-	return nil // opaque MaxBounds: cannot skip without known wire format
-	s.WindowingMode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ActivityType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.AlwaysOnTop, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Rotation, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.DisplayWindowingMode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.DisplayRotation, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

@@ -35,35 +35,5 @@ func (s *VerifiedMotionEvent) MarshalParcel(
 func (s *VerifiedMotionEvent) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.RawX, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	s.RawY, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	s.ActionMasked, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.DownTimeNanos, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.MetaState, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ButtonState, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

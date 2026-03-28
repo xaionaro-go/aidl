@@ -31,9 +31,4 @@ func (s *KeyDerivationParams) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Salt: cannot skip without known wire format
-	s.MemoryDifficulty, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

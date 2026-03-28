@@ -43,13 +43,4 @@ func (s *SipMessage) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Content: cannot skip without known wire format
-	s.ViaBranchParam, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.CallIdParam, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

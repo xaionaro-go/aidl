@@ -121,28 +121,4 @@ func (s *CameraSessionStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque StreamStats: cannot skip without known wire format
-	s.UserTag, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.VideoStabilizationMode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.UsedUltraWide, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.UsedZoomOverride, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.SessionIndex, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	if _err := s.CameraExtensionSessionStats.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	return nil
 }

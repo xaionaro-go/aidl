@@ -43,5 +43,4 @@ func (s *BarringInfo) UnmarshalParcel(
 		}
 	}
 	return nil // opaque BarringServiceInfos: cannot skip without known wire format
-	return nil
 }

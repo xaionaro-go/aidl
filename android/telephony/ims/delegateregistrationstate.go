@@ -23,6 +23,4 @@ func (s *DelegateRegistrationState) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque RegisteredTags: cannot skip without known wire format
-	return nil // opaque RegisteringTags: cannot skip without known wire format
-	return nil
 }

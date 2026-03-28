@@ -34,7 +34,6 @@ func (s *RemoteViews) MarshalParcel(
 func (s *RemoteViews) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	{
 		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
@@ -45,49 +44,4 @@ func (s *RemoteViews) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Dest: cannot skip without known wire format
-	return nil // opaque CollectionCache: cannot skip without known wire format
-	return nil // opaque Application: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null LayoutId: cannot skip unknown-size typed object
-		}
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null ViewId: cannot skip unknown-size typed object
-		}
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null LightBackgroundLayoutId: cannot skip unknown-size typed object
-		}
-	}
-	s.ApplyFlags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ProviderInstanceId, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.HasDrawInstructions, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

@@ -25,15 +25,5 @@ func (s *UiccAccessRule) MarshalParcel(
 func (s *UiccAccessRule) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque CertificateHash: cannot skip without known wire format
-	s.PackageName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.AccessType, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

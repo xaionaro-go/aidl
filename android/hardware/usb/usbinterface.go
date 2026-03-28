@@ -59,5 +59,4 @@ func (s *UsbInterface) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Endpoints: cannot skip without known wire format
-	return nil
 }

@@ -36,7 +36,6 @@ func (s *ConversationChannelWrapper) MarshalParcel(
 func (s *ConversationChannelWrapper) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	{
 		_flag, _err := p.ReadInt32()
 		if _err != nil {
@@ -45,23 +44,4 @@ func (s *ConversationChannelWrapper) UnmarshalParcel(
 		_ = _flag // opaque: cycle prevents typed unmarshal
 	}
 	return nil // opaque GroupLabel: cannot skip without known wire format
-	return nil // opaque ParentChannelLabel: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.ShortcutInfo = &types.ShortcutInfo{}
-			if _err = s.ShortcutInfo.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	return nil // opaque Pkg: cannot skip without known wire format
-	s.Uid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

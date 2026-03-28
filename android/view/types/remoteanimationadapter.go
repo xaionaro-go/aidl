@@ -28,20 +28,5 @@ func (s *RemoteAnimationAdapter) MarshalParcel(
 func (s *RemoteAnimationAdapter) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Runner: cannot skip without known wire format
-	s.Duration, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.StatusBarTransitionDelay, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.ChangeNeedsSnapshot, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque CallingApplication: cannot skip without known wire format
-	return nil
 }

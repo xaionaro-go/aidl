@@ -41,45 +41,5 @@ func (s *ProviderInfo) MarshalParcel(
 func (s *ProviderInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.Authority, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.ReadPermission, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.WritePermission, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.GrantUriPermissions, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.ForceUriPermissions, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque UriPermissionPatterns: cannot skip without known wire format
-	return nil // opaque PathPermissions: cannot skip without known wire format
-	s.Multiprocess, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.InitOrder, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.IsSyncable, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

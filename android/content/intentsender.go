@@ -22,5 +22,4 @@ func (s *IntentSender) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Target.asBinder(): cannot skip without known wire format
-	return nil
 }

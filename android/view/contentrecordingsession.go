@@ -49,9 +49,4 @@ func (s *ContentRecordingSession) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TokenToRecord: cannot skip without known wire format
-	s.TargetUid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

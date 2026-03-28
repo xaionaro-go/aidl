@@ -49,5 +49,4 @@ func (s *CallAudioState) UnmarshalParcel(
 		}
 	}
 	return nil // opaque NewArrayList<>(supportedBluetoothDevices): cannot skip without known wire format
-	return nil
 }

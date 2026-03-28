@@ -26,22 +26,5 @@ func (s *RouteDiscoveryPreference) MarshalParcel(
 func (s *RouteDiscoveryPreference) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque PreferredFeatures: cannot skip without known wire format
-	return nil // opaque PackageOrder: cannot skip without known wire format
-	return nil // opaque AllowedPackages: cannot skip without known wire format
-	s.ShouldPerformActiveScan, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	return nil
 }

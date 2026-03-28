@@ -41,5 +41,4 @@ func (s *ModemActivityInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ActivityStatsTechSpecificInfo: cannot skip without known wire format
-	return nil
 }

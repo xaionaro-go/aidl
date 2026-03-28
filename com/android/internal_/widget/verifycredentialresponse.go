@@ -37,9 +37,4 @@ func (s *VerifyCredentialResponse) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque GatekeeperHAT: cannot skip without known wire format
-	s.GatekeeperPasswordHandle, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

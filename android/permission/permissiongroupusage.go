@@ -57,11 +57,4 @@ func (s *PermissionGroupUsage) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque AttributionTag: cannot skip without known wire format
-	return nil // opaque AttributionLabel: cannot skip without known wire format
-	return nil // opaque ProxyLabel: cannot skip without known wire format
-	s.PersistentDeviceId, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

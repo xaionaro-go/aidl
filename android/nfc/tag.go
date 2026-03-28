@@ -44,18 +44,4 @@ func (s *Tag) UnmarshalParcel(
 		}
 	}
 	return nil // opaque TechExtras: cannot skip without known wire format
-	s.ServiceHandle, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Cookie, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.IsMock, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque TagService.asBinder(): cannot skip without known wire format
-	return nil
 }

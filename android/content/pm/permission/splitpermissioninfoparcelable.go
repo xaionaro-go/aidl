@@ -31,9 +31,4 @@ func (s *SplitPermissionInfoParcelable) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque NewPermissions: cannot skip without known wire format
-	s.TargetSdk, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

@@ -23,6 +23,4 @@ func (s *TaskFragmentTransaction) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque TransactionToken: cannot skip without known wire format
-	return nil // opaque Changes: cannot skip without known wire format
-	return nil
 }

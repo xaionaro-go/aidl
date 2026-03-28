@@ -71,41 +71,4 @@ func (s *KeyEvent) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Hmac: cannot skip without known wire format
-	s.Action, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.KeyCode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.RepeatCount, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.MetaState, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ScanCode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.DownTime, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.EventTime, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.Characters, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

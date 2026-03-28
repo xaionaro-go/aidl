@@ -34,34 +34,5 @@ func (s *BrightnessConfiguration) MarshalParcel(
 func (s *BrightnessConfiguration) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
-	return nil                                // opaque Lux: cannot skip without known wire format
-	return nil                                // opaque Nits: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip CorrectionsByPackageName.size()
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip CorrectionsByCategory.size()
-		return _err
-	}
-	s.Description, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.ShouldCollectColorSamples, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.ShortTermModelTimeout, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.ShortTermModelLowerLuxMultiplier, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	s.ShortTermModelUpperLuxMultiplier, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	return nil
+	return nil // opaque Lux: cannot skip without known wire format
 }

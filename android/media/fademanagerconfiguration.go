@@ -53,43 +53,4 @@ func (s *FadeManagerConfiguration) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque UsageToFadeWrapperMap: cannot skip without known wire format
-	return nil // opaque AttrToFadeWrapperMap: cannot skip without known wire format
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		if _arrLen > 0 {
-			p.SetPosition(p.Position() + int(_arrLen)*4)
-		}
-	}
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		if _arrLen > 0 {
-			p.SetPosition(p.Position() + int(_arrLen)*4)
-		}
-	}
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		if _arrLen > 0 {
-			p.SetPosition(p.Position() + int(_arrLen)*4)
-		}
-	}
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		if _arrLen > 0 {
-			p.SetPosition(p.Position() + int(_arrLen)*4)
-		}
-	}
-	return nil // opaque UnfadeableAudioAttributes: cannot skip without known wire format
-	return nil
 }

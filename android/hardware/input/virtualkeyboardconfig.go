@@ -25,15 +25,5 @@ func (s *VirtualKeyboardConfig) MarshalParcel(
 func (s *VirtualKeyboardConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.LanguageTag, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.LayoutType, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

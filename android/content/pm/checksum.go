@@ -29,5 +29,4 @@ func (s *Checksum) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Value: cannot skip without known wire format
-	return nil
 }

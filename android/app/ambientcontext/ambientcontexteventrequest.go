@@ -23,14 +23,4 @@ func (s *AmbientContextEventRequest) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque NewArraySet<>(mEventTypes): cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Options: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

@@ -29,5 +29,4 @@ func (s *WifiSsidPolicy) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Ssids: cannot skip without known wire format
-	return nil
 }

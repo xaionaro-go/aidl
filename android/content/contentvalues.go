@@ -27,5 +27,4 @@ func (s *ContentValues) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Map: cannot skip without known wire format
-	return nil
 }

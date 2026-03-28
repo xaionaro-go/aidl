@@ -41,5 +41,4 @@ func (s *PcoData) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Contents: cannot skip without known wire format
-	return nil
 }

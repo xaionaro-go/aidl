@@ -69,9 +69,4 @@ func (s *FullyManagedDeviceProvisioningParams) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque AdminExtras: cannot skip without known wire format
-	s.DemoDevice, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

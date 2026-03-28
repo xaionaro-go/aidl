@@ -107,46 +107,4 @@ func (s *PrintJobInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque PageRanges: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Attributes: cannot skip unknown-size typed object
-		}
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DocumentInfo: cannot skip unknown-size typed object
-		}
-	}
-	s.Progress, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Status: cannot skip without known wire format
-	s.StatusRes, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque StatusResAppPackageName: cannot skip without known wire format
-	s.Canceling, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	return nil
 }

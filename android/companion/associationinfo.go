@@ -74,46 +74,4 @@ func (s *AssociationInfo) UnmarshalParcel(
 		}
 	}
 	return nil // opaque DisplayName: cannot skip without known wire format
-	s.DeviceProfile, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null AssociatedDevice: cannot skip unknown-size typed object
-		}
-	}
-	s.SelfManaged, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.NotifyOnDeviceNearby, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.Revoked, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.Pending, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.TimeApprovedMs, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.LastTimeConnectedMs, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.SystemDataSyncFlags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

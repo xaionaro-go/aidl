@@ -30,20 +30,5 @@ func (s *TaskFragmentCreationParams) MarshalParcel(
 func (s *TaskFragmentCreationParams) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Organizer: cannot skip without known wire format
-	return nil // opaque FragmentToken: cannot skip without known wire format
-	return nil // opaque OwnerToken: cannot skip without known wire format
-	return nil // opaque InitialRelativeBounds: cannot skip without known wire format
-	s.WindowingMode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque PairedPrimaryFragmentToken: cannot skip without known wire format
-	return nil // opaque PairedActivityToken: cannot skip without known wire format
-	s.AllowTransitionWhenEmpty, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

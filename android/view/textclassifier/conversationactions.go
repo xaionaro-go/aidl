@@ -23,11 +23,5 @@ func (s *ConversationActions) MarshalParcel(
 func (s *ConversationActions) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque ConversationActions: cannot skip without known wire format
-	s.Id, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

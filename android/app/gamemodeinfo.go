@@ -61,5 +61,4 @@ func (s *GameModeInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ConfigMap: cannot skip without known wire format
-	return nil
 }

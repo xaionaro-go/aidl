@@ -71,5 +71,4 @@ func (s *SyncResult) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Stats: cannot skip without known wire format
-	return nil
 }

@@ -49,19 +49,4 @@ func (s *ShortcutQueryWrapper) UnmarshalParcel(
 		}
 	}
 	return nil // opaque ShortcutIds: cannot skip without known wire format
-	return nil // opaque LocusIds: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Activity: cannot skip unknown-size typed object
-		}
-	}
-	s.QueryFlags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

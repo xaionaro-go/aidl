@@ -23,11 +23,5 @@ func (s *Rule) MarshalParcel(
 func (s *Rule) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque IntegrityFormula: cannot skip without known wire format
-	s.Effect, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

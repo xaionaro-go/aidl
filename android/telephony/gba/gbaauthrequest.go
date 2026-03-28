@@ -58,10 +58,4 @@ func (s *GbaAuthRequest) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SecurityProtocol: cannot skip without known wire format
-	s.ForceBootStrapping, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Callback: cannot skip without known wire format
-	return nil
 }

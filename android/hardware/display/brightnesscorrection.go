@@ -22,5 +22,4 @@ func (s *BrightnessCorrection) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Implementation: cannot skip without known wire format
-	return nil
 }

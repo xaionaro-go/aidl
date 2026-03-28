@@ -26,16 +26,5 @@ func (s *TvInteractiveAppServiceInfo) MarshalParcel(
 func (s *TvInteractiveAppServiceInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Service: cannot skip without known wire format
-	s.Id, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.Types, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque ExtraTypes: cannot skip without known wire format
-	return nil
 }

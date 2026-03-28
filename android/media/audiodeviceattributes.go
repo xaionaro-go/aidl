@@ -54,6 +54,4 @@ func (s *AudioDeviceAttributes) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque AudioProfiles.toArray(newAudioProfile[mAudioProfiles.size()]): cannot skip without known wire format
-	return nil // opaque AudioDescriptors.toArray(newAudioDescriptor[mAudioDescriptors.size()]): cannot skip without known wire format
-	return nil
 }

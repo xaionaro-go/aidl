@@ -40,39 +40,4 @@ func (s *InstantAppInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque LabelText: cannot skip without known wire format
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		for _j := int32(0); _j < _arrLen; _j++ {
-			if _, _arrErr = p.ReadString16(); _arrErr != nil {
-				return _arrErr
-			}
-		}
-	}
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		for _j := int32(0); _j < _arrLen; _j++ {
-			if _, _arrErr = p.ReadString16(); _arrErr != nil {
-				return _arrErr
-			}
-		}
-	}
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.ApplicationInfo = &ApplicationInfo{}
-			if _err = s.ApplicationInfo.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	return nil
 }

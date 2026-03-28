@@ -22,5 +22,4 @@ func (s *UnregisterCredentialDescriptionRequest) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque CredentialDescriptions: cannot skip without known wire format
-	return nil
 }

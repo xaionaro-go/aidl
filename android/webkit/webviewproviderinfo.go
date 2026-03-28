@@ -47,5 +47,4 @@ func (s *WebViewProviderInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Signatures: cannot skip without known wire format
-	return nil
 }

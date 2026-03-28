@@ -47,7 +47,6 @@ func (s *Dataset) MarshalParcel(
 func (s *Dataset) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	{
 		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
@@ -88,47 +87,4 @@ func (s *Dataset) UnmarshalParcel(
 		}
 	}
 	return nil // opaque FieldIds: cannot skip without known wire format
-	return nil // opaque FieldValues: cannot skip without known wire format
-	return nil // opaque FieldPresentations: cannot skip without known wire format
-	return nil // opaque FieldDialogPresentations: cannot skip without known wire format
-	return nil // opaque FieldInlinePresentations: cannot skip without known wire format
-	return nil // opaque FieldInlineTooltipPresentations: cannot skip without known wire format
-	return nil // opaque FieldFilters: cannot skip without known wire format
-	return nil // opaque AutofillDatatypes: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null FieldContent: cannot skip unknown-size typed object
-		}
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Authentication: cannot skip unknown-size typed object
-		}
-	}
-	s.Id, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.EligibleReason, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null CredentialFillInIntent: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

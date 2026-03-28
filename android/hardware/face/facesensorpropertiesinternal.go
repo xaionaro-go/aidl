@@ -27,19 +27,5 @@ func (s *FaceSensorPropertiesInternal) MarshalParcel(
 func (s *FaceSensorPropertiesInternal) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.SensorType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SupportsFaceDetection, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.SupportsSelfIllumination, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

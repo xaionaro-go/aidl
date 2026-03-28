@@ -53,5 +53,4 @@ func (s *UsbAccessory) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SerialNumberReader.asBinder(): cannot skip without known wire format
-	return nil
 }

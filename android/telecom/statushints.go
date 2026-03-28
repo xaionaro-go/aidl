@@ -33,26 +33,4 @@ func (s *StatusHints) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Label: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.Icon = &drawable.Icon{}
-			if _err = s.Icon.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Extras: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

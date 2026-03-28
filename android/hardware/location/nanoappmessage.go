@@ -49,13 +49,4 @@ func (s *NanoAppMessage) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque MessageBody: cannot skip without known wire format
-	s.IsReliable, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.MessageSequenceNumber, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

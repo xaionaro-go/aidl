@@ -33,11 +33,4 @@ func (s *SigningDetails) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Signatures: cannot skip without known wire format
-	s.SignatureSchemeVersion, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque PublicKeys: cannot skip without known wire format
-	return nil // opaque PastSigningCertificates: cannot skip without known wire format
-	return nil
 }

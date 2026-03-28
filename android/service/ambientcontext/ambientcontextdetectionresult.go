@@ -31,9 +31,4 @@ func (s *AmbientContextDetectionResult) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Events: cannot skip without known wire format
-	s.PackageName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

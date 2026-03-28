@@ -35,5 +35,4 @@ func (s *BluetoothCodecType) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Dest: cannot skip without known wire format
-	return nil
 }

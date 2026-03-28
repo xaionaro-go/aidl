@@ -50,40 +50,4 @@ func (s *FillRequest) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque FillContexts: cannot skip without known wire format
-	return nil // opaque Hints: cannot skip without known wire format
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.InlineSuggestionsRequest = &types.InlineSuggestionsRequest{}
-			if _err = s.InlineSuggestionsRequest.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DelayedFillIntentSender: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

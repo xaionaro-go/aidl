@@ -90,18 +90,4 @@ func (s *HotwordDetectedResult) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque AudioStreams: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Extras: cannot skip unknown-size typed object
-		}
-	}
-	s.BackgroundAudioPower, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

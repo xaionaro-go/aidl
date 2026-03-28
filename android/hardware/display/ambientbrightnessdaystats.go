@@ -28,6 +28,4 @@ func (s *AmbientBrightnessDayStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque BucketBoundaries: cannot skip without known wire format
-	return nil // opaque Stats: cannot skip without known wire format
-	return nil
 }

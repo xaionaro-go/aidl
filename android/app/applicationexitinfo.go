@@ -117,13 +117,4 @@ func (s *ApplicationExitInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque State: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	return nil // opaque AppTraceRetriever.asBinder(): cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	return nil // opaque NativeTombstoneRetriever.asBinder(): cannot skip without known wire format
-	return nil
 }

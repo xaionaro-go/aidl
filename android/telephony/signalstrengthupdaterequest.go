@@ -26,16 +26,5 @@ func (s *SignalStrengthUpdateRequest) MarshalParcel(
 func (s *SignalStrengthUpdateRequest) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque SignalThresholdInfos: cannot skip without known wire format
-	s.IsReportingRequestedWhileIdle, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.IsSystemThresholdReportingRequestedWhileIdle, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque LiveToken: cannot skip without known wire format
-	return nil
 }

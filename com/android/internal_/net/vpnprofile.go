@@ -154,44 +154,4 @@ func (s *VpnProfile) UnmarshalParcel(
 		}
 	}
 	return nil // opaque AllowedAlgorithms: cannot skip without known wire format
-	s.IsBypassable, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.IsMetered, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.MaxMtu, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.AreAuthParamsInline, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.IsRestrictedToTestNetworks, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.ExcludeLocalRoutes, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.RequiresInternetValidation, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadBool(); _err != nil { // skip IkeTunConnParams==null
-		return _err
-	}
-	s.AutomaticNattKeepaliveTimerEnabled, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.AutomaticIpVersionSelectionEnabled, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

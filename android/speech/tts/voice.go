@@ -35,17 +35,4 @@ func (s *Voice) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Locale: cannot skip without known wire format
-	s.Quality, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Latency, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)(mRequiresNetworkConnection?1:0)
-		return _err
-	}
-	return nil // opaque NewArrayList<String>(mFeatures): cannot skip without known wire format
-	return nil
 }

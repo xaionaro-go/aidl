@@ -23,6 +23,4 @@ func (s *NetworkSlicingConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque UrspRules: cannot skip without known wire format
-	return nil // opaque SliceInfo: cannot skip without known wire format
-	return nil
 }

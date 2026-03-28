@@ -112,5 +112,4 @@ func (s *ConversationChannel) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Statuses: cannot skip without known wire format
-	return nil
 }

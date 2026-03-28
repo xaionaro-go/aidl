@@ -43,12 +43,4 @@ func (s *InputContentInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Description: cannot skip without known wire format
-	if _err := s.Uri2.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	return nil // opaque UriToken.asBinder(): cannot skip without known wire format
-	return nil
 }

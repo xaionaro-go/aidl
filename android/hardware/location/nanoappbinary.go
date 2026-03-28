@@ -27,5 +27,4 @@ func (s *NanoAppBinary) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque NanoAppBinary: cannot skip without known wire format
-	return nil
 }

@@ -70,20 +70,4 @@ func (s *AccessibilityEvent) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TextUtils: cannot skip without known wire format
-	s.EventTime, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.ConnectionId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.RecordCount, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip OriginStackTrace.length
-		return _err
-	}
-	return nil
 }

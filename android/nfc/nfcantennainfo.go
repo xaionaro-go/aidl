@@ -39,5 +39,4 @@ func (s *NfcAntennaInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque AvailableNfcAntennas: cannot skip without known wire format
-	return nil
 }

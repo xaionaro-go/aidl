@@ -35,35 +35,5 @@ func (s *VerifiedKeyEvent) MarshalParcel(
 func (s *VerifiedKeyEvent) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.Action, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.DownTimeNanos, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.KeyCode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ScanCode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.MetaState, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.RepeatCount, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

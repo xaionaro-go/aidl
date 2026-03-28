@@ -34,20 +34,4 @@ func (s *PrepareGetCredentialResponseInternal) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque CredentialResultTypes: cannot skip without known wire format
-	s.HasAuthenticationResults, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.HasRemoteResults, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		_ = _flag // opaque: cycle prevents typed unmarshal
-	}
-	return nil
 }

@@ -83,15 +83,4 @@ func (s *ContentCaptureContext) UnmarshalParcel(
 		}
 	}
 	return nil // opaque WindowToken: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Flags: cannot skip unknown-size typed object
-		}
-	}
-	return nil // opaque ActivityId: cannot skip without known wire format
-	return nil
 }

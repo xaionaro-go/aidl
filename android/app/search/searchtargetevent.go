@@ -27,19 +27,5 @@ func (s *SearchTargetEvent) MarshalParcel(
 func (s *SearchTargetEvent) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque TargetIds: cannot skip without known wire format
-	s.Location, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.Action, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

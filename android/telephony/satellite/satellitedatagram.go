@@ -22,5 +22,4 @@ func (s *SatelliteDatagram) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Data: cannot skip without known wire format
-	return nil
 }

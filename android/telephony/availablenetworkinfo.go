@@ -37,7 +37,4 @@ func (s *AvailableNetworkInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque MccMncs: cannot skip without known wire format
-	return nil // opaque Bands: cannot skip without known wire format
-	return nil // opaque RadioAccessSpecifiers: cannot skip without known wire format
-	return nil
 }

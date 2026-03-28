@@ -35,18 +35,5 @@ func (s *ScoredNetwork) UnmarshalParcel(
 	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)1
 		return _err
 	}
-	return nil                                // opaque RssiCurve: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)(meteredHint?1:0)
-		return _err
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	return nil
+	return nil // opaque RssiCurve: cannot skip without known wire format
 }

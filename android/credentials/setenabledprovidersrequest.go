@@ -22,5 +22,4 @@ func (s *SetEnabledProvidersRequest) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Providers: cannot skip without known wire format
-	return nil
 }

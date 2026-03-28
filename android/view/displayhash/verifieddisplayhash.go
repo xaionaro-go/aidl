@@ -45,5 +45,4 @@ func (s *VerifiedDisplayHash) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ImageHash: cannot skip without known wire format
-	return nil
 }

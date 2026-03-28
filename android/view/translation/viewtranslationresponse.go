@@ -44,5 +44,4 @@ func (s *ViewTranslationResponse) UnmarshalParcel(
 		}
 	}
 	return nil // opaque TranslationResponseValues: cannot skip without known wire format
-	return nil
 }

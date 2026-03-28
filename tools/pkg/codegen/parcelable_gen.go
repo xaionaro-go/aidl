@@ -970,6 +970,42 @@ func writeJavaWireMarshalParcel(
 	f.P("")
 }
 
+// computeReachableWireFields returns the prefix of wireFields that will
+// actually be emitted before the first unconditional opaque bail-out.
+// This mirrors the control flow in writeJavaWireUnmarshalParcel so that
+// _err is only declared when a reachable field needs it.
+func computeReachableWireFields(
+	wireFields []parser.JavaWireField,
+	typeRef *TypeRefResolver,
+) []parser.JavaWireField {
+	for i, wf := range wireFields {
+		// delegate with resolved GoType: handled inline, no bail-out.
+		if wf.WriteMethod == "delegate" && wf.GoType != "" {
+			continue
+		}
+		// typed_object with resolved GoType: handled inline, no bail-out.
+		if wf.WriteMethod == "typed_object" && wf.GoType != "" {
+			continue
+		}
+		// Known primitive method: no bail-out.
+		if _, ok := javaWireMethodMap[wf.WriteMethod]; ok {
+			continue
+		}
+		// Handled opaque-skip cases (no unconditional return).
+		switch wf.WriteMethod {
+		case "component_name", "string_array", "int_array", "bundle":
+			continue
+		case "typed_object":
+			// Conditional return (only when non-null); field after is reachable.
+			continue
+		default:
+			// Unconditional bail-out: stop here.
+			return wireFields[:i]
+		}
+	}
+	return wireFields
+}
+
 // writeJavaWireUnmarshalParcel generates an UnmarshalParcel method that
 // follows the Java writeToParcel() wire format, including conditional fields
 // and opaque field skipping.
@@ -985,10 +1021,15 @@ func writeJavaWireUnmarshalParcel(
 	f.P("\tp *parcel.Parcel,")
 	f.P(") error {")
 
-	// Only declare _err if there is at least one primitive field that uses it.
-	// typed_object fields with GoType use block-scoped _err, not the outer one.
+	// Determine which fields will actually be emitted before the first
+	// opaque bail-out (unconditional return). A field bails out when its
+	// write method is unrecognised AND isn't handled by a specific switch
+	// case or a prior delegate/typed_object guard.
+	reachableFields := computeReachableWireFields(wireFields, typeRef)
+
+	// Only declare _err if at least one reachable field uses it.
 	hasPrimitiveField := false
-	for _, wf := range wireFields {
+	for _, wf := range reachableFields {
 		if _, ok := javaWireMethodMap[wf.WriteMethod]; ok {
 			hasPrimitiveField = true
 			break
@@ -998,6 +1039,8 @@ func writeJavaWireUnmarshalParcel(
 		f.P("\tvar _err error")
 	}
 
+	bailedOut := false
+fieldLoop:
 	for _, wf := range wireFields {
 		// delegate field: inline unmarshal without nullable wrapper.
 		if wf.WriteMethod == "delegate" && wf.GoType != "" {
@@ -1116,6 +1159,8 @@ func writeJavaWireUnmarshalParcel(
 				// (partial struct). For array reads, the caller must handle
 				// the position being mid-element.
 				f.P("\treturn nil // opaque %s: cannot skip without known wire format", wf.Name)
+				bailedOut = true
+				break fieldLoop
 			}
 			continue
 		}
@@ -1154,7 +1199,11 @@ func writeJavaWireUnmarshalParcel(
 		}
 	}
 
-	f.P("\treturn nil")
+	// Omit trailing return nil when the loop ended with an opaque bail-out
+	// return, since the bail-out already returns.
+	if !bailedOut {
+		f.P("\treturn nil")
+	}
 	f.P("}")
 	f.P("")
 }

@@ -38,10 +38,4 @@ func (s *BlobInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Label: cannot skip without known wire format
-	s.SizeBytes, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque LeaseInfos: cannot skip without known wire format
-	return nil
 }

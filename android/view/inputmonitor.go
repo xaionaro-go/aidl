@@ -52,17 +52,4 @@ func (s *InputMonitor) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Host: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.Surface = &Surface{}
-			if _err = s.Surface.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	return nil
 }

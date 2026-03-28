@@ -30,6 +30,4 @@ func (s *ActivityWindowInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TaskBounds: cannot skip without known wire format
-	return nil // opaque TaskFragmentBounds: cannot skip without known wire format
-	return nil
 }

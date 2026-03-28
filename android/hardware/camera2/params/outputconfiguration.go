@@ -78,46 +78,4 @@ func (s *OutputConfiguration) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Surfaces: cannot skip without known wire format
-	s.PhysicalCameraId, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.IsMultiResolution, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		if _arrLen > 0 {
-			p.SetPosition(p.Position() + int(_arrLen)*4)
-		}
-	}
-	s.DynamicRangeProfile, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.ColorSpace, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.StreamUseCase, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.TimestampBase, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.MirrorMode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ReadoutTimestampEnabled, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

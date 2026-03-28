@@ -30,6 +30,4 @@ func (s *CredentialDescription) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SupportedElementKeys.stream().toList(): cannot skip without known wire format
-	return nil // opaque CredentialEntries: cannot skip without known wire format
-	return nil
 }

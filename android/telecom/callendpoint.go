@@ -24,12 +24,5 @@ func (s *CallEndpoint) MarshalParcel(
 func (s *CallEndpoint) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Name: cannot skip without known wire format
-	s.Type, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Identifier: cannot skip without known wire format
-	return nil
 }

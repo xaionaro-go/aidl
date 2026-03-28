@@ -41,43 +41,5 @@ func (s *TaskFragmentInfo) MarshalParcel(
 func (s *TaskFragmentInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque FragmentToken: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Token: cannot skip unknown-size typed object
-		}
-	}
-	if _err := s.Configuration.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	s.RunningActivityCount, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.IsVisible, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Activities: cannot skip without known wire format
-	return nil // opaque InRequestedTaskFragmentActivities: cannot skip without known wire format
-	return nil // opaque PositionInParent: cannot skip without known wire format
-	s.IsTaskClearedForReuse, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.IsTaskFragmentClearedForPip, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.IsClearedForReorderActivityToFront, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque MinimumDimensions: cannot skip without known wire format
-	return nil
 }

@@ -30,6 +30,4 @@ func (s *UrspRule) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TrafficDescriptors: cannot skip without known wire format
-	return nil // opaque RouteSelectionDescriptor: cannot skip without known wire format
-	return nil
 }

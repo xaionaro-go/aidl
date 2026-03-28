@@ -42,6 +42,4 @@ func (s *NanoAppState) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque NanoAppPermissions: cannot skip without known wire format
-	return nil // opaque NanoAppRpcServiceList.toArray(newNanoAppRpcService[0]): cannot skip without known wire format
-	return nil
 }

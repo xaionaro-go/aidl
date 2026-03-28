@@ -45,29 +45,4 @@ func (s *ProfilerInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ProfileFd: cannot skip without known wire format
-	s.SamplingInterval, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.AutoStopProfiler, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.StreamingOutput, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.Agent, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.AttachAgentDuringBind, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.ClockType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

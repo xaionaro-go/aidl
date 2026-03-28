@@ -33,5 +33,4 @@ func (s *ParcelableUsageEventList) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Retriever: cannot skip without known wire format
-	return nil
 }

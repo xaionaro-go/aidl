@@ -31,25 +31,5 @@ func (s *BluetoothQualityReport) MarshalParcel(
 func (s *BluetoothQualityReport) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Out: cannot skip without known wire format
-	s.LmpVer, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.LmpSubVer, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ManufacturerId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil                                // opaque Out: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip BluetoothClass.getClassOfDevice()
-		return _err
-	}
-	return nil // opaque BqrCommon: cannot skip without known wire format
-	return nil // opaque BqrVsLsto: cannot skip without known wire format
-	return nil
 }

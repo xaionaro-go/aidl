@@ -28,18 +28,5 @@ func (s *ImsFeatureContainer) MarshalParcel(
 func (s *ImsFeatureContainer) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque ImsFeature: cannot skip without known wire format
-	return nil // opaque ImsConfig: cannot skip without known wire format
-	return nil // opaque ImsRegistration: cannot skip without known wire format
-	return nil // opaque SipTransport: cannot skip without known wire format
-	s.State, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Capabilities, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

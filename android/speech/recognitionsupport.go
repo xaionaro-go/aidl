@@ -25,8 +25,4 @@ func (s *RecognitionSupport) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque InstalledOnDeviceLanguages: cannot skip without known wire format
-	return nil // opaque PendingOnDeviceLanguages: cannot skip without known wire format
-	return nil // opaque SupportedOnDeviceLanguages: cannot skip without known wire format
-	return nil // opaque OnlineLanguages: cannot skip without known wire format
-	return nil
 }

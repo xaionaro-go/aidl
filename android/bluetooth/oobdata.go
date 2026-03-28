@@ -32,22 +32,5 @@ func (s *OobData) MarshalParcel(
 func (s *OobData) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque DeviceAddressWithType: cannot skip without known wire format
-	return nil // opaque ConfirmationHash: cannot skip without known wire format
-	return nil // opaque RandomizerHash: cannot skip without known wire format
-	return nil // opaque DeviceName: cannot skip without known wire format
-	return nil // opaque ClassicLength: cannot skip without known wire format
-	return nil // opaque ClassOfDevice: cannot skip without known wire format
-	s.LeDeviceRole, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque LeTemporaryKey: cannot skip without known wire format
-	return nil // opaque LeAppearance: cannot skip without known wire format
-	s.LeFlags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

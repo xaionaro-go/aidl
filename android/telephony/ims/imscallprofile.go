@@ -72,26 +72,4 @@ func (s *ImsCallProfile) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque EmergencyUrns: cannot skip without known wire format
-	s.EmergencyCallRouting, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.EmergencyCallTesting, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.HasKnownUserIntentEmergency, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.RestrictCause, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.CallerNumberVerificationStatus, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque AcceptedRtpHeaderExtensionTypes.toArray(): cannot skip without known wire format
-	return nil
 }

@@ -29,5 +29,4 @@ func (s *VerifierInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque PublicKey: cannot skip without known wire format
-	return nil
 }

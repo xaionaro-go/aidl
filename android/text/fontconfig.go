@@ -27,17 +27,5 @@ func (s *FontConfig) MarshalParcel(
 func (s *FontConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Families: cannot skip without known wire format
-	return nil // opaque Aliases: cannot skip without known wire format
-	return nil // opaque NamedFamilyLists: cannot skip without known wire format
-	s.LastModifiedTimeMillis, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.ConfigVersion, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

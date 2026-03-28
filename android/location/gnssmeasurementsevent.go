@@ -42,10 +42,4 @@ func (s *GnssMeasurementsEvent) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Measurements: cannot skip without known wire format
-	return nil // opaque GnssAgcs: cannot skip without known wire format
-	s.IsFullTracking, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

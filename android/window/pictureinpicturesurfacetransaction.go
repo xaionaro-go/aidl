@@ -48,30 +48,4 @@ func (s *PictureInPictureSurfaceTransaction) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Float9: cannot skip without known wire format
-	s.Rotation, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	s.CornerRadius, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	s.ShadowRadius, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null WindowCrop: cannot skip unknown-size typed object
-		}
-	}
-	s.ShouldDisableCanAffectSystemUiFlags, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

@@ -55,25 +55,4 @@ func (s *ConversationStatus) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Description: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.Icon = &drawable.Icon{}
-			if _err = s.Icon.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	s.StartTimeMs, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.EndTimeMs, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

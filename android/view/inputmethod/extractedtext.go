@@ -33,31 +33,5 @@ func (s *ExtractedText) MarshalParcel(
 func (s *ExtractedText) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque TextUtils: cannot skip without known wire format
-	s.StartOffset, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.PartialStartOffset, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.PartialEndOffset, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SelectionStart, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SelectionEnd, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip This.flags
-		return _err
-	}
-	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil
 }

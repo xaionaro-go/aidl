@@ -31,15 +31,4 @@ func (s *RemoteTransition) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque RemoteTransition: cannot skip without known wire format
-	return nil // opaque AppThread: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DebugName: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

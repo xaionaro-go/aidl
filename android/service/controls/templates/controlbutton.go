@@ -29,5 +29,4 @@ func (s *ControlButton) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ActionDescription: cannot skip without known wire format
-	return nil
 }

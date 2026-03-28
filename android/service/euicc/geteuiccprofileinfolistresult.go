@@ -31,9 +31,4 @@ func (s *GetEuiccProfileInfoListResult) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Profiles: cannot skip without known wire format
-	s.IsRemovable, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

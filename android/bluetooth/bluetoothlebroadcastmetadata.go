@@ -82,32 +82,4 @@ func (s *BluetoothLeBroadcastMetadata) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque BroadcastCode: cannot skip without known wire format
-	s.PresentationDelayMicros, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Subgroups: cannot skip without known wire format
-	s.IsPublicBroadcast, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Out: cannot skip without known wire format
-	s.AudioConfigQuality, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null PublicBroadcastMetadata: cannot skip unknown-size typed object
-		}
-	}
-	s.Rssi, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

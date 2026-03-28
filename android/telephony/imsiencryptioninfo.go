@@ -38,28 +38,4 @@ func (s *ImsiEncryptionInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque b: cannot skip without known wire format
-	s.Mcc, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.Mnc, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.KeyIdentifier, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.KeyType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt64(); _err != nil { // skip ExpirationTime.getTime()
-		return _err
-	}
-	s.CarrierId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

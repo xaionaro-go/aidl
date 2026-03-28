@@ -30,24 +30,5 @@ func (s *CellIdentityGsm) MarshalParcel(
 func (s *CellIdentityGsm) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.Lac, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Cid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Arfcn, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Bsic, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque AdditionalPlmns: cannot skip without known wire format
-	return nil
 }

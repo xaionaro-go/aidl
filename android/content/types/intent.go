@@ -83,41 +83,4 @@ func (s *Intent) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SourceBounds: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null N: cannot skip unknown-size typed object
-		}
-	}
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	return nil // opaque Selector: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	if _err := s.ClipData.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	s.ContentUserHint, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	return nil // opaque OriginalIntent: cannot skip without known wire format
-	return nil
 }

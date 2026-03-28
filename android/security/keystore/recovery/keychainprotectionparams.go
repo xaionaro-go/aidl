@@ -56,5 +56,4 @@ func (s *KeyChainProtectionParams) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Secret: cannot skip without known wire format
-	return nil
 }

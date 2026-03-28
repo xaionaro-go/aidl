@@ -22,5 +22,4 @@ func (s *InlineSuggestionsResponse) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque InlineSuggestions: cannot skip without known wire format
-	return nil
 }

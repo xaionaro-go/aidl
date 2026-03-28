@@ -27,17 +27,5 @@ func (s *BluetoothLeCall) MarshalParcel(
 func (s *BluetoothLeCall) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque (newParcelUuid(mUuid)): cannot skip without known wire format
-	return nil // opaque Out: cannot skip without known wire format
-	return nil // opaque Out: cannot skip without known wire format
-	s.State, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.CallFlags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

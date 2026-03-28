@@ -105,9 +105,4 @@ func (s *ConnectionRequest) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Participants: cannot skip without known wire format
-	s.IsAdhocConference, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

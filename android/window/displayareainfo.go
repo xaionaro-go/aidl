@@ -32,22 +32,5 @@ func (s *DisplayAreaInfo) MarshalParcel(
 func (s *DisplayAreaInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Token: cannot skip without known wire format
-	if _err := s.Configuration.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	s.DisplayId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.FeatureId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.RootDisplayAreaId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

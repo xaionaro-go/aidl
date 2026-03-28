@@ -22,5 +22,4 @@ func (s *RecoveryCertPath) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque EncodedCertPath: cannot skip without known wire format
-	return nil
 }

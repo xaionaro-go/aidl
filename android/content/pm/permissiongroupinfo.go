@@ -36,36 +36,5 @@ func (s *PermissionGroupInfo) MarshalParcel(
 func (s *PermissionGroupInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.DescriptionRes, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.RequestRes, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.RequestDetailResourceId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.BackgroundRequestResourceId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.BackgroundRequestDetailResourceId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque TextUtils: cannot skip without known wire format
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Priority, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

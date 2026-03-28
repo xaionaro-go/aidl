@@ -41,5 +41,4 @@ func (s *LeaseInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Description: cannot skip without known wire format
-	return nil
 }

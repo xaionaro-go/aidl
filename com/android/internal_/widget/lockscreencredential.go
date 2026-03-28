@@ -31,9 +31,4 @@ func (s *LockscreenCredential) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Credential: cannot skip without known wire format
-	s.HasInvalidChars, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

@@ -39,5 +39,4 @@ func (s *ContextHubMessage) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Data: cannot skip without known wire format
-	return nil
 }

@@ -40,6 +40,4 @@ func (s *ProgramSelector) UnmarshalParcel(
 		}
 	}
 	return nil // opaque SecondaryIds: cannot skip without known wire format
-	return nil // opaque VendorIds: cannot skip without known wire format
-	return nil
 }

@@ -41,5 +41,4 @@ func (s *DownloadableSubscription) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque AccessRules: cannot skip without known wire format
-	return nil
 }

@@ -33,5 +33,4 @@ func (s *AidGroup) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Aids: cannot skip without known wire format
-	return nil
 }

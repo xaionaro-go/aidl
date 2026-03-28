@@ -35,51 +35,5 @@ func (s *NfcFServiceInfo) MarshalParcel(
 func (s *NfcFServiceInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Service: cannot skip without known wire format
-	s.Description, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.SystemCode, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadBool(); _err != nil { // skip DynamicSystemCode!=null
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DynamicSystemCode: cannot skip unknown-size typed object
-		}
-	}
-	s.Nfcid2, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadBool(); _err != nil { // skip DynamicNfcid2!=null
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DynamicNfcid2: cannot skip unknown-size typed object
-		}
-	}
-	s.Uid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.T3tPmm, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

@@ -47,5 +47,4 @@ func (s *NotificationHistory) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Data.marshall(): cannot skip without known wire format
-	return nil
 }

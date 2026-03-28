@@ -59,5 +59,4 @@ func (s *StatusBarIcon) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque This.contentDescription: cannot skip without known wire format
-	return nil
 }

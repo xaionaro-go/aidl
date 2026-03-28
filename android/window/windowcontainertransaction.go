@@ -25,8 +25,4 @@ func (s *WindowContainerTransaction) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Changes: cannot skip without known wire format
-	return nil // opaque HierarchyOps: cannot skip without known wire format
-	return nil // opaque ErrorCallbackToken: cannot skip without known wire format
-	return nil // opaque TaskFragmentOrganizer: cannot skip without known wire format
-	return nil
 }

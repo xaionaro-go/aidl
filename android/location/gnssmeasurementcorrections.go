@@ -63,27 +63,4 @@ func (s *GnssMeasurementCorrections) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SingleSatCorrectionList: cannot skip without known wire format
-	s.HasEnvironmentBearing, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null EnvironmentBearingDegrees: cannot skip unknown-size typed object
-		}
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null EnvironmentBearingUncertaintyDegrees: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

@@ -34,32 +34,5 @@ func (s *PermissionInfo) MarshalParcel(
 func (s *PermissionInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.ProtectionLevel, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Group, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.BackgroundPermission, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.DescriptionRes, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.RequestRes, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil
 }

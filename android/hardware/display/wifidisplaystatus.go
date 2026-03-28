@@ -46,10 +46,5 @@ func (s *WifiDisplayStatus) UnmarshalParcel(
 	if _, _err = p.ReadInt32(); _err != nil {
 		return _err
 	}
-	return nil                                // opaque ActiveDisplay: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip Displays.length
-		return _err
-	}
-	return nil // opaque SessionInfo: cannot skip without known wire format
-	return nil
+	return nil // opaque ActiveDisplay: cannot skip without known wire format
 }

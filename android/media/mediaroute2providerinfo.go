@@ -29,5 +29,4 @@ func (s *MediaRoute2ProviderInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Routes: cannot skip without known wire format
-	return nil
 }

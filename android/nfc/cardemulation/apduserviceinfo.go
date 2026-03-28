@@ -47,59 +47,5 @@ func (s *ApduServiceInfo) MarshalParcel(
 func (s *ApduServiceInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Service: cannot skip without known wire format
-	s.Description, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.OnHost, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.OffHostName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.StaticOffHostName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip StaticAidGroups.size()
-		return _err
-	}
-	return nil                                // opaque NewArrayList<AidGroup>(mStaticAidGroups.values()): cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip DynamicAidGroups.size()
-		return _err
-	}
-	return nil // opaque NewArrayList<AidGroup>(mDynamicAidGroups.values()): cannot skip without known wire format
-	s.RequiresDeviceUnlock, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.RequiresDeviceScreenOn, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.BannerResourceId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Uid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SettingsActivityName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.CategoryOtherServiceEnabled, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip AutoTransact.size()
-		return _err
-	}
-	return nil // opaque AutoTransact: cannot skip without known wire format
-	return nil
 }

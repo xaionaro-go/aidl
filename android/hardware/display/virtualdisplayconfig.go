@@ -97,13 +97,4 @@ func (s *VirtualDisplayConfig) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque DisplayCategories: cannot skip without known wire format
-	s.RequestedRefreshRate, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	s.IsHomeSupported, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

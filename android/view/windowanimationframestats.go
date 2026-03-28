@@ -29,5 +29,4 @@ func (s *WindowAnimationFrameStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque FramesPresentedTimeNano: cannot skip without known wire format
-	return nil
 }

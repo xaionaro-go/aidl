@@ -62,6 +62,4 @@ func (s *RcsContactUceCapability) UnmarshalParcel(
 		}
 	}
 	return nil // opaque NewArrayList<>(mFeatureTags): cannot skip without known wire format
-	return nil // opaque PresenceTuples: cannot skip without known wire format
-	return nil
 }

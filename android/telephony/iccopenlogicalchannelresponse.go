@@ -39,5 +39,4 @@ func (s *IccOpenLogicalChannelResponse) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SelectResponse: cannot skip without known wire format
-	return nil
 }

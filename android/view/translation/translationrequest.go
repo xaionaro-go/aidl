@@ -30,6 +30,4 @@ func (s *TranslationRequest) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TranslationRequestValues: cannot skip without known wire format
-	return nil // opaque ViewTranslationRequests: cannot skip without known wire format
-	return nil
 }

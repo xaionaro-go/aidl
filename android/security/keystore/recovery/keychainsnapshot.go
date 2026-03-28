@@ -37,25 +37,4 @@ func (s *KeyChainSnapshot) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque KeyChainProtectionParams: cannot skip without known wire format
-	return nil // opaque EncryptedRecoveryKeyBlob: cannot skip without known wire format
-	return nil // opaque EntryRecoveryData: cannot skip without known wire format
-	s.MaxAttempts, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.CounterId, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque ServerParams: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null CertPath: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

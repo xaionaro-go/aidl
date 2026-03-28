@@ -46,54 +46,5 @@ func (s *RegisterStatusBarResult) MarshalParcel(
 func (s *RegisterStatusBarResult) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Icons: cannot skip without known wire format
-	s.DisabledFlags1, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Appearance, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque AppearanceRegions: cannot skip without known wire format
-	s.ImeWindowVis, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ImeBackDisposition, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ShowImeSwitcher, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.DisabledFlags2, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque ImeToken: cannot skip without known wire format
-	s.NavbarColorManagedByIme, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.Behavior, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.RequestedVisibleTypes, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.PackageName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.TransientBarTypes, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque LetterboxDetails: cannot skip without known wire format
-	return nil
 }

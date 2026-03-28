@@ -26,16 +26,5 @@ func (s *PackageRollbackInfo) MarshalParcel(
 func (s *PackageRollbackInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque VersionRolledBackFrom: cannot skip without known wire format
-	return nil // opaque VersionRolledBackTo: cannot skip without known wire format
-	s.IsApex, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.IsApkInApex, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

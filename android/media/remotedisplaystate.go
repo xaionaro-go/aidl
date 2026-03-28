@@ -22,5 +22,4 @@ func (s *RemoteDisplayState) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Displays: cannot skip without known wire format
-	return nil
 }

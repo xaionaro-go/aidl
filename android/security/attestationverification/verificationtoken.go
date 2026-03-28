@@ -68,9 +68,4 @@ func (s *VerificationToken) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Hmac: cannot skip without known wire format
-	s.Uid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

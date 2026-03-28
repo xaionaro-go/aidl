@@ -25,15 +25,5 @@ func (s *JobSnapshot) MarshalParcel(
 func (s *JobSnapshot) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Job: cannot skip without known wire format
-	s.SatisfiedConstraints, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.IsRunnable, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

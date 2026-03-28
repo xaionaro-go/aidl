@@ -25,15 +25,5 @@ func (s *VirtualNavigationTouchpadConfig) MarshalParcel(
 func (s *VirtualNavigationTouchpadConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.Height, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Width, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

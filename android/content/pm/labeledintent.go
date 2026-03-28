@@ -28,20 +28,5 @@ func (s *LabeledIntent) MarshalParcel(
 func (s *LabeledIntent) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.SourcePackage, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.LabelRes, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque TextUtils: cannot skip without known wire format
-	s.Icon, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

@@ -50,36 +50,4 @@ func (s *AudioRecordingConfiguration) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ClientFormat: cannot skip without known wire format
-	return nil // opaque DeviceFormat: cannot skip without known wire format
-	s.PatchHandle, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ClientPackageName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.ClientUid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ClientPortId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ClientSilenced, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.DeviceSource, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip ClientEffects.length
-		return _err
-	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip DeviceEffects.length
-		return _err
-	}
-	return nil
 }

@@ -41,23 +41,4 @@ func (s *TransitionInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Changes: cannot skip without known wire format
-	return nil // opaque Roots: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Options: cannot skip unknown-size typed object
-		}
-	}
-	s.DebugId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Track, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

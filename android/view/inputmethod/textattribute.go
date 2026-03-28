@@ -23,6 +23,4 @@ func (s *TextAttribute) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque TextConversionSuggestions: cannot skip without known wire format
-	return nil // opaque Extras: cannot skip without known wire format
-	return nil
 }

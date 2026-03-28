@@ -34,14 +34,4 @@ func (s *BlobHandle) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Digest: cannot skip without known wire format
-	return nil // opaque Label: cannot skip without known wire format
-	s.ExpiryTimeMillis, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.Tag, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

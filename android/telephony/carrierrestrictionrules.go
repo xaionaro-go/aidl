@@ -31,31 +31,5 @@ func (s *CarrierRestrictionRules) MarshalParcel(
 func (s *CarrierRestrictionRules) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque AllowedCarriers: cannot skip without known wire format
-	return nil // opaque ExcludedCarriers: cannot skip without known wire format
-	s.CarrierRestrictionDefault, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.MultiSimPolicy, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.CarrierRestrictionStatus, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque AllowedCarrierInfo: cannot skip without known wire format
-	return nil // opaque ExcludedCarrierInfo: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null UseCarrierLockInfo: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

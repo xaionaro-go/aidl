@@ -31,33 +31,5 @@ func (s *CellIdentityWcdma) MarshalParcel(
 func (s *CellIdentityWcdma) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.Lac, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Cid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Psc, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Uarfcn, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque AdditionalPlmns: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null CsgInfo: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

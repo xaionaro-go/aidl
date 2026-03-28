@@ -30,6 +30,4 @@ func (s *WrappedApplicationKey) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque EncryptedKeyMaterial: cannot skip without known wire format
-	return nil // opaque Metadata: cannot skip without known wire format
-	return nil
 }

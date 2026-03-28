@@ -32,7 +32,6 @@ func (s *SubscriptionPlan) MarshalParcel(
 func (s *SubscriptionPlan) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	{
 		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
@@ -43,31 +42,4 @@ func (s *SubscriptionPlan) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Title: cannot skip without known wire format
-	return nil // opaque Summary: cannot skip without known wire format
-	s.DataLimitBytes, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.DataLimitBehavior, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.DataUsageBytes, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.DataUsageTime, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		if _arrLen > 0 {
-			p.SetPosition(p.Position() + int(_arrLen)*4)
-		}
-	}
-	return nil
 }

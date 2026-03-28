@@ -47,5 +47,4 @@ func (s *GnssCapabilities) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque GnssSignalTypes: cannot skip without known wire format
-	return nil
 }

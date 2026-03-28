@@ -70,6 +70,4 @@ func (s *UserData) UnmarshalParcel(
 		}
 	}
 	return nil // opaque CategoryAlgorithms: cannot skip without known wire format
-	return nil // opaque CategoryArgs: cannot skip without known wire format
-	return nil
 }

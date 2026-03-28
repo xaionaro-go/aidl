@@ -65,5 +65,4 @@ func (s *VolumeInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque VolGroup: cannot skip without known wire format
-	return nil
 }

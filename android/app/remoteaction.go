@@ -32,20 +32,8 @@ func (s *RemoteAction) MarshalParcel(
 func (s *RemoteAction) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	if _err := s.Icon.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
 	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil // opaque ActionIntent: cannot skip without known wire format
-	s.Enabled, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.ShouldShowIcon, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

@@ -46,16 +46,4 @@ func (s *CredentialProviderInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Capabilities: cannot skip without known wire format
-	s.IsEnabled, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.IsPrimary, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil
 }

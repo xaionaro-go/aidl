@@ -88,26 +88,4 @@ func (s *UsbDevice) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SerialNumberReader.asBinder(): cannot skip without known wire format
-	return nil // opaque Configurations: cannot skip without known wire format
-	s.HasAudioPlayback, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.HasAudioCapture, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.HasMidi, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.HasVideoPlayback, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.HasVideoCapture, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

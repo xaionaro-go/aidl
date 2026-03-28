@@ -36,18 +36,4 @@ func (s *RollbackInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Packages: cannot skip without known wire format
-	s.IsStaged, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque CausePackages: cannot skip without known wire format
-	s.CommittedSessionId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.RollbackImpactLevel, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

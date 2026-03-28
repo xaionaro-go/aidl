@@ -67,42 +67,4 @@ func (s *WindowInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Token: cannot skip without known wire format
-	return nil // opaque ParentToken: cannot skip without known wire format
-	return nil // opaque ActivityToken: cannot skip without known wire format
-	s.Focused, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque RegionInScreen: cannot skip without known wire format
-	return nil // opaque Title: cannot skip without known wire format
-	s.AccessibilityIdOfAnchor, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.InPictureInPicture, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.HasFlagWatchOutsideTouch, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque TransformMatrix: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	return nil // opaque ChildTokens: cannot skip without known wire format
-	if _err := s.MagnificationSpec.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null Locales: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

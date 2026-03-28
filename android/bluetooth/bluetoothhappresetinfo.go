@@ -33,13 +33,4 @@ func (s *BluetoothHapPresetInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Dest: cannot skip without known wire format
-	s.IsWritable, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.IsAvailable, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

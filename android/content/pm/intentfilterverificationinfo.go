@@ -35,5 +35,4 @@ func (s *IntentFilterVerificationInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque NewArrayList<>(mDomains): cannot skip without known wire format
-	return nil
 }

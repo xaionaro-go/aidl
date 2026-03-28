@@ -29,5 +29,4 @@ func (s *VisibleActivityInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque AssistToken: cannot skip without known wire format
-	return nil
 }

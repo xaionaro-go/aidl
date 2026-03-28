@@ -29,5 +29,4 @@ func (s *TextClassificationSessionId) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Token: cannot skip without known wire format
-	return nil
 }

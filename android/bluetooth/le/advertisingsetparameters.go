@@ -103,9 +103,4 @@ func (s *AdvertisingSetParameters) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Dest: cannot skip without known wire format
-	s.PeerAddressType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

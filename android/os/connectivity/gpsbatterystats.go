@@ -35,5 +35,4 @@ func (s *GpsBatteryStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TimeInGpsSignalQualityLevel: cannot skip without known wire format
-	return nil
 }

@@ -36,14 +36,5 @@ func (s *NdefRecord) UnmarshalParcel(
 	if _, _err = p.ReadInt32(); _err != nil { // skip Type.length
 		return _err
 	}
-	return nil                                // opaque Type: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip Id.length
-		return _err
-	}
-	return nil                                // opaque Id: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip Payload.length
-		return _err
-	}
-	return nil // opaque Payload: cannot skip without known wire format
-	return nil
+	return nil // opaque Type: cannot skip without known wire format
 }

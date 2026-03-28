@@ -175,38 +175,4 @@ func (s *ParcelableConnection) UnmarshalParcel(
 		}
 	}
 	return nil // opaque ConferenceableConnectionIds: cannot skip without known wire format
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	s.ConnectionProperties, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SupportedAudioRoutes, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ParentCallId, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.ConnectElapsedTimeMillis, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.CallDirection, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.CallerNumberVerificationStatus, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

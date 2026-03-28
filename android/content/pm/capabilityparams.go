@@ -35,5 +35,4 @@ func (s *CapabilityParams) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Aliases: cannot skip without known wire format
-	return nil
 }

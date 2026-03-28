@@ -47,15 +47,4 @@ func (s *SessionConfiguration) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque OutputConfigurations: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null True: cannot skip unknown-size typed object
-		}
-	}
-	return nil // opaque Metadata: cannot skip without known wire format
-	return nil
 }

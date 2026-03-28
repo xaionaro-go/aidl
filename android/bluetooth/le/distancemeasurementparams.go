@@ -29,23 +29,5 @@ func (s *DistanceMeasurementParams) MarshalParcel(
 func (s *DistanceMeasurementParams) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Device: cannot skip without known wire format
-	s.Duration, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Frequency, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.MethodId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	if _, _err = p.ReadBool(); _err != nil { // skip ChannelSoundingParams==null
-		return _err
-	}
-	return nil // opaque ChannelSoundingParams: cannot skip without known wire format
-	return nil
 }

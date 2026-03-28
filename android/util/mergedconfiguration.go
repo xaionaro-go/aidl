@@ -24,7 +24,4 @@ func (s *MergedConfiguration) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque GlobalConfig: cannot skip without known wire format
-	return nil // opaque OverrideConfig: cannot skip without known wire format
-	return nil // opaque MergedConfig: cannot skip without known wire format
-	return nil
 }

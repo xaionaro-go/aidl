@@ -122,30 +122,4 @@ func (s *SelectionEvent) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SessionId: cannot skip without known wire format
-	s.Start, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.End, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SmartStart, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SmartEnd, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null SystemTcMetadata: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

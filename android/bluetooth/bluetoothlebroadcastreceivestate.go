@@ -73,11 +73,4 @@ func (s *BluetoothLeBroadcastReceiveState) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque BadCode: cannot skip without known wire format
-	s.NumSubgroups, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque BisSyncState: cannot skip without known wire format
-	return nil // opaque SubgroupMetadata: cannot skip without known wire format
-	return nil
 }

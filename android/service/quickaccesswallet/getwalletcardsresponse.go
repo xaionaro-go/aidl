@@ -29,9 +29,4 @@ func (s *GetWalletCardsResponse) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque WalletCards: cannot skip without known wire format
-	s.SelectedIndex, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

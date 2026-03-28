@@ -39,9 +39,4 @@ func (s *WalletCard) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque CardImage: cannot skip without known wire format
-	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil // opaque PendingIntent: cannot skip without known wire format
-	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil // opaque CardLocations: cannot skip without known wire format
-	return nil
 }

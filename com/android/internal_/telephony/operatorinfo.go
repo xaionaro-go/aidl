@@ -43,9 +43,4 @@ func (s *OperatorInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque State: cannot skip without known wire format
-	s.Ran, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

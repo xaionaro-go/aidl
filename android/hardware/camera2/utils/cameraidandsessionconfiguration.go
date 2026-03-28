@@ -29,5 +29,4 @@ func (s *CameraIdAndSessionConfiguration) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SessionConfiguration: cannot skip without known wire format
-	return nil
 }

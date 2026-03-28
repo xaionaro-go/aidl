@@ -42,6 +42,4 @@ func (s *RouteSelectionDescriptor) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SliceInfo: cannot skip without known wire format
-	return nil // opaque Dnn: cannot skip without known wire format
-	return nil
 }

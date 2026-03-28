@@ -47,5 +47,4 @@ func (s *ObbInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Salt: cannot skip without known wire format
-	return nil
 }

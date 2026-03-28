@@ -70,5 +70,4 @@ func (s *ApkChecksum) UnmarshalParcel(
 		}
 	}
 	return nil // opaque InstallerCertificate: cannot skip without known wire format
-	return nil
 }

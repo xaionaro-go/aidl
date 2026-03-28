@@ -28,20 +28,5 @@ func (s *ModuleInfo) MarshalParcel(
 func (s *ModuleInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Name: cannot skip without known wire format
-	s.PackageName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.Hidden, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.ApexModuleName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque ApkInApexPackageNames: cannot skip without known wire format
-	return nil
 }

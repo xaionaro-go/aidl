@@ -35,29 +35,5 @@ func (s *ChooserTarget) MarshalParcel(
 func (s *ChooserTarget) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Title: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	if _err := s.Icon.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	s.Score, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	if _err := s.ComponentName.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	return nil
 }

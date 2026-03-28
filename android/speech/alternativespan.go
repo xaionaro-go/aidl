@@ -35,5 +35,4 @@ func (s *AlternativeSpan) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Alternatives: cannot skip without known wire format
-	return nil
 }

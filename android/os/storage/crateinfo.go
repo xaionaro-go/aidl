@@ -29,23 +29,5 @@ func (s *CrateInfo) MarshalParcel(
 func (s *CrateInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Label: cannot skip without known wire format
-	s.Expiration, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.Uid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.PackageName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.Id, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

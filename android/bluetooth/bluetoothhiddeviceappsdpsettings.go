@@ -26,14 +26,5 @@ func (s *BluetoothHidDeviceAppSdpSettings) MarshalParcel(
 func (s *BluetoothHidDeviceAppSdpSettings) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Out: cannot skip without known wire format
-	return nil // opaque Out: cannot skip without known wire format
-	return nil // opaque Out: cannot skip without known wire format
-	s.Subclass, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Descriptors: cannot skip without known wire format
-	return nil
 }

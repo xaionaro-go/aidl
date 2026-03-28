@@ -61,13 +61,4 @@ func (s *Message) UnmarshalParcel(
 		}
 	}
 	return nil // opaque ReplyTo: cannot skip without known wire format
-	s.SendingUid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.WorkSourceUid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

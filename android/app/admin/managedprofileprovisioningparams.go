@@ -73,5 +73,4 @@ func (s *ManagedProfileProvisioningParams) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque AdminExtras: cannot skip without known wire format
-	return nil
 }

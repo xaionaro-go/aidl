@@ -51,5 +51,4 @@ func (s *TelephonyTimeSuggestion) UnmarshalParcel(
 		}
 	}
 	return nil // opaque DebugInfo: cannot skip without known wire format
-	return nil
 }

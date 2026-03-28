@@ -35,19 +35,5 @@ func (s *AudioPresentation) UnmarshalParcel(
 	if _, _err = p.ReadInt32(); _err != nil { // skip GetProgramId()
 		return _err
 	}
-	return nil                                // opaque GetULocale(): cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip GetMasteringIndication()
-		return _err
-	}
-	if _, _err = p.ReadBool(); _err != nil { // skip HasAudioDescription()
-		return _err
-	}
-	if _, _err = p.ReadBool(); _err != nil { // skip HasSpokenSubtitles()
-		return _err
-	}
-	if _, _err = p.ReadBool(); _err != nil { // skip HasDialogueEnhancement()
-		return _err
-	}
-	return nil // opaque Labels: cannot skip without known wire format
-	return nil
+	return nil // opaque GetULocale(): cannot skip without known wire format
 }

@@ -51,5 +51,4 @@ func (s *PeriodicAdvertisingReport) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Data.getBytes(): cannot skip without known wire format
-	return nil
 }

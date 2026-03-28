@@ -83,17 +83,5 @@ func (s *TvRecordingInfo) UnmarshalParcel(
 	if _, _err = p.ReadBool(); _err != nil { // skip ProgramUri==null
 		return _err
 	}
-	return nil                               // opaque ContentRatings: cannot skip without known wire format
-	if _, _err = p.ReadBool(); _err != nil { // skip RecordingUri==null
-		return _err
-	}
-	s.RecordingDurationMillis, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.RecordingStartTimeMillis, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
+	return nil // opaque ContentRatings: cannot skip without known wire format
 }

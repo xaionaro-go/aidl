@@ -37,39 +37,5 @@ func (s *AudioFocusInfo) MarshalParcel(
 func (s *AudioFocusInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Attributes: cannot skip without known wire format
-	s.ClientUid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ClientId, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.PackageName, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	s.GainRequest, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.LossReceived, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SdkTarget, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.GenCount, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

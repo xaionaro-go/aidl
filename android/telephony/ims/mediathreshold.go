@@ -42,5 +42,4 @@ func (s *MediaThreshold) UnmarshalParcel(
 		}
 	}
 	return nil // opaque RtpInactivityTimeMillis: cannot skip without known wire format
-	return nil
 }

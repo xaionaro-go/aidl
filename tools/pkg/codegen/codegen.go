@@ -283,8 +283,10 @@ func (g *Generator) expandCycleTypes(
 			}
 			origPkg := packageFromDef(qn, def.GetName())
 
-			// Find types referenced by this definition.
-			typeNames := collectTypeNames(def)
+			// Find types referenced by this definition, including
+			// JavaWireFormat delegate/typed_object GoType references
+			// which generate struct fields in the types sub-package.
+			typeNames := collectTypeNamesForCycleExpansion(def)
 			for _, tn := range typeNames {
 				// Resolve to see if it's in the same original package.
 				resolvedQN := resolveTypeQN(tn, origPkg, registry)

@@ -53,9 +53,4 @@ func (s *AudioMix) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Format: cannot skip without known wire format
-	if _err := s.Rule.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	return nil // opaque Token: cannot skip without known wire format
-	return nil
 }

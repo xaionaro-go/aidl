@@ -67,9 +67,4 @@ func (s *UiccCardInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque PortList: cannot skip without known wire format
-	s.IccIdAccessRestricted, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

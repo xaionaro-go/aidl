@@ -53,9 +53,4 @@ func (s *GnssNavigationMessage) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Data: cannot skip without known wire format
-	s.Status, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

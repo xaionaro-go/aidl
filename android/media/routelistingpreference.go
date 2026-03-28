@@ -28,14 +28,5 @@ func (s *RouteListingPreference) MarshalParcel(
 func (s *RouteListingPreference) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Items: cannot skip without known wire format
-	s.UseSystemOrdering, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	if _err := s.ComponentName.UnmarshalParcel(p); _err != nil {
-		return _err
-	}
-	return nil
 }

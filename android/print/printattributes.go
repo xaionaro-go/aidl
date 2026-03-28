@@ -35,21 +35,4 @@ func (s *PrintAttributes) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque MediaSize: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	return nil // opaque Resolution: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	return nil // opaque MinMargins: cannot skip without known wire format
-	s.ColorMode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.DuplexMode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

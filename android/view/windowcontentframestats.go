@@ -31,7 +31,4 @@ func (s *WindowContentFrameStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque FramesPostedTimeNano: cannot skip without known wire format
-	return nil // opaque FramesPresentedTimeNano: cannot skip without known wire format
-	return nil // opaque FramesReadyTimeNano: cannot skip without known wire format
-	return nil
 }

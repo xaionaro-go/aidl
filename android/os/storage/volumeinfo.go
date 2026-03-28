@@ -57,41 +57,4 @@ func (s *VolumeInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Disk: cannot skip without known wire format
-	s.PartGuid, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.MountFlags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.MountUserId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.State, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.FsType, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.FsUuid, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.FsLabel, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.Path, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.InternalPath, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

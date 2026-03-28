@@ -31,27 +31,5 @@ func (s *CellIdentityCdma) MarshalParcel(
 func (s *CellIdentityCdma) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.NetworkId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SystemId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.BasestationId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Longitude, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Latitude, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

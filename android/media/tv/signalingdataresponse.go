@@ -24,7 +24,4 @@ func (s *SignalingDataResponse) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Super: cannot skip without known wire format
-	return nil // opaque SignalingDataTypes: cannot skip without known wire format
-	return nil // opaque SignalingDataInfoList: cannot skip without known wire format
-	return nil
 }

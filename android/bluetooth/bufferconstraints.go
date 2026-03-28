@@ -22,5 +22,4 @@ func (s *BufferConstraints) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque BufferConstraintList: cannot skip without known wire format
-	return nil
 }

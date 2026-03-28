@@ -59,5 +59,4 @@ func (s *BluetoothActivityEnergyInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque UidTraffic: cannot skip without known wire format
-	return nil
 }

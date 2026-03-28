@@ -48,28 +48,4 @@ func (s *VibratorInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque SupportedEffects: cannot skip without known wire format
-	return nil // opaque SupportedBraking: cannot skip without known wire format
-	return nil // opaque SupportedPrimitives: cannot skip without known wire format
-	s.PrimitiveDelayMax, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.CompositionSizeMax, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.PwlePrimitiveDurationMax, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.PwleSizeMax, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.QFactor, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque FrequencyProfile: cannot skip without known wire format
-	return nil
 }

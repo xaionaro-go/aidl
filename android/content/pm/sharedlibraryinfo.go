@@ -51,33 +51,4 @@ func (s *SharedLibraryInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque CodePaths.toArray(newString[mCodePaths.size()]): cannot skip without known wire format
-	s.Name, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	s.Version, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.Type, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null DeclaringPackage: cannot skip unknown-size typed object
-		}
-	}
-	return nil // opaque DependentPackages: cannot skip without known wire format
-	return nil // opaque Dependencies: cannot skip without known wire format
-	s.IsNative, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque OptionalDependentPackages: cannot skip without known wire format
-	return nil
 }

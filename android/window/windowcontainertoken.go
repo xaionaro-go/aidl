@@ -22,5 +22,4 @@ func (s *WindowContainerToken) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque RealToken.asBinder(): cannot skip without known wire format
-	return nil
 }

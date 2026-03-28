@@ -32,5 +32,4 @@ func (s *UniqueProgramIdentifier) UnmarshalParcel(
 		}
 	}
 	return nil // opaque CriticalSecondaryIds: cannot skip without known wire format
-	return nil
 }

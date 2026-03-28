@@ -105,11 +105,4 @@ func (s *WifiBatteryStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TimeInStateMillis: cannot skip without known wire format
-	return nil // opaque TimeInRxSignalStrengthLevelMillis: cannot skip without known wire format
-	return nil // opaque TimeInSupplicantStateMillis: cannot skip without known wire format
-	s.MonitoredRailChargeConsumedMaMillis, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

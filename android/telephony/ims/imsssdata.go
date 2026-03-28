@@ -54,6 +54,4 @@ func (s *ImsSsData) UnmarshalParcel(
 		}
 	}
 	return nil // opaque CfInfo: cannot skip without known wire format
-	return nil // opaque ImsSsInfo: cannot skip without known wire format
-	return nil
 }

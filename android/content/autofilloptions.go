@@ -45,13 +45,4 @@ func (s *AutofillOptions) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque WhitelistedActivitiesForAugmentedAutofill: cannot skip without known wire format
-	s.AppDisabledExpiration, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.Size, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

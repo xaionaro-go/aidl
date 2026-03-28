@@ -50,34 +50,5 @@ func (s *Control) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil                                // opaque Title: cannot skip without known wire format
-	return nil                                // opaque Subtitle: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)1
-		return _err
-	}
-	return nil                                // opaque Structure: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)1
-		return _err
-	}
-	return nil                                // opaque Zone: cannot skip without known wire format
-	return nil                                // opaque AppIntent: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)1
-		return _err
-	}
-	return nil                                // opaque CustomIcon: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)1
-		return _err
-	}
-	return nil // opaque CustomColor: cannot skip without known wire format
-	s.Status, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque NewControlTemplateWrapper(mControlTemplate): cannot skip without known wire format
-	return nil // opaque StatusText: cannot skip without known wire format
-	s.AuthRequired, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
+	return nil // opaque Title: cannot skip without known wire format
 }

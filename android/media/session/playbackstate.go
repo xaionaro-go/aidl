@@ -63,19 +63,4 @@ func (s *PlaybackState) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque CustomActions: cannot skip without known wire format
-	s.ActiveItemId, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque TextUtils: cannot skip without known wire format
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	return nil
 }

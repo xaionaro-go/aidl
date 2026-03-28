@@ -47,5 +47,4 @@ func (s *PresResInstanceInfo) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TupleInfoArray: cannot skip without known wire format
-	return nil
 }

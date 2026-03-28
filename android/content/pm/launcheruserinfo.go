@@ -23,11 +23,5 @@ func (s *LauncherUserInfo) MarshalParcel(
 func (s *LauncherUserInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque UserType: cannot skip without known wire format
-	s.UserSerialNumber, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

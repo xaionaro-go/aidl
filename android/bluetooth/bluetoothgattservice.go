@@ -27,17 +27,5 @@ func (s *BluetoothGattService) MarshalParcel(
 func (s *BluetoothGattService) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque (newParcelUuid(mUuid)): cannot skip without known wire format
-	s.InstanceId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ServiceType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Characteristics: cannot skip without known wire format
-	return nil // opaque IncludedServices: cannot skip without known wire format
-	return nil
 }

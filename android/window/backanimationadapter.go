@@ -22,5 +22,4 @@ func (s *BackAnimationAdapter) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Runner: cannot skip without known wire format
-	return nil
 }

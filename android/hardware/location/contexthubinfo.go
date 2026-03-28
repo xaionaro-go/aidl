@@ -129,9 +129,4 @@ func (s *ContextHubInfo) UnmarshalParcel(
 		}
 	}
 	return nil // opaque MemoryRegions: cannot skip without known wire format
-	s.SupportsReliableMessages, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

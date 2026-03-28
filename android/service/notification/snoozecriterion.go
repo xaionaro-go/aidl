@@ -42,10 +42,5 @@ func (s *SnoozeCriterion) UnmarshalParcel(
 	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)1
 		return _err
 	}
-	return nil                                // opaque Explanation: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)1
-		return _err
-	}
-	return nil // opaque Confirmation: cannot skip without known wire format
-	return nil
+	return nil // opaque Explanation: cannot skip without known wire format
 }

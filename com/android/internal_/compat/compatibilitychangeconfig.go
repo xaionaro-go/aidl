@@ -23,6 +23,4 @@ func (s *CompatibilityChangeConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Enabled: cannot skip without known wire format
-	return nil // opaque Disabled: cannot skip without known wire format
-	return nil
 }

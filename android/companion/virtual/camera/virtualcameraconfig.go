@@ -34,14 +34,4 @@ func (s *VirtualCameraConfig) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Callback: cannot skip without known wire format
-	return nil // opaque StreamConfigurations.toArray(newVirtualCameraStreamConfig[0]): cannot skip without known wire format
-	s.SensorOrientation, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.LensFacing, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

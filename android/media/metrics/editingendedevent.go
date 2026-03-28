@@ -63,27 +63,4 @@ func (s *EditingEndedEvent) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque InputMediaItemInfos: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null OutputMediaItemInfo: cannot skip unknown-size typed object
-		}
-	}
-	s.OperationTypes, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	return nil
 }

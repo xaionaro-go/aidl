@@ -48,30 +48,4 @@ func (s *AdRequest) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque FileDescriptor: cannot skip without known wire format
-	s.StartTime, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.StopTime, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.EchoInterval, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.MediaFileType, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	return nil
 }

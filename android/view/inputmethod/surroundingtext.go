@@ -27,19 +27,5 @@ func (s *SurroundingText) MarshalParcel(
 func (s *SurroundingText) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque TextUtils: cannot skip without known wire format
-	s.SelectionStart, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SelectionEnd, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.Offset, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

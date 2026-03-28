@@ -29,5 +29,4 @@ func (s *UssdResponse) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil
 }

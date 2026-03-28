@@ -46,6 +46,4 @@ func (s *DisplayHash) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque ImageHash: cannot skip without known wire format
-	return nil // opaque Hmac: cannot skip without known wire format
-	return nil
 }

@@ -32,17 +32,4 @@ func (s *GetCandidateCredentialsResponse) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque CandidateProviderDataList: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.Intent = &types.Intent{}
-			if _err = s.Intent.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	return nil
 }

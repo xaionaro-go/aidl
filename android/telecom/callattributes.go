@@ -46,7 +46,6 @@ func (s *CallAttributes) MarshalParcel(
 func (s *CallAttributes) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	{
 		_flag, _err := p.ReadInt32()
 		if _err != nil {
@@ -60,29 +59,4 @@ func (s *CallAttributes) UnmarshalParcel(
 		}
 	}
 	return nil // opaque DisplayName: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.Address = &location.Address{}
-			if _err = s.Address.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	s.Direction, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.CallType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.CallCapabilities, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

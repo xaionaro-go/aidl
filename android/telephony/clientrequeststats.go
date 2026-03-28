@@ -53,5 +53,4 @@ func (s *ClientRequestStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque GetRequestHistograms(): cannot skip without known wire format
-	return nil
 }

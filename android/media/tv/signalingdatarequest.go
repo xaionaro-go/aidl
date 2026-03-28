@@ -24,12 +24,5 @@ func (s *SignalingDataRequest) MarshalParcel(
 func (s *SignalingDataRequest) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.Group, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque SignalingDataTypes: cannot skip without known wire format
-	return nil
 }

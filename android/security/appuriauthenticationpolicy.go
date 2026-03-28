@@ -22,5 +22,4 @@ func (s *AppUriAuthenticationPolicy) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque AppToUris: cannot skip without known wire format
-	return nil
 }

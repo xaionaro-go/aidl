@@ -35,5 +35,4 @@ func (s *VisualQueryDetectedResult) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque AccessibilityDetectionData: cannot skip without known wire format
-	return nil
 }

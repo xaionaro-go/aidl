@@ -27,5 +27,4 @@ func (s *GetWalletCardsError) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil
 }

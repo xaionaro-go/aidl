@@ -44,46 +44,4 @@ func (s *MediaDescription) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil // opaque TextUtils: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.Icon = &drawable.Icon{}
-			if _err = s.Icon.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null IconUri: cannot skip unknown-size typed object
-		}
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null MediaUri: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

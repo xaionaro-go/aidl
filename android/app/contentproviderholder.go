@@ -27,17 +27,5 @@ func (s *ContentProviderHolder) MarshalParcel(
 func (s *ContentProviderHolder) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Info: cannot skip without known wire format
-	return nil // opaque Provider.asBinder(): cannot skip without known wire format
-	return nil // opaque Connection: cannot skip without known wire format
-	s.NoReleaseNeeded, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.Local, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

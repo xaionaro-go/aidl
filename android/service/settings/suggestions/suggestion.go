@@ -52,34 +52,4 @@ func (s *Suggestion) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Title: cannot skip without known wire format
-	return nil // opaque Summary: cannot skip without known wire format
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.Icon = &drawable.Icon{}
-			if _err = s.Icon.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	s.Flags, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_flag, _err := p.ReadInt32()
-		if _err != nil {
-			return _err
-		}
-		if _flag != 0 {
-			s.PendingIntent = &app.PendingIntent{}
-			if _err = s.PendingIntent.UnmarshalParcel(p); _err != nil {
-				return _err
-			}
-		}
-	}
-	return nil
 }

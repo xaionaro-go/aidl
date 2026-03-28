@@ -51,17 +51,5 @@ func (s *KeyboardLayout) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil                                // opaque Locales: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil { // skip LayoutType.getValue()
-		return _err
-	}
-	s.VendorId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ProductId, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
+	return nil // opaque Locales: cannot skip without known wire format
 }

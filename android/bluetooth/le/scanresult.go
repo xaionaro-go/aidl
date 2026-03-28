@@ -45,41 +45,4 @@ func (s *ScanResult) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Device: cannot skip without known wire format
-	if _, _err = p.ReadInt32(); _err != nil {
-		return _err
-	}
-	return nil // opaque ScanRecord.getBytes(): cannot skip without known wire format
-	s.Rssi, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.TimestampNanos, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.EventType, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.PrimaryPhy, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SecondaryPhy, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.AdvertisingSid, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.TxPower, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.PeriodicAdvertisingInterval, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

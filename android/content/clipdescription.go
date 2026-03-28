@@ -30,30 +30,5 @@ func (s *ClipDescription) MarshalParcel(
 func (s *ClipDescription) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque TextUtils: cannot skip without known wire format
-	return nil // opaque MimeTypes: cannot skip without known wire format
-	return nil // opaque Extras: cannot skip without known wire format
-	s.TimeStamp, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.IsStyledText, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.ClassificationStatus, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	return nil
 }

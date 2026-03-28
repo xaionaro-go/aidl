@@ -87,11 +87,4 @@ func (s *CellularBatteryStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TimeInRatMs: cannot skip without known wire format
-	return nil // opaque TimeInRxSignalStrengthLevelMs: cannot skip without known wire format
-	return nil // opaque TxTimeMs: cannot skip without known wire format
-	s.MonitoredRailChargeConsumedMaMs, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

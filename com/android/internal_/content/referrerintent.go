@@ -24,12 +24,5 @@ func (s *ReferrerIntent) MarshalParcel(
 func (s *ReferrerIntent) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Super: cannot skip without known wire format
-	s.Referrer, _err = p.ReadString16()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque CallerToken: cannot skip without known wire format
-	return nil
 }

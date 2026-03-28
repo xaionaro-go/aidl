@@ -32,5 +32,4 @@ func (s *BeginGetCredentialRequest) UnmarshalParcel(
 		}
 	}
 	return nil // opaque BeginGetCredentialOptions: cannot skip without known wire format
-	return nil
 }

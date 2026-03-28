@@ -26,24 +26,5 @@ func (s *GetCredentialRequest) MarshalParcel(
 func (s *GetCredentialRequest) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque CredentialOptions: cannot skip without known wire format
-	{
-		_opaqueLen, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueLen > 0 {
-			p.SetPosition(p.Position() + int(_opaqueLen))
-		}
-	}
-	s.AlwaysSendAppInfoToProvider, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.Origin, _err = p.ReadString()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

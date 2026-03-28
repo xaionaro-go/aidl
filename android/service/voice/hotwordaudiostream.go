@@ -81,5 +81,4 @@ func (s *HotwordAudioStream) UnmarshalParcel(
 		}
 	}
 	return nil // opaque InitialAudio: cannot skip without known wire format
-	return nil
 }

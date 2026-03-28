@@ -25,15 +25,5 @@ func (s *OnBackInvokedCallbackInfo) MarshalParcel(
 func (s *OnBackInvokedCallbackInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Callback: cannot skip without known wire format
-	s.Priority, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.IsAnimationCallback, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

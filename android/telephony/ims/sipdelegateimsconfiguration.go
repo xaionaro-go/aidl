@@ -29,5 +29,4 @@ func (s *SipDelegateImsConfiguration) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque Bundle: cannot skip without known wire format
-	return nil
 }

@@ -24,7 +24,4 @@ func (s *BluetoothLeAudioContentMetadata) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	return nil // opaque Out: cannot skip without known wire format
-	return nil // opaque Out: cannot skip without known wire format
-	return nil // opaque RawMetadata: cannot skip without known wire format
-	return nil
 }

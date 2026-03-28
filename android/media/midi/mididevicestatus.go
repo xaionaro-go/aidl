@@ -33,14 +33,4 @@ func (s *MidiDeviceStatus) UnmarshalParcel(
 		}
 	}
 	return nil // opaque InputPortOpen: cannot skip without known wire format
-	{
-		_arrLen, _arrErr := p.ReadInt32()
-		if _arrErr != nil {
-			return _arrErr
-		}
-		if _arrLen > 0 {
-			p.SetPosition(p.Position() + int(_arrLen)*4)
-		}
-	}
-	return nil
 }

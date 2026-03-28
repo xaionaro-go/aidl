@@ -29,5 +29,4 @@ func (s *ClientTransaction) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque TransactionItems: cannot skip without known wire format
-	return nil
 }

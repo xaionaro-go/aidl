@@ -109,15 +109,4 @@ func (s *BatteryUsageStats) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque BatteryConsumersCursorWindow: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null True: cannot skip unknown-size typed object
-		}
-	}
-	return nil // opaque Dest: cannot skip without known wire format
-	return nil
 }

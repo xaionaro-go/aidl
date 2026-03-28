@@ -32,28 +32,8 @@ func (s *ClientWindowFrames) MarshalParcel(
 func (s *ClientWindowFrames) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	if _err := s.Frame.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
 	return nil // opaque DisplayFrame: cannot skip without known wire format
-	return nil // opaque ParentFrame: cannot skip without known wire format
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null AttachedFrame: cannot skip unknown-size typed object
-		}
-	}
-	s.IsParentFrameClippedByDisplayCutout, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.CompatScale, _err = p.ReadFloat32()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

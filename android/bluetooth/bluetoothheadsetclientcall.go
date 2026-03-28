@@ -33,29 +33,5 @@ func (s *BluetoothHeadsetClientCall) MarshalParcel(
 func (s *BluetoothHeadsetClientCall) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	return nil // opaque Device: cannot skip without known wire format
-	s.Id, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Out: cannot skip without known wire format
-	s.State, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	return nil // opaque Out: cannot skip without known wire format
-	s.MultiParty, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.Outgoing, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.InBandRing, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

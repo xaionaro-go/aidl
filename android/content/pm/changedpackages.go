@@ -29,5 +29,4 @@ func (s *ChangedPackages) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque PackageNames: cannot skip without known wire format
-	return nil
 }

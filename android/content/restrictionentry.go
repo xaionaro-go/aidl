@@ -89,5 +89,4 @@ func (s *RestrictionEntry) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Restrictions: cannot skip without known wire format
-	return nil
 }

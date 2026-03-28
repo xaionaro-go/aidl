@@ -44,22 +44,4 @@ func (s *BackNavigationInfo) UnmarshalParcel(
 		}
 	}
 	return nil // opaque OnBackInvokedCallback: cannot skip without known wire format
-	s.PrepareRemoteAnimation, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	s.AnimationCallback, _err = p.ReadBool()
-	if _err != nil {
-		return _err
-	}
-	{
-		_opaqueFlag, _opaqueErr := p.ReadInt32()
-		if _opaqueErr != nil {
-			return _opaqueErr
-		}
-		if _opaqueFlag != 0 {
-			return nil // non-null CustomAnimationInfo: cannot skip unknown-size typed object
-		}
-	}
-	return nil
 }

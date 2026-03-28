@@ -38,7 +38,6 @@ func (s *BluetoothCodecConfig) MarshalParcel(
 func (s *BluetoothCodecConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	var _err error
 	{
 		_opaqueFlag, _opaqueErr := p.ReadInt32()
 		if _opaqueErr != nil {
@@ -49,37 +48,4 @@ func (s *BluetoothCodecConfig) UnmarshalParcel(
 		}
 	}
 	return nil // opaque CodecType: cannot skip without known wire format
-	s.CodecPriority, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.SampleRate, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.BitsPerSample, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.ChannelMode, _err = p.ReadInt32()
-	if _err != nil {
-		return _err
-	}
-	s.CodecSpecific1, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.CodecSpecific2, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.CodecSpecific3, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	s.CodecSpecific4, _err = p.ReadInt64()
-	if _err != nil {
-		return _err
-	}
-	return nil
 }

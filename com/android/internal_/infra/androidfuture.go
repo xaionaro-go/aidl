@@ -39,5 +39,4 @@ func (s *AndroidFuture) UnmarshalParcel(
 		}
 	}
 	return nil // opaque Result: cannot skip without known wire format
-	return nil
 }

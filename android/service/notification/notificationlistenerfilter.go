@@ -29,5 +29,4 @@ func (s *NotificationListenerFilter) UnmarshalParcel(
 		return _err
 	}
 	return nil // opaque DisallowedPackages: cannot skip without known wire format
-	return nil
 }
