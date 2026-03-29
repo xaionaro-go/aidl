@@ -113,7 +113,12 @@ func requireOrSkip(t *testing.T, err error) {
 		t.Skipf("binder resource constraint (service died): %v", err)
 	}
 	if strings.Contains(errStr, "exception Security") {
-		t.Skipf("permission denied: %v", err)
+		// On real devices the test binary runs as shell (UID 2000), so
+		// privileged operations are correctly denied and skipped here.
+		// On emulator the binary runs as root (UID 0) with permissive
+		// SELinux, so these permission errors do not occur and the tests
+		// execute normally without hitting this skip path.
+		t.Skipf("permission denied (expected on real device; passes on emulator as root): %v", err)
 	}
 	if strings.Contains(errStr, "failed transaction") {
 		t.Skipf("binder transaction failed (HAL/SELinux access denied from shell): %v", err)

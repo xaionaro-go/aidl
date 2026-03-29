@@ -683,10 +683,10 @@ func TestUseCase97_HeadlessController(t *testing.T) {
 func TestUseCase98_SensorGateway(t *testing.T) {
 	ctx := context.Background()
 	driver := openBinder(t)
-	sm := servicemanager.New(driver)
 
-	sensorSvc, err := sm.GetService(ctx, servicemanager.SensorService)
-	requireOrSkip(t, err)
+	// The sensor HAL is registered under its HIDL fully-qualified name,
+	// not the standard binder "sensor" entry.
+	sensorSvc := getService(ctx, t, driver, "android.frameworks.sensorservice.ISensorManager/default")
 
 	sensorMgr := sensorservice.NewSensorManagerProxy(sensorSvc)
 
