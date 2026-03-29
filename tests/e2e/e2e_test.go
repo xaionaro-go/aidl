@@ -1,4 +1,4 @@
-//go:build e2e
+//go:build e2e || e2e_root
 
 package e2e
 
@@ -21,6 +21,12 @@ import (
 	"github.com/AndroidGoLab/binder/parcel"
 	"github.com/AndroidGoLab/binder/servicemanager"
 )
+
+// onDevice reports whether the test binary is running directly on an
+// Android device (i.e. /dev/binder is accessible). When true, the
+// emulator/adb setup is skipped — on-device tests open /dev/binder
+// directly, and bindercli tests exec the binary directly.
+var onDevice bool
 
 // cachedBinder provides a shared binder connection with auto-recovery.
 // The connection is refreshed every maxTestsPerConnection tests to

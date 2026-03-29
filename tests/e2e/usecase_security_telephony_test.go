@@ -14,7 +14,6 @@ import (
 	genCredentials "github.com/AndroidGoLab/binder/android/credentials"
 	genSecurity "github.com/AndroidGoLab/binder/android/security"
 	genOemlock "github.com/AndroidGoLab/binder/android/service/oemlock"
-	genKeystore2 "github.com/AndroidGoLab/binder/android/system/keystore2"
 	"github.com/AndroidGoLab/binder/android/se/omapi"
 	genOs "github.com/AndroidGoLab/binder/android/os"
 	genTelephony "github.com/AndroidGoLab/binder/com/android/internal_/telephony"
@@ -64,37 +63,8 @@ func TestUsecase_PermissionChecker(t *testing.T) {
 	t.Logf("GetProcessLimit: %d", limit)
 }
 
-// ==========================================================================
-// Use case #47: Keystore operations (read-only)
-// ==========================================================================
-
-func TestUsecase_KeystoreOps(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	sm := servicemanager.New(driver)
-
-	const svcName = "android.system.keystore2.IKeystoreService/default"
-	svc, err := sm.CheckService(ctx, servicemanager.ServiceName(svcName))
-	requireOrSkip(t, err)
-	if svc == nil {
-		t.Skip("keystore2 service not registered")
-	}
-	require.True(t, svc.IsAlive(ctx), "keystore2 should be alive")
-
-	ks := genKeystore2.NewKeystoreServiceProxy(svc)
-
-	// Query number of entries in SELINUX domain (namespace 0).
-	count, err := ks.GetNumberOfEntries(ctx, genKeystore2.DomainSELINUX, 0)
-	requireOrSkip(t, err)
-	t.Logf("GetNumberOfEntries(SELINUX, ns=0): %d", count)
-	require.GreaterOrEqual(t, count, int32(0))
-
-	// Query number of entries in APP domain.
-	appCount, err := ks.GetNumberOfEntries(ctx, genKeystore2.DomainAPP, -1)
-	requireOrSkip(t, err)
-	t.Logf("GetNumberOfEntries(APP, ns=-1): %d", appCount)
-	require.GreaterOrEqual(t, appCount, int32(0))
-}
+// Use case #47 (Keystore operations) moved to usecase_root_test.go —
+// requires root to bypass keystore2 SELinux access control.
 
 // ==========================================================================
 // Use case #48: Attestation verification service
@@ -113,17 +83,19 @@ func TestUsecase_AttestationVerify(t *testing.T) {
 	require.True(t, svc.IsAlive(ctx), "attestation_verification should be alive")
 	t.Logf("attestation_verification: handle=%d, alive=true", svc.Handle())
 
-	// Also check file_integrity service.
-	fiSvc, err := sm.CheckService(ctx, servicemanager.FileIntegrityService)
-	requireOrSkip(t, err)
-	if fiSvc != nil {
+	// IsApkVeritySupported was removed in API 36. Test it independently
+	// so the attestation service check above still passes.
+	t.Run("FileIntegrity", func(t *testing.T) {
+		fiSvc, err := sm.CheckService(ctx, servicemanager.FileIntegrityService)
+		requireOrSkip(t, err)
+		if fiSvc == nil {
+			t.Skip("file_integrity service not registered")
+		}
 		fiProxy := genSecurity.NewFileIntegrityServiceProxy(fiSvc)
 		supported, err := fiProxy.IsApkVeritySupported(ctx)
 		requireOrSkip(t, err)
 		t.Logf("IsApkVeritySupported: %v", supported)
-	} else {
-		t.Log("file_integrity service not registered (optional)")
-	}
+	})
 }
 
 // ==========================================================================

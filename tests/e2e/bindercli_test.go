@@ -1,4 +1,4 @@
-//go:build e2e
+//go:build e2e && !e2e_root
 
 package e2e
 
@@ -36,12 +36,6 @@ var emulatorSerial string
 // emulatorStartedByTest tracks whether TestMain started the emulator,
 // so cleanup only kills it if we own it.
 var emulatorStartedByTest bool
-
-// onDevice reports whether the test binary is running directly on an
-// Android device (i.e. /dev/binder is accessible). When true, the
-// emulator/adb setup is skipped — on-device tests open /dev/binder
-// directly, and bindercli tests exec the binary directly.
-var onDevice bool
 
 // bindercliAvailable is true when the bindercli binary exists at
 // deviceBinary. On-device, this requires the binary to have been

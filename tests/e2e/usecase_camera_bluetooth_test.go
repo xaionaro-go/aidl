@@ -1,4 +1,4 @@
-//go:build e2e
+//go:build e2e || e2e_root
 
 package e2e
 
@@ -30,7 +30,6 @@ import (
 	genLE "github.com/AndroidGoLab/binder/android/bluetooth/le"
 	"github.com/AndroidGoLab/binder/android/content"
 	fwkService "github.com/AndroidGoLab/binder/android/frameworks/cameraservice/service"
-	"github.com/AndroidGoLab/binder/android/hardware"
 	genOs "github.com/AndroidGoLab/binder/android/os"
 	"github.com/AndroidGoLab/binder/binder"
 	"github.com/AndroidGoLab/binder/binder/versionaware"
@@ -110,25 +109,8 @@ func TestUseCase22_FlashlightTorch(t *testing.T) {
 	// Clean up listener registration.
 	_ = fwkCam.RemoveListener(ctx, listener)
 
-	t.Run("SetTorchMode", func(t *testing.T) {
-		// Torch control requires the media.camera service. Create a
-		// properly registered client token (same pattern as the
-		// flashlight_torch example).
-		mediaSvc, err := sm.GetService(ctx, servicemanager.MediaCameraService)
-		requireOrSkip(t, err)
-		cam := hardware.NewCameraServiceProxy(mediaSvc)
-
-		token := binder.NewStubBinder(&torchClientToken{})
-		token.RegisterWithTransport(ctx, transport)
-
-		err = cam.SetTorchMode(ctx, cameras[0].CameraId, true, token)
-		requireOrSkip(t, err)
-		t.Log("Torch ON")
-
-		err = cam.SetTorchMode(ctx, cameras[0].CameraId, false, token)
-		requireOrSkip(t, err)
-		t.Log("Torch OFF")
-	})
+	// SetTorchMode subtest moved to usecase_root_test.go — requires root
+	// to bypass media.camera SELinux restrictions (kernel status -61).
 }
 
 // torchClientToken is a minimal TransactionReceiver used as the client
@@ -205,22 +187,8 @@ func TestUseCase23_CameraAvailability(t *testing.T) {
 		}
 	})
 
-	t.Run("GetCameraCharacteristics", func(t *testing.T) {
-		listener := fwkService.NewCameraServiceListenerStub(&noopCameraServiceListener{})
-		cameras, err := fwkCam.AddListener(ctx, listener)
-		requireOrSkip(t, err)
-		defer func() { _ = fwkCam.RemoveListener(ctx, listener) }()
-
-		if len(cameras) == 0 {
-			t.Skip("no cameras available")
-		}
-
-		chars, err := fwkCam.GetCameraCharacteristics(ctx, cameras[0].CameraId)
-		requireOrSkip(t, err)
-		t.Logf("Camera %q characteristics: %d bytes of metadata",
-			cameras[0].CameraId, len(chars.Metadata))
-		assert.Greater(t, len(chars.Metadata), 0, "expected non-empty camera metadata")
-	})
+	// GetCameraCharacteristics subtest moved to usecase_root_test.go —
+	// returns HAL ServiceSpecific error as shell.
 }
 
 // ---------------------------------------------------------------------------

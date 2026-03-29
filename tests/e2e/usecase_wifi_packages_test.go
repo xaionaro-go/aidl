@@ -14,8 +14,6 @@ import (
 	"github.com/AndroidGoLab/binder/android/apphibernation"
 	"github.com/AndroidGoLab/binder/android/content/pm"
 	"github.com/AndroidGoLab/binder/android/net"
-	"github.com/AndroidGoLab/binder/android/net/wifi/nl80211"
-	"github.com/AndroidGoLab/binder/android/system/net/netd"
 	genOs "github.com/AndroidGoLab/binder/android/os"
 	"github.com/AndroidGoLab/binder/android/app/usage"
 	internalNet "github.com/AndroidGoLab/binder/com/android/internal_/net"
@@ -47,70 +45,8 @@ func TestUseCase32_SoftapManage_BandwidthControl(t *testing.T) {
 	t.Logf("bandwidth control enabled: %v", bwCtrl)
 }
 
-// --- Use case #33: WiFi scanner ---
-
-func TestUseCase33_WifiScanner_GetClientInterfaces(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, "wifinl80211")
-	wificond := nl80211.NewWificondProxy(svc)
-
-	clientIfaces, err := wificond.GetClientInterfaces(ctx)
-	requireOrSkip(t, err)
-	t.Logf("client interfaces: %d", len(clientIfaces))
-
-	for i, ifaceBinder := range clientIfaces {
-		client := nl80211.NewClientInterfaceProxy(ifaceBinder)
-		ifName, err := client.GetInterfaceName(ctx)
-		requireOrSkip(t, err)
-		t.Logf("  [%d] interface name: %s", i, ifName)
-
-		mac, err := client.GetMacAddress(ctx)
-		requireOrSkip(t, err)
-		t.Logf("  [%d] MAC: %x", i, mac)
-	}
-}
-
-func TestUseCase33_WifiScanner_GetScanResults(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, "wifinl80211")
-	wificond := nl80211.NewWificondProxy(svc)
-
-	clientIfaces, err := wificond.GetClientInterfaces(ctx)
-	requireOrSkip(t, err)
-	if len(clientIfaces) == 0 {
-		t.Skip("no WiFi client interfaces available")
-	}
-
-	client := nl80211.NewClientInterfaceProxy(clientIfaces[0])
-	scanner, err := client.GetWifiScannerImpl(ctx)
-	requireOrSkip(t, err)
-
-	maxSSIDs, err := scanner.GetMaxSsidsPerScan(ctx)
-	requireOrSkip(t, err)
-	assert.Greater(t, maxSSIDs, int32(0), "max SSIDs per scan should be > 0")
-	t.Logf("max SSIDs per scan: %d", maxSSIDs)
-
-	results, err := scanner.GetScanResults(ctx)
-	requireOrSkip(t, err)
-	t.Logf("cached scan results: %d", len(results))
-}
-
-func TestUseCase33_WifiScanner_AvailableChannels(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, "wifinl80211")
-	wificond := nl80211.NewWificondProxy(svc)
-
-	ch2g, err := wificond.GetAvailable2gChannels(ctx)
-	requireOrSkip(t, err)
-	t.Logf("2.4 GHz channels: %v", ch2g)
-
-	ch5g, err := wificond.GetAvailable5gNonDFSChannels(ctx)
-	requireOrSkip(t, err)
-	t.Logf("5 GHz (non-DFS) channels: %v", ch5g)
-}
+// Use case #33 (WiFi scanner) and #35 (WiFi HAL diagnostics) moved to
+// usecase_root_test.go — they require root to bypass wificond SELinux.
 
 // --- Use case #34: Tethering offload (softap_tether_offload) ---
 
@@ -123,30 +59,6 @@ func TestUseCase34_TetheringOffload_IsTetheringStarted(t *testing.T) {
 	tethering, err := netMgr.IsTetheringStarted(ctx)
 	requireOrSkip(t, err)
 	t.Logf("tethering started: %v", tethering)
-}
-
-// --- Use case #35: WiFi HAL diagnostics (softap_wifi_hal) ---
-
-func TestUseCase35_WifiHAL_PhyCapabilities(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, "wifinl80211")
-	wificond := nl80211.NewWificondProxy(svc)
-
-	caps, err := wificond.GetDeviceWiphyCapabilities(ctx, "wlan0")
-	requireOrSkip(t, err)
-	t.Logf("wlan0 PHY capabilities: %+v", caps)
-}
-
-func TestUseCase35_WifiHAL_ApInterfaces(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, "wifinl80211")
-	wificond := nl80211.NewWificondProxy(svc)
-
-	apIfaces, err := wificond.GetApInterfaces(ctx)
-	requireOrSkip(t, err)
-	t.Logf("AP interfaces: %d", len(apIfaces))
 }
 
 // --- Use case #36: Network policy ---
@@ -298,31 +210,9 @@ func TestUseCase38_DnsConfig_ListInterfaces(t *testing.T) {
 	t.Logf("interfaces: %v", ifaces)
 }
 
-func TestUseCase38_DnsConfig_NetdPing(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, "netd")
-
-	alive := svc.IsAlive(ctx)
-	assert.True(t, alive, "netd service should be alive")
-	t.Logf("netd alive: %v", alive)
-}
-
-func TestUseCase38_DnsConfig_NetdCreateDestroyOemNetwork(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, "netd")
-	netdProxy := netd.NewNetdProxy(svc)
-
-	oemNet, err := netdProxy.CreateOemNetwork(ctx)
-	requireOrSkip(t, err)
-	assert.NotZero(t, oemNet.NetworkHandle, "OEM network handle should be non-zero")
-	t.Logf("OEM network: handle=%d, packetMark=%d", oemNet.NetworkHandle, oemNet.PacketMark)
-
-	err = netdProxy.DestroyOemNetwork(ctx, oemNet.NetworkHandle)
-	requireOrSkip(t, err)
-	t.Log("OEM network destroyed")
-}
+// TestUseCase38_DnsConfig_NetdCreateDestroyOemNetwork moved to
+// usecase_root_test.go — CreateOemNetwork requires root to bypass
+// netd SELinux access control.
 
 func TestUseCase38_DnsConfig_NetworkWatchlistHash(t *testing.T) {
 	ctx := context.Background()

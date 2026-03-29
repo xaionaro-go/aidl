@@ -320,17 +320,8 @@ func TestUseCase66_NotificationListener_GetEffectsSuppressor(t *testing.T) {
 	t.Logf("Effects suppressor: %+v", suppressor)
 }
 
-func TestUseCase66_NotificationListener_GetActiveNotifications(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, string(servicemanager.NotificationService))
-
-	nm := genApp.NewNotificationManagerProxy(svc)
-
-	notifs, err := nm.GetActiveNotifications(ctx, "com.android.shell")
-	requireOrSkip(t, err)
-	t.Logf("Active notifications: %d", len(notifs))
-}
+// TestUseCase66_NotificationListener_GetActiveNotifications moved to
+// usecase_root_test.go — requires ACCESS_NOTIFICATIONS permission.
 
 // --- #67: StatusBar Control ---
 
@@ -410,17 +401,8 @@ func TestUseCase68_DNDController_GetConsolidatedNotificationPolicy(t *testing.T)
 	t.Logf("Consolidated notification policy: %+v", policy)
 }
 
-func TestUseCase68_DNDController_ShouldHideSilentStatusIcons(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, string(servicemanager.NotificationService))
-
-	nm := genApp.NewNotificationManagerProxy(svc)
-
-	hidden, err := nm.ShouldHideSilentStatusIcons(ctx, "com.android.shell")
-	requireOrSkip(t, err)
-	t.Logf("Hide silent status icons: %v", hidden)
-}
+// TestUseCase68_DNDController_ShouldHideSilentStatusIcons moved to
+// usecase_root_test.go — requires notification listener access.
 
 // --- #69: Dream Manager ---
 
@@ -486,17 +468,8 @@ func TestUseCase60_VolumeControl_IsMicrophoneMuted(t *testing.T) {
 	t.Logf("Microphone muted: %v", muted)
 }
 
-func TestUseCase61_AudioFocus_IsUltrasoundSupported(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	svc := getService(ctx, t, driver, string(servicemanager.AudioService))
-
-	audio := genMedia.NewAudioServiceProxy(svc)
-
-	supported, err := audio.IsUltrasoundSupported(ctx)
-	requireOrSkip(t, err)
-	t.Logf("Ultrasound supported: %v", supported)
-}
+// TestUseCase61_AudioFocus_IsUltrasoundSupported moved to
+// usecase_root_test.go — requires ACCESS_ULTRASOUND permission.
 
 // Verify test file compiles with all required imports.
 var _ = require.NoError

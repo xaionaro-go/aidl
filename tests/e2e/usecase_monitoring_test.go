@@ -355,30 +355,38 @@ func TestUsecase_NetworkMonitor(t *testing.T) {
 	t.Logf("Network interfaces: %v", ifaces)
 	require.NotEmpty(t, ifaces)
 
-	// IP forwarding.
-	fwd, err := net.GetIpForwardingEnabled(ctx)
-	requireOrSkip(t, err)
-	t.Logf("IP forwarding: %v", fwd)
+	// Each method tested independently — some may be removed in newer
+	// API levels (e.g. API 36 removed getIpForwardingEnabled,
+	// isTetheringStarted).
+	t.Run("IpForwarding", func(t *testing.T) {
+		fwd, err := net.GetIpForwardingEnabled(ctx)
+		requireOrSkip(t, err)
+		t.Logf("IP forwarding: %v", fwd)
+	})
 
-	// Bandwidth control.
-	bw, err := net.IsBandwidthControlEnabled(ctx)
-	requireOrSkip(t, err)
-	t.Logf("Bandwidth control: %v", bw)
+	t.Run("BandwidthControl", func(t *testing.T) {
+		bw, err := net.IsBandwidthControlEnabled(ctx)
+		requireOrSkip(t, err)
+		t.Logf("Bandwidth control: %v", bw)
+	})
 
-	// Firewall state.
-	fw, err := net.IsFirewallEnabled(ctx)
-	requireOrSkip(t, err)
-	t.Logf("Firewall: %v", fw)
+	t.Run("Firewall", func(t *testing.T) {
+		fw, err := net.IsFirewallEnabled(ctx)
+		requireOrSkip(t, err)
+		t.Logf("Firewall: %v", fw)
+	})
 
-	// Tethering.
-	teth, err := net.IsTetheringStarted(ctx)
-	requireOrSkip(t, err)
-	t.Logf("Tethering: %v", teth)
+	t.Run("Tethering", func(t *testing.T) {
+		teth, err := net.IsTetheringStarted(ctx)
+		requireOrSkip(t, err)
+		t.Logf("Tethering: %v", teth)
+	})
 
-	// Network restriction for root.
-	restricted, err := net.IsNetworkRestricted(ctx, 0)
-	requireOrSkip(t, err)
-	t.Logf("UID 0 restricted: %v", restricted)
+	t.Run("NetworkRestriction", func(t *testing.T) {
+		restricted, err := net.IsNetworkRestricted(ctx, 0)
+		requireOrSkip(t, err)
+		t.Logf("UID 0 restricted: %v", restricted)
+	})
 }
 
 // ==========================================================================

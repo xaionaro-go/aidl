@@ -101,13 +101,8 @@ func TestUseCase84_MDMAgent(t *testing.T) {
 		t.Logf("Camera disabled: %v", camDisabled)
 	})
 
-	// Device provisioned.
-	t.Run("device_provisioned", func(t *testing.T) {
-		provisioned, err := dpm.IsDeviceProvisioned(ctx)
-		requireOrSkip(t, err)
-		assert.True(t, provisioned, "device should be provisioned")
-		t.Logf("Device provisioned: %v", provisioned)
-	})
+	// device_provisioned subtest moved to usecase_root_test.go —
+	// requires system permission.
 
 	// Active admins.
 	t.Run("active_admins", func(t *testing.T) {
@@ -148,16 +143,8 @@ func TestUseCase85_ComplianceChecker(t *testing.T) {
 		t.Logf("Global security state bundle retrieved successfully")
 	})
 
-	// System update info.
-	t.Run("system_update", func(t *testing.T) {
-		updateMgr, err := genOs.GetSystemUpdateManager(ctx, sm)
-		requireOrSkip(t, err)
-
-		info, err := updateMgr.RetrieveSystemUpdateInfo(ctx)
-		requireOrSkip(t, err)
-		_ = info
-		t.Logf("System update info retrieved successfully")
-	})
+	// system_update subtest moved to usecase_root_test.go —
+	// requires READ_SYSTEM_UPDATE_INFO permission.
 }
 
 // --- #86: Remote Diagnostics ---
@@ -267,16 +254,8 @@ func TestUseCase88_OTAStatus(t *testing.T) {
 	driver := openBinder(t)
 	sm := servicemanager.New(driver)
 
-	// System update info.
-	t.Run("system_update", func(t *testing.T) {
-		updateMgr, err := genOs.GetSystemUpdateManager(ctx, sm)
-		requireOrSkip(t, err)
-
-		info, err := updateMgr.RetrieveSystemUpdateInfo(ctx)
-		requireOrSkip(t, err)
-		_ = info
-		t.Logf("System update info bundle retrieved")
-	})
+	// system_update subtest moved to usecase_root_test.go —
+	// requires READ_SYSTEM_UPDATE_INFO permission.
 
 	// Recovery system LSKF state.
 	t.Run("recovery", func(t *testing.T) {
