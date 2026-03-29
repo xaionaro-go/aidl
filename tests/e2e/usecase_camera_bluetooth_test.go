@@ -326,6 +326,81 @@ func TestUseCase26_TimelapseCapture(t *testing.T) {
 	}
 }
 
+// ucCleanupLeakedScanners unregisters scanner IDs 0..15 to free BLE
+// resources leaked by previous test runs that failed to clean up.
+func ucCleanupLeakedScanners(
+	ctx context.Context,
+	scanProxy *genBluetooth.BluetoothScanProxy,
+) {
+	attr := ucShellAttribution()
+	for id := int32(0); id < 16; id++ {
+		_ = scanProxy.UnregisterScanner(ctx, id, attr)
+	}
+}
+
+// ucRegisterBLEScanner registers a BLE scanner using the provided callback
+// spy and returns the scanner ID. If the first registration attempt fails
+// with status 128 (GATT_NO_RESOURCES), it cleans up leaked scanners from
+// previous test runs and retries.
+func ucRegisterBLEScanner(
+	ctx context.Context,
+	t *testing.T,
+	scanProxy *genBluetooth.BluetoothScanProxy,
+	spy *scanCallbackSpy,
+) int32 {
+	t.Helper()
+	attr := ucShellAttribution()
+	cb := genLE.NewScannerCallbackStub(spy)
+
+	err := scanProxy.RegisterScanner(ctx, cb, genOs.WorkSource{}, attr)
+	requireOrSkip(t, err)
+
+	var status, scannerID int32
+	select {
+	case ev := <-spy.registeredCh:
+		status = ev.status
+		scannerID = ev.scannerID
+	case <-time.After(5 * time.Second):
+		t.Fatal("OnScannerRegistered callback never arrived")
+	}
+
+	if status == 0 {
+		return scannerID
+	}
+
+	// Status 128 = GATT_NO_RESOURCES. Clean up leaked scanners from
+	// previous test runs, then retry with a fresh callback.
+	if status == 128 {
+		t.Log("scanner registration got status 128; cleaning up leaked scanners")
+		ucCleanupLeakedScanners(ctx, scanProxy)
+		time.Sleep(500 * time.Millisecond)
+
+		spy2 := &scanCallbackSpy{
+			registeredCh: make(chan scanRegisteredEvent, 1),
+			resultCh:     spy.resultCh,
+		}
+		cb2 := genLE.NewScannerCallbackStub(spy2)
+
+		err = scanProxy.RegisterScanner(ctx, cb2, genOs.WorkSource{}, attr)
+		requireOrSkip(t, err)
+
+		select {
+		case ev := <-spy2.registeredCh:
+			status = ev.status
+			scannerID = ev.scannerID
+		case <-time.After(5 * time.Second):
+			t.Fatal("OnScannerRegistered callback never arrived after cleanup")
+		}
+
+		if status == 0 {
+			return scannerID
+		}
+	}
+
+	t.Fatalf("scanner registration failed after cleanup: status %d", status)
+	return -1
+}
+
 // ---------------------------------------------------------------------------
 // #27: BLE scanning
 // ---------------------------------------------------------------------------
@@ -349,22 +424,7 @@ func TestUseCase27_BLEScanning(t *testing.T) {
 		registeredCh: make(chan scanRegisteredEvent, 1),
 		resultCh:     make(chan genLE.ScanResult, 100),
 	}
-	scanCallback := genLE.NewScannerCallbackStub(spy)
-
-	err = scanProxy.RegisterScanner(ctx, scanCallback, genOs.WorkSource{}, ucShellAttribution())
-	requireOrSkip(t, err)
-
-	var scannerID int32
-	select {
-	case event := <-spy.registeredCh:
-		t.Logf("OnScannerRegistered: status=%d scannerID=%d", event.status, event.scannerID)
-		if event.status != 0 {
-			t.Skipf("scanner registration failed: status %d", event.status)
-		}
-		scannerID = event.scannerID
-	case <-time.After(5 * time.Second):
-		t.Fatal("OnScannerRegistered callback never arrived")
-	}
+	scannerID := ucRegisterBLEScanner(ctx, t, scanProxy, spy)
 
 	ss := genLE.ScanSettings{
 		CallbackType:          1,
@@ -389,6 +449,9 @@ collectLoop:
 	t.Logf("BLE scan: %d results in 3s", resultCount)
 
 	err = scanProxy.StopScan(ctx, scannerID, ucShellAttribution())
+	requireOrSkip(t, err)
+
+	err = scanProxy.UnregisterScanner(ctx, scannerID, ucShellAttribution())
 	requireOrSkip(t, err)
 }
 
@@ -553,22 +616,8 @@ func TestUseCase30_BLESensorCollector(t *testing.T) {
 			registeredCh: make(chan scanRegisteredEvent, 1),
 			resultCh:     make(chan genLE.ScanResult, 100),
 		}
-		scanCallback := genLE.NewScannerCallbackStub(spy)
-
-		err = scanProxy.RegisterScanner(ctx, scanCallback, genOs.WorkSource{}, ucShellAttribution())
-		requireOrSkip(t, err)
-
-		var scannerID int32
-		select {
-		case event := <-spy.registeredCh:
-			if event.status != 0 {
-				t.Skipf("scanner registration failed: status %d", event.status)
-			}
-			scannerID = event.scannerID
-			t.Logf("Scanner registered: id=%d", scannerID)
-		case <-time.After(5 * time.Second):
-			t.Fatal("scanner registration timed out")
-		}
+		scannerID := ucRegisterBLEScanner(ctx, t, scanProxy, spy)
+		t.Logf("Scanner registered: id=%d", scannerID)
 
 		ss := genLE.ScanSettings{
 			CallbackType:          1,
@@ -606,6 +655,9 @@ func TestUseCase30_BLESensorCollector(t *testing.T) {
 		}
 
 		err = scanProxy.StopScan(ctx, scannerID, ucShellAttribution())
+		requireOrSkip(t, err)
+
+		err = scanProxy.UnregisterScanner(ctx, scannerID, ucShellAttribution())
 		requireOrSkip(t, err)
 	})
 }

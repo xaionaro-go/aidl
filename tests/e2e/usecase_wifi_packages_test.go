@@ -5,6 +5,7 @@ package e2e
 import (
 	"context"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -57,6 +58,12 @@ func TestUseCase34_TetheringOffload_IsTetheringStarted(t *testing.T) {
 	netMgr := genOs.NewNetworkManagementServiceProxy(svc)
 
 	tethering, err := netMgr.IsTetheringStarted(ctx)
+	if err != nil && strings.Contains(err.Error(), "not found in version") {
+		// isTetheringStarted was removed in API 36 as tethering moved
+		// to the ConnectivityService/TetheringService stack.
+		t.Logf("isTetheringStarted removed in this API level (expected): %v", err)
+		return
+	}
 	requireOrSkip(t, err)
 	t.Logf("tethering started: %v", tethering)
 }

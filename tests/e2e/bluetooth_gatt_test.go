@@ -288,6 +288,10 @@ func TestBluetoothGATT_FullPipeline(t *testing.T) {
 				err = scanProxy.StopScan(ctx, scannerID, shellAttribution())
 				requireOrSkip(t, err)
 				t.Log("stopScan sent")
+
+				err = scanProxy.UnregisterScanner(ctx, scannerID, shellAttribution())
+				requireOrSkip(t, err)
+				t.Log("scanner unregistered")
 			})
 		})
 	})

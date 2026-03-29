@@ -5,6 +5,7 @@ package e2e
 import (
 	"context"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -83,16 +84,27 @@ func TestUsecase_AttestationVerify(t *testing.T) {
 	require.True(t, svc.IsAlive(ctx), "attestation_verification should be alive")
 	t.Logf("attestation_verification: handle=%d, alive=true", svc.Handle())
 
-	// IsApkVeritySupported was removed in API 36. Test it independently
-	// so the attestation service check above still passes.
+	// The IFileIntegrityService interface was removed from the AIDL
+	// version table in API 36. On older API levels, test
+	// IsApkVeritySupported; on API 36+, verify the service is
+	// reachable and alive (its methods are no longer in our version
+	// table).
 	t.Run("FileIntegrity", func(t *testing.T) {
 		fiSvc, err := sm.CheckService(ctx, servicemanager.FileIntegrityService)
 		requireOrSkip(t, err)
 		if fiSvc == nil {
 			t.Skip("file_integrity service not registered")
 		}
+
 		fiProxy := genSecurity.NewFileIntegrityServiceProxy(fiSvc)
 		supported, err := fiProxy.IsApkVeritySupported(ctx)
+		if err != nil && strings.Contains(err.Error(), "not found in version") {
+			// API 36+: IFileIntegrityService methods are gone from the
+			// version table. The service still exists; verify liveness.
+			require.True(t, fiSvc.IsAlive(ctx), "file_integrity service should be alive")
+			t.Logf("FileIntegrityService alive (methods removed in API 36)")
+			return
+		}
 		requireOrSkip(t, err)
 		t.Logf("IsApkVeritySupported: %v", supported)
 	})
@@ -476,6 +488,14 @@ func TestUsecase_ImsMonitor(t *testing.T) {
 
 	t.Run("IsVoWiFiSettingEnabled", func(t *testing.T) {
 		vowifi, err := phone.IsVoWiFiSettingEnabled(ctx, 1)
+		if err != nil && strings.Contains(err.Error(), "ServiceSpecific") {
+			// ServiceSpecific errors from IMS methods indicate the
+			// carrier/SIM does not support this IMS feature. The binder
+			// call succeeded — the service processed it and returned a
+			// definitive answer.
+			t.Logf("VoWiFi not supported by carrier (ServiceSpecific): %v", err)
+			return
+		}
 		requireOrSkip(t, err)
 		t.Logf("VoWiFi setting enabled (subId=1): %v", vowifi)
 	})
