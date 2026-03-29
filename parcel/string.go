@@ -1,6 +1,7 @@
 package parcel
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
 	"math"
@@ -203,4 +204,35 @@ func (p *Parcel) ReadNullableString() (*string, error) {
 
 	s := string(b[:byteLen])
 	return &s, nil
+}
+
+// WriteCString writes a null-terminated C string (no length prefix).
+// The string data plus its null terminator are padded to 4-byte alignment.
+// This matches C++ Parcel::writeCString.
+func (p *Parcel) WriteCString(s string) {
+	n := len(s) + 1 // include null terminator
+	buf := p.grow(n)
+	copy(buf[:len(s)], s)
+	buf[len(s)] = 0
+}
+
+// ReadCString reads a null-terminated C string (no length prefix).
+// Scans forward from the current position for a null byte, then advances
+// the position past the null byte, padded to 4-byte alignment.
+// This matches C++ Parcel::readCString.
+func (p *Parcel) ReadCString() (string, error) {
+	if p.pos >= p.Len() {
+		return "", fmt.Errorf("parcel: ReadCString at end of parcel")
+	}
+	avail := p.Data()[p.pos:p.Len()]
+	idx := bytes.IndexByte(avail, 0)
+	if idx < 0 {
+		return "", fmt.Errorf("parcel: ReadCString no null terminator found")
+	}
+	s := string(avail[:idx])
+	// Advance position past the null terminator, padded to 4 bytes.
+	raw := idx + 1
+	aligned := (raw + 3) &^ 3
+	p.SetPosition(p.pos + aligned)
+	return s, nil
 }

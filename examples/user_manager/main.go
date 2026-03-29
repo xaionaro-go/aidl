@@ -69,8 +69,8 @@ func main() {
 		fmt.Printf("Current user serial:       %d\n", serial)
 	}
 
-	// List all users (exclude partial, dying, and pre-created).
-	users, err := um.GetUsers(ctx, true, true, true)
+	// List all users (exclude dying).
+	users, err := um.GetUsers(ctx, true)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "GetUsers: %v\n", err)
 	} else {

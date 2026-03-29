@@ -246,7 +246,7 @@ type IUserManager interface {
 	GetMainUserId(ctx context.Context) (int32, error)
 	GetCommunalProfileId(ctx context.Context) (int32, error)
 	GetPreviousFullUserToEnterForeground(ctx context.Context) (int32, error)
-	GetUsers(ctx context.Context, excludePartial bool, excludeDying bool, excludePreCreated bool) ([]types.UserInfo, error)
+	GetUsers(ctx context.Context, excludeDying bool) ([]types.UserInfo, error)
 	GetProfiles(ctx context.Context, enabledOnly bool) ([]types.UserInfo, error)
 	GetProfileIds(ctx context.Context, enabledOnly bool) ([]int32, error)
 	IsUserTypeEnabled(ctx context.Context, userType string) (bool, error)
@@ -1026,17 +1026,13 @@ func (p *UserManagerProxy) GetPreviousFullUserToEnterForeground(
 
 func (p *UserManagerProxy) GetUsers(
 	ctx context.Context,
-	excludePartial bool,
 	excludeDying bool,
-	excludePreCreated bool,
 ) ([]types.UserInfo, error) {
 	var _result []types.UserInfo
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIUserManager)
-	_data.WriteBool(excludePartial)
 	_data.WriteBool(excludeDying)
-	_data.WriteBool(excludePreCreated)
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIUserManager, MethodIUserManagerGetUsers)
 	if _err != nil {
@@ -1064,14 +1060,16 @@ func (p *UserManagerProxy) GetUsers(
 	if _count >= 0 {
 		_result = make([]types.UserInfo, _count)
 		for _i := int32(0); _i < _count; _i++ {
-			if _, _err = _reply.ReadInt32(); _err != nil {
-				return _result, _err
-			}
-			_endPos, _err := parcel.ReadParcelableHeader(_reply)
+			_nonNull, _err := _reply.ReadInt32()
 			if _err != nil {
 				return _result, _err
 			}
-			parcel.SkipToParcelableEnd(_reply, _endPos)
+			if _nonNull == 0 {
+				continue
+			}
+			if _err = _result[_i].UnmarshalParcel(_reply); _err != nil {
+				return _result, fmt.Errorf("unmarshalling UserInfo[%d]: %w", _i, _err)
+			}
 		}
 	}
 	return _result, nil
@@ -4218,19 +4216,11 @@ func (s *UserManagerStub) OnTransaction(
 		_reply.WriteInt32(_result)
 		return _reply, nil
 	case TransactionIUserManagerGetUsers:
-		_arg_excludePartial, _err := _data.ReadBool()
-		if _err != nil {
-			return nil, _err
-		}
 		_arg_excludeDying, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_excludePreCreated, _err := _data.ReadBool()
-		if _err != nil {
-			return nil, _err
-		}
-		_result, _err := s.Impl.GetUsers(ctx, _arg_excludePartial, _arg_excludeDying, _arg_excludePreCreated)
+		_result, _err := s.Impl.GetUsers(ctx, _arg_excludeDying)
 		_reply := parcel.New()
 		if _err != nil {
 			binder.WriteStatus(_reply, _err)
@@ -5590,7 +5580,7 @@ type IUserManagerServer interface {
 	GetMainUserId(ctx context.Context) (int32, error)
 	GetCommunalProfileId(ctx context.Context) (int32, error)
 	GetPreviousFullUserToEnterForeground(ctx context.Context) (int32, error)
-	GetUsers(ctx context.Context, excludePartial bool, excludeDying bool, excludePreCreated bool) ([]types.UserInfo, error)
+	GetUsers(ctx context.Context, excludeDying bool) ([]types.UserInfo, error)
 	GetProfiles(ctx context.Context, enabledOnly bool) ([]types.UserInfo, error)
 	GetProfileIds(ctx context.Context, enabledOnly bool) ([]int32, error)
 	IsUserTypeEnabled(ctx context.Context, userType string) (bool, error)
@@ -5818,11 +5808,9 @@ func (w *userManagerStubWrapper) GetPreviousFullUserToEnterForeground(
 
 func (w *userManagerStubWrapper) GetUsers(
 	ctx context.Context,
-	excludePartial bool,
 	excludeDying bool,
-	excludePreCreated bool,
 ) ([]types.UserInfo, error) {
-	return w.impl.GetUsers(ctx, excludePartial, excludeDying, excludePreCreated)
+	return w.impl.GetUsers(ctx, excludeDying)
 }
 
 func (w *userManagerStubWrapper) GetProfiles(
