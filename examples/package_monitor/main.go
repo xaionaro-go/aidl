@@ -61,11 +61,11 @@ func main() {
 	sort.Strings(baseline)
 
 	fmt.Printf("Baseline: %d packages installed\n", len(baseline))
-	fmt.Println("Monitoring for package changes (poll every 5s, 3 iterations)...")
+	fmt.Println("Monitoring for package changes (poll every 2s, 2 iterations)...")
 
 	// Poll for changes.
-	for i := 0; i < 3; i++ {
-		time.Sleep(5 * time.Second)
+	for i := 0; i < 2; i++ {
+		time.Sleep(2 * time.Second)
 
 		current, err := pkgMgr.GetAllPackages(ctx)
 		if err != nil {

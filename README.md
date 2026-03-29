@@ -634,7 +634,7 @@ More examples: [`examples/`](examples/)
 | [`sound_trigger`](examples/sound_trigger/) | List sound trigger modules via SoundTriggerMiddlewareService. |
 | [`statusbar_control`](examples/statusbar_control/) | Query status bar state: navigation bar mode, tracing, last system key. |
 | [`storage_info`](examples/storage_info/) | Storage device stats, mount points |
-| [`suspend_logger`](examples/suspend_logger/) | Acquire and release a system suspend wake lock to demonstrate SystemSuspend interaction. |
+| [`suspend_logger`](examples/suspend_logger/) | Acquire and release a wake lock via the PowerManager binder service. |
 | [`system_app_classifier`](examples/system_app_classifier/) | Classify installed packages as system or user apps. |
 | [`thermal_monitor`](examples/thermal_monitor/) | Poll thermal service for CPU/GPU temperatures, throttling status, and cooling devices. |
 | [`timelapse_capture`](examples/timelapse_capture/) | Periodic timelapse camera capture via binder. |
@@ -2063,7 +2063,7 @@ git submodule update --init --depth 1
 go run ./tools/cmd/aospgen -3rdparty tools/pkg/3rdparty -output . -smoke-tests
 ```
 
-This discovers all AIDL files across `frameworks-base`, `frameworks-native`, `hardware-interfaces`, and `system-hardware-interfaces`, infers search roots from package declarations, and generates Go proxies for all AOSP services. The current AOSP snapshot produces **5,142 Go files** across **405 packages**.
+This discovers all AIDL files across `frameworks-base`, `frameworks-native`, `hardware-interfaces`, and `system-hardware-interfaces`, infers search roots from package declarations, and generates Go proxies for all AOSP services. The current AOSP snapshot produces **5,144 Go files** across **405 packages**.
 
 ### Transaction Code Resolution
 
@@ -2355,7 +2355,7 @@ See the example app at [`examples/gomobile/`](examples/gomobile/).
 │   └── driver.go             Open, mmap, ioctl BINDER_WRITE_READ
 ├── servicemanager/           ServiceManager client
 ├── errors/                   AIDL exception types (ExceptionCode, StatusError)
-├── android/                  Pre-generated AOSP service proxies (5,142 files)
+├── android/                  Pre-generated AOSP service proxies (5,144 files)
 │   ├── app/                  ActivityManager, AlarmManager, ...
 │   ├── os/                   ServiceManager, PowerManager, ...
 │   ├── hardware/             HAL interfaces

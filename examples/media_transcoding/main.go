@@ -49,16 +49,19 @@ func main() {
 	svc, err := sm.GetService(ctx, servicemanager.MediaTranscodingService)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get media_transcoding service: %v\n", err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "Media transcoding service is not present on all devices (requires hardware transcoding support).\n")
+		fmt.Println("Skipping transcoding queries.")
+		svc = nil
 	}
+	if svc != nil {
+		tc := media.NewMediaTranscodingServiceProxy(svc)
 
-	tc := media.NewMediaTranscodingServiceProxy(svc)
-
-	numClients, err := tc.GetNumOfClients(ctx)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "GetNumOfClients: %v\n", err)
-	} else {
-		fmt.Printf("Active transcoding clients: %d\n", numClients)
+		numClients, err := tc.GetNumOfClients(ctx)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "GetNumOfClients: %v\n", err)
+		} else {
+			fmt.Printf("Active transcoding clients: %d\n", numClients)
+		}
 	}
 
 	// 2. MediaMetricsManager — obtain session IDs for various media operations

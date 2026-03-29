@@ -36,7 +36,7 @@ func main() {
 
 	sm := servicemanager.New(transport)
 
-	svc, err := sm.GetService(ctx, servicemanager.SmsService)
+	svc, err := sm.GetService(ctx, "isms")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get isms service: %v\n", err)
 		os.Exit(1)

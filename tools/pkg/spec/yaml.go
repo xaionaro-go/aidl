@@ -142,12 +142,32 @@ func GoPackageFromAIDL(aidlPackage string) string {
 	return strings.ReplaceAll(aidlPackage, ".", "/")
 }
 
-// mergeOverlay appends all slice fields from overlay into base.
-// Scalar fields (AIDLPackage, GoPackage) are left unchanged.
+// mergeOverlay merges overlay entries into base.
+// For services, overlay entries with the same ConstantName replace existing
+// entries (allowing overlay.yaml to override service_name or descriptor).
+// All other slice fields are appended. Scalar fields (AIDLPackage, GoPackage)
+// are left unchanged.
 func mergeOverlay(
 	base *PackageSpec,
 	overlay *PackageSpec,
 ) {
+	// Build a set of constant names being overridden.
+	overrideConsts := make(map[string]struct{}, len(overlay.Services))
+	for _, s := range overlay.Services {
+		if s.ConstantName != "" {
+			overrideConsts[s.ConstantName] = struct{}{}
+		}
+	}
+	// Remove base services that will be replaced by overlay.
+	if len(overrideConsts) > 0 {
+		filtered := base.Services[:0]
+		for _, s := range base.Services {
+			if _, replaced := overrideConsts[s.ConstantName]; !replaced {
+				filtered = append(filtered, s)
+			}
+		}
+		base.Services = filtered
+	}
 	base.Services = append(base.Services, overlay.Services...)
 	base.Interfaces = append(base.Interfaces, overlay.Interfaces...)
 	base.Parcelables = append(base.Parcelables, overlay.Parcelables...)

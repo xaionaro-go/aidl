@@ -16,3 +16,9 @@ services:
     - service_name: package_native
       constant_name: PACKAGE_NATIVE_SERVICE
       descriptor: android.content.pm.IPackageManagerNative
+    - service_name: dreams
+      constant_name: DREAM_SERVICE
+      descriptor: android.service.dreams.IDreamManager
+    - service_name: isms
+      constant_name: ISMS_SERVICE
+      descriptor: com.android.internal.telephony.ISms

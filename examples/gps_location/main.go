@@ -22,7 +22,7 @@ import (
 	"github.com/AndroidGoLab/binder/servicemanager"
 )
 
-const gpsTimeout = 30 * time.Second
+const gpsTimeout = 5 * time.Second
 
 // gpsListener receives location callbacks from the LocationManager.
 type gpsListener struct {

@@ -1,4 +1,7 @@
-// Acquire and release a system suspend wake lock to demonstrate SystemSuspend interaction.
+// Acquire and release a wake lock via the PowerManager binder service.
+//
+// Uses the framework PowerManager service (accessible from shell context)
+// rather than the SystemSuspend HAL (which requires privileged SELinux context).
 //
 // Build:
 //
@@ -12,11 +15,17 @@ import (
 	"os"
 	"time"
 
-	"github.com/AndroidGoLab/binder/android/system/suspend"
+	genOs "github.com/AndroidGoLab/binder/android/os"
 	"github.com/AndroidGoLab/binder/binder"
 	"github.com/AndroidGoLab/binder/binder/versionaware"
 	"github.com/AndroidGoLab/binder/kernelbinder"
+	"github.com/AndroidGoLab/binder/parcel"
 	"github.com/AndroidGoLab/binder/servicemanager"
+)
+
+const (
+	partialWakeLock = 1 // PowerManager.PARTIAL_WAKE_LOCK
+	packageName     = "com.android.shell"
 )
 
 func main() {
@@ -37,16 +46,30 @@ func main() {
 
 	sm := servicemanager.New(transport)
 
-	svc, err := sm.GetService(ctx, servicemanager.ServiceName(suspend.DescriptorISystemSuspend+"/default"))
+	power, err := genOs.GetPowerManager(ctx, sm)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "get SystemSuspend service: %v\n", err)
+		fmt.Fprintf(os.Stderr, "get PowerManager: %v\n", err)
 		os.Exit(1)
 	}
 
-	ss := suspend.NewSystemSuspendProxy(svc)
+	// Create a binder token for wake lock ownership tracking.
+	lockToken := binder.NewStubBinder(&wakeLockToken{})
+	lockToken.RegisterWithTransport(ctx, transport)
+
+	wlCallback := genOs.NewWakeLockCallbackStub(&noopWakeLockCallback{})
 
 	fmt.Println("Acquiring partial wake lock...")
-	wl, err := ss.AcquireWakeLock(ctx, suspend.WakeLockTypePARTIAL, "suspend_logger_example")
+	err = power.AcquireWakeLock(
+		ctx,
+		lockToken,
+		partialWakeLock,
+		"suspend_logger_example",
+		packageName,
+		genOs.WorkSource{},
+		"",  // historyTag
+		0,   // displayId
+		wlCallback,
+	)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "AcquireWakeLock: %v\n", err)
 		os.Exit(1)
@@ -57,9 +80,32 @@ func main() {
 	time.Sleep(3 * time.Second)
 
 	fmt.Println("Releasing wake lock...")
-	if err := wl.Release(ctx); err != nil {
-		fmt.Fprintf(os.Stderr, "Release: %v\n", err)
+	if err := power.ReleaseWakeLock(ctx, lockToken, 0); err != nil {
+		fmt.Fprintf(os.Stderr, "ReleaseWakeLock: %v\n", err)
 		os.Exit(1)
 	}
 	fmt.Println("Wake lock released. Device may suspend normally.")
 }
+
+// wakeLockToken is a minimal TransactionReceiver used as the binder token
+// for PowerManager wake lock acquire/release.
+type wakeLockToken struct{}
+
+func (w *wakeLockToken) Descriptor() string { return "wakelock.token" }
+
+func (w *wakeLockToken) OnTransaction(
+	_ context.Context,
+	_ binder.TransactionCode,
+	_ *parcel.Parcel,
+) (*parcel.Parcel, error) {
+	return parcel.New(), nil
+}
+
+// noopWakeLockCallback implements IWakeLockCallbackServer.
+type noopWakeLockCallback struct{}
+
+func (n *noopWakeLockCallback) OnStateChanged(_ context.Context, _ bool) error {
+	return nil
+}
+
+var _ genOs.IWakeLockCallbackServer = (*noopWakeLockCallback)(nil)

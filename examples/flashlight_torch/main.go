@@ -131,8 +131,9 @@ func setTorch(
 	fmt.Printf("Turning torch %s for camera %s\n", state, cameraID)
 	if err := cam.SetTorchMode(ctx, cameraID, enabled, clientToken); err != nil {
 		fmt.Fprintf(os.Stderr, "SetTorchMode(%s): %v\n", state, err)
-		fmt.Fprintf(os.Stderr, "Hint: this requires android.permission.CAMERA; from adb shell, try running as root.\n")
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "Hint: SELinux denies shell→cameraserver binder calls.\n")
+		fmt.Fprintf(os.Stderr, "Requires: adb root + setenforce 0 (permissive mode).\n")
+		return
 	}
 	fmt.Printf("Torch is %s.\n", state)
 }

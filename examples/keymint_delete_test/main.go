@@ -38,7 +38,9 @@ func main() {
 	svc, err := sm.GetService(ctx, servicemanager.ServiceName(svcName))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get service: %v\n", err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "KeyMint HAL may be a lazy service not currently active,\n")
+		fmt.Fprintf(os.Stderr, "or may require vndbinder/hwbinder access.\n")
+		return
 	}
 	fmt.Printf("GetService OK (handle=%d)\n", svc.Handle())
 

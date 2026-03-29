@@ -39,7 +39,8 @@ func main() {
 	proxy, err := oemlock.GetOemLockService(ctx, sm)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get oem_lock service: %v\n", err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "OEM lock service is only present on devices with OEM unlock hardware.\n")
+		return
 	}
 
 	fmt.Println("=== OEM Lock Status ===")

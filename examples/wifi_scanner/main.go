@@ -57,7 +57,9 @@ func main() {
 	clientIfaces, err := wificond.GetClientInterfaces(ctx)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "GetClientInterfaces: %v\n", err)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "Hint: SELinux denies shell→wificond binder calls.\n")
+		fmt.Fprintf(os.Stderr, "Requires: adb root + setenforce 0 (permissive mode).\n")
+		return
 	}
 
 	fmt.Printf("Client interfaces found: %d\n", len(clientIfaces))

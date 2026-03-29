@@ -6,6 +6,7 @@ import (
 	"context"
 	"math/rand"
 	"os"
+	"os/exec"
 	"strings"
 	"testing"
 	"time"
@@ -28,6 +29,21 @@ import (
 
 // isEmulator checks build properties for emulator indicators.
 func isEmulator() bool {
+	// Android system properties (most reliable on modern emulators).
+	for _, prop := range []string{
+		"ro.hardware",
+		"ro.product.model",
+		"ro.build.characteristics",
+	} {
+		out, err := exec.Command("getprop", prop).Output()
+		if err == nil {
+			v := strings.ToLower(strings.TrimSpace(string(out)))
+			if strings.Contains(v, "goldfish") || strings.Contains(v, "ranchu") ||
+				strings.Contains(v, "emulator") || strings.Contains(v, "sdk_gphone") {
+				return true
+			}
+		}
+	}
 	// DMI identity (may not exist on all emulators).
 	for _, path := range []string{
 		"/sys/class/dmi/id/product_name",

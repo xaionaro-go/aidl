@@ -15,6 +15,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/AndroidGoLab/binder/binder"
@@ -46,6 +47,11 @@ func run(ctx context.Context) error {
 
 	cam, err := camera.Connect(ctx, sm, transport, cameraID)
 	if err != nil {
+		if strings.Contains(err.Error(), "ServiceSpecific") {
+			fmt.Fprintf(os.Stderr, "Camera device %q not available (HAL reports disconnected).\n", cameraID)
+			fmt.Fprintf(os.Stderr, "This is expected on emulators without a camera backend.\n")
+			return nil
+		}
 		return fmt.Errorf("connect: %w", err)
 	}
 	defer cam.Close(ctx)

@@ -40,9 +40,9 @@ func main() {
 
 	sm := servicemanager.New(transport)
 
-	// The sensor manager is a HIDL/AIDL service under "manager" in
-	// the sensor service namespace. Access via direct service lookup.
-	sensorSvc, err := sm.GetService(ctx, servicemanager.SensorService)
+	// The frameworks sensor manager is an AIDL service, not the SDK
+	// Context.SENSOR_SERVICE ("sensor"). Use the full AIDL instance name.
+	sensorSvc, err := sm.GetService(ctx, "android.frameworks.sensorservice.ISensorManager/default")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "get sensor service: %v\n", err)
 		os.Exit(1)
