@@ -394,17 +394,18 @@ func TestUsecase81_JobSchedulerMonitor_GetAllPendingJobs(t *testing.T) {
 	t.Logf("GetAllPendingJobs: %d namespaces", len(pendingJobs))
 }
 
-func TestUsecase81_JobSchedulerMonitor_GetAllJobSnapshots(t *testing.T) {
+func TestUsecase81_JobSchedulerMonitor_CanRunUserInitiatedJobs(t *testing.T) {
 	ctx := context.Background()
 	driver := openBinder(t)
 	svc := getService(ctx, t, driver, "jobscheduler")
 
 	proxy := genJob.NewJobSchedulerProxy(svc)
 
-	snapshots, err := proxy.GetAllJobSnapshots(ctx)
+	// GetAllJobSnapshots requires system-internal-use-only permission,
+	// so use CanRunUserInitiatedJobs which is accessible from shell.
+	canRun, err := proxy.CanRunUserInitiatedJobs(ctx, "com.android.shell")
 	requireOrSkip(t, err)
-	_ = snapshots
-	t.Log("GetAllJobSnapshots: succeeded")
+	t.Logf("CanRunUserInitiatedJobs(com.android.shell): %v", canRun)
 }
 
 // ---------- #82: Alarm auditor ----------

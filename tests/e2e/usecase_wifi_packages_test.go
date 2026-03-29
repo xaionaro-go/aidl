@@ -237,30 +237,18 @@ func TestUseCase36_NetworkPolicy_GetRestrictBackgroundByCaller(t *testing.T) {
 
 // --- Use case #37: VPN monitor ---
 
-func TestUseCase37_VpnMonitor_GetAlwaysOnVpnPackage(t *testing.T) {
+func TestUseCase37_VpnMonitor_ServiceReachable(t *testing.T) {
 	ctx := context.Background()
 	driver := openBinder(t)
 	sm := servicemanager.New(driver)
 
-	vpnMgr, err := net.GetVpnManager(ctx, sm)
+	svc, err := sm.CheckService(ctx, servicemanager.VpnManagementService)
 	requireOrSkip(t, err)
-
-	pkg, err := vpnMgr.GetAlwaysOnVpnPackage(ctx)
-	requireOrSkip(t, err)
-	t.Logf("always-on VPN package: %q", pkg)
-}
-
-func TestUseCase37_VpnMonitor_IsVpnLockdownEnabled(t *testing.T) {
-	ctx := context.Background()
-	driver := openBinder(t)
-	sm := servicemanager.New(driver)
-
-	vpnMgr, err := net.GetVpnManager(ctx, sm)
-	requireOrSkip(t, err)
-
-	lockdown, err := vpnMgr.IsVpnLockdownEnabled(ctx)
-	requireOrSkip(t, err)
-	t.Logf("VPN lockdown enabled: %v", lockdown)
+	if svc == nil {
+		t.Skip("vpn_management service not registered")
+	}
+	require.True(t, svc.IsAlive(ctx), "vpn_management service should be alive")
+	t.Logf("vpn_management: handle=%d, alive=true", svc.Handle())
 }
 
 func TestUseCase37_VpnMonitor_IsCallerCurrentAlwaysOnVpnApp(t *testing.T) {
@@ -271,13 +259,16 @@ func TestUseCase37_VpnMonitor_IsCallerCurrentAlwaysOnVpnApp(t *testing.T) {
 	vpnMgr, err := net.GetVpnManager(ctx, sm)
 	requireOrSkip(t, err)
 
+	// IsCallerCurrentAlwaysOnVpnApp checks the caller's own identity,
+	// so it does not require CONTROL_ALWAYS_ON_VPN unlike the admin
+	// query methods (GetAlwaysOnVpnPackage, IsVpnLockdownEnabled, etc).
 	isAlwaysOn, err := vpnMgr.IsCallerCurrentAlwaysOnVpnApp(ctx)
 	requireOrSkip(t, err)
 	assert.False(t, isAlwaysOn, "test process should not be the always-on VPN app")
 	t.Logf("caller is always-on VPN app: %v", isAlwaysOn)
 }
 
-func TestUseCase37_VpnMonitor_GetVpnLockdownAllowlist(t *testing.T) {
+func TestUseCase37_VpnMonitor_IsCallerCurrentAlwaysOnVpnLockdownApp(t *testing.T) {
 	ctx := context.Background()
 	driver := openBinder(t)
 	sm := servicemanager.New(driver)
@@ -285,9 +276,12 @@ func TestUseCase37_VpnMonitor_GetVpnLockdownAllowlist(t *testing.T) {
 	vpnMgr, err := net.GetVpnManager(ctx, sm)
 	requireOrSkip(t, err)
 
-	allowlist, err := vpnMgr.GetVpnLockdownAllowlist(ctx)
+	// Like IsCallerCurrentAlwaysOnVpnApp, this checks the caller's own
+	// identity and does not require CONTROL_ALWAYS_ON_VPN.
+	isLockdown, err := vpnMgr.IsCallerCurrentAlwaysOnVpnLockdownApp(ctx)
 	requireOrSkip(t, err)
-	t.Logf("VPN lockdown allowlist: %v", allowlist)
+	assert.False(t, isLockdown, "test process should not be the always-on VPN lockdown app")
+	t.Logf("caller is always-on VPN lockdown app: %v", isLockdown)
 }
 
 // --- Use case #38: DNS config ---

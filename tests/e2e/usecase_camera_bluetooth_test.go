@@ -28,6 +28,7 @@ import (
 	genBluetooth "github.com/AndroidGoLab/binder/android/bluetooth"
 	genLE "github.com/AndroidGoLab/binder/android/bluetooth/le"
 	"github.com/AndroidGoLab/binder/android/content"
+	fwkService "github.com/AndroidGoLab/binder/android/frameworks/cameraservice/service"
 	"github.com/AndroidGoLab/binder/android/hardware"
 	genOs "github.com/AndroidGoLab/binder/android/os"
 	"github.com/AndroidGoLab/binder/binder"
@@ -77,31 +78,53 @@ func ucGetBluetoothAdapter(
 
 func TestUseCase22_FlashlightTorch(t *testing.T) {
 	ctx := context.Background()
-	transport := openBinder(t)
+
+	// The media.camera service (hardware.ICameraService) is not accessible
+	// from the shell context due to SELinux restrictions. Use a dedicated
+	// binder driver with the framework camera service for enumeration,
+	// then attempt torch control via media.camera with a properly
+	// registered client token (matching the flashlight_torch example).
+	driver, transport := openBinderDirect(ctx, t)
+	defer func() { _ = driver.Close(ctx) }()
+	defer func() { _ = transport.Close(ctx) }()
+
 	sm := servicemanager.New(transport)
 
-	svc, err := sm.GetService(ctx, servicemanager.MediaCameraService)
+	// Enumerate cameras via the framework camera service (NDK AIDL),
+	// which is accessible from shell unlike media.camera.
+	fwkSvc, err := sm.GetService(ctx, "android.frameworks.cameraservice.service.ICameraService/default")
 	requireOrSkip(t, err)
-	cam := hardware.NewCameraServiceProxy(svc)
+	fwkCam := fwkService.NewCameraServiceProxy(fwkSvc)
 
-	t.Run("GetNumberOfCameras", func(t *testing.T) {
-		n, err := cam.GetNumberOfCameras(ctx, hardware.ICameraServiceCameraTypeBackwardCompatible)
-		requireOrSkip(t, err)
-		t.Logf("Number of cameras: %d", n)
-		assert.Greater(t, n, int32(0), "expected at least one camera")
-	})
+	listener := fwkService.NewCameraServiceListenerStub(&noopCameraServiceListener{})
+	cameras, err := fwkCam.AddListener(ctx, listener)
+	requireOrSkip(t, err)
+	t.Logf("Framework camera service reports %d camera(s)", len(cameras))
+	require.Greater(t, len(cameras), 0, "expected at least one camera")
+
+	for i, cam := range cameras {
+		t.Logf("  [%d] id=%q status=%d", i, cam.CameraId, cam.DeviceStatus)
+	}
+
+	// Clean up listener registration.
+	_ = fwkCam.RemoveListener(ctx, listener)
 
 	t.Run("SetTorchMode", func(t *testing.T) {
-		// Create a client token for torch ownership tracking.
+		// Torch control requires the media.camera service. Create a
+		// properly registered client token (same pattern as the
+		// flashlight_torch example).
+		mediaSvc, err := sm.GetService(ctx, servicemanager.MediaCameraService)
+		requireOrSkip(t, err)
+		cam := hardware.NewCameraServiceProxy(mediaSvc)
+
 		token := binder.NewStubBinder(&torchClientToken{})
 		token.RegisterWithTransport(ctx, transport)
 
-		err := cam.SetTorchMode(ctx, "0", true, token)
+		err = cam.SetTorchMode(ctx, cameras[0].CameraId, true, token)
 		requireOrSkip(t, err)
 		t.Log("Torch ON")
 
-		// Turn off immediately.
-		err = cam.SetTorchMode(ctx, "0", false, token)
+		err = cam.SetTorchMode(ctx, cameras[0].CameraId, false, token)
 		requireOrSkip(t, err)
 		t.Log("Torch OFF")
 	})
@@ -121,43 +144,81 @@ func (t *torchClientToken) OnTransaction(
 	return parcel.New(), nil
 }
 
+// noopCameraServiceListener implements ICameraServiceListenerServer for
+// use with the framework camera service's AddListener. The listener
+// receives status updates but does not act on them.
+type noopCameraServiceListener struct{}
+
+func (n *noopCameraServiceListener) OnPhysicalCameraStatusChanged(
+	_ context.Context,
+	_ fwkService.CameraDeviceStatus,
+	_ string,
+	_ string,
+) error {
+	return nil
+}
+
+func (n *noopCameraServiceListener) OnStatusChanged(
+	_ context.Context,
+	_ fwkService.CameraDeviceStatus,
+	_ string,
+) error {
+	return nil
+}
+
+var _ fwkService.ICameraServiceListenerServer = (*noopCameraServiceListener)(nil)
+
 // ---------------------------------------------------------------------------
 // #23: Camera availability
 // ---------------------------------------------------------------------------
 
 func TestUseCase23_CameraAvailability(t *testing.T) {
 	ctx := context.Background()
-	transport := openBinder(t)
+
+	// The media.camera service is not accessible from shell context.
+	// Use the framework camera service (NDK AIDL) which provides
+	// camera enumeration via AddListener and metadata via
+	// GetCameraCharacteristics.
+	driver, transport := openBinderDirect(ctx, t)
+	defer func() { _ = driver.Close(ctx) }()
+	defer func() { _ = transport.Close(ctx) }()
+
 	sm := servicemanager.New(transport)
 
-	svc, err := sm.GetService(ctx, servicemanager.MediaCameraService)
+	fwkSvc, err := sm.GetService(ctx, "android.frameworks.cameraservice.service.ICameraService/default")
 	requireOrSkip(t, err)
-	cam := hardware.NewCameraServiceProxy(svc)
+	fwkCam := fwkService.NewCameraServiceProxy(fwkSvc)
 
-	t.Run("GetNumberOfCameras_BackwardCompat", func(t *testing.T) {
-		n, err := cam.GetNumberOfCameras(ctx, hardware.ICameraServiceCameraTypeBackwardCompatible)
+	t.Run("EnumerateCameras", func(t *testing.T) {
+		listener := fwkService.NewCameraServiceListenerStub(&noopCameraServiceListener{})
+		cameras, err := fwkCam.AddListener(ctx, listener)
 		requireOrSkip(t, err)
-		t.Logf("Backward-compatible cameras: %d", n)
-		assert.GreaterOrEqual(t, n, int32(0))
+		defer func() { _ = fwkCam.RemoveListener(ctx, listener) }()
+
+		t.Logf("Available cameras: %d", len(cameras))
+		assert.GreaterOrEqual(t, len(cameras), 0)
+
+		for i, cam := range cameras {
+			t.Logf("  [%d] id=%q status=%d unavailPhysical=%v",
+				i, cam.CameraId, cam.DeviceStatus, cam.UnavailPhysicalCameraIds)
+		}
 	})
 
-	t.Run("GetNumberOfCameras_All", func(t *testing.T) {
-		n, err := cam.GetNumberOfCameras(ctx, hardware.ICameraServiceCameraTypeAll)
+	t.Run("GetCameraCharacteristics", func(t *testing.T) {
+		listener := fwkService.NewCameraServiceListenerStub(&noopCameraServiceListener{})
+		cameras, err := fwkCam.AddListener(ctx, listener)
 		requireOrSkip(t, err)
-		t.Logf("All cameras: %d", n)
-		assert.GreaterOrEqual(t, n, int32(0))
-	})
+		defer func() { _ = fwkCam.RemoveListener(ctx, listener) }()
 
-	t.Run("GetCameraInfo", func(t *testing.T) {
-		n, err := cam.GetNumberOfCameras(ctx, hardware.ICameraServiceCameraTypeBackwardCompatible)
-		requireOrSkip(t, err)
-		if n == 0 {
+		if len(cameras) == 0 {
 			t.Skip("no cameras available")
 		}
 
-		info, err := cam.GetCameraInfo(ctx, 0, false)
+		chars, err := fwkCam.GetCameraCharacteristics(ctx, cameras[0].CameraId)
 		requireOrSkip(t, err)
-		t.Logf("Camera 0 info: %+v", info)
+		t.Logf("Camera %q characteristics: %d bytes of metadata",
+			cameras[0].CameraId, len(chars.Metadata))
+		assert.Greater(t, len(chars.Metadata), 0, "expected non-empty camera metadata")
 	})
 }
 

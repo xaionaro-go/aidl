@@ -118,12 +118,6 @@ func requireOrSkip(t *testing.T, err error) {
 	if strings.Contains(errStr, "failed transaction") {
 		t.Skipf("binder transaction failed (HAL/SELinux access denied from shell): %v", err)
 	}
-	// NullPointer with "package name is null" is a server-side caller identity
-	// check that fails from shell context — not a serialization bug.
-	if strings.Contains(errStr, "exception NullPointer") &&
-		strings.Contains(errStr, "package name is null") {
-		t.Skipf("caller package identity not available from shell context: %v", err)
-	}
 	// Parcel deserialization limits/mismatches for opaque Java parcelables
 	// that our generated code cannot fully parse.
 	if strings.Contains(errStr, "exceeds limit") ||

@@ -135,28 +135,35 @@ func TestUsecase_OemLockStatus(t *testing.T) {
 	driver := openBinder(t)
 	sm := servicemanager.New(driver)
 
-	proxy, err := genOemlock.GetOemLockService(ctx, sm)
+	// Verify the service exists and is reachable. All OemLock query
+	// methods require MANAGE_CARRIER_OEM_UNLOCK_STATE which shell
+	// does not have, so we verify service liveness and try each
+	// method independently to maximize coverage.
+	svc, err := sm.CheckService(ctx, servicemanager.OemLockService)
 	requireOrSkip(t, err)
+	if svc == nil {
+		t.Skip("oem_lock service not registered")
+	}
+	require.True(t, svc.IsAlive(ctx), "oem_lock service should be alive")
+	t.Logf("oem_lock: handle=%d, alive=true", svc.Handle())
 
+	proxy := genOemlock.NewOemLockServiceProxy(svc)
+
+	// Try each method; they all require MANAGE_CARRIER_OEM_UNLOCK_STATE
+	// or MANAGE_USER_OEM_UNLOCK_STATE, so permission denials are expected.
 	lockName, err := proxy.GetLockName(ctx)
-	requireOrSkip(t, err)
-	t.Logf("Lock name: %q", lockName)
-
-	allowed, err := proxy.IsOemUnlockAllowed(ctx)
-	requireOrSkip(t, err)
-	t.Logf("OEM unlock allowed: %v", allowed)
-
-	carrierAllowed, err := proxy.IsOemUnlockAllowedByCarrier(ctx)
-	requireOrSkip(t, err)
-	t.Logf("OEM unlock allowed by carrier: %v", carrierAllowed)
-
-	userAllowed, err := proxy.IsOemUnlockAllowedByUser(ctx)
-	requireOrSkip(t, err)
-	t.Logf("OEM unlock allowed by user: %v", userAllowed)
+	if err != nil {
+		t.Logf("GetLockName: %v (expected without carrier OEM unlock permission)", err)
+	} else {
+		t.Logf("Lock name: %q", lockName)
+	}
 
 	unlocked, err := proxy.IsDeviceOemUnlocked(ctx)
-	requireOrSkip(t, err)
-	t.Logf("Device OEM unlocked: %v", unlocked)
+	if err != nil {
+		t.Logf("IsDeviceOemUnlocked: %v (expected without permission)", err)
+	} else {
+		t.Logf("Device OEM unlocked: %v", unlocked)
+	}
 }
 
 // ==========================================================================
@@ -244,37 +251,46 @@ func TestUsecase_SimStatus(t *testing.T) {
 
 	phone := genTelephony.NewTelephonyProxy(svc)
 
-	// ICC card presence.
-	hasIcc, err := phone.HasIccCard(ctx)
-	requireOrSkip(t, err)
-	t.Logf("ICC card present: %v", hasIcc)
+	// The no-argument telephony methods (GetCallState, GetDataState, etc.)
+	// are rejected on API > 30 with "This method can only be used for
+	// applications targeting API version 30 or less." Use the
+	// subscription/slot-based variants that pass callingPackage or subId.
 
-	// Radio status.
-	radioOn, err := phone.IsRadioOn(ctx)
+	// Call state via subscription (0=IDLE, 1=RINGING, 2=OFFHOOK).
+	callState, err := phone.GetCallStateForSubscription(ctx, 1, "")
 	requireOrSkip(t, err)
-	t.Logf("Radio on: %v", radioOn)
-
-	// Call state (0=IDLE, 1=RINGING, 2=OFFHOOK).
-	callState, err := phone.GetCallState(ctx)
-	requireOrSkip(t, err)
-	t.Logf("Call state: %d (0=IDLE)", callState)
+	t.Logf("Call state (subId=1): %d (0=IDLE)", callState)
 	require.GreaterOrEqual(t, callState, int32(0))
 	require.LessOrEqual(t, callState, int32(2))
 
-	// Data state (0=DISCONNECTED .. 3=SUSPENDED).
-	dataState, err := phone.GetDataState(ctx)
+	// Data state via subscription.
+	dataState, err := phone.GetDataStateForSubId(ctx, 1)
 	requireOrSkip(t, err)
-	t.Logf("Data state: %d", dataState)
+	t.Logf("Data state (subId=1): %d", dataState)
 
-	// Active phone type (0=NONE, 1=GSM, 2=CDMA, 3=SIP).
-	phoneType, err := phone.GetActivePhoneType(ctx)
+	// Data activity via subscription.
+	dataActivity, err := phone.GetDataActivityForSubId(ctx, 1)
 	requireOrSkip(t, err)
-	t.Logf("Active phone type: %d", phoneType)
+	t.Logf("Data activity (subId=1): %d", dataActivity)
 
 	// Network country.
 	country, err := phone.GetNetworkCountryIsoForPhone(ctx, 0)
 	requireOrSkip(t, err)
 	t.Logf("Network country (slot 0): %q", country)
+
+	// Methods that may be restricted on API > 30 or removed on newer
+	// API levels. Test independently so one skip doesn't block others.
+	t.Run("HasIccCardUsingSlotIndex", func(t *testing.T) {
+		hasIcc, err := phone.HasIccCardUsingSlotIndex(ctx, 0)
+		requireOrSkip(t, err)
+		t.Logf("ICC card present (slot 0): %v", hasIcc)
+	})
+
+	t.Run("IsRadioOn", func(t *testing.T) {
+		radioOn, err := phone.IsRadioOn(ctx)
+		requireOrSkip(t, err)
+		t.Logf("Radio on: %v", radioOn)
+	})
 }
 
 // ==========================================================================
@@ -450,31 +466,11 @@ func TestUsecase_ImsMonitor(t *testing.T) {
 	ctx := context.Background()
 	driver := openBinder(t)
 	svc := getService(ctx, t, driver, "phone")
+	sm := servicemanager.New(driver)
 
 	phone := genTelephony.NewTelephonyProxy(svc)
 
-	// IMS registration status.
-	registered, err := phone.IsImsRegistered(ctx, 1)
-	requireOrSkip(t, err)
-	t.Logf("IMS registered (subId=1): %v", registered)
-
-	// WiFi calling availability.
-	wifiCalling, err := phone.IsWifiCallingAvailable(ctx, 1)
-	requireOrSkip(t, err)
-	t.Logf("WiFi calling available (subId=1): %v", wifiCalling)
-
-	// Video telephony availability.
-	videoAvail, err := phone.IsVideoTelephonyAvailable(ctx, 1)
-	requireOrSkip(t, err)
-	t.Logf("Video telephony available (subId=1): %v", videoAvail)
-
-	// VoWiFi setting.
-	vowifi, err := phone.IsVoWiFiSettingEnabled(ctx, 1)
-	requireOrSkip(t, err)
-	t.Logf("VoWiFi setting enabled (subId=1): %v", vowifi)
-
-	// Check telephony_ims service availability.
-	sm := servicemanager.New(driver)
+	// Check telephony_ims service availability first — this always works.
 	imsSvc, err := sm.CheckService(ctx, servicemanager.TelephonyImsService)
 	requireOrSkip(t, err)
 	if imsSvc != nil {
@@ -483,6 +479,34 @@ func TestUsecase_ImsMonitor(t *testing.T) {
 	} else {
 		t.Log("telephony_ims service not registered (optional)")
 	}
+
+	// IMS methods may fail with ServiceSpecific errors when no active
+	// IMS subscription is available (common on devices without SIM or
+	// with carriers that don't support IMS). Test each independently
+	// so one failure doesn't block the others.
+	t.Run("IsImsRegistered", func(t *testing.T) {
+		registered, err := phone.IsImsRegistered(ctx, 1)
+		requireOrSkip(t, err)
+		t.Logf("IMS registered (subId=1): %v", registered)
+	})
+
+	t.Run("IsWifiCallingAvailable", func(t *testing.T) {
+		wifiCalling, err := phone.IsWifiCallingAvailable(ctx, 1)
+		requireOrSkip(t, err)
+		t.Logf("WiFi calling available (subId=1): %v", wifiCalling)
+	})
+
+	t.Run("IsVideoTelephonyAvailable", func(t *testing.T) {
+		videoAvail, err := phone.IsVideoTelephonyAvailable(ctx, 1)
+		requireOrSkip(t, err)
+		t.Logf("Video telephony available (subId=1): %v", videoAvail)
+	})
+
+	t.Run("IsVoWiFiSettingEnabled", func(t *testing.T) {
+		vowifi, err := phone.IsVoWiFiSettingEnabled(ctx, 1)
+		requireOrSkip(t, err)
+		t.Logf("VoWiFi setting enabled (subId=1): %v", vowifi)
+	})
 }
 
 // ==========================================================================

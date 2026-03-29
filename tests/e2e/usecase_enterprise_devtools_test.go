@@ -69,30 +69,40 @@ func TestUseCase84_MDMAgent(t *testing.T) {
 	emptyAdmin := content.ComponentName{}
 
 	// Password quality (aggregated).
-	quality, err := dpm.GetPasswordQuality(ctx, emptyAdmin, false)
-	requireOrSkip(t, err)
-	t.Logf("Password quality: 0x%x", quality)
+	t.Run("password_quality", func(t *testing.T) {
+		quality, err := dpm.GetPasswordQuality(ctx, emptyAdmin, false)
+		requireOrSkip(t, err)
+		t.Logf("Password quality: 0x%x", quality)
+	})
 
 	// Encryption status.
-	encStatus, err := dpm.GetStorageEncryptionStatus(ctx, callerPkg)
-	requireOrSkip(t, err)
-	t.Logf("Encryption status: %d", encStatus)
+	t.Run("encryption_status", func(t *testing.T) {
+		encStatus, err := dpm.GetStorageEncryptionStatus(ctx, callerPkg)
+		requireOrSkip(t, err)
+		t.Logf("Encryption status: %d", encStatus)
+	})
 
 	// Camera disabled.
-	camDisabled, err := dpm.GetCameraDisabled(ctx, emptyAdmin, callerPkg, false)
-	requireOrSkip(t, err)
-	t.Logf("Camera disabled: %v", camDisabled)
+	t.Run("camera_disabled", func(t *testing.T) {
+		camDisabled, err := dpm.GetCameraDisabled(ctx, emptyAdmin, callerPkg, false)
+		requireOrSkip(t, err)
+		t.Logf("Camera disabled: %v", camDisabled)
+	})
 
 	// Device provisioned.
-	provisioned, err := dpm.IsDeviceProvisioned(ctx)
-	requireOrSkip(t, err)
-	assert.True(t, provisioned, "device should be provisioned")
-	t.Logf("Device provisioned: %v", provisioned)
+	t.Run("device_provisioned", func(t *testing.T) {
+		provisioned, err := dpm.IsDeviceProvisioned(ctx)
+		requireOrSkip(t, err)
+		assert.True(t, provisioned, "device should be provisioned")
+		t.Logf("Device provisioned: %v", provisioned)
+	})
 
 	// Active admins.
-	admins, err := dpm.GetActiveAdmins(ctx)
-	requireOrSkip(t, err)
-	t.Logf("Active admins: %d", len(admins))
+	t.Run("active_admins", func(t *testing.T) {
+		admins, err := dpm.GetActiveAdmins(ctx)
+		requireOrSkip(t, err)
+		t.Logf("Active admins: %d", len(admins))
+	})
 }
 
 // --- #85: Compliance Checker ---
