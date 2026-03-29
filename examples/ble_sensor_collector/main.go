@@ -206,7 +206,8 @@ func main() {
 	}
 	if statusErr := binder.ReadStatus(reply); statusErr != nil {
 		fmt.Fprintf(os.Stderr, "registerClient status: %v\n", statusErr)
-		os.Exit(1)
+		fmt.Fprintf(os.Stderr, "Hint: AIDL version mismatch — the BT stack may not expect AttributionSource.\n")
+		return
 	}
 
 	select {
