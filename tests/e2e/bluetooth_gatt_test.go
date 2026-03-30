@@ -17,7 +17,6 @@ import (
 	"github.com/AndroidGoLab/binder/android/content"
 	genOs "github.com/AndroidGoLab/binder/android/os"
 	"github.com/AndroidGoLab/binder/binder"
-	"github.com/AndroidGoLab/binder/parcel"
 )
 
 // ---------------------------------------------------------------------------
@@ -192,34 +191,14 @@ func TestBluetoothGATT_FullPipeline(t *testing.T) {
 			require.NotNil(t, gattBinder, "GetBluetoothGatt returned nil")
 			t.Logf("IBluetoothGatt handle: %d", gattBinder.Handle())
 
-			code := resolveCode(ctx, t, gattBinder,
-				genBluetooth.DescriptorIBluetoothGatt, "registerClient")
+			gattProxy := genBluetooth.NewBluetoothGattProxy(gattBinder)
 
 			spy := &gattCallbackSpy{registeredCh: make(chan int32, 1)}
 			gattCallback := genBluetooth.NewBluetoothGattCallbackStub(spy)
 
-			data := parcel.New()
-			defer data.Recycle()
-			data.WriteInterfaceToken(genBluetooth.DescriptorIBluetoothGatt)
-			data.WriteInt32(1) // non-null ParcelUuid
-			data.WriteInt64(0x0000180000001000)
-			data.WriteInt64(-9223371485494954757)
-			binder.WriteBinderToParcel(ctx, data, gattCallback.AsBinder(), transport)
-			data.WriteBool(false)
-			data.WriteInt32(0)
-			attr := shellAttribution()
-			data.WriteInt32(1)
-			attr.MarshalParcel(data)
-
-			regReply, err := gattBinder.Transact(ctx, code, 0, data)
+			appID := genOs.ParcelUuid{}
+			err = gattProxy.RegisterClient(ctx, appID, gattCallback, false, 0, shellAttribution())
 			requireOrSkip(t, err)
-			if statusErr := binder.ReadStatus(regReply); statusErr != nil {
-				// AIDL version mismatch: the server may not expect
-				// AttributionSource (e.g., older BT stack). Skip
-				// rather than fail — the proxy call is correct per
-				// the AIDL spec, but the device's version differs.
-				requireOrSkip(t, statusErr)
-			}
 
 			select {
 			case status := <-spy.registeredCh:

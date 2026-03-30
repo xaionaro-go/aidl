@@ -26,7 +26,6 @@ import (
 	"github.com/AndroidGoLab/binder/binder"
 	"github.com/AndroidGoLab/binder/binder/versionaware"
 	"github.com/AndroidGoLab/binder/kernelbinder"
-	"github.com/AndroidGoLab/binder/parcel"
 	"github.com/AndroidGoLab/binder/servicemanager"
 )
 
@@ -178,36 +177,15 @@ func main() {
 
 	spy := &gattSpy{registeredCh: make(chan int32, 1)}
 	gattCallback := genBluetooth.NewBluetoothGattCallbackStub(spy)
+	gattProxy := genBluetooth.NewBluetoothGattProxy(gattBinder)
 
-	// registerClient via raw transaction (the generated proxy may not
-	// handle all the complex parameters correctly).
-	code, err := gattBinder.ResolveCode(ctx, genBluetooth.DescriptorIBluetoothGatt, "registerClient")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "resolve registerClient: %v\n", err)
-		os.Exit(1)
-	}
+	// ParcelUuid for the app identifier (placeholder; the actual UUID
+	// value is not significant for GATT client registration).
+	appID := genOs.ParcelUuid{}
 
-	data := parcel.New()
-	data.WriteInterfaceToken(genBluetooth.DescriptorIBluetoothGatt)
-	data.WriteInt32(1) // non-null ParcelUuid
-	data.WriteInt64(0x0000180000001000)
-	data.WriteInt64(-9223371485494954757)
-	binder.WriteBinderToParcel(ctx, data, gattCallback.AsBinder(), transport)
-	data.WriteBool(false)
-	data.WriteInt32(0)
-	attr := shellAttribution()
-	data.WriteInt32(1)
-	attr.MarshalParcel(data)
-
-	reply, err := gattBinder.Transact(ctx, code, 0, data)
-	if err != nil {
+	if err := gattProxy.RegisterClient(ctx, appID, gattCallback, false, 0, shellAttribution()); err != nil {
 		fmt.Fprintf(os.Stderr, "registerClient: %v\n", err)
 		os.Exit(1)
-	}
-	if statusErr := binder.ReadStatus(reply); statusErr != nil {
-		fmt.Fprintf(os.Stderr, "registerClient status: %v\n", statusErr)
-		fmt.Fprintf(os.Stderr, "Hint: AIDL version mismatch — the BT stack may not expect AttributionSource.\n")
-		return
 	}
 
 	select {
