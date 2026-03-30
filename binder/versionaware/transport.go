@@ -58,6 +58,11 @@ type Transport struct {
 	// (parameter type descriptor lists). Populated alongside table
 	// during lazy JAR extraction.
 	signatures map[string]dex.MethodSignatures
+	// signaturesLoaded tracks whether signatures have been extracted
+	// from device JARs. Separate from ScannedJARs because the cache
+	// stores transaction codes but not signatures — JARs marked as
+	// scanned in the cache need re-scanning for signatures.
+	signaturesLoaded bool
 	// ScannedJARs tracks which framework JARs have been fully scanned
 	// for $Stub classes. Keyed by JAR filename (e.g. "framework.jar").
 	// Persisted in the cache to avoid re-scanning across runs.
@@ -317,15 +322,30 @@ func (t *Transport) ResolveMethodSignature(
 ) []string {
 	// Fast path: check if signatures are already loaded.
 	t.mu.RLock()
-	sigs, loaded := t.signatures[descriptor]
+	loaded := t.signaturesLoaded
+	sigs := t.signatures[descriptor]
 	t.mu.RUnlock()
 
-	if loaded {
+	if loaded && sigs != nil {
 		return sigs[method]
 	}
 
-	// Descriptor not in the signatures map yet — trigger lazy
-	// extraction (which populates both table and signatures).
+	if !loaded {
+		// Signatures haven't been extracted yet. The cache only stores
+		// transaction codes, not signatures, so JARs marked as scanned
+		// may need re-scanning for $Stub$Proxy method prototypes.
+		t.loadSignatures(ctx)
+
+		t.mu.RLock()
+		sigs = t.signatures[descriptor]
+		t.mu.RUnlock()
+
+		if sigs != nil {
+			return sigs[method]
+		}
+	}
+
+	// Trigger lazy extraction which may find new JARs.
 	t.lazyExtractDescriptor(ctx, descriptor, method)
 
 	t.mu.RLock()
@@ -337,6 +357,41 @@ func (t *Transport) ResolveMethodSignature(
 	}
 
 	return nil
+}
+
+// loadSignatures scans all known framework JARs for method signatures,
+// regardless of whether they were already scanned for transaction codes.
+func (t *Transport) loadSignatures(ctx context.Context) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	if t.signaturesLoaded {
+		return // another goroutine loaded them
+	}
+
+	for _, dir := range jarDirectories() {
+		entries, err := os.ReadDir(dir)
+		if err != nil {
+			continue
+		}
+		for _, entry := range entries {
+			if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".jar") {
+				continue
+			}
+			jarPath := dir + "/" + entry.Name()
+			sigs, err := dex.ExtractSignaturesFromJAR(jarPath)
+			if err != nil {
+				continue
+			}
+			for iface, ms := range sigs {
+				if t.signatures[iface] == nil {
+					t.signatures[iface] = ms
+				}
+			}
+		}
+	}
+
+	t.signaturesLoaded = true
 }
 
 // lazyExtractDescriptor attempts on-demand extraction of a single
