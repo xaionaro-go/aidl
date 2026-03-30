@@ -37,6 +37,7 @@
 /spec2readme
 /storage_info
 /aidl2spec
+/getservice_vs_checkservice
 
 # Lean 4
 /.lake
