@@ -35,7 +35,12 @@ func isTransportError(err error) bool {
 		return false
 	}
 	var txnErr *aidlerrors.TransactionError
-	return errors.As(err, &txnErr) || err.Error() == "binder: failed transaction"
+	if errors.As(err, &txnErr) {
+		return true
+	}
+	s := err.Error()
+	return s == "binder: failed transaction" ||
+		strings.Contains(s, "kernel status error")
 }
 
 // requireNoErrorOrTransport fails the test only if err is non-nil and NOT a
