@@ -244,9 +244,10 @@ func convertParamToAST(
 	p spec.ParamSpec,
 ) *parser.ParamDecl {
 	decl := &parser.ParamDecl{
-		ParamName: p.Name,
-		Type:      convertTypeRefToAST(p.Type),
-		Annots:    convertAnnotationNamesToAST(p.Annotations),
+		ParamName:   p.Name,
+		Type:        convertTypeRefToAST(p.Type),
+		Annots:      convertAnnotationNamesToAST(p.Annotations),
+		MinAPILevel: p.MinAPILevel,
 	}
 
 	switch p.Direction {

@@ -1158,15 +1158,28 @@ func writeProxyMethod(
 			continue
 		}
 
+		// Version-dependent params are wrapped in a conditional that
+		// checks the device API level. The == 0 fallback ensures the
+		// param is written when API level is unknown (backward compat).
+		if param.MinAPILevel > 0 {
+			f.P("if binder.APILevelFromBinder(p.Remote) == 0 || binder.APILevelFromBinder(p.Remote) >= %d {", param.MinAPILevel)
+		}
+
 		// Identity params are written from _identity instead of a
 		// method parameter.
 		if field, ok := identityParams[i]; ok {
 			expr := fmt.Sprintf(identityWriteExpr[param.Type.Name], "_identity."+field)
 			f.P("\t%s", expr)
+			if param.MinAPILevel > 0 {
+				f.P("}")
+			}
 			continue
 		}
 
 		writeParamToParcel(f, param, hasReturn, opts, typeRef)
+		if param.MinAPILevel > 0 {
+			f.P("}")
+		}
 	}
 
 	// Determine flags.
