@@ -1001,5 +1001,10 @@ func (t *Transport) Close(ctx context.Context) error {
 	return t.inner.Close(ctx)
 }
 
+// APILevel returns the detected Android API level.
+func (t *Transport) APILevel() int {
+	return t.apiLevel
+}
+
 // Verify Transport implements binder.VersionAwareTransport.
 var _ binder.VersionAwareTransport = (*Transport)(nil)

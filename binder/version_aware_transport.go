@@ -16,4 +16,9 @@ type VersionAwareTransport interface {
 		descriptor string,
 		method string,
 	) (TransactionCode, error)
+
+	// APILevel returns the detected Android API level of the device
+	// (e.g., 35 for Android 15, 36 for Android 16). Returns 0 if
+	// the API level is unknown.
+	APILevel() int
 }
