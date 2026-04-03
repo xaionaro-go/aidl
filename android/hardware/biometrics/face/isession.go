@@ -173,7 +173,7 @@ func (p *SessionProxy) GetEnrollmentConfig(
 	_data.WriteInterfaceToken(DescriptorISession)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISession, MethodISessionGetEnrollmentConfig)
 	_compiledDescs := []string{
-		"Landroid/hardware/biometrics/face/EnrollmentType;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(enrollmentType))
@@ -255,8 +255,8 @@ func (p *SessionProxy) Enroll(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISession, MethodISessionEnroll)
 	_compiledDescs := []string{
 		"Landroid/hardware/keymaster/HardwareAuthToken;",
-		"Landroid/hardware/biometrics/face/EnrollmentType;",
-		"[Landroid/hardware/biometrics/face/Feature;",
+		"B",
+		"[B",
 		"Landroid/hardware/common/NativeHandle;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -532,7 +532,7 @@ func (p *SessionProxy) SetFeature(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISession, MethodISessionSetFeature)
 	_compiledDescs := []string{
 		"Landroid/hardware/keymaster/HardwareAuthToken;",
-		"Landroid/hardware/biometrics/face/Feature;",
+		"B",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -772,8 +772,8 @@ func (p *SessionProxy) EnrollWithContext(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISession, MethodISessionEnrollWithContext)
 	_compiledDescs := []string{
 		"Landroid/hardware/keymaster/HardwareAuthToken;",
-		"Landroid/hardware/biometrics/face/EnrollmentType;",
-		"[Landroid/hardware/biometrics/face/Feature;",
+		"B",
+		"[B",
 		"Landroid/hardware/common/NativeHandle;",
 		"Landroid/hardware/biometrics/common/OperationContext;",
 	}

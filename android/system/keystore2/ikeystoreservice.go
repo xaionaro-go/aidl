@@ -75,7 +75,7 @@ func (p *KeystoreServiceProxy) GetSecurityLevel(
 	_data.WriteInterfaceToken(DescriptorIKeystoreService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIKeystoreService, MethodIKeystoreServiceGetSecurityLevel)
 	_compiledDescs := []string{
-		"Landroid/hardware/drm/SecurityLevel;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(securityLevel))
@@ -237,7 +237,7 @@ func (p *KeystoreServiceProxy) ListEntries(
 	_data.WriteInterfaceToken(DescriptorIKeystoreService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIKeystoreService, MethodIKeystoreServiceListEntries)
 	_compiledDescs := []string{
-		"Landroid/system/keystore2/Domain;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -486,7 +486,7 @@ func (p *KeystoreServiceProxy) GetNumberOfEntries(
 	_data.WriteInterfaceToken(DescriptorIKeystoreService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIKeystoreService, MethodIKeystoreServiceGetNumberOfEntries)
 	_compiledDescs := []string{
-		"Landroid/system/keystore2/Domain;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -538,7 +538,7 @@ func (p *KeystoreServiceProxy) ListEntriesBatched(
 	_data.WriteInterfaceToken(DescriptorIKeystoreService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIKeystoreService, MethodIKeystoreServiceListEntriesBatched)
 	_compiledDescs := []string{
-		"Landroid/system/keystore2/Domain;",
+		"I",
 		"J",
 		"Ljava/lang/String;",
 	}

@@ -1,6 +1,7 @@
 package credentials
 
 import (
+	types "github.com/AndroidGoLab/binder/android/app/types"
 	"github.com/AndroidGoLab/binder/parcel"
 )
 
@@ -10,6 +11,7 @@ type PrepareGetCredentialResponseInternal struct {
 	HasQueryApiPermission    bool
 	HasAuthenticationResults bool
 	HasRemoteResults         bool
+	PendingIntent            *types.PendingIntent
 }
 
 var _ parcel.Parcelable = (*PrepareGetCredentialResponseInternal)(nil)
@@ -21,7 +23,14 @@ func (s *PrepareGetCredentialResponseInternal) MarshalParcel(
 	p.WriteInt32(-1) // null CredentialResultTypes
 	p.WriteBool(s.HasAuthenticationResults)
 	p.WriteBool(s.HasRemoteResults)
-	p.WriteInt32(0) // opaque: cycle prevents typed marshal
+	if s.PendingIntent != nil {
+		p.WriteInt32(1)
+		if _err := s.PendingIntent.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	return nil
 }
 

@@ -236,7 +236,7 @@ func (p *FileProxy) Rename(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIFile, MethodIFileRename)
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
-		"Landroid/hardware/security/see/storage/CreationMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteString16(destPath)

@@ -61,7 +61,7 @@ func (p *BluetoothChannelSoundingSessionCallbackProxy) OnOpened(
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSoundingSessionCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothChannelSoundingSessionCallback, MethodIBluetoothChannelSoundingSessionCallbackOnOpened)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/ranging/Reason;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(reason))
@@ -102,7 +102,7 @@ func (p *BluetoothChannelSoundingSessionCallbackProxy) OnOpenFailed(
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSoundingSessionCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothChannelSoundingSessionCallback, MethodIBluetoothChannelSoundingSessionCallbackOnOpenFailed)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/ranging/Reason;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(reason))
@@ -190,7 +190,7 @@ func (p *BluetoothChannelSoundingSessionCallbackProxy) OnClose(
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSoundingSessionCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothChannelSoundingSessionCallback, MethodIBluetoothChannelSoundingSessionCallbackOnClose)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/ranging/Reason;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(reason))
@@ -231,7 +231,7 @@ func (p *BluetoothChannelSoundingSessionCallbackProxy) OnCloseFailed(
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSoundingSessionCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothChannelSoundingSessionCallback, MethodIBluetoothChannelSoundingSessionCallbackOnCloseFailed)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/ranging/Reason;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(reason))

@@ -103,5 +103,92 @@ func (s *ParcelableConference) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque ConnectionIds: cannot skip without known wire format
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	s.ConnectTimeMillis, _err = p.ReadInt64()
+	if _err != nil {
+		return _err
+	}
+	if _, _err = p.ReadBool(); _err != nil { // skip VideoProvider!=null
+		return _err
+	}
+	s.VideoState, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	{
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
+		}
+		if _flag != 0 {
+			s.StatusHints = &StatusHints{}
+			if _err = s.StatusHints.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
+		}
+	}
+	{
+		_opaqueLen, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueLen > 0 {
+			p.SetPosition(p.Position() + int(_opaqueLen))
+		}
+	}
+	s.ConnectionProperties, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.ConnectElapsedTimeMillis, _err = p.ReadInt64()
+	if _err != nil {
+		return _err
+	}
+	{
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
+		}
+		if _flag != 0 {
+			s.Address = &location.Address{}
+			if _err = s.Address.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
+		}
+	}
+	s.AddressPresentation, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.CallerDisplayName, _err = p.ReadString16()
+	if _err != nil {
+		return _err
+	}
+	s.CallerDisplayNamePresentation, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	{
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
+		}
+		if _flag != 0 {
+			s.DisconnectCause = &DisconnectCause{}
+			if _err = s.DisconnectCause.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
+		}
+	}
+	s.RingbackRequested, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	s.CallDirection, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	return nil
 }

@@ -1131,7 +1131,7 @@ parcelables:
         - name: ReceiveSystemEvents
           write_method: bool
         - name: AllowedSensorIds
-          write_method: opaque
+          write_method: write_list
         - name: AllowBackgroundAuthentication
           write_method: bool
         - name: IgnoreEnrollmentState
@@ -1161,7 +1161,7 @@ parcelables:
         - name: MaxEnrollmentsPerUser
           write_method: int32
         - name: ComponentInfo
-          write_method: opaque
+          write_method: write_list
         - name: ResetLockoutRequiresHardwareAuthToken
           write_method: bool
         - name: ResetLockoutRequiresChallenge

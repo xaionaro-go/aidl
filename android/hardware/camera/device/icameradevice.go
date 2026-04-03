@@ -463,7 +463,7 @@ func (p *CameraDeviceProxy) ConstructDefaultRequestSettings(
 	_data.WriteInterfaceToken(DescriptorICameraDevice)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICameraDevice, MethodICameraDeviceConstructDefaultRequestSettings)
 	_compiledDescs := []string{
-		"Landroid/hardware/camera/device/RequestTemplate;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))

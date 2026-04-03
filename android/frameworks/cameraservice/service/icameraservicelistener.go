@@ -54,7 +54,7 @@ func (p *CameraServiceListenerProxy) OnPhysicalCameraStatusChanged(
 	_data.WriteInterfaceToken(DescriptorICameraServiceListener)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICameraServiceListener, MethodICameraServiceListenerOnPhysicalCameraStatusChanged)
 	_compiledDescs := []string{
-		"Landroid/frameworks/cameraservice/service/CameraDeviceStatus;",
+		"I",
 		"Ljava/lang/String;",
 		"Ljava/lang/String;",
 	}
@@ -95,7 +95,7 @@ func (p *CameraServiceListenerProxy) OnStatusChanged(
 	_data.WriteInterfaceToken(DescriptorICameraServiceListener)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICameraServiceListener, MethodICameraServiceListenerOnStatusChanged)
 	_compiledDescs := []string{
-		"Landroid/frameworks/cameraservice/service/CameraDeviceStatus;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

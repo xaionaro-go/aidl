@@ -86,5 +86,68 @@ func (s *DataCallResponse) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque Addresses: cannot skip without known wire format
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	s.Mtu, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.MtuV4, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.MtuV6, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.HandoverFailureMode, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.PduSessionId, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null DefaultQos: cannot skip unknown-size typed object
+		}
+	}
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	{
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
+		}
+		if _flag != 0 {
+			s.SliceInfo = &radioData.SliceInfo{}
+			if _err = s.SliceInfo.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
+		}
+	}
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	s.NetworkValidationStatus, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	return nil
 }

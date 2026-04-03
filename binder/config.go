@@ -4,6 +4,7 @@ package binder
 type Config struct {
 	MaxThreads uint32
 	MapSize    uint32
+	DevicePath string
 }
 
 // DefaultConfig returns the default transport configuration.
@@ -11,5 +12,6 @@ func DefaultConfig() Config {
 	return Config{
 		MaxThreads: 0,
 		MapSize:    1024*1024 - 2*4096, // 1MB - 2*PAGE_SIZE
+		DevicePath: "/dev/binder",
 	}
 }

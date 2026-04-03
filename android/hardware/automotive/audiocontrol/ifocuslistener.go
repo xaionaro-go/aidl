@@ -100,7 +100,7 @@ func (p *FocusListenerProxy) RequestAudioFocus(
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
 		"I",
-		"Landroid/hardware/automotive/audiocontrol/AudioFocusChange;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteString16(usage)
@@ -185,7 +185,7 @@ func (p *FocusListenerProxy) RequestAudioFocusWithMetaData(
 	_compiledDescs := []string{
 		"Landroid/hardware/audio/common/PlaybackTrackMetadata;",
 		"I",
-		"Landroid/hardware/automotive/audiocontrol/AudioFocusChange;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)

@@ -16,7 +16,7 @@ func (s *SmartspaceSessionId) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.Id)
-	p.WriteInt32(0) // null This.mUserHandle
+	p.WriteInt32(0) // null MUserHandle
 	return nil
 }
 
@@ -34,7 +34,7 @@ func (s *SmartspaceSessionId) UnmarshalParcel(
 			return _opaqueErr
 		}
 		if _opaqueFlag != 0 {
-			return nil // non-null This.mUserHandle: cannot skip unknown-size typed object
+			return nil // non-null MUserHandle: cannot skip unknown-size typed object
 		}
 	}
 	return nil

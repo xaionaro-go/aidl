@@ -52,7 +52,7 @@ func (p *FrontendCallbackProxy) OnEvent(
 	_data.WriteInterfaceToken(DescriptorIFrontendCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIFrontendCallback, MethodIFrontendCallbackOnEvent)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/FrontendEventType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(frontendEventType))
@@ -85,7 +85,7 @@ func (p *FrontendCallbackProxy) OnScanMessage(
 	_data.WriteInterfaceToken(DescriptorIFrontendCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIFrontendCallback, MethodIFrontendCallbackOnScanMessage)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/FrontendScanMessageType;",
+		"I",
 		"Landroid/hardware/tv/tuner/FrontendScanMessage;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

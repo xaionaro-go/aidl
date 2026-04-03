@@ -52,7 +52,7 @@ func (p *DvrCallbackProxy) OnPlaybackStatus(
 	_data.WriteInterfaceToken(DescriptorIDvrCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIDvrCallback, MethodIDvrCallbackOnPlaybackStatus)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/PlaybackStatus;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))
@@ -84,7 +84,7 @@ func (p *DvrCallbackProxy) OnRecordStatus(
 	_data.WriteInterfaceToken(DescriptorIDvrCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIDvrCallback, MethodIDvrCallbackOnRecordStatus)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/RecordStatus;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(status))

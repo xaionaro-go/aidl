@@ -421,7 +421,7 @@ func (p *StreamOutProxy) SetDualMonoMode(
 	_data.WriteInterfaceToken(DescriptorIStreamOut)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIStreamOut, MethodIStreamOutSetDualMonoMode)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioDualMonoMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mode))
@@ -506,7 +506,7 @@ func (p *StreamOutProxy) SetLatencyMode(
 	_data.WriteInterfaceToken(DescriptorIStreamOut)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIStreamOut, MethodIStreamOutSetLatencyMode)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioLatencyMode;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(mode))

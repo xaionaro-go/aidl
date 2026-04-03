@@ -331,7 +331,7 @@ func (p *RadioModemProxy) NvReadItem(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioModem, MethodIRadioModemNvReadItem)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/modem/NvItem;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -368,7 +368,7 @@ func (p *RadioModemProxy) NvResetConfig(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioModem, MethodIRadioModemNvResetConfig)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/modem/ResetNvType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -534,7 +534,7 @@ func (p *RadioModemProxy) SendDeviceState(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioModem, MethodIRadioModemSendDeviceState)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/modem/DeviceStateType;",
+		"I",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

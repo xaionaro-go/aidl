@@ -53,7 +53,7 @@ func (p *EArcCallbackProxy) OnStateChange(
 	_data.WriteInterfaceToken(DescriptorIEArcCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIEArcCallback, MethodIEArcCallbackOnStateChange)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/hdmi/earc/IEArcStatus;",
+		"B",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

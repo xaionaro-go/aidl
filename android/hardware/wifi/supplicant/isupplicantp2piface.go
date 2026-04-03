@@ -645,7 +645,7 @@ func (p *SupplicantP2pIfaceProxy) Connect(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantP2pIface, MethodISupplicantP2pIfaceConnect)
 	_compiledDescs := []string{
 		"[B",
-		"Landroid/hardware/wifi/supplicant/WpsProvisionMethod;",
+		"I",
 		"Ljava/lang/String;",
 		"Z",
 		"Z",
@@ -1258,7 +1258,7 @@ func (p *SupplicantP2pIfaceProxy) ProvisionDiscovery(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantP2pIface, MethodISupplicantP2pIfaceProvisionDiscovery)
 	_compiledDescs := []string{
 		"[B",
-		"Landroid/hardware/wifi/supplicant/WpsProvisionMethod;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteByteArray(peerAddress)
@@ -1992,7 +1992,7 @@ func (p *SupplicantP2pIfaceProxy) SetMiracastMode(
 	_data.WriteInterfaceToken(DescriptorISupplicantP2pIface)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantP2pIface, MethodISupplicantP2pIfaceSetMiracastMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/MiracastMode;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(mode))
@@ -2248,7 +2248,7 @@ func (p *SupplicantP2pIfaceProxy) SetWpsConfigMethods(
 	_data.WriteInterfaceToken(DescriptorISupplicantP2pIface)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantP2pIface, MethodISupplicantP2pIfaceSetWpsConfigMethods)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/WpsConfigMethods;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(configMethods))
@@ -2791,7 +2791,7 @@ func (p *SupplicantP2pIfaceProxy) SetVendorElements(
 	_data.WriteInterfaceToken(DescriptorISupplicantP2pIface)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantP2pIface, MethodISupplicantP2pIfaceSetVendorElements)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/P2pFrameTypeMask;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

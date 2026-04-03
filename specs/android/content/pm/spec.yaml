@@ -6271,7 +6271,7 @@ parcelables:
         - name: DeclaringPackage
           write_method: typed_object
         - name: DependentPackages
-          write_method: opaque
+          write_method: write_list
         - name: Dependencies
           write_method: opaque
         - name: IsNative

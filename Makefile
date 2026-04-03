@@ -28,7 +28,7 @@ specs-versions:
 
 # Generate all Go code from specs.
 generate: specs
-	go run ./tools/cmd/spec2go -specs specs/ -output . -smoke-tests -codes-output binder/versionaware/codes_gen.go
+	go run ./tools/cmd/spec2go -specs specs/ -output . -native-impls native_impls/ -smoke-tests -codes-output binder/versionaware/codes_gen.go
 
 # Generate bindercli commands from specs.
 cli: specs

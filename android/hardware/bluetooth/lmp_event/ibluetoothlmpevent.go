@@ -56,9 +56,9 @@ func (p *BluetoothLmpEventProxy) RegisterForLmpEvents(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothLmpEvent, MethodIBluetoothLmpEventRegisterForLmpEvents)
 	_compiledDescs := []string{
 		"Landroid/hardware/bluetooth/lmp_event/IBluetoothLmpEventCallback;",
-		"Landroid/hardware/bluetooth/lmp_event/AddressType;",
+		"B",
 		"[B",
-		"[Landroid/hardware/bluetooth/lmp_event/LmpEventId;",
+		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.Remote.Transport())
@@ -123,7 +123,7 @@ func (p *BluetoothLmpEventProxy) UnregisterLmpEvents(
 	_data.WriteInterfaceToken(DescriptorIBluetoothLmpEvent)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothLmpEvent, MethodIBluetoothLmpEventUnregisterLmpEvents)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/lmp_event/AddressType;",
+		"B",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

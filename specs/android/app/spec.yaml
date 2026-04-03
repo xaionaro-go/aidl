@@ -11745,6 +11745,7 @@ parcelables:
         - name: Locales
           write_method: typed_object
     - name: Notification
+      native_parcelable: true
     - name: Notification.Action
     - name: NotificationChannel
       java_wire_format:

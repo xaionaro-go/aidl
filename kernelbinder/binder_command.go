@@ -25,4 +25,16 @@ var (
 	bcRequestDeathNotif = binderCommand(iow('c', 14, binderHandleCookieSize))
 	bcClearDeathNotif   = binderCommand(iow('c', 15, binderHandleCookieSize))
 	bcDeadBinderDone    = binderCommand(iow('c', 16, unsafe.Sizeof(uintptr(0))))
+	bcTransactionSG     = binderCommand(iow('c', 17, unsafe.Sizeof(binderTransactionDataSG{})))
+	bcReplySG           = binderCommand(iow('c', 18, unsafe.Sizeof(binderTransactionDataSG{})))
 )
+
+// binderTransactionDataSG extends binderTransactionData with a buffers_size
+// field for scatter-gather transactions (BC_TRANSACTION_SG / BC_REPLY_SG).
+type binderTransactionDataSG struct {
+	binderTransactionData
+	buffersSize uint64 // binder_size_t: total size of scatter-gather buffers
+}
+
+// Compile-time size assertion: binderTransactionData (64) + buffersSize (8) = 72.
+var _ [72]byte = [unsafe.Sizeof(binderTransactionDataSG{})]byte{}

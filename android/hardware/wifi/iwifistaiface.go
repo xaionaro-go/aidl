@@ -812,7 +812,7 @@ func (p *WifiStaIfaceProxy) SetRoamingState(
 	_data.WriteInterfaceToken(DescriptorIWifiStaIface)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiStaIface, MethodIWifiStaIfaceSetRoamingState)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/StaRoamingState;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(state))

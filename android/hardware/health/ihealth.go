@@ -543,7 +543,7 @@ func (p *HealthProxy) SetChargingPolicy(
 	_data.WriteInterfaceToken(DescriptorIHealth)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIHealth, MethodIHealthSetChargingPolicy)
 	_compiledDescs := []string{
-		"Landroid/hardware/health/BatteryChargingPolicy;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(in_value))

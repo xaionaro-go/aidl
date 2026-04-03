@@ -60,7 +60,7 @@ func (p *DrmPluginListenerProxy) OnEvent(
 	_data.WriteInterfaceToken(DescriptorIDrmPluginListener)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIDrmPluginListener, MethodIDrmPluginListenerOnEvent)
 	_compiledDescs := []string{
-		"Landroid/hardware/drm/EventType;",
+		"I",
 		"[B",
 		"[B",
 	}

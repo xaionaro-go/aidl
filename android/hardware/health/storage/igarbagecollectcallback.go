@@ -49,7 +49,7 @@ func (p *GarbageCollectCallbackProxy) OnFinish(
 	_data.WriteInterfaceToken(DescriptorIGarbageCollectCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIGarbageCollectCallback, MethodIGarbageCollectCallbackOnFinish)
 	_compiledDescs := []string{
-		"Landroid/hardware/health/storage/Result;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(result))

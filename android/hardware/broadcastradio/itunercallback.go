@@ -65,7 +65,7 @@ func (p *TunerCallbackProxy) OnTuneFailed(
 	_data.WriteInterfaceToken(DescriptorITunerCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITunerCallback, MethodITunerCallbackOnTuneFailed)
 	_compiledDescs := []string{
-		"Landroid/hardware/broadcastradio/Result;",
+		"I",
 		"Landroid/hardware/broadcastradio/ProgramSelector;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -216,7 +216,7 @@ func (p *TunerCallbackProxy) OnConfigFlagUpdated(
 	_data.WriteInterfaceToken(DescriptorITunerCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITunerCallback, MethodITunerCallbackOnConfigFlagUpdated)
 	_compiledDescs := []string{
-		"Landroid/hardware/broadcastradio/ConfigFlag;",
+		"I",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

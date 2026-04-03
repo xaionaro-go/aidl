@@ -100,7 +100,7 @@ func (p *CarPowerPolicyServerProxy) GetPowerComponentState(
 	_data.WriteInterfaceToken(DescriptorICarPowerPolicyServer)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICarPowerPolicyServer, MethodICarPowerPolicyServerGetPowerComponentState)
 	_compiledDescs := []string{
-		"Landroid/frameworks/automotive/powerpolicy/PowerComponent;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(componentId))

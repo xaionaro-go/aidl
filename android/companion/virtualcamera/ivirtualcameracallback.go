@@ -64,7 +64,7 @@ func (p *VirtualCameraCallbackProxy) OnStreamConfigured(
 		"Landroid/view/Surface;",
 		"I",
 		"I",
-		"Landroid/companion/virtualcamera/Format;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(streamId)

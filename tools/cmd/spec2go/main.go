@@ -30,6 +30,7 @@ import (
 func main() {
 	specsDir := flag.String("specs", "specs/", "Directory containing spec YAML files")
 	outputDir := flag.String("output", ".", "Output directory for generated Go files")
+	nativeImplsDir := flag.String("native-impls", "", "Directory containing hand-written native parcelable implementations")
 	smokeTests := flag.Bool("smoke-tests", false, "Generate smoke tests")
 	codesOutput := flag.String("codes-output", "", "Output path for codes_gen.go")
 	defaultAPI := flag.Int("default-api", 36, "Default API level")
@@ -38,6 +39,7 @@ func main() {
 	if err := run(
 		*specsDir,
 		*outputDir,
+		*nativeImplsDir,
 		*smokeTests,
 		*codesOutput,
 		*defaultAPI,
@@ -50,6 +52,7 @@ func main() {
 func run(
 	specsDir string,
 	outputDir string,
+	nativeImplsDir string,
 	smokeTests bool,
 	codesOutput string,
 	defaultAPI int,
@@ -80,6 +83,7 @@ func run(
 	// Generate Go code.
 	fmt.Fprintf(os.Stderr, "Generating Go code into %s...\n", outputDir)
 	gen := codegen.NewGenerator(r, outputDir)
+	gen.NativeImplsDir = nativeImplsDir
 	gen.SetSkipErrors(true)
 	if err := gen.GenerateAll(); err != nil {
 		// errors.Join returns an error implementing Unwrap() []error.
@@ -158,6 +162,78 @@ func buildParcelableIndex(
 		}
 	}
 	return idx
+}
+
+// resolveDelegateName tries common name transformations to find a
+// parcelable matching the delegate field name. For example, a field
+// named "Locales" may correspond to the parcelable "LocaleList".
+func resolveDelegateName(fieldName string, parcIdx parcelableIndex) string {
+	// Try: strip trailing 's' (plurals) and append "List".
+	// "Locales" → "Locale" + "List" → "LocaleList"
+	if len(fieldName) > 1 && fieldName[len(fieldName)-1] == 's' {
+		candidate := fieldName[:len(fieldName)-1] + "List"
+		if q := parcIdx[candidate]; q != "" {
+			return q
+		}
+	}
+	// Try: append "List" directly.
+	// "Foo" → "FooList"
+	if q := parcIdx[fieldName+"List"]; q != "" {
+		return q
+	}
+	// Try: append "Handle" — e.g. "User" → "UserHandle".
+	if q := parcIdx[fieldName+"Handle"]; q != "" {
+		return q
+	}
+	return ""
+}
+
+// delegateFieldName extracts a clean field name from a java_wire_format
+// delegate name. Names like "This.notification" become "Notification".
+// Names without a "This." prefix are returned as-is.
+func delegateFieldName(name string) string {
+	if strings.HasPrefix(name, "This.") {
+		suffix := name[len("This."):]
+		if len(suffix) > 0 {
+			return strings.ToUpper(suffix[:1]) + suffix[1:]
+		}
+	}
+	return name
+}
+
+// isNullCheckCondition returns true if the condition is a Java-style null
+// check like "this.tag!=null" or "this.mInstanceId!=null".
+func isNullCheckCondition(cond string) bool {
+	return strings.HasSuffix(cond, "!=null") && strings.HasPrefix(cond, "this.")
+}
+
+// mergeNullFlagPairs preprocesses JavaWireFormat fields to merge the
+// "flag + conditional data" pattern used for nullable fields in Java
+// writeToParcel(). The pattern is:
+//
+//	{ name: "1", write_method: int32, condition: "this.xxx!=null" }   ← flag
+//	{ name: FieldName, write_method: ..., condition: "this.xxx!=null" } ← data
+//
+// This merges into a single field with condition "_null_flag", meaning
+// the codegen should emit: read int32 flag, then conditionally read/write data.
+func mergeNullFlagPairs(fields []spec.JavaWireField) []spec.JavaWireField {
+	var result []spec.JavaWireField
+	for i := 0; i < len(fields); i++ {
+		f := fields[i]
+		// Detect flag field: numeric literal int32 with null-check condition.
+		if isNumericLiteral(f.Name) && f.WriteMethod == "int32" &&
+			isNullCheckCondition(f.Condition) &&
+			i+1 < len(fields) && fields[i+1].Condition == f.Condition {
+			// Merge: skip the flag field, mark the data field with _null_flag.
+			i++
+			merged := fields[i]
+			merged.Condition = "_null_flag"
+			result = append(result, merged)
+			continue
+		}
+		result = append(result, f)
+	}
+	return result
 }
 
 // registerPackageSpec converts all definitions in a PackageSpec to parser
@@ -349,6 +425,9 @@ func isResolvableJavaWireCondition(condition string) bool {
 	if condition == "" {
 		return true
 	}
+	if condition == "_null_flag" {
+		return true
+	}
 	parts := strings.SplitN(condition, " & ", 2)
 	if len(parts) != 2 {
 		return false
@@ -366,8 +445,9 @@ func convertParcelableToAST(
 	parcIdx parcelableIndex,
 ) *parser.ParcelableDecl {
 	decl := &parser.ParcelableDecl{
-		ParcName: parc.Name,
-		Annots:   convertAnnotationNamesToAST(parc.Annotations),
+		ParcName:         parc.Name,
+		Annots:           convertAnnotationNamesToAST(parc.Annotations),
+		NativeParcelable: parc.NativeParcelable,
 	}
 
 	for _, f := range parc.Fields {
@@ -380,17 +460,25 @@ func convertParcelableToAST(
 	if len(decl.Fields) == 0 && len(parc.JavaWireFormat) > 0 {
 		var wireFields []parser.JavaWireField
 		seenNames := map[string]int{} // track Go field names for dedup
-		for _, jwf := range parc.JavaWireFormat {
+		jwfList := mergeNullFlagPairs(parc.JavaWireFormat)
+		for _, jwf := range jwfList {
+			// Strip "This." prefix from field names to get clean Go
+			// identifiers. Java writeToParcel often references fields
+			// as "this.field" → spec records them as "This.field".
+			cleanName := delegateFieldName(jwf.Name)
+			if cleanName != jwf.Name {
+				jwf.Name = cleanName
+			}
+
 			// Check if this field has a valid name and resolvable condition.
 			validName := isValidJavaWireFieldName(jwf.Name)
 			resolvableCond := isResolvableJavaWireCondition(jwf.Condition)
 			_, knownType := javaWireTypeToAIDL[jwf.WriteMethod]
 
-			// For typed_object fields with a valid name, check if the
-			// field name corresponds to a known parcelable in the specs.
+			// For typed_object/delegate fields with a valid name, check if
+			// the field name corresponds to a known parcelable in the specs.
 			// If found, store the AIDL qualified name in GoType so the
-			// codegen can generate a *ParcelableType struct field with
-			// proper nullable marshal/unmarshal.
+			// codegen can generate a struct field with proper marshal/unmarshal.
 			//
 			// The struct field is NOT added to decl.Fields here — it's
 			// generated directly by the codegen from JavaWireField.GoType.
@@ -398,6 +486,12 @@ func convertParcelableToAST(
 			// the cycle-breaking back-edge computation for unrelated packages.
 			if (jwf.WriteMethod == "typed_object" || jwf.WriteMethod == "delegate") && validName {
 				qualifiedName := parcIdx[jwf.Name]
+				if qualifiedName == "" && jwf.DelegateType != "" {
+					qualifiedName = parcIdx[jwf.DelegateType]
+				}
+				if qualifiedName == "" && jwf.WriteMethod == "delegate" {
+					qualifiedName = resolveDelegateName(jwf.Name, parcIdx)
+				}
 				if qualifiedName != "" {
 					goName := codegen.AIDLToGoName(jwf.Name)
 					seenNames[goName]++
@@ -410,6 +504,7 @@ func convertParcelableToAST(
 						Name:        dedupName,
 						WriteMethod: jwf.WriteMethod, // preserve typed_object vs delegate
 						GoType:      qualifiedName,
+						Condition:   jwf.Condition,
 					})
 					continue
 				}

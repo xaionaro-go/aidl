@@ -21,6 +21,8 @@ func (s *CaptureRequest) MarshalParcel(
 	p.WriteString16(s.LogicalCameraId)
 	p.WriteInt32(-1) // null LogicalCameraSettings
 	p.WriteBool(s.IsReprocess)
+	p.WriteInt32(-1) // null Surfaces.toArray(newSurface[surfaces.size()])
+	p.WriteInt32(0)  // placeholder StreamIdxArray.length
 	p.WriteInt32(1)
 	p.WriteString16("") // placeholder UserTagStr.substring(SET_TAG_STRING_PREFIX.length())
 	return nil

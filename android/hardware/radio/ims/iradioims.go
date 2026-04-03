@@ -177,8 +177,8 @@ func (p *RadioImsProxy) StartImsTraffic(
 	_compiledDescs := []string{
 		"I",
 		"I",
-		"Landroid/hardware/radio/ims/ImsTrafficType;",
-		"Landroid/hardware/radio/AccessNetwork;",
+		"I",
+		"I",
 		"LImsCall/Direction;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -262,7 +262,7 @@ func (p *RadioImsProxy) TriggerEpsFallback(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioIms, MethodIRadioImsTriggerEpsFallback)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/ims/EpsFallbackReason;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -338,8 +338,8 @@ func (p *RadioImsProxy) SendAnbrQuery(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioIms, MethodIRadioImsSendAnbrQuery)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/ims/ImsStreamType;",
-		"Landroid/hardware/radio/ims/ImsStreamDirection;",
+		"I",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

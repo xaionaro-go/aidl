@@ -211,7 +211,7 @@ func (p *HdmiConnectionProxy) SetHpdSignal(
 	_data.WriteInterfaceToken(DescriptorIHdmiConnection)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIHdmiConnection, MethodIHdmiConnectionSetHpdSignal)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/hdmi/connection/HpdSignal;",
+		"B",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

@@ -201,6 +201,16 @@ func (l *parcelableListener) extractFieldsFromStatement(
 		return l.extractFieldsFromIfStatement(stmt, condition)
 	}
 
+	// Check for synchronized block: synchronized(expr) { ... }
+	// Recurse into the body to extract write calls.
+	if stmt.SYNCHRONIZED() != nil {
+		blk := stmt.Block()
+		if blk != nil {
+			return l.extractFieldsFromBlock(blk, condition)
+		}
+		return nil
+	}
+
 	// Check for expression statement: parcel.writeXxx(arg).
 	exprStmt := stmt.GetStatementExpression()
 	if exprStmt == nil {

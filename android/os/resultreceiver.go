@@ -14,20 +14,12 @@ var _ parcel.Parcelable = (*ResultReceiver)(nil)
 func (s *ResultReceiver) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	_headerPos := parcel.WriteParcelableHeader(p)
-
-	parcel.WriteParcelableFooter(p, _headerPos)
+	p.WriteInt32(-1) // null Receiver.asBinder()
 	return nil
 }
 
 func (s *ResultReceiver) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	_endPos, _err := parcel.ReadParcelableHeader(p)
-	if _err != nil {
-		return _err
-	}
-
-	parcel.SkipToParcelableEnd(p, _endPos)
-	return nil
+	return nil // opaque Receiver.asBinder(): cannot skip without known wire format
 }

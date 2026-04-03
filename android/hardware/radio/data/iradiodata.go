@@ -168,7 +168,7 @@ func (p *RadioDataProxy) DeactivateDataCall(
 	_compiledDescs := []string{
 		"I",
 		"I",
-		"Landroid/hardware/radio/data/DataRequestReason;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -420,7 +420,7 @@ func (p *RadioDataProxy) SetDataThrottling(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioData, MethodIRadioDataSetDataThrottling)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/data/DataThrottlingAction;",
+		"B",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -557,10 +557,10 @@ func (p *RadioDataProxy) SetupDataCall(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioData, MethodIRadioDataSetupDataCall)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/AccessNetwork;",
+		"I",
 		"Landroid/hardware/radio/data/DataProfileInfo;",
 		"Z",
-		"Landroid/hardware/radio/data/DataRequestReason;",
+		"I",
 		"[Landroid/hardware/radio/data/LinkAddress;",
 		"[Ljava/lang/String;",
 		"I",

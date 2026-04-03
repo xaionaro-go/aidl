@@ -734,7 +734,7 @@ func (p *GnssProxy) DeleteAidingData(
 	_data.WriteInterfaceToken(DescriptorIGnss)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIGnss, MethodIGnssDeleteAidingData)
 	_compiledDescs := []string{
-		"Landroid/hardware/gnss/IGnss/GnssAidingData;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(aidingDataFlags))

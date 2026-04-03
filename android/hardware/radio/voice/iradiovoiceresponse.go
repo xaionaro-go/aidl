@@ -572,7 +572,7 @@ func (p *RadioVoiceResponseProxy) GetClipResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceResponse, MethodIRadioVoiceResponseGetClipResponse)
 	_compiledDescs := []string{
 		"Landroid/hardware/radio/RadioResponseInfo;",
-		"Landroid/hardware/radio/voice/ClipStatus;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -861,7 +861,7 @@ func (p *RadioVoiceResponseProxy) GetTtyModeResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceResponse, MethodIRadioVoiceResponseGetTtyModeResponse)
 	_compiledDescs := []string{
 		"Landroid/hardware/radio/RadioResponseInfo;",
-		"Landroid/hardware/radio/voice/TtyMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)

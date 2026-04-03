@@ -153,7 +153,7 @@ func (p *ConfirmationUIProxy) PromptUserConfirmation(
 		"[B",
 		"[B",
 		"Ljava/lang/String;",
-		"[Landroid/hardware/confirmationui/UIOption;",
+		"[I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		binder.WriteBinderToParcel(ctx, _data, resultCB.AsBinder(), p.Remote.Transport())

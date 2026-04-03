@@ -142,7 +142,7 @@ func (p *ThermalProxy) GetCoolingDevicesWithType(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIThermal, MethodIThermalGetCoolingDevicesWithType)
 	_compiledDescs := []string{
-		"Landroid/hardware/thermal/CoolingType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -282,7 +282,7 @@ func (p *ThermalProxy) GetTemperaturesWithType(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIThermal, MethodIThermalGetTemperaturesWithType)
 	_compiledDescs := []string{
-		"Landroid/hardware/thermal/TemperatureType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -422,7 +422,7 @@ func (p *ThermalProxy) GetTemperatureThresholdsWithType(
 	_data.WriteInterfaceToken(DescriptorIThermal)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIThermal, MethodIThermalGetTemperatureThresholdsWithType)
 	_compiledDescs := []string{
-		"Landroid/hardware/thermal/TemperatureType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -542,7 +542,7 @@ func (p *ThermalProxy) RegisterThermalChangedCallbackWithType(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIThermal, MethodIThermalRegisterThermalChangedCallbackWithType)
 	_compiledDescs := []string{
 		"Landroid/hardware/thermal/IThermalChangedCallback;",
-		"Landroid/hardware/thermal/TemperatureType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.Remote.Transport())
@@ -629,7 +629,7 @@ func (p *ThermalProxy) RegisterCoolingDeviceChangedCallbackWithType(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIThermal, MethodIThermalRegisterCoolingDeviceChangedCallbackWithType)
 	_compiledDescs := []string{
 		"Landroid/hardware/thermal/ICoolingDeviceChangedCallback;",
-		"Landroid/hardware/thermal/CoolingType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		binder.WriteBinderToParcel(ctx, _data, callback.AsBinder(), p.Remote.Transport())

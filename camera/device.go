@@ -13,6 +13,7 @@ import (
 	"github.com/AndroidGoLab/binder/binder"
 	cameraIGBP "github.com/AndroidGoLab/binder/camera/igbp"
 	"github.com/AndroidGoLab/binder/camera/gralloc"
+	"github.com/AndroidGoLab/binder/logger"
 	"github.com/AndroidGoLab/binder/servicemanager"
 )
 
@@ -25,6 +26,7 @@ type Device struct {
 
 	deviceUser fwkDevice.ICameraDeviceUser
 	callback   *deviceCallback
+	cameraID   string
 
 	// Set after ConfigureStream.
 	igbpStub    *cameraIGBP.ProducerStub
@@ -66,6 +68,7 @@ func Connect(
 		transport:  transport,
 		deviceUser: deviceUser,
 		callback:   cb,
+		cameraID:   cameraID,
 	}
 
 	return dev, nil
@@ -91,13 +94,17 @@ func (d *Device) ConfigureStream(
 			width,
 			height,
 			format,
-			gfxCommon.BufferUsageCpuReadOften|gfxCommon.BufferUsageCameraOutput,
+			gfxCommon.BufferUsageCpuReadOften|gfxCommon.BufferUsageCpuWriteOften|gfxCommon.BufferUsageCameraOutput,
 		)
 		if err != nil {
 			return fmt.Errorf("allocating gralloc buffer %d: %w", i, err)
 		}
+		logger.Debugf(ctx, "gralloc buffer %d: fds=%v ints=%v stride=%d", i, buf.Handle.Fds, buf.Handle.Ints, buf.Stride)
 		if err := buf.Mmap(); err != nil {
-			return fmt.Errorf("mmap gralloc buffer %d: %w", i, err)
+			// HIDL gralloc buffers are GPU memory and may not be
+			// mmappable without IMapper.lock(). Capture still works
+			// via IGBP callbacks but CaptureFrame() can't read pixels.
+			logger.Debugf(ctx, "mmap gralloc buffer %d: %v (capture will work but CPU pixel read unavailable)", i, err)
 		}
 		d.grallocBufs[i] = buf
 	}
@@ -154,7 +161,7 @@ func (d *Device) CaptureFrame(
 	captureReq := fwkDevice.CaptureRequest{
 		PhysicalCameraSettings: []fwkDevice.PhysicalCameraSettings{
 			{
-				Id: "0",
+				Id: d.cameraID,
 				Settings: fwkDevice.CaptureMetadataInfo{
 					Tag:      fwkDevice.CaptureMetadataInfoTagMetadata,
 					Metadata: fwkDevice.CameraMetadata{Metadata: d.metadata},

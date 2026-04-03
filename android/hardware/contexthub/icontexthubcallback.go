@@ -201,7 +201,7 @@ func (p *ContextHubCallbackProxy) HandleContextHubAsyncEvent(
 	_data.WriteInterfaceToken(DescriptorIContextHubCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIContextHubCallback, MethodIContextHubCallbackHandleContextHubAsyncEvent)
 	_compiledDescs := []string{
-		"Landroid/hardware/contexthub/AsyncEventType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(evt))

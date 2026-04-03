@@ -261,7 +261,7 @@ parcelables:
         - name: Super
           write_method: delegate
         - name: Files
-          write_method: opaque
+          write_method: write_list
     - name: ServiceInfo
       java_wire_format:
         - name: KeySet.size()

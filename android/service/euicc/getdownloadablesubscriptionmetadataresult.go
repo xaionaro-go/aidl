@@ -16,7 +16,7 @@ func (s *GetDownloadableSubscriptionMetadataResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Result)
-	p.WriteInt32(0) // null This.mSubscription
+	p.WriteInt32(0) // null MSubscription
 	return nil
 }
 
@@ -34,7 +34,7 @@ func (s *GetDownloadableSubscriptionMetadataResult) UnmarshalParcel(
 			return _opaqueErr
 		}
 		if _opaqueFlag != 0 {
-			return nil // non-null This.mSubscription: cannot skip unknown-size typed object
+			return nil // non-null MSubscription: cannot skip unknown-size typed object
 		}
 	}
 	return nil

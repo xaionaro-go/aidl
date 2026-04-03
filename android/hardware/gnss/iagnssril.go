@@ -155,7 +155,7 @@ func (p *AGnssRilProxy) SetSetId(
 	_data.WriteInterfaceToken(DescriptorIAGnssRil)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAGnssRil, MethodIAGnssRilSetSetId)
 	_compiledDescs := []string{
-		"Landroid/hardware/gnss/IAGnssRil/SetIdType;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

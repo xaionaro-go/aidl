@@ -53,7 +53,7 @@ func (p *GnssPsdsProxy) InjectPsdsData(
 	_data.WriteInterfaceToken(DescriptorIGnssPsds)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIGnssPsds, MethodIGnssPsdsInjectPsdsData)
 	_compiledDescs := []string{
-		"Landroid/hardware/gnss/PsdsType;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

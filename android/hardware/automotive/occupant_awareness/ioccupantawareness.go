@@ -134,7 +134,7 @@ func (p *OccupantAwarenessProxy) GetCapabilityForRole(
 	_data.WriteInterfaceToken(DescriptorIOccupantAwareness)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIOccupantAwareness, MethodIOccupantAwarenessGetCapabilityForRole)
 	_compiledDescs := []string{
-		"Landroid/hardware/automotive/occupant_awareness/Role;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(occupantRole))
@@ -181,7 +181,7 @@ func (p *OccupantAwarenessProxy) GetState(
 	_data.WriteInterfaceToken(DescriptorIOccupantAwareness)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIOccupantAwareness, MethodIOccupantAwarenessGetState)
 	_compiledDescs := []string{
-		"Landroid/hardware/automotive/occupant_awareness/Role;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

@@ -50,7 +50,7 @@ func (p *PreparedModelCallbackProxy) Notify(
 	_data.WriteInterfaceToken(DescriptorIPreparedModelCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIPreparedModelCallback, MethodIPreparedModelCallbackNotify)
 	_compiledDescs := []string{
-		"Landroid/hardware/neuralnetworks/ErrorStatus;",
+		"I",
 		"Landroid/hardware/neuralnetworks/IPreparedModel;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

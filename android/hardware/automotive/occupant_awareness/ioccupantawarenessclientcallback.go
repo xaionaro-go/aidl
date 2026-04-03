@@ -54,7 +54,7 @@ func (p *OccupantAwarenessClientCallbackProxy) OnSystemStatusChanged(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIOccupantAwarenessClientCallback, MethodIOccupantAwarenessClientCallbackOnSystemStatusChanged)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/automotive/occupant_awareness/OccupantAwarenessStatus;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(detectionFlags)

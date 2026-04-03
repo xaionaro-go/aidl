@@ -63,7 +63,7 @@ func (p *RadioDataIndicationProxy) DataCallListChanged(
 	_data.WriteInterfaceToken(DescriptorIRadioDataIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioDataIndication, MethodIRadioDataIndicationDataCallListChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"[Landroid/hardware/radio/data/SetupDataCallResult;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -120,7 +120,7 @@ func (p *RadioDataIndicationProxy) KeepaliveStatus(
 	_data.WriteInterfaceToken(DescriptorIRadioDataIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioDataIndication, MethodIRadioDataIndicationKeepaliveStatus)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Landroid/hardware/radio/data/KeepaliveStatus;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -163,7 +163,7 @@ func (p *RadioDataIndicationProxy) PcoData(
 	_data.WriteInterfaceToken(DescriptorIRadioDataIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioDataIndication, MethodIRadioDataIndicationPcoData)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Landroid/hardware/radio/data/PcoDataInfo;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -206,7 +206,7 @@ func (p *RadioDataIndicationProxy) UnthrottleApn(
 	_data.WriteInterfaceToken(DescriptorIRadioDataIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioDataIndication, MethodIRadioDataIndicationUnthrottleApn)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Landroid/hardware/radio/data/DataProfileInfo;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -249,7 +249,7 @@ func (p *RadioDataIndicationProxy) SlicingConfigChanged(
 	_data.WriteInterfaceToken(DescriptorIRadioDataIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioDataIndication, MethodIRadioDataIndicationSlicingConfigChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Landroid/hardware/radio/data/SlicingConfig;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

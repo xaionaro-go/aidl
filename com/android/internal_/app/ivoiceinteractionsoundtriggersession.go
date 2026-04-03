@@ -230,7 +230,7 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) SetParameter(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIVoiceInteractionSoundTriggerSession, MethodIVoiceInteractionSoundTriggerSessionSetParameter)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/soundtrigger/ModelParams;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -285,7 +285,7 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) GetParameter(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIVoiceInteractionSoundTriggerSession, MethodIVoiceInteractionSoundTriggerSessionGetParameter)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/soundtrigger/ModelParams;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(keyphraseId)
@@ -336,7 +336,7 @@ func (p *VoiceInteractionSoundTriggerSessionProxy) QueryParameter(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIVoiceInteractionSoundTriggerSession, MethodIVoiceInteractionSoundTriggerSessionQueryParameter)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/soundtrigger/ModelParams;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(keyphraseId)

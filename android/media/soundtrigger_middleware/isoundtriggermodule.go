@@ -365,7 +365,7 @@ func (p *SoundTriggerModuleProxy) SetModelParameter(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISoundTriggerModule, MethodISoundTriggerModuleSetModelParameter)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/media/soundtrigger/ModelParameter;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -416,7 +416,7 @@ func (p *SoundTriggerModuleProxy) GetModelParameter(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISoundTriggerModule, MethodISoundTriggerModuleGetModelParameter)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/media/soundtrigger/ModelParameter;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(modelHandle)
@@ -467,7 +467,7 @@ func (p *SoundTriggerModuleProxy) QueryModelParameterSupport(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISoundTriggerModule, MethodISoundTriggerModuleQueryModelParameterSupport)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/media/soundtrigger/ModelParameter;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(modelHandle)

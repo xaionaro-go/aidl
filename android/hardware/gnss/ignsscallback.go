@@ -139,7 +139,7 @@ func (p *GnssCallbackProxy) GnssStatusCb(
 	_data.WriteInterfaceToken(DescriptorIGnssCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIGnssCallback, MethodIGnssCallbackGnssStatusCb)
 	_compiledDescs := []string{
-		"Landroid/hardware/gnss/IGnssCallback/GnssStatusValue;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))

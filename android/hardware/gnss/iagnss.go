@@ -154,7 +154,7 @@ func (p *AGnssProxy) SetServer(
 	_data.WriteInterfaceToken(DescriptorIAGnss)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAGnss, MethodIAGnssSetServer)
 	_compiledDescs := []string{
-		"Landroid/hardware/gnss/IAGnssCallback/AGnssType;",
+		"I",
 		"Ljava/lang/String;",
 		"I",
 	}
@@ -207,7 +207,7 @@ func (p *AGnssProxy) DataConnOpen(
 	_compiledDescs := []string{
 		"J",
 		"Ljava/lang/String;",
-		"Landroid/hardware/gnss/IAGnss/ApnIpType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt64(networkHandle)

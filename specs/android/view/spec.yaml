@@ -3718,6 +3718,7 @@ parcelables:
         - name: Size
           write_method: int32
     - name: KeyCharacterMap
+      native_parcelable: true
     - name: KeyEvent
       annotations:
         - JavaOnlyStableParcelable
@@ -3873,6 +3874,11 @@ parcelables:
         - JavaOnlyStableParcelable
         - NdkOnlyStableParcelable
         - RustOnlyStableParcelable
+      java_wire_format:
+        - name: Name
+          write_method: string16
+        - name: IsSingleBuffered
+          write_method: bool
     - name: SurfaceControl
       java_wire_format:
         - name: Name

@@ -204,7 +204,7 @@ func (p *RadioMessagingProxy) AcknowledgeLastIncomingGsmSms(
 	_compiledDescs := []string{
 		"I",
 		"Z",
-		"Landroid/hardware/radio/messaging/SmsAcknowledgeFailCause;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)

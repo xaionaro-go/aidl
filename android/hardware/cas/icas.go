@@ -155,8 +155,8 @@ func (p *CasProxy) OpenSession(
 	_data.WriteInterfaceToken(DescriptorICas)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICas, MethodICasOpenSession)
 	_compiledDescs := []string{
-		"Landroid/hardware/cas/SessionIntent;",
-		"Landroid/hardware/cas/ScramblingMode;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(intent))

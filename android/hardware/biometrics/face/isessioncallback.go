@@ -281,7 +281,7 @@ func (p *SessionCallbackProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorISessionCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISessionCallback, MethodISessionCallbackOnError)
 	_compiledDescs := []string{
-		"Landroid/hardware/biometrics/face/Error;",
+		"B",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -620,7 +620,7 @@ func (p *SessionCallbackProxy) OnFeaturesRetrieved(
 	_data.WriteInterfaceToken(DescriptorISessionCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISessionCallback, MethodISessionCallbackOnFeaturesRetrieved)
 	_compiledDescs := []string{
-		"[Landroid/hardware/biometrics/face/Feature;",
+		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		if features == nil {
@@ -675,7 +675,7 @@ func (p *SessionCallbackProxy) OnFeatureSet(
 	_data.WriteInterfaceToken(DescriptorISessionCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISessionCallback, MethodISessionCallbackOnFeatureSet)
 	_compiledDescs := []string{
-		"Landroid/hardware/biometrics/face/Feature;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(feature))

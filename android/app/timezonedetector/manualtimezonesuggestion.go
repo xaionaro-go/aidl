@@ -28,5 +28,8 @@ func (s *ManualTimeZoneSuggestion) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque DebugInfo: cannot skip without known wire format
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	return nil
 }

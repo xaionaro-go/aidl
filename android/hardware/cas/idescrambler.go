@@ -64,7 +64,7 @@ func (p *DescramblerProxy) Descramble(
 	_data.WriteInterfaceToken(DescriptorIDescrambler)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIDescrambler, MethodIDescramblerDescramble)
 	_compiledDescs := []string{
-		"Landroid/hardware/cas/ScramblingControl;",
+		"I",
 		"[Landroid/hardware/cas/SubSample;",
 		"Landroid/hardware/cas/SharedBuffer;",
 		"J",

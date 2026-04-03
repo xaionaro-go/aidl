@@ -67,7 +67,7 @@ func (p *WifiChipEventCallbackProxy) OnChipReconfigureFailure(
 	_data.WriteInterfaceToken(DescriptorIWifiChipEventCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChipEventCallback, MethodIWifiChipEventCallbackOnChipReconfigureFailure)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/WifiStatusCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))
@@ -212,7 +212,7 @@ func (p *WifiChipEventCallbackProxy) OnIfaceAdded(
 	_data.WriteInterfaceToken(DescriptorIWifiChipEventCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChipEventCallback, MethodIWifiChipEventCallbackOnIfaceAdded)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/IfaceType;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -249,7 +249,7 @@ func (p *WifiChipEventCallbackProxy) OnIfaceRemoved(
 	_data.WriteInterfaceToken(DescriptorIWifiChipEventCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChipEventCallback, MethodIWifiChipEventCallbackOnIfaceRemoved)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/IfaceType;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

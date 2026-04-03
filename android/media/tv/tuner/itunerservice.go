@@ -725,7 +725,7 @@ func (p *TunerServiceProxy) SetMaxNumberOfFrontends(
 	_data.WriteInterfaceToken(DescriptorITunerService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITunerService, MethodITunerServiceSetMaxNumberOfFrontends)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/FrontendType;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -771,7 +771,7 @@ func (p *TunerServiceProxy) GetMaxNumberOfFrontends(
 	_data.WriteInterfaceToken(DescriptorITunerService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITunerService, MethodITunerServiceGetMaxNumberOfFrontends)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/FrontendType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(frontendType))

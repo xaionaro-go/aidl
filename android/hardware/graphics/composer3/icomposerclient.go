@@ -260,7 +260,7 @@ func (p *ComposerClientProxy) CreateVirtualDisplay(
 	_compiledDescs := []string{
 		"I",
 		"I",
-		"Landroid/hardware/graphics/common/PixelFormat;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -612,7 +612,7 @@ func (p *ComposerClientProxy) GetDataspaceSaturationMatrix(
 	_data.WriteInterfaceToken(DescriptorIComposerClient)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIComposerClient, MethodIComposerClientGetDataspaceSaturationMatrix)
 	_compiledDescs := []string{
-		"Landroid/hardware/graphics/common/Dataspace;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(dataspace))
@@ -675,7 +675,7 @@ func (p *ComposerClientProxy) GetDisplayAttribute(
 	_compiledDescs := []string{
 		"J",
 		"I",
-		"Landroid/hardware/graphics/composer3/DisplayAttribute;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt64(display)
@@ -1435,7 +1435,7 @@ func (p *ComposerClientProxy) GetRenderIntents(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIComposerClient, MethodIComposerClientGetRenderIntents)
 	_compiledDescs := []string{
 		"J",
-		"Landroid/hardware/graphics/composer3/ColorMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt64(display)
@@ -1990,8 +1990,8 @@ func (p *ComposerClientProxy) SetColorMode(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIComposerClient, MethodIComposerClientSetColorMode)
 	_compiledDescs := []string{
 		"J",
-		"Landroid/hardware/graphics/composer3/ColorMode;",
-		"Landroid/hardware/graphics/composer3/RenderIntent;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt64(display)
@@ -2040,7 +2040,7 @@ func (p *ComposerClientProxy) SetContentType(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIComposerClient, MethodIComposerClientSetContentType)
 	_compiledDescs := []string{
 		"J",
-		"Landroid/hardware/graphics/composer3/ContentType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt64(display)
@@ -2089,7 +2089,7 @@ func (p *ComposerClientProxy) SetDisplayedContentSamplingEnabled(
 	_compiledDescs := []string{
 		"J",
 		"Z",
-		"Landroid/hardware/graphics/composer3/FormatColorComponent;",
+		"B",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -2142,7 +2142,7 @@ func (p *ComposerClientProxy) SetPowerMode(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIComposerClient, MethodIComposerClientSetPowerMode)
 	_compiledDescs := []string{
 		"J",
-		"Landroid/hardware/graphics/composer3/PowerMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt64(display)

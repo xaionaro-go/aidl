@@ -205,7 +205,7 @@ func (p *PowerHintSessionProxy) SendHint(
 	_data.WriteInterfaceToken(DescriptorIPowerHintSession)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIPowerHintSession, MethodIPowerHintSessionSendHint)
 	_compiledDescs := []string{
-		"Landroid/hardware/power/SessionHint;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(hint))
@@ -293,7 +293,7 @@ func (p *PowerHintSessionProxy) SetMode(
 	_data.WriteInterfaceToken(DescriptorIPowerHintSession)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIPowerHintSession, MethodIPowerHintSessionSetMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/power/SessionMode;",
+		"I",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

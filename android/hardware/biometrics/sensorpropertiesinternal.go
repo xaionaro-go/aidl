@@ -44,5 +44,16 @@ func (s *SensorPropertiesInternal) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque ComponentInfo: cannot skip without known wire format
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	s.ResetLockoutRequiresHardwareAuthToken, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	s.ResetLockoutRequiresChallenge, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	return nil
 }

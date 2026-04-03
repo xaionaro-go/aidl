@@ -30,3 +30,11 @@ func (o mapSizeOption) apply(c *Config) { c.MapSize = o.n }
 
 // WithMapSize sets the mmap size for the Binder driver.
 func WithMapSize(n uint32) Option { return mapSizeOption{n: n} }
+
+type devicePathOption struct{ path string }
+
+func (o devicePathOption) apply(c *Config) { c.DevicePath = o.path }
+
+// WithDevicePath sets the binder device path (e.g. "/dev/hwbinder").
+// Defaults to "/dev/binder".
+func WithDevicePath(path string) Option { return devicePathOption{path: path} }

@@ -787,7 +787,7 @@ func (p *AudioFlingerServiceProxy) SetStreamVolume(
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerService, MethodIAudioFlingerServiceSetStreamVolume)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 		"F",
 		"I",
 	}
@@ -837,7 +837,7 @@ func (p *AudioFlingerServiceProxy) SetStreamMute(
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerService, MethodIAudioFlingerServiceSetStreamMute)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -884,7 +884,7 @@ func (p *AudioFlingerServiceProxy) StreamVolume(
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerService, MethodIAudioFlingerServiceStreamVolume)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -934,7 +934,7 @@ func (p *AudioFlingerServiceProxy) StreamMute(
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerService, MethodIAudioFlingerServiceStreamMute)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(stream))
@@ -979,7 +979,7 @@ func (p *AudioFlingerServiceProxy) SetMode(
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerService, MethodIAudioFlingerServiceSetMode)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mode))
@@ -1811,7 +1811,7 @@ func (p *AudioFlingerServiceProxy) NewAudioUniqueId(
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerService, MethodIAudioFlingerServiceNewAudioUniqueId)
 	_compiledDescs := []string{
-		"Landroid/media/AudioUniqueIdUse;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(use))
@@ -3057,7 +3057,7 @@ func (p *AudioFlingerServiceProxy) GetMmapPolicyInfos(
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerService, MethodIAudioFlingerServiceGetMmapPolicyInfos)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioMMapPolicyType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(policyType))
@@ -3196,7 +3196,7 @@ func (p *AudioFlingerServiceProxy) SetDeviceConnectedState(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerService, MethodIAudioFlingerServiceSetDeviceConnectedState)
 	_compiledDescs := []string{
 		"Landroid/media/AudioPortFw;",
-		"Landroid/media/DeviceConnectedState;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -3289,7 +3289,7 @@ func (p *AudioFlingerServiceProxy) SetRequestedLatencyMode(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerService, MethodIAudioFlingerServiceSetRequestedLatencyMode)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/media/audio/common/AudioLatencyMode;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(output)

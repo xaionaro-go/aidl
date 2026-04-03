@@ -250,9 +250,9 @@ parcelables:
         - name: MccMncs
           write_method: opaque
         - name: Bands
-          write_method: opaque
+          write_method: write_list
         - name: RadioAccessSpecifiers
-          write_method: opaque
+          write_method: write_list
     - name: BarringInfo
       java_wire_format:
         - name: CellIdentity
@@ -614,7 +614,7 @@ parcelables:
         - name: EmergencyOnly
           write_method: bool
         - name: AvailableServices
-          write_method: opaque
+          write_method: write_list
         - name: CellIdentity
           write_method: typed_object
         - name: VoiceSpecificInfo
@@ -674,7 +674,7 @@ parcelables:
         - name: NetworkValidationBeforeSwitchSupported
           write_method: bool
         - name: LogicalModemList
-          write_method: opaque
+          write_method: write_list
         - name: DeviceNrCapabilities
           write_method: int_array
     - name: PhoneNumberRange
@@ -787,6 +787,8 @@ parcelables:
           write_method: bool
         - name: ArfcnRsrpBoost
           write_method: int32
+        - name: NetworkRegistrationInfos
+          write_method: write_list
         - name: ChannelNumber
           write_method: int32
         - name: CellBandwidths

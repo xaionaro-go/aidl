@@ -279,7 +279,7 @@ parcelables:
         - name: SizeBytes
           write_method: int64
         - name: LeaseInfos
-          write_method: opaque
+          write_method: write_list
     - name: LeaseInfo
       java_wire_format:
         - name: PackageName

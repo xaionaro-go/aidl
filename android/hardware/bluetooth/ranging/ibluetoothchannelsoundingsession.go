@@ -244,7 +244,7 @@ func (p *BluetoothChannelSoundingSessionProxy) Close(
 	_data.WriteInterfaceToken(DescriptorIBluetoothChannelSoundingSession)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothChannelSoundingSession, MethodIBluetoothChannelSoundingSessionClose)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/ranging/Reason;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(reason))

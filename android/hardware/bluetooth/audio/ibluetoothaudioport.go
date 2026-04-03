@@ -288,7 +288,7 @@ func (p *BluetoothAudioPortProxy) SetLatencyMode(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioPort)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothAudioPort, MethodIBluetoothAudioPortSetLatencyMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/audio/LatencyMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(latencyMode))

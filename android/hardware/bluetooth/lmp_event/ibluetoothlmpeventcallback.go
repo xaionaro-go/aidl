@@ -58,10 +58,10 @@ func (p *BluetoothLmpEventCallbackProxy) OnEventGenerated(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothLmpEventCallback, MethodIBluetoothLmpEventCallbackOnEventGenerated)
 	_compiledDescs := []string{
 		"Landroid/hardware/bluetooth/lmp_event/Timestamp;",
-		"Landroid/hardware/bluetooth/lmp_event/AddressType;",
+		"B",
 		"[B",
-		"Landroid/hardware/bluetooth/lmp_event/Direction;",
-		"Landroid/hardware/bluetooth/lmp_event/LmpEventId;",
+		"B",
+		"B",
 		"C",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

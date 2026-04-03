@@ -209,7 +209,7 @@ func (p *EvsDisplayProxy) SetDisplayState(
 	_data.WriteInterfaceToken(DescriptorIEvsDisplay)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIEvsDisplay, MethodIEvsDisplaySetDisplayState)
 	_compiledDescs := []string{
-		"Landroid/hardware/automotive/evs/DisplayState;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(state))

@@ -206,7 +206,7 @@ func (p *EffectProxy) Command(
 	_data.WriteInterfaceToken(DescriptorIEffect)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIEffect, MethodIEffectCommand)
 	_compiledDescs := []string{
-		"Landroid/hardware/audio/effect/CommandId;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(commandId))

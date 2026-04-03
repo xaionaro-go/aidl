@@ -85,8 +85,8 @@ func (p *UwbClientCallbackProxy) OnHalEvent(
 	_data.WriteInterfaceToken(DescriptorIUwbClientCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIUwbClientCallback, MethodIUwbClientCallbackOnHalEvent)
 	_compiledDescs := []string{
-		"Landroid/hardware/uwb/UwbEvent;",
-		"Landroid/hardware/uwb/UwbStatus;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(event))

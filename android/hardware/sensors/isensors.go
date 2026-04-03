@@ -198,7 +198,7 @@ func (p *SensorsProxy) ConfigDirectReport(
 	_compiledDescs := []string{
 		"I",
 		"I",
-		"Landroid/hardware/sensors/ISensors/RateLevel;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(sensorHandle)
@@ -514,7 +514,7 @@ func (p *SensorsProxy) SetOperationMode(
 	_data.WriteInterfaceToken(DescriptorISensors)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISensors, MethodISensorsSetOperationMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/sensors/ISensors/OperationMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mode))

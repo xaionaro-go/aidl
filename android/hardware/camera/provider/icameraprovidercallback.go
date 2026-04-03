@@ -58,7 +58,7 @@ func (p *CameraProviderCallbackProxy) CameraDeviceStatusChange(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICameraProviderCallback, MethodICameraProviderCallbackCameraDeviceStatusChange)
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
-		"Landroid/frameworks/cameraservice/service/CameraDeviceStatus;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteString16(cameraDeviceName)
@@ -104,7 +104,7 @@ func (p *CameraProviderCallbackProxy) TorchModeStatusChange(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICameraProviderCallback, MethodICameraProviderCallbackTorchModeStatusChange)
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
-		"Landroid/hardware/camera/common/TorchModeStatus;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteString16(cameraDeviceName)
@@ -152,7 +152,7 @@ func (p *CameraProviderCallbackProxy) PhysicalCameraDeviceStatusChange(
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
 		"Ljava/lang/String;",
-		"Landroid/frameworks/cameraservice/service/CameraDeviceStatus;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteString16(cameraDeviceName)

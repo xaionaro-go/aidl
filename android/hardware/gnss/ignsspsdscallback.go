@@ -49,7 +49,7 @@ func (p *GnssPsdsCallbackProxy) DownloadRequestCb(
 	_data.WriteInterfaceToken(DescriptorIGnssPsdsCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIGnssPsdsCallback, MethodIGnssPsdsCallbackDownloadRequestCb)
 	_compiledDescs := []string{
-		"Landroid/hardware/gnss/PsdsType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(psdsType))

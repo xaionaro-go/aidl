@@ -8,6 +8,7 @@ import (
 
 type ExtractedTextRequest struct {
 	Token        int32
+	Flags        int32
 	HintMaxLines int32
 	HintMaxChars int32
 }
@@ -18,7 +19,7 @@ func (s *ExtractedTextRequest) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Token)
-	p.WriteInt32(0) // placeholder This.flags
+	p.WriteInt32(s.Flags)
 	p.WriteInt32(s.HintMaxLines)
 	p.WriteInt32(s.HintMaxChars)
 	return nil
@@ -32,7 +33,8 @@ func (s *ExtractedTextRequest) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip This.flags
+	s.Flags, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	s.HintMaxLines, _err = p.ReadInt32()

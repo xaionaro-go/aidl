@@ -483,8 +483,8 @@ func (p *DeviceProxy) PrepareModel(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIDevice, MethodIDevicePrepareModel)
 	_compiledDescs := []string{
 		"Landroid/hardware/neuralnetworks/Model;",
-		"Landroid/hardware/neuralnetworks/ExecutionPreference;",
-		"Landroid/hardware/neuralnetworks/Priority;",
+		"I",
+		"I",
 		"J",
 		"[Landroid/os/ParcelFileDescriptor;",
 		"[Landroid/os/ParcelFileDescriptor;",

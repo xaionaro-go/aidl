@@ -368,7 +368,7 @@ func (p *ContextHubProxy) OnSettingChanged(
 	_data.WriteInterfaceToken(DescriptorIContextHub)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIContextHub, MethodIContextHubOnSettingChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/contexthub/Setting;",
+		"B",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

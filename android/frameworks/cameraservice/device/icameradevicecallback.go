@@ -108,7 +108,7 @@ func (p *CameraDeviceCallbackProxy) OnDeviceError(
 	_data.WriteInterfaceToken(DescriptorICameraDeviceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICameraDeviceCallback, MethodICameraDeviceCallbackOnDeviceError)
 	_compiledDescs := []string{
-		"Landroid/frameworks/cameraservice/device/ErrorCode;",
+		"I",
 		"Landroid/frameworks/cameraservice/device/CaptureResultExtras;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

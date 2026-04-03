@@ -199,7 +199,7 @@ func (p *SatelliteListenerProxy) OnSatelliteModemStateChanged(
 	_data.WriteInterfaceToken(DescriptorISatelliteListener)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISatelliteListener, MethodISatelliteListenerOnSatelliteModemStateChanged)
 	_compiledDescs := []string{
-		"Landroid/telephony/satellite/stub/SatelliteModemState;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(state))

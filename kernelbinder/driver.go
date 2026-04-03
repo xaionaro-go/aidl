@@ -96,7 +96,7 @@ func Open(
 
 	cfg := binder.Options(opts).Config()
 
-	fd, err := unix.Open("/dev/binder", unix.O_RDWR|unix.O_CLOEXEC, 0)
+	fd, err := unix.Open(cfg.DevicePath, unix.O_RDWR|unix.O_CLOEXEC, 0)
 	if err != nil {
 		return nil, &aidlerrors.BinderError{Op: "open", Err: err}
 	}
@@ -441,11 +441,29 @@ func (d *Driver) Transact(
 		offsetsBuffer: offsetsPtr,
 	}
 
-	// Build write buffer: uint32 command code + binderTransactionData.
-	txnSize := unsafe.Sizeof(txn)
-	writeBuf := make([]byte, 4+txnSize)
-	binary.LittleEndian.PutUint32(writeBuf[0:4], uint32(bcTransaction))
-	copyStructToBytes(writeBuf[4:], unsafe.Pointer(&txn), txnSize)
+	// Check if the parcel contains scatter-gather buffer objects
+	// (BINDER_TYPE_PTR). If so, we must use BC_TRANSACTION_SG which
+	// tells the kernel the total extra buffer size to allocate.
+	sgBuffersSize := calcScatterGatherBuffersSize(dataBytes, objects)
+
+	var writeBuf []byte
+	if sgBuffersSize > 0 {
+		// Use BC_TRANSACTION_SG with binderTransactionDataSG.
+		txnSG := binderTransactionDataSG{
+			binderTransactionData: txn,
+			buffersSize:           sgBuffersSize,
+		}
+		sgSize := unsafe.Sizeof(txnSG)
+		writeBuf = make([]byte, 4+sgSize)
+		binary.LittleEndian.PutUint32(writeBuf[0:4], uint32(bcTransactionSG))
+		copyStructToBytes(writeBuf[4:], unsafe.Pointer(&txnSG), sgSize)
+	} else {
+		// Standard BC_TRANSACTION (no scatter-gather).
+		txnSize := unsafe.Sizeof(txn)
+		writeBuf = make([]byte, 4+txnSize)
+		binary.LittleEndian.PutUint32(writeBuf[0:4], uint32(bcTransaction))
+		copyStructToBytes(writeBuf[4:], unsafe.Pointer(&txn), txnSize)
+	}
 
 	// Allocate read buffer for the response.
 	readBuf := make([]byte, readBufferSize)
@@ -592,6 +610,15 @@ func (d *Driver) parseReadBuffer(
 			}
 
 			d.acquireReplyHandles(ctx, replyData, txn.offsetsBuffer, txn.offsetsSize)
+
+			// Resolve HIDL scatter-gather buffers before freeing the mmap'd
+			// region. BINDER_TYPE_PTR objects reference data in the extra
+			// buffer space after the main data; we copy those and patch the
+			// pointers to offsets within the extended reply data.
+			replyData, sgErr := d.resolveScatterGather(replyData, txn.offsetsBuffer, txn.offsetsSize)
+			if sgErr != nil {
+				logger.Warnf(ctx, "scatter-gather resolve: %v", sgErr)
+			}
 
 			if err := d.freeBuffer(ctx, txn.dataBuffer); err != nil {
 				logger.Warnf(ctx, "failed to free binder buffer: %v", err)

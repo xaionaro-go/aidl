@@ -156,7 +156,7 @@ func (p *SupplicantStaNetworkCallbackProxy) OnTransitionDisable(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetworkCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetworkCallback, MethodISupplicantStaNetworkCallbackOnTransitionDisable)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/TransitionDisableIndication;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(ind))

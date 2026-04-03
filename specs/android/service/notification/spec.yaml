@@ -503,9 +503,9 @@ parcelables:
     - name: ZenPolicy
       java_wire_format:
         - name: PriorityCategories
-          write_method: opaque
+          write_method: write_list
         - name: VisualEffects
-          write_method: opaque
+          write_method: write_list
         - name: PriorityMessages
           write_method: int32
         - name: PriorityCalls

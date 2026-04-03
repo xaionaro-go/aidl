@@ -381,7 +381,7 @@ func (p *SupplicantStaIfaceProxy) AddRxFilter(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIface)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIface, MethodISupplicantStaIfaceAddRxFilter)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/RxFilterType;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(type_))
@@ -589,7 +589,7 @@ func (p *SupplicantStaIfaceProxy) GenerateDppBootstrapInfoForResponder(
 	_compiledDescs := []string{
 		"[B",
 		"Ljava/lang/String;",
-		"Landroid/hardware/wifi/supplicant/DppCurve;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteByteArray(macAddress)
@@ -964,8 +964,8 @@ func (p *SupplicantStaIfaceProxy) InitiateAnqpQuery(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIface, MethodISupplicantStaIfaceInitiateAnqpQuery)
 	_compiledDescs := []string{
 		"[B",
-		"[Landroid/hardware/wifi/supplicant/AnqpInfoId;",
-		"[Landroid/hardware/wifi/supplicant/Hs20AnqpSubtypes;",
+		"[I",
+		"[I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteByteArray(macAddress)
@@ -1644,7 +1644,7 @@ func (p *SupplicantStaIfaceProxy) RemoveRxFilter(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIface)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIface, MethodISupplicantStaIfaceRemoveRxFilter)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/RxFilterType;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(type_))
@@ -1685,7 +1685,7 @@ func (p *SupplicantStaIfaceProxy) SetBtCoexistenceMode(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIface)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIface, MethodISupplicantStaIfaceSetBtCoexistenceMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/BtCoexistenceMode;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(mode))
@@ -1972,7 +1972,7 @@ func (p *SupplicantStaIfaceProxy) SetWpsConfigMethods(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIface)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIface, MethodISupplicantStaIfaceSetWpsConfigMethods)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/WpsConfigMethods;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(configMethods))
@@ -2272,8 +2272,8 @@ func (p *SupplicantStaIfaceProxy) StartDppConfiguratorInitiator(
 		"Ljava/lang/String;",
 		"Ljava/lang/String;",
 		"Ljava/lang/String;",
-		"Landroid/hardware/wifi/supplicant/DppNetRole;",
-		"Landroid/hardware/wifi/supplicant/DppAkm;",
+		"I",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

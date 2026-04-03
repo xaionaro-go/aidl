@@ -96,7 +96,7 @@ parcelables:
         - name: RttPipeToInCall
           write_method: typed_object
         - name: Participants
-          write_method: opaque
+          write_method: write_list
         - name: IsAdhocConference
           write_method: bool
     - name: DisconnectCause
@@ -135,7 +135,7 @@ parcelables:
         - name: DisconnectCause
           write_method: typed_object
         - name: CannedSmsResponses
-          write_method: opaque
+          write_method: write_list
         - name: Capabilities
           write_method: int32
         - name: Properties
@@ -161,13 +161,13 @@ parcelables:
         - name: ParentCallId
           write_method: string16
         - name: ChildCallIds
-          write_method: opaque
+          write_method: write_list
         - name: StatusHints
           write_method: typed_object
         - name: VideoState
           write_method: int32
         - name: ConferenceableCallIds
-          write_method: opaque
+          write_method: write_list
         - name: IntentExtras
           write_method: bundle
         - name: Extras
@@ -199,7 +199,7 @@ parcelables:
         - name: ConnectionCapabilities
           write_method: int32
         - name: ConnectionIds
-          write_method: opaque
+          write_method: write_list
         - name: ConnectTimeMillis
           write_method: int64
         - name: VideoProvider!=null

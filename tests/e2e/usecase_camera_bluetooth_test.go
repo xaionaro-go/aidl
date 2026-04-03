@@ -42,6 +42,29 @@ import (
 // Helpers
 // ---------------------------------------------------------------------------
 
+// discoverCameraID queries the framework camera service to find the first
+// available camera ID. This avoids hardcoding a camera ID that may differ
+// across emulators and devices.
+func discoverCameraID(
+	ctx context.Context,
+	t *testing.T,
+	sm *servicemanager.ServiceManager,
+) string {
+	t.Helper()
+	fwkSvc, err := sm.GetService(ctx, "android.frameworks.cameraservice.service.ICameraService/default")
+	requireOrSkip(t, err)
+	fwkCam := fwkService.NewCameraServiceProxy(fwkSvc)
+
+	listener := fwkService.NewCameraServiceListenerStub(&noopCameraServiceListener{})
+	cameras, err := fwkCam.AddListener(ctx, listener)
+	requireOrSkip(t, err)
+	defer func() { _ = fwkCam.RemoveListener(ctx, listener) }()
+
+	require.Greater(t, len(cameras), 0, "expected at least one camera")
+	t.Logf("Discovered camera ID %q (out of %d cameras)", cameras[0].CameraId, len(cameras))
+	return cameras[0].CameraId
+}
+
 func ucShellAttribution() content.AttributionSource {
 	return content.AttributionSource{
 		AttributionSourceState: content.AttributionSourceState{
@@ -200,15 +223,15 @@ func TestUseCase23_CameraAvailability(t *testing.T) {
 // package API (camera.Connect + ConfigureStream + CaptureFrame).
 func TestUseCase24_CameraFrameCapture(t *testing.T) {
 	const (
-		cameraID = "0"
-		width    = 640
-		height   = 480
+		width  = 640
+		height = 480
 	)
 
 	ctx := context.Background()
 	transport := openBinderLarge(t)
 	sm := servicemanager.New(transport)
 
+	cameraID := discoverCameraID(ctx, t, sm)
 	cam, err := camera.Connect(ctx, sm, transport, cameraID)
 	requireOrSkip(t, err)
 	defer cam.Close(ctx)
@@ -242,16 +265,16 @@ func TestUseCase24_CameraFrameCapture(t *testing.T) {
 
 func TestUseCase25_QRScannerDaemon(t *testing.T) {
 	const (
-		cameraID    = "0"
-		width       = 640
-		height      = 480
-		frameCount  = 3
+		width      = 640
+		height     = 480
+		frameCount = 3
 	)
 
 	ctx := context.Background()
 	transport := openBinderLarge(t)
 	sm := servicemanager.New(transport)
 
+	cameraID := discoverCameraID(ctx, t, sm)
 	cam, err := camera.Connect(ctx, sm, transport, cameraID)
 	requireOrSkip(t, err)
 	defer cam.Close(ctx)
@@ -285,7 +308,6 @@ func TestUseCase25_QRScannerDaemon(t *testing.T) {
 
 func TestUseCase26_TimelapseCapture(t *testing.T) {
 	const (
-		cameraID     = "0"
 		width        = 640
 		height       = 480
 		captureCount = 2
@@ -296,6 +318,7 @@ func TestUseCase26_TimelapseCapture(t *testing.T) {
 	transport := openBinderLarge(t)
 	sm := servicemanager.New(transport)
 
+	cameraID := discoverCameraID(ctx, t, sm)
 	cam, err := camera.Connect(ctx, sm, transport, cameraID)
 	requireOrSkip(t, err)
 	defer cam.Close(ctx)

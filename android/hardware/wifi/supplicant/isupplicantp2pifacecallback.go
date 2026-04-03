@@ -132,9 +132,9 @@ func (p *SupplicantP2pIfaceCallbackProxy) OnDeviceFound(
 		"[B",
 		"[B",
 		"Ljava/lang/String;",
-		"Landroid/hardware/wifi/supplicant/WpsConfigMethods;",
+		"I",
 		"B",
-		"Landroid/hardware/wifi/supplicant/P2pGroupCapabilityMask;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -236,7 +236,7 @@ func (p *SupplicantP2pIfaceCallbackProxy) OnGoNegotiationCompleted(
 	_data.WriteInterfaceToken(DescriptorISupplicantP2pIfaceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantP2pIfaceCallback, MethodISupplicantP2pIfaceCallbackOnGoNegotiationCompleted)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/P2pStatusCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))
@@ -270,7 +270,7 @@ func (p *SupplicantP2pIfaceCallbackProxy) OnGoNegotiationRequest(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantP2pIfaceCallback, MethodISupplicantP2pIfaceCallbackOnGoNegotiationRequest)
 	_compiledDescs := []string{
 		"[B",
-		"Landroid/hardware/wifi/supplicant/WpsDevPasswordId;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteByteArray(srcAddress)
@@ -511,7 +511,7 @@ func (p *SupplicantP2pIfaceCallbackProxy) OnInvitationResult(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantP2pIfaceCallback, MethodISupplicantP2pIfaceCallbackOnInvitationResult)
 	_compiledDescs := []string{
 		"[B",
-		"Landroid/hardware/wifi/supplicant/P2pStatusCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteByteArray(bssid)
@@ -552,8 +552,8 @@ func (p *SupplicantP2pIfaceCallbackProxy) OnProvisionDiscoveryCompleted(
 	_compiledDescs := []string{
 		"[B",
 		"Z",
-		"Landroid/hardware/wifi/supplicant/P2pProvDiscStatusCode;",
-		"Landroid/hardware/wifi/supplicant/WpsConfigMethods;",
+		"B",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -610,9 +610,9 @@ func (p *SupplicantP2pIfaceCallbackProxy) OnR2DeviceFound(
 		"[B",
 		"[B",
 		"Ljava/lang/String;",
-		"Landroid/hardware/wifi/supplicant/WpsConfigMethods;",
+		"I",
 		"B",
-		"Landroid/hardware/wifi/supplicant/P2pGroupCapabilityMask;",
+		"I",
 		"[B",
 		"[B",
 	}
@@ -836,9 +836,9 @@ func (p *SupplicantP2pIfaceCallbackProxy) OnDeviceFoundWithVendorElements(
 		"[B",
 		"[B",
 		"Ljava/lang/String;",
-		"Landroid/hardware/wifi/supplicant/WpsConfigMethods;",
+		"I",
 		"B",
-		"Landroid/hardware/wifi/supplicant/P2pGroupCapabilityMask;",
+		"I",
 		"[B",
 		"[B",
 		"[B",

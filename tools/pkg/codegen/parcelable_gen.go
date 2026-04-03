@@ -29,6 +29,12 @@ func GenerateParcelable(
 		return nil, nil
 	}
 
+	// Native parcelables have wire formats defined by C++/JNI code.
+	// Hand-written implementations are copied from native_impls/.
+	if decl.NativeParcelable {
+		return nil, nil
+	}
+
 	f := NewGoFile(pkg)
 	typeRef := opts.newTypeRefResolver(f)
 	f.AddImport("github.com/AndroidGoLab/binder/parcel", "")
@@ -88,8 +94,13 @@ func GenerateParcelable(
 				continue
 			}
 			goName := AIDLToGoName(wf.Name)
-			// Delegation: not nullable — embedded directly.
-			f.P("\t%s %s", goName, goType)
+			if wf.Condition == "_null_flag" {
+				// Nullable delegation: pointer field with null flag.
+				f.P("\t%s *%s", goName, goType)
+			} else {
+				// Delegation: not nullable — embedded directly.
+				f.P("\t%s %s", goName, goType)
+			}
 		}
 	}
 	f.P("}")
@@ -897,9 +908,21 @@ func writeJavaWireMarshalParcel(
 				continue
 			}
 			goName := AIDLToGoName(wf.Name)
-			f.P("\tif _err := s.%s.MarshalParcel(p); _err != nil {", goName)
-			f.P("\t\treturn _err")
-			f.P("\t}")
+			if wf.Condition == "_null_flag" {
+				// Nullable delegate: write int32 flag, then marshal if non-nil.
+				f.P("\tif s.%s != nil {", goName)
+				f.P("\t\tp.WriteInt32(1)")
+				f.P("\t\tif _err := s.%s.MarshalParcel(p); _err != nil {", goName)
+				f.P("\t\t\treturn _err")
+				f.P("\t\t}")
+				f.P("\t} else {")
+				f.P("\t\tp.WriteInt32(0)")
+				f.P("\t}")
+			} else {
+				f.P("\tif _err := s.%s.MarshalParcel(p); _err != nil {", goName)
+				f.P("\t\treturn _err")
+				f.P("\t}")
+			}
 			continue
 		}
 
@@ -955,7 +978,15 @@ func writeJavaWireMarshalParcel(
 		}
 
 		goName := AIDLToGoName(wf.Name)
-		if wf.Condition != "" {
+		if wf.Condition == "_null_flag" {
+			// Nullable primitive: write int32 flag, then value if non-zero.
+			f.P("\tif s.%s != %s {", goName, info.zeroValue)
+			f.P("\t\tp.WriteInt32(1)")
+			f.P("\t\tp.%s(s.%s)", info.writeMethod, goName)
+			f.P("\t} else {")
+			f.P("\t\tp.WriteInt32(0)")
+			f.P("\t}")
+		} else if wf.Condition != "" {
 			cond := javaWireConditionToGo(wf.Condition)
 			f.P("\tif %s {", cond)
 			f.P("\t\tp.%s(s.%s)", info.writeMethod, goName)
@@ -993,7 +1024,7 @@ func computeReachableWireFields(
 		}
 		// Handled opaque-skip cases (no unconditional return).
 		switch wf.WriteMethod {
-		case "component_name", "string_array", "int_array", "bundle":
+		case "component_name", "string_array", "int_array", "bundle", "write_list":
 			continue
 		case "typed_object":
 			// Conditional return (only when non-null); field after is reachable.
@@ -1049,9 +1080,25 @@ fieldLoop:
 				continue
 			}
 			goName := AIDLToGoName(wf.Name)
-			f.P("\tif _err := s.%s.UnmarshalParcel(p); _err != nil {", goName)
-			f.P("\t\treturn _err")
-			f.P("\t}")
+			if wf.Condition == "_null_flag" {
+				// Nullable delegate: read int32 flag, then unmarshal if non-zero.
+				f.P("\t{")
+				f.P("\t\t_flag, _err := p.ReadInt32()")
+				f.P("\t\tif _err != nil {")
+				f.P("\t\t\treturn _err")
+				f.P("\t\t}")
+				f.P("\t\tif _flag != 0 {")
+				f.P("\t\t\ts.%s = &%s{}", goName, goType)
+				f.P("\t\t\tif _err = s.%s.UnmarshalParcel(p); _err != nil {", goName)
+				f.P("\t\t\t\treturn _err")
+				f.P("\t\t\t}")
+				f.P("\t\t}")
+				f.P("\t}")
+			} else {
+				f.P("\tif _err := s.%s.UnmarshalParcel(p); _err != nil {", goName)
+				f.P("\t\treturn _err")
+				f.P("\t}")
+			}
 			continue
 		}
 
@@ -1150,6 +1197,10 @@ fieldLoop:
 				f.P("\t\t\treturn nil // non-null %s: cannot skip unknown-size typed object", wf.Name)
 				f.P("\t\t}")
 				f.P("\t}")
+			case "write_list":
+				f.P("\tif _listErr := p.SkipWriteList(); _listErr != nil {")
+				f.P("\t\treturn _listErr")
+				f.P("\t}")
 			default:
 				// Opaque sub-parcelable (e.g., mKeyCharacterMap.writeToParcel):
 				// the caller writes a complex native object without a length
@@ -1183,7 +1234,21 @@ fieldLoop:
 		}
 
 		goName := AIDLToGoName(wf.Name)
-		if wf.Condition != "" {
+		if wf.Condition == "_null_flag" {
+			// Nullable primitive: read int32 flag, then value if non-zero.
+			f.P("\t{")
+			f.P("\t\t_flag, _flagErr := p.ReadInt32()")
+			f.P("\t\tif _flagErr != nil {")
+			f.P("\t\t\treturn _flagErr")
+			f.P("\t\t}")
+			f.P("\t\tif _flag != 0 {")
+			f.P("\t\t\ts.%s, _err = p.%s()", goName, info.readMethod)
+			f.P("\t\t\tif _err != nil {")
+			f.P("\t\t\t\treturn _err")
+			f.P("\t\t\t}")
+			f.P("\t\t}")
+			f.P("\t}")
+		} else if wf.Condition != "" {
 			cond := javaWireConditionToGo(wf.Condition)
 			f.P("\tif %s {", cond)
 			f.P("\t\ts.%s, _err = p.%s()", goName, info.readMethod)
@@ -1236,8 +1301,16 @@ func resolveJavaWireGoType(
 					typeRef.ImportGraph.WouldCauseCycle(typeRef.CurrentPkg, typePkg) {
 					// Both packages are in the same SCC and the
 					// strict graph marks this edge as cycle-causing.
-					// No further redirect is possible — keep opaque.
-					return ""
+					//
+					// In strict mode (types sub-package generation),
+					// ALL intra-SCC edges are back-edges, so the
+					// redirect would create inter-types cycles.
+					// In normal mode, the redirect to typePkg.types
+					// is safe because types sub-packages don't import
+					// non-types packages within the SCC.
+					if typeRef.ImportGraph.Strict {
+						return ""
+					}
 				}
 				typesPkg := typePkg + ".types"
 				goTypeName := AIDLToGoName(aidlQualifiedName[strings.LastIndex(aidlQualifiedName, ".")+1:])

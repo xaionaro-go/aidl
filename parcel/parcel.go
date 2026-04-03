@@ -32,6 +32,16 @@ func FromBytes(
 	return &Parcel{data: data}
 }
 
+// FromBytesWithObjects creates a Parcel from existing serialized data
+// and a pre-built objects offset array. Used by HIDL HwParcel to pass
+// scatter-gather buffer objects alongside inline data.
+func FromBytesWithObjects(
+	data []byte,
+	objects []uint64,
+) *Parcel {
+	return &Parcel{data: data, objects: objects}
+}
+
 // Data returns the internal byte slice. Callers must not modify it.
 func (p *Parcel) Data() []byte {
 	return p.data
@@ -144,5 +154,13 @@ func (p *Parcel) read(
 	p.pos += aligned
 	return out, nil
 }
-// test
-// test comment
+
+// Read reads n bytes from the parcel at the current position, advancing
+// past n bytes (4-byte aligned). This is the exported form of the
+// internal read method, used by packages that need raw byte access
+// (e.g. HIDL HwParcel response parsing).
+func (p *Parcel) Read(
+	n int,
+) ([]byte, error) {
+	return p.read(n)
+}

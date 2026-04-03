@@ -21,5 +21,8 @@ func (s *DelegateRequest) MarshalParcel(
 func (s *DelegateRequest) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	return nil // opaque FeatureTags: cannot skip without known wire format
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	return nil
 }

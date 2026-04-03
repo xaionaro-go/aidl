@@ -51,7 +51,7 @@ func (p *AdbTransportProxy) OnAdbEnabled(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAdbTransport, MethodIAdbTransportOnAdbEnabled)
 	_compiledDescs := []string{
 		"Z",
-		"Landroid/debug/AdbTransportType;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteBool(enabled)

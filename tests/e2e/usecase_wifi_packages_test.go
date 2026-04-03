@@ -1,4 +1,4 @@
-//go:build e2e
+//go:build e2e || e2e_root
 
 package e2e
 
@@ -58,13 +58,18 @@ func TestUseCase34_TetheringOffload_IsTetheringStarted(t *testing.T) {
 	netMgr := genOs.NewNetworkManagementServiceProxy(svc)
 
 	tethering, err := netMgr.IsTetheringStarted(ctx)
-	if err != nil && strings.Contains(err.Error(), "not found in version") {
-		// isTetheringStarted was removed in API 36 as tethering moved
-		// to the ConnectivityService/TetheringService stack.
-		t.Logf("isTetheringStarted removed in this API level (expected): %v", err)
+	if err != nil {
+		errStr := err.Error()
+		if strings.Contains(errStr, "not found in version") ||
+			strings.Contains(errStr, "not supported in V+") ||
+			strings.Contains(errStr, "UnsupportedOperation") {
+			// isTetheringStarted was removed in Android V (API 35+)
+			// as tethering moved to ConnectivityService/TetheringService.
+			t.Skipf("isTetheringStarted not available on this API level: %v", err)
+		}
+		requireOrSkip(t, err)
 		return
 	}
-	requireOrSkip(t, err)
 	t.Logf("tethering started: %v", tethering)
 }
 

@@ -167,7 +167,7 @@ func (p *IdentityCredentialStoreProxy) GetCredential(
 	_data.WriteInterfaceToken(DescriptorIIdentityCredentialStore)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIIdentityCredentialStore, MethodIIdentityCredentialStoreGetCredential)
 	_compiledDescs := []string{
-		"Landroid/hardware/identity/CipherSuite;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -218,7 +218,7 @@ func (p *IdentityCredentialStoreProxy) CreatePresentationSession(
 	_data.WriteInterfaceToken(DescriptorIIdentityCredentialStore)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIIdentityCredentialStore, MethodIIdentityCredentialStoreCreatePresentationSession)
 	_compiledDescs := []string{
-		"Landroid/hardware/identity/CipherSuite;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(cipherSuite))

@@ -284,7 +284,7 @@ func (p *StorageSessionProxy) OpenDir(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIStorageSession, MethodIStorageSessionOpenDir)
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
-		"Landroid/hardware/security/see/storage/ReadIntegrity;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteString16(path)

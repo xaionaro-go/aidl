@@ -126,7 +126,7 @@ func (p *HostapdProxy) ForceClientDisconnect(
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
 		"[B",
-		"Landroid/hardware/wifi/hostapd/Ieee80211ReasonCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteString16(ifaceName)
@@ -255,7 +255,7 @@ func (p *HostapdProxy) SetDebugParams(
 	_data.WriteInterfaceToken(DescriptorIHostapd)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIHostapd, MethodIHostapdSetDebugParams)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/hostapd/DebugLevel;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(level))

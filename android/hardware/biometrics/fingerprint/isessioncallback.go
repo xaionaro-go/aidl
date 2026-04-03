@@ -178,7 +178,7 @@ func (p *SessionCallbackProxy) OnAcquired(
 	_data.WriteInterfaceToken(DescriptorISessionCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISessionCallback, MethodISessionCallbackOnAcquired)
 	_compiledDescs := []string{
-		"Landroid/hardware/biometrics/fingerprint/AcquiredInfo;",
+		"B",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -224,7 +224,7 @@ func (p *SessionCallbackProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorISessionCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISessionCallback, MethodISessionCallbackOnError)
 	_compiledDescs := []string{
-		"Landroid/hardware/biometrics/fingerprint/Error;",
+		"B",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

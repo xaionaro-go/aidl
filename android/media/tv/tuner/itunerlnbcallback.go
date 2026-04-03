@@ -53,7 +53,7 @@ func (p *TunerLnbCallbackProxy) OnEvent(
 	_data.WriteInterfaceToken(DescriptorITunerLnbCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITunerLnbCallback, MethodITunerLnbCallbackOnEvent)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/LnbEventType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(lnbEventType))

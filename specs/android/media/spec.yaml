@@ -7926,6 +7926,29 @@ parcelables:
             name: AudioPortConfigFw
             is_array: true
     - name: AudioPlaybackConfiguration
+      java_wire_format:
+        - name: PlayerIId
+          write_method: int32
+        - name: DeviceId
+          write_method: int32
+        - name: MutedState
+          write_method: int32
+        - name: PlayerType
+          write_method: int32
+        - name: ClientUid
+          write_method: int32
+        - name: ClientPid
+          write_method: int32
+        - name: PlayerState
+          write_method: int32
+        - name: PlayerAttr
+          write_method: delegate
+        - name: Ips==null
+          write_method: bool
+        - name: SessionId
+          write_method: int32
+        - name: FormatInfo
+          write_method: delegate
     - name: AudioPolicyConfig
       fields:
         - name: modules

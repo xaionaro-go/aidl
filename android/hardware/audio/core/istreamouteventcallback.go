@@ -85,7 +85,7 @@ func (p *StreamOutEventCallbackProxy) OnRecommendedLatencyModeChanged(
 	_data.WriteInterfaceToken(DescriptorIStreamOutEventCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIStreamOutEventCallback, MethodIStreamOutEventCallbackOnRecommendedLatencyModeChanged)
 	_compiledDescs := []string{
-		"[Landroid/media/audio/common/AudioLatencyMode;",
+		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		if modes == nil {

@@ -50,8 +50,8 @@ func (p *AGnssCallbackProxy) AgnssStatusCb(
 	_data.WriteInterfaceToken(DescriptorIAGnssCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAGnssCallback, MethodIAGnssCallbackAgnssStatusCb)
 	_compiledDescs := []string{
-		"Landroid/hardware/gnss/IAGnssCallback/AGnssType;",
-		"Landroid/hardware/gnss/IAGnssCallback/AGnssStatusValue;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))

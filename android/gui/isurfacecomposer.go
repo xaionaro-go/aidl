@@ -284,8 +284,8 @@ func (p *SurfaceComposerProxy) CreateDisplayEventConnection(
 	_data.WriteInterfaceToken(DescriptorISurfaceComposer)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISurfaceComposer, MethodISurfaceComposerCreateDisplayEventConnection)
 	_compiledDescs := []string{
-		"Landroid/gui/ISurfaceComposer/VsyncSource;",
-		"Landroid/gui/ISurfaceComposer/EventRegistration;",
+		"I",
+		"I",
 		"Landroid/os/IBinder;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

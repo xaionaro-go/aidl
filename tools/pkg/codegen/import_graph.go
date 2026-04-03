@@ -25,6 +25,10 @@ type ImportGraph struct {
 	// (their removal makes the subgraph acyclic). Only these edges need
 	// to be broken to prevent Go import cycles.
 	BackEdges map[string]map[string]bool
+	// Strict is true when this graph was created by StrictForSCC for
+	// generating types sub-package code. In strict mode, ALL intra-SCC
+	// edges are treated as cycle-causing.
+	Strict bool
 }
 
 // BuildImportGraph scans all definitions in the registry and builds a
@@ -326,6 +330,7 @@ func (g *ImportGraph) StrictForSCC(pkg string) *ImportGraph {
 		Edges:     g.Edges,
 		CyclePkgs: g.CyclePkgs,
 		BackEdges: make(map[string]map[string]bool),
+		Strict:    true,
 	}
 
 	// Copy existing back-edges.

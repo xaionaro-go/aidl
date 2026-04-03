@@ -56,7 +56,7 @@ func (p *BluetoothAudioProviderFactoryProxy) GetProviderCapabilities(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProviderFactory)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothAudioProviderFactory, MethodIBluetoothAudioProviderFactoryGetProviderCapabilities)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/audio/SessionType;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(sessionType))
@@ -134,7 +134,7 @@ func (p *BluetoothAudioProviderFactoryProxy) OpenProvider(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProviderFactory)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothAudioProviderFactory, MethodIBluetoothAudioProviderFactoryOpenProvider)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/audio/SessionType;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(sessionType))
@@ -181,7 +181,7 @@ func (p *BluetoothAudioProviderFactoryProxy) GetProviderInfo(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProviderFactory)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothAudioProviderFactory, MethodIBluetoothAudioProviderFactoryGetProviderInfo)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/audio/SessionType;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(sessionType))

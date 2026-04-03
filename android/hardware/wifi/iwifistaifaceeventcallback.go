@@ -260,7 +260,7 @@ func (p *WifiStaIfaceEventCallbackProxy) OnTwtFailure(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiStaIfaceEventCallback, MethodIWifiStaIfaceEventCallbackOnTwtFailure)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/wifi/IWifiStaIfaceEventCallback/TwtErrorCode;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(cmdId)
@@ -385,7 +385,7 @@ func (p *WifiStaIfaceEventCallbackProxy) OnTwtSessionTeardown(
 	_compiledDescs := []string{
 		"I",
 		"I",
-		"Landroid/hardware/wifi/IWifiStaIfaceEventCallback/TwtTeardownReasonCode;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(cmdId)

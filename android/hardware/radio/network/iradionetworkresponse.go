@@ -265,7 +265,7 @@ func (p *RadioNetworkResponseProxy) GetAvailableBandModesResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioNetworkResponse, MethodIRadioNetworkResponseGetAvailableBandModesResponse)
 	_compiledDescs := []string{
 		"Landroid/hardware/radio/RadioResponseInfo;",
-		"[Landroid/hardware/radio/network/RadioBandMode;",
+		"[I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -459,7 +459,7 @@ func (p *RadioNetworkResponseProxy) GetCdmaRoamingPreferenceResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioNetworkResponse, MethodIRadioNetworkResponseGetCdmaRoamingPreferenceResponse)
 	_compiledDescs := []string{
 		"Landroid/hardware/radio/RadioResponseInfo;",
-		"Landroid/hardware/radio/network/CdmaRoamingType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -616,7 +616,7 @@ func (p *RadioNetworkResponseProxy) GetImsRegistrationStateResponse(
 	_compiledDescs := []string{
 		"Landroid/hardware/radio/RadioResponseInfo;",
 		"Z",
-		"Landroid/hardware/radio/RadioTechnologyFamily;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -870,7 +870,7 @@ func (p *RadioNetworkResponseProxy) GetVoiceRadioTechnologyResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioNetworkResponse, MethodIRadioNetworkResponseGetVoiceRadioTechnologyResponse)
 	_compiledDescs := []string{
 		"Landroid/hardware/radio/RadioResponseInfo;",
-		"Landroid/hardware/radio/RadioTechnology;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -1694,7 +1694,7 @@ func (p *RadioNetworkResponseProxy) GetUsageSettingResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioNetworkResponse, MethodIRadioNetworkResponseGetUsageSettingResponse)
 	_compiledDescs := []string{
 		"Landroid/hardware/radio/RadioResponseInfo;",
-		"Landroid/hardware/radio/network/UsageSetting;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)

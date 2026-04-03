@@ -74,7 +74,7 @@ func (p *PowerProxy) SetMode(
 	_data.WriteInterfaceToken(DescriptorIPower)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIPower, MethodIPowerSetMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/power/Mode;",
+		"I",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -111,7 +111,7 @@ func (p *PowerProxy) IsModeSupported(
 	_data.WriteInterfaceToken(DescriptorIPower)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIPower, MethodIPowerIsModeSupported)
 	_compiledDescs := []string{
-		"Landroid/hardware/power/Mode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -157,7 +157,7 @@ func (p *PowerProxy) SetBoost(
 	_data.WriteInterfaceToken(DescriptorIPower)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIPower, MethodIPowerSetBoost)
 	_compiledDescs := []string{
-		"Landroid/hardware/power/Boost;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -194,7 +194,7 @@ func (p *PowerProxy) IsBoostSupported(
 	_data.WriteInterfaceToken(DescriptorIPower)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIPower, MethodIPowerIsBoostSupported)
 	_compiledDescs := []string{
-		"Landroid/hardware/power/Boost;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -355,7 +355,7 @@ func (p *PowerProxy) CreateHintSessionWithConfig(
 		"I",
 		"[I",
 		"J",
-		"Landroid/hardware/power/SessionTag;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(tgid)

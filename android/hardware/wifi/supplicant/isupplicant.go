@@ -521,7 +521,7 @@ func (p *SupplicantProxy) SetConcurrencyPriority(
 	_data.WriteInterfaceToken(DescriptorISupplicant)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicant, MethodISupplicantSetConcurrencyPriority)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/IfaceType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -564,7 +564,7 @@ func (p *SupplicantProxy) SetDebugParams(
 	_data.WriteInterfaceToken(DescriptorISupplicant)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicant, MethodISupplicantSetDebugParams)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/DebugLevel;",
+		"I",
 		"Z",
 		"Z",
 	}

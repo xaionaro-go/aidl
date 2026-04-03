@@ -69,7 +69,7 @@ func (p *RadioMessagingIndicationProxy) CdmaNewSms(
 	_data.WriteInterfaceToken(DescriptorIRadioMessagingIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioMessagingIndication, MethodIRadioMessagingIndicationCdmaNewSms)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Landroid/hardware/radio/messaging/CdmaSmsMessage;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -111,7 +111,7 @@ func (p *RadioMessagingIndicationProxy) CdmaRuimSmsStorageFull(
 	_data.WriteInterfaceToken(DescriptorIRadioMessagingIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioMessagingIndication, MethodIRadioMessagingIndicationCdmaRuimSmsStorageFull)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -144,7 +144,7 @@ func (p *RadioMessagingIndicationProxy) NewBroadcastSms(
 	_data.WriteInterfaceToken(DescriptorIRadioMessagingIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioMessagingIndication, MethodIRadioMessagingIndicationNewBroadcastSms)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -181,7 +181,7 @@ func (p *RadioMessagingIndicationProxy) NewSms(
 	_data.WriteInterfaceToken(DescriptorIRadioMessagingIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioMessagingIndication, MethodIRadioMessagingIndicationNewSms)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -218,7 +218,7 @@ func (p *RadioMessagingIndicationProxy) NewSmsOnSim(
 	_data.WriteInterfaceToken(DescriptorIRadioMessagingIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioMessagingIndication, MethodIRadioMessagingIndicationNewSmsOnSim)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -255,7 +255,7 @@ func (p *RadioMessagingIndicationProxy) NewSmsStatusReport(
 	_data.WriteInterfaceToken(DescriptorIRadioMessagingIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioMessagingIndication, MethodIRadioMessagingIndicationNewSmsStatusReport)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -291,7 +291,7 @@ func (p *RadioMessagingIndicationProxy) SimSmsStorageFull(
 	_data.WriteInterfaceToken(DescriptorIRadioMessagingIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioMessagingIndication, MethodIRadioMessagingIndicationSimSmsStorageFull)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))

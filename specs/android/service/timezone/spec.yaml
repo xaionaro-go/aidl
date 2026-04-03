@@ -65,6 +65,6 @@ parcelables:
     - name: TimeZoneProviderSuggestion
       java_wire_format:
         - name: TimeZoneIds
-          write_method: opaque
+          write_method: write_list
         - name: ElapsedRealtimeMillis
           write_method: int64

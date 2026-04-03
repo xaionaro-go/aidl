@@ -312,7 +312,7 @@ func (p *RadioVoiceProxy) EmergencyDial(
 		"Landroid/hardware/radio/voice/Dial;",
 		"I",
 		"[Ljava/lang/String;",
-		"Landroid/hardware/radio/voice/EmergencyCallRouting;",
+		"I",
 		"Z",
 		"Z",
 	}
@@ -1400,7 +1400,7 @@ func (p *RadioVoiceProxy) SetTtyMode(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoice, MethodIRadioVoiceSetTtyMode)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/voice/TtyMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)

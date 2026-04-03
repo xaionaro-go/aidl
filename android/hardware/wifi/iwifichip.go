@@ -1263,7 +1263,7 @@ func (p *WifiChipProxy) GetUsableChannels(
 	_data.WriteInterfaceToken(DescriptorIWifiChip)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChip, MethodIWifiChipGetUsableChannels)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/WifiBand;",
+		"I",
 		"I",
 		"I",
 	}
@@ -1766,7 +1766,7 @@ func (p *WifiChipProxy) SelectTxPowerScenario(
 	_data.WriteInterfaceToken(DescriptorIWifiChip)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChip, MethodIWifiChipSelectTxPowerScenario)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/IWifiChip/TxPowerScenario;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(scenario))
@@ -1914,7 +1914,7 @@ func (p *WifiChipProxy) SetLatencyMode(
 	_data.WriteInterfaceToken(DescriptorIWifiChip)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChip, MethodIWifiChipSetLatencyMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/audio/LatencyMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mode))
@@ -1996,7 +1996,7 @@ func (p *WifiChipProxy) SetMultiStaUseCase(
 	_data.WriteInterfaceToken(DescriptorIWifiChip)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChip, MethodIWifiChipSetMultiStaUseCase)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/IWifiChip/MultiStaUseCase;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(useCase))
@@ -2041,7 +2041,7 @@ func (p *WifiChipProxy) StartLoggingToDebugRingBuffer(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChip, MethodIWifiChipStartLoggingToDebugRingBuffer)
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
-		"Landroid/hardware/wifi/WifiDebugRingBufferVerboseLevel;",
+		"I",
 		"I",
 		"I",
 	}
@@ -2184,7 +2184,7 @@ func (p *WifiChipProxy) SetMloMode(
 	_data.WriteInterfaceToken(DescriptorIWifiChip)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChip, MethodIWifiChipSetMloMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/IWifiChip/ChipMloMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mode))
@@ -2227,7 +2227,7 @@ func (p *WifiChipProxy) CreateApOrBridgedApIface(
 	_data.WriteInterfaceToken(DescriptorIWifiChip)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChip, MethodIWifiChipCreateApOrBridgedApIface)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/IfaceConcurrencyType;",
+		"I",
 		"[Landroid/hardware/wifi/common/OuiKeyedData;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -2297,7 +2297,7 @@ func (p *WifiChipProxy) SetVoipMode(
 	_data.WriteInterfaceToken(DescriptorIWifiChip)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiChip, MethodIWifiChipSetVoipMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/IWifiChip/VoipMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mode))

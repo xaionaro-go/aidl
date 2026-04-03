@@ -52,7 +52,7 @@ func (p *TetheringOffloadCallbackProxy) OnEvent(
 	_data.WriteInterfaceToken(DescriptorITetheringOffloadCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITetheringOffloadCallback, MethodITetheringOffloadCallbackOnEvent)
 	_compiledDescs := []string{
-		"Landroid/hardware/tetheroffload/OffloadCallbackEvent;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(event))

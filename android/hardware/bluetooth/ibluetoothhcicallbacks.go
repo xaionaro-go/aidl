@@ -143,7 +143,7 @@ func (p *BluetoothHciCallbacksProxy) InitializationComplete(
 	_data.WriteInterfaceToken(DescriptorIBluetoothHciCallbacks)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothHciCallbacks, MethodIBluetoothHciCallbacksInitializationComplete)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/Status;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))

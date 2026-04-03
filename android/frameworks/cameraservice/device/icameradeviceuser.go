@@ -148,7 +148,7 @@ func (p *CameraDeviceUserProxy) CreateDefaultRequest(
 	_data.WriteInterfaceToken(DescriptorICameraDeviceUser)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICameraDeviceUser, MethodICameraDeviceUserCreateDefaultRequest)
 	_compiledDescs := []string{
-		"Landroid/frameworks/cameraservice/device/TemplateId;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(templateId))
@@ -318,7 +318,7 @@ func (p *CameraDeviceUserProxy) EndConfigure(
 	_data.WriteInterfaceToken(DescriptorICameraDeviceUser)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICameraDeviceUser, MethodICameraDeviceUserEndConfigure)
 	_compiledDescs := []string{
-		"Landroid/frameworks/cameraservice/device/StreamConfigurationMode;",
+		"I",
 		"Landroid/frameworks/cameraservice/device/CameraMetadata;",
 		"J",
 	}

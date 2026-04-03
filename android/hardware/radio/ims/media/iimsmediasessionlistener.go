@@ -72,7 +72,7 @@ func (p *ImsMediaSessionListenerProxy) OnModifySessionResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIImsMediaSessionListener, MethodIImsMediaSessionListenerOnModifySessionResponse)
 	_compiledDescs := []string{
 		"Landroid/hardware/radio/ims/media/RtpConfig;",
-		"Landroid/hardware/radio/ims/media/RtpError;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)

@@ -495,13 +495,13 @@ parcelables:
         - name: InterfaceName
           write_method: string16
         - name: Addresses
-          write_method: opaque
+          write_method: write_list
         - name: DnsAddresses
-          write_method: opaque
+          write_method: write_list
         - name: GatewayAddresses
-          write_method: opaque
+          write_method: write_list
         - name: PcscfAddresses
-          write_method: opaque
+          write_method: write_list
         - name: Mtu
           write_method: int32
         - name: MtuV4
@@ -515,11 +515,11 @@ parcelables:
         - name: DefaultQos
           write_method: typed_object
         - name: QosBearerSessions
-          write_method: opaque
+          write_method: write_list
         - name: SliceInfo
           write_method: typed_object
         - name: TrafficDescriptors
-          write_method: opaque
+          write_method: write_list
         - name: NetworkValidationStatus
           write_method: int32
     - name: DataProfile

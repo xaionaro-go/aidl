@@ -338,7 +338,7 @@ func (p *ComposerCallbackProxy) OnHotplugEvent(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIComposerCallback, MethodIComposerCallbackOnHotplugEvent)
 	_compiledDescs := []string{
 		"J",
-		"Landroid/hardware/graphics/common/DisplayHotplugEvent;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt64(display)

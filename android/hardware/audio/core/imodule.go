@@ -1450,7 +1450,7 @@ func (p *ModuleProxy) UpdateAudioMode(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIModule, MethodIModuleUpdateAudioMode)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mode))
@@ -1491,7 +1491,7 @@ func (p *ModuleProxy) UpdateScreenRotation(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIModule, MethodIModuleUpdateScreenRotation)
 	_compiledDescs := []string{
-		"Landroid/hardware/audio/core/IModule/ScreenRotation;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(rotation))
@@ -1885,7 +1885,7 @@ func (p *ModuleProxy) GetMmapPolicyInfos(
 	_data.WriteInterfaceToken(DescriptorIModule)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIModule, MethodIModuleGetMmapPolicyInfos)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioMMapPolicyType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mmapPolicyType))

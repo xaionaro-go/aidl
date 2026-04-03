@@ -130,7 +130,7 @@ func (p *BluetoothAudioProviderProxy) StartSession(
 	_compiledDescs := []string{
 		"Landroid/hardware/bluetooth/audio/IBluetoothAudioPort;",
 		"Landroid/hardware/bluetooth/audio/AudioConfiguration;",
-		"[Landroid/hardware/bluetooth/audio/LatencyMode;",
+		"[I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		binder.WriteBinderToParcel(ctx, _data, hostIf.AsBinder(), p.Remote.Transport())
@@ -206,7 +206,7 @@ func (p *BluetoothAudioProviderProxy) StreamStarted(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothAudioProvider, MethodIBluetoothAudioProviderStreamStarted)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/audio/BluetoothAudioStatus;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))
@@ -247,7 +247,7 @@ func (p *BluetoothAudioProviderProxy) StreamSuspended(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothAudioProvider, MethodIBluetoothAudioProviderStreamSuspended)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/audio/BluetoothAudioStatus;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))
@@ -872,7 +872,7 @@ func (p *BluetoothAudioProviderProxy) OnSinkAseMetadataChanged(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothAudioProvider, MethodIBluetoothAudioProviderOnSinkAseMetadataChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/audio/IBluetoothAudioProvider/AseState;",
+		"B",
 		"I",
 		"I",
 		"[Landroid/hardware/bluetooth/audio/MetadataLtv;",
@@ -948,7 +948,7 @@ func (p *BluetoothAudioProviderProxy) OnSourceAseMetadataChanged(
 	_data.WriteInterfaceToken(DescriptorIBluetoothAudioProvider)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothAudioProvider, MethodIBluetoothAudioProviderOnSourceAseMetadataChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/bluetooth/audio/IBluetoothAudioProvider/AseState;",
+		"B",
 		"I",
 		"I",
 		"[Landroid/hardware/bluetooth/audio/MetadataLtv;",

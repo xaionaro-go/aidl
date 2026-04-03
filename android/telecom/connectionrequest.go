@@ -104,5 +104,12 @@ func (s *ConnectionRequest) UnmarshalParcel(
 			return nil // non-null RttPipeToInCall: cannot skip unknown-size typed object
 		}
 	}
-	return nil // opaque Participants: cannot skip without known wire format
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	s.IsAdhocConference, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	return nil
 }

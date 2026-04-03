@@ -53,7 +53,7 @@ func (p *TunerFilterCallbackProxy) OnFilterStatus(
 	_data.WriteInterfaceToken(DescriptorITunerFilterCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITunerFilterCallback, MethodITunerFilterCallbackOnFilterStatus)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/DemuxFilterStatus;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(status))

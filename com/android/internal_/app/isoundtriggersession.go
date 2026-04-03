@@ -814,7 +814,7 @@ func (p *SoundTriggerSessionProxy) SetParameter(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISoundTriggerSession, MethodISoundTriggerSessionSetParameter)
 	_compiledDescs := []string{
 		"Landroid/os/ParcelUuid;",
-		"Landroid/hardware/soundtrigger/ModelParams;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -875,7 +875,7 @@ func (p *SoundTriggerSessionProxy) GetParameter(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISoundTriggerSession, MethodISoundTriggerSessionGetParameter)
 	_compiledDescs := []string{
 		"Landroid/os/ParcelUuid;",
-		"Landroid/hardware/soundtrigger/ModelParams;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -932,7 +932,7 @@ func (p *SoundTriggerSessionProxy) QueryParameter(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISoundTriggerSession, MethodISoundTriggerSessionQueryParameter)
 	_compiledDescs := []string{
 		"Landroid/os/ParcelUuid;",
-		"Landroid/hardware/soundtrigger/ModelParams;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)

@@ -231,7 +231,7 @@ func (p *SensorManagerProxy) GetDefaultSensor(
 	_data.WriteInterfaceToken(DescriptorISensorManager)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISensorManager, MethodISensorManagerGetDefaultSensor)
 	_compiledDescs := []string{
-		"Landroid/hardware/sensors/SensorType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))

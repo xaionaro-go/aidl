@@ -550,7 +550,7 @@ func (p *BroadcastRadioProxy) IsConfigFlagSet(
 	_data.WriteInterfaceToken(DescriptorIBroadcastRadio)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBroadcastRadio, MethodIBroadcastRadioIsConfigFlagSet)
 	_compiledDescs := []string{
-		"Landroid/hardware/broadcastradio/ConfigFlag;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(flag))
@@ -596,7 +596,7 @@ func (p *BroadcastRadioProxy) SetConfigFlag(
 	_data.WriteInterfaceToken(DescriptorIBroadcastRadio)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBroadcastRadio, MethodIBroadcastRadioSetConfigFlag)
 	_compiledDescs := []string{
-		"Landroid/hardware/broadcastradio/ConfigFlag;",
+		"I",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -880,7 +880,7 @@ func (p *BroadcastRadioProxy) RegisterAnnouncementListener(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBroadcastRadio, MethodIBroadcastRadioRegisterAnnouncementListener)
 	_compiledDescs := []string{
 		"Landroid/hardware/broadcastradio/IAnnouncementListener;",
-		"[Landroid/hardware/broadcastradio/AnnouncementType;",
+		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.Remote.Transport())

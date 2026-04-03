@@ -29,5 +29,33 @@ func (s *ZenPolicy) MarshalParcel(
 func (s *ZenPolicy) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	return nil // opaque PriorityCategories: cannot skip without known wire format
+	var _err error
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	s.PriorityMessages, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.PriorityCalls, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.ConversationSenders, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null AllowChannels: cannot skip unknown-size typed object
+		}
+	}
+	return nil
 }

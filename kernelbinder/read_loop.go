@@ -411,6 +411,16 @@ func (d *Driver) handleIncomingTransaction(
 		}
 	}
 
+	// Resolve HIDL scatter-gather buffers before freeing the mmap'd region.
+	if len(dataBytes) > 0 && txn.offsetsSize > 0 {
+		resolved, sgErr := d.resolveScatterGather(dataBytes, txn.offsetsBuffer, txn.offsetsSize)
+		if sgErr != nil {
+			logger.Warnf(ctx, "scatter-gather resolve: %v", sgErr)
+		} else {
+			dataBytes = resolved
+		}
+	}
+
 	// Free the mmap'd buffer as soon as we have copied the data.
 	// The kernel requires BC_FREE_BUFFER for ALL BR_TRANSACTION buffers
 	// regardless of dataSize.

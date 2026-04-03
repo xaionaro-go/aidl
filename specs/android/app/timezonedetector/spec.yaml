@@ -81,7 +81,7 @@ parcelables:
         - name: ZoneId
           write_method: string16
         - name: DebugInfo
-          write_method: opaque
+          write_method: write_list
     - name: TelephonyTimeZoneSuggestion
       java_wire_format:
         - name: SlotIndex
@@ -93,4 +93,4 @@ parcelables:
         - name: Quality
           write_method: int32
         - name: DebugInfo
-          write_method: opaque
+          write_method: write_list

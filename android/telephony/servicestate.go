@@ -50,6 +50,7 @@ func (s *ServiceState) MarshalParcel(
 	p.WriteInt32(s.CdmaEriIconMode)
 	p.WriteBool(s.IsEmergencyOnly)
 	p.WriteInt32(s.ArfcnRsrpBoost)
+	p.WriteInt32(-1) // null NetworkRegistrationInfos
 	p.WriteInt32(s.ChannelNumber)
 	p.WriteInt32(-1) // null CellBandwidths
 	p.WriteInt32(s.NrFrequencyRange)
@@ -123,6 +124,9 @@ func (s *ServiceState) UnmarshalParcel(
 	s.ArfcnRsrpBoost, _err = p.ReadInt32()
 	if _err != nil {
 		return _err
+	}
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
 	}
 	s.ChannelNumber, _err = p.ReadInt32()
 	if _err != nil {

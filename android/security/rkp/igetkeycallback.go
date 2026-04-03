@@ -110,7 +110,7 @@ func (p *GetKeyCallbackProxy) OnError(
 	_data.WriteInterfaceToken(DescriptorIGetKeyCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIGetKeyCallback, MethodIGetKeyCallbackOnError)
 	_compiledDescs := []string{
-		"Landroid/frameworks/cameraservice/device/ErrorCode;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

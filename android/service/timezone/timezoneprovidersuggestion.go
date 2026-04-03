@@ -23,5 +23,13 @@ func (s *TimeZoneProviderSuggestion) MarshalParcel(
 func (s *TimeZoneProviderSuggestion) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	return nil // opaque TimeZoneIds: cannot skip without known wire format
+	var _err error
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	s.ElapsedRealtimeMillis, _err = p.ReadInt64()
+	if _err != nil {
+		return _err
+	}
+	return nil
 }

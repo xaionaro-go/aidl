@@ -26,7 +26,7 @@ parcelables:
     - name: DelegateRequest
       java_wire_format:
         - name: FeatureTags
-          write_method: opaque
+          write_method: write_list
     - name: FeatureTagState
       java_wire_format:
         - name: FeatureTag
@@ -110,7 +110,7 @@ parcelables:
         - name: ImsAttributeFlags
           write_method: int32
         - name: FeatureTags
-          write_method: opaque
+          write_method: write_list
         - name: SipDetails
           write_method: typed_object
     - name: ImsSsData
@@ -200,7 +200,7 @@ parcelables:
         - name: PublishState
           write_method: int32
         - name: PresenceTuples
-          write_method: opaque
+          write_method: write_list
         - name: SipDetails
           write_method: typed_object
     - name: RcsClientConfiguration

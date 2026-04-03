@@ -2645,7 +2645,7 @@ parcelables:
         - name: ProgramUri==null
           write_method: bool
         - name: ContentRatings
-          write_method: opaque
+          write_method: write_list
         - name: RecordingUri==null
           write_method: bool
         - name: RecordingDurationMillis

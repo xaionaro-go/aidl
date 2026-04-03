@@ -58,7 +58,7 @@ func (p *WifiEventCallbackProxy) OnFailure(
 	_data.WriteInterfaceToken(DescriptorIWifiEventCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiEventCallback, MethodIWifiEventCallbackOnFailure)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/WifiStatusCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))
@@ -122,7 +122,7 @@ func (p *WifiEventCallbackProxy) OnSubsystemRestart(
 	_data.WriteInterfaceToken(DescriptorIWifiEventCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIWifiEventCallback, MethodIWifiEventCallbackOnSubsystemRestart)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/WifiStatusCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))

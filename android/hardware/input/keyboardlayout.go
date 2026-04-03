@@ -1,6 +1,7 @@
 package input
 
 import (
+	types "github.com/AndroidGoLab/binder/android/os/types"
 	"github.com/AndroidGoLab/binder/parcel"
 )
 
@@ -13,6 +14,7 @@ type KeyboardLayout struct {
 	Priority   int32
 	VendorId   int32
 	ProductId  int32
+	Locales    types.LocaleList
 }
 
 var _ parcel.Parcelable = (*KeyboardLayout)(nil)
@@ -24,8 +26,10 @@ func (s *KeyboardLayout) MarshalParcel(
 	p.WriteString16(s.Label)
 	p.WriteString16(s.Collection)
 	p.WriteInt32(s.Priority)
-	p.WriteInt32(-1) // null Locales
-	p.WriteInt32(0)  // placeholder LayoutType.getValue()
+	if _err := s.Locales.MarshalParcel(p); _err != nil {
+		return _err
+	}
+	p.WriteInt32(0) // placeholder LayoutType.getValue()
 	p.WriteInt32(s.VendorId)
 	p.WriteInt32(s.ProductId)
 	return nil
@@ -51,5 +55,19 @@ func (s *KeyboardLayout) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque Locales: cannot skip without known wire format
+	if _err := s.Locales.UnmarshalParcel(p); _err != nil {
+		return _err
+	}
+	if _, _err = p.ReadInt32(); _err != nil { // skip LayoutType.getValue()
+		return _err
+	}
+	s.VendorId, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.ProductId, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	return nil
 }

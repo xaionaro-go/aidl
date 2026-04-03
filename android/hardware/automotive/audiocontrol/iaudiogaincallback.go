@@ -50,7 +50,7 @@ func (p *AudioGainCallbackProxy) OnAudioDeviceGainsChanged(
 	_data.WriteInterfaceToken(DescriptorIAudioGainCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioGainCallback, MethodIAudioGainCallbackOnAudioDeviceGainsChanged)
 	_compiledDescs := []string{
-		"[Landroid/hardware/automotive/audiocontrol/Reasons;",
+		"[I",
 		"[Landroid/hardware/automotive/audiocontrol/AudioGainConfigInfo;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

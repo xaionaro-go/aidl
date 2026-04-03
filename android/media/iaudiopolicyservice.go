@@ -372,7 +372,7 @@ func (p *AudioPolicyServiceProxy) SetDeviceConnectionState(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceSetDeviceConnectionState)
 	_compiledDescs := []string{
-		"Landroid/media/AudioPolicyDeviceState;",
+		"I",
 		"Landroid/media/audio/common/AudioPort;",
 		"Landroid/media/audio/common/AudioFormatDescription;",
 	}
@@ -550,7 +550,7 @@ func (p *AudioPolicyServiceProxy) SetPhoneState(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceSetPhoneState)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioMode;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -596,8 +596,8 @@ func (p *AudioPolicyServiceProxy) SetForceUse(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceSetForceUse)
 	_compiledDescs := []string{
-		"Landroid/media/AudioPolicyForceUse;",
-		"Landroid/media/AudioPolicyForcedConfig;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(usage))
@@ -642,7 +642,7 @@ func (p *AudioPolicyServiceProxy) GetForceUse(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceGetForceUse)
 	_compiledDescs := []string{
-		"Landroid/media/AudioPolicyForceUse;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(usage))
@@ -689,7 +689,7 @@ func (p *AudioPolicyServiceProxy) GetOutput(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceGetOutput)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(stream))
@@ -1180,7 +1180,7 @@ func (p *AudioPolicyServiceProxy) InitStreamVolume(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceInitStreamVolume)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 		"I",
 		"I",
 	}
@@ -1231,7 +1231,7 @@ func (p *AudioPolicyServiceProxy) SetStreamVolumeIndex(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceSetStreamVolumeIndex)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 		"Landroid/media/audio/common/AudioDeviceDescription;",
 		"I",
 	}
@@ -1288,7 +1288,7 @@ func (p *AudioPolicyServiceProxy) GetStreamVolumeIndex(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceGetStreamVolumeIndex)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 		"Landroid/media/audio/common/AudioDeviceDescription;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -1574,7 +1574,7 @@ func (p *AudioPolicyServiceProxy) GetStrategyForStream(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceGetStrategyForStream)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(stream))
@@ -1976,7 +1976,7 @@ func (p *AudioPolicyServiceProxy) IsStreamActive(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceIsStreamActive)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -2027,7 +2027,7 @@ func (p *AudioPolicyServiceProxy) IsStreamActiveRemotely(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceIsStreamActiveRemotely)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -2077,7 +2077,7 @@ func (p *AudioPolicyServiceProxy) IsSourceActive(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceIsSourceActive)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioSource;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(source))
@@ -2231,7 +2231,7 @@ func (p *AudioPolicyServiceProxy) AddSourceDefaultEffect(
 		"Ljava/lang/String;",
 		"Landroid/media/audio/common/AudioUuid;",
 		"I",
-		"Landroid/media/audio/common/AudioSource;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -2309,7 +2309,7 @@ func (p *AudioPolicyServiceProxy) AddStreamDefaultEffect(
 		"Ljava/lang/String;",
 		"Landroid/media/audio/common/AudioUuid;",
 		"I",
-		"Landroid/media/audio/common/AudioUsage;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -2460,7 +2460,7 @@ func (p *AudioPolicyServiceProxy) SetSupportedSystemUsages(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceSetSupportedSystemUsages)
 	_compiledDescs := []string{
-		"[Landroid/media/audio/common/AudioUsage;",
+		"[I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		if systemUsages == nil {
@@ -2681,8 +2681,8 @@ func (p *AudioPolicyServiceProxy) ListAudioPorts(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceListAudioPorts)
 	_compiledDescs := []string{
-		"Landroid/media/AudioPortRole;",
-		"Landroid/media/AudioPortType;",
+		"I",
+		"I",
 		"Landroid/media/audio/common/Int;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -2770,7 +2770,7 @@ func (p *AudioPolicyServiceProxy) ListDeclaredDevicePorts(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceListDeclaredDevicePorts)
 	_compiledDescs := []string{
-		"Landroid/media/AudioPortRole;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(role))
@@ -3936,7 +3936,7 @@ func (p *AudioPolicyServiceProxy) GetStreamVolumeDB(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceGetStreamVolumeDB)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/AudioStreamType;",
+		"I",
 		"I",
 		"Landroid/media/audio/common/AudioDeviceDescription;",
 	}
@@ -4926,7 +4926,7 @@ func (p *AudioPolicyServiceProxy) SetDevicesRoleForStrategy(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceSetDevicesRoleForStrategy)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/media/DeviceRole;",
+		"I",
 		"[Landroid/media/audio/common/AudioDevice;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -4997,7 +4997,7 @@ func (p *AudioPolicyServiceProxy) RemoveDevicesRoleForStrategy(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceRemoveDevicesRoleForStrategy)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/media/DeviceRole;",
+		"I",
 		"[Landroid/media/audio/common/AudioDevice;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -5067,7 +5067,7 @@ func (p *AudioPolicyServiceProxy) ClearDevicesRoleForStrategy(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceClearDevicesRoleForStrategy)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/media/DeviceRole;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(strategy)
@@ -5114,7 +5114,7 @@ func (p *AudioPolicyServiceProxy) GetDevicesForRoleAndStrategy(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceGetDevicesForRoleAndStrategy)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/media/DeviceRole;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(strategy)
@@ -5196,8 +5196,8 @@ func (p *AudioPolicyServiceProxy) SetDevicesRoleForCapturePreset(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceSetDevicesRoleForCapturePreset)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioSource;",
-		"Landroid/media/DeviceRole;",
+		"I",
+		"I",
 		"[Landroid/media/audio/common/AudioDevice;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -5267,8 +5267,8 @@ func (p *AudioPolicyServiceProxy) AddDevicesRoleForCapturePreset(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceAddDevicesRoleForCapturePreset)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioSource;",
-		"Landroid/media/DeviceRole;",
+		"I",
+		"I",
 		"[Landroid/media/audio/common/AudioDevice;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -5338,8 +5338,8 @@ func (p *AudioPolicyServiceProxy) RemoveDevicesRoleForCapturePreset(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceRemoveDevicesRoleForCapturePreset)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioSource;",
-		"Landroid/media/DeviceRole;",
+		"I",
+		"I",
 		"[Landroid/media/audio/common/AudioDevice;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -5408,8 +5408,8 @@ func (p *AudioPolicyServiceProxy) ClearDevicesRoleForCapturePreset(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceClearDevicesRoleForCapturePreset)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioSource;",
-		"Landroid/media/DeviceRole;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(audioSource))
@@ -5455,8 +5455,8 @@ func (p *AudioPolicyServiceProxy) GetDevicesForRoleAndCapturePreset(
 	_data.WriteInterfaceToken(DescriptorIAudioPolicyService)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioPolicyService, MethodIAudioPolicyServiceGetDevicesForRoleAndCapturePreset)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioSource;",
-		"Landroid/media/DeviceRole;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(audioSource))

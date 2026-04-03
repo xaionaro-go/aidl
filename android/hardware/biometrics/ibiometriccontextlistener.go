@@ -55,7 +55,7 @@ func (p *BiometricContextListenerProxy) OnFoldChanged(
 	_data.WriteInterfaceToken(DescriptorIBiometricContextListener)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBiometricContextListener, MethodIBiometricContextListenerOnFoldChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/biometrics/IBiometricContextListener/FoldState;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(FoldState))

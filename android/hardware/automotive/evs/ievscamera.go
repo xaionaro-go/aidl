@@ -284,7 +284,7 @@ func (p *EvsCameraProxy) GetIntParameter(
 	_data.WriteInterfaceToken(DescriptorIEvsCamera)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIEvsCamera, MethodIEvsCameraGetIntParameter)
 	_compiledDescs := []string{
-		"Landroid/hardware/automotive/evs/CameraParam;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(id))
@@ -343,7 +343,7 @@ func (p *EvsCameraProxy) GetIntParameterRange(
 	_data.WriteInterfaceToken(DescriptorIEvsCamera)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIEvsCamera, MethodIEvsCameraGetIntParameterRange)
 	_compiledDescs := []string{
-		"Landroid/hardware/automotive/evs/CameraParam;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(id))
@@ -652,7 +652,7 @@ func (p *EvsCameraProxy) SetIntParameter(
 	_data.WriteInterfaceToken(DescriptorIEvsCamera)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIEvsCamera, MethodIEvsCameraSetIntParameter)
 	_compiledDescs := []string{
-		"Landroid/hardware/automotive/evs/CameraParam;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

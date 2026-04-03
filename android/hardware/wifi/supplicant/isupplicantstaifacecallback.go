@@ -280,7 +280,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnAuxiliarySupplicantEvent(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIfaceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnAuxiliarySupplicantEvent)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/AuxiliarySupplicantEventCode;",
+		"I",
 		"[B",
 		"Ljava/lang/String;",
 	}
@@ -359,7 +359,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnBssidChanged(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIfaceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnBssidChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/BssidChangeReason;",
+		"B",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -399,7 +399,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnDisconnected(
 	_compiledDescs := []string{
 		"[B",
 		"Z",
-		"Landroid/hardware/wifi/supplicant/StaIfaceReasonCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteByteArray(bssid)
@@ -440,7 +440,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnDppFailure(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIfaceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnDppFailure)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/DppFailureCode;",
+		"I",
 		"Ljava/lang/String;",
 		"Ljava/lang/String;",
 		"[C",
@@ -498,7 +498,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnDppProgress(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIfaceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnDppProgress)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/DppProgressCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(code))
@@ -530,7 +530,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnDppSuccess(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIfaceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnDppSuccess)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/DppEventType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(event))
@@ -569,7 +569,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnDppSuccessConfigReceived(
 		"[B",
 		"Ljava/lang/String;",
 		"[B",
-		"Landroid/hardware/wifi/supplicant/DppAkm;",
+		"I",
 		"Landroid/hardware/wifi/supplicant/DppConnectionKeys;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -829,7 +829,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnHs20SubscriptionRemediation(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnHs20SubscriptionRemediation)
 	_compiledDescs := []string{
 		"[B",
-		"Landroid/hardware/wifi/supplicant/OsuMethod;",
+		"B",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -1042,7 +1042,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnStateChanged(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIfaceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnStateChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/StaIfaceCallbackState;",
+		"I",
 		"[B",
 		"I",
 		"[B",
@@ -1093,8 +1093,8 @@ func (p *SupplicantStaIfaceCallbackProxy) OnWpsEventFail(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnWpsEventFail)
 	_compiledDescs := []string{
 		"[B",
-		"Landroid/hardware/wifi/supplicant/WpsConfigError;",
-		"Landroid/hardware/wifi/supplicant/WpsErrorIndication;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteByteArray(bssid)
@@ -1237,7 +1237,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnMloLinksInfoChanged(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIfaceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnMloLinksInfoChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/ISupplicantStaIfaceCallback/MloLinkInfoChangeReason;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(reason))
@@ -1307,7 +1307,7 @@ func (p *SupplicantStaIfaceCallbackProxy) OnDppConnectionStatusResultSent(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaIfaceCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaIfaceCallback, MethodISupplicantStaIfaceCallbackOnDppConnectionStatusResultSent)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/DppStatusErrorCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(code))

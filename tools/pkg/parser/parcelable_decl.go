@@ -40,6 +40,11 @@ type ParcelableDecl struct {
 	// Fields are still populated for struct generation, but marshal/unmarshal
 	// uses this instead of the generic field-walking approach.
 	JavaWireFormat []JavaWireField
+
+	// NativeParcelable marks a parcelable whose wire format is defined
+	// by native C++/JNI code. The codegen skips these; hand-written
+	// implementations are provided via native_impls/.
+	NativeParcelable bool
 }
 
 func (*ParcelableDecl) definitionNode() {}

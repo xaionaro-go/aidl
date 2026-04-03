@@ -54,7 +54,7 @@ func (p *AudioFlingerClientProxy) IoConfigChanged(
 	_data.WriteInterfaceToken(DescriptorIAudioFlingerClient)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerClient, MethodIAudioFlingerClientIoConfigChanged)
 	_compiledDescs := []string{
-		"Landroid/media/AudioIoConfigEvent;",
+		"I",
 		"Landroid/media/AudioIoDescriptor;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -98,7 +98,7 @@ func (p *AudioFlingerClientProxy) OnSupportedLatencyModesChanged(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioFlingerClient, MethodIAudioFlingerClientOnSupportedLatencyModesChanged)
 	_compiledDescs := []string{
 		"I",
-		"[Landroid/media/audio/common/AudioLatencyMode;",
+		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(output)

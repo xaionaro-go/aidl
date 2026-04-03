@@ -66,7 +66,7 @@ func (p *RadioModemIndicationProxy) HardwareConfigChanged(
 	_data.WriteInterfaceToken(DescriptorIRadioModemIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioModemIndication, MethodIRadioModemIndicationHardwareConfigChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"[Landroid/hardware/radio/modem/HardwareConfig;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -123,7 +123,7 @@ func (p *RadioModemIndicationProxy) ModemReset(
 	_data.WriteInterfaceToken(DescriptorIRadioModemIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioModemIndication, MethodIRadioModemIndicationModemReset)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -160,7 +160,7 @@ func (p *RadioModemIndicationProxy) RadioCapabilityIndication(
 	_data.WriteInterfaceToken(DescriptorIRadioModemIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioModemIndication, MethodIRadioModemIndicationRadioCapabilityIndication)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Landroid/hardware/radio/modem/RadioCapability;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -203,8 +203,8 @@ func (p *RadioModemIndicationProxy) RadioStateChanged(
 	_data.WriteInterfaceToken(DescriptorIRadioModemIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioModemIndication, MethodIRadioModemIndicationRadioStateChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
-		"Landroid/hardware/radio/modem/RadioState;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -239,7 +239,7 @@ func (p *RadioModemIndicationProxy) RilConnected(
 	_data.WriteInterfaceToken(DescriptorIRadioModemIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioModemIndication, MethodIRadioModemIndicationRilConnected)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -272,7 +272,7 @@ func (p *RadioModemIndicationProxy) OnImeiMappingChanged(
 	_data.WriteInterfaceToken(DescriptorIRadioModemIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioModemIndication, MethodIRadioModemIndicationOnImeiMappingChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Landroid/hardware/radio/modem/ImeiInfo;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

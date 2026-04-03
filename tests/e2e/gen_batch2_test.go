@@ -1,4 +1,4 @@
-//go:build e2e
+//go:build e2e || e2e_root
 
 package e2e
 
@@ -35,12 +35,7 @@ func isTransportError(err error) bool {
 		return false
 	}
 	var txnErr *aidlerrors.TransactionError
-	if errors.As(err, &txnErr) {
-		return true
-	}
-	s := err.Error()
-	return s == "binder: failed transaction" ||
-		strings.Contains(s, "kernel status error")
+	return errors.As(err, &txnErr) || err.Error() == "binder: failed transaction"
 }
 
 // requireNoErrorOrTransport fails the test only if err is non-nil and NOT a
@@ -84,11 +79,9 @@ func TestGenBatch2_Keystore2_GetNumberOfEntries(t *testing.T) {
 	proxy := genKeystore2.NewKeystoreServiceProxy(svc)
 	count, err := proxy.GetNumberOfEntries(ctx, genKeystore2.DomainSELINUX, 0)
 	if err != nil {
-		if isPermissionError(err) {
-			t.Logf("GetNumberOfEntries: permission denied (expected): %v", err)
-			return
-		}
-		requireNoErrorOrTransport(t, err)
+		// Keystore2 requires privileged access — see TestUsecase_KeystoreOps_Root
+		// in usecase_root_test.go for the root-context version.
+		requireOrSkip(t, err)
 		return
 	}
 	t.Logf("GetNumberOfEntries(SELINUX, 0): %d", count)

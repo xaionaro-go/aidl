@@ -12,6 +12,7 @@ type Condition struct {
 	Line2   string
 	Icon    int32
 	State   int32
+	Flags   int32
 }
 
 var _ parcel.Parcelable = (*Condition)(nil)
@@ -25,8 +26,8 @@ func (s *Condition) MarshalParcel(
 	p.WriteString16(s.Line2)
 	p.WriteInt32(s.Icon)
 	p.WriteInt32(s.State)
-	p.WriteInt32(0) // placeholder This.source
-	p.WriteInt32(0) // placeholder This.flags
+	p.WriteInt32(0) // null Source
+	p.WriteInt32(s.Flags)
 	return nil
 }
 
@@ -63,10 +64,17 @@ func (s *Condition) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip This.source
-		return _err
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Source: cannot skip unknown-size typed object
+		}
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip This.flags
+	s.Flags, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil

@@ -17,6 +17,11 @@ type Generator struct {
 	Resolver   *resolver.Resolver
 	OutputDir  string
 	SkipErrors bool
+	// NativeImplsDir, when non-empty, is the path to a directory containing
+	// hand-written Go files for native parcelables (those with
+	// NativeParcelable=true in their spec). Files are copied to OutputDir
+	// after code generation, preserving their relative directory structure.
+	NativeImplsDir string
 	// CycleTypes collects empty parcelables that were redirected to "types"
 	// sub-packages during codegen to break import cycles. Populated during
 	// GenerateAll and used to generate the sub-package files afterward.
@@ -244,7 +249,44 @@ func (g *Generator) GenerateAll() (_err error) {
 		removeStaleGeneratedFiles(dir, generatedFiles, generatedDirs)
 	}
 
+	// Copy hand-written native parcelable implementations from
+	// NativeImplsDir into OutputDir, preserving directory structure.
+	if g.NativeImplsDir != "" {
+		if err := g.copyNativeImpls(); err != nil {
+			return fmt.Errorf("copying native impls: %w", err)
+		}
+	}
+
 	return errors.Join(errs...)
+}
+
+// copyNativeImpls walks NativeImplsDir and copies each .go file into the
+// corresponding location under OutputDir, creating directories as needed.
+func (g *Generator) copyNativeImpls() error {
+	return filepath.Walk(g.NativeImplsDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() || filepath.Ext(path) != ".go" {
+			return nil
+		}
+		rel, err := filepath.Rel(g.NativeImplsDir, path)
+		if err != nil {
+			return fmt.Errorf("computing relative path for %s: %w", path, err)
+		}
+		dst := filepath.Join(g.OutputDir, rel)
+		if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+			return fmt.Errorf("creating directory for %s: %w", dst, err)
+		}
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return fmt.Errorf("reading %s: %w", path, err)
+		}
+		if err := os.WriteFile(dst, data, 0o644); err != nil {
+			return fmt.Errorf("writing %s: %w", dst, err)
+		}
+		return nil
+	})
 }
 
 // expandCycleTypes takes the initial set of cycle types and expands it

@@ -94,7 +94,7 @@ func (p *ImsMediaListenerProxy) OnOpenSessionFailure(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIImsMediaListener, MethodIImsMediaListenerOnOpenSessionFailure)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/ims/media/RtpError;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(sessionId)

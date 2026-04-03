@@ -51,7 +51,7 @@ func (p *SystemSuspendProxy) AcquireWakeLock(
 	_data.WriteInterfaceToken(DescriptorISystemSuspend)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISystemSuspend, MethodISystemSuspendAcquireWakeLock)
 	_compiledDescs := []string{
-		"Landroid/system/suspend/WakeLockType;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

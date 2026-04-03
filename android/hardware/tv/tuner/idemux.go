@@ -328,7 +328,7 @@ func (p *DemuxProxy) OpenDvr(
 	_data.WriteInterfaceToken(DescriptorIDemux)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIDemux, MethodIDemuxOpenDvr)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/DvrType;",
+		"B",
 		"I",
 		"Landroid/hardware/tv/tuner/IDvrCallback;",
 	}

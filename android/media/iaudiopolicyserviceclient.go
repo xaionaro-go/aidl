@@ -188,7 +188,7 @@ func (p *AudioPolicyServiceClientProxy) OnRecordingConfigurationUpdate(
 		"Landroid/media/audio/common/AudioConfigBase;",
 		"[Landroid/media/EffectDescriptor;",
 		"I",
-		"Landroid/media/audio/common/AudioSource;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(event)

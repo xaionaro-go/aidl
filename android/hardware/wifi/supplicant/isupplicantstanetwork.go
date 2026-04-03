@@ -1997,7 +1997,7 @@ func (p *SupplicantStaNetworkProxy) SetAuthAlg(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetAuthAlg)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/AuthAlgMask;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(authAlgMask))
@@ -2577,7 +2577,7 @@ func (p *SupplicantStaNetworkProxy) SetEapMethod(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetEapMethod)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/EapMethod;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(method))
@@ -2659,7 +2659,7 @@ func (p *SupplicantStaNetworkProxy) SetEapPhase2Method(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetEapPhase2Method)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/EapPhase2Method;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(method))
@@ -2823,7 +2823,7 @@ func (p *SupplicantStaNetworkProxy) SetGroupCipher(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetGroupCipher)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/GroupCipherMask;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(groupCipherMask))
@@ -2864,7 +2864,7 @@ func (p *SupplicantStaNetworkProxy) SetGroupMgmtCipher(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetGroupMgmtCipher)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/GroupMgmtCipherMask;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(groupMgmtCipherMask))
@@ -2946,7 +2946,7 @@ func (p *SupplicantStaNetworkProxy) SetKeyMgmt(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetKeyMgmt)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/KeyMgmtMask;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(keyMgmtMask))
@@ -2987,7 +2987,7 @@ func (p *SupplicantStaNetworkProxy) SetOcsp(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetOcsp)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/OcspType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(ocspType))
@@ -3028,7 +3028,7 @@ func (p *SupplicantStaNetworkProxy) SetPairwiseCipher(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetPairwiseCipher)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/PairwiseCipherMask;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(pairwiseCipherMask))
@@ -3151,7 +3151,7 @@ func (p *SupplicantStaNetworkProxy) SetProto(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetProto)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/ProtoMask;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(protoMask))
@@ -3315,7 +3315,7 @@ func (p *SupplicantStaNetworkProxy) SetSaeH2eMode(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetSaeH2eMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/SaeH2eMode;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(mode))
@@ -3730,7 +3730,7 @@ func (p *SupplicantStaNetworkProxy) SetMinimumTlsVersionEapPhase1Param(
 	_data.WriteInterfaceToken(DescriptorISupplicantStaNetwork)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISupplicantStaNetwork, MethodISupplicantStaNetworkSetMinimumTlsVersionEapPhase1Param)
 	_compiledDescs := []string{
-		"Landroid/hardware/wifi/supplicant/TlsVersion;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(tlsVersion))

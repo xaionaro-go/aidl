@@ -9,6 +9,7 @@ import (
 type ServiceStartArgs struct {
 	TaskRemoved bool
 	StartId     int32
+	Flags       int32
 }
 
 var _ parcel.Parcelable = (*ServiceStartArgs)(nil)
@@ -18,7 +19,7 @@ func (s *ServiceStartArgs) MarshalParcel(
 ) error {
 	p.WriteBool(s.TaskRemoved)
 	p.WriteInt32(s.StartId)
-	p.WriteInt32(0) // placeholder This.flags
+	p.WriteInt32(s.Flags)
 	p.WriteInt32(1)
 	p.WriteInt32(-1) // null Args
 	return nil
@@ -36,7 +37,8 @@ func (s *ServiceStartArgs) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip This.flags
+	s.Flags, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	if _, _err = p.ReadInt32(); _err != nil {

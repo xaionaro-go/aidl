@@ -1,9 +1,11 @@
-//go:build e2e
+//go:build e2e || e2e_root
 
 package e2e
 
 import (
 	"context"
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -116,6 +118,12 @@ func TestSubsystem_Wallpaper(t *testing.T) {
 
 	proxy := genApp.NewWallpaperManagerProxy(svc)
 	result, err := proxy.IsWallpaperSupported(ctx)
+	if err != nil && strings.Contains(err.Error(), "does not belong to uid") {
+		// Root (UID 0) has no Android package — the wallpaper service
+		// validates callingPackage against the calling UID. This method
+		// only works from an Android app context.
+		t.Skipf("callingPackage/UID mismatch (no Android package for UID %d): %v", os.Getuid(), err)
+	}
 	requireOrSkip(t, err)
 	t.Logf("isWallpaperSupported: %v", result)
 }

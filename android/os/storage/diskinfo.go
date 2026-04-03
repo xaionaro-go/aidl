@@ -8,6 +8,7 @@ import (
 
 type DiskInfo struct {
 	Id          string
+	Flags       int32
 	Size        int64
 	Label       string
 	VolumeCount int32
@@ -20,7 +21,7 @@ func (s *DiskInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.Id)
-	p.WriteInt32(0) // placeholder This.flags
+	p.WriteInt32(s.Flags)
 	p.WriteInt64(s.Size)
 	p.WriteString16(s.Label)
 	p.WriteInt32(s.VolumeCount)
@@ -36,7 +37,8 @@ func (s *DiskInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip This.flags
+	s.Flags, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	s.Size, _err = p.ReadInt64()

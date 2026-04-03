@@ -144,7 +144,7 @@ parcelables:
         - name: Proxy
           write_method: typed_object
         - name: AllowedAlgorithms
-          write_method: opaque
+          write_method: write_list
         - name: IsBypassable
           write_method: bool
         - name: IsMetered

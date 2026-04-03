@@ -86,6 +86,24 @@ func AIDLTypeToDexDescriptor(
 		return ""
 	}
 
+	// Enums in AIDL are serialized as their backing type (int, long, etc.),
+	// not as object references. In DEX, an enum parameter appears as "I"
+	// (int), not "Landroid/system/keystore2/Domain;". Check the registry
+	// and return the backing type descriptor for enums.
+	if registry != nil {
+		if def, ok := registry.Lookup(qualifiedName); ok {
+			if enumDecl, isEnum := def.(*parser.EnumDecl); isEnum {
+				backingType := "int"
+				if enumDecl.BackingType != nil {
+					backingType = enumDecl.BackingType.Name
+				}
+				if desc, ok := aidlPrimitiveToDex[backingType]; ok {
+					return desc
+				}
+			}
+		}
+	}
+
 	// Convert dot-separated qualified name to DEX descriptor:
 	// "android.content.AttributionSource" → "Landroid/content/AttributionSource;"
 	return "L" + strings.ReplaceAll(qualifiedName, ".", "/") + ";"

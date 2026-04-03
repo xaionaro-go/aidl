@@ -100,7 +100,7 @@ func (p *TelephonyProxy) SwitchAudioMode(
 	_data.WriteInterfaceToken(DescriptorITelephony)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITelephony, MethodITelephonySwitchAudioMode)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mode))

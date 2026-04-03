@@ -55,7 +55,7 @@ func (p *MemtrackProxy) GetMemory(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIMemtrack, MethodIMemtrackGetMemory)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/memtrack/MemtrackType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(pid)

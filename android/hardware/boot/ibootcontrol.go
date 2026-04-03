@@ -450,7 +450,7 @@ func (p *BootControlProxy) SetSnapshotMergeStatus(
 	_data.WriteInterfaceToken(DescriptorIBootControl)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBootControl, MethodIBootControlSetSnapshotMergeStatus)
 	_compiledDescs := []string{
-		"Landroid/hardware/boot/MergeStatus;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(status))

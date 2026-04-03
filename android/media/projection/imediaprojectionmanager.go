@@ -655,7 +655,7 @@ func (p *MediaProjectionManagerProxy) SetUserReviewGrantedConsentResult(
 	_data.WriteInterfaceToken(DescriptorIMediaProjectionManager)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIMediaProjectionManager, MethodIMediaProjectionManagerSetUserReviewGrantedConsentResult)
 	_compiledDescs := []string{
-		"Landroid/media/projection/ReviewGrantedConsentResult;",
+		"I",
 		"Landroid/media/projection/IMediaProjection;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

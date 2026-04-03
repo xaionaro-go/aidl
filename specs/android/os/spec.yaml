@@ -6239,6 +6239,9 @@ parcelables:
     - name: ResultReceiver
       annotations:
         - JavaOnlyStableParcelable
+      java_wire_format:
+        - name: Receiver.asBinder()
+          write_method: binder
     - name: ServiceDebugInfo
       fields:
         - name: name

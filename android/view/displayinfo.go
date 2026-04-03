@@ -10,6 +10,7 @@ import (
 
 type DisplayInfo struct {
 	LayerStack                        int32
+	Flags                             int32
 	Type                              int32
 	DisplayId                         int32
 	DisplayGroupId                    int32
@@ -59,7 +60,7 @@ func (s *DisplayInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.LayerStack)
-	p.WriteInt32(0) // placeholder This.flags
+	p.WriteInt32(s.Flags)
 	p.WriteInt32(s.Type)
 	p.WriteInt32(s.DisplayId)
 	p.WriteInt32(s.DisplayGroupId)
@@ -147,7 +148,8 @@ func (s *DisplayInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip This.flags
+	s.Flags, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	s.Type, _err = p.ReadInt32()

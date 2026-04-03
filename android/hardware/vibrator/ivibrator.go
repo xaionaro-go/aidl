@@ -236,8 +236,8 @@ func (p *VibratorProxy) Perform(
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIVibrator, MethodIVibratorPerform)
 	_compiledDescs := []string{
-		"Landroid/hardware/vibrator/Effect;",
-		"Landroid/hardware/vibrator/EffectStrength;",
+		"I",
+		"B",
 		"Landroid/hardware/vibrator/IVibratorCallback;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -520,7 +520,7 @@ func (p *VibratorProxy) GetPrimitiveDuration(
 	_data.WriteInterfaceToken(DescriptorIVibrator)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIVibrator, MethodIVibratorGetPrimitiveDuration)
 	_compiledDescs := []string{
-		"Landroid/hardware/vibrator/CompositePrimitive;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(primitive))
@@ -678,8 +678,8 @@ func (p *VibratorProxy) AlwaysOnEnable(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIVibrator, MethodIVibratorAlwaysOnEnable)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/vibrator/Effect;",
-		"Landroid/hardware/vibrator/EffectStrength;",
+		"I",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(id)

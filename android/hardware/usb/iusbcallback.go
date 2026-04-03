@@ -72,7 +72,7 @@ func (p *UsbCallbackProxy) NotifyPortStatusChange(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIUsbCallback, MethodIUsbCallbackNotifyPortStatusChange)
 	_compiledDescs := []string{
 		"[Landroid/hardware/usb/PortStatus;",
-		"Landroid/hardware/usb/Status;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		if currentPortStatus == nil {
@@ -132,7 +132,7 @@ func (p *UsbCallbackProxy) NotifyRoleSwitchStatus(
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
 		"Landroid/hardware/usb/PortRole;",
-		"Landroid/hardware/usb/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -185,7 +185,7 @@ func (p *UsbCallbackProxy) NotifyEnableUsbDataStatus(
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
 		"Z",
-		"Landroid/hardware/usb/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -230,7 +230,7 @@ func (p *UsbCallbackProxy) NotifyEnableUsbDataWhileDockedStatus(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIUsbCallback, MethodIUsbCallbackNotifyEnableUsbDataWhileDockedStatus)
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
-		"Landroid/hardware/usb/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -274,7 +274,7 @@ func (p *UsbCallbackProxy) NotifyContaminantEnabledStatus(
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
 		"Z",
-		"Landroid/hardware/usb/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -319,7 +319,7 @@ func (p *UsbCallbackProxy) NotifyQueryPortStatus(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIUsbCallback, MethodIUsbCallbackNotifyQueryPortStatus)
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
-		"Landroid/hardware/usb/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -363,7 +363,7 @@ func (p *UsbCallbackProxy) NotifyLimitPowerTransferStatus(
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
 		"Z",
-		"Landroid/hardware/usb/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -408,7 +408,7 @@ func (p *UsbCallbackProxy) NotifyResetUsbPortStatus(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIUsbCallback, MethodIUsbCallbackNotifyResetUsbPortStatus)
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
-		"Landroid/hardware/usb/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

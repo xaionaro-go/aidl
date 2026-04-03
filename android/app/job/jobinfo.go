@@ -27,6 +27,7 @@ type JobInfo struct {
 	HasLateConstraint         bool
 	Bias                      int32
 	Priority                  int32
+	Flags                     int32
 	NumDebugTags              int32
 	TraceTag                  string
 	ClipData                  content.ClipData
@@ -67,7 +68,7 @@ func (s *JobInfo) MarshalParcel(
 	p.WriteBool(s.HasLateConstraint)
 	p.WriteInt32(s.Bias)
 	p.WriteInt32(s.Priority)
-	p.WriteInt32(0) // placeholder This.flags
+	p.WriteInt32(s.Flags)
 	p.WriteInt32(s.NumDebugTags)
 	p.WriteString16(s.TraceTag)
 	return nil

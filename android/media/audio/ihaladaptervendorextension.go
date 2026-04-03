@@ -64,7 +64,7 @@ func (p *HalAdapterVendorExtensionProxy) ParseVendorParameterIds(
 	_data.WriteInterfaceToken(DescriptorIHalAdapterVendorExtension)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIHalAdapterVendorExtension, MethodIHalAdapterVendorExtensionParseVendorParameterIds)
 	_compiledDescs := []string{
-		"Landroid/media/audio/IHalAdapterVendorExtension/ParameterScope;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -129,7 +129,7 @@ func (p *HalAdapterVendorExtensionProxy) ParseVendorParameters(
 	_data.WriteInterfaceToken(DescriptorIHalAdapterVendorExtension)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIHalAdapterVendorExtension, MethodIHalAdapterVendorExtensionParseVendorParameters)
 	_compiledDescs := []string{
-		"Landroid/media/audio/IHalAdapterVendorExtension/ParameterScope;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -368,7 +368,7 @@ func (p *HalAdapterVendorExtensionProxy) ProcessVendorParameters(
 	_data.WriteInterfaceToken(DescriptorIHalAdapterVendorExtension)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIHalAdapterVendorExtension, MethodIHalAdapterVendorExtensionProcessVendorParameters)
 	_compiledDescs := []string{
-		"Landroid/media/audio/IHalAdapterVendorExtension/ParameterScope;",
+		"I",
 		"[Landroid/hardware/audio/core/VendorParameter;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

@@ -596,7 +596,7 @@ func (p *AudioTrackProxy) SetDualMonoMode(
 	_data.WriteInterfaceToken(DescriptorIAudioTrack)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioTrack, MethodIAudioTrackSetDualMonoMode)
 	_compiledDescs := []string{
-		"Landroid/media/audio/common/AudioDualMonoMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(mode))

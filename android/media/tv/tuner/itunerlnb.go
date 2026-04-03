@@ -106,7 +106,7 @@ func (p *TunerLnbProxy) SetVoltage(
 	_data.WriteInterfaceToken(DescriptorITunerLnb)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITunerLnb, MethodITunerLnbSetVoltage)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/LnbVoltage;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(voltage))
@@ -147,7 +147,7 @@ func (p *TunerLnbProxy) SetTone(
 	_data.WriteInterfaceToken(DescriptorITunerLnb)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITunerLnb, MethodITunerLnbSetTone)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/LnbTone;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(tone))
@@ -188,7 +188,7 @@ func (p *TunerLnbProxy) SetSatellitePosition(
 	_data.WriteInterfaceToken(DescriptorITunerLnb)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITunerLnb, MethodITunerLnbSetSatellitePosition)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/tuner/LnbPosition;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(position))

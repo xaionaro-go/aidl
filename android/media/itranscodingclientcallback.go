@@ -262,7 +262,7 @@ func (p *TranscodingClientCallbackProxy) OnTranscodingFailed(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorITranscodingClientCallback, MethodITranscodingClientCallbackOnTranscodingFailed)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/media/TranscodingErrorCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(sessionId)

@@ -54,7 +54,7 @@ func (p *RadioConfigIndicationProxy) SimSlotsStatusChanged(
 	_data.WriteInterfaceToken(DescriptorIRadioConfigIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioConfigIndication, MethodIRadioConfigIndicationSimSlotsStatusChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"[Landroid/hardware/radio/config/SimSlotStatus;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

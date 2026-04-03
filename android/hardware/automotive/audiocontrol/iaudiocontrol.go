@@ -84,7 +84,7 @@ func (p *AudioControlProxy) OnAudioFocusChange(
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
 		"I",
-		"Landroid/hardware/automotive/audiocontrol/AudioFocusChange;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteString16(usage)
@@ -326,7 +326,7 @@ func (p *AudioControlProxy) OnAudioFocusChangeWithMetaData(
 	_compiledDescs := []string{
 		"Landroid/hardware/audio/common/PlaybackTrackMetadata;",
 		"I",
-		"Landroid/hardware/automotive/audiocontrol/AudioFocusChange;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -371,7 +371,7 @@ func (p *AudioControlProxy) SetAudioDeviceGainsChanged(
 	_data.WriteInterfaceToken(DescriptorIAudioControl)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIAudioControl, MethodIAudioControlSetAudioDeviceGainsChanged)
 	_compiledDescs := []string{
-		"[Landroid/hardware/automotive/audiocontrol/Reasons;",
+		"[I",
 		"[Landroid/hardware/automotive/audiocontrol/AudioGainConfigInfo;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

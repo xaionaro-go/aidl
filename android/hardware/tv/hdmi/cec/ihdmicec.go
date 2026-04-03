@@ -83,7 +83,7 @@ func (p *HdmiCecProxy) AddLogicalAddress(
 	_data.WriteInterfaceToken(DescriptorIHdmiCec)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIHdmiCec, MethodIHdmiCecAddLogicalAddress)
 	_compiledDescs := []string{
-		"Landroid/hardware/tv/hdmi/cec/CecLogicalAddress;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WritePaddedByte(byte(addr))

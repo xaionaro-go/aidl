@@ -61,7 +61,7 @@ func (p *UsbGadgetCallbackProxy) SetCurrentUsbFunctionsCb(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIUsbGadgetCallback, MethodIUsbGadgetCallbackSetCurrentUsbFunctionsCb)
 	_compiledDescs := []string{
 		"J",
-		"Landroid/hardware/usb/gadget/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -103,7 +103,7 @@ func (p *UsbGadgetCallbackProxy) GetCurrentUsbFunctionsCb(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIUsbGadgetCallback, MethodIUsbGadgetCallbackGetCurrentUsbFunctionsCb)
 	_compiledDescs := []string{
 		"J",
-		"Landroid/hardware/usb/gadget/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -143,7 +143,7 @@ func (p *UsbGadgetCallbackProxy) GetUsbSpeedCb(
 	_data.WriteInterfaceToken(DescriptorIUsbGadgetCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIUsbGadgetCallback, MethodIUsbGadgetCallbackGetUsbSpeedCb)
 	_compiledDescs := []string{
-		"Landroid/hardware/usb/gadget/UsbSpeed;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -180,7 +180,7 @@ func (p *UsbGadgetCallbackProxy) ResetCb(
 	_data.WriteInterfaceToken(DescriptorIUsbGadgetCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIUsbGadgetCallback, MethodIUsbGadgetCallbackResetCb)
 	_compiledDescs := []string{
-		"Landroid/hardware/usb/gadget/Status;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

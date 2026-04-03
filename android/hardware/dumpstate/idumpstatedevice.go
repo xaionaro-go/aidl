@@ -63,7 +63,7 @@ func (p *DumpstateDeviceProxy) DumpstateBoard(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIDumpstateDevice, MethodIDumpstateDeviceDumpstateBoard)
 	_compiledDescs := []string{
 		"[Landroid/os/ParcelFileDescriptor;",
-		"Landroid/hardware/dumpstate/IDumpstateDevice/DumpstateMode;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

@@ -1,7 +1,8 @@
 package res
 
 import (
-	types "github.com/AndroidGoLab/binder/android/app/types"
+	appTypes "github.com/AndroidGoLab/binder/android/app/types"
+	types "github.com/AndroidGoLab/binder/android/os/types"
 	"github.com/AndroidGoLab/binder/parcel"
 )
 
@@ -32,7 +33,8 @@ type Configuration struct {
 	Seq                         int32
 	FontWeightAdjustment        int32
 	GrammaticalGender           int32
-	WindowConfiguration         types.WindowConfiguration
+	LocaleList                  *types.LocaleList
+	WindowConfiguration         appTypes.WindowConfiguration
 }
 
 var _ parcel.Parcelable = (*Configuration)(nil)
@@ -43,7 +45,14 @@ func (s *Configuration) MarshalParcel(
 	p.WriteFloat32(s.FontScale)
 	p.WriteInt32(s.Mcc)
 	p.WriteInt32(s.Mnc)
-	p.WriteInt32(0) // opaque: cycle prevents typed marshal
+	if s.LocaleList != nil {
+		p.WriteInt32(1)
+		if _err := s.LocaleList.MarshalParcel(p); _err != nil {
+			return _err
+		}
+	} else {
+		p.WriteInt32(0)
+	}
 	p.WriteInt32(1)
 	p.WriteInt32(s.Touchscreen)
 	p.WriteInt32(s.Keyboard)
@@ -93,7 +102,12 @@ func (s *Configuration) UnmarshalParcel(
 		if _err != nil {
 			return _err
 		}
-		_ = _flag // opaque: cycle prevents typed unmarshal
+		if _flag != 0 {
+			s.LocaleList = &types.LocaleList{}
+			if _err = s.LocaleList.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
+		}
 	}
 	if _, _err = p.ReadInt32(); _err != nil {
 		return _err

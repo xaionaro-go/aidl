@@ -94,8 +94,8 @@ func (p *NfcClientCallbackProxy) SendEvent(
 	_data.WriteInterfaceToken(DescriptorINfcClientCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorINfcClientCallback, MethodINfcClientCallbackSendEvent)
 	_compiledDescs := []string{
-		"Landroid/hardware/nfc/NfcEvent;",
-		"Landroid/hardware/nfc/NfcStatus;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(event))

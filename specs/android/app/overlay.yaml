@@ -1,0 +1,3 @@
+parcelables:
+    - name: Notification
+      native_parcelable: true

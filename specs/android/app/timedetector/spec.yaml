@@ -97,4 +97,4 @@ parcelables:
         - name: UnixEpochTime
           write_method: typed_object
         - name: DebugInfo
-          write_method: opaque
+          write_method: write_list

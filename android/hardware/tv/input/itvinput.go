@@ -299,7 +299,7 @@ func (p *TvInputProxy) SetTvMessageEnabled(
 	_compiledDescs := []string{
 		"I",
 		"I",
-		"Landroid/hardware/tv/input/TvMessageEventType;",
+		"I",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

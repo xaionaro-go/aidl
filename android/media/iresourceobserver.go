@@ -52,7 +52,7 @@ func (p *ResourceObserverProxy) OnStatusChanged(
 	_data.WriteInterfaceToken(DescriptorIResourceObserver)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIResourceObserver, MethodIResourceObserverOnStatusChanged)
 	_compiledDescs := []string{
-		"Landroid/media/MediaObservableEvent;",
+		"J",
 		"I",
 		"I",
 		"[Landroid/media/MediaObservableParcel;",

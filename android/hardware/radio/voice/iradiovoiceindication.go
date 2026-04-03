@@ -94,7 +94,7 @@ func (p *RadioVoiceIndicationProxy) CallRing(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationCallRing)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Z",
 		"Landroid/hardware/radio/voice/CdmaSignalInfoRecord;",
 	}
@@ -140,7 +140,7 @@ func (p *RadioVoiceIndicationProxy) CallStateChanged(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationCallStateChanged)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -173,7 +173,7 @@ func (p *RadioVoiceIndicationProxy) CdmaCallWaiting(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationCdmaCallWaiting)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Landroid/hardware/radio/voice/CdmaCallWaiting;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -216,7 +216,7 @@ func (p *RadioVoiceIndicationProxy) CdmaInfoRec(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationCdmaInfoRec)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"[Landroid/hardware/radio/voice/CdmaInformationRecord;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -273,8 +273,8 @@ func (p *RadioVoiceIndicationProxy) CdmaOtaProvisionStatus(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationCdmaOtaProvisionStatus)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
-		"Landroid/hardware/radio/voice/CdmaOtaProvisionStatus;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -310,7 +310,7 @@ func (p *RadioVoiceIndicationProxy) CurrentEmergencyNumberList(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationCurrentEmergencyNumberList)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"[Landroid/hardware/radio/voice/EmergencyNumber;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -366,7 +366,7 @@ func (p *RadioVoiceIndicationProxy) EnterEmergencyCallbackMode(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationEnterEmergencyCallbackMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -398,7 +398,7 @@ func (p *RadioVoiceIndicationProxy) ExitEmergencyCallbackMode(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationExitEmergencyCallbackMode)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -431,7 +431,7 @@ func (p *RadioVoiceIndicationProxy) IndicateRingbackTone(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationIndicateRingbackTone)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Z",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -468,7 +468,7 @@ func (p *RadioVoiceIndicationProxy) OnSupplementaryServiceIndication(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationOnSupplementaryServiceIndication)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Landroid/hardware/radio/voice/StkCcUnsolSsResult;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -512,8 +512,8 @@ func (p *RadioVoiceIndicationProxy) OnUssd(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationOnUssd)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
-		"Landroid/hardware/radio/voice/UssdModeType;",
+		"I",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -552,7 +552,7 @@ func (p *RadioVoiceIndicationProxy) ResendIncallMute(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationResendIncallMute)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -585,8 +585,8 @@ func (p *RadioVoiceIndicationProxy) SrvccStateNotify(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationSrvccStateNotify)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
-		"Landroid/hardware/radio/voice/SrvccState;",
+		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(type_))
@@ -622,7 +622,7 @@ func (p *RadioVoiceIndicationProxy) StkCallControlAlphaNotify(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationStkCallControlAlphaNotify)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -659,7 +659,7 @@ func (p *RadioVoiceIndicationProxy) StkCallSetup(
 	_data.WriteInterfaceToken(DescriptorIRadioVoiceIndication)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioVoiceIndication, MethodIRadioVoiceIndicationStkCallSetup)
 	_compiledDescs := []string{
-		"Landroid/hardware/radio/RadioIndicationType;",
+		"I",
 		"J",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

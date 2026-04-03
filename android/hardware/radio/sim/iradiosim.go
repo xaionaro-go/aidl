@@ -1019,7 +1019,7 @@ func (p *RadioSimProxy) SetAllowedCarriers(
 	_compiledDescs := []string{
 		"I",
 		"Landroid/hardware/radio/sim/CarrierRestrictions;",
-		"Landroid/hardware/radio/sim/SimLockMultiSimPolicy;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -1108,7 +1108,7 @@ func (p *RadioSimProxy) SetCdmaSubscriptionSource(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioSim, MethodIRadioSimSetCdmaSubscriptionSource)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sim/CdmaSubscriptionSource;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -1239,7 +1239,7 @@ func (p *RadioSimProxy) SetSimCardPower(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioSim, MethodIRadioSimSetSimCardPower)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sim/CardPowerState;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -1498,7 +1498,7 @@ func (p *RadioSimProxy) SupplySimDepersonalization(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioSim, MethodIRadioSimSupplySimDepersonalization)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sim/PersoSubstate;",
+		"I",
 		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

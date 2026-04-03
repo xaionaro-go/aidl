@@ -1,0 +1,5 @@
+parcelables:
+    - name: InstanceId
+      java_wire_format:
+        - name: Id
+          write_method: int32

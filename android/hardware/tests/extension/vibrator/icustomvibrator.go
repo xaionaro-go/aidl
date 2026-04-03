@@ -90,7 +90,7 @@ func (p *CustomVibratorProxy) SetDirectionality(
 	_data.WriteInterfaceToken(DescriptorICustomVibrator)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICustomVibrator, MethodICustomVibratorSetDirectionality)
 	_compiledDescs := []string{
-		"Landroid/hardware/tests/extension/vibrator/Directionality;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(directionality))
@@ -133,7 +133,7 @@ func (p *CustomVibratorProxy) Perform(
 	_data.WriteInterfaceToken(DescriptorICustomVibrator)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICustomVibrator, MethodICustomVibratorPerform)
 	_compiledDescs := []string{
-		"Landroid/hardware/tests/extension/vibrator/VendorEffect;",
+		"I",
 		"Landroid/hardware/vibrator/IVibratorCallback;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

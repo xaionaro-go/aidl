@@ -273,7 +273,7 @@ func (p *KeyMintDeviceProxy) ImportKey(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIKeyMintDevice, MethodIKeyMintDeviceImportKey)
 	_compiledDescs := []string{
 		"[Landroid/hardware/security/keymint/KeyParameter;",
-		"Landroid/hardware/security/keymint/KeyFormat;",
+		"I",
 		"[B",
 		"Landroid/hardware/security/keymint/AttestationKey;",
 	}
@@ -630,7 +630,7 @@ func (p *KeyMintDeviceProxy) Begin(
 	_data.WriteInterfaceToken(DescriptorIKeyMintDevice)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIKeyMintDevice, MethodIKeyMintDeviceBegin)
 	_compiledDescs := []string{
-		"Landroid/hardware/security/keymint/KeyPurpose;",
+		"I",
 		"[B",
 		"[Landroid/hardware/security/keymint/KeyParameter;",
 		"Landroid/hardware/security/keymint/HardwareAuthToken;",

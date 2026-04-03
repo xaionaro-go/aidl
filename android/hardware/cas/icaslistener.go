@@ -163,7 +163,7 @@ func (p *CasListenerProxy) OnStatusUpdate(
 	_data.WriteInterfaceToken(DescriptorICasListener)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorICasListener, MethodICasListenerOnStatusUpdate)
 	_compiledDescs := []string{
-		"Landroid/hardware/cas/StatusEvent;",
+		"B",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {

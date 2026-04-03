@@ -41,5 +41,17 @@ func (s *PhoneCapability) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque LogicalModemList: cannot skip without known wire format
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	{
+		_arrLen, _arrErr := p.ReadInt32()
+		if _arrErr != nil {
+			return _arrErr
+		}
+		if _arrLen > 0 {
+			p.SetPosition(p.Position() + int(_arrLen)*4)
+		}
+	}
+	return nil
 }

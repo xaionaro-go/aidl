@@ -207,7 +207,7 @@ func (p *StreamInProxy) SetMicrophoneDirection(
 	_data.WriteInterfaceToken(DescriptorIStreamIn)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIStreamIn, MethodIStreamInSetMicrophoneDirection)
 	_compiledDescs := []string{
-		"Landroid/hardware/audio/core/IStreamIn/MicrophoneDirection;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(direction))

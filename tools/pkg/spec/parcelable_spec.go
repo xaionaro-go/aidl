@@ -13,4 +13,9 @@ type ParcelableSpec struct {
 	// as extracted from the Java writeToParcel() implementation.
 	// Present only when java2spec has analyzed the corresponding Java class.
 	JavaWireFormat []JavaWireField `yaml:"java_wire_format,omitempty"`
+
+	// NativeParcelable marks a parcelable whose wire format is defined
+	// by native C++/JNI code rather than AIDL fields. The codegen skips
+	// these types; hand-written implementations are provided via native_impls/.
+	NativeParcelable bool `yaml:"native_parcelable,omitempty"`
 }

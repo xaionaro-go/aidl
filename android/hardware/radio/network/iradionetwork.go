@@ -726,7 +726,7 @@ func (p *RadioNetworkProxy) SetBandMode(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioNetwork, MethodIRadioNetworkSetBandMode)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/network/RadioBandMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -810,7 +810,7 @@ func (p *RadioNetworkProxy) SetCdmaRoamingPreference(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioNetwork, MethodIRadioNetworkSetCdmaRoamingPreference)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/network/CdmaRoamingType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -931,7 +931,7 @@ func (p *RadioNetworkProxy) SetLinkCapacityReportingCriteria(
 		"I",
 		"[I",
 		"[I",
-		"Landroid/hardware/radio/AccessNetwork;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -1082,7 +1082,7 @@ func (p *RadioNetworkProxy) SetNetworkSelectionModeManual(
 	_compiledDescs := []string{
 		"I",
 		"Ljava/lang/String;",
-		"Landroid/hardware/radio/AccessNetwork;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -1122,7 +1122,7 @@ func (p *RadioNetworkProxy) SetNrDualConnectivityState(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioNetwork, MethodIRadioNetworkSetNrDualConnectivityState)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/network/NrDualConnectivityState;",
+		"B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -1464,7 +1464,7 @@ func (p *RadioNetworkProxy) SetUsageSetting(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioNetwork, MethodIRadioNetworkSetUsageSetting)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/network/UsageSetting;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -1533,7 +1533,7 @@ func (p *RadioNetworkProxy) SetEmergencyMode(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIRadioNetwork, MethodIRadioNetworkSetEmergencyMode)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/network/EmergencyMode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)

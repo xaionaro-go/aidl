@@ -12,6 +12,7 @@ type ExtractedText struct {
 	PartialEndOffset   int32
 	SelectionStart     int32
 	SelectionEnd       int32
+	Flags              int32
 }
 
 var _ parcel.Parcelable = (*ExtractedText)(nil)
@@ -25,7 +26,7 @@ func (s *ExtractedText) MarshalParcel(
 	p.WriteInt32(s.PartialEndOffset)
 	p.WriteInt32(s.SelectionStart)
 	p.WriteInt32(s.SelectionEnd)
-	p.WriteInt32(0)  // placeholder This.flags
+	p.WriteInt32(s.Flags)
 	p.WriteInt32(-1) // null TextUtils
 	return nil
 }

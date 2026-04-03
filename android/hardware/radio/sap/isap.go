@@ -76,7 +76,7 @@ func (p *SapProxy) ApduReq(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISap, MethodISapApduReq)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapApduType;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -287,7 +287,7 @@ func (p *SapProxy) SetTransferProtocolReq(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISap, MethodISapSetTransferProtocolReq)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapTransferProtocol;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)

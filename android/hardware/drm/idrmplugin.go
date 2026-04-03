@@ -369,7 +369,7 @@ func (p *DrmPluginProxy) GetKeyRequest(
 		"[B",
 		"[B",
 		"Ljava/lang/String;",
-		"Landroid/hardware/drm/KeyType;",
+		"I",
 		"[Landroid/hardware/drm/KeyValue;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -1103,7 +1103,7 @@ func (p *DrmPluginProxy) OpenSession(
 	_data.WriteInterfaceToken(DescriptorIDrmPlugin)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIDrmPlugin, MethodIDrmPluginOpenSession)
 	_compiledDescs := []string{
-		"Landroid/hardware/drm/SecurityLevel;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(int32(securityLevel))
@@ -1615,7 +1615,7 @@ func (p *DrmPluginProxy) RequiresSecureDecoder(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIDrmPlugin, MethodIDrmPluginRequiresSecureDecoder)
 	_compiledDescs := []string{
 		"Ljava/lang/String;",
-		"Landroid/hardware/drm/SecurityLevel;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteString16(mime)

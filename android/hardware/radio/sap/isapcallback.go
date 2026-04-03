@@ -82,7 +82,7 @@ func (p *SapCallbackProxy) ApduResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISapCallback, MethodISapCallbackApduResponse)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapResultCode;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -124,7 +124,7 @@ func (p *SapCallbackProxy) ConnectResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISapCallback, MethodISapCallbackConnectResponse)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapConnectRsp;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -165,7 +165,7 @@ func (p *SapCallbackProxy) DisconnectIndication(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISapCallback, MethodISapCallbackDisconnectIndication)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapDisconnectType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -266,7 +266,7 @@ func (p *SapCallbackProxy) PowerResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISapCallback, MethodISapCallbackPowerResponse)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapResultCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -303,7 +303,7 @@ func (p *SapCallbackProxy) ResetSimResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISapCallback, MethodISapCallbackResetSimResponse)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapResultCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -340,7 +340,7 @@ func (p *SapCallbackProxy) StatusIndication(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISapCallback, MethodISapCallbackStatusIndication)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapStatus;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)
@@ -378,7 +378,7 @@ func (p *SapCallbackProxy) TransferAtrResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISapCallback, MethodISapCallbackTransferAtrResponse)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapResultCode;",
+		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -420,7 +420,7 @@ func (p *SapCallbackProxy) TransferCardReaderStatusResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISapCallback, MethodISapCallbackTransferCardReaderStatusResponse)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapResultCode;",
+		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -461,7 +461,7 @@ func (p *SapCallbackProxy) TransferProtocolResponse(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorISapCallback, MethodISapCallbackTransferProtocolResponse)
 	_compiledDescs := []string{
 		"I",
-		"Landroid/hardware/radio/sap/SapResultCode;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(serial)

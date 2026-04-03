@@ -225,7 +225,7 @@ func (p *FrontendProxy) Scan(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIFrontend, MethodIFrontendScan)
 	_compiledDescs := []string{
 		"Landroid/hardware/tv/tuner/FrontendSettings;",
-		"Landroid/hardware/tv/tuner/FrontendScanType;",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(1)
@@ -301,7 +301,7 @@ func (p *FrontendProxy) GetStatus(
 	_data.WriteInterfaceToken(DescriptorIFrontend)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIFrontend, MethodIFrontendGetStatus)
 	_compiledDescs := []string{
-		"[Landroid/hardware/tv/tuner/FrontendStatusType;",
+		"[I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		if statusTypes == nil {
@@ -592,7 +592,7 @@ func (p *FrontendProxy) GetFrontendStatusReadiness(
 	_data.WriteInterfaceToken(DescriptorIFrontend)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIFrontend, MethodIFrontendGetFrontendStatusReadiness)
 	_compiledDescs := []string{
-		"[Landroid/hardware/tv/tuner/FrontendStatusType;",
+		"[I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		if statusTypes == nil {

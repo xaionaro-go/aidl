@@ -170,8 +170,40 @@ func mergeOverlay(
 	}
 	base.Services = append(base.Services, overlay.Services...)
 	base.Interfaces = append(base.Interfaces, overlay.Interfaces...)
-	base.Parcelables = append(base.Parcelables, overlay.Parcelables...)
+
+	// For parcelables, overlay entries with the same name update the
+	// existing base entry's properties (e.g., native_parcelable) rather
+	// than creating a duplicate. New names are appended.
+	mergeParcelables(base, overlay.Parcelables)
+
 	base.Enums = append(base.Enums, overlay.Enums...)
 	base.Unions = append(base.Unions, overlay.Unions...)
 	base.JavaConstants = append(base.JavaConstants, overlay.JavaConstants...)
+}
+
+// mergeParcelables merges overlay parcelables into base. Overlay entries
+// with the same name as a base entry update the base entry's boolean
+// flags (NativeParcelable). Overlay entries with new names are appended.
+func mergeParcelables(
+	base *PackageSpec,
+	overlayParcelables []ParcelableSpec,
+) {
+	// Index base parcelables by name for efficient lookup.
+	baseIdx := make(map[string]int, len(base.Parcelables))
+	for i, p := range base.Parcelables {
+		baseIdx[p.Name] = i
+	}
+
+	for _, op := range overlayParcelables {
+		if idx, exists := baseIdx[op.Name]; exists {
+			if op.NativeParcelable {
+				base.Parcelables[idx].NativeParcelable = true
+			}
+			if len(op.JavaWireFormat) > 0 {
+				base.Parcelables[idx].JavaWireFormat = op.JavaWireFormat
+			}
+		} else {
+			base.Parcelables = append(base.Parcelables, op)
+		}
+	}
 }

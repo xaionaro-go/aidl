@@ -10209,7 +10209,7 @@ parcelables:
         - name: NumSubgroups
           write_method: int32
         - name: BisSyncState
-          write_method: opaque
+          write_method: write_list
         - name: SubgroupMetadata
           write_method: opaque
     - name: BluetoothLeBroadcastSettings
