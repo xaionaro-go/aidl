@@ -184,6 +184,61 @@ func (p *HwParcel) WriteHidlVecUint32(values []uint32) {
 	p.WriteEmbeddedBuffer(dataBuf, parentHandle, 0)
 }
 
+// WriteNullBinder writes a null HIDL binder reference into the inline
+// data. HIDL null binders use flat_binder_object with BINDER_TYPE_BINDER
+// and binder=0, cookie=0. Unlike AIDL, HIDL does NOT append a stability
+// level. The offset is NOT recorded in the objects array (matching AOSP
+// behavior where null binder objects are inert data).
+func (p *HwParcel) WriteNullBinder() {
+	const flatBinderObjectSize = 24
+	const binderTypeBinder = uint32(0x73622a85)
+
+	obj := make([]byte, flatBinderObjectSize)
+	binary.LittleEndian.PutUint32(obj[0:], binderTypeBinder)
+	// flags, binder pointer, cookie are all zero.
+	p.data = append(p.data, obj...)
+}
+
+// WriteBool writes a boolean as a uint8 into the inline data buffer,
+// padded to 4-byte alignment.
+func (p *HwParcel) WriteBool(v bool) {
+	b := make([]byte, 4)
+	if v {
+		b[0] = 1
+	}
+	p.data = append(p.data, b...)
+}
+
+// WriteInt32 writes an int32 directly into the inline data buffer.
+func (p *HwParcel) WriteInt32(v int32) {
+	b := make([]byte, 4)
+	binary.LittleEndian.PutUint32(b, uint32(v))
+	p.data = append(p.data, b...)
+}
+
+// WriteUint64 writes a uint64 directly into the inline data buffer.
+func (p *HwParcel) WriteUint64(v uint64) {
+	b := make([]byte, 8)
+	binary.LittleEndian.PutUint64(b, v)
+	p.data = append(p.data, b...)
+}
+
+// WriteHidlVecBytes writes a hidl_vec<uint8_t>. Creates two buffer objects:
+//  1. The hidl_vec header (16 bytes)
+//  2. The byte array data (child of #1)
+func (p *HwParcel) WriteHidlVecBytes(data []byte) {
+	headerBuf := make([]byte, hidlVecHeaderSize)
+	binary.LittleEndian.PutUint32(headerBuf[8:], uint32(len(data)))
+
+	parentHandle := p.WriteBuffer(headerBuf)
+
+	// Copy data to ensure it stays alive.
+	dataCopy := make([]byte, len(data))
+	copy(dataCopy, data)
+
+	p.WriteEmbeddedBuffer(dataCopy, parentHandle, 0)
+}
+
 // WriteUint32 writes a uint32 directly into the inline data buffer
 // (not as a scatter-gather buffer object). Used for simple scalar
 // arguments that follow buffer objects.

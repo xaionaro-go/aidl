@@ -565,7 +565,8 @@ More examples: [`examples/`](examples/)
 | [`camera_connect`](examples/camera_connect/) | Camera device connection with callback stub |
 | [`carrier_config`](examples/carrier_config/) | Query carrier configuration: default carrier service package, |
 | [`charge_monitor`](examples/charge_monitor/) | Monitor charging status and battery health via the Health HAL. |
-| [`clipboard_monitor`](examples/clipboard_monitor/) | Access the clipboard service to check clipboard state. |
+| [`clipboard_monitor`](examples/clipboard_monitor/) | Set and read clipboard text via the Android clipboard binder service. |
+| [`codec2_encode`](examples/codec2_encode/) | Codec2 H.264 encoding via binder. |
 | [`compliance_checker`](examples/compliance_checker/) | Verify device compliance: encryption, security state, OTA update status. |
 | [`credential_manager`](examples/credential_manager/) | Query the CredentialManager service for availability. |
 | [`device_info`](examples/device_info/) | Device properties, build info |
@@ -585,7 +586,7 @@ More examples: [`examples/`](examples/)
 | [`gps_location`](examples/gps_location/) | Live GPS fix via ILocationListener callback |
 | [`headless_controller`](examples/headless_controller/) | Headless device orchestration: query power, display, and process state. |
 | [`ims_monitor`](examples/ims_monitor/) | Monitor IMS registration state via ITelephony proxy. |
-| [`input_injector`](examples/input_injector/) | Query input devices from InputManager. |
+| [`input_injector`](examples/input_injector/) | Inject input events via InputManager's binder interface. |
 | [`job_scheduler_monitor`](examples/job_scheduler_monitor/) | Query JobScheduler state from the "jobscheduler" service. |
 | [`keymint_delete_test`](examples/keymint_delete_test/) | Binary keymint_delete_test calls DeleteAllKeys on the KeyMint HAL |
 | [`keystore_ops`](examples/keystore_ops/) | Query Keystore2 service for key entries and counts (read-only). |
@@ -621,7 +622,7 @@ More examples: [`examples/`](examples/)
 | [`screen_control`](examples/screen_control/) | Check screen on/off state and display interactivity via PowerManager. |
 | [`secure_element`](examples/secure_element/) | Query OMAPI SecureElementService for available readers. |
 | [`security_test_apk`](examples/security_test_apk/) | Binary security_test_apk probes whether an app-sandboxed process can |
-| [`sensor_gateway`](examples/sensor_gateway/) | Sensor data collection relay: list available sensors and query defaults. |
+| [`sensor_gateway`](examples/sensor_gateway/) | Stream live sensor events via the SensorManager event queue callback. |
 | [`sensor_reader`](examples/sensor_reader/) | Read sensor data from the SensorManager HAL. |
 | [`server_service`](examples/server_service/) | Register a Go service and call it back via binder |
 | [`server_service_aidl`](examples/server_service_aidl/) | Register a Go binder service using a generated AIDL stub. |
@@ -2063,7 +2064,7 @@ git submodule update --init --depth 1
 go run ./tools/cmd/aospgen -3rdparty tools/pkg/3rdparty -output . -smoke-tests
 ```
 
-This discovers all AIDL files across `frameworks-base`, `frameworks-native`, `hardware-interfaces`, and `system-hardware-interfaces`, infers search roots from package declarations, and generates Go proxies for all AOSP services. The current AOSP snapshot produces **5,146 Go files** across **405 packages**.
+This discovers all AIDL files across `frameworks-base`, `frameworks-native`, `hardware-interfaces`, and `system-hardware-interfaces`, infers search roots from package declarations, and generates Go proxies for all AOSP services. The current AOSP snapshot produces **5,151 Go files** across **407 packages**.
 
 ### Transaction Code Resolution
 
@@ -2355,12 +2356,12 @@ See the example app at [`examples/gomobile/`](examples/gomobile/).
 │   └── driver.go             Open, mmap, ioctl BINDER_WRITE_READ
 ├── servicemanager/           ServiceManager client
 ├── errors/                   AIDL exception types (ExceptionCode, StatusError)
-├── android/                  Pre-generated AOSP service proxies (5,146 files)
+├── android/                  Pre-generated AOSP service proxies (5,151 files)
 │   ├── app/                  ActivityManager, AlarmManager, ...
 │   ├── os/                   ServiceManager, PowerManager, ...
 │   ├── hardware/             HAL interfaces
-│   └── ...                   405 packages total
+│   └── ...                   407 packages total
 ├── com/                      AOSP com.android.* service proxies
-├── examples/                 105 runnable examples
+├── examples/                 106 runnable examples
 └── .github/workflows/        CI configuration
 ```
