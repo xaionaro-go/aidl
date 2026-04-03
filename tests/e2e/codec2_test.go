@@ -609,6 +609,136 @@ func TestCodec2HIDL_CreateEncoder(t *testing.T) {
 	t.Log("HIDL Codec2: encoder stopped")
 }
 
+// TestCodec2HIDL_QueueEmpty verifies that queueing an empty WorkBundle
+// succeeds. This validates the scatter-gather serialization baseline.
+func TestCodec2HIDL_QueueEmpty(t *testing.T) {
+	ctx := context.Background()
+	store, drv := getHIDLComponentStore(ctx, t)
+
+	listener := &hidlcodec2.ComponentListenerStub{}
+	listenerCookie := hidlcodec2.RegisterListener(ctx, drv, listener)
+	defer hidlcodec2.UnregisterListener(ctx, drv, listenerCookie)
+
+	component, err := store.CreateComponent(ctx, avcEncoderName, listenerCookie)
+	require.NoError(t, err, "CreateComponent failed")
+	defer func() { _ = component.Release(ctx) }()
+
+	err = component.Start(ctx)
+	require.NoError(t, err, "Start failed")
+	defer func() { _ = component.Stop(ctx) }()
+
+	// Queue an empty WorkBundle (no works, no base blocks).
+	emptyBundle := &hidlcodec2.WorkBundle{}
+	err = component.Queue(ctx, emptyBundle)
+	require.NoError(t, err, "Queue empty bundle failed")
+	t.Log("HIDL Codec2: empty queue succeeded")
+
+	// Step A0: Work with 1 empty Buffer (no Blocks).
+	bundleA0 := &hidlcodec2.WorkBundle{
+		Works: []hidlcodec2.Work{
+			{
+				Input: hidlcodec2.FrameData{
+					Ordinal: hidlcodec2.WorkOrdinal{FrameIndex: 0},
+					Buffers: []hidlcodec2.Buffer{
+						{},
+					},
+				},
+				Worklets: []hidlcodec2.Worklet{
+					{ComponentId: 0},
+				},
+				Result: hidlcodec2.StatusOK,
+			},
+		},
+	}
+	err = component.Queue(ctx, bundleA0)
+	if err != nil {
+		t.Logf("Step A0 (1 empty Buffer, no Blocks): %v", err)
+	} else {
+		t.Log("Step A0 (1 empty Buffer, no Blocks): succeeded")
+	}
+
+	// Step A1: Work with 1 Buffer with 1 Block.
+	bundleA1 := &hidlcodec2.WorkBundle{
+		Works: []hidlcodec2.Work{
+			{
+				Input: hidlcodec2.FrameData{
+					Ordinal: hidlcodec2.WorkOrdinal{FrameIndex: 0},
+					Buffers: []hidlcodec2.Buffer{
+						{
+							Blocks: []hidlcodec2.Block{
+								{Index: 0},
+							},
+						},
+					},
+				},
+				Worklets: []hidlcodec2.Worklet{
+					{ComponentId: 0},
+				},
+				Result: hidlcodec2.StatusOK,
+			},
+		},
+	}
+	err = component.Queue(ctx, bundleA1)
+	if err != nil {
+		t.Logf("Step A1 (1 Buffer + 1 Block): %v", err)
+	} else {
+		t.Log("Step A1 (1 Buffer + 1 Block): succeeded")
+	}
+
+	// Step B: Work with NO buffers but WITH BaseBlocks.
+	frameData := makeGrayYUVFrame(320, 240)
+	frameFd := createMemfd(t, "hidl-c2-empty", frameData)
+	bundleB := &hidlcodec2.WorkBundle{
+		Works: []hidlcodec2.Work{
+			{
+				Input: hidlcodec2.FrameData{
+					Ordinal: hidlcodec2.WorkOrdinal{FrameIndex: 0},
+				},
+				Worklets: []hidlcodec2.Worklet{
+					{ComponentId: 0},
+				},
+				Result: hidlcodec2.StatusOK,
+			},
+		},
+		BaseBlocks: []hidlcodec2.BaseBlock{
+			{
+				Tag:             0,
+				NativeBlockFds:  []int32{frameFd},
+				NativeBlockInts: []int32{int32(len(frameData))},
+			},
+		},
+	}
+	err = component.Queue(ctx, bundleB)
+	if err != nil {
+		t.Logf("Step B (Work+BaseBlock, no Buffers): %v", err)
+	} else {
+		t.Log("Step B (Work+BaseBlock, no Buffers): succeeded")
+	}
+
+	// Queue a minimal EOS Work (no buffers, no base blocks).
+	eosBundle := &hidlcodec2.WorkBundle{
+		Works: []hidlcodec2.Work{
+			{
+				Input: hidlcodec2.FrameData{
+					Flags: hidlcodec2.FrameDataEndOfStream,
+					Ordinal: hidlcodec2.WorkOrdinal{
+						TimestampUs:   0,
+						FrameIndex:    0,
+						CustomOrdinal: 0,
+					},
+				},
+				Worklets: []hidlcodec2.Worklet{
+					{ComponentId: 0},
+				},
+				Result: hidlcodec2.StatusOK,
+			},
+		},
+	}
+	err = component.Queue(ctx, eosBundle)
+	require.NoError(t, err, "Queue EOS bundle failed")
+	t.Log("HIDL Codec2: EOS queue succeeded")
+}
+
 // TestCodec2HIDL_EncodeFrame is the full end-to-end test: configure an AVC
 // encoder via HIDL, queue a YUV frame, signal EOS, and retrieve output
 // via flush.

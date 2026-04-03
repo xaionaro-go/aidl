@@ -96,6 +96,11 @@ func dmaBufEndCPUAccess(fd int) {
 // backends (AIDL gralloc, HIDL gralloc, dma-buf heap, memfd).
 // On kernel 6.6+, DMA-BUF mmap requires a prior SYNC ioctl.
 // The MmapData field can then be read directly. Call Munmap to release.
+//
+// For goldfish emulator buffers (/dev/goldfish_address_space), mmap
+// alone is insufficient: the host GPU must first transfer pixel data
+// into the shared region via rcReadColorBuffer. Use ReadPixels()
+// instead, which handles the IMapper bridge fallback.
 func (b *Buffer) Mmap() error {
 	if len(b.Handle.Fds) == 0 {
 		return fmt.Errorf("no FDs in gralloc buffer")
@@ -104,16 +109,12 @@ func (b *Buffer) Mmap() error {
 	bufSize := b.BufferSize()
 
 	// Goldfish emulator: gralloc buffers use /dev/goldfish_address_space
-	// backed by the host virtual GPU. These buffers cannot be read via
-	// direct mmap because the physical memory region is mapped with
-	// io_remap_pfn_range and only supports host-side writes. CPU reads
-	// cause SIGILL on x86 emulators due to non-readable page attributes.
-	//
-	// Reading pixels from goldfish buffers requires going through the
-	// HIDL IMapper (gralloc_bridge.so) which calls rcReadColorBuffer to
-	// transfer data from the host GPU before returning a readable pointer.
-	if isGoldfishBuffer(fd) {
-		return fmt.Errorf("goldfish buffer: direct mmap not supported; use IMapper bridge for CPU read")
+	// backed by the host virtual GPU. Mmap alone returns stale/zero data
+	// because the host must explicitly transfer pixels via
+	// rcReadColorBuffer before the mapped region is readable. The HIDL
+	// IMapper bridge (gralloc_bridge.so) handles this transfer.
+	if isGoldfishFD(fd) {
+		return fmt.Errorf("goldfish buffer: requires IMapper bridge for CPU read (rcReadColorBuffer)")
 	}
 
 	// Standard path: try mmap at offset 0, then with DMA-BUF sync
@@ -152,16 +153,14 @@ func (b *Buffer) ReadPixels() ([]byte, error) {
 	}
 	mapper, err := GetMapper()
 	if err != nil {
-		// No mapper — return zero buffer so callers can still
-		// verify the binder pipeline.
-		return make([]byte, b.BufferSize()), nil
+		return nil, fmt.Errorf("buffer not mmapped and IMapper bridge unavailable: %w", err)
 	}
 	return mapper.LockBuffer(b)
 }
 
-// isGoldfishBuffer checks if the FD points to the goldfish emulator's
+// isGoldfishFD checks if an FD points to the goldfish emulator's
 // address space device.
-func isGoldfishBuffer(fd int) bool {
+func isGoldfishFD(fd int) bool {
 	link, err := os.Readlink(fmt.Sprintf("/proc/self/fd/%d", fd))
 	if err != nil {
 		return false

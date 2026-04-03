@@ -275,6 +275,41 @@ func (p *HwParcel) WriteUint32(v uint32) {
 	p.data = append(p.data, b...)
 }
 
+// BufferCount returns the number of scatter-gather buffer objects.
+func (p *HwParcel) BufferCount() int {
+	return p.bufferCount
+}
+
+// DataBytes returns the raw inline data bytes.
+func (p *HwParcel) DataBytes() []byte {
+	return p.data
+}
+
+// ObjectOffsets returns the objects array (byte offsets of binder objects).
+func (p *HwParcel) ObjectOffsets() []uint64 {
+	return p.objects
+}
+
+// DumpBufferObjects returns a debug description of all buffer objects
+// in the parcel (type, flags, length, parent, parent_offset).
+func (p *HwParcel) DumpBufferObjects() []string {
+	var result []string
+	for i, off := range p.objects {
+		if off+binderBufferObjectSize > uint64(len(p.data)) {
+			result = append(result, fmt.Sprintf("[%d] off=%d: truncated", i, off))
+			continue
+		}
+		objType := binary.LittleEndian.Uint32(p.data[off:])
+		flags := binary.LittleEndian.Uint32(p.data[off+4:])
+		length := binary.LittleEndian.Uint64(p.data[off+16:])
+		parent := binary.LittleEndian.Uint64(p.data[off+24:])
+		parentOff := binary.LittleEndian.Uint64(p.data[off+32:])
+		result = append(result, fmt.Sprintf("[%d] off=%d type=%#x flags=%#x len=%d parent=%d parentOff=%d bufLen=%d",
+			i, off, objType, flags, length, parent, parentOff, len(p.buffers[i].data)))
+	}
+	return result
+}
+
 // ToParcel converts this HwParcel into a standard parcel.Parcel.
 // It patches the buffer pointers in each binder_buffer_object to point
 // to the actual buffer data in memory. The returned keepAlive slice must
