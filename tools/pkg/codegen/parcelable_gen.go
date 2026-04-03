@@ -1049,7 +1049,7 @@ func writeJavaWireMarshalParcel(
 					f.P("\t\tp.WriteInt64(_item.%s)", elemGoName)
 				case "typed_object":
 					f.P("\t\tp.WriteInt32(0) // null %s", elem.Name)
-				case "bundle":
+				case "bundle", "persistable_bundle":
 					f.P("\t\tp.WriteInt32(-1) // null %s", elem.Name)
 				default:
 					f.P("\t\tp.WriteInt32(-1) // null %s", elem.Name)
@@ -1151,7 +1151,7 @@ func computeReachableWireFields(
 		// Handled opaque-skip cases (no unconditional return).
 		switch wf.WriteMethod {
 		case "component_name", "string_array", "int_array", "long_array",
-			"bundle", "write_list", "binder", "typed_array", "array_set",
+			"bundle", "persistable_bundle", "write_list", "binder", "typed_array", "array_set",
 			"char_sequence", "string_list":
 			continue
 		case "typed_object":
@@ -1369,7 +1369,7 @@ fieldLoop:
 					f.P("\t\t\t\t\treturn nil // non-null %s: cannot skip", elem.Name)
 					f.P("\t\t\t\t}")
 					f.P("\t\t\t}")
-				case "bundle":
+				case "bundle", "persistable_bundle":
 					f.P("\t\t\t{")
 					f.P("\t\t\t\t_bLen, _bErr := p.ReadInt32()")
 					f.P("\t\t\t\tif _bErr != nil {")
@@ -1484,7 +1484,7 @@ fieldLoop:
 				f.P("\tif _csErr := parcel.SkipCharSequence(p); _csErr != nil {")
 				f.P("\t\treturn _csErr")
 				f.P("\t}")
-			case "bundle":
+			case "bundle", "persistable_bundle":
 				f.P("\t{")
 				f.P("\t\t_opaqueLen, _opaqueErr := p.ReadInt32()")
 				f.P("\t\tif _opaqueErr != nil {")
