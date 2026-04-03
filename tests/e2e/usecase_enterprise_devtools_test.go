@@ -298,16 +298,18 @@ func TestUseCase89_FactoryReset(t *testing.T) {
 	dpm, err := genAdmin.GetDevicePolicyManager(ctx, sm)
 	requireOrSkip(t, err)
 
-	// Verify the service is accessible, but do NOT actually wipe.
-	provisioned, err := dpm.IsDeviceProvisioned(ctx)
-	requireOrSkip(t, err)
-	t.Logf("Device provisioned (pre-reset check): %v", provisioned)
-
-	// Confirm WipeDataWithReason method can be resolved.
+	// Verify the service is accessible using unprivileged queries.
+	// IsDeviceProvisioned requires device-admin authorization so we
+	// use GetStorageEncryptionStatus and GetActiveAdmins which are
+	// accessible from shell UID.
 	callerPkg := binder.DefaultCallerIdentity().PackageName
 	encStatus, err := dpm.GetStorageEncryptionStatus(ctx, callerPkg)
 	requireOrSkip(t, err)
 	t.Logf("Encryption status (pre-reset check): %d", encStatus)
+
+	admins, err := dpm.GetActiveAdmins(ctx)
+	requireOrSkip(t, err)
+	t.Logf("Active admins (pre-reset check): %d", len(admins))
 
 	// NOTE: We intentionally do NOT call WipeDataWithReason even on
 	// emulators in automated tests, as it would terminate the test
