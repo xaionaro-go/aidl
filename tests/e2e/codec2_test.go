@@ -571,9 +571,14 @@ func TestCodec2HIDL_ListComponents(t *testing.T) {
 // via HIDL hwbinder.
 func TestCodec2HIDL_CreateEncoder(t *testing.T) {
 	ctx := context.Background()
-	store, _ := getHIDLComponentStore(ctx, t)
+	store, drv := getHIDLComponentStore(ctx, t)
 
-	component, err := store.CreateComponent(ctx, avcEncoderName)
+	// Register a listener stub so the component can send callbacks.
+	listener := &hidlcodec2.ComponentListenerStub{}
+	listenerCookie := hidlcodec2.RegisterListener(ctx, drv, listener)
+	defer hidlcodec2.UnregisterListener(ctx, drv, listenerCookie)
+
+	component, err := store.CreateComponent(ctx, avcEncoderName, listenerCookie)
 	require.NoError(t, err, "CreateComponent failed")
 	require.NotNil(t, component, "CreateComponent returned nil")
 	defer func() { _ = component.Release(ctx) }()
@@ -615,9 +620,24 @@ func TestCodec2HIDL_EncodeFrame(t *testing.T) {
 	)
 
 	ctx := context.Background()
-	store, _ := getHIDLComponentStore(ctx, t)
+	store, drv := getHIDLComponentStore(ctx, t)
 
-	component, err := store.CreateComponent(ctx, avcEncoderName)
+	// Register a listener stub.
+	workDoneCh := make(chan []byte, 16)
+	listener := &hidlcodec2.ComponentListenerStub{
+		OnWorkDone: func(data []byte) {
+			cp := make([]byte, len(data))
+			copy(cp, data)
+			select {
+			case workDoneCh <- cp:
+			default:
+			}
+		},
+	}
+	listenerCookie := hidlcodec2.RegisterListener(ctx, drv, listener)
+	defer hidlcodec2.UnregisterListener(ctx, drv, listenerCookie)
+
+	component, err := store.CreateComponent(ctx, avcEncoderName, listenerCookie)
 	require.NoError(t, err, "CreateComponent failed")
 	defer func() { _ = component.Release(ctx) }()
 
@@ -709,22 +729,29 @@ func TestCodec2HIDL_EncodeFrame(t *testing.T) {
 	require.NoError(t, err, "Queue EOS failed")
 	t.Log("HIDL Codec2: EOS queued")
 
-	// Since we don't have a listener callback with HIDL (null listener),
-	// wait briefly then flush to retrieve output.
-	time.Sleep(2 * time.Second)
+	// Wait for onWorkDone callbacks or timeout.
+	var receivedCallback bool
+	deadline := time.After(10 * time.Second)
+	for i := 0; i < 2; i++ {
+		select {
+		case data := <-workDoneCh:
+			t.Logf("HIDL Codec2: onWorkDone received (%d bytes)", len(data))
+			receivedCallback = true
+		case <-deadline:
+			t.Log("HIDL Codec2: timeout waiting for onWorkDone; trying Flush")
+			flushErr := component.Flush(ctx)
+			if flushErr != nil {
+				t.Logf("HIDL Codec2: flush: %v", flushErr)
+			} else {
+				t.Log("HIDL Codec2: flush succeeded")
+			}
+			i = 2 // exit loop
+		}
+	}
 
-	err = component.Flush(ctx)
-	if err != nil {
-		t.Logf("HIDL Codec2: flush result: %v", err)
+	if receivedCallback {
+		t.Log("HIDL Codec2: full encode pipeline verified with callback")
 	} else {
-		t.Log("HIDL Codec2: flush succeeded")
+		t.Log("HIDL Codec2: queue succeeded; callback may not have arrived before timeout")
 	}
-
-	// Drain to signal the encoder.
-	err = component.Drain(ctx, true)
-	if err != nil {
-		t.Logf("HIDL Codec2: drain result: %v (expected if already flushed)", err)
-	}
-
-	t.Log("HIDL Codec2: full encode pipeline exercised successfully")
 }

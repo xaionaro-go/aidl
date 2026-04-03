@@ -199,6 +199,33 @@ func (p *HwParcel) WriteNullBinder() {
 	p.data = append(p.data, obj...)
 }
 
+// WriteLocalBinder writes a local HIDL binder reference (BINDER_TYPE_BINDER)
+// into the inline data with a real binder/cookie pair. The kernel will
+// create a binder_node for this object and translate it to a
+// BINDER_TYPE_HANDLE in the receiving process.
+//
+// Unlike AIDL, HIDL does NOT write a stability level after the flat_binder_object.
+// The offset IS recorded in the objects array so the kernel processes it.
+func (p *HwParcel) WriteLocalBinder(
+	binderPtr uintptr,
+	cookie uintptr,
+) {
+	const flatBinderObjectSize = 24
+	const binderTypeBinder = uint32(0x73622a85)
+	const binderFlagsAcceptFDs = uint32(0x100 | 0x13)
+
+	offset := uint64(len(p.data))
+	p.objects = append(p.objects, offset)
+
+	obj := make([]byte, flatBinderObjectSize)
+	binary.LittleEndian.PutUint32(obj[0:], binderTypeBinder)
+	binary.LittleEndian.PutUint32(obj[4:], binderFlagsAcceptFDs)
+	binary.LittleEndian.PutUint64(obj[8:], uint64(binderPtr))
+	binary.LittleEndian.PutUint64(obj[16:], uint64(cookie))
+
+	p.data = append(p.data, obj...)
+}
+
 // WriteBool writes a boolean as a uint8 into the inline data buffer,
 // padded to 4-byte alignment.
 func (p *HwParcel) WriteBool(v bool) {
