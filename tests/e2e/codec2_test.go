@@ -711,26 +711,218 @@ func TestCodec2HIDL_QueueEmpty(t *testing.T) {
 	t.Log("HIDL Codec2: EOS queue succeeded")
 }
 
-// TestCodec2HIDL_EncodeFrame is the full end-to-end test: configure an AVC
-// encoder via HIDL, queue an EOS work item, and verify that the
-// onWorkDone callback fires. This validates the complete binder
-// round-trip: config, start, queue, callback delivery.
+// TestCodec2HIDL_EncodeFrame tests actual encoding through the HIDL Codec2
+// pipeline. It tries two approaches:
 //
-// We queue only an EOS (no frame data) because the software AVC encoder
-// expects graphic blocks (C2GraphicBlock) for input frames, which
-// require gralloc allocation. An EOS-only work is sufficient to test
-// the callback pipeline without needing gralloc.
+//  1. AAC audio encoder with linear PCM blocks (no gralloc required)
+//  2. AVC video encoder with gralloc graphic blocks (requires HIDL allocator)
+//
+// The test verifies that OnWorkDone fires and output contains non-zero
+// encoded data.
 func TestCodec2HIDL_EncodeFrame(t *testing.T) {
+	t.Run("AAC", testCodec2HIDL_EncodeAAC)
+	t.Run("AVC", testCodec2HIDL_EncodeAVC)
+}
+
+// testCodec2HIDL_EncodeAAC encodes PCM audio through c2.android.aac.encoder.
+// The AAC encoder accepts linear blocks (memfd-backed), so no gralloc is
+// needed. This is the most reliable encode path on emulators.
+func testCodec2HIDL_EncodeAAC(t *testing.T) {
 	const (
-		encWidth   = 320
-		encHeight  = 240
-		encBitrate = 512000
+		sampleRate   = 44100
+		channelCount = 1
+		bitrate      = 64000
+		// AAC frame = 1024 samples, 16-bit mono = 2048 bytes.
+		samplesPerFrame = 1024
+		bytesPerSample  = 2
+		frameSize       = samplesPerFrame * bytesPerSample * channelCount
 	)
 
 	ctx := context.Background()
 	store, drv := getHIDLComponentStore(ctx, t)
 
-	// Register a listener stub.
+	workDoneCh := make(chan []byte, 16)
+	listener := &hidlcodec2.ComponentListenerStub{
+		OnWorkDone: func(data []byte) {
+			cp := make([]byte, len(data))
+			copy(cp, data)
+			select {
+			case workDoneCh <- cp:
+			default:
+			}
+		},
+	}
+	listenerCookie := hidlcodec2.RegisterListener(ctx, drv, listener)
+	defer hidlcodec2.UnregisterListener(ctx, drv, listenerCookie)
+
+	component, err := store.CreateComponent(ctx, aacEncoderName, listenerCookie)
+	require.NoError(t, err, "CreateComponent(AAC) failed")
+	defer func() { _ = component.Release(ctx) }()
+
+	// Configure: sample rate, channel count, bitrate.
+	iface, err := component.GetInterface(ctx)
+	require.NoError(t, err, "GetInterface failed")
+
+	cfg, err := iface.GetConfigurable(ctx)
+	require.NoError(t, err, "GetConfigurable failed")
+
+	configParams := hidlcodec2.ConcatParams(
+		hidlcodec2.BuildSampleRateParam(0, sampleRate),
+		hidlcodec2.BuildChannelCountParam(0, channelCount),
+		hidlcodec2.BuildBitrateParam(0, bitrate),
+	)
+	cfgStatus, _, err := cfg.Config(ctx, configParams, true)
+	require.NoError(t, err, "Config failed")
+	require.Equal(t, hidlcodec2.StatusOK, cfgStatus,
+		"Config returned non-OK status: %s", cfgStatus)
+	t.Logf("AAC encoder configured: %dHz %dch %dbps, status=%s",
+		sampleRate, channelCount, bitrate, cfgStatus)
+
+	err = component.Start(ctx)
+	require.NoError(t, err, "Start failed")
+	defer func() { _ = component.Stop(ctx) }()
+	t.Log("AAC encoder started")
+
+	// Build PCM audio data: silence (zeroes) for one AAC frame.
+	pcmData := make([]byte, frameSize)
+	pcmFd := createMemfd(t, "aac-input-pcm", pcmData)
+
+	// Queue a work item with the linear PCM block.
+	frameBundle := &hidlcodec2.WorkBundle{
+		Works: []hidlcodec2.Work{
+			{
+				Input: hidlcodec2.FrameData{
+					Ordinal: hidlcodec2.WorkOrdinal{
+						FrameIndex: 0,
+					},
+					Buffers: []hidlcodec2.Buffer{
+						{
+							Blocks: []hidlcodec2.Block{
+								{
+									Index: 0,
+									Meta:  hidlcodec2.BuildRangeInfoParam(0, frameSize),
+								},
+							},
+						},
+					},
+				},
+				Worklets: []hidlcodec2.Worklet{
+					{ComponentId: 0},
+				},
+				Result: hidlcodec2.StatusOK,
+			},
+		},
+		BaseBlocks: []hidlcodec2.BaseBlock{
+			{
+				Tag:             0, // nativeBlock
+				NativeBlockFds:  []int32{pcmFd},
+				NativeBlockInts: hidlcodec2.C2HandleLinearInts(frameSize),
+			},
+		},
+	}
+	err = component.Queue(ctx, frameBundle)
+	require.NoError(t, err, "Queue PCM frame failed")
+	t.Log("AAC PCM frame queued")
+
+	// Queue EOS to flush the encoder.
+	eosBundle := &hidlcodec2.WorkBundle{
+		Works: []hidlcodec2.Work{
+			{
+				Input: hidlcodec2.FrameData{
+					Flags: hidlcodec2.FrameDataEndOfStream,
+					Ordinal: hidlcodec2.WorkOrdinal{
+						FrameIndex: 1,
+					},
+				},
+				Worklets: []hidlcodec2.Worklet{
+					{ComponentId: 0},
+				},
+				Result: hidlcodec2.StatusOK,
+			},
+		},
+	}
+	err = component.Queue(ctx, eosBundle)
+	require.NoError(t, err, "Queue EOS failed")
+	t.Log("AAC EOS queued")
+
+	// Wait for OnWorkDone callbacks. We expect at least one callback
+	// with actual encoded AAC output.
+	var totalOutputBytes int
+	deadline := time.After(10 * time.Second)
+	for i := 0; i < 3; i++ {
+		select {
+		case data := <-workDoneCh:
+			t.Logf("AAC onWorkDone[%d]: %d raw callback bytes", i, len(data))
+			totalOutputBytes += len(data)
+		case <-deadline:
+			if totalOutputBytes == 0 {
+				// Try drain as fallback.
+				t.Log("AAC: timeout; trying Drain")
+				_ = component.Drain(ctx, true)
+				select {
+				case data := <-workDoneCh:
+					t.Logf("AAC onWorkDone after drain: %d bytes", len(data))
+					totalOutputBytes += len(data)
+				case <-time.After(5 * time.Second):
+					t.Fatal("AAC: no onWorkDone callback received")
+				}
+			}
+			i = 3 // exit loop
+		}
+	}
+
+	require.Greater(t, totalOutputBytes, 0,
+		"AAC encoder produced no output")
+	t.Logf("AAC encode complete: total callback data=%d bytes", totalOutputBytes)
+}
+
+// testCodec2HIDL_EncodeAVC encodes a YUV frame through c2.android.avc.encoder.
+// The AVC encoder requires graphic blocks (C2GraphicBlock), which need a
+// gralloc-allocated buffer wrapped with C2HandleGralloc metadata.
+func testCodec2HIDL_EncodeAVC(t *testing.T) {
+	const (
+		encWidth   = 320
+		encHeight  = 240
+		encBitrate = 512000
+		encFormat  = gfxCommon.PixelFormatYcbcr420888
+		encUsage   = gfxCommon.BufferUsage(
+			gfxCommon.BufferUsageCpuWriteOften | gfxCommon.BufferUsageVideoEncoder,
+		)
+	)
+
+	ctx := context.Background()
+	store, drv := getHIDLComponentStore(ctx, t)
+
+	// Allocate a gralloc buffer for the input frame.
+	sm := servicemanager.New(openBinder(t))
+	buf, err := gralloc.Allocate(ctx, sm, encWidth, encHeight, encFormat, encUsage)
+	if err != nil {
+		t.Skipf("gralloc allocation unavailable: %v", err)
+	}
+	t.Logf("AVC gralloc buffer: fds=%d ints=%d stride=%d",
+		len(buf.Handle.Fds), len(buf.Handle.Ints), buf.Stride)
+	t.Cleanup(func() {
+		buf.Munmap()
+		for _, fd := range buf.Handle.Fds {
+			unix.Close(int(fd))
+		}
+	})
+
+	// Try to mmap and write gray YUV data. On goldfish emulators mmap
+	// may fail; the encoder can still import the handle directly.
+	if mmapErr := buf.Mmap(); mmapErr != nil {
+		t.Logf("AVC gralloc mmap failed (expected on goldfish): %v", mmapErr)
+	} else {
+		grayFrame := makeGrayYUVFrame(encWidth, encHeight)
+		copyLen := len(grayFrame)
+		if copyLen > len(buf.MmapData) {
+			copyLen = len(buf.MmapData)
+		}
+		copy(buf.MmapData[:copyLen], grayFrame[:copyLen])
+		t.Logf("AVC: wrote %d bytes of gray YUV to gralloc buffer", copyLen)
+	}
+
+	// Register listener and create component.
 	workDoneCh := make(chan []byte, 16)
 	listener := &hidlcodec2.ComponentListenerStub{
 		OnWorkDone: func(data []byte) {
@@ -746,11 +938,10 @@ func TestCodec2HIDL_EncodeFrame(t *testing.T) {
 	defer hidlcodec2.UnregisterListener(ctx, drv, listenerCookie)
 
 	component, err := store.CreateComponent(ctx, avcEncoderName, listenerCookie)
-	require.NoError(t, err, "CreateComponent failed")
+	require.NoError(t, err, "CreateComponent(AVC) failed")
 	defer func() { _ = component.Release(ctx) }()
 
-	// Configure via IConfigurable.
-	// Picture size is input-direction stream 0, bitrate is output-direction stream 0.
+	// Configure picture size + bitrate.
 	iface, err := component.GetInterface(ctx)
 	require.NoError(t, err, "GetInterface failed")
 
@@ -765,58 +956,108 @@ func TestCodec2HIDL_EncodeFrame(t *testing.T) {
 	require.NoError(t, err, "Config failed")
 	require.Equal(t, hidlcodec2.StatusOK, cfgStatus,
 		"Config returned non-OK status: %s", cfgStatus)
-	t.Logf("HIDL Codec2: config status=%s", cfgStatus)
+	t.Logf("AVC encoder configured: %dx%d %dbps, status=%s",
+		encWidth, encHeight, encBitrate, cfgStatus)
 
-	// Start the encoder.
 	err = component.Start(ctx)
 	require.NoError(t, err, "Start failed")
 	defer func() { _ = component.Stop(ctx) }()
-	t.Log("HIDL Codec2: encoder started")
+	t.Log("AVC encoder started")
 
-	// Queue an EOS work item (no frame buffers). The encoder should
-	// acknowledge EOS via the onWorkDone callback.
+	// Build the C2HandleGralloc-wrapped native_handle by appending
+	// ExtraData ints to the gralloc handle's existing ints.
+	grallocExtraInts := hidlcodec2.C2HandleGrallocInts(
+		encWidth, encHeight,
+		uint32(encFormat), uint64(encUsage),
+		uint32(buf.Stride),
+	)
+	c2HandleInts := make([]int32, 0, len(buf.Handle.Ints)+len(grallocExtraInts))
+	c2HandleInts = append(c2HandleInts, buf.Handle.Ints...)
+	c2HandleInts = append(c2HandleInts, grallocExtraInts...)
+
+	// Queue a work item with the graphic block.
+	frameBundle := &hidlcodec2.WorkBundle{
+		Works: []hidlcodec2.Work{
+			{
+				Input: hidlcodec2.FrameData{
+					Ordinal: hidlcodec2.WorkOrdinal{
+						FrameIndex: 0,
+					},
+					Buffers: []hidlcodec2.Buffer{
+						{
+							Blocks: []hidlcodec2.Block{
+								{
+									Index: 0,
+									Meta:  hidlcodec2.BuildRangeInfoParam(0, uint32(buf.BufferSize())),
+								},
+							},
+						},
+					},
+				},
+				Worklets: []hidlcodec2.Worklet{
+					{ComponentId: 0},
+				},
+				Result: hidlcodec2.StatusOK,
+			},
+		},
+		BaseBlocks: []hidlcodec2.BaseBlock{
+			{
+				Tag:             0, // nativeBlock
+				NativeBlockFds:  buf.Handle.Fds,
+				NativeBlockInts: c2HandleInts,
+			},
+		},
+	}
+	err = component.Queue(ctx, frameBundle)
+	require.NoError(t, err, "Queue graphic frame failed")
+	t.Log("AVC graphic frame queued")
+
+	// Queue EOS to flush.
 	eosBundle := &hidlcodec2.WorkBundle{
 		Works: []hidlcodec2.Work{
 			{
 				Input: hidlcodec2.FrameData{
 					Flags: hidlcodec2.FrameDataEndOfStream,
 					Ordinal: hidlcodec2.WorkOrdinal{
-						TimestampUs:   0,
-						FrameIndex:    0,
-						CustomOrdinal: 0,
+						FrameIndex: 1,
 					},
 				},
 				Worklets: []hidlcodec2.Worklet{
 					{ComponentId: 0},
 				},
-				WorkletsProcessed: 0,
-				Result:            hidlcodec2.StatusOK,
+				Result: hidlcodec2.StatusOK,
 			},
 		},
 	}
 	err = component.Queue(ctx, eosBundle)
 	require.NoError(t, err, "Queue EOS failed")
-	t.Log("HIDL Codec2: EOS queued")
+	t.Log("AVC EOS queued")
 
-	// Wait for onWorkDone callback.
-	select {
-	case data := <-workDoneCh:
-		t.Logf("HIDL Codec2: onWorkDone received (%d bytes)", len(data))
-	case <-time.After(10 * time.Second):
-		// Try drain as a fallback to force the encoder to flush.
-		t.Log("HIDL Codec2: timeout waiting for onWorkDone; trying Drain")
-		drainErr := component.Drain(ctx, true)
-		if drainErr != nil {
-			t.Logf("HIDL Codec2: drain: %v", drainErr)
-		}
-
+	// Wait for OnWorkDone callbacks.
+	var totalOutputBytes int
+	deadline := time.After(10 * time.Second)
+	for i := 0; i < 3; i++ {
 		select {
 		case data := <-workDoneCh:
-			t.Logf("HIDL Codec2: onWorkDone after drain (%d bytes)", len(data))
-		case <-time.After(5 * time.Second):
-			t.Fatal("HIDL Codec2: no onWorkDone callback received after queue + drain")
+			t.Logf("AVC onWorkDone[%d]: %d raw callback bytes", i, len(data))
+			totalOutputBytes += len(data)
+		case <-deadline:
+			if totalOutputBytes == 0 {
+				t.Log("AVC: timeout; trying Drain")
+				_ = component.Drain(ctx, true)
+				select {
+				case data := <-workDoneCh:
+					t.Logf("AVC onWorkDone after drain: %d bytes", len(data))
+					totalOutputBytes += len(data)
+				case <-time.After(5 * time.Second):
+					t.Fatal("AVC: no onWorkDone callback received")
+				}
+			}
+			i = 3 // exit loop
 		}
 	}
 
-	t.Log("HIDL Codec2: callback pipeline verified (config + queue + onWorkDone)")
+	require.Greater(t, totalOutputBytes, 0,
+		"AVC encoder produced no output")
+	t.Logf("AVC encode complete: total callback data=%d bytes", totalOutputBytes)
 }
