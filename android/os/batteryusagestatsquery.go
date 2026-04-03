@@ -8,6 +8,7 @@ import (
 
 type BatteryUsageStatsQuery struct {
 	Flags                     int32
+	Length                    int32
 	MaxStatsAgeMs             int64
 	MinConsumedPowerThreshold float64
 	FromTimestamp             int64
@@ -20,7 +21,7 @@ func (s *BatteryUsageStatsQuery) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(0)  // placeholder UserIds.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null UserIds
 	p.WriteInt64(s.MaxStatsAgeMs)
 	p.WriteFloat64(s.MinConsumedPowerThreshold)
@@ -38,7 +39,8 @@ func (s *BatteryUsageStatsQuery) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip UserIds.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	{

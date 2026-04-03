@@ -32,7 +32,7 @@ func (s *SearchTarget) MarshalParcel(
 	p.WriteFloat32(s.Score)
 	p.WriteBool(s.Hidden)
 	p.WriteString16(s.PackageName)
-	p.WriteInt32(0) // placeholder UserHandle.getIdentifier()
+	p.WriteInt32(0) // placeholder GetIdentifier()
 	p.WriteInt32(0) // null SearchAction
 	if s.ShortcutInfo != nil {
 		p.WriteInt32(1)
@@ -87,7 +87,7 @@ func (s *SearchTarget) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip UserHandle.getIdentifier()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetIdentifier()
 		return _err
 	}
 	{

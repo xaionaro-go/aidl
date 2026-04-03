@@ -13,6 +13,8 @@ type ExtractedText struct {
 	SelectionStart     int32
 	SelectionEnd       int32
 	Flags              int32
+	Text               *string
+	Hint               *string
 }
 
 var _ parcel.Parcelable = (*ExtractedText)(nil)
@@ -20,14 +22,14 @@ var _ parcel.Parcelable = (*ExtractedText)(nil)
 func (s *ExtractedText) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Text
+	parcel.WritePlainCharSequence(p, s.Text)
 	p.WriteInt32(s.StartOffset)
 	p.WriteInt32(s.PartialStartOffset)
 	p.WriteInt32(s.PartialEndOffset)
 	p.WriteInt32(s.SelectionStart)
 	p.WriteInt32(s.SelectionEnd)
 	p.WriteInt32(s.Flags)
-	p.WriteInt32(-1) // null Hint
+	parcel.WritePlainCharSequence(p, s.Hint)
 	return nil
 }
 
@@ -35,8 +37,12 @@ func (s *ExtractedText) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.Text = _cs
 	}
 	s.StartOffset, _err = p.ReadInt32()
 	if _err != nil {
@@ -62,8 +68,12 @@ func (s *ExtractedText) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.Hint = _cs
 	}
 	return nil
 }

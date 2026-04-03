@@ -1685,15 +1685,15 @@ parcelables:
           write_method: int32
     - name: NotificationVisibility
       java_wire_format:
-        - name: This.key
+        - name: Key
           write_method: string16
-        - name: This.rank
+        - name: Rank
           write_method: int32
-        - name: This.count
+        - name: Count
           write_method: int32
-        - name: This.visible
+        - name: Visible
           write_method: bool
-        - name: This.location.name()
+        - name: Name()
           write_method: string16
     - name: RegisterStatusBarResult
       java_wire_format:
@@ -1729,19 +1729,19 @@ parcelables:
           write_method: opaque
     - name: StatusBarIcon
       java_wire_format:
-        - name: This.icon
+        - name: Icon
           write_method: typed_object
-        - name: This.pkg
+        - name: Pkg
           write_method: string16
-        - name: This.user
+        - name: User
           write_method: typed_object
-        - name: This.iconLevel
+        - name: IconLevel
           write_method: int32
-        - name: This.visible
+        - name: Visible
           write_method: bool
-        - name: This.number
+        - name: Number
           write_method: int32
-        - name: This.contentDescription
+        - name: ContentDescription
           write_method: opaque
     - name: StatusBarIconList
     - name: StatusBarNotificationList

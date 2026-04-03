@@ -12,7 +12,7 @@ parcelables:
           delegate_type: SessionConfiguration
     - name: ConcurrentCameraIdCombination
       java_wire_format:
-        - name: ConcurrentCameraIds.size()
+        - name: Size()
           write_method: int32
     - name: SubmitInfo
       java_wire_format:

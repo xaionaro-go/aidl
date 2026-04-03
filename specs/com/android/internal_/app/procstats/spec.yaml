@@ -99,7 +99,7 @@ parcelables:
           write_method: int32
         - name: SYS_MEM_USAGE_COUNT
           write_method: int32
-        - name: SparseMappingTable.ARRAY_SIZE
+        - name: ARRAY_SIZE
           write_method: int32
         - name: NumAggregated
           write_method: int32

@@ -9,6 +9,7 @@ import (
 type ContextHubMessage struct {
 	Type    int32
 	Version int32
+	Length  int32
 }
 
 var _ parcel.Parcelable = (*ContextHubMessage)(nil)
@@ -18,7 +19,7 @@ func (s *ContextHubMessage) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Type)
 	p.WriteInt32(s.Version)
-	p.WriteInt32(0)  // placeholder Data.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null Data
 	return nil
 }
@@ -35,7 +36,8 @@ func (s *ContextHubMessage) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Data.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil // opaque Data: cannot skip without known wire format

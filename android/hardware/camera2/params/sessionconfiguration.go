@@ -16,10 +16,10 @@ func (s *SessionConfiguration) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.SessionType)
-	p.WriteInt32(0)    // placeholder InputConfig.getWidth()
-	p.WriteInt32(0)    // placeholder InputConfig.getHeight()
-	p.WriteInt32(0)    // placeholder InputConfig.getFormat()
-	p.WriteBool(false) // placeholder InputConfig.isMultiResolution()
+	p.WriteInt32(0)    // placeholder GetWidth()
+	p.WriteInt32(0)    // placeholder GetHeight()
+	p.WriteInt32(0)    // placeholder GetFormat()
+	p.WriteBool(false) // placeholder IsMultiResolution()
 	p.WriteInt32(-1)   // null OutputConfigurations
 	p.WriteInt32(0)    // null True
 	p.WriteInt32(-1)   // null Metadata
@@ -34,16 +34,16 @@ func (s *SessionConfiguration) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip InputConfig.getWidth()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetWidth()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip InputConfig.getHeight()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetHeight()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip InputConfig.getFormat()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetFormat()
 		return _err
 	}
-	if _, _err = p.ReadBool(); _err != nil { // skip InputConfig.isMultiResolution()
+	if _, _err = p.ReadBool(); _err != nil { // skip IsMultiResolution()
 		return _err
 	}
 	return nil // opaque OutputConfigurations: cannot skip without known wire format

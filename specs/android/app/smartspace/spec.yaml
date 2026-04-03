@@ -109,47 +109,47 @@ parcelables:
       java_wire_format:
         - name: Id
           write_method: string16
-        - name: This.mUserHandle
+        - name: UserHandle
           write_method: typed_object
     - name: SmartspaceTarget
       java_wire_format:
-        - name: This.mSmartspaceTargetId
+        - name: SmartspaceTargetId
           write_method: string16
-        - name: This.mHeaderAction
+        - name: HeaderAction
           write_method: typed_object
-        - name: This.mBaseAction
+        - name: BaseAction
           write_method: typed_object
-        - name: This.mCreationTimeMillis
+        - name: CreationTimeMillis
           write_method: int64
-        - name: This.mExpiryTimeMillis
+        - name: ExpiryTimeMillis
           write_method: int64
-        - name: This.mScore
+        - name: Score
           write_method: float32
-        - name: This.mActionChips
+        - name: ActionChips
           write_method: opaque
-        - name: This.mIconGrid
+        - name: IconGrid
           write_method: opaque
-        - name: This.mFeatureType
+        - name: FeatureType
           write_method: int32
-        - name: This.mSensitive
+        - name: Sensitive
           write_method: bool
-        - name: This.mShouldShowExpanded
+        - name: ShouldShowExpanded
           write_method: bool
-        - name: This.mSourceNotificationKey
+        - name: SourceNotificationKey
           write_method: string16
-        - name: This.mComponentName
+        - name: ComponentName
           write_method: typed_object
-        - name: This.mUserHandle
+        - name: UserHandle
           write_method: typed_object
-        - name: This.mAssociatedSmartspaceTargetId
+        - name: AssociatedSmartspaceTargetId
           write_method: string16
-        - name: This.mSliceUri
+        - name: SliceUri
           write_method: typed_object
-        - name: This.mWidget
+        - name: Widget
           write_method: typed_object
-        - name: This.mTemplateData
+        - name: TemplateData
           write_method: typed_object
-        - name: This.mRemoteViews
+        - name: RemoteViews
           write_method: typed_object
     - name: SmartspaceTargetEvent
       java_wire_format:

@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*AmbientBrightnessDayStats)(nil)
 func (s *AmbientBrightnessDayStats) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteString16("") // placeholder LocalDate.toString()
+	p.WriteString16("") // placeholder ToString()
 	p.WriteInt32(-1)    // null BucketBoundaries
 	p.WriteInt32(-1)    // null Stats
 	return nil
@@ -24,7 +24,7 @@ func (s *AmbientBrightnessDayStats) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadString16(); _err != nil { // skip LocalDate.toString()
+	if _, _err = p.ReadString16(); _err != nil { // skip ToString()
 		return _err
 	}
 	return nil // opaque BucketBoundaries: cannot skip without known wire format

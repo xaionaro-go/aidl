@@ -229,3 +229,14 @@ parcelables:
       java_wire_format:
         - name: Size
           write_method: int32
+        - name: Requests
+          write_method: repeated
+          elements:
+            - name: Type
+              write_method: int32
+            - name: Overlay
+              write_method: typed_object
+            - name: UserId
+              write_method: int32
+            - name: Extras
+              write_method: bundle

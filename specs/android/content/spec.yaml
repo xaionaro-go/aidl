@@ -1166,17 +1166,33 @@ parcelables:
           write_method: delegate
           condition: mIcon!=null
           delegate_type: Bitmap
-        - name: "N"
-          write_method: int32
+        - name: Items
+          write_method: repeated
+          elements:
+            - name: Text
+              write_method: char_sequence
+              delegate_type: TextUtils
+            - name: HtmlText
+              write_method: string8
+            - name: Intent
+              write_method: typed_object
+            - name: IntentSender
+              write_method: typed_object
+            - name: Uri
+              write_method: typed_object
+            - name: ParcelItemActivityInfos
+              write_method: bool
+            - name: TextLinks
+              write_method: typed_object
     - name: ClipDescription
       java_wire_format:
         - name: Label
           write_method: char_sequence
           delegate_type: TextUtils
         - name: MimeTypes
-          write_method: opaque
+          write_method: string_list
         - name: Extras
-          write_method: opaque
+          write_method: persistable_bundle
         - name: TimeStamp
           write_method: int64
         - name: IsStyledText
@@ -1216,7 +1232,7 @@ parcelables:
           write_method: array_set
     - name: ContentValues
       java_wire_format:
-        - name: Map.size()
+        - name: Size()
           write_method: int32
         - name: Map
           write_method: opaque
@@ -1275,37 +1291,37 @@ parcelables:
           delegate_type: Intent
     - name: IntentFilter
       java_wire_format:
-        - name: Actions.toArray(newString[mActions.size()])
+        - name: Size()])
           write_method: string_array
         - name: "1"
           write_method: int32
           condition: mCategories!=null
         - name: Categories
-          write_method: opaque
+          write_method: string_list
           condition: mCategories!=null
         - name: "1"
           write_method: int32
           condition: mDataSchemes!=null
         - name: DataSchemes
-          write_method: opaque
+          write_method: string_list
           condition: mDataSchemes!=null
         - name: "1"
           write_method: int32
           condition: mStaticDataTypes!=null
         - name: StaticDataTypes
-          write_method: opaque
+          write_method: string_list
           condition: mStaticDataTypes!=null
         - name: "1"
           write_method: int32
           condition: mDataTypes!=null
         - name: DataTypes
-          write_method: opaque
+          write_method: string_list
           condition: mDataTypes!=null
         - name: "1"
           write_method: int32
           condition: mMimeGroups!=null
         - name: MimeGroups
-          write_method: opaque
+          write_method: string_list
           condition: mMimeGroups!=null
         - name: "N"
           write_method: int32
@@ -1340,7 +1356,7 @@ parcelables:
           condition: Flags.relativeReferenceIntentFilters()&&mUriRelativeFilterGroups!=null
     - name: IntentSender
       java_wire_format:
-        - name: Target.asBinder()
+        - name: AsBinder()
           write_method: binder
     - name: LocusId
       java_wire_format:
@@ -1475,17 +1491,17 @@ parcelables:
           write_method: int32
         - name: AuthorityId
           write_method: int32
-        - name: TotalStats.totalElapsedTime
+        - name: TotalElapsedTime
           write_method: int64
-        - name: TotalStats.numSyncs
+        - name: NumSyncs
           write_method: int32
-        - name: TotalStats.numSourcePoll
+        - name: NumSourcePoll
           write_method: int32
-        - name: TotalStats.numSourceOther
+        - name: NumSourceOther
           write_method: int32
-        - name: TotalStats.numSourceLocal
+        - name: NumSourceLocal
           write_method: int32
-        - name: TotalStats.numSourceUser
+        - name: NumSourceUser
           write_method: int32
         - name: LastSuccessTime
           write_method: int64
@@ -1503,18 +1519,18 @@ parcelables:
           write_method: bool
         - name: Initialize
           write_method: bool
-        - name: PeriodicSyncTimes.size()
+        - name: Size()
           write_method: int32
           condition: periodicSyncTimes!=null
-        - name: LastEventTimes.size()
+        - name: Size()
           write_method: int32
-        - name: TotalStats.numSourcePeriodic
+        - name: NumSourcePeriodic
           write_method: int32
-        - name: TotalStats.numSourceFeed
+        - name: NumSourceFeed
           write_method: int32
-        - name: TotalStats.numFailures
+        - name: NumFailures
           write_method: int32
-        - name: TotalStats.numCancels
+        - name: NumCancels
           write_method: int32
         - name: LastTodayResetTime
           write_method: int64

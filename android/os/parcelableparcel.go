@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*ParcelableParcel)(nil)
 func (s *ParcelableParcel) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // placeholder Parcel.dataSize()
+	p.WriteInt32(0) // placeholder DataSize()
 	return nil
 }
 
@@ -22,7 +22,7 @@ func (s *ParcelableParcel) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt32(); _err != nil { // skip Parcel.dataSize()
+	if _, _err = p.ReadInt32(); _err != nil { // skip DataSize()
 		return _err
 	}
 	return nil

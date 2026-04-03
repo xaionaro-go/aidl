@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*AudioPolicyConfig)(nil)
 func (s *AudioPolicyConfig) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // placeholder Mixes.size()
+	p.WriteInt32(0) // placeholder Size()
 	return nil
 }
 
@@ -22,7 +22,7 @@ func (s *AudioPolicyConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt32(); _err != nil { // skip Mixes.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	return nil

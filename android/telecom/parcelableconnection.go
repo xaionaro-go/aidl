@@ -25,6 +25,7 @@ type ParcelableConnection struct {
 	Address                        *location.Address
 	StatusHints                    *StatusHints
 	DisconnectCause                *DisconnectCause
+	ConferenceableConnectionIds    []string
 }
 
 var _ parcel.Parcelable = (*ParcelableConnection)(nil)
@@ -74,7 +75,7 @@ func (s *ParcelableConnection) MarshalParcel(
 	} else {
 		p.WriteInt32(0)
 	}
-	p.WriteInt32(-1) // null ConferenceableConnectionIds
+	p.WriteStringList(s.ConferenceableConnectionIds)
 	p.WriteInt32(-1) // null Extras
 	p.WriteInt32(s.ConnectionProperties)
 	p.WriteInt32(s.SupportedAudioRoutes)
@@ -174,5 +175,45 @@ func (s *ParcelableConnection) UnmarshalParcel(
 			}
 		}
 	}
-	return nil // opaque ConferenceableConnectionIds: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.ConferenceableConnectionIds = _sl
+	}
+	{
+		_opaqueLen, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueLen > 0 {
+			p.SetPosition(p.Position() + int(_opaqueLen))
+		}
+	}
+	s.ConnectionProperties, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.SupportedAudioRoutes, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.ParentCallId, _err = p.ReadString16()
+	if _err != nil {
+		return _err
+	}
+	s.ConnectElapsedTimeMillis, _err = p.ReadInt64()
+	if _err != nil {
+		return _err
+	}
+	s.CallDirection, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.CallerNumberVerificationStatus, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	return nil
 }

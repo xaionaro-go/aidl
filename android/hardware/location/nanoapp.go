@@ -14,6 +14,9 @@ type NanoApp struct {
 	NeededReadMemBytes  int32
 	NeededWriteMemBytes int32
 	NeededExecMemBytes  int32
+	Length              int32
+	Length2             int32
+	Length3             int32
 }
 
 var _ parcel.Parcelable = (*NanoApp)(nil)
@@ -28,11 +31,11 @@ func (s *NanoApp) MarshalParcel(
 	p.WriteInt32(s.NeededReadMemBytes)
 	p.WriteInt32(s.NeededWriteMemBytes)
 	p.WriteInt32(s.NeededExecMemBytes)
-	p.WriteInt32(0)  // placeholder NeededSensors.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null NeededSensors
-	p.WriteInt32(0)  // placeholder OutputEvents.length
+	p.WriteInt32(s.Length2)
 	p.WriteInt32(-1) // null OutputEvents
-	p.WriteInt32(0)  // placeholder AppBinary.length
+	p.WriteInt32(s.Length3)
 	p.WriteInt32(-1) // null AppBinary
 	return nil
 }
@@ -69,7 +72,8 @@ func (s *NanoApp) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip NeededSensors.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	{
@@ -81,7 +85,8 @@ func (s *NanoApp) UnmarshalParcel(
 			p.SetPosition(p.Position() + int(_arrLen)*4)
 		}
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip OutputEvents.length
+	s.Length2, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	{
@@ -93,7 +98,8 @@ func (s *NanoApp) UnmarshalParcel(
 			p.SetPosition(p.Position() + int(_arrLen)*4)
 		}
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip AppBinary.length
+	s.Length3, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil // opaque AppBinary: cannot skip without known wire format

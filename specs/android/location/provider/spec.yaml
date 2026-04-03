@@ -189,11 +189,11 @@ parcelables:
           write_method: float64
         - name: MaxResults
           write_method: int32
-        - name: Locale.getLanguage()
+        - name: GetLanguage()
           write_method: string8
-        - name: Locale.getCountry()
+        - name: GetCountry()
           write_method: string8
-        - name: Locale.getVariant()
+        - name: GetVariant()
           write_method: string8
         - name: CallingUid
           write_method: int32
@@ -251,11 +251,11 @@ parcelables:
           write_method: float64
         - name: MaxResults
           write_method: int32
-        - name: Locale.getLanguage()
+        - name: GetLanguage()
           write_method: string8
-        - name: Locale.getCountry()
+        - name: GetCountry()
           write_method: string8
-        - name: Locale.getVariant()
+        - name: GetVariant()
           write_method: string8
         - name: CallingUid
           write_method: int32

@@ -10,6 +10,7 @@ import (
 type TvAdServiceInfo struct {
 	Id      string
 	Service pm.ResolveInfo
+	Types   []string
 }
 
 var _ parcel.Parcelable = (*TvAdServiceInfo)(nil)
@@ -21,7 +22,7 @@ func (s *TvAdServiceInfo) MarshalParcel(
 		return _err
 	}
 	p.WriteString16(s.Id)
-	p.WriteInt32(-1) // null Types
+	p.WriteStringList(s.Types)
 	return nil
 }
 
@@ -36,5 +37,12 @@ func (s *TvAdServiceInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque Types: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.Types = _sl
+	}
+	return nil
 }

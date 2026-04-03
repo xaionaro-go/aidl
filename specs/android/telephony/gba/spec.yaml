@@ -27,7 +27,7 @@ parcelables:
           write_method: int32
         - name: NafUrl
           write_method: typed_object
-        - name: SecurityProtocol.length
+        - name: Length
           write_method: int32
         - name: SecurityProtocol
           write_method: byte_array

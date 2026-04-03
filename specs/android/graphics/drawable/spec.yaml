@@ -10,5 +10,5 @@ parcelables:
         - name: "0"
           write_method: int32
           condition: mTintList==null
-        - name: BlendMode.toValue(mBlendMode)
+        - name: ToValue(mBlendMode)
           write_method: int32

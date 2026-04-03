@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*ImsConferenceState)(nil)
 func (s *ImsConferenceState) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // placeholder Participants.size()
+	p.WriteInt32(0) // placeholder Size()
 	return nil
 }
 
@@ -22,7 +22,7 @@ func (s *ImsConferenceState) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt32(); _err != nil { // skip Participants.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	return nil

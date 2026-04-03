@@ -10,6 +10,8 @@ type ClipDescription struct {
 	TimeStamp            int64
 	IsStyledText         bool
 	ClassificationStatus int32
+	Label                *string
+	MimeTypes            []string
 }
 
 var _ parcel.Parcelable = (*ClipDescription)(nil)
@@ -17,8 +19,8 @@ var _ parcel.Parcelable = (*ClipDescription)(nil)
 func (s *ClipDescription) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Label
-	p.WriteInt32(-1) // null MimeTypes
+	parcel.WritePlainCharSequence(p, s.Label)
+	p.WriteStringList(s.MimeTypes)
 	p.WriteInt32(-1) // null Extras
 	p.WriteInt64(s.TimeStamp)
 	p.WriteBool(s.IsStyledText)
@@ -30,8 +32,19 @@ func (s *ClipDescription) MarshalParcel(
 func (s *ClipDescription) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.Label = _cs
 	}
-	return nil // opaque MimeTypes: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.MimeTypes = _sl
+	}
+	return nil // opaque Extras: cannot skip without known wire format
 }

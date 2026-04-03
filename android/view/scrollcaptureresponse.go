@@ -9,6 +9,7 @@ import (
 type ScrollCaptureResponse struct {
 	Flg         int32
 	Description string
+	Messages    []string
 }
 
 var _ parcel.Parcelable = (*ScrollCaptureResponse)(nil)
@@ -23,7 +24,7 @@ func (s *ScrollCaptureResponse) MarshalParcel(
 	p.WriteInt32(0)  // null BoundsInWindow
 	p.WriteInt32(0)  // null WindowTitle
 	p.WriteInt32(0)  // null PackageName
-	p.WriteInt32(-1) // null Messages
+	p.WriteStringList(s.Messages)
 	return nil
 }
 

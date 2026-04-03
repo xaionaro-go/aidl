@@ -16,7 +16,7 @@ func (s *CellNetworkScanResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Status)
-	p.WriteInt32(0) // placeholder Operators.size()
+	p.WriteInt32(0) // placeholder Size()
 	return nil
 }
 
@@ -28,7 +28,7 @@ func (s *CellNetworkScanResult) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Operators.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	return nil

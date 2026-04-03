@@ -8,6 +8,7 @@ import (
 
 type AidGroup struct {
 	Category string
+	Aids     []string
 }
 
 var _ parcel.Parcelable = (*AidGroup)(nil)
@@ -16,8 +17,8 @@ func (s *AidGroup) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString(s.Category)
-	p.WriteInt32(0)  // placeholder Aids.size()
-	p.WriteInt32(-1) // null Aids
+	p.WriteInt32(0) // placeholder Size()
+	p.WriteStringList(s.Aids)
 	return nil
 }
 
@@ -29,8 +30,15 @@ func (s *AidGroup) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Aids.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
-	return nil // opaque Aids: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.Aids = _sl
+	}
+	return nil
 }

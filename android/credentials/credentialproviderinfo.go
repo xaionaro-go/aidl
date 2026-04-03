@@ -10,6 +10,10 @@ type CredentialProviderInfo struct {
 	IsSystemProvider bool
 	IsEnabled        bool
 	IsPrimary        bool
+	Capabilities     []string
+	OverrideLabel    *string
+	SettingsSubtitle *string
+	SettingsActivity *string
 }
 
 var _ parcel.Parcelable = (*CredentialProviderInfo)(nil)
@@ -19,12 +23,12 @@ func (s *CredentialProviderInfo) MarshalParcel(
 ) error {
 	p.WriteInt32(0) // null ServiceInfo
 	p.WriteBool(s.IsSystemProvider)
-	p.WriteInt32(-1) // null Capabilities
+	p.WriteStringList(s.Capabilities)
 	p.WriteBool(s.IsEnabled)
 	p.WriteBool(s.IsPrimary)
-	p.WriteInt32(-1) // null OverrideLabel
-	p.WriteInt32(-1) // null SettingsSubtitle
-	p.WriteInt32(-1) // null SettingsActivity
+	parcel.WritePlainCharSequence(p, s.OverrideLabel)
+	parcel.WritePlainCharSequence(p, s.SettingsSubtitle)
+	parcel.WritePlainCharSequence(p, s.SettingsActivity)
 	return nil
 }
 
@@ -45,5 +49,41 @@ func (s *CredentialProviderInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque Capabilities: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.Capabilities = _sl
+	}
+	s.IsEnabled, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	s.IsPrimary, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.OverrideLabel = _cs
+	}
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.SettingsSubtitle = _cs
+	}
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.SettingsActivity = _cs
+	}
+	return nil
 }

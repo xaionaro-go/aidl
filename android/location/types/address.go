@@ -29,8 +29,8 @@ var _ parcel.Parcelable = (*Address)(nil)
 func (s *Address) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteString16("") // placeholder Locale.getLanguage()
-	p.WriteString16("") // placeholder Locale.getCountry()
+	p.WriteString16("") // placeholder GetLanguage()
+	p.WriteString16("") // placeholder GetCountry()
 	p.WriteInt32(0)
 	p.WriteString16(s.FeatureName)
 	p.WriteString16(s.AdminArea)
@@ -57,10 +57,10 @@ func (s *Address) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadString16(); _err != nil { // skip Locale.getLanguage()
+	if _, _err = p.ReadString16(); _err != nil { // skip GetLanguage()
 		return _err
 	}
-	if _, _err = p.ReadString16(); _err != nil { // skip Locale.getCountry()
+	if _, _err = p.ReadString16(); _err != nil { // skip GetCountry()
 		return _err
 	}
 	if _, _err = p.ReadInt32(); _err != nil {

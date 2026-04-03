@@ -14,8 +14,8 @@ var _ parcel.Parcelable = (*ParcelUuid)(nil)
 func (s *ParcelUuid) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt64(0) // placeholder Uuid.getMostSignificantBits()
-	p.WriteInt64(0) // placeholder Uuid.getLeastSignificantBits()
+	p.WriteInt64(0) // placeholder GetMostSignificantBits()
+	p.WriteInt64(0) // placeholder GetLeastSignificantBits()
 	return nil
 }
 
@@ -23,10 +23,10 @@ func (s *ParcelUuid) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt64(); _err != nil { // skip Uuid.getMostSignificantBits()
+	if _, _err = p.ReadInt64(); _err != nil { // skip GetMostSignificantBits()
 		return _err
 	}
-	if _, _err = p.ReadInt64(); _err != nil { // skip Uuid.getLeastSignificantBits()
+	if _, _err = p.ReadInt64(); _err != nil { // skip GetLeastSignificantBits()
 		return _err
 	}
 	return nil

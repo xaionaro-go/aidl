@@ -11,9 +11,9 @@ parcelables:
           write_method: int32
         - name: SurfaceType
           write_method: int32
-        - name: ConfiguredSize.getWidth()
+        - name: GetWidth()
           write_method: int32
-        - name: ConfiguredSize.getHeight()
+        - name: GetHeight()
           write_method: int32
         - name: IsDeferredConfig
           write_method: bool
@@ -43,16 +43,16 @@ parcelables:
       java_wire_format:
         - name: SessionType
           write_method: int32
-        - name: InputConfig.getWidth()
+        - name: GetWidth()
           write_method: int32
           condition: mInputConfig!=null
-        - name: InputConfig.getHeight()
+        - name: GetHeight()
           write_method: int32
           condition: mInputConfig!=null
-        - name: InputConfig.getFormat()
+        - name: GetFormat()
           write_method: int32
           condition: mInputConfig!=null
-        - name: InputConfig.isMultiResolution()
+        - name: IsMultiResolution()
           write_method: bool
           condition: mInputConfig!=null
         - name: OutputConfigurations

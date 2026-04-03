@@ -10,6 +10,7 @@ type GbaAuthRequest struct {
 	Token              int32
 	SubId              int32
 	AppType            int32
+	Length             int32
 	ForceBootStrapping bool
 }
 
@@ -21,8 +22,8 @@ func (s *GbaAuthRequest) MarshalParcel(
 	p.WriteInt32(s.Token)
 	p.WriteInt32(s.SubId)
 	p.WriteInt32(s.AppType)
-	p.WriteInt32(0)  // null NafUrl
-	p.WriteInt32(0)  // placeholder SecurityProtocol.length
+	p.WriteInt32(0) // null NafUrl
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null SecurityProtocol
 	p.WriteBool(s.ForceBootStrapping)
 	p.WriteInt32(-1) // null Callback
@@ -54,7 +55,8 @@ func (s *GbaAuthRequest) UnmarshalParcel(
 			return nil // non-null NafUrl: cannot skip unknown-size typed object
 		}
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip SecurityProtocol.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil // opaque SecurityProtocol: cannot skip without known wire format

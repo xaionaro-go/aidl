@@ -14,8 +14,8 @@ var _ parcel.Parcelable = (*CapabilityChangeRequest)(nil)
 func (s *CapabilityChangeRequest) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // placeholder CapabilitiesToEnable.size()
-	p.WriteInt32(0) // placeholder CapabilitiesToDisable.size()
+	p.WriteInt32(0) // placeholder Size()
+	p.WriteInt32(0) // placeholder Size()
 	return nil
 }
 
@@ -23,10 +23,10 @@ func (s *CapabilityChangeRequest) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt32(); _err != nil { // skip CapabilitiesToEnable.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip CapabilitiesToDisable.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	return nil

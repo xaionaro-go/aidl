@@ -262,7 +262,7 @@ parcelables:
         - name: DisconnectCause
           write_method: typed_object
         - name: ConferenceableConnectionIds
-          write_method: opaque
+          write_method: string_list
         - name: Extras
           write_method: bundle
         - name: ConnectionProperties
@@ -305,7 +305,7 @@ parcelables:
         - name: ShortDescription
           write_method: opaque
         - name: SupportedUriSchemes
-          write_method: opaque
+          write_method: string_list
         - name: "0"
           write_method: int32
           condition: mIcon==null

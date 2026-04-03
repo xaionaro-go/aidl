@@ -595,7 +595,7 @@ parcelables:
         - name: SliceInfo
           write_method: opaque
         - name: Dnn
-          write_method: opaque
+          write_method: string_list
     - name: ThrottleStatus
       java_wire_format:
         - name: SlotIndex

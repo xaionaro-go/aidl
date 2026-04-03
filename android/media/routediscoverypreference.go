@@ -8,6 +8,9 @@ import (
 
 type RouteDiscoveryPreference struct {
 	ShouldPerformActiveScan bool
+	PreferredFeatures       []string
+	PackageOrder            []string
+	AllowedPackages         []string
 }
 
 var _ parcel.Parcelable = (*RouteDiscoveryPreference)(nil)
@@ -15,9 +18,9 @@ var _ parcel.Parcelable = (*RouteDiscoveryPreference)(nil)
 func (s *RouteDiscoveryPreference) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null PreferredFeatures
-	p.WriteInt32(-1) // null PackageOrder
-	p.WriteInt32(-1) // null AllowedPackages
+	p.WriteStringList(s.PreferredFeatures)
+	p.WriteStringList(s.PackageOrder)
+	p.WriteStringList(s.AllowedPackages)
 	p.WriteBool(s.ShouldPerformActiveScan)
 	p.WriteInt32(-1) // null Extras
 	return nil
@@ -26,5 +29,40 @@ func (s *RouteDiscoveryPreference) MarshalParcel(
 func (s *RouteDiscoveryPreference) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	return nil // opaque PreferredFeatures: cannot skip without known wire format
+	var _err error
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.PreferredFeatures = _sl
+	}
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.PackageOrder = _sl
+	}
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.AllowedPackages = _sl
+	}
+	s.ShouldPerformActiveScan, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	{
+		_opaqueLen, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueLen > 0 {
+			p.SetPosition(p.Position() + int(_opaqueLen))
+		}
+	}
+	return nil
 }

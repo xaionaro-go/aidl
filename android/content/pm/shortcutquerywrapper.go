@@ -10,6 +10,7 @@ type ShortcutQueryWrapper struct {
 	Flg          int32
 	ChangedSince int64
 	QueryFlags   int32
+	ShortcutIds  []string
 }
 
 var _ parcel.Parcelable = (*ShortcutQueryWrapper)(nil)
@@ -19,8 +20,8 @@ func (s *ShortcutQueryWrapper) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Flg)
 	p.WriteInt64(s.ChangedSince)
-	p.WriteInt32(0)  // null Package
-	p.WriteInt32(-1) // null ShortcutIds
+	p.WriteInt32(0) // null Package
+	p.WriteStringList(s.ShortcutIds)
 	p.WriteInt32(-1) // null LocusIds
 	p.WriteInt32(0)  // null Activity
 	p.WriteInt32(s.QueryFlags)
@@ -48,5 +49,12 @@ func (s *ShortcutQueryWrapper) UnmarshalParcel(
 			return nil // non-null Package: cannot skip unknown-size typed object
 		}
 	}
-	return nil // opaque ShortcutIds: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.ShortcutIds = _sl
+	}
+	return nil // opaque LocusIds: cannot skip without known wire format
 }

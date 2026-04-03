@@ -22,7 +22,7 @@ func (s *SharedLibraryInfo) MarshalParcel(
 ) error {
 	p.WriteString(s.Path)
 	p.WriteString(s.PackageName)
-	p.WriteInt32(-1) // null CodePaths.toArray(newString[mCodePaths.size()])
+	p.WriteInt32(-1) // null Size()])
 	p.WriteString(s.Name)
 	p.WriteInt64(s.Version)
 	p.WriteInt32(s.Type)
@@ -46,5 +46,5 @@ func (s *SharedLibraryInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque CodePaths.toArray(newString[mCodePaths.size()]): cannot skip without known wire format
+	return nil // opaque Size()]): cannot skip without known wire format
 }

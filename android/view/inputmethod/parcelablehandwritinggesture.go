@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*ParcelableHandwritingGesture)(nil)
 func (s *ParcelableHandwritingGesture) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0)  // placeholder Gesture.getGestureType()
+	p.WriteInt32(0)  // placeholder GetGestureType()
 	p.WriteInt32(-1) // null GestureAsParcelable
 	return nil
 }
@@ -23,7 +23,7 @@ func (s *ParcelableHandwritingGesture) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt32(); _err != nil { // skip Gesture.getGestureType()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetGestureType()
 		return _err
 	}
 	return nil // opaque GestureAsParcelable: cannot skip without known wire format

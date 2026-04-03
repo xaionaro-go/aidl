@@ -1119,9 +1119,9 @@ interfaces:
 parcelables:
     - name: Address
       java_wire_format:
-        - name: Locale.getLanguage()
+        - name: GetLanguage()
           write_method: string16
-        - name: Locale.getCountry()
+        - name: GetCountry()
           write_method: string16
         - name: "0"
           write_method: int32
@@ -1300,7 +1300,7 @@ parcelables:
           write_method: int32
         - name: SubmessageId
           write_method: int32
-        - name: Data.length
+        - name: Length
           write_method: int32
         - name: Data
           write_method: byte_array

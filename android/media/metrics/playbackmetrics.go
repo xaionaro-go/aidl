@@ -20,6 +20,7 @@ type PlaybackMetrics struct {
 	NetworkBytesRead              int64
 	LocalBytesRead                int64
 	NetworkTransferDurationMillis int64
+	Length                        int32
 }
 
 var _ parcel.Parcelable = (*PlaybackMetrics)(nil)
@@ -43,7 +44,7 @@ func (s *PlaybackMetrics) MarshalParcel(
 	p.WriteInt64(s.NetworkBytesRead)
 	p.WriteInt64(s.LocalBytesRead)
 	p.WriteInt64(s.NetworkTransferDurationMillis)
-	p.WriteInt32(0)  // placeholder DrmSessionId.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null DrmSessionId
 	p.WriteInt32(-1) // null MetricsBundle
 	return nil
@@ -132,7 +133,8 @@ func (s *PlaybackMetrics) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip DrmSessionId.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil // opaque DrmSessionId: cannot skip without known wire format

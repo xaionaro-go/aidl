@@ -10,6 +10,7 @@ type Dataset struct {
 	Id                 string
 	EligibleReason     int32
 	InlinePresentation *InlinePresentation
+	AutofillDatatypes  []string
 }
 
 var _ parcel.Parcelable = (*Dataset)(nil)
@@ -35,9 +36,9 @@ func (s *Dataset) MarshalParcel(
 	p.WriteInt32(-1) // null FieldInlinePresentations
 	p.WriteInt32(-1) // null FieldInlineTooltipPresentations
 	p.WriteInt32(-1) // null FieldFilters
-	p.WriteInt32(-1) // null AutofillDatatypes
-	p.WriteInt32(0)  // null FieldContent
-	p.WriteInt32(0)  // null Authentication
+	p.WriteStringList(s.AutofillDatatypes)
+	p.WriteInt32(0) // null FieldContent
+	p.WriteInt32(0) // null Authentication
 	p.WriteString16(s.Id)
 	p.WriteInt32(s.EligibleReason)
 	p.WriteInt32(0) // null CredentialFillInIntent

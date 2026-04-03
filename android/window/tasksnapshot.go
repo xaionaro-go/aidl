@@ -29,8 +29,8 @@ func (s *TaskSnapshot) MarshalParcel(
 	if _err := s.ComponentName.MarshalParcel(p); _err != nil {
 		return _err
 	}
-	p.WriteBool(false) // placeholder Snapshot!=null&&!mSnapshot.isClosed()
-	p.WriteInt32(0)    // placeholder ColorSpace.getId()
+	p.WriteBool(false) // placeholder IsClosed()
+	p.WriteInt32(0)    // placeholder GetId()
 	p.WriteInt32(s.Orientation)
 	p.WriteInt32(s.Rotation)
 	p.WriteInt32(0) // null TaskSize
@@ -56,10 +56,10 @@ func (s *TaskSnapshot) UnmarshalParcel(
 	if _err := s.ComponentName.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadBool(); _err != nil { // skip Snapshot!=null&&!mSnapshot.isClosed()
+	if _, _err = p.ReadBool(); _err != nil { // skip IsClosed()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip ColorSpace.getId()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetId()
 		return _err
 	}
 	s.Orientation, _err = p.ReadInt32()

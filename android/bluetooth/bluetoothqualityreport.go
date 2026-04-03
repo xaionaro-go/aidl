@@ -22,7 +22,7 @@ func (s *BluetoothQualityReport) MarshalParcel(
 	p.WriteInt32(s.LmpSubVer)
 	p.WriteInt32(s.ManufacturerId)
 	p.WriteInt32(-1) // null Out
-	p.WriteInt32(0)  // placeholder BluetoothClass.getClassOfDevice()
+	p.WriteInt32(0)  // placeholder GetClassOfDevice()
 	p.WriteInt32(-1) // null BqrCommon
 	p.WriteInt32(-1) // null BqrVsLsto
 	return nil

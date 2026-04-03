@@ -9,7 +9,9 @@ import (
 type UsageEventsQuery struct {
 	BeginTimeMillis int64
 	EndTimeMillis   int64
+	Length          int32
 	UserId          int32
+	Length2         int32
 }
 
 var _ parcel.Parcelable = (*UsageEventsQuery)(nil)
@@ -19,10 +21,10 @@ func (s *UsageEventsQuery) MarshalParcel(
 ) error {
 	p.WriteInt64(s.BeginTimeMillis)
 	p.WriteInt64(s.EndTimeMillis)
-	p.WriteInt32(0)  // placeholder EventTypes.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null EventTypes
 	p.WriteInt32(s.UserId)
-	p.WriteInt32(0)  // placeholder PackageNames.length
+	p.WriteInt32(s.Length2)
 	p.WriteInt32(-1) // null PackageNames
 	return nil
 }
@@ -39,7 +41,8 @@ func (s *UsageEventsQuery) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip EventTypes.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	{
@@ -55,7 +58,8 @@ func (s *UsageEventsQuery) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip PackageNames.length
+	s.Length2, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	{

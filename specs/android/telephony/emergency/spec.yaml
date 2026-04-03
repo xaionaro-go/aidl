@@ -14,7 +14,7 @@ parcelables:
         - name: EmergencyServiceCategoryBitmask
           write_method: int32
         - name: EmergencyUrns
-          write_method: opaque
+          write_method: string_list
         - name: EmergencyNumberSourceBitmask
           write_method: int32
         - name: EmergencyCallRouting

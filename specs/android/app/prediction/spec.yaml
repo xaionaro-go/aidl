@@ -166,7 +166,7 @@ parcelables:
         - name: PackageName
           write_method: string16
           condition: mShortcutInfo==null
-        - name: User.getIdentifier()
+        - name: GetIdentifier()
           write_method: int32
           condition: mShortcutInfo==null
         - name: ClassName

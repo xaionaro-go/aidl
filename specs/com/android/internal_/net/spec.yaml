@@ -74,13 +74,13 @@ parcelables:
         - name: Routes
           write_method: opaque
         - name: DnsServers
-          write_method: opaque
+          write_method: string_list
         - name: SearchDomains
-          write_method: opaque
+          write_method: string_list
         - name: AllowedApplications
-          write_method: opaque
+          write_method: string_list
         - name: DisallowedApplications
-          write_method: opaque
+          write_method: string_list
         - name: ConfigureIntent
           write_method: typed_object
         - name: StartTime

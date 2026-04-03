@@ -29,7 +29,7 @@ func (s *BluetoothLeBroadcastMetadata) MarshalParcel(
 	p.WriteInt32(s.BroadcastId)
 	p.WriteInt32(s.PaSyncInterval)
 	p.WriteBool(s.IsEncrypted)
-	p.WriteInt32(0)  // placeholder BroadcastCode.length
+	p.WriteInt32(0)  // null Length
 	p.WriteInt32(-1) // null BroadcastCode
 	p.WriteInt32(s.PresentationDelayMicros)
 	p.WriteInt32(-1) // null Subgroups
@@ -74,8 +74,14 @@ func (s *BluetoothLeBroadcastMetadata) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip BroadcastCode.length
-		return _err
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Length: cannot skip unknown-size typed object
+		}
 	}
 	return nil // opaque BroadcastCode: cannot skip without known wire format
 }

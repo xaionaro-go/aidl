@@ -297,7 +297,7 @@ parcelables:
         - name: EndPosition
           write_method: int32
         - name: Alternatives
-          write_method: opaque
+          write_method: string_list
     - name: AlternativeSpans
       java_wire_format:
         - name: Spans
@@ -318,10 +318,10 @@ parcelables:
     - name: RecognitionSupport
       java_wire_format:
         - name: InstalledOnDeviceLanguages
-          write_method: opaque
+          write_method: string_list
         - name: PendingOnDeviceLanguages
-          write_method: opaque
+          write_method: string_list
         - name: SupportedOnDeviceLanguages
-          write_method: opaque
+          write_method: string_list
         - name: OnlineLanguages
-          write_method: opaque
+          write_method: string_list

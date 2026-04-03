@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*DevicePolicyState)(nil)
 func (s *DevicePolicyState) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // placeholder Policies.size()
+	p.WriteInt32(0) // placeholder Size()
 	return nil
 }
 
@@ -22,7 +22,7 @@ func (s *DevicePolicyState) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt32(); _err != nil { // skip Policies.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	return nil

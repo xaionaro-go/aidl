@@ -5,54 +5,54 @@ go_package: android/appwidget
 parcelables:
     - name: AppWidgetProviderInfo
       java_wire_format:
-        - name: This.provider
+        - name: Provider
           write_method: typed_object
-        - name: This.minWidth
+        - name: MinWidth
           write_method: int32
-        - name: This.minHeight
+        - name: MinHeight
           write_method: int32
-        - name: This.minResizeWidth
+        - name: MinResizeWidth
           write_method: int32
-        - name: This.minResizeHeight
+        - name: MinResizeHeight
           write_method: int32
-        - name: This.maxResizeWidth
+        - name: MaxResizeWidth
           write_method: int32
-        - name: This.maxResizeHeight
+        - name: MaxResizeHeight
           write_method: int32
-        - name: This.targetCellWidth
+        - name: TargetCellWidth
           write_method: int32
-        - name: This.targetCellHeight
+        - name: TargetCellHeight
           write_method: int32
-        - name: This.updatePeriodMillis
+        - name: UpdatePeriodMillis
           write_method: int32
-        - name: This.initialLayout
+        - name: InitialLayout
           write_method: int32
-        - name: This.initialKeyguardLayout
+        - name: InitialKeyguardLayout
           write_method: int32
-        - name: This.configure
+        - name: Configure
           write_method: typed_object
-        - name: This.label
+        - name: Label
           write_method: string16
-        - name: This.icon
+        - name: Icon
           write_method: int32
-        - name: This.previewImage
+        - name: PreviewImage
           write_method: int32
-        - name: This.previewLayout
+        - name: PreviewLayout
           write_method: int32
-        - name: This.autoAdvanceViewId
+        - name: AutoAdvanceViewId
           write_method: int32
-        - name: This.resizeMode
+        - name: ResizeMode
           write_method: int32
-        - name: This.widgetCategory
+        - name: WidgetCategory
           write_method: int32
-        - name: This.providerInfo
+        - name: ProviderInfo
           write_method: typed_object
-        - name: This.widgetFeatures
+        - name: WidgetFeatures
           write_method: int32
-        - name: This.descriptionRes
+        - name: DescriptionRes
           write_method: int32
-        - name: This.isExtendedFromAppWidgetProvider
+        - name: IsExtendedFromAppWidgetProvider
           write_method: bool
-        - name: This.generatedPreviewCategories
+        - name: GeneratedPreviewCategories
           write_method: int32
           condition: generatedPreviews()

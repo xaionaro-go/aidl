@@ -351,10 +351,10 @@ parcelables:
           write_method: int32
         - name: State
           write_method: int32
-        - name: This.source
+        - name: Source
           write_method: int32
           condition: Flags.modesApi()
-        - name: This.flags
+        - name: Flags
           write_method: int32
     - name: ConversationChannelWrapper
       java_wire_format:
@@ -438,33 +438,34 @@ parcelables:
           condition: mConfirmation!=null
     - name: StatusBarNotification
       java_wire_format:
-        - name: This.pkg
+        - name: Pkg
           write_method: string16
-        - name: This.opPkg
+        - name: OpPkg
           write_method: string16
-        - name: This.id
+        - name: Id
           write_method: int32
         - name: "1"
           write_method: int32
           condition: this.tag!=null
-        - name: This.tag
+        - name: Tag
           write_method: string16
           condition: this.tag!=null
-        - name: This.uid
+        - name: Uid
           write_method: int32
-        - name: This.initialPid
+        - name: InitialPid
           write_method: int32
-        - name: This.notification
+        - name: Notification
           write_method: delegate
+          delegate_type: Notification
         - name: User
           write_method: delegate
           delegate_type: UserHandle
-        - name: This.postTime
+        - name: PostTime
           write_method: int64
         - name: "1"
           write_method: int32
           condition: this.overrideGroupKey!=null
-        - name: This.overrideGroupKey
+        - name: OverrideGroupKey
           write_method: string16
           condition: this.overrideGroupKey!=null
         - name: "1"

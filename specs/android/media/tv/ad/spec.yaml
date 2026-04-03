@@ -817,4 +817,4 @@ parcelables:
         - name: Id
           write_method: string16
         - name: Types
-          write_method: opaque
+          write_method: string_list

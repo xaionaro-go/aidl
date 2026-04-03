@@ -17,11 +17,11 @@ func (s *AudioCodecAttributes) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteFloat32(s.BitrateKbps)
-	p.WriteFloat32(0) // placeholder BitrateRangeKbps.getLower()
-	p.WriteFloat32(0) // placeholder BitrateRangeKbps.getUpper()
+	p.WriteFloat32(0) // placeholder GetLower()
+	p.WriteFloat32(0) // placeholder GetUpper()
 	p.WriteFloat32(s.BandwidthKhz)
-	p.WriteFloat32(0) // placeholder BandwidthRangeKhz.getLower()
-	p.WriteFloat32(0) // placeholder BandwidthRangeKhz.getUpper()
+	p.WriteFloat32(0) // placeholder GetLower()
+	p.WriteFloat32(0) // placeholder GetUpper()
 	return nil
 }
 
@@ -33,20 +33,20 @@ func (s *AudioCodecAttributes) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadFloat32(); _err != nil { // skip BitrateRangeKbps.getLower()
+	if _, _err = p.ReadFloat32(); _err != nil { // skip GetLower()
 		return _err
 	}
-	if _, _err = p.ReadFloat32(); _err != nil { // skip BitrateRangeKbps.getUpper()
+	if _, _err = p.ReadFloat32(); _err != nil { // skip GetUpper()
 		return _err
 	}
 	s.BandwidthKhz, _err = p.ReadFloat32()
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadFloat32(); _err != nil { // skip BandwidthRangeKhz.getLower()
+	if _, _err = p.ReadFloat32(); _err != nil { // skip GetLower()
 		return _err
 	}
-	if _, _err = p.ReadFloat32(); _err != nil { // skip BandwidthRangeKhz.getUpper()
+	if _, _err = p.ReadFloat32(); _err != nil { // skip GetUpper()
 		return _err
 	}
 	return nil

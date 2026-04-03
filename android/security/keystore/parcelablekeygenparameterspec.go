@@ -14,38 +14,38 @@ var _ parcel.Parcelable = (*ParcelableKeyGenParameterSpec)(nil)
 func (s *ParcelableKeyGenParameterSpec) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteString16("") // placeholder Spec.getKeystoreAlias()
-	p.WriteInt32(0)     // placeholder Spec.getPurposes()
-	p.WriteInt32(0)     // placeholder Spec.getNamespace()
-	p.WriteInt32(0)     // placeholder Spec.getKeySize()
+	p.WriteString16("") // placeholder GetKeystoreAlias()
+	p.WriteInt32(0)     // placeholder GetPurposes()
+	p.WriteInt32(0)     // placeholder GetNamespace()
+	p.WriteInt32(0)     // placeholder GetKeySize()
 	p.WriteInt32(0)     // null ALGORITHM_PARAMETER_SPEC_NONE
-	p.WriteInt32(-1)    // null Spec.getCertificateSubject().getEncoded()
-	p.WriteInt32(-1)    // null Spec.getCertificateSerialNumber().toByteArray()
-	p.WriteInt64(0)     // placeholder Spec.getCertificateNotBefore().getTime()
-	p.WriteInt64(0)     // placeholder Spec.getCertificateNotAfter().getTime()
-	p.WriteInt32(-1)    // null Spec.getDigests()
-	p.WriteInt32(-1)    // null List.copyOf(mSpec.getMgf1Digests())
-	p.WriteInt32(-1)    // null Spec.getEncryptionPaddings()
-	p.WriteInt32(-1)    // null Spec.getSignaturePaddings()
-	p.WriteInt32(-1)    // null Spec.getBlockModes()
-	p.WriteBool(false)  // placeholder Spec.isRandomizedEncryptionRequired()
-	p.WriteBool(false)  // placeholder Spec.isUserAuthenticationRequired()
-	p.WriteInt32(0)     // placeholder Spec.getUserAuthenticationValidityDurationSeconds()
-	p.WriteInt32(0)     // placeholder Spec.getUserAuthenticationType()
-	p.WriteBool(false)  // placeholder Spec.isUserPresenceRequired()
-	p.WriteInt32(-1)    // null Spec.getAttestationChallenge()
-	p.WriteBool(false)  // placeholder Spec.isDevicePropertiesAttestationIncluded()
-	p.WriteInt32(-1)    // null Spec.getAttestationIds()
-	p.WriteBool(false)  // placeholder Spec.isUniqueIdIncluded()
-	p.WriteBool(false)  // placeholder Spec.isUserAuthenticationValidWhileOnBody()
-	p.WriteBool(false)  // placeholder Spec.isInvalidatedByBiometricEnrollment()
-	p.WriteBool(false)  // placeholder Spec.isStrongBoxBacked()
-	p.WriteBool(false)  // placeholder Spec.isUserConfirmationRequired()
-	p.WriteBool(false)  // placeholder Spec.isUnlockedDeviceRequired()
-	p.WriteBool(false)  // placeholder Spec.isCriticalToDeviceEncryption()
-	p.WriteInt32(0)     // placeholder Spec.getMaxUsageCount()
-	p.WriteString16("") // placeholder Spec.getAttestKeyAlias()
-	p.WriteInt64(0)     // placeholder Spec.getBoundToSpecificSecureUserId()
+	p.WriteInt32(-1)    // null GetEncoded()
+	p.WriteInt32(-1)    // null ToByteArray()
+	p.WriteInt64(0)     // placeholder GetTime()
+	p.WriteInt64(0)     // placeholder GetTime()
+	p.WriteInt32(-1)    // null GetDigests()
+	p.WriteInt32(-1)    // null GetMgf1Digests())
+	p.WriteInt32(-1)    // null GetEncryptionPaddings()
+	p.WriteInt32(-1)    // null GetSignaturePaddings()
+	p.WriteInt32(-1)    // null GetBlockModes()
+	p.WriteBool(false)  // placeholder IsRandomizedEncryptionRequired()
+	p.WriteBool(false)  // placeholder IsUserAuthenticationRequired()
+	p.WriteInt32(0)     // placeholder GetUserAuthenticationValidityDurationSeconds()
+	p.WriteInt32(0)     // placeholder GetUserAuthenticationType()
+	p.WriteBool(false)  // placeholder IsUserPresenceRequired()
+	p.WriteInt32(-1)    // null GetAttestationChallenge()
+	p.WriteBool(false)  // placeholder IsDevicePropertiesAttestationIncluded()
+	p.WriteInt32(-1)    // null GetAttestationIds()
+	p.WriteBool(false)  // placeholder IsUniqueIdIncluded()
+	p.WriteBool(false)  // placeholder IsUserAuthenticationValidWhileOnBody()
+	p.WriteBool(false)  // placeholder IsInvalidatedByBiometricEnrollment()
+	p.WriteBool(false)  // placeholder IsStrongBoxBacked()
+	p.WriteBool(false)  // placeholder IsUserConfirmationRequired()
+	p.WriteBool(false)  // placeholder IsUnlockedDeviceRequired()
+	p.WriteBool(false)  // placeholder IsCriticalToDeviceEncryption()
+	p.WriteInt32(0)     // placeholder GetMaxUsageCount()
+	p.WriteString16("") // placeholder GetAttestKeyAlias()
+	p.WriteInt64(0)     // placeholder GetBoundToSpecificSecureUserId()
 	return nil
 }
 
@@ -53,16 +53,16 @@ func (s *ParcelableKeyGenParameterSpec) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadString16(); _err != nil { // skip Spec.getKeystoreAlias()
+	if _, _err = p.ReadString16(); _err != nil { // skip GetKeystoreAlias()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Spec.getPurposes()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetPurposes()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Spec.getNamespace()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetNamespace()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Spec.getKeySize()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetKeySize()
 		return _err
 	}
 	{
@@ -74,5 +74,5 @@ func (s *ParcelableKeyGenParameterSpec) UnmarshalParcel(
 			return nil // non-null ALGORITHM_PARAMETER_SPEC_NONE: cannot skip unknown-size typed object
 		}
 	}
-	return nil // opaque Spec.getCertificateSubject().getEncoded(): cannot skip without known wire format
+	return nil // opaque GetEncoded(): cannot skip without known wire format
 }

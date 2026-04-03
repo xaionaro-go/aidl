@@ -9,6 +9,7 @@ import (
 type AvailableNetworkInfo struct {
 	SubId    int32
 	Priority int32
+	MccMncs  []string
 }
 
 var _ parcel.Parcelable = (*AvailableNetworkInfo)(nil)
@@ -18,7 +19,7 @@ func (s *AvailableNetworkInfo) MarshalParcel(
 ) error {
 	p.WriteInt32(s.SubId)
 	p.WriteInt32(s.Priority)
-	p.WriteInt32(-1) // null MccMncs
+	p.WriteStringList(s.MccMncs)
 	p.WriteInt32(-1) // null Bands
 	p.WriteInt32(-1) // null RadioAccessSpecifiers
 	return nil
@@ -36,5 +37,18 @@ func (s *AvailableNetworkInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque MccMncs: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.MccMncs = _sl
+	}
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	if _listErr := p.SkipWriteList(); _listErr != nil {
+		return _listErr
+	}
+	return nil
 }

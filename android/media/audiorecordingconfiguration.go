@@ -15,6 +15,8 @@ type AudioRecordingConfiguration struct {
 	ClientPortId      int32
 	ClientSilenced    bool
 	DeviceSource      int32
+	Length            int32
+	Length2           int32
 	ClientFormat      AudioFormat
 	DeviceFormat      AudioFormat
 }
@@ -38,8 +40,8 @@ func (s *AudioRecordingConfiguration) MarshalParcel(
 	p.WriteInt32(s.ClientPortId)
 	p.WriteBool(s.ClientSilenced)
 	p.WriteInt32(s.DeviceSource)
-	p.WriteInt32(0) // placeholder ClientEffects.length
-	p.WriteInt32(0) // placeholder DeviceEffects.length
+	p.WriteInt32(s.Length)
+	p.WriteInt32(s.Length2)
 	return nil
 }
 
@@ -85,10 +87,12 @@ func (s *AudioRecordingConfiguration) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip ClientEffects.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip DeviceEffects.length
+	s.Length2, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil

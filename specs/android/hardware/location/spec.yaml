@@ -753,7 +753,7 @@ interfaces:
 parcelables:
     - name: ActivityChangedEvent
       java_wire_format:
-        - name: ActivityRecognitionEventArray.length
+        - name: Length
           write_method: int32
         - name: ActivityRecognitionEventArray
           write_method: typed_array
@@ -789,7 +789,7 @@ parcelables:
           write_method: int32
         - name: ChrePatchVersion
           write_method: int32
-        - name: SupportedSensors.length
+        - name: Length
           write_method: int32
         - name: SupportedSensors
           write_method: int_array
@@ -803,7 +803,7 @@ parcelables:
           write_method: int32
         - name: Version
           write_method: int32
-        - name: Data.length
+        - name: Length
           write_method: int32
         - name: Data
           write_method: byte_array
@@ -855,21 +855,21 @@ parcelables:
           write_method: int32
         - name: NeededExecMemBytes
           write_method: int32
-        - name: NeededSensors.length
+        - name: Length
           write_method: int32
         - name: NeededSensors
           write_method: int_array
-        - name: OutputEvents.length
+        - name: Length
           write_method: int32
         - name: OutputEvents
           write_method: int_array
-        - name: AppBinary.length
+        - name: Length
           write_method: int32
         - name: AppBinary
           write_method: byte_array
     - name: NanoAppBinary
       java_wire_format:
-        - name: NanoAppBinary.length
+        - name: Length
           write_method: int32
         - name: NanoAppBinary
           write_method: byte_array
@@ -903,11 +903,11 @@ parcelables:
           write_method: int32
         - name: NeededExecMemBytes
           write_method: int32
-        - name: NeededSensors.length
+        - name: Length
           write_method: int32
         - name: NeededSensors
           write_method: int_array
-        - name: OutputEvents.length
+        - name: Length
           write_method: int32
         - name: OutputEvents
           write_method: int_array
@@ -919,7 +919,7 @@ parcelables:
           write_method: bool
         - name: MessageType
           write_method: int32
-        - name: MessageBody.length
+        - name: Length
           write_method: int32
         - name: MessageBody
           write_method: byte_array
@@ -942,6 +942,6 @@ parcelables:
         - name: IsEnabled
           write_method: bool
         - name: NanoAppPermissions
-          write_method: opaque
-        - name: NanoAppRpcServiceList.toArray(newNanoAppRpcService[0])
+          write_method: string_list
+        - name: ToArray(newNanoAppRpcService[0])
           write_method: opaque

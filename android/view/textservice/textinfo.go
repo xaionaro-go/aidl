@@ -9,6 +9,7 @@ import (
 type TextInfo struct {
 	Cookie         int32
 	SequenceNumber int32
+	CharSequence   *string
 }
 
 var _ parcel.Parcelable = (*TextInfo)(nil)
@@ -16,7 +17,7 @@ var _ parcel.Parcelable = (*TextInfo)(nil)
 func (s *TextInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null CharSequence
+	parcel.WritePlainCharSequence(p, s.CharSequence)
 	p.WriteInt32(s.Cookie)
 	p.WriteInt32(s.SequenceNumber)
 	return nil
@@ -26,8 +27,12 @@ func (s *TextInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.CharSequence = _cs
 	}
 	s.Cookie, _err = p.ReadInt32()
 	if _err != nil {

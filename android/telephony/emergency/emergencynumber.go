@@ -13,6 +13,7 @@ type EmergencyNumber struct {
 	EmergencyServiceCategoryBitmask int32
 	EmergencyNumberSourceBitmask    int32
 	EmergencyCallRouting            int32
+	EmergencyUrns                   []string
 }
 
 var _ parcel.Parcelable = (*EmergencyNumber)(nil)
@@ -24,7 +25,7 @@ func (s *EmergencyNumber) MarshalParcel(
 	p.WriteString16(s.CountryIso)
 	p.WriteString16(s.Mnc)
 	p.WriteInt32(s.EmergencyServiceCategoryBitmask)
-	p.WriteInt32(-1) // null EmergencyUrns
+	p.WriteStringList(s.EmergencyUrns)
 	p.WriteInt32(s.EmergencyNumberSourceBitmask)
 	p.WriteInt32(s.EmergencyCallRouting)
 	return nil
@@ -50,5 +51,20 @@ func (s *EmergencyNumber) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque EmergencyUrns: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.EmergencyUrns = _sl
+	}
+	s.EmergencyNumberSourceBitmask, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.EmergencyCallRouting, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	return nil
 }

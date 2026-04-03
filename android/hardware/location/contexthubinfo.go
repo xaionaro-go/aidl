@@ -22,6 +22,7 @@ type ContextHubInfo struct {
 	ChreApiMajorVersion      int32
 	ChreApiMinorVersion      int32
 	ChrePatchVersion         int32
+	Length                   int32
 	SupportsReliableMessages bool
 }
 
@@ -45,7 +46,7 @@ func (s *ContextHubInfo) MarshalParcel(
 	p.WriteInt32(s.ChreApiMajorVersion)
 	p.WriteInt32(s.ChreApiMinorVersion)
 	p.WriteInt32(s.ChrePatchVersion)
-	p.WriteInt32(0)  // placeholder SupportedSensors.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null SupportedSensors
 	p.WriteInt32(-1) // null MemoryRegions
 	p.WriteBool(s.SupportsReliableMessages)
@@ -116,7 +117,8 @@ func (s *ContextHubInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip SupportedSensors.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	{

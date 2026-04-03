@@ -15,7 +15,7 @@ func (s *BroadcastResponseStatsList) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(-1) // null BroadcastResponseStats
-	p.WriteInt32(-1) // null Data.marshall()
+	p.WriteInt32(-1) // null Marshall()
 	return nil
 }
 

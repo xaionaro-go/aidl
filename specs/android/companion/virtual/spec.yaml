@@ -674,7 +674,7 @@ interfaces:
 parcelables:
     - name: VirtualDevice
       java_wire_format:
-        - name: VirtualDevice.asBinder()
+        - name: AsBinder()
           write_method: binder
         - name: Id
           write_method: int32

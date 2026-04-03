@@ -264,7 +264,7 @@ parcelables:
           write_method: write_list
     - name: ServiceInfo
       java_wire_format:
-        - name: KeySet.size()
+        - name: Size()
           write_method: int32
         - name: ClassName
           write_method: string16

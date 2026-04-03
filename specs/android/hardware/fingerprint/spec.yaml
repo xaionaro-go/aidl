@@ -940,7 +940,7 @@ interfaces:
 parcelables:
     - name: Fingerprint
       java_wire_format:
-        - name: GetName().toString()
+        - name: ToString()
           write_method: string16
         - name: GetBiometricId()
           write_method: int32

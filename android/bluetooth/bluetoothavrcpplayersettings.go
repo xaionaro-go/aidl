@@ -16,7 +16,7 @@ func (s *BluetoothAvrcpPlayerSettings) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Settings)
-	p.WriteInt32(0) // placeholder SettingsValue.size()
+	p.WriteInt32(0) // placeholder Size()
 	return nil
 }
 
@@ -28,7 +28,7 @@ func (s *BluetoothAvrcpPlayerSettings) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip SettingsValue.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	return nil

@@ -18,6 +18,10 @@ type RoutingSessionInfo struct {
 	IsSystemSession              bool
 	TransferReason               int32
 	TransferInitiatorPackageName string
+	SelectedRoutes               []string
+	SelectableRoutes             []string
+	DeselectableRoutes           []string
+	TransferableRoutes           []string
 	UserHandle                   types.UserHandle
 }
 
@@ -31,10 +35,10 @@ func (s *RoutingSessionInfo) MarshalParcel(
 	p.WriteString16(s.OwnerPackageName)
 	p.WriteString16(s.ClientPackageName)
 	p.WriteString16(s.ProviderId)
-	p.WriteInt32(-1) // null SelectedRoutes
-	p.WriteInt32(-1) // null SelectableRoutes
-	p.WriteInt32(-1) // null DeselectableRoutes
-	p.WriteInt32(-1) // null TransferableRoutes
+	p.WriteStringList(s.SelectedRoutes)
+	p.WriteStringList(s.SelectableRoutes)
+	p.WriteStringList(s.DeselectableRoutes)
+	p.WriteStringList(s.TransferableRoutes)
 	p.WriteInt32(s.VolumeHandling)
 	p.WriteInt32(s.VolumeMax)
 	p.WriteInt32(s.Volume)

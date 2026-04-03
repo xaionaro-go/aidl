@@ -25,6 +25,6 @@ parcelables:
         - name: SplitPermission
           write_method: string16
         - name: NewPermissions
-          write_method: opaque
+          write_method: string_list
         - name: TargetSdk
           write_method: int32

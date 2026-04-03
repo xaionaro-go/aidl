@@ -18,7 +18,7 @@ func (s *EnforcingAdmin) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.PackageName)
-	p.WriteInt32(0) // placeholder UserHandle.getIdentifier()
+	p.WriteInt32(0) // placeholder GetIdentifier()
 	p.WriteInt32(0) // null Authority
 	if s.ComponentName != nil {
 		p.WriteInt32(1)
@@ -39,7 +39,7 @@ func (s *EnforcingAdmin) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip UserHandle.getIdentifier()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetIdentifier()
 		return _err
 	}
 	{

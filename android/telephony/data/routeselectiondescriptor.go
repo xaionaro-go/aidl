@@ -10,6 +10,7 @@ type RouteSelectionDescriptor struct {
 	Precedence  int32
 	SessionType int32
 	SscMode     int32
+	Dnn         []string
 }
 
 var _ parcel.Parcelable = (*RouteSelectionDescriptor)(nil)
@@ -21,7 +22,7 @@ func (s *RouteSelectionDescriptor) MarshalParcel(
 	p.WriteInt32(s.SessionType)
 	p.WriteInt32(s.SscMode)
 	p.WriteInt32(-1) // null SliceInfo
-	p.WriteInt32(-1) // null Dnn
+	p.WriteStringList(s.Dnn)
 	return nil
 }
 

@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*CreateGameSessionResult)(nil)
 func (s *CreateGameSessionResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteNullStrongBinder() // null GameSession.asBinder()
+	p.WriteNullStrongBinder() // null AsBinder()
 	p.WriteInt32(0)           // null SurfacePackage
 	return nil
 }

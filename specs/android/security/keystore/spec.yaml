@@ -39,72 +39,72 @@ parcelables:
             is_array: true
     - name: ParcelableKeyGenParameterSpec
       java_wire_format:
-        - name: Spec.getKeystoreAlias()
+        - name: GetKeystoreAlias()
           write_method: string16
-        - name: Spec.getPurposes()
+        - name: GetPurposes()
           write_method: int32
-        - name: Spec.getNamespace()
+        - name: GetNamespace()
           write_method: int32
-        - name: Spec.getKeySize()
+        - name: GetKeySize()
           write_method: int32
         - name: ALGORITHM_PARAMETER_SPEC_NONE
           write_method: int32
           condition: algoSpec==null
-        - name: Spec.getCertificateSubject().getEncoded()
+        - name: GetEncoded()
           write_method: byte_array
-        - name: Spec.getCertificateSerialNumber().toByteArray()
+        - name: ToByteArray()
           write_method: byte_array
-        - name: Spec.getCertificateNotBefore().getTime()
+        - name: GetTime()
           write_method: int64
-        - name: Spec.getCertificateNotAfter().getTime()
+        - name: GetTime()
           write_method: int64
-        - name: Spec.getDigests()
+        - name: GetDigests()
           write_method: string_array
           condition: mSpec.isDigestsSpecified()
-        - name: List.copyOf(mSpec.getMgf1Digests())
-          write_method: opaque
+        - name: GetMgf1Digests())
+          write_method: string_list
           condition: mSpec.isMgf1DigestsSpecified()
-        - name: Spec.getEncryptionPaddings()
+        - name: GetEncryptionPaddings()
           write_method: string_array
-        - name: Spec.getSignaturePaddings()
+        - name: GetSignaturePaddings()
           write_method: string_array
-        - name: Spec.getBlockModes()
+        - name: GetBlockModes()
           write_method: string_array
-        - name: Spec.isRandomizedEncryptionRequired()
+        - name: IsRandomizedEncryptionRequired()
           write_method: bool
-        - name: Spec.isUserAuthenticationRequired()
+        - name: IsUserAuthenticationRequired()
           write_method: bool
-        - name: Spec.getUserAuthenticationValidityDurationSeconds()
+        - name: GetUserAuthenticationValidityDurationSeconds()
           write_method: int32
-        - name: Spec.getUserAuthenticationType()
+        - name: GetUserAuthenticationType()
           write_method: int32
-        - name: Spec.isUserPresenceRequired()
+        - name: IsUserPresenceRequired()
           write_method: bool
-        - name: Spec.getAttestationChallenge()
+        - name: GetAttestationChallenge()
           write_method: byte_array
-        - name: Spec.isDevicePropertiesAttestationIncluded()
+        - name: IsDevicePropertiesAttestationIncluded()
           write_method: bool
-        - name: Spec.getAttestationIds()
+        - name: GetAttestationIds()
           write_method: int_array
-        - name: Spec.isUniqueIdIncluded()
+        - name: IsUniqueIdIncluded()
           write_method: bool
-        - name: Spec.isUserAuthenticationValidWhileOnBody()
+        - name: IsUserAuthenticationValidWhileOnBody()
           write_method: bool
-        - name: Spec.isInvalidatedByBiometricEnrollment()
+        - name: IsInvalidatedByBiometricEnrollment()
           write_method: bool
-        - name: Spec.isStrongBoxBacked()
+        - name: IsStrongBoxBacked()
           write_method: bool
-        - name: Spec.isUserConfirmationRequired()
+        - name: IsUserConfirmationRequired()
           write_method: bool
-        - name: Spec.isUnlockedDeviceRequired()
+        - name: IsUnlockedDeviceRequired()
           write_method: bool
-        - name: Spec.isCriticalToDeviceEncryption()
+        - name: IsCriticalToDeviceEncryption()
           write_method: bool
-        - name: Spec.getMaxUsageCount()
+        - name: GetMaxUsageCount()
           write_method: int32
-        - name: Spec.getAttestKeyAlias()
+        - name: GetAttestKeyAlias()
           write_method: string16
-        - name: Spec.getBoundToSpecificSecureUserId()
+        - name: GetBoundToSpecificSecureUserId()
           write_method: int64
     - name: Signature
       fields:

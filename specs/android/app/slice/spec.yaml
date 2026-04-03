@@ -184,7 +184,7 @@ parcelables:
       java_wire_format:
         - name: Hints
           write_method: string_array
-        - name: Items.length
+        - name: Length
           write_method: int32
         - name: Uri
           write_method: delegate

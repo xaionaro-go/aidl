@@ -1012,7 +1012,7 @@ parcelables:
         - name: Locales
           write_method: delegate
           delegate_type: LocaleList
-        - name: LayoutType.getValue()
+        - name: GetValue()
           write_method: int32
         - name: VendorId
           write_method: int32

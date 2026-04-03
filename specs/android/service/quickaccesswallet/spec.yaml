@@ -133,7 +133,7 @@ parcelables:
           write_method: int32
     - name: GetWalletCardsResponse
       java_wire_format:
-        - name: WalletCards.size()
+        - name: Size()
           write_method: int32
         - name: WalletCards
           write_method: opaque

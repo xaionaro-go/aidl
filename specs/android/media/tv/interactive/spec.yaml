@@ -2396,4 +2396,4 @@ parcelables:
         - name: Types
           write_method: int32
         - name: ExtraTypes
-          write_method: opaque
+          write_method: string_list

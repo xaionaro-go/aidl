@@ -24,8 +24,8 @@ func (s *AudioDeviceAttributes) MarshalParcel(
 	p.WriteString16(s.Address)
 	p.WriteString16(s.Name)
 	p.WriteInt32(s.NativeType)
-	p.WriteInt32(-1) // null AudioProfiles.toArray(newAudioProfile[mAudioProfiles.size()])
-	p.WriteInt32(-1) // null AudioDescriptors.toArray(newAudioDescriptor[mAudioDescriptors.size()])
+	p.WriteInt32(-1) // null Size()])
+	p.WriteInt32(-1) // null Size()])
 	return nil
 }
 
@@ -53,5 +53,5 @@ func (s *AudioDeviceAttributes) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque AudioProfiles.toArray(newAudioProfile[mAudioProfiles.size()]): cannot skip without known wire format
+	return nil // opaque Size()]): cannot skip without known wire format
 }

@@ -15,7 +15,7 @@ var _ parcel.Parcelable = (*Fingerprint)(nil)
 func (s *Fingerprint) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteString16("") // placeholder GetName().toString()
+	p.WriteString16("") // placeholder ToString()
 	p.WriteInt32(0)     // placeholder GetBiometricId()
 	p.WriteInt64(0)     // placeholder GetDeviceId()
 	p.WriteInt32(s.GroupId)
@@ -26,7 +26,7 @@ func (s *Fingerprint) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadString16(); _err != nil { // skip GetName().toString()
+	if _, _err = p.ReadString16(); _err != nil { // skip ToString()
 		return _err
 	}
 	if _, _err = p.ReadInt32(); _err != nil { // skip GetBiometricId()

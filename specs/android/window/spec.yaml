@@ -1210,9 +1210,9 @@ parcelables:
           write_method: int64
         - name: ComponentName
           write_method: delegate
-        - name: Snapshot!=null&&!mSnapshot.isClosed()
+        - name: IsClosed()
           write_method: bool
-        - name: ColorSpace.getId()
+        - name: GetId()
           write_method: int32
         - name: Orientation
           write_method: int32
@@ -1296,7 +1296,7 @@ parcelables:
           write_method: int32
     - name: WindowContainerToken
       java_wire_format:
-        - name: RealToken.asBinder()
+        - name: AsBinder()
           write_method: binder
     - name: WindowContainerTransaction
       java_wire_format:

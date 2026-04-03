@@ -9,6 +9,12 @@ import (
 type SyncStatusInfo struct {
 	VERSION            int32
 	AuthorityId        int32
+	TotalElapsedTime   int64
+	NumSyncs           int32
+	NumSourcePoll      int32
+	NumSourceOther     int32
+	NumSourceLocal     int32
+	NumSourceUser      int32
 	LastSuccessTime    int64
 	LastSuccessSource  int32
 	LastFailureTime    int64
@@ -17,6 +23,10 @@ type SyncStatusInfo struct {
 	InitialFailureTime int64
 	Pending            bool
 	Initialize         bool
+	NumSourcePeriodic  int32
+	NumSourceFeed      int32
+	NumFailures        int32
+	NumCancels         int32
 	LastTodayResetTime int64
 }
 
@@ -27,12 +37,12 @@ func (s *SyncStatusInfo) MarshalParcel(
 ) error {
 	p.WriteInt32(s.VERSION)
 	p.WriteInt32(s.AuthorityId)
-	p.WriteInt64(0) // placeholder TotalStats.totalElapsedTime
-	p.WriteInt32(0) // placeholder TotalStats.numSyncs
-	p.WriteInt32(0) // placeholder TotalStats.numSourcePoll
-	p.WriteInt32(0) // placeholder TotalStats.numSourceOther
-	p.WriteInt32(0) // placeholder TotalStats.numSourceLocal
-	p.WriteInt32(0) // placeholder TotalStats.numSourceUser
+	p.WriteInt64(s.TotalElapsedTime)
+	p.WriteInt32(s.NumSyncs)
+	p.WriteInt32(s.NumSourcePoll)
+	p.WriteInt32(s.NumSourceOther)
+	p.WriteInt32(s.NumSourceLocal)
+	p.WriteInt32(s.NumSourceUser)
 	p.WriteInt64(s.LastSuccessTime)
 	p.WriteInt32(s.LastSuccessSource)
 	p.WriteInt64(s.LastFailureTime)
@@ -41,12 +51,12 @@ func (s *SyncStatusInfo) MarshalParcel(
 	p.WriteInt64(s.InitialFailureTime)
 	p.WriteBool(s.Pending)
 	p.WriteBool(s.Initialize)
-	p.WriteInt32(0) // placeholder PeriodicSyncTimes.size()
-	p.WriteInt32(0) // placeholder LastEventTimes.size()
-	p.WriteInt32(0) // placeholder TotalStats.numSourcePeriodic
-	p.WriteInt32(0) // placeholder TotalStats.numSourceFeed
-	p.WriteInt32(0) // placeholder TotalStats.numFailures
-	p.WriteInt32(0) // placeholder TotalStats.numCancels
+	p.WriteInt32(0) // placeholder Size()
+	p.WriteInt32(0) // placeholder Size()
+	p.WriteInt32(s.NumSourcePeriodic)
+	p.WriteInt32(s.NumSourceFeed)
+	p.WriteInt32(s.NumFailures)
+	p.WriteInt32(s.NumCancels)
 	p.WriteInt64(s.LastTodayResetTime)
 	p.WriteInt32(-1) // null TodayStats
 	p.WriteInt32(-1) // null YesterdayStats
@@ -67,22 +77,28 @@ func (s *SyncStatusInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt64(); _err != nil { // skip TotalStats.totalElapsedTime
+	s.TotalElapsedTime, _err = p.ReadInt64()
+	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip TotalStats.numSyncs
+	s.NumSyncs, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip TotalStats.numSourcePoll
+	s.NumSourcePoll, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip TotalStats.numSourceOther
+	s.NumSourceOther, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip TotalStats.numSourceLocal
+	s.NumSourceLocal, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip TotalStats.numSourceUser
+	s.NumSourceUser, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	s.LastSuccessTime, _err = p.ReadInt64()
@@ -117,22 +133,26 @@ func (s *SyncStatusInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip PeriodicSyncTimes.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip LastEventTimes.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip TotalStats.numSourcePeriodic
+	s.NumSourcePeriodic, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip TotalStats.numSourceFeed
+	s.NumSourceFeed, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip TotalStats.numFailures
+	s.NumFailures, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip TotalStats.numCancels
+	s.NumCancels, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	s.LastTodayResetTime, _err = p.ReadInt64()

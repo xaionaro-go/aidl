@@ -2537,13 +2537,13 @@ parcelables:
         - name: Group
           write_method: int32
         - name: SignalingDataTypes
-          write_method: opaque
+          write_method: string_list
     - name: SignalingDataResponse
       java_wire_format:
         - name: Super
           write_method: delegate
         - name: SignalingDataTypes
-          write_method: opaque
+          write_method: string_list
         - name: SignalingDataInfoList
           write_method: opaque
     - name: TunedInfo

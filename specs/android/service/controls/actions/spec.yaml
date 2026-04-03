@@ -5,5 +5,5 @@ go_package: android/service/controls/actions
 parcelables:
     - name: ControlActionWrapper
       java_wire_format:
-        - name: ControlAction.getDataBundle()
+        - name: GetDataBundle()
           write_method: bundle

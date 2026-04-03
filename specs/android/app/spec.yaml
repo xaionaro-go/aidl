@@ -11594,13 +11594,13 @@ parcelables:
         - name: "1"
           write_method: int32
           condition: mAppTraceRetriever!=null
-        - name: AppTraceRetriever.asBinder()
+        - name: AsBinder()
           write_method: binder
           condition: mAppTraceRetriever!=null
         - name: "1"
           write_method: int32
           condition: mNativeTombstoneRetriever!=null
-        - name: NativeTombstoneRetriever.asBinder()
+        - name: AsBinder()
           write_method: binder
           condition: mNativeTombstoneRetriever!=null
     - name: ApplicationStartInfo
@@ -11692,7 +11692,7 @@ parcelables:
         - name: Info
           write_method: delegate
           delegate_type: ProviderInfo
-        - name: Provider.asBinder()
+        - name: AsBinder()
           write_method: binder
           condition: provider!=null
         - name: Connection
@@ -11808,7 +11808,7 @@ parcelables:
           delegate_type: Icon
         - name: Defaults
           write_method: int32
-        - name: This.flags
+        - name: Flags
           write_method: int32
         - name: "1"
           write_method: int32
@@ -12022,7 +12022,7 @@ parcelables:
         - name: (byte)1
           write_method: int32
           condition: mName!=null
-        - name: Name.toString()
+        - name: ToString()
           write_method: string16
           condition: mName!=null
         - name: (byte)1
@@ -12056,12 +12056,12 @@ parcelables:
         - name: "0"
           write_method: int32
           condition: mHistoryCount>0 && !mNotificationsToWrite.isEmpty()
-        - name: Data.marshall()
+        - name: Marshall()
           write_method: blob
     - name: NotificationManager.Policy
     - name: PendingIntent
       java_wire_format:
-        - name: Target.asBinder()
+        - name: AsBinder()
           write_method: binder
     - name: PictureInPictureParams
       java_wire_format:
@@ -12316,7 +12316,7 @@ parcelables:
           write_method: bool
         - name: StartId
           write_method: int32
-        - name: This.flags
+        - name: Flags
           write_method: int32
         - name: "1"
           write_method: int32

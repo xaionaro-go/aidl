@@ -9,6 +9,7 @@ import (
 type CapabilityParams struct {
 	Name         string
 	PrimaryValue string
+	Aliases      []string
 }
 
 var _ parcel.Parcelable = (*CapabilityParams)(nil)
@@ -18,7 +19,7 @@ func (s *CapabilityParams) MarshalParcel(
 ) error {
 	p.WriteString16(s.Name)
 	p.WriteString16(s.PrimaryValue)
-	p.WriteInt32(-1) // null Aliases
+	p.WriteStringList(s.Aliases)
 	return nil
 }
 
@@ -34,5 +35,12 @@ func (s *CapabilityParams) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque Aliases: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.Aliases = _sl
+	}
+	return nil
 }

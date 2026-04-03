@@ -819,7 +819,7 @@ parcelables:
       java_wire_format:
         - name: Id
           write_method: string16
-        - name: This.flags
+        - name: Flags
           write_method: int32
         - name: Size
           write_method: int64
@@ -833,9 +833,9 @@ parcelables:
       java_wire_format:
         - name: Id
           write_method: string8
-        - name: Path.toString()
+        - name: ToString()
           write_method: string8
-        - name: InternalPath.toString()
+        - name: ToString()
           write_method: string8
         - name: Description
           write_method: string8
@@ -856,7 +856,7 @@ parcelables:
         - name: "1"
           write_method: int32
           condition: mUuid!=null
-        - name: StorageManager.convert(mUuid)
+        - name: Convert(mUuid)
           write_method: string8
           condition: mUuid!=null
         - name: FsUuid

@@ -9,6 +9,7 @@ import (
 type SplitPermissionInfoParcelable struct {
 	SplitPermission string
 	TargetSdk       int32
+	NewPermissions  []string
 }
 
 var _ parcel.Parcelable = (*SplitPermissionInfoParcelable)(nil)
@@ -17,7 +18,7 @@ func (s *SplitPermissionInfoParcelable) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.SplitPermission)
-	p.WriteInt32(-1) // null NewPermissions
+	p.WriteStringList(s.NewPermissions)
 	p.WriteInt32(s.TargetSdk)
 	return nil
 }
@@ -30,5 +31,16 @@ func (s *SplitPermissionInfoParcelable) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque NewPermissions: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.NewPermissions = _sl
+	}
+	s.TargetSdk, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	return nil
 }

@@ -5,9 +5,9 @@ go_package: android/telephony/ims/feature
 parcelables:
     - name: CapabilityChangeRequest
       java_wire_format:
-        - name: CapabilitiesToEnable.size()
+        - name: Size()
           write_method: int32
-        - name: CapabilitiesToDisable.size()
+        - name: Size()
           write_method: int32
     - name: ConnectionFailureInfo
       java_wire_format:

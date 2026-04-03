@@ -21,8 +21,8 @@ func (s *BrightnessConfiguration) MarshalParcel(
 ) error {
 	p.WriteInt32(-1) // null Lux
 	p.WriteInt32(-1) // null Nits
-	p.WriteInt32(0)  // placeholder CorrectionsByPackageName.size()
-	p.WriteInt32(0)  // placeholder CorrectionsByCategory.size()
+	p.WriteInt32(0)  // placeholder Size()
+	p.WriteInt32(0)  // placeholder Size()
 	p.WriteString16(s.Description)
 	p.WriteBool(s.ShouldCollectColorSamples)
 	p.WriteInt64(s.ShortTermModelTimeout)

@@ -11,6 +11,7 @@ type PhoneAccount struct {
 	HighlightColor       int32
 	GroupId              string
 	SupportedAudioRoutes int32
+	SupportedUriSchemes  []string
 }
 
 var _ parcel.Parcelable = (*PhoneAccount)(nil)
@@ -25,7 +26,7 @@ func (s *PhoneAccount) MarshalParcel(
 	p.WriteInt32(s.HighlightColor)
 	p.WriteInt32(-1) // null Label
 	p.WriteInt32(-1) // null ShortDescription
-	p.WriteInt32(-1) // null SupportedUriSchemes
+	p.WriteStringList(s.SupportedUriSchemes)
 	p.WriteInt32(0)
 	p.WriteInt32(0)  // placeholder (byte)(mIsEnabled?1:0)
 	p.WriteInt32(-1) // null Extras

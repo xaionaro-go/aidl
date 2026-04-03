@@ -12,6 +12,7 @@ type NetworkScanRequest struct {
 	MaxSearchTime                 int32
 	IncrementalResults            bool
 	IncrementalResultsPeriodicity int32
+	MccMncs                       []string
 }
 
 var _ parcel.Parcelable = (*NetworkScanRequest)(nil)
@@ -25,7 +26,7 @@ func (s *NetworkScanRequest) MarshalParcel(
 	p.WriteInt32(s.MaxSearchTime)
 	p.WriteBool(s.IncrementalResults)
 	p.WriteInt32(s.IncrementalResultsPeriodicity)
-	p.WriteInt32(-1) // null MccMncs
+	p.WriteStringList(s.MccMncs)
 	return nil
 }
 

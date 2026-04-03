@@ -381,7 +381,7 @@ parcelables:
         - name: FieldFilters
           write_method: opaque
         - name: AutofillDatatypes
-          write_method: opaque
+          write_method: string_list
         - name: FieldContent
           write_method: typed_object
         - name: Authentication
@@ -409,7 +409,7 @@ parcelables:
         - name: FillContexts
           write_method: opaque
         - name: Hints
-          write_method: opaque
+          write_method: string_list
         - name: ClientState
           write_method: bundle
           condition: mClientState!=null
@@ -490,7 +490,7 @@ parcelables:
         - name: ClientState
           write_method: bundle
         - name: DatasetIds
-          write_method: opaque
+          write_method: string_list
     - name: UserData
       java_wire_format:
         - name: Id

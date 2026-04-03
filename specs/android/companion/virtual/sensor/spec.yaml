@@ -72,7 +72,7 @@ parcelables:
           write_method: int32
         - name: Name
           write_method: string8
-        - name: VirtualDevice.asBinder()
+        - name: AsBinder()
           write_method: binder
         - name: Token
           write_method: binder
@@ -98,7 +98,7 @@ parcelables:
           write_method: int32
     - name: VirtualSensorEvent
       java_wire_format:
-        - name: Values.length
+        - name: Length
           write_method: int32
         - name: Values
           write_method: float_array

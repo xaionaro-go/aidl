@@ -7,15 +7,15 @@ parcelables:
       java_wire_format:
         - name: BitrateKbps
           write_method: float32
-        - name: BitrateRangeKbps.getLower()
+        - name: GetLower()
           write_method: float32
-        - name: BitrateRangeKbps.getUpper()
+        - name: GetUpper()
           write_method: float32
         - name: BandwidthKhz
           write_method: float32
-        - name: BandwidthRangeKhz.getLower()
+        - name: GetLower()
           write_method: float32
-        - name: BandwidthRangeKhz.getUpper()
+        - name: GetUpper()
           write_method: float32
     - name: DelegateRegistrationState
       java_wire_format:
@@ -60,7 +60,7 @@ parcelables:
         - name: EmergencyServiceCategories
           write_method: int32
         - name: EmergencyUrns
-          write_method: opaque
+          write_method: string_list
         - name: EmergencyCallRouting
           write_method: int32
         - name: EmergencyCallTesting
@@ -71,11 +71,11 @@ parcelables:
           write_method: int32
         - name: CallerNumberVerificationStatus
           write_method: int32
-        - name: AcceptedRtpHeaderExtensionTypes.toArray()
+        - name: ToArray()
           write_method: opaque
     - name: ImsConferenceState
       java_wire_format:
-        - name: Participants.size()
+        - name: Size()
           write_method: int32
     - name: ImsExternalCallState
       java_wire_format:
@@ -250,7 +250,7 @@ parcelables:
         - name: EntityUri
           write_method: typed_object
         - name: NewArrayList<>(mFeatureTags)
-          write_method: opaque
+          write_method: string_list
         - name: PresenceTuples
           write_method: opaque
     - name: RtpHeaderExtension
@@ -316,7 +316,7 @@ parcelables:
         - name: Version
           write_method: int64
         - name: Bundle
-          write_method: opaque
+          write_method: persistable_bundle
     - name: SipDetails
       java_wire_format:
         - name: Method
@@ -343,7 +343,7 @@ parcelables:
           write_method: string16
         - name: HeaderSection
           write_method: string16
-        - name: Content.length
+        - name: Length
           write_method: int32
         - name: Content
           write_method: byte_array

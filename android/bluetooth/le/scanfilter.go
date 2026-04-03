@@ -47,27 +47,27 @@ func (s *ScanFilter) MarshalParcel(
 		return _err
 	}
 	p.WriteBool(false) // placeholder ServiceData==null
-	p.WriteInt32(0)    // placeholder ServiceData.length
+	p.WriteInt32(0)    // null Length
 	p.WriteInt32(-1)   // null ServiceData
 	p.WriteBool(false) // placeholder ServiceDataMask==null
-	p.WriteInt32(0)    // placeholder ServiceDataMask.length
+	p.WriteInt32(0)    // null Length
 	p.WriteInt32(-1)   // null ServiceDataMask
 	p.WriteInt32(s.ManufacturerId)
 	p.WriteBool(false) // placeholder ManufacturerData==null
-	p.WriteInt32(0)    // placeholder ManufacturerData.length
+	p.WriteInt32(0)    // null Length
 	p.WriteInt32(-1)   // null ManufacturerData
 	p.WriteBool(false) // placeholder ManufacturerDataMask==null
-	p.WriteInt32(0)    // placeholder ManufacturerDataMask.length
+	p.WriteInt32(0)    // null Length
 	p.WriteInt32(-1)   // null ManufacturerDataMask
 	p.WriteInt32(0)    // null AddressType
 	p.WriteBool(false) // placeholder Irk==null
-	p.WriteInt32(-1)   // null Arrays.copyOfRange(mIrk,0,16)
+	p.WriteInt32(-1)   // null CopyOfRange(mIrk,0,16)
 	p.WriteInt32(s.AdvertisingDataType)
 	p.WriteBool(false) // placeholder AdvertisingData==null
-	p.WriteInt32(0)    // placeholder AdvertisingData.length
+	p.WriteInt32(0)    // null Length
 	p.WriteInt32(-1)   // null AdvertisingData
 	p.WriteBool(false) // placeholder AdvertisingDataMask==null
-	p.WriteInt32(0)    // placeholder AdvertisingDataMask.length
+	p.WriteInt32(0)    // null Length
 	p.WriteInt32(-1)   // null AdvertisingDataMask
 	p.WriteBool(false) // placeholder TransportBlockFilter==null
 	p.WriteInt32(0)    // null TransportBlockFilter

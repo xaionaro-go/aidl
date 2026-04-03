@@ -13,6 +13,8 @@ type DisconnectCause struct {
 	ToneToPlay                      int32
 	TelephonyDisconnectCause        int32
 	TelephonyPreciseDisconnectCause int32
+	DisconnectLabel                 *string
+	DisconnectDescription           *string
 	ImsReasonInfo                   *ims.ImsReasonInfo
 }
 
@@ -22,8 +24,8 @@ func (s *DisconnectCause) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.DisconnectCode)
-	p.WriteInt32(-1) // null DisconnectLabel
-	p.WriteInt32(-1) // null DisconnectDescription
+	parcel.WritePlainCharSequence(p, s.DisconnectLabel)
+	parcel.WritePlainCharSequence(p, s.DisconnectDescription)
 	p.WriteString16(s.DisconnectReason)
 	p.WriteInt32(s.ToneToPlay)
 	p.WriteInt32(s.TelephonyDisconnectCause)
@@ -47,11 +49,19 @@ func (s *DisconnectCause) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.DisconnectLabel = _cs
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.DisconnectDescription = _cs
 	}
 	s.DisconnectReason, _err = p.ReadString16()
 	if _err != nil {

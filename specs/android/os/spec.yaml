@@ -5836,7 +5836,7 @@ parcelables:
       java_wire_format:
         - name: Flags
           write_method: int32
-        - name: UserIds.length
+        - name: Length
           write_method: int32
         - name: UserIds
           write_method: int_array
@@ -5943,7 +5943,7 @@ parcelables:
           write_method: int32
         - name: Pkg
           write_method: string16
-        - name: Controller.asBinder()
+        - name: AsBinder()
           write_method: binder
         - name: Token
           write_method: binder
@@ -6145,7 +6145,7 @@ parcelables:
           write_method: int32
     - name: Messenger
       java_wire_format:
-        - name: Target.asBinder()
+        - name: AsBinder()
           write_method: binder
     - name: PackageTagsList
       java_wire_format:
@@ -6159,14 +6159,14 @@ parcelables:
           write_method: int32
     - name: ParcelUuid
       java_wire_format:
-        - name: Uuid.getMostSignificantBits()
+        - name: GetMostSignificantBits()
           write_method: int64
-        - name: Uuid.getLeastSignificantBits()
+        - name: GetLeastSignificantBits()
           write_method: int64
     - name: ParcelableException
     - name: ParcelableParcel
       java_wire_format:
-        - name: Parcel.dataSize()
+        - name: DataSize()
           write_method: int32
     - name: PatternMatcher
       java_wire_format:
@@ -6241,13 +6241,13 @@ parcelables:
             name: int
     - name: RemoteCallback
       java_wire_format:
-        - name: Callback.asBinder()
+        - name: AsBinder()
           write_method: binder
     - name: ResultReceiver
       annotations:
         - JavaOnlyStableParcelable
       java_wire_format:
-        - name: Receiver.asBinder()
+        - name: AsBinder()
           write_method: binder
     - name: ServiceDebugInfo
       fields:

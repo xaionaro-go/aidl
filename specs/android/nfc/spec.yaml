@@ -1152,7 +1152,7 @@ interfaces:
 parcelables:
     - name: ApduList
       java_wire_format:
-        - name: Commands.size()
+        - name: Size()
           write_method: int32
     - name: AvailableNfcAntenna
       java_wire_format:
@@ -1162,7 +1162,7 @@ parcelables:
           write_method: int32
     - name: NdefMessage
       java_wire_format:
-        - name: Records.length
+        - name: Length
           write_method: int32
         - name: Records
           write_method: typed_array
@@ -1170,15 +1170,15 @@ parcelables:
       java_wire_format:
         - name: Tnf
           write_method: int32
-        - name: Type.length
+        - name: Length
           write_method: int32
         - name: Type
           write_method: byte_array
-        - name: Id.length
+        - name: Length
           write_method: int32
         - name: Id
           write_method: byte_array
-        - name: Payload.length
+        - name: Length
           write_method: int32
         - name: Payload
           write_method: byte_array
@@ -1194,7 +1194,7 @@ parcelables:
           write_method: opaque
     - name: Tag
       java_wire_format:
-        - name: TechList.length
+        - name: Length
           write_method: int32
         - name: TechList
           write_method: int_array
@@ -1206,7 +1206,7 @@ parcelables:
           write_method: int64
         - name: IsMock
           write_method: int32
-        - name: TagService.asBinder()
+        - name: AsBinder()
           write_method: binder
           condition: isMock==0
     - name: TechListParcel
@@ -1217,7 +1217,7 @@ parcelables:
       java_wire_format:
         - name: Result
           write_method: int32
-        - name: ResponseData.length
+        - name: Length
           write_method: int32
           condition: mResult==RESULT_SUCCESS
         - name: ResponseData

@@ -7,10 +7,10 @@ parcelables:
       java_wire_format:
         - name: Category
           write_method: string8
-        - name: Aids.size()
+        - name: Size()
           write_method: int32
         - name: Aids
-          write_method: opaque
+          write_method: string_list
           condition: mAids.size()>0
     - name: ApduServiceInfo
       java_wire_format:
@@ -25,14 +25,14 @@ parcelables:
           write_method: string16
         - name: StaticOffHostName
           write_method: string16
-        - name: StaticAidGroups.size()
+        - name: Size()
           write_method: int32
-        - name: NewArrayList<AidGroup>(mStaticAidGroups.values())
+        - name: Values())
           write_method: opaque
           condition: mStaticAidGroups.size()>0
-        - name: DynamicAidGroups.size()
+        - name: Size()
           write_method: int32
-        - name: NewArrayList<AidGroup>(mDynamicAidGroups.values())
+        - name: Values())
           write_method: opaque
           condition: mDynamicAidGroups.size()>0
         - name: RequiresDeviceUnlock
@@ -47,7 +47,7 @@ parcelables:
           write_method: string16
         - name: CategoryOtherServiceEnabled
           write_method: bool
-        - name: AutoTransact.size()
+        - name: Size()
           write_method: int32
         - name: AutoTransact
           write_method: opaque

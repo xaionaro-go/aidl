@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*Face)(nil)
 func (s *Face) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteString16("") // placeholder GetName().toString()
+	p.WriteString16("") // placeholder ToString()
 	p.WriteInt32(0)     // placeholder GetBiometricId()
 	p.WriteInt64(0)     // placeholder GetDeviceId()
 	return nil
@@ -24,7 +24,7 @@ func (s *Face) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadString16(); _err != nil { // skip GetName().toString()
+	if _, _err = p.ReadString16(); _err != nil { // skip ToString()
 		return _err
 	}
 	if _, _err = p.ReadInt32(); _err != nil { // skip GetBiometricId()

@@ -32,7 +32,7 @@ func (s *ScanResult) MarshalParcel(
 	} else {
 		p.WriteInt32(0)
 	}
-	p.WriteInt32(-1) // null ScanRecord.getBytes()
+	p.WriteInt32(-1) // null GetBytes()
 	p.WriteInt32(s.Rssi)
 	p.WriteInt64(s.TimestampNanos)
 	p.WriteInt32(s.EventType)
@@ -59,5 +59,5 @@ func (s *ScanResult) UnmarshalParcel(
 			}
 		}
 	}
-	return nil // opaque ScanRecord.getBytes(): cannot skip without known wire format
+	return nil // opaque GetBytes(): cannot skip without known wire format
 }

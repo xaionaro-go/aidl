@@ -17,7 +17,7 @@ func (s *Icon) MarshalParcel(
 ) error {
 	p.WriteInt32(s.Type)
 	p.WriteInt32(0)
-	p.WriteInt32(0) // placeholder BlendMode.toValue(mBlendMode)
+	p.WriteInt32(0) // placeholder ToValue(mBlendMode)
 	return nil
 }
 
@@ -32,7 +32,7 @@ func (s *Icon) UnmarshalParcel(
 	if _, _err = p.ReadInt32(); _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip BlendMode.toValue(mBlendMode)
+	if _, _err = p.ReadInt32(); _err != nil { // skip ToValue(mBlendMode)
 		return _err
 	}
 	return nil

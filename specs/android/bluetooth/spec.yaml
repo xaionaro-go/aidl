@@ -9955,7 +9955,7 @@ parcelables:
       java_wire_format:
         - name: Settings
           write_method: int32
-        - name: SettingsValue.size()
+        - name: Size()
           write_method: int32
     - name: BluetoothBroadcastAudioScanBaseConfig
     - name: BluetoothClass
@@ -10170,7 +10170,7 @@ parcelables:
           write_method: int32
         - name: IsEncrypted
           write_method: bool
-        - name: BroadcastCode.length
+        - name: Length
           write_method: int32
           condition: mBroadcastCode!=null
         - name: BroadcastCode
@@ -10250,7 +10250,7 @@ parcelables:
           write_method: int32
         - name: Out
           write_method: opaque
-        - name: BluetoothClass.getClassOfDevice()
+        - name: GetClassOfDevice()
           write_method: int32
         - name: BqrCommon
           write_method: delegate

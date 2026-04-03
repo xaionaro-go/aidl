@@ -108,7 +108,7 @@ interfaces:
 parcelables:
     - name: DeviceStateInfo
       java_wire_format:
-        - name: SupportedStates.length
+        - name: Length
           write_method: int32
         - name: BaseState
           write_method: int32

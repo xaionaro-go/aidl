@@ -20,6 +20,10 @@ type VpnConfig struct {
 	IsMetered                  bool
 	RequiresInternetValidation bool
 	ExcludeLocalRoutes         bool
+	DnsServers                 []string
+	SearchDomains              []string
+	AllowedApplications        []string
+	DisallowedApplications     []string
 }
 
 var _ parcel.Parcelable = (*VpnConfig)(nil)
@@ -33,11 +37,11 @@ func (s *VpnConfig) MarshalParcel(
 	p.WriteInt32(s.Mtu)
 	p.WriteInt32(-1) // null Addresses
 	p.WriteInt32(-1) // null Routes
-	p.WriteInt32(-1) // null DnsServers
-	p.WriteInt32(-1) // null SearchDomains
-	p.WriteInt32(-1) // null AllowedApplications
-	p.WriteInt32(-1) // null DisallowedApplications
-	p.WriteInt32(0)  // null ConfigureIntent
+	p.WriteStringList(s.DnsServers)
+	p.WriteStringList(s.SearchDomains)
+	p.WriteStringList(s.AllowedApplications)
+	p.WriteStringList(s.DisallowedApplications)
+	p.WriteInt32(0) // null ConfigureIntent
 	p.WriteInt64(s.StartTime)
 	p.WriteBool(s.Legacy)
 	p.WriteBool(s.Blocking)

@@ -799,7 +799,7 @@ parcelables:
       java_wire_format:
         - name: BroadcastResponseStats
           write_method: opaque
-        - name: Data.marshall()
+        - name: Marshall()
           write_method: blob
     - name: CacheQuotaHint
       java_wire_format:
@@ -865,13 +865,13 @@ parcelables:
           write_method: int64
         - name: EndTimeMillis
           write_method: int64
-        - name: EventTypes.length
+        - name: Length
           write_method: int32
         - name: EventTypes
           write_method: int_array
         - name: UserId
           write_method: int32
-        - name: PackageNames.length
+        - name: Length
           write_method: int32
         - name: PackageNames
           write_method: string_array

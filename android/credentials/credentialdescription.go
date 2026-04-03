@@ -16,7 +16,7 @@ func (s *CredentialDescription) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString(s.Type)
-	p.WriteInt32(-1) // null SupportedElementKeys.stream().toList()
+	p.WriteInt32(-1) // null ToList()
 	p.WriteInt32(-1) // null CredentialEntries
 	return nil
 }
@@ -29,5 +29,5 @@ func (s *CredentialDescription) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque SupportedElementKeys.stream().toList(): cannot skip without known wire format
+	return nil // opaque ToList(): cannot skip without known wire format
 }

@@ -8,6 +8,7 @@ import (
 
 type ChangedPackages struct {
 	SequenceNumber int32
+	PackageNames   []string
 }
 
 var _ parcel.Parcelable = (*ChangedPackages)(nil)
@@ -16,7 +17,7 @@ func (s *ChangedPackages) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.SequenceNumber)
-	p.WriteInt32(-1) // null PackageNames
+	p.WriteStringList(s.PackageNames)
 	return nil
 }
 
@@ -28,5 +29,12 @@ func (s *ChangedPackages) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque PackageNames: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.PackageNames = _sl
+	}
+	return nil
 }

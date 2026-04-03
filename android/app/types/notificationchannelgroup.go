@@ -19,7 +19,7 @@ func (s *NotificationChannelGroup) MarshalParcel(
 	p.WriteInt32(0)     // placeholder (byte)1
 	p.WriteInt32(0)     // null Id
 	p.WriteInt32(0)     // placeholder (byte)1
-	p.WriteString16("") // placeholder Name.toString()
+	p.WriteString16("") // placeholder ToString()
 	p.WriteInt32(0)     // placeholder (byte)1
 	p.WriteInt32(0)     // null Description
 	p.WriteInt32(0)     // placeholder (byte)1
@@ -48,7 +48,7 @@ func (s *NotificationChannelGroup) UnmarshalParcel(
 	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)1
 		return _err
 	}
-	if _, _err = p.ReadString16(); _err != nil { // skip Name.toString()
+	if _, _err = p.ReadString16(); _err != nil { // skip ToString()
 		return _err
 	}
 	if _, _err = p.ReadInt32(); _err != nil { // skip (byte)1

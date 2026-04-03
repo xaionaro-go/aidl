@@ -9,6 +9,8 @@ import (
 type CompletionInfo struct {
 	Id       int64
 	Position int32
+	Text     *string
+	Label    *string
 }
 
 var _ parcel.Parcelable = (*CompletionInfo)(nil)
@@ -18,8 +20,8 @@ func (s *CompletionInfo) MarshalParcel(
 ) error {
 	p.WriteInt64(s.Id)
 	p.WriteInt32(s.Position)
-	p.WriteInt32(-1) // null Text
-	p.WriteInt32(-1) // null Label
+	parcel.WritePlainCharSequence(p, s.Text)
+	parcel.WritePlainCharSequence(p, s.Label)
 	return nil
 }
 
@@ -35,11 +37,19 @@ func (s *CompletionInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.Text = _cs
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.Label = _cs
 	}
 	return nil
 }

@@ -14,11 +14,11 @@ var _ parcel.Parcelable = (*AdvertiseData)(nil)
 func (s *AdvertiseData) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null ServiceUuids.toArray(newParcelUuid[mServiceUuids.size()])
-	p.WriteInt32(-1) // null ServiceSolicitationUuids.toArray(newParcelUuid[mServiceSolicitationUuids.size()])
+	p.WriteInt32(-1) // null Size()])
+	p.WriteInt32(-1) // null Size()])
 	p.WriteInt32(-1) // null TransportDiscoveryData
-	p.WriteInt32(0)  // placeholder ManufacturerSpecificData.size()
-	p.WriteInt32(0)  // placeholder ServiceData.size()
+	p.WriteInt32(0)  // placeholder Size()
+	p.WriteInt32(0)  // placeholder Size()
 	p.WriteInt32(0)  // placeholder (byte)(getIncludeTxPowerLevel()?1:0)
 	p.WriteInt32(0)  // placeholder (byte)(getIncludeDeviceName()?1:0)
 	return nil
@@ -33,7 +33,7 @@ func (s *AdvertiseData) UnmarshalParcel(
 			return _arrErr
 		}
 		if _arrLen > 0 {
-			return nil // non-empty typed_array ServiceUuids.toArray(newParcelUuid[mServiceUuids.size()]): cannot skip
+			return nil // non-empty typed_array Size()]): cannot skip
 		}
 	}
 	{
@@ -42,7 +42,7 @@ func (s *AdvertiseData) UnmarshalParcel(
 			return _arrErr
 		}
 		if _arrLen > 0 {
-			return nil // non-empty typed_array ServiceSolicitationUuids.toArray(newParcelUuid[mServiceSolicitationUuids.size()]): cannot skip
+			return nil // non-empty typed_array Size()]): cannot skip
 		}
 	}
 	return nil // opaque TransportDiscoveryData: cannot skip without known wire format

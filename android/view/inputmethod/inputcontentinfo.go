@@ -30,7 +30,7 @@ func (s *InputContentInfo) MarshalParcel(
 	if _err := s.Uri2.MarshalParcel(p); _err != nil {
 		return _err
 	}
-	p.WriteNullStrongBinder() // null UriToken.asBinder()
+	p.WriteNullStrongBinder() // null AsBinder()
 	return nil
 }
 

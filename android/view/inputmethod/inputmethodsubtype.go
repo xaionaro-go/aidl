@@ -20,6 +20,7 @@ type InputMethodSubtype struct {
 	SubtypeHashCode                   int32
 	SubtypeId                         int32
 	IsAsciiCapable                    bool
+	SubtypeNameOverride               *string
 }
 
 var _ parcel.Parcelable = (*InputMethodSubtype)(nil)
@@ -28,7 +29,7 @@ func (s *InputMethodSubtype) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.SubtypeNameResId)
-	p.WriteInt32(-1) // null SubtypeNameOverride
+	parcel.WritePlainCharSequence(p, s.SubtypeNameOverride)
 	p.WriteString(s.PkLanguageTag)
 	p.WriteString(s.PkLayoutType)
 	p.WriteInt32(s.SubtypeIconResId)
@@ -52,8 +53,12 @@ func (s *InputMethodSubtype) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.SubtypeNameOverride = _cs
 	}
 	s.PkLanguageTag, _err = p.ReadString()
 	if _err != nil {

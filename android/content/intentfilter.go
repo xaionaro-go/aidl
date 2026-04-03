@@ -13,6 +13,11 @@ type IntentFilter struct {
 	HasDynamicPartialTypes bool
 	InstantAppVisibility   int32
 	Order                  int32
+	Categories             []string
+	DataSchemes            []string
+	StaticDataTypes        []string
+	DataTypes              []string
+	MimeGroups             []string
 	Extras                 *types.PersistableBundle
 }
 
@@ -21,15 +26,15 @@ var _ parcel.Parcelable = (*IntentFilter)(nil)
 func (s *IntentFilter) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(-1) // null Actions.toArray(newString[mActions.size()])
-	p.WriteInt32(-1) // null Categories
-	p.WriteInt32(-1) // null DataSchemes
-	p.WriteInt32(-1) // null StaticDataTypes
-	p.WriteInt32(-1) // null DataTypes
-	p.WriteInt32(-1) // null MimeGroups
-	p.WriteInt32(0)  // null N
-	p.WriteInt32(0)  // null N
-	p.WriteInt32(0)  // null N
+	p.WriteInt32(-1) // null Size()])
+	p.WriteStringList(s.Categories)
+	p.WriteStringList(s.DataSchemes)
+	p.WriteStringList(s.StaticDataTypes)
+	p.WriteStringList(s.DataTypes)
+	p.WriteStringList(s.MimeGroups)
+	p.WriteInt32(0) // null N
+	p.WriteInt32(0) // null N
+	p.WriteInt32(0) // null N
 	p.WriteInt32(s.Priority)
 	p.WriteBool(s.HasStaticPartialTypes)
 	p.WriteBool(s.HasDynamicPartialTypes)
@@ -51,6 +56,7 @@ func (s *IntentFilter) MarshalParcel(
 func (s *IntentFilter) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
+	var _err error
 	{
 		_arrLen, _arrErr := p.ReadInt32()
 		if _arrErr != nil {
@@ -62,5 +68,111 @@ func (s *IntentFilter) UnmarshalParcel(
 			}
 		}
 	}
-	return nil // opaque Categories: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.Categories = _sl
+	}
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.DataSchemes = _sl
+	}
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.StaticDataTypes = _sl
+	}
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.DataTypes = _sl
+	}
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.MimeGroups = _sl
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null N: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null N: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null N: cannot skip unknown-size typed object
+		}
+	}
+	s.Priority, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.HasStaticPartialTypes, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	s.HasDynamicPartialTypes, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	if _, _err = p.ReadBool(); _err != nil { // skip GetAutoVerify()
+		return _err
+	}
+	s.InstantAppVisibility, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.Order, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	{
+		_flag, _err := p.ReadInt32()
+		if _err != nil {
+			return _err
+		}
+		if _flag != 0 {
+			s.Extras = &types.PersistableBundle{}
+			if _err = s.Extras.UnmarshalParcel(p); _err != nil {
+				return _err
+			}
+		}
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null N: cannot skip unknown-size typed object
+		}
+	}
+	return nil
 }

@@ -15,6 +15,7 @@ type ImsCallProfile struct {
 	HasKnownUserIntentEmergency    bool
 	RestrictCause                  int32
 	CallerNumberVerificationStatus int32
+	EmergencyUrns                  []string
 }
 
 var _ parcel.Parcelable = (*ImsCallProfile)(nil)
@@ -27,13 +28,13 @@ func (s *ImsCallProfile) MarshalParcel(
 	p.WriteInt32(-1) // null FilteredExtras
 	p.WriteInt32(0)  // null MediaProfile
 	p.WriteInt32(s.EmergencyServiceCategories)
-	p.WriteInt32(-1) // null EmergencyUrns
+	p.WriteStringList(s.EmergencyUrns)
 	p.WriteInt32(s.EmergencyCallRouting)
 	p.WriteBool(s.EmergencyCallTesting)
 	p.WriteBool(s.HasKnownUserIntentEmergency)
 	p.WriteInt32(s.RestrictCause)
 	p.WriteInt32(s.CallerNumberVerificationStatus)
-	p.WriteInt32(-1) // null AcceptedRtpHeaderExtensionTypes.toArray()
+	p.WriteInt32(-1) // null ToArray()
 	return nil
 }
 
@@ -71,5 +72,32 @@ func (s *ImsCallProfile) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque EmergencyUrns: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.EmergencyUrns = _sl
+	}
+	s.EmergencyCallRouting, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.EmergencyCallTesting, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	s.HasKnownUserIntentEmergency, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	s.RestrictCause, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.CallerNumberVerificationStatus, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	return nil // opaque ToArray(): cannot skip without known wire format
 }

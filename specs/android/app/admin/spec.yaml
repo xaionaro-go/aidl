@@ -4841,7 +4841,7 @@ parcelables:
           write_method: typed_object
     - name: DevicePolicyState
       java_wire_format:
-        - name: Policies.size()
+        - name: Size()
           write_method: int32
     - name: DevicePolicyStringResource
       java_wire_format:
@@ -4871,7 +4871,7 @@ parcelables:
       java_wire_format:
         - name: PackageName
           write_method: string16
-        - name: UserHandle.getIdentifier()
+        - name: GetIdentifier()
           write_method: int32
         - name: Authority
           write_method: typed_object
@@ -4900,7 +4900,7 @@ parcelables:
         - name: DeviceOwnerCanGrantSensorsPermissions
           write_method: bool
         - name: AdminExtras
-          write_method: opaque
+          write_method: persistable_bundle
         - name: DemoDevice
           write_method: bool
     - name: ManagedProfileProvisioningParams
@@ -4920,7 +4920,7 @@ parcelables:
         - name: KeepAccountOnMigration
           write_method: bool
         - name: AdminExtras
-          write_method: opaque
+          write_method: persistable_bundle
     - name: ManagedSubscriptionsPolicy
       java_wire_format:
         - name: PolicyType
@@ -4934,7 +4934,7 @@ parcelables:
           write_method: array_set
     - name: ParcelableGranteeMap
       java_wire_format:
-        - name: PackagesByUid.size()
+        - name: Size()
           write_method: int32
     - name: ParcelableResource
       java_wire_format:

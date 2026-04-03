@@ -9,6 +9,7 @@ import (
 type AlternativeSpan struct {
 	StartPosition int32
 	EndPosition   int32
+	Alternatives  []string
 }
 
 var _ parcel.Parcelable = (*AlternativeSpan)(nil)
@@ -18,7 +19,7 @@ func (s *AlternativeSpan) MarshalParcel(
 ) error {
 	p.WriteInt32(s.StartPosition)
 	p.WriteInt32(s.EndPosition)
-	p.WriteInt32(-1) // null Alternatives
+	p.WriteStringList(s.Alternatives)
 	return nil
 }
 
@@ -34,5 +35,12 @@ func (s *AlternativeSpan) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque Alternatives: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.Alternatives = _sl
+	}
+	return nil
 }

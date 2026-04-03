@@ -28,7 +28,7 @@ func (s *AppTarget) MarshalParcel(
 		p.WriteInt32(0)
 	}
 	p.WriteInt32(0) // null PackageName
-	p.WriteInt32(0) // placeholder User.getIdentifier()
+	p.WriteInt32(0) // placeholder GetIdentifier()
 	p.WriteString16(s.ClassName)
 	p.WriteInt32(s.Rank)
 	return nil
@@ -68,7 +68,7 @@ func (s *AppTarget) UnmarshalParcel(
 			return nil // non-null PackageName: cannot skip unknown-size typed object
 		}
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip User.getIdentifier()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetIdentifier()
 		return _err
 	}
 	s.ClassName, _err = p.ReadString16()

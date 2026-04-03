@@ -3484,7 +3484,7 @@ parcelables:
       java_wire_format:
         - name: LayerStack
           write_method: int32
-        - name: This.flags
+        - name: Flags
           write_method: int32
         - name: Type
           write_method: int32
@@ -3526,11 +3526,11 @@ parcelables:
           write_method: int32
         - name: UserPreferredModeId
           write_method: int32
-        - name: SupportedModes.length
+        - name: Length
           write_method: int32
         - name: ColorMode
           write_method: int32
-        - name: SupportedColorModes.length
+        - name: Length
           write_method: int32
         - name: HdrCapabilities
           write_method: typed_object
@@ -3568,7 +3568,7 @@ parcelables:
           write_method: float32
         - name: RoundedCorners
           write_method: typed_object
-        - name: UserDisabledHdrTypes.length
+        - name: Length
           write_method: int32
         - name: InstallOrientation
           write_method: int32
@@ -3675,7 +3675,24 @@ parcelables:
           write_method: int32
         - name: NumRanges
           write_method: int32
-        - name: ViewBehavior.mShouldSmoothScroll
+        - name: MotionRanges
+          write_method: repeated
+          elements:
+            - name: Axis
+              write_method: int32
+            - name: Source
+              write_method: int32
+            - name: Min
+              write_method: float32
+            - name: Max
+              write_method: float32
+            - name: Flat
+              write_method: float32
+            - name: Fuzz
+              write_method: float32
+            - name: Resolution
+              write_method: float32
+        - name: ShouldSmoothScroll
           write_method: bool
     - name: InputEvent
     - name: InputMonitor
@@ -3874,7 +3891,7 @@ parcelables:
           write_method: string16
           condition: mPackageName!=null
         - name: Messages
-          write_method: opaque
+          write_method: string_list
     - name: Surface
       annotations:
         - JavaOnlyStableParcelable

@@ -16,6 +16,7 @@ type CursorAnchorInfo struct {
 	InsertionMarkerTop        float32
 	InsertionMarkerBaseline   float32
 	InsertionMarkerBottom     float32
+	ComposingText             *string
 }
 
 var _ parcel.Parcelable = (*CursorAnchorInfo)(nil)
@@ -27,7 +28,7 @@ func (s *CursorAnchorInfo) MarshalParcel(
 	p.WriteInt32(s.SelectionStart)
 	p.WriteInt32(s.SelectionEnd)
 	p.WriteInt32(s.ComposingTextStart)
-	p.WriteInt32(-1) // null ComposingText
+	parcel.WritePlainCharSequence(p, s.ComposingText)
 	p.WriteInt32(s.InsertionMarkerFlags)
 	p.WriteFloat32(s.InsertionMarkerHorizontal)
 	p.WriteFloat32(s.InsertionMarkerTop)
@@ -61,8 +62,12 @@ func (s *CursorAnchorInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.ComposingText = _cs
 	}
 	s.InsertionMarkerFlags, _err = p.ReadInt32()
 	if _err != nil {

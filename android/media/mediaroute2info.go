@@ -20,6 +20,9 @@ type MediaRoute2Info struct {
 	ProviderId             string
 	IsVisibilityRestricted bool
 	SuitabilityStatus      int32
+	Name                   *string
+	Features               []string
+	Description            *string
 }
 
 var _ parcel.Parcelable = (*MediaRoute2Info)(nil)
@@ -28,12 +31,12 @@ func (s *MediaRoute2Info) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteString16(s.Id)
-	p.WriteInt32(-1) // null Name
-	p.WriteInt32(-1) // null Features
+	parcel.WritePlainCharSequence(p, s.Name)
+	p.WriteStringList(s.Features)
 	p.WriteInt32(s.Type)
 	p.WriteBool(s.IsSystem)
-	p.WriteInt32(0)  // null IconUri
-	p.WriteInt32(-1) // null Description
+	p.WriteInt32(0) // null IconUri
+	parcel.WritePlainCharSequence(p, s.Description)
 	p.WriteInt32(s.ConnectionState)
 	p.WriteString16(s.ClientPackageName)
 	p.WriteString16(s.PackageName)
@@ -41,11 +44,11 @@ func (s *MediaRoute2Info) MarshalParcel(
 	p.WriteInt32(s.VolumeMax)
 	p.WriteInt32(s.Volume)
 	p.WriteString16(s.Address)
-	p.WriteInt32(-1) // null DeduplicationIds.toArray(newString[mDeduplicationIds.size()])
+	p.WriteInt32(-1) // null Size()])
 	p.WriteInt32(-1) // null Extras
 	p.WriteString16(s.ProviderId)
 	p.WriteBool(s.IsVisibilityRestricted)
-	p.WriteInt32(-1) // null AllowedPackages.toArray(newString[0])
+	p.WriteInt32(-1) // null ToArray(newString[0])
 	p.WriteInt32(s.SuitabilityStatus)
 	return nil
 }
@@ -58,8 +61,99 @@ func (s *MediaRoute2Info) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.Name = _cs
 	}
-	return nil // opaque Features: cannot skip without known wire format
+	{
+		_sl, _slErr := p.ReadStringList()
+		if _slErr != nil {
+			return _slErr
+		}
+		s.Features = _sl
+	}
+	s.Type, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.IsSystem, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null IconUri: cannot skip unknown-size typed object
+		}
+	}
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.Description = _cs
+	}
+	s.ConnectionState, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.ClientPackageName, _err = p.ReadString16()
+	if _err != nil {
+		return _err
+	}
+	s.PackageName, _err = p.ReadString16()
+	if _err != nil {
+		return _err
+	}
+	s.VolumeHandling, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.VolumeMax, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.Volume, _err = p.ReadInt32()
+	if _err != nil {
+		return _err
+	}
+	s.Address, _err = p.ReadString16()
+	if _err != nil {
+		return _err
+	}
+	{
+		_arrLen, _arrErr := p.ReadInt32()
+		if _arrErr != nil {
+			return _arrErr
+		}
+		for _j := int32(0); _j < _arrLen; _j++ {
+			if _, _arrErr = p.ReadString16(); _arrErr != nil {
+				return _arrErr
+			}
+		}
+	}
+	{
+		_opaqueLen, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueLen > 0 {
+			p.SetPosition(p.Position() + int(_opaqueLen))
+		}
+	}
+	s.ProviderId, _err = p.ReadString16()
+	if _err != nil {
+		return _err
+	}
+	s.IsVisibilityRestricted, _err = p.ReadBool()
+	if _err != nil {
+		return _err
+	}
+	return nil // opaque ToArray(newString[0]): cannot skip without known wire format
 }

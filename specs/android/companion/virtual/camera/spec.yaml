@@ -56,7 +56,7 @@ parcelables:
           write_method: string8
         - name: Callback
           write_method: opaque
-        - name: StreamConfigurations.toArray(newVirtualCameraStreamConfig[0])
+        - name: ToArray(newVirtualCameraStreamConfig[0])
           write_method: opaque
         - name: SensorOrientation
           write_method: int32

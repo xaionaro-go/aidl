@@ -10,6 +10,7 @@ type WifiDisplayStatus struct {
 	FeatureState       int32
 	ScanState          int32
 	ActiveDisplayState int32
+	Length             int32
 	ActiveDisplay      *WifiDisplay
 }
 
@@ -29,7 +30,7 @@ func (s *WifiDisplayStatus) MarshalParcel(
 	} else {
 		p.WriteInt32(0)
 	}
-	p.WriteInt32(0)  // placeholder Displays.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null SessionInfo
 	return nil
 }
@@ -62,7 +63,8 @@ func (s *WifiDisplayStatus) UnmarshalParcel(
 			}
 		}
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Displays.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil // opaque SessionInfo: cannot skip without known wire format

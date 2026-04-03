@@ -22,7 +22,7 @@ func (s *NotificationVisibility) MarshalParcel(
 	p.WriteInt32(s.Rank)
 	p.WriteInt32(s.Count)
 	p.WriteBool(s.Visible)
-	p.WriteString16("") // placeholder Location.name()
+	p.WriteString16("") // placeholder Name()
 	return nil
 }
 
@@ -46,7 +46,7 @@ func (s *NotificationVisibility) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadString16(); _err != nil { // skip Location.name()
+	if _, _err = p.ReadString16(); _err != nil { // skip Name()
 		return _err
 	}
 	return nil

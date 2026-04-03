@@ -146,7 +146,7 @@ parcelables:
           write_method: bool
         - name: PackageName
           write_method: string16
-        - name: UserHandle.getIdentifier()
+        - name: GetIdentifier()
           write_method: int32
         - name: SearchAction
           write_method: typed_object
@@ -161,7 +161,7 @@ parcelables:
     - name: SearchTargetEvent
       java_wire_format:
         - name: TargetIds
-          write_method: opaque
+          write_method: string_list
         - name: Location
           write_method: string16
         - name: Action

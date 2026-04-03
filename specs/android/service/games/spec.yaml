@@ -144,7 +144,7 @@ parcelables:
           write_method: string8
     - name: CreateGameSessionResult
       java_wire_format:
-        - name: GameSession.asBinder()
+        - name: AsBinder()
           write_method: binder
         - name: SurfacePackage
           write_method: typed_object

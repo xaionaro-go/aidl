@@ -384,4 +384,4 @@ parcelables:
         - name: (byte)(mRequiresNetworkConnection?1:0)
           write_method: int32
         - name: NewArrayList<String>(mFeatures)
-          write_method: opaque
+          write_method: string_list

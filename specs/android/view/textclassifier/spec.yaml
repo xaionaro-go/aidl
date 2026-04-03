@@ -111,7 +111,7 @@ parcelables:
           write_method: string16
         - name: EventIndex
           write_method: int32
-        - name: Scores.length
+        - name: Length
           write_method: int32
         - name: Scores
           write_method: float_array

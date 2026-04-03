@@ -16,6 +16,7 @@ type AccessibilityEvent struct {
 	EventTime              int64
 	ConnectionId           int32
 	RecordCount            int32
+	PackageName            *string
 }
 
 var _ parcel.Parcelable = (*AccessibilityEvent)(nil)
@@ -30,11 +31,11 @@ func (s *AccessibilityEvent) MarshalParcel(
 	p.WriteInt32(s.ContentChangeTypes)
 	p.WriteInt32(s.WindowChangeTypes)
 	p.WriteInt32(s.SpeechStateChangeTypes)
-	p.WriteInt32(-1) // null PackageName
+	parcel.WritePlainCharSequence(p, s.PackageName)
 	p.WriteInt64(s.EventTime)
 	p.WriteInt32(s.ConnectionId)
 	p.WriteInt32(s.RecordCount)
-	p.WriteInt32(0) // placeholder OriginStackTrace.length
+	p.WriteInt32(0) // null Length
 	return nil
 }
 
@@ -69,8 +70,12 @@ func (s *AccessibilityEvent) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.PackageName = _cs
 	}
 	s.EventTime, _err = p.ReadInt64()
 	if _err != nil {
@@ -84,8 +89,14 @@ func (s *AccessibilityEvent) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip OriginStackTrace.length
-		return _err
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Length: cannot skip unknown-size typed object
+		}
 	}
 	return nil
 }

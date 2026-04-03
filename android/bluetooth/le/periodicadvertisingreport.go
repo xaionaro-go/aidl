@@ -22,7 +22,7 @@ func (s *PeriodicAdvertisingReport) MarshalParcel(
 	p.WriteInt32(s.TxPower)
 	p.WriteInt32(s.Rssi)
 	p.WriteInt32(s.DataStatus)
-	p.WriteInt32(-1) // null Data.getBytes()
+	p.WriteInt32(-1) // null GetBytes()
 	return nil
 }
 
@@ -46,5 +46,5 @@ func (s *PeriodicAdvertisingReport) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque Data.getBytes(): cannot skip without known wire format
+	return nil // opaque GetBytes(): cannot skip without known wire format
 }

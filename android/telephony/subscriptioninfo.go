@@ -32,6 +32,8 @@ type SubscriptionInfo struct {
 	IsOnlyNonTerrestrialNetwork bool
 	ServiceCapabilities         int32
 	TransferStatus              int32
+	DisplayName                 *string
+	CarrierName                 *string
 }
 
 var _ parcel.Parcelable = (*SubscriptionInfo)(nil)
@@ -42,8 +44,8 @@ func (s *SubscriptionInfo) MarshalParcel(
 	p.WriteInt32(s.Id)
 	p.WriteString16(s.IccId)
 	p.WriteInt32(s.SimSlotIndex)
-	p.WriteInt32(-1) // null DisplayName
-	p.WriteInt32(-1) // null CarrierName
+	parcel.WritePlainCharSequence(p, s.DisplayName)
+	parcel.WritePlainCharSequence(p, s.CarrierName)
 	p.WriteInt32(s.DisplayNameSource)
 	p.WriteInt32(s.IconTint)
 	p.WriteString16(s.Number)
@@ -90,11 +92,19 @@ func (s *SubscriptionInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.DisplayName = _cs
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.CarrierName = _cs
 	}
 	s.DisplayNameSource, _err = p.ReadInt32()
 	if _err != nil {

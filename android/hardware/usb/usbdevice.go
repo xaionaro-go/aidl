@@ -37,7 +37,7 @@ func (s *UsbDevice) MarshalParcel(
 	p.WriteString16(s.ManufacturerName)
 	p.WriteString16(s.ProductName)
 	p.WriteString16(s.Version)
-	p.WriteNullStrongBinder() // null SerialNumberReader.asBinder()
+	p.WriteNullStrongBinder() // null AsBinder()
 	p.WriteInt32(-1)          // null Configurations
 	p.WriteBool(s.HasAudioPlayback)
 	p.WriteBool(s.HasAudioCapture)

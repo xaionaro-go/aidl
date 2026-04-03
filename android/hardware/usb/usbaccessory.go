@@ -24,7 +24,7 @@ func (s *UsbAccessory) MarshalParcel(
 	p.WriteString16(s.Description)
 	p.WriteString16(s.Version)
 	p.WriteString16(s.Uri)
-	p.WriteNullStrongBinder() // null SerialNumberReader.asBinder()
+	p.WriteNullStrongBinder() // null AsBinder()
 	return nil
 }
 

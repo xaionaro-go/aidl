@@ -348,15 +348,15 @@ interfaces:
 parcelables:
     - name: AdvertiseData
       java_wire_format:
-        - name: ServiceUuids.toArray(newParcelUuid[mServiceUuids.size()])
+        - name: Size()])
           write_method: typed_array
-        - name: ServiceSolicitationUuids.toArray(newParcelUuid[mServiceSolicitationUuids.size()])
+        - name: Size()])
           write_method: typed_array
         - name: TransportDiscoveryData
           write_method: opaque
-        - name: ManufacturerSpecificData.size()
+        - name: Size()
           write_method: int32
-        - name: ServiceData.size()
+        - name: Size()
           write_method: int32
         - name: (byte)(getIncludeTxPowerLevel()?1:0)
           write_method: int32
@@ -476,7 +476,7 @@ parcelables:
         - name: "1"
           write_method: int32
           condition: mData!=null
-        - name: Data.getBytes()
+        - name: GetBytes()
           write_method: byte_array
           condition: mData!=null
     - name: ResultStorageDescriptor
@@ -534,7 +534,7 @@ parcelables:
         - name: ServiceData==null
           write_method: bool
           condition: mServiceDataUuid!=null
-        - name: ServiceData.length
+        - name: Length
           write_method: int32
           condition: mServiceDataUuid!=null && mServiceData!=null
         - name: ServiceData
@@ -543,7 +543,7 @@ parcelables:
         - name: ServiceDataMask==null
           write_method: bool
           condition: mServiceDataUuid!=null && mServiceData!=null
-        - name: ServiceDataMask.length
+        - name: Length
           write_method: int32
           condition: mServiceDataUuid!=null && mServiceData!=null && mServiceDataMask!=null
         - name: ServiceDataMask
@@ -553,7 +553,7 @@ parcelables:
           write_method: int32
         - name: ManufacturerData==null
           write_method: bool
-        - name: ManufacturerData.length
+        - name: Length
           write_method: int32
           condition: mManufacturerData!=null
         - name: ManufacturerData
@@ -562,7 +562,7 @@ parcelables:
         - name: ManufacturerDataMask==null
           write_method: bool
           condition: mManufacturerData!=null
-        - name: ManufacturerDataMask.length
+        - name: Length
           write_method: int32
           condition: mManufacturerData!=null && mManufacturerDataMask!=null
         - name: ManufacturerDataMask
@@ -574,14 +574,14 @@ parcelables:
         - name: Irk==null
           write_method: bool
           condition: mDeviceAddress!=null
-        - name: Arrays.copyOfRange(mIrk,0,16)
+        - name: CopyOfRange(mIrk,0,16)
           write_method: byte_array
           condition: mDeviceAddress!=null && mIrk!=null
         - name: AdvertisingDataType
           write_method: int32
         - name: AdvertisingData==null
           write_method: bool
-        - name: AdvertisingData.length
+        - name: Length
           write_method: int32
           condition: mAdvertisingData!=null
         - name: AdvertisingData
@@ -590,7 +590,7 @@ parcelables:
         - name: AdvertisingDataMask==null
           write_method: bool
           condition: mAdvertisingData!=null
-        - name: AdvertisingDataMask.length
+        - name: Length
           write_method: int32
           condition: mAdvertisingData!=null && mAdvertisingDataMask!=null
         - name: AdvertisingDataMask
@@ -613,7 +613,7 @@ parcelables:
         - name: "1"
           write_method: int32
           condition: mScanRecord!=null
-        - name: ScanRecord.getBytes()
+        - name: GetBytes()
           write_method: byte_array
           condition: mScanRecord!=null
         - name: Rssi

@@ -1119,7 +1119,7 @@ parcelables:
         - name: Addr
           write_method: typed_object
           condition: mAddr!=null
-        - name: Flags.size()
+        - name: Size()
           write_method: int32
     - name: LinkQualityInfo
       java_wire_format:

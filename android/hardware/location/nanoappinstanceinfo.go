@@ -16,6 +16,8 @@ type NanoAppInstanceInfo struct {
 	NeededReadMemBytes  int32
 	NeededWriteMemBytes int32
 	NeededExecMemBytes  int32
+	Length              int32
+	Length2             int32
 }
 
 var _ parcel.Parcelable = (*NanoAppInstanceInfo)(nil)
@@ -32,9 +34,9 @@ func (s *NanoAppInstanceInfo) MarshalParcel(
 	p.WriteInt32(s.NeededReadMemBytes)
 	p.WriteInt32(s.NeededWriteMemBytes)
 	p.WriteInt32(s.NeededExecMemBytes)
-	p.WriteInt32(0)  // placeholder NeededSensors.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null NeededSensors
-	p.WriteInt32(0)  // placeholder OutputEvents.length
+	p.WriteInt32(s.Length2)
 	p.WriteInt32(-1) // null OutputEvents
 	return nil
 }
@@ -79,7 +81,8 @@ func (s *NanoAppInstanceInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip NeededSensors.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	{
@@ -91,7 +94,8 @@ func (s *NanoAppInstanceInfo) UnmarshalParcel(
 			p.SetPosition(p.Position() + int(_arrLen)*4)
 		}
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip OutputEvents.length
+	s.Length2, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	{

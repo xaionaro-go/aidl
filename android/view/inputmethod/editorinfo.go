@@ -23,6 +23,9 @@ type EditorInfo struct {
 	FieldName                               string
 	SupportedHandwritingGestureTypes        int32
 	SupportedHandwritingGesturePreviewTypes int32
+	ActionLabel                             *string
+	HintText                                *string
+	Label                                   *string
 	AutofillId                              *types.AutofillId
 	InitialSurroundingText                  SurroundingText
 	HintLocales                             osTypes.LocaleList
@@ -38,14 +41,14 @@ func (s *EditorInfo) MarshalParcel(
 	p.WriteInt32(s.ImeOptions)
 	p.WriteString16(s.PrivateImeOptions)
 	p.WriteInt32(s.InternalImeOptions)
-	p.WriteInt32(-1) // null ActionLabel
+	parcel.WritePlainCharSequence(p, s.ActionLabel)
 	p.WriteInt32(s.ActionId)
 	p.WriteInt32(s.InitialSelStart)
 	p.WriteInt32(s.InitialSelEnd)
 	p.WriteInt32(s.InitialCapsMode)
 	p.WriteInt32(s.InitialToolType)
-	p.WriteInt32(-1) // null HintText
-	p.WriteInt32(-1) // null Label
+	parcel.WritePlainCharSequence(p, s.HintText)
+	parcel.WritePlainCharSequence(p, s.Label)
 	p.WriteString16(s.PackageName)
 	if s.AutofillId != nil {
 		p.WriteInt32(1)
@@ -95,8 +98,12 @@ func (s *EditorInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.ActionLabel = _cs
 	}
 	s.ActionId, _err = p.ReadInt32()
 	if _err != nil {
@@ -118,11 +125,19 @@ func (s *EditorInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.HintText = _cs
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.Label = _cs
 	}
 	s.PackageName, _err = p.ReadString16()
 	if _err != nil {

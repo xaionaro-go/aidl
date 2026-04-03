@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*Messenger)(nil)
 func (s *Messenger) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteNullStrongBinder() // null Target.asBinder()
+	p.WriteNullStrongBinder() // null AsBinder()
 	return nil
 }
 

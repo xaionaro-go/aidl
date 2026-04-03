@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*CompatibilityOverridesByPackageConfig)(nil)
 func (s *CompatibilityOverridesByPackageConfig) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // placeholder PackageNameToOverrides.size()
+	p.WriteInt32(0) // placeholder Size()
 	return nil
 }
 
@@ -22,7 +22,7 @@ func (s *CompatibilityOverridesByPackageConfig) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt32(); _err != nil { // skip PackageNameToOverrides.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	return nil

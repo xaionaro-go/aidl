@@ -416,7 +416,7 @@ parcelables:
         - name: JobId
           write_method: int32
         - name: Extras
-          write_method: opaque
+          write_method: persistable_bundle
         - name: TransientExtras
           write_method: bundle
         - name: "1"
@@ -476,7 +476,7 @@ parcelables:
           write_method: int32
         - name: Priority
           write_method: int32
-        - name: This.flags
+        - name: Flags
           write_method: int32
         - name: NumDebugTags
           write_method: int32
@@ -489,7 +489,7 @@ parcelables:
         - name: JobNamespace
           write_method: string16
         - name: Extras
-          write_method: opaque
+          write_method: persistable_bundle
         - name: TransientExtras
           write_method: bundle
         - name: "1"
@@ -546,7 +546,7 @@ parcelables:
           condition: mIntent!=null
           delegate_type: Intent
         - name: Extras
-          write_method: opaque
+          write_method: persistable_bundle
         - name: NetworkDownloadBytes
           write_method: int64
         - name: NetworkUploadBytes

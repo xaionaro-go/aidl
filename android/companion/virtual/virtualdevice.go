@@ -17,7 +17,7 @@ var _ parcel.Parcelable = (*VirtualDevice)(nil)
 func (s *VirtualDevice) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteNullStrongBinder() // null VirtualDevice.asBinder()
+	p.WriteNullStrongBinder() // null AsBinder()
 	p.WriteInt32(s.Id)
 	p.WriteString(s.PersistentId)
 	p.WriteString(s.Name)

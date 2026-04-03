@@ -25,7 +25,7 @@ func (s *ScreenshotRequest) MarshalParcel(
 	p.WriteInt32(0) // null TopComponent
 	p.WriteInt32(s.TaskId)
 	p.WriteInt32(s.UserId)
-	p.WriteInt32(0) // null HardwareBitmapBundler.hardwareBitmapToBundle(mBitmap)
+	p.WriteInt32(0) // null HardwareBitmapToBundle(mBitmap)
 	p.WriteInt32(0) // null BoundsInScreen
 	if s.Insets != nil {
 		p.WriteInt32(1)
@@ -73,7 +73,7 @@ func (s *ScreenshotRequest) UnmarshalParcel(
 			return _opaqueErr
 		}
 		if _opaqueFlag != 0 {
-			return nil // non-null HardwareBitmapBundler.hardwareBitmapToBundle(mBitmap): cannot skip unknown-size typed object
+			return nil // non-null HardwareBitmapToBundle(mBitmap): cannot skip unknown-size typed object
 		}
 	}
 	{

@@ -754,7 +754,7 @@ interfaces:
 parcelables:
     - name: AmbientBrightnessDayStats
       java_wire_format:
-        - name: LocalDate.toString()
+        - name: ToString()
           write_method: string16
         - name: BucketBoundaries
           write_method: float_array
@@ -806,9 +806,9 @@ parcelables:
           write_method: float_array
         - name: Nits
           write_method: float_array
-        - name: CorrectionsByPackageName.size()
+        - name: Size()
           write_method: int32
-        - name: CorrectionsByCategory.size()
+        - name: Size()
           write_method: int32
         - name: Description
           write_method: string16
@@ -918,7 +918,7 @@ parcelables:
           write_method: delegate
           condition: mActiveDisplay!=null
           delegate_type: WifiDisplay
-        - name: Displays.length
+        - name: Length
           write_method: int32
         - name: SessionInfo
           write_method: delegate

@@ -1006,7 +1006,7 @@ parcelables:
           write_method: string16
         - name: Uri
           write_method: string16
-        - name: SerialNumberReader.asBinder()
+        - name: AsBinder()
           write_method: binder
     - name: UsbDevice
       java_wire_format:
@@ -1028,7 +1028,7 @@ parcelables:
           write_method: string16
         - name: Version
           write_method: string16
-        - name: SerialNumberReader.asBinder()
+        - name: AsBinder()
           write_method: binder
         - name: Configurations
           write_method: opaque

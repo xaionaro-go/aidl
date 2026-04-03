@@ -22,6 +22,7 @@ type TvInputInfo struct {
 	HdmiConnectionRelativePosition int32
 	ParentId                       string
 	Service                        pm.ResolveInfo
+	Label                          *string
 	Icon                           *drawable.Icon
 	HdmiDeviceInfo                 *hdmi.HdmiDeviceInfo
 }
@@ -37,8 +38,8 @@ func (s *TvInputInfo) MarshalParcel(
 	p.WriteString16(s.Id)
 	p.WriteInt32(s.Type)
 	p.WriteBool(s.IsHardwareInput)
-	p.WriteInt32(-1) // null Label
-	p.WriteInt32(0)  // null IconUri
+	parcel.WritePlainCharSequence(p, s.Label)
+	p.WriteInt32(0) // null IconUri
 	p.WriteInt32(s.LabelResId)
 	if s.Icon != nil {
 		p.WriteInt32(1)
@@ -88,8 +89,12 @@ func (s *TvInputInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.Label = _cs
 	}
 	{
 		_opaqueFlag, _opaqueErr := p.ReadInt32()

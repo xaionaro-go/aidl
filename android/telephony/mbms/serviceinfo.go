@@ -17,7 +17,7 @@ var _ parcel.Parcelable = (*ServiceInfo)(nil)
 func (s *ServiceInfo) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0) // placeholder KeySet.size()
+	p.WriteInt32(0) // placeholder Size()
 	p.WriteString16(s.ClassName)
 	p.WriteInt32(s.LocalesCount)
 	p.WriteString16(s.ServiceId)
@@ -30,7 +30,7 @@ func (s *ServiceInfo) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt32(); _err != nil { // skip KeySet.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	s.ClassName, _err = p.ReadString16()

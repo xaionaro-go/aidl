@@ -35,6 +35,7 @@ type Notification struct {
 	SmallIcon                             *drawable.Icon
 	ContentIntent                         *PendingIntent
 	DeleteIntent                          *PendingIntent
+	TickerText                            *string
 	TickerView                            *widgetTypes.RemoteViews
 	ContentView                           *widgetTypes.RemoteViews
 	LargeIcon                             *drawable.Icon
@@ -42,6 +43,7 @@ type Notification struct {
 	BigContentView                        *widgetTypes.RemoteViews
 	HeadsUpContentView                    *widgetTypes.RemoteViews
 	PublicVersion                         *Notification
+	SettingsText                          *string
 }
 
 var _ parcel.Parcelable = (*Notification)(nil)
@@ -78,7 +80,7 @@ func (s *Notification) MarshalParcel(
 	} else {
 		p.WriteInt32(0)
 	}
-	p.WriteInt32(-1) // null TickerText
+	parcel.WritePlainCharSequence(p, s.TickerText)
 	if s.TickerView != nil {
 		p.WriteInt32(1)
 		if _err := s.TickerView.MarshalParcel(p); _err != nil {
@@ -166,7 +168,7 @@ func (s *Notification) MarshalParcel(
 		p.WriteInt32(0)
 	}
 	p.WriteInt32(s.BadgeIcon)
-	p.WriteInt32(-1) // null SettingsText
+	parcel.WritePlainCharSequence(p, s.SettingsText)
 	p.WriteInt32(s.GroupAlertBehavior)
 	p.WriteInt32(-1) // null BubbleMetadata
 	p.WriteBool(s.AllowSystemGeneratedContextualActions)
@@ -232,8 +234,12 @@ func (s *Notification) UnmarshalParcel(
 			}
 		}
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.TickerText = _cs
 	}
 	{
 		_flag, _err := p.ReadInt32()

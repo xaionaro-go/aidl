@@ -30,8 +30,8 @@ func (s *OutputConfiguration) MarshalParcel(
 	p.WriteInt32(s.Rotation)
 	p.WriteInt32(s.SurfaceGroupId)
 	p.WriteInt32(s.SurfaceType)
-	p.WriteInt32(0) // placeholder ConfiguredSize.getWidth()
-	p.WriteInt32(0) // placeholder ConfiguredSize.getHeight()
+	p.WriteInt32(0) // placeholder GetWidth()
+	p.WriteInt32(0) // placeholder GetHeight()
 	p.WriteBool(s.IsDeferredConfig)
 	p.WriteBool(s.IsShared)
 	p.WriteInt32(-1) // null Surfaces
@@ -63,10 +63,10 @@ func (s *OutputConfiguration) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip ConfiguredSize.getWidth()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetWidth()
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip ConfiguredSize.getHeight()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetHeight()
 		return _err
 	}
 	s.IsDeferredConfig, _err = p.ReadBool()

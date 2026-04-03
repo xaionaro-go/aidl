@@ -10,6 +10,7 @@ type NanoAppMessage struct {
 	NanoAppId             int64
 	IsBroadcasted         bool
 	MessageType           int32
+	Length                int32
 	IsReliable            bool
 	MessageSequenceNumber int32
 }
@@ -22,7 +23,7 @@ func (s *NanoAppMessage) MarshalParcel(
 	p.WriteInt64(s.NanoAppId)
 	p.WriteBool(s.IsBroadcasted)
 	p.WriteInt32(s.MessageType)
-	p.WriteInt32(0)  // placeholder MessageBody.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null MessageBody
 	p.WriteBool(s.IsReliable)
 	p.WriteInt32(s.MessageSequenceNumber)
@@ -45,7 +46,8 @@ func (s *NanoAppMessage) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip MessageBody.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil // opaque MessageBody: cannot skip without known wire format

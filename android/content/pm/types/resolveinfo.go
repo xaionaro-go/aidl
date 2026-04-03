@@ -22,6 +22,7 @@ type ResolveInfo struct {
 	AutoResolutionAllowed bool
 	IsInstantAppAvailable bool
 	ActivityInfo          *ActivityInfo
+	NonLocalizedLabel     *string
 }
 
 var _ parcel.Parcelable = (*ResolveInfo)(nil)
@@ -42,7 +43,7 @@ func (s *ResolveInfo) MarshalParcel(
 	p.WriteInt32(s.Match)
 	p.WriteInt32(s.SpecificIndex)
 	p.WriteInt32(s.LabelRes)
-	p.WriteInt32(-1) // null NonLocalizedLabel
+	parcel.WritePlainCharSequence(p, s.NonLocalizedLabel)
 	p.WriteInt32(s.Icon)
 	p.WriteString(s.ResolvePackageName)
 	p.WriteInt32(s.TargetUserId)
@@ -92,8 +93,12 @@ func (s *ResolveInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _csErr := parcel.SkipCharSequence(p); _csErr != nil {
-		return _csErr
+	{
+		_cs, _csErr := parcel.ReadPlainCharSequence(p)
+		if _csErr != nil {
+			return _csErr
+		}
+		s.NonLocalizedLabel = _cs
 	}
 	s.Icon, _err = p.ReadInt32()
 	if _err != nil {

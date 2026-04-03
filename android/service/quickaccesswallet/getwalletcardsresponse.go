@@ -15,7 +15,7 @@ var _ parcel.Parcelable = (*GetWalletCardsResponse)(nil)
 func (s *GetWalletCardsResponse) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteInt32(0)  // placeholder WalletCards.size()
+	p.WriteInt32(0)  // placeholder Size()
 	p.WriteInt32(-1) // null WalletCards
 	p.WriteInt32(s.SelectedIndex)
 	return nil
@@ -25,7 +25,7 @@ func (s *GetWalletCardsResponse) UnmarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	var _err error
-	if _, _err = p.ReadInt32(); _err != nil { // skip WalletCards.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	return nil // opaque WalletCards: cannot skip without known wire format

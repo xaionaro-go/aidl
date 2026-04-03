@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*RemoteCallback)(nil)
 func (s *RemoteCallback) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteNullStrongBinder() // null Callback.asBinder()
+	p.WriteNullStrongBinder() // null AsBinder()
 	return nil
 }
 

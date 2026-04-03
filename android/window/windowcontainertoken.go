@@ -14,7 +14,7 @@ var _ parcel.Parcelable = (*WindowContainerToken)(nil)
 func (s *WindowContainerToken) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
-	p.WriteNullStrongBinder() // null RealToken.asBinder()
+	p.WriteNullStrongBinder() // null AsBinder()
 	return nil
 }
 

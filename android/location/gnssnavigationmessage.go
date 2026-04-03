@@ -11,6 +11,7 @@ type GnssNavigationMessage struct {
 	Svid         int32
 	MessageId    int32
 	SubmessageId int32
+	Length       int32
 	Status       int32
 }
 
@@ -23,7 +24,7 @@ func (s *GnssNavigationMessage) MarshalParcel(
 	p.WriteInt32(s.Svid)
 	p.WriteInt32(s.MessageId)
 	p.WriteInt32(s.SubmessageId)
-	p.WriteInt32(0)  // placeholder Data.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null Data
 	p.WriteInt32(s.Status)
 	return nil
@@ -49,7 +50,8 @@ func (s *GnssNavigationMessage) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Data.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil // opaque Data: cannot skip without known wire format

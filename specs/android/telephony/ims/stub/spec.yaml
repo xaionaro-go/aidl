@@ -5,5 +5,5 @@ go_package: android/telephony/ims/stub
 parcelables:
     - name: ImsFeatureConfiguration
       java_wire_format:
-        - name: FeatureSlotPairs.length
+        - name: Length
           write_method: int32

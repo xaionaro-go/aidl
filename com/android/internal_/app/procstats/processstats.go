@@ -13,6 +13,7 @@ type ProcessStats struct {
 	AdjCount                int32
 	PssCount                int32
 	SysMemUsageCount        int32
+	ArraySize               int32
 	NumAggregated           int32
 	TimePeriodStartClock    int64
 	TimePeriodStartRealtime int64
@@ -49,7 +50,7 @@ func (s *ProcessStats) MarshalParcel(
 	p.WriteInt32(s.AdjCount)
 	p.WriteInt32(s.PssCount)
 	p.WriteInt32(s.SysMemUsageCount)
-	p.WriteInt32(0) // placeholder SparseMappingTable.ARRAY_SIZE
+	p.WriteInt32(s.ArraySize)
 	p.WriteInt32(s.NumAggregated)
 	p.WriteInt64(s.TimePeriodStartClock)
 	p.WriteInt64(s.TimePeriodStartRealtime)
@@ -106,7 +107,8 @@ func (s *ProcessStats) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip SparseMappingTable.ARRAY_SIZE
+	s.ArraySize, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	s.NumAggregated, _err = p.ReadInt32()

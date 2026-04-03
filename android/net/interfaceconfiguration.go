@@ -18,7 +18,7 @@ func (s *InterfaceConfiguration) MarshalParcel(
 	p.WriteString16(s.HwAddr)
 	p.WriteInt32(0) // placeholder (byte)1
 	p.WriteInt32(0) // null Addr
-	p.WriteInt32(0) // placeholder Flags.size()
+	p.WriteInt32(0) // placeholder Size()
 	return nil
 }
 
@@ -42,7 +42,7 @@ func (s *InterfaceConfiguration) UnmarshalParcel(
 			return nil // non-null Addr: cannot skip unknown-size typed object
 		}
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Flags.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
 	return nil

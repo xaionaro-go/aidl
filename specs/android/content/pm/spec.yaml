@@ -5544,10 +5544,10 @@ parcelables:
         - name: "1"
           write_method: int32
           condition: storageUuid!=null
-        - name: StorageUuid.getMostSignificantBits()
+        - name: GetMostSignificantBits()
           write_method: int64
           condition: storageUuid!=null
-        - name: StorageUuid.getLeastSignificantBits()
+        - name: GetLeastSignificantBits()
           write_method: int64
           condition: storageUuid!=null
         - name: ScanSourceDir
@@ -5731,13 +5731,13 @@ parcelables:
         - name: PrimaryValue
           write_method: string16
         - name: Aliases
-          write_method: opaque
+          write_method: string_list
     - name: ChangedPackages
       java_wire_format:
         - name: SequenceNumber
           write_method: int32
         - name: PackageNames
-          write_method: opaque
+          write_method: string_list
     - name: Checksum
       java_wire_format:
         - name: Type
@@ -5917,7 +5917,7 @@ parcelables:
         - name: Status
           write_method: int32
         - name: NewArrayList<>(mDomains)
-          write_method: opaque
+          write_method: string_list
     - name: KeySet
       java_wire_format:
         - name: Token
@@ -5961,7 +5961,7 @@ parcelables:
         - name: ApexModuleName
           write_method: string16
         - name: ApkInApexPackageNames
-          write_method: opaque
+          write_method: string_list
     - name: PackageInfo
       java_wire_format:
         - name: PackageName
@@ -6268,7 +6268,7 @@ parcelables:
         - name: "1"
           write_method: int32
           condition: mCodePaths!=null
-        - name: CodePaths.toArray(newString[mCodePaths.size()])
+        - name: Size()])
           write_method: opaque
           condition: mCodePaths!=null
         - name: Name
@@ -6367,7 +6367,7 @@ parcelables:
           write_method: string16
           condition: mPackage!=null
         - name: ShortcutIds
-          write_method: opaque
+          write_method: string_list
           condition: mShortcutIds!=null
         - name: LocusIds
           write_method: opaque

@@ -11,6 +11,7 @@ type FillRequest struct {
 	Flg                      int32
 	Id                       int32
 	Flags                    int32
+	Hints                    []string
 	InlineSuggestionsRequest *types.InlineSuggestionsRequest
 }
 
@@ -22,7 +23,7 @@ func (s *FillRequest) MarshalParcel(
 	p.WriteInt32(s.Flg)
 	p.WriteInt32(s.Id)
 	p.WriteInt32(-1) // null FillContexts
-	p.WriteInt32(-1) // null Hints
+	p.WriteStringList(s.Hints)
 	p.WriteInt32(-1) // null ClientState
 	p.WriteInt32(s.Flags)
 	if s.InlineSuggestionsRequest != nil {

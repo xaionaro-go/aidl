@@ -379,19 +379,19 @@ parcelables:
           write_method: bool
     - name: CompatibilityOverrideConfig
       java_wire_format:
-        - name: Overrides.size()
+        - name: Size()
           write_method: int32
     - name: CompatibilityOverridesByPackageConfig
       java_wire_format:
-        - name: PackageNameToOverrides.size()
+        - name: Size()
           write_method: int32
     - name: CompatibilityOverridesToRemoveByPackageConfig
       java_wire_format:
-        - name: PackageNameToOverridesToRemove.size()
+        - name: Size()
           write_method: int32
     - name: CompatibilityOverridesToRemoveConfig
       java_wire_format:
-        - name: ChangeIds.size()
+        - name: Size()
           write_method: int32
     - name: OverrideAllowedState
       java_wire_format:

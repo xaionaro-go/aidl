@@ -23,9 +23,9 @@ func (s *ReverseGeocodeRequest) MarshalParcel(
 	p.WriteFloat64(s.Latitude)
 	p.WriteFloat64(s.Longitude)
 	p.WriteInt32(s.MaxResults)
-	p.WriteString("") // placeholder Locale.getLanguage()
-	p.WriteString("") // placeholder Locale.getCountry()
-	p.WriteString("") // placeholder Locale.getVariant()
+	p.WriteString("") // placeholder GetLanguage()
+	p.WriteString("") // placeholder GetCountry()
+	p.WriteString("") // placeholder GetVariant()
 	p.WriteInt32(s.CallingUid)
 	p.WriteString(s.CallingPackage)
 	p.WriteString(s.CallingAttributionTag)
@@ -48,13 +48,13 @@ func (s *ReverseGeocodeRequest) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadString(); _err != nil { // skip Locale.getLanguage()
+	if _, _err = p.ReadString(); _err != nil { // skip GetLanguage()
 		return _err
 	}
-	if _, _err = p.ReadString(); _err != nil { // skip Locale.getCountry()
+	if _, _err = p.ReadString(); _err != nil { // skip GetCountry()
 		return _err
 	}
-	if _, _err = p.ReadString(); _err != nil { // skip Locale.getVariant()
+	if _, _err = p.ReadString(); _err != nil { // skip GetVariant()
 		return _err
 	}
 	s.CallingUid, _err = p.ReadInt32()

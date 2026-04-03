@@ -28,7 +28,9 @@ type DisplayInfo struct {
 	RenderFrameRate                   float32
 	DefaultModeId                     int32
 	UserPreferredModeId               int32
+	Length                            int32
 	ColorMode                         int32
+	Length2                           int32
 	MinimalPostProcessingSupported    bool
 	LogicalDensityDpi                 int32
 	PhysicalXDpi                      float32
@@ -45,6 +47,7 @@ type DisplayInfo struct {
 	BrightnessMinimum                 float32
 	BrightnessMaximum                 float32
 	BrightnessDefault                 float32
+	Length3                           int32
 	InstallOrientation                int32
 	HdrSdrRatio                       float32
 	ThermalBrightnessThrottlingDataId string
@@ -95,9 +98,9 @@ func (s *DisplayInfo) MarshalParcel(
 	p.WriteFloat32(s.RenderFrameRate)
 	p.WriteInt32(s.DefaultModeId)
 	p.WriteInt32(s.UserPreferredModeId)
-	p.WriteInt32(0) // placeholder SupportedModes.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(s.ColorMode)
-	p.WriteInt32(0) // placeholder SupportedColorModes.length
+	p.WriteInt32(s.Length2)
 	p.WriteInt32(0) // null HdrCapabilities
 	p.WriteBool(s.MinimalPostProcessingSupported)
 	p.WriteInt32(s.LogicalDensityDpi)
@@ -123,7 +126,7 @@ func (s *DisplayInfo) MarshalParcel(
 	} else {
 		p.WriteInt32(0)
 	}
-	p.WriteInt32(0) // placeholder UserDisabledHdrTypes.length
+	p.WriteInt32(s.Length3)
 	p.WriteInt32(s.InstallOrientation)
 	if s.DisplayShape != nil {
 		p.WriteInt32(1)

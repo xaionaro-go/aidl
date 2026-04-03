@@ -21,7 +21,7 @@ func (s *ContentProviderHolder) MarshalParcel(
 	if _err := s.Info.MarshalParcel(p); _err != nil {
 		return _err
 	}
-	p.WriteNullStrongBinder() // null Provider.asBinder()
+	p.WriteNullStrongBinder() // null AsBinder()
 	p.WriteNullStrongBinder() // null Connection
 	p.WriteBool(s.NoReleaseNeeded)
 	p.WriteBool(s.Local)

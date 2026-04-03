@@ -934,9 +934,9 @@ parcelables:
             - utf8InCpp
     - name: CameraInfo
       java_wire_format:
-        - name: Info.facing
+        - name: Facing
           write_method: int32
-        - name: Info.orientation
+        - name: Orientation
           write_method: int32
     - name: CameraPrivacyAllowlistEntry
       fields:

@@ -151,7 +151,7 @@ parcelables:
           write_method: int32
         - name: SelectionEnd
           write_method: int32
-        - name: This.flags
+        - name: Flags
           write_method: int32
         - name: Hint
           write_method: char_sequence
@@ -160,7 +160,7 @@ parcelables:
       java_wire_format:
         - name: Token
           write_method: int32
-        - name: This.flags
+        - name: Flags
           write_method: int32
         - name: HintMaxLines
           write_method: int32
@@ -237,7 +237,7 @@ parcelables:
         - name: "1"
           write_method: int32
           condition: mUriToken!=null
-        - name: UriToken.asBinder()
+        - name: AsBinder()
           write_method: binder
           condition: mUriToken!=null
     - name: InputMethodInfo
@@ -325,7 +325,7 @@ parcelables:
           write_method: string8
         - name: Point
           write_method: typed_object
-        - name: CancellationSignalBeamer.Sender.beamFromScope(mCancellationSignal)
+        - name: BeamFromScope(mCancellationSignal)
           write_method: binder
     - name: JoinOrSplitGesture
       java_wire_format:
@@ -335,7 +335,7 @@ parcelables:
           write_method: string8
     - name: ParcelableHandwritingGesture
       java_wire_format:
-        - name: Gesture.getGestureType()
+        - name: GetGestureType()
           write_method: int32
         - name: GestureAsParcelable
           write_method: delegate
@@ -380,6 +380,6 @@ parcelables:
     - name: TextAttribute
       java_wire_format:
         - name: TextConversionSuggestions
-          write_method: opaque
+          write_method: string_list
         - name: Extras
-          write_method: opaque
+          write_method: persistable_bundle

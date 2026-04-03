@@ -21,7 +21,7 @@ func (s *NotificationHistory) MarshalParcel(
 	p.WriteInt32(-1) // null StringPool
 	p.WriteInt32(0)  // null ListByteLength
 	p.WriteInt32(0)
-	p.WriteInt32(-1) // null Data.marshall()
+	p.WriteInt32(-1) // null Marshall()
 	return nil
 }
 
@@ -60,5 +60,5 @@ func (s *NotificationHistory) UnmarshalParcel(
 	if _, _err = p.ReadInt32(); _err != nil {
 		return _err
 	}
-	return nil // opaque Data.marshall(): cannot skip without known wire format
+	return nil // opaque Marshall(): cannot skip without known wire format
 }

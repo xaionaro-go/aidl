@@ -7739,9 +7739,9 @@ parcelables:
           write_method: string16
         - name: NativeType
           write_method: int32
-        - name: AudioProfiles.toArray(newAudioProfile[mAudioProfiles.size()])
+        - name: Size()])
           write_method: opaque
-        - name: AudioDescriptors.toArray(newAudioDescriptor[mAudioDescriptors.size()])
+        - name: Size()])
           write_method: opaque
     - name: AudioFocusInfo
       java_wire_format:
@@ -8094,9 +8094,9 @@ parcelables:
           write_method: bool
         - name: DeviceSource
           write_method: int32
-        - name: ClientEffects.length
+        - name: Length
           write_method: int32
-        - name: DeviceEffects.length
+        - name: Length
           write_method: int32
     - name: AudioRoute
       fields:
@@ -8510,13 +8510,13 @@ parcelables:
           write_method: opaque
         - name: AttrToFadeWrapperMap
           write_method: opaque
-        - name: FadeableUsages.toArray()
+        - name: ToArray()
           write_method: int_array
-        - name: UnfadeableContentTypes.toArray()
+        - name: ToArray()
           write_method: int_array
-        - name: UnfadeablePlayerTypes.toArray()
+        - name: ToArray()
           write_method: int_array
-        - name: UnfadeableUids.toArray()
+        - name: ToArray()
           write_method: int_array
         - name: UnfadeableAudioAttributes
           write_method: opaque
@@ -8698,7 +8698,7 @@ parcelables:
           write_method: char_sequence
           delegate_type: TextUtils
         - name: Features
-          write_method: opaque
+          write_method: string_list
         - name: Type
           write_method: int32
         - name: IsSystem
@@ -8722,7 +8722,7 @@ parcelables:
           write_method: int32
         - name: Address
           write_method: string16
-        - name: DeduplicationIds.toArray(newString[mDeduplicationIds.size()])
+        - name: Size()])
           write_method: string_array
         - name: Extras
           write_method: bundle
@@ -8730,7 +8730,7 @@ parcelables:
           write_method: string16
         - name: IsVisibilityRestricted
           write_method: bool
-        - name: AllowedPackages.toArray(newString[0])
+        - name: ToArray(newString[0])
           write_method: opaque
         - name: SuitabilityStatus
           write_method: int32
@@ -8877,11 +8877,11 @@ parcelables:
     - name: RouteDiscoveryPreference
       java_wire_format:
         - name: PreferredFeatures
-          write_method: opaque
+          write_method: string_list
         - name: PackageOrder
-          write_method: opaque
+          write_method: string_list
         - name: AllowedPackages
-          write_method: opaque
+          write_method: string_list
         - name: ShouldPerformActiveScan
           write_method: bool
         - name: Extras
@@ -8907,13 +8907,13 @@ parcelables:
         - name: ProviderId
           write_method: string16
         - name: SelectedRoutes
-          write_method: opaque
+          write_method: string_list
         - name: SelectableRoutes
-          write_method: opaque
+          write_method: string_list
         - name: DeselectableRoutes
-          write_method: opaque
+          write_method: string_list
         - name: TransferableRoutes
-          write_method: opaque
+          write_method: string_list
         - name: VolumeHandling
           write_method: int32
         - name: VolumeMax

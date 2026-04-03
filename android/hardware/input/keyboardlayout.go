@@ -29,7 +29,7 @@ func (s *KeyboardLayout) MarshalParcel(
 	if _err := s.Locales.MarshalParcel(p); _err != nil {
 		return _err
 	}
-	p.WriteInt32(0) // placeholder LayoutType.getValue()
+	p.WriteInt32(0) // placeholder GetValue()
 	p.WriteInt32(s.VendorId)
 	p.WriteInt32(s.ProductId)
 	return nil
@@ -58,7 +58,7 @@ func (s *KeyboardLayout) UnmarshalParcel(
 	if _err := s.Locales.UnmarshalParcel(p); _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip LayoutType.getValue()
+	if _, _err = p.ReadInt32(); _err != nil { // skip GetValue()
 		return _err
 	}
 	s.VendorId, _err = p.ReadInt32()

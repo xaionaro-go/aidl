@@ -25,10 +25,10 @@ func (s *CaptureRequest) MarshalParcel(
 		return _err
 	}
 	p.WriteBool(s.IsReprocess)
-	p.WriteInt32(-1) // null Surfaces.toArray(newSurface[surfaces.size()])
-	p.WriteInt32(0)  // placeholder StreamIdxArray.length
+	p.WriteInt32(-1) // null Size()])
+	p.WriteInt32(0)  // null Length
 	p.WriteInt32(1)
-	p.WriteString16("") // placeholder UserTagStr.substring(SET_TAG_STRING_PREFIX.length())
+	p.WriteString16("") // placeholder Length())
 	return nil
 }
 
@@ -51,5 +51,5 @@ func (s *CaptureRequest) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	return nil // opaque Surfaces.toArray(newSurface[surfaces.size()]): cannot skip without known wire format
+	return nil // opaque Size()]): cannot skip without known wire format
 }

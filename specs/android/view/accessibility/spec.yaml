@@ -1148,7 +1148,7 @@ parcelables:
           write_method: int32
         - name: RecordCount
           write_method: int32
-        - name: OriginStackTrace.length
+        - name: Length
           write_method: int32
           condition: DEBUG_ORIGIN
     - name: AccessibilityNodeInfo

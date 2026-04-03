@@ -14,6 +14,7 @@ type PermissionGroupInfo struct {
 	BackgroundRequestDetailResourceId int32
 	Flags                             int32
 	Priority                          int32
+	NonLocalizedDescription           *string
 }
 
 var _ parcel.Parcelable = (*PermissionGroupInfo)(nil)
@@ -27,7 +28,7 @@ func (s *PermissionGroupInfo) MarshalParcel(
 	p.WriteInt32(s.RequestDetailResourceId)
 	p.WriteInt32(s.BackgroundRequestResourceId)
 	p.WriteInt32(s.BackgroundRequestDetailResourceId)
-	p.WriteInt32(-1) // null NonLocalizedDescription
+	parcel.WritePlainCharSequence(p, s.NonLocalizedDescription)
 	p.WriteInt32(s.Flags)
 	p.WriteInt32(s.Priority)
 	return nil

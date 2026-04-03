@@ -33,17 +33,17 @@ func (s *ApduServiceInfo) MarshalParcel(
 	p.WriteBool(s.OnHost)
 	p.WriteString16(s.OffHostName)
 	p.WriteString16(s.StaticOffHostName)
-	p.WriteInt32(0)  // placeholder StaticAidGroups.size()
-	p.WriteInt32(-1) // null NewArrayList<AidGroup>(mStaticAidGroups.values())
-	p.WriteInt32(0)  // placeholder DynamicAidGroups.size()
-	p.WriteInt32(-1) // null NewArrayList<AidGroup>(mDynamicAidGroups.values())
+	p.WriteInt32(0)  // placeholder Size()
+	p.WriteInt32(-1) // null Values())
+	p.WriteInt32(0)  // placeholder Size()
+	p.WriteInt32(-1) // null Values())
 	p.WriteBool(s.RequiresDeviceUnlock)
 	p.WriteBool(s.RequiresDeviceScreenOn)
 	p.WriteInt32(s.BannerResourceId)
 	p.WriteInt32(s.Uid)
 	p.WriteString16(s.SettingsActivityName)
 	p.WriteBool(s.CategoryOtherServiceEnabled)
-	p.WriteInt32(0)  // placeholder AutoTransact.size()
+	p.WriteInt32(0)  // placeholder Size()
 	p.WriteInt32(-1) // null AutoTransact
 	return nil
 }
@@ -71,8 +71,8 @@ func (s *ApduServiceInfo) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip StaticAidGroups.size()
+	if _, _err = p.ReadInt32(); _err != nil { // skip Size()
 		return _err
 	}
-	return nil // opaque NewArrayList<AidGroup>(mStaticAidGroups.values()): cannot skip without known wire format
+	return nil // opaque Values()): cannot skip without known wire format
 }

@@ -16,7 +16,7 @@ func (s *TransceiveResult) MarshalParcel(
 	p *parcel.Parcel,
 ) error {
 	p.WriteInt32(s.Result)
-	p.WriteInt32(0)  // placeholder ResponseData.length
+	p.WriteInt32(0)  // null Length
 	p.WriteInt32(-1) // null ResponseData
 	return nil
 }
@@ -29,8 +29,14 @@ func (s *TransceiveResult) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip ResponseData.length
-		return _err
+	{
+		_opaqueFlag, _opaqueErr := p.ReadInt32()
+		if _opaqueErr != nil {
+			return _opaqueErr
+		}
+		if _opaqueFlag != 0 {
+			return nil // non-null Length: cannot skip unknown-size typed object
+		}
 	}
 	return nil // opaque ResponseData: cannot skip without known wire format
 }

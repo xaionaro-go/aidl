@@ -248,7 +248,7 @@ parcelables:
         - name: Priority
           write_method: int32
         - name: MccMncs
-          write_method: opaque
+          write_method: string_list
         - name: Bands
           write_method: write_list
         - name: RadioAccessSpecifiers
@@ -533,7 +533,7 @@ parcelables:
           write_method: int32
         - name: Status
           write_method: int32
-        - name: SelectResponse.length
+        - name: Length
           write_method: int32
           condition: mSelectResponse!=null&&mSelectResponse.length>0
         - name: SelectResponse
@@ -541,7 +541,7 @@ parcelables:
           condition: mSelectResponse!=null&&mSelectResponse.length>0
     - name: ImsiEncryptionInfo
       java_wire_format:
-        - name: B.length
+        - name: Length
           write_method: int32
         - name: b
           write_method: byte_array
@@ -553,7 +553,7 @@ parcelables:
           write_method: string16
         - name: KeyType
           write_method: int32
-        - name: ExpirationTime.getTime()
+        - name: GetTime()
           write_method: int64
         - name: CarrierId
           write_method: int32
@@ -644,7 +644,7 @@ parcelables:
         - name: IncrementalResultsPeriodicity
           write_method: int32
         - name: MccMncs
-          write_method: opaque
+          write_method: string_list
     - name: NrVopsSupportInfo
       java_wire_format:
         - name: Super
@@ -1030,7 +1030,7 @@ parcelables:
         - name: ClientPrefix
           write_method: string16
         - name: OriginatingNumbers
-          write_method: opaque
+          write_method: string_list
         - name: DestinationPort
           write_method: int32
         - name: PackageName

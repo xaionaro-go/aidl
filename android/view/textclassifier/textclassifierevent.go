@@ -11,6 +11,7 @@ type TextClassifierEvent struct {
 	EventType     int32
 	ResultId      string
 	EventIndex    int32
+	Length        int32
 	ModelName     string
 }
 
@@ -26,7 +27,7 @@ func (s *TextClassifierEvent) MarshalParcel(
 	p.WriteInt32(0)  // null EventContext
 	p.WriteString16(s.ResultId)
 	p.WriteInt32(s.EventIndex)
-	p.WriteInt32(0)  // placeholder Scores.length
+	p.WriteInt32(s.Length)
 	p.WriteInt32(-1) // null Scores
 	p.WriteString16(s.ModelName)
 	p.WriteInt32(-1)   // null ActionIndices
@@ -78,7 +79,8 @@ func (s *TextClassifierEvent) UnmarshalParcel(
 	if _err != nil {
 		return _err
 	}
-	if _, _err = p.ReadInt32(); _err != nil { // skip Scores.length
+	s.Length, _err = p.ReadInt32()
+	if _err != nil {
 		return _err
 	}
 	return nil // opaque Scores: cannot skip without known wire format

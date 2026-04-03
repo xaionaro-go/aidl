@@ -252,7 +252,7 @@ parcelables:
           write_method: int64
         - name: NetworkTransferDurationMillis
           write_method: int64
-        - name: DrmSessionId.length
+        - name: Length
           write_method: int32
         - name: DrmSessionId
           write_method: byte_array

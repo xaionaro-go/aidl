@@ -511,7 +511,7 @@ parcelables:
       java_wire_format:
         - name: Result
           write_method: int32
-        - name: This.mSubscription
+        - name: Subscription
           write_method: typed_object
     - name: GetEuiccProfileInfoListResult
       java_wire_format:

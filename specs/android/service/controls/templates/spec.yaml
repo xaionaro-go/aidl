@@ -11,5 +11,5 @@ parcelables:
           write_method: opaque
     - name: ControlTemplateWrapper
       java_wire_format:
-        - name: ControlTemplate.getDataBundle()
+        - name: GetDataBundle()
           write_method: bundle
