@@ -41,6 +41,7 @@
 
 # Example binaries built to repo root
 /clipboard_monitor
+/codec2_encode
 /input_injector
 /sensor_gateway
 /sensor_reader
