@@ -16,22 +16,32 @@ import "fmt"
 type Status int32
 
 // Positive-errno values as seen on the HIDL wire (c2_status_t raw values).
+// The AOSP HIDL server implementations use static_cast<Status>(c2_status_t),
+// so the wire carries raw POSIX errno values.
 const (
 	StatusOK        Status = 0
-	StatusBadValue  Status = 22  // EINVAL
-	StatusBadIndex  Status = 6   // ENXIO
-	StatusCannotDo  Status = 95  // ENOTSUP (EOPNOTSUPP on some systems)
-	StatusDuplicate Status = 17  // EEXIST
-	StatusNotFound  Status = 2   // ENOENT
 	StatusBadState  Status = 1   // EPERM
-	StatusBlocking  Status = 11  // EAGAIN/EWOULDBLOCK
+	StatusNotFound  Status = 2   // ENOENT
 	StatusCanceled  Status = 4   // EINTR
+	StatusBadIndex  Status = 6   // ENXIO
+	StatusBlocking  Status = 11  // EAGAIN/EWOULDBLOCK
 	StatusNoMemory  Status = 12  // ENOMEM
 	StatusRefused   Status = 13  // EACCES
-	StatusTimedOut  Status = 110 // ETIMEDOUT
-	StatusOmitted   Status = 38  // ENOSYS
 	StatusCorrupted Status = 14  // EFAULT
+	StatusDuplicate Status = 17  // EEXIST
 	StatusNoInit    Status = 19  // ENODEV
+	StatusBadValue  Status = 22  // EINVAL
+	StatusOmitted   Status = 38  // ENOSYS
+	StatusCannotDo  Status = 95  // ENOTSUP (EOPNOTSUPP on some systems)
+	StatusTimedOut  Status = 110 // ETIMEDOUT
+)
+
+// HIDL types.hal negative Status values. Some internal error paths in
+// the HIDL transport may return these instead of the positive-errno
+// values above (e.g., when the framework itself detects corruption
+// before delegating to the C2 component).
+const (
+	StatusHIDLCorrupted Status = -2147483648 // types.hal CORRUPTED
 )
 
 // Err returns nil if status is OK, otherwise an error.
@@ -75,6 +85,8 @@ func (s Status) String() string {
 		return "CORRUPTED"
 	case StatusNoInit:
 		return "NO_INIT"
+	case StatusHIDLCorrupted:
+		return "HIDL_CORRUPTED"
 	default:
 		return fmt.Sprintf("UNKNOWN(%d)", int32(s))
 	}
