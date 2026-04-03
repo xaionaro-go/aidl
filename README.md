@@ -566,7 +566,7 @@ More examples: [`examples/`](examples/)
 | [`carrier_config`](examples/carrier_config/) | Query carrier configuration: default carrier service package, |
 | [`charge_monitor`](examples/charge_monitor/) | Monitor charging status and battery health via the Health HAL. |
 | [`clipboard_monitor`](examples/clipboard_monitor/) | Set and read clipboard text via the Android clipboard binder service. |
-| [`codec2_encode`](examples/codec2_encode/) | Codec2 H.264 encoding via binder. |
+| [`codec2_encode`](examples/codec2_encode/) | Codec2 H.264 encoding via HIDL hwbinder. |
 | [`compliance_checker`](examples/compliance_checker/) | Verify device compliance: encryption, security state, OTA update status. |
 | [`credential_manager`](examples/credential_manager/) | Query the CredentialManager service for availability. |
 | [`device_info`](examples/device_info/) | Device properties, build info |
