@@ -11,7 +11,9 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+
 	"github.com/AndroidGoLab/binder/binder"
+	"github.com/AndroidGoLab/binder/cmd/bindercli/cliutil"
 	"github.com/AndroidGoLab/binder/parcel"
 	"github.com/AndroidGoLab/binder/servicemanager"
 )
@@ -103,7 +105,7 @@ func newServiceInspectCmd() *cobra.Command {
 				return err
 			}
 
-			descriptor := queryDescriptor(ctx, svc)
+			descriptor := cliutil.QueryDescriptor(ctx, svc)
 
 			mode, err := cmd.Root().PersistentFlags().GetString("format")
 			if err != nil {
@@ -183,26 +185,6 @@ func newServiceTransactCmd() *cobra.Command {
 	}
 }
 
-// queryDescriptor sends an InterfaceTransaction to the binder service
-// and reads back the interface descriptor string.
-// Returns "(unknown)" if the query fails.
-func queryDescriptor(
-	ctx context.Context,
-	svc binder.IBinder,
-) string {
-	reply, err := svc.Transact(ctx, binder.InterfaceTransaction, 0, parcel.New())
-	if err != nil {
-		return "(unknown)"
-	}
-
-	desc, err := reply.ReadString16()
-	if err != nil {
-		return "(unknown)"
-	}
-
-	return desc
-}
-
 func newServiceMethodsCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "methods <name>",
@@ -223,12 +205,12 @@ func newServiceMethodsCmd() *cobra.Command {
 				return err
 			}
 
-			descriptor := queryDescriptor(ctx, svc)
+			descriptor := cliutil.QueryDescriptor(ctx, svc)
 
 			// InterfaceTransaction may return empty on some services.
 			// Fall back to the static knownServiceNames map (reverse lookup).
 			if descriptor == "" || descriptor == "(unknown)" {
-				for desc, svcName := range knownServiceNames {
+				for desc, svcName := range cliutil.KnownServiceNames {
 					if svcName == name {
 						descriptor = desc
 						break
@@ -257,7 +239,7 @@ func newServiceMethodsCmd() *cobra.Command {
 			f := NewFormatter(mode, os.Stdout)
 			switch f.Mode {
 			case "json":
-				f.writeJSON(map[string]any{
+				f.WriteJSON(map[string]any{
 					"descriptor": descriptor,
 					"methods":    methodsToJSON(info.Methods),
 				})

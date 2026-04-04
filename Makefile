@@ -156,3 +156,5 @@ clean:
 	find specs -name spec.yaml -delete 2>/dev/null; find specs -type d -empty -delete 2>/dev/null; true
 	find . -maxdepth 1 -name '*.go' -exec grep -l 'Code generated' {} \; | xargs -r rm -f
 	rm -f servicemanager/service_names_gen.go
+	rm -f cmd/bindercli/commands_gen.go cmd/bindercli/commands_gen_*.go cmd/bindercli/registry_gen.go cmd/bindercli/register_gen.go
+	rm -rf cmd/bindercli/gen/

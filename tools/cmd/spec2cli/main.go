@@ -743,8 +743,13 @@ func run(
 		return fmt.Errorf("writing registry_gen.go: %w", err)
 	}
 
-	if err := writeCommandsGen(outputDir, interfaces); err != nil {
-		return fmt.Errorf("writing commands_gen.go: %w", err)
+	genPkgs, err := writeCommandsGenPackages(outputDir, interfaces)
+	if err != nil {
+		return fmt.Errorf("writing gen packages: %w", err)
+	}
+
+	if err := writeRegisterGen(outputDir, genPkgs); err != nil {
+		return fmt.Errorf("writing register_gen.go: %w", err)
 	}
 
 	// Verify the generated code compiles. If not, identify broken
@@ -754,19 +759,25 @@ func run(
 		if err := writeRegistryGen(outputDir, interfaces); err != nil {
 			return fmt.Errorf("writing registry_gen.go (retry): %w", err)
 		}
-		if err := writeCommandsGen(outputDir, interfaces); err != nil {
-			return fmt.Errorf("writing commands_gen.go (retry): %w", err)
+		genPkgs, err = writeCommandsGenPackages(outputDir, interfaces)
+		if err != nil {
+			return fmt.Errorf("writing gen packages (retry): %w", err)
+		}
+		if err := writeRegisterGen(outputDir, genPkgs); err != nil {
+			return fmt.Errorf("writing register_gen.go (retry): %w", err)
 		}
 	}
 
-	fmt.Fprintf(os.Stderr, "Generated registry_gen.go and commands_gen.go in %s\n", outputDir)
+	fmt.Fprintf(os.Stderr, "Generated gen packages and register_gen.go in %s\n", outputDir)
 	return nil
 }
 
-// verifyAndExclude runs `go build` on the generated package. If it fails,
-// parses error line numbers, identifies the enclosing command functions,
-// and marks them as excluded (via goProxyMethodsWithInterfaceParams) so
-// the next generation pass skips them. Returns the number of methods excluded.
+// verifyAndExclude runs `go build` on the generated packages. If it
+// fails, parses error line numbers from commands.go files inside
+// gen/<pkg>/ directories, identifies the enclosing command functions,
+// and marks them as excluded (via goProxyMethodsWithInterfaceParams)
+// so the next generation pass skips them. Returns the number of
+// methods excluded.
 func verifyAndExclude(outputDir string) int {
 	cmd := exec.Command("go", "build", "./"+outputDir)
 	out, err := cmd.CombinedOutput()
@@ -774,42 +785,63 @@ func verifyAndExclude(outputDir string) int {
 		return 0 // compiles fine
 	}
 
-	// Parse error lines like "commands_gen.go:149258:39: ..."
-	genFile := filepath.Join(outputDir, "commands_gen.go")
-	data, readErr := os.ReadFile(genFile)
-	if readErr != nil {
+	// Build a map of relative file path -> lines for all generated
+	// commands.go files inside gen subdirectories.
+	genDir := filepath.Join(outputDir, "gen")
+	genFiles := map[string][]string{}
+
+	filepath.Walk(genDir, func(path string, info os.FileInfo, walkErr error) error {
+		if walkErr != nil || info.IsDir() {
+			return nil
+		}
+		if filepath.Base(path) != "commands.go" {
+			return nil
+		}
+		data, readErr := os.ReadFile(path)
+		if readErr != nil {
+			return nil
+		}
+		genFiles[path] = strings.Split(string(data), "\n")
+		return nil
+	})
+
+	if len(genFiles) == 0 {
 		return 0
 	}
-	lines := strings.Split(string(data), "\n")
 
-	// Collect error line numbers.
-	errorLines := map[int]bool{}
+	// Collect error line numbers per file.
+	type fileError struct {
+		filePath string
+		lineNo   int
+	}
+	var fileErrors []fileError
 	for _, line := range strings.Split(string(out), "\n") {
-		if !strings.Contains(line, "commands_gen.go:") {
-			continue
-		}
-		parts := strings.SplitN(line, ":", 4)
-		if len(parts) < 3 {
-			continue
-		}
-		lineNo := 0
-		fmt.Sscanf(parts[1], "%d", &lineNo)
-		if lineNo > 0 {
-			errorLines[lineNo] = true
+		for filePath := range genFiles {
+			if !strings.Contains(line, filePath+":") {
+				continue
+			}
+			idx := strings.Index(line, filePath+":")
+			rest := line[idx+len(filePath)+1:]
+			parts := strings.SplitN(rest, ":", 3)
+			if len(parts) < 2 {
+				continue
+			}
+			lineNo := 0
+			fmt.Sscanf(parts[0], "%d", &lineNo)
+			if lineNo > 0 {
+				fileErrors = append(fileErrors, fileError{filePath: filePath, lineNo: lineNo})
+			}
 		}
 	}
 
-	if len(errorLines) == 0 {
+	if len(fileErrors) == 0 {
 		return 0
 	}
 
-	// For each error line, find the enclosing command by scanning backwards
-	// for a "Use:" pattern to identify the command name, then backwards more
-	// for the interface descriptor to build the method key.
 	excluded := map[string]bool{}
-	for errLine := range errorLines {
-		// Find enclosing method key by looking for the RunE pattern.
-		methodKey := findMethodKeyForLine(lines, errLine)
+	for _, fe := range fileErrors {
+		lines := genFiles[fe.filePath]
+		methodKey := findMethodKeyForLine(lines, fe.lineNo)
 		if methodKey != "" {
 			excluded[methodKey] = true
 		}
@@ -865,10 +897,10 @@ func findMethodKeyForLine(lines []string, lineNo int) string {
 		return ""
 	}
 
-	// Scan backwards for findServiceByDescriptor to get the interface.
+	// Scan backwards for FindServiceByDescriptor to get the interface.
 	for i := lineNo - 1; i >= 0 && i > lineNo-500; i-- {
 		line := strings.TrimSpace(lines[i])
-		if strings.Contains(line, "findServiceByDescriptor") {
+		if strings.Contains(line, "FindServiceByDescriptor") {
 			q1 := strings.LastIndex(line, "\"")
 			if q1 < 0 {
 				continue
@@ -1772,105 +1804,6 @@ type needsTracker struct {
 	strings bool
 }
 
-func (n *needsTracker) methodNeeds(
-	m methodInfo,
-	iface *interfaceInfo,
-) {
-	for _, p := range m.Params {
-		n.paramNeeds(p.Type, iface)
-	}
-}
-
-func (n *needsTracker) paramNeeds(
-	typeStr string,
-	iface *interfaceInfo,
-) {
-	kind := classifyType(typeStr, iface)
-	switch kind {
-	case kindPrimitiveArray:
-		switch typeStr {
-		case "[]byte":
-			n.hex = true
-		case "[]string":
-			n.strings = true
-		default:
-			n.strings = true
-			n.strconv = true
-		}
-	case kindStruct:
-		key := resolveTypeKey(typeStr, iface.ImportPath)
-		si := knownStructs[key]
-		if si != nil {
-			n.structFieldsNeeds(si, 0)
-		}
-	case kindEnum:
-		// enum uses GetInt32 then cast -- no extra imports
-	case kindInterface, kindMap, kindComplexArray:
-		n.json = true
-	case kindNullable:
-		inner := typeStr[1:]
-		n.paramNeeds(inner, iface)
-	case kindNullablePrimitive:
-		inner := typeStr[1:]
-		switch inner {
-		case "string":
-			// no extra
-		default:
-			n.strconv = true
-		}
-	case kindInterfaceType:
-		// uses GetString + conn.GetService -- no extra
-	case kindBinderIBinder:
-		// uses GetString + conn.GetService -- no extra
-	}
-}
-
-func (n *needsTracker) structFieldsNeeds(
-	si *structInfo,
-	depth int,
-) {
-	if depth > 3 {
-		n.json = true
-		return
-	}
-	for _, f := range si.Fields {
-		n.fieldNeeds(f, si, depth)
-	}
-}
-
-func (n *needsTracker) fieldNeeds(
-	f structField,
-	parentSI *structInfo,
-	depth int,
-) {
-	fKind := classifyFieldType(f.Type, parentSI)
-	switch fKind {
-	case kindPrimitiveArray:
-		switch f.Type {
-		case "[]byte":
-			n.hex = true
-		case "[]string":
-			n.strings = true
-		default:
-			n.strings = true
-			n.strconv = true
-		}
-	case kindStruct:
-		key := resolveTypeKey(f.Type, parentSI.ImportPath)
-		innerSI := knownStructs[key]
-		if innerSI != nil {
-			n.structFieldsNeeds(innerSI, depth+1)
-		} else {
-			n.json = true
-		}
-	case kindEnum:
-		n.strconv = true
-	case kindInterface, kindMap, kindComplexArray,
-		kindBinderIBinder, kindInterfaceType, kindNullable, kindNullablePrimitive:
-		n.json = true
-	}
-}
-
 // ---- Generation: registry_gen.go ----
 
 func writeRegistryGen(
@@ -1921,7 +1854,13 @@ func writeRegistryGen(
 	return os.WriteFile(filepath.Join(outDir, "registry_gen.go"), formatted, 0o644)
 }
 
-// ---- Generation: commands_gen.go ----
+// ---- Generation: gen/<aidl_pkg>/commands.go (one package per AIDL package) ----
+
+const (
+	// cliutilImportPath is the import path of the shared CLI utility
+	// package that generated subpackages import.
+	cliutilImportPath = modulePath + "/cmd/bindercli/cliutil"
+)
 
 type commandableIface struct {
 	iface          *interfaceInfo
@@ -1929,36 +1868,74 @@ type commandableIface struct {
 	commandMethods []methodInfo
 }
 
-func writeCommandsGen(
+// genPackageInfo holds metadata about a generated subpackage.
+type genPackageInfo struct {
+	// GoPackageName is the Go package name (e.g., "android_app").
+	GoPackageName string
+
+	// ImportPath is the full import path under gen/.
+	ImportPath string
+
+	// RelDir is the directory path relative to outputDir
+	// (e.g., "gen/android_app").
+	RelDir string
+}
+
+// aidlPkgToGoPkg converts an AIDL package prefix to a Go package name.
+// e.g., "android.app" -> "android_app",
+//
+//	"com.android.internal_.app" -> "com_android_internal__app",
+//	"aaudio" -> "aaudio".
+func aidlPkgToGoPkg(
+	aidlPkg string,
+) string {
+	return strings.NewReplacer(
+		".", "_",
+	).Replace(aidlPkg)
+}
+
+// aidlPackageOf extracts the AIDL package from a descriptor.
+// e.g., "android.app.IActivityManager" -> "android.app",
+//
+//	"aaudio.IAAudioService" -> "aaudio".
+func aidlPackageOf(
+	descriptor string,
+) string {
+	idx := strings.LastIndex(descriptor, ".")
+	if idx < 0 {
+		return descriptor
+	}
+	return descriptor[:idx]
+}
+
+// writeCommandsGenPackages generates one Go package per AIDL package
+// under outputDir/gen/<aidl_pkg>/commands.go. Each package exports a
+// Register(root *cobra.Command) function. Returns metadata about all
+// generated packages for the register_gen.go import list.
+func writeCommandsGenPackages(
 	outDir string,
 	interfaces []*interfaceInfo,
-) error {
-	importAliases := map[string]string{}
+) ([]genPackageInfo, error) {
+	// Remove legacy single-file and split-file outputs.
+	os.Remove(filepath.Join(outDir, "commands_gen.go"))
+	os.Remove(filepath.Join(outDir, "commands_gen_common.go"))
+	removeOldCommandsGenFiles(outDir)
 
-	aliasCounts := map[string]int{
-		"context": 1,
-		"fmt":     1,
-		"os":      1,
-		"cobra":   1,
-		"binder":  1,
-		"main":    1,
-		"hex":     1,
-		"json":    1,
-		"strconv": 1,
-		"strings": 1,
+	// Remove stale gen subdirectories.
+	genDir := filepath.Join(outDir, "gen")
+	os.RemoveAll(genDir)
+
+	// Group commandable interfaces by AIDL package.
+	type pkgGroup struct {
+		commandables []commandableIface
 	}
-
-	var commandables []commandableIface
-	var needs needsTracker
+	groups := map[string]*pkgGroup{}
 
 	for _, iface := range interfaces {
 		if iface.ImportPath == modulePath {
 			continue
 		}
 
-		// Skip interfaces whose Go proxy constructor doesn't exist
-		// in the source tree (e.g., stale specs referencing deleted
-		// generated code).
 		constructorKey := iface.ImportPath + ":" + iface.ProxyConstructor
 		if !knownGoProxyConstructors[constructorKey] {
 			continue
@@ -1970,32 +1947,124 @@ func writeCommandsGen(
 				continue
 			}
 			cmdMethods = append(cmdMethods, m)
-			needs.methodNeeds(m, iface)
 		}
 		if len(cmdMethods) == 0 {
 			continue
 		}
 
-		alias, ok := importAliases[iface.ImportPath]
+		aidlPkg := aidlPackageOf(iface.Descriptor)
+		g, ok := groups[aidlPkg]
 		if !ok {
-			alias = uniqueAlias(iface.PkgName, aliasCounts)
-			importAliases[iface.ImportPath] = alias
+			g = &pkgGroup{}
+			groups[aidlPkg] = g
 		}
-
-		commandables = append(commandables, commandableIface{
+		g.commandables = append(g.commandables, commandableIface{
 			iface:          iface,
-			importAlias:    alias,
 			commandMethods: cmdMethods,
 		})
 	}
 
-	// Generate the code body first so that ensureImport populates
-	// importAliases lazily (only imports that are actually used).
-	var body bytes.Buffer
-	writeAddGeneratedCommands(&body, commandables)
-	writeKnownServiceNamesMap(&body)
-	writeFindServiceByDescriptorFunc(&body)
+	// Also generate the knownServiceNames init in a separate
+	// register_gen.go (handled by writeRegisterGen), so we write
+	// the knownServiceNames map init there.
 
+	// Sort AIDL packages for deterministic output.
+	aidlPkgs := make([]string, 0, len(groups))
+	for pkg := range groups {
+		aidlPkgs = append(aidlPkgs, pkg)
+	}
+	sort.Strings(aidlPkgs)
+
+	var genPkgs []genPackageInfo
+
+	for _, aidlPkg := range aidlPkgs {
+		g := groups[aidlPkg]
+		goPkgName := aidlPkgToGoPkg(aidlPkg)
+		relDir := filepath.Join("gen", goPkgName)
+		pkgDir := filepath.Join(outDir, relDir)
+
+		if err := os.MkdirAll(pkgDir, 0o755); err != nil {
+			return nil, fmt.Errorf("creating %s: %w", pkgDir, err)
+		}
+
+		if err := writeGenPackage(pkgDir, goPkgName, g.commandables); err != nil {
+			return nil, fmt.Errorf("writing %s: %w", pkgDir, err)
+		}
+
+		genPkgs = append(genPkgs, genPackageInfo{
+			GoPackageName: goPkgName,
+			ImportPath:    modulePath + "/cmd/bindercli/" + relDir,
+			RelDir:        relDir,
+		})
+	}
+
+	fmt.Fprintf(os.Stderr, "Generated %d subpackages under gen/\n", len(genPkgs))
+	return genPkgs, nil
+}
+
+// removeOldCommandsGenFiles deletes all commands_gen_*.go files from
+// outDir so stale files don't linger from previous split-file generations.
+func removeOldCommandsGenFiles(outDir string) {
+	entries, err := os.ReadDir(outDir)
+	if err != nil {
+		return
+	}
+	for _, e := range entries {
+		if strings.HasPrefix(e.Name(), "commands_gen_") && strings.HasSuffix(e.Name(), ".go") {
+			os.Remove(filepath.Join(outDir, e.Name()))
+		}
+	}
+}
+
+// writeGenPackage writes a single commands.go file for one AIDL package
+// group. The file defines a Register(root *cobra.Command) function that
+// adds all interface commands for that AIDL package.
+func writeGenPackage(
+	pkgDir string,
+	goPkgName string,
+	commandables []commandableIface,
+) error {
+	// Each subpackage gets its own independent alias namespace.
+	importAliases := map[string]string{}
+	aliasCounts := map[string]int{
+		"context": 1,
+		"fmt":     1,
+		"os":      1,
+		"cobra":   1,
+		"binder":  1,
+		"cliutil": 1,
+		"hex":     1,
+		"json":    1,
+		"strconv": 1,
+		"strings": 1,
+	}
+
+	// Reserve the package name itself to avoid alias collisions.
+	aliasCounts[goPkgName] = 1
+
+	// Assign import aliases for each interface's package.
+	for i := range commandables {
+		ci := &commandables[i]
+		alias, ok := importAliases[ci.iface.ImportPath]
+		if !ok {
+			alias = uniqueAlias(ci.iface.PkgName, aliasCounts)
+			importAliases[ci.iface.ImportPath] = alias
+		}
+		ci.importAlias = alias
+	}
+
+	// Generate the body first to determine which imports are used.
+	var body bytes.Buffer
+
+	// Write the Register function.
+	body.WriteString("// Register adds all generated commands for this AIDL package to root.\n")
+	body.WriteString("func Register(root *cobra.Command) {\n")
+	for _, ci := range commandables {
+		fmt.Fprintf(&body, "\troot.AddCommand(%s())\n", cmdGroupFuncName(ci.iface))
+	}
+	body.WriteString("}\n\n")
+
+	// Write each interface group and its method commands.
 	for _, ci := range commandables {
 		gc := &genContext{
 			iface:         ci.iface,
@@ -2006,38 +2075,60 @@ func writeCommandsGen(
 		writeInterfaceGroup(&body, ci, gc)
 	}
 
-	// Now write the full file: header + imports + body.
+	// Determine which imports the body actually uses.
+	bodyStripped := stripStringLiterals(body.String())
+
+	fileImportAliases := map[string]string{}
+	for importPath, alias := range importAliases {
+		if bodyUsesAlias(bodyStripped, alias) {
+			fileImportAliases[importPath] = alias
+		}
+	}
+
+	needs := scanBodyNeeds(bodyStripped)
+
+	// Assemble the full file.
 	var buf bytes.Buffer
 	buf.WriteString("// Code generated by spec2cli. DO NOT EDIT.\n\n")
 	buf.WriteString("//go:build linux\n\n")
-	buf.WriteString("package main\n\n")
+	fmt.Fprintf(&buf, "package %s\n\n", goPkgName)
 
-	writeImports(&buf, importAliases, needs)
+	writeSubpackageImports(&buf, fileImportAliases, needs, bodyStripped)
 	buf.Write(body.Bytes())
 
 	formatted, err := format.Source(buf.Bytes())
 	if err != nil {
-		return fmt.Errorf("formatting commands_gen.go: %w\n\nsource:\n%s", err, buf.String())
+		return fmt.Errorf("formatting commands.go: %w\n\nsource:\n%s", err, buf.String())
 	}
 
-	return os.WriteFile(filepath.Join(outDir, "commands_gen.go"), formatted, 0o644)
+	return os.WriteFile(filepath.Join(pkgDir, "commands.go"), formatted, 0o644)
 }
 
-func writeImports(
+// writeSubpackageImports writes the import block for a gen subpackage.
+func writeSubpackageImports(
 	buf *bytes.Buffer,
 	importAliases map[string]string,
 	needs needsTracker,
+	bodyStr string,
 ) {
 	buf.WriteString("import (\n")
-	buf.WriteString("\t\"context\"\n")
+
+	// Standard library imports.
+	if bodyUsesAlias(bodyStr, "context") {
+		buf.WriteString("\t\"context\"\n")
+	}
 	if needs.hex {
 		buf.WriteString("\t\"encoding/hex\"\n")
 	}
 	if needs.json {
 		buf.WriteString("\t\"encoding/json\"\n")
 	}
-	buf.WriteString("\t\"fmt\"\n")
-	buf.WriteString("\t\"os\"\n")
+	if bodyUsesAlias(bodyStr, "fmt") {
+		buf.WriteString("\t\"fmt\"\n")
+	}
+	if bodyUsesAlias(bodyStr, "os") {
+		buf.WriteString("\t\"os\"\n")
+	}
 	if needs.strconv {
 		buf.WriteString("\t\"strconv\"\n")
 	}
@@ -2045,9 +2136,15 @@ func writeImports(
 		buf.WriteString("\t\"strings\"\n")
 	}
 	buf.WriteString("\n")
-	buf.WriteString("\t\"github.com/spf13/cobra\"\n")
-	buf.WriteString("\t\"github.com/AndroidGoLab/binder/binder\"\n")
-	buf.WriteString("\t\"github.com/AndroidGoLab/binder/servicemanager\"\n")
+
+	// Well-known project imports.
+	if bodyUsesAlias(bodyStr, "cobra") {
+		buf.WriteString("\t\"github.com/spf13/cobra\"\n")
+	}
+	if bodyUsesAlias(bodyStr, "binder") {
+		buf.WriteString("\t\"github.com/AndroidGoLab/binder/binder\"\n")
+	}
+	buf.WriteString("\t\"github.com/AndroidGoLab/binder/cmd/bindercli/cliutil\"\n")
 
 	type importEntry struct {
 		path  string
@@ -2069,12 +2166,6 @@ func writeImports(
 	}
 	for _, imp := range imports {
 		pkgBase := filepath.Base(imp.path)
-		// Always write an explicit alias when the directory name
-		// doesn't match the Go package name. This happens for:
-		// - trailing underscore (e.g., directory "internal_" declares "package internal")
-		// - numeric version suffixes (e.g., directory "foov2" declares "package foo")
-		// Even when they match, being explicit avoids ambiguity with
-		// duplicate package names.
 		needsAlias := imp.alias != pkgBase ||
 			strings.HasSuffix(pkgBase, "_") ||
 			hasNumericVersionSuffix(pkgBase)
@@ -2087,74 +2178,150 @@ func writeImports(
 	buf.WriteString(")\n\n")
 }
 
-func writeAddGeneratedCommands(
-	buf *bytes.Buffer,
-	commandables []commandableIface,
-) {
-	buf.WriteString("func addGeneratedCommands(root *cobra.Command) {\n")
-	for _, ci := range commandables {
-		fmt.Fprintf(buf, "\troot.AddCommand(%s())\n", cmdGroupFuncName(ci.iface))
-	}
-	buf.WriteString("}\n\n")
-}
+// writeRegisterGen writes register_gen.go in the bindercli package
+// that imports all gen subpackages and calls their Register functions.
+// It also initializes the cliutil.KnownServiceNames map.
+func writeRegisterGen(
+	outDir string,
+	genPkgs []genPackageInfo,
+) error {
+	var buf bytes.Buffer
+	buf.WriteString("// Code generated by spec2cli. DO NOT EDIT.\n\n")
+	buf.WriteString("//go:build linux\n\n")
+	buf.WriteString("package main\n\n")
 
-func writeKnownServiceNamesMap(
-	buf *bytes.Buffer,
-) {
+	buf.WriteString("import (\n")
+	buf.WriteString("\t\"github.com/spf13/cobra\"\n\n")
+	buf.WriteString("\t\"github.com/AndroidGoLab/binder/cmd/bindercli/cliutil\"\n")
+	for _, pkg := range genPkgs {
+		fmt.Fprintf(&buf, "\t%s %q\n", pkg.GoPackageName, pkg.ImportPath)
+	}
+	buf.WriteString(")\n\n")
+
+	// Write init that populates knownServiceNames.
+	buf.WriteString("func init() {\n")
+	buf.WriteString("\tcliutil.KnownServiceNames = map[string]string{\n")
 	keys := make([]string, 0, len(knownServiceNames))
 	for k := range knownServiceNames {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
-
-	buf.WriteString("// knownServiceNames maps AIDL descriptors to well-known Android\n")
-	buf.WriteString("// ServiceManager names, allowing fast lookup without enumeration.\n")
-	buf.WriteString("var knownServiceNames = map[string]string{\n")
 	for _, k := range keys {
-		fmt.Fprintf(buf, "\t%q: %q,\n", k, knownServiceNames[k])
+		fmt.Fprintf(&buf, "\t\t%q: %q,\n", k, knownServiceNames[k])
 	}
+	buf.WriteString("\t}\n")
 	buf.WriteString("}\n\n")
+
+	// Write addGeneratedCommands calling each package's Register.
+	buf.WriteString("func addGeneratedCommands(root *cobra.Command) {\n")
+	for _, pkg := range genPkgs {
+		fmt.Fprintf(&buf, "\t%s.Register(root)\n", pkg.GoPackageName)
+	}
+	buf.WriteString("}\n")
+
+	formatted, err := format.Source(buf.Bytes())
+	if err != nil {
+		return fmt.Errorf("formatting register_gen.go: %w\n\nsource:\n%s", err, buf.String())
+	}
+
+	return os.WriteFile(filepath.Join(outDir, "register_gen.go"), formatted, 0o644)
 }
 
-func writeFindServiceByDescriptorFunc(
-	buf *bytes.Buffer,
-) {
-	buf.WriteString(`func findServiceByDescriptor(
-	ctx context.Context,
-	conn *Conn,
-	descriptor string,
-) (binder.IBinder, error) {
-	// Try the static map of well-known service names first to avoid
-	// slow enumeration of all registered services.
-	if name, ok := knownServiceNames[descriptor]; ok {
-		svc, err := conn.SM.CheckService(ctx, servicemanager.ServiceName(name))
-		if err == nil && svc != nil {
-			return svc, nil
+// stripStringLiterals removes the contents of Go string literals
+// from source text, replacing them with empty strings. This prevents
+// false positive import matches against descriptor strings and flag
+// descriptions inside quoted text.
+func stripStringLiterals(src string) string {
+	var buf strings.Builder
+	buf.Grow(len(src))
+	i := 0
+	for i < len(src) {
+		switch src[i] {
+		case '"':
+			buf.WriteByte('"')
+			i++
+			for i < len(src) && src[i] != '"' {
+				if src[i] == '\\' && i+1 < len(src) {
+					i += 2
+					continue
+				}
+				i++
+			}
+			if i < len(src) {
+				buf.WriteByte('"')
+				i++
+			}
+		case '`':
+			buf.WriteByte('`')
+			i++
+			for i < len(src) && src[i] != '`' {
+				i++
+			}
+			if i < len(src) {
+				buf.WriteByte('`')
+				i++
+			}
+		default:
+			buf.WriteByte(src[i])
+			i++
 		}
 	}
+	return buf.String()
+}
 
-	// Fall back to enumeration.
-	services, err := conn.SM.ListServices(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("listing services: %w", err)
-	}
+// bodyUsesAlias checks whether the generated body text (with string
+// literals already stripped) references the given import alias as a
+// Go qualifier (alias.ExportedIdent).
+func bodyUsesAlias(
+	bodyStr string,
+	alias string,
+) bool {
+	needle := alias + "."
+	idx := 0
+	for {
+		pos := strings.Index(bodyStr[idx:], needle)
+		if pos < 0 {
+			return false
+		}
+		absPos := idx + pos
+		afterDot := absPos + len(needle)
 
-	for _, name := range services {
-		svc, err := conn.SM.CheckService(ctx, name)
-		if err != nil || svc == nil {
+		// The char before the alias must not be an identifier char.
+		if absPos > 0 && isIdentChar(bodyStr[absPos-1]) {
+			idx = afterDot
 			continue
 		}
-		desc := queryDescriptor(ctx, svc)
-		if desc == descriptor {
-			return svc, nil
+
+		// The char after "alias." must be an uppercase letter
+		// (exported Go identifier).
+		if afterDot < len(bodyStr) && bodyStr[afterDot] >= 'A' && bodyStr[afterDot] <= 'Z' {
+			return true
 		}
+
+		idx = afterDot
 	}
-
-	return nil, fmt.Errorf("no service with descriptor %q found", descriptor)
 }
 
-`)
+func isIdentChar(b byte) bool {
+	return (b >= 'a' && b <= 'z') ||
+		(b >= 'A' && b <= 'Z') ||
+		(b >= '0' && b <= '9') ||
+		b == '_'
 }
+
+// scanBodyNeeds determines which standard library imports are used by
+// scanning the generated body text for their characteristic patterns.
+func scanBodyNeeds(bodyStr string) needsTracker {
+	var needs needsTracker
+	needs.hex = bodyUsesAlias(bodyStr, "hex")
+	needs.json = bodyUsesAlias(bodyStr, "json")
+	needs.strconv = bodyUsesAlias(bodyStr, "strconv")
+	needs.strings = bodyUsesAlias(bodyStr, "strings")
+	return needs
+}
+
+
+
 
 func writeInterfaceGroup(
 	buf *bytes.Buffer,
@@ -2202,7 +2369,7 @@ func writeMethodCmd(
 
 	buf.WriteString("\t\tRunE: func(cmd *cobra.Command, args []string) error {\n")
 	buf.WriteString("\t\t\tctx := context.Background()\n\n")
-	buf.WriteString("\t\t\tconn, err := OpenConn(ctx, cmd)\n")
+	buf.WriteString("\t\t\tconn, err := cliutil.OpenConn(ctx, cmd)\n")
 	buf.WriteString("\t\t\tif err != nil {\n")
 	buf.WriteString("\t\t\t\treturn err\n")
 	buf.WriteString("\t\t\t}\n")
@@ -2213,7 +2380,7 @@ func writeMethodCmd(
 	buf.WriteString("\t\t\tif serviceName != \"\" {\n")
 	buf.WriteString("\t\t\t\tsvc, err = conn.GetService(ctx, serviceName)\n")
 	buf.WriteString("\t\t\t} else {\n")
-	fmt.Fprintf(buf, "\t\t\t\tsvc, err = findServiceByDescriptor(ctx, conn, %q)\n", iface.Descriptor)
+	fmt.Fprintf(buf, "\t\t\t\tsvc, err = cliutil.FindServiceByDescriptor(ctx, conn, %q)\n", iface.Descriptor)
 	buf.WriteString("\t\t\t}\n")
 	buf.WriteString("\t\t\tif err != nil {\n")
 	buf.WriteString("\t\t\t\treturn err\n")
@@ -2245,7 +2412,7 @@ func writeMethodCmd(
 	buf.WriteString("\t\t\t}\n\n")
 
 	buf.WriteString("\t\t\tmode, _ := cmd.Root().PersistentFlags().GetString(\"format\")\n")
-	buf.WriteString("\t\t\tf := NewFormatter(mode, os.Stdout)\n")
+	buf.WriteString("\t\t\tf := cliutil.NewFormatter(mode, os.Stdout)\n")
 	if m.ReturnType != "" {
 		buf.WriteString("\t\t\tf.Value(\"result\", result)\n")
 	} else {
