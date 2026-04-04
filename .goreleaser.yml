@@ -51,10 +51,21 @@ builds:
       - -s -w
 
 archives:
-  - id: default
+  - id: binder-mcp
+    builds: [binder-mcp]
     formats:
       - tar.gz
-    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    name_template: "binder-mcp_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  - id: bindercli
+    builds: [bindercli]
+    formats:
+      - tar.gz
+    name_template: "bindercli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  - id: binder-proxyd
+    builds: [binder-proxyd]
+    formats:
+      - tar.gz
+    name_template: "binder-proxyd_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 
 checksum:
   name_template: "checksums.txt"
