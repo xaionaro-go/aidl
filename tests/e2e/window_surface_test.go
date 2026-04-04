@@ -1036,7 +1036,7 @@ func TestWindowSurface_SurfaceComposer_CaptureLayersSync(t *testing.T) {
 		defer buf.Munmap()
 	}
 
-	pixels, err := buf.ReadPixels()
+	pixels, err := buf.ReadPixels(ctx)
 	if err != nil {
 		t.Logf("ReadPixels failed (not a library bug if mapper unavailable): %v", err)
 		return

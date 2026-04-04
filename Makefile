@@ -84,32 +84,6 @@ e2e:
 e2e-bindercli:
 	go test -tags e2e ./tests/e2e/... -run TestBindercli -v -timeout 300s
 
-# Build gralloc bridge shared library for x86_64 Android using NDK.
-# Requires stub libs (libhidlbase.so, libmapper3.so, libutils.so, libcutils.so)
-# to be pulled from the emulator into /tmp first:
-#   adb pull /system/lib64/libhidlbase.so /tmp/
-#   adb pull /system/lib64/libutils.so /tmp/
-#   adb pull /system/lib64/libcutils.so /tmp/
-#   (libmapper3.so is a thin wrapper — pull or build separately)
-gralloc-bridge:
-	@mkdir -p build
-	$(NDK_CC) -shared -fPIC -o build/gralloc_bridge.so gralloc/bridge/native/gralloc_bridge.cpp \
-		-I$(GRAPHENEOS)/system/libhidl/transport/include \
-		-I$(GRAPHENEOS)/system/libhidl/base/include \
-		-I$(GRAPHENEOS)/system/core/libcutils/include \
-		-I$(GRAPHENEOS)/system/core/libutils/include \
-		-I$(GRAPHENEOS)/system/core/libsystem/include \
-		-I$(GRAPHENEOS)/system/libfmq/base \
-		-I$(HIDL_GEN)/hardware/interfaces/graphics/mapper/3.0/android.hardware.graphics.mapper@3.0_genc++_headers/gen \
-		-I$(HIDL_GEN)/hardware/interfaces/graphics/common/1.0/android.hardware.graphics.common@1.0_genc++_headers/gen \
-		-I$(HIDL_GEN)/hardware/interfaces/graphics/common/1.1/android.hardware.graphics.common@1.1_genc++_headers/gen \
-		-I$(HIDL_GEN)/hardware/interfaces/graphics/common/1.2/android.hardware.graphics.common@1.2_genc++_headers/gen \
-		-I$(HIDL_GEN)/hardware/interfaces/graphics/mapper/2.0/android.hardware.graphics.mapper@2.0_genc++_headers/gen \
-		-I$(HIDL_GEN)/hardware/interfaces/graphics/mapper/2.1/android.hardware.graphics.mapper@2.1_genc++_headers/gen \
-		-I$(HIDL_GEN)/system/libhidl/transport/base/1.0/android.hidl.base@1.0_genc++_headers/gen \
-		-I$(HIDL_GEN)/system/libhidl/transport/manager/1.0/android.hidl.manager@1.0_genc++_headers/gen \
-		-L/tmp -lhidlbase -lmapper3 -lutils -lcutils -std=c++17 -static-libstdc++
-
 # --- Build ---
 
 # Run go vet on all packages.

@@ -3,6 +3,7 @@
 package gralloc
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"unsafe"
@@ -121,11 +122,9 @@ const goldfishIntsOffsetAllocSize = 5
 //
 // For goldfish emulator buffers (/dev/goldfish_address_space), the FD
 // requires claiming a shared region via ioctl and mmapping at the
-// buffer's address space offset. The mapped data reflects whatever the
-// host GPU has written; after the camera HAL queues a buffer (which
-// calls rcReadColorBuffer internally), the pixels are readable.
-// If the goldfish path fails, ReadPixels() falls back to the IMapper
-// bridge (gralloc_bridge.so).
+// buffer's address space offset. ReadPixels() then uses IMapper.lock()
+// via hwbinder to trigger rcReadColorBuffer (host GPU readback) before
+// copying from the mmap'd region.
 func (b *Buffer) Mmap() error {
 	if len(b.Handle.Fds) == 0 {
 		return fmt.Errorf("no FDs in gralloc buffer")
@@ -222,21 +221,33 @@ func (b *Buffer) mmapGoldfish(fd int, bufSize int) error {
 	return fmt.Errorf("goldfish buffer: mmap at offset=0x%x failed for all strategies", offset)
 }
 
-// ReadPixels returns the buffer pixel data. When MmapData is available
-// (memfd, dma-buf heap, or compatible gralloc), a copy of the mapped
-// data is returned. When mmap is unavailable (goldfish emulator), falls
-// back to the HIDL IMapper HAL via gralloc_bridge.so.
-func (b *Buffer) ReadPixels() ([]byte, error) {
-	if b.MmapData != nil {
-		out := make([]byte, len(b.MmapData))
-		copy(out, b.MmapData)
-		return out, nil
+// ReadPixels returns the buffer pixel data.
+//
+// For non-goldfish buffers (memfd, dma-buf heap), a copy of MmapData is
+// returned directly.
+//
+// For goldfish emulator buffers, the pixel data lives in host GPU memory
+// and must be fetched via IMapper.lock() (which triggers rcReadColorBuffer).
+// The buffer must have been mmap'd first; lock() populates the shared
+// goldfish address space memory visible through our mmap.
+func (b *Buffer) ReadPixels(ctx context.Context) ([]byte, error) {
+	if b.MmapData == nil {
+		return nil, fmt.Errorf("buffer not mmap'd; call Mmap() first")
 	}
-	mapper, err := GetMapper()
-	if err != nil {
-		return nil, fmt.Errorf("buffer not mmapped and IMapper bridge unavailable: %w", err)
+
+	// Goldfish buffers require an IMapper lock cycle to fetch pixel data
+	// from the host GPU into the shared address space memory.
+	if b.goldfishClaimed {
+		mapper, err := GetMapper(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("IMapper unavailable for goldfish buffer readback: %w", err)
+		}
+		return mapper.LockBuffer(ctx, b)
 	}
-	return mapper.LockBuffer(b)
+
+	out := make([]byte, len(b.MmapData))
+	copy(out, b.MmapData)
+	return out, nil
 }
 
 // isGoldfishFD checks if an FD points to the goldfish emulator's

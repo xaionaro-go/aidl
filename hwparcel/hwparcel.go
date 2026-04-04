@@ -48,6 +48,10 @@ const (
 	// hidlVecHeaderSize is sizeof(hidl_vec<T>) on 64-bit:
 	// hidl_pointer<T> (8) + uint32_t size (4) + bool owns (1) + pad[3] = 16.
 	hidlVecHeaderSize = 16
+
+	// hidlHandleSize is sizeof(hidl_handle) on 64-bit:
+	// native_handle_t* mHandle (8) + bool mOwnsHandle (1) + pad[7] = 16.
+	hidlHandleSize = 16
 )
 
 // bufferEntry holds a scatter-gather buffer and its metadata.
@@ -479,6 +483,51 @@ func (p *HwParcel) WriteFdArrayObject(
 // Wire format: uint64(0) inline.
 func (p *HwParcel) WriteNullNativeHandle() {
 	p.WriteUint64(0)
+}
+
+// WriteNativeHandle writes a non-null HIDL handle as a top-level parameter.
+// Creates a hidl_handle struct as a top-level buffer, then embeds the
+// native_handle_t data as a child buffer with a binder_fd_array_object.
+//
+// Wire format:
+//
+//	binder_buffer_object: hidl_handle struct (16 bytes)
+//	  -> child binder_buffer_object: native_handle_t data
+//	  -> binder_fd_array_object: FD array in native_handle_t
+func (p *HwParcel) WriteNativeHandle(
+	fds []int32,
+	ints []int32,
+) {
+	const nativeHandleVersion = 12
+	const nativeHandleDataOffset = 12
+
+	// hidl_handle is 16 bytes: pointer(8) + bool owns(1) + pad(7).
+	// The pointer field (offset 0) is patched by the kernel.
+	handleStruct := make([]byte, hidlHandleSize)
+	parentHandle := p.WriteBuffer(handleStruct)
+
+	// Build the native_handle_t buffer.
+	nativeHandleSize := nativeHandleVersion + len(fds)*4 + len(ints)*4
+	buf := make([]byte, nativeHandleSize)
+	binary.LittleEndian.PutUint32(buf[0:], uint32(nativeHandleVersion))
+	binary.LittleEndian.PutUint32(buf[4:], uint32(len(fds)))
+	binary.LittleEndian.PutUint32(buf[8:], uint32(len(ints)))
+	off := 12
+	for _, fd := range fds {
+		binary.LittleEndian.PutUint32(buf[off:], uint32(fd))
+		off += 4
+	}
+	for _, v := range ints {
+		binary.LittleEndian.PutUint32(buf[off:], uint32(v))
+		off += 4
+	}
+
+	// Write the native_handle_t as a child of the hidl_handle struct.
+	// Parent offset 0 = the mHandle pointer field.
+	bufHandle := p.WriteEmbeddedBuffer(buf, parentHandle, 0)
+
+	// Tell the kernel about the FDs in the native_handle_t buffer.
+	p.WriteFdArrayObject(len(fds), bufHandle, nativeHandleDataOffset)
 }
 
 // WriteEmbeddedNativeHandle writes a non-null native_handle_t as an

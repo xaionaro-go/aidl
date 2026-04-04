@@ -191,7 +191,7 @@ func (d *Device) CaptureFrame(
 		if buf == nil {
 			return nil, fmt.Errorf("slot %d: buffer not assigned (dequeue may not have been called for this slot)", slot)
 		}
-		return buf.ReadPixels()
+		return buf.ReadPixels(ctx)
 	}
 }
 

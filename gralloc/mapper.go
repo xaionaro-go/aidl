@@ -1,18 +1,20 @@
 package gralloc
 
-import "sync"
+import (
+	"context"
+	"sync"
+)
 
-// Mapper provides CPU access to gralloc buffers.
+// Mapper provides CPU access to gralloc buffers via the HIDL IMapper HAL.
 type Mapper interface {
-	LockBuffer(b *Buffer) ([]byte, error)
+	LockBuffer(ctx context.Context, b *Buffer) ([]byte, error)
 }
 
 // GetMapper returns a Mapper for the current device. The result is cached.
-// Returns (nil, nil) when no mapper is available (real devices where mmap
-// works directly).
-func GetMapper() (Mapper, error) {
+// Returns an error when no mapper is available.
+func GetMapper(ctx context.Context) (Mapper, error) {
 	globalMapperOnce.Do(func() {
-		globalMapper, globalMapperErr = newBridgeMapper()
+		globalMapper, globalMapperErr = newHIDLMapper(ctx)
 	})
 	return globalMapper, globalMapperErr
 }
