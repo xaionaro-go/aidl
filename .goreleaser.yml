@@ -54,17 +54,17 @@ archives:
   - id: binder-mcp
     builds: [binder-mcp]
     formats:
-      - tar.gz
+      - binary
     name_template: "binder-mcp_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
   - id: bindercli
     builds: [bindercli]
     formats:
-      - tar.gz
+      - binary
     name_template: "bindercli_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
   - id: binder-proxyd
     builds: [binder-proxyd]
     formats:
-      - tar.gz
+      - binary
     name_template: "binder-proxyd_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 
 checksum:
