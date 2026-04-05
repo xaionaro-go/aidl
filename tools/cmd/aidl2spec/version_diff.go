@@ -11,25 +11,79 @@ import (
 )
 
 // diffMethodParams compares oldMethod (from oldAPI) with newMethod (from newAPI)
-// and sets MinAPILevel on params that were added in newAPI.
-// Only trailing param additions are detected (AIDL stability guarantees
-// params are never removed or reordered).
+// and annotates params with MinAPILevel / MaxAPILevel to record cross-version
+// differences. The comparison walks params by position:
+//
+//   - Same type at position N → kept as-is (present in both versions).
+//   - Different type at position N → old param gets MaxAPILevel=oldAPI,
+//     new param gets MinAPILevel=newAPI. Both appear in the result.
+//   - Trailing params only in newMethod → MinAPILevel=newAPI.
+//   - Trailing params only in oldMethod → MaxAPILevel=oldAPI.
 func diffMethodParams(
 	oldMethod spec.MethodSpec,
 	newMethod spec.MethodSpec,
 	oldAPI int,
 	newAPI int,
 ) []spec.ParamSpec {
-	result := make([]spec.ParamSpec, len(newMethod.Params))
-	copy(result, newMethod.Params)
+	oldParams := oldMethod.Params
+	newParams := newMethod.Params
 
-	oldCount := len(oldMethod.Params)
-	for i := range result {
-		if i >= oldCount {
-			result[i].MinAPILevel = newAPI
+	minLen := len(oldParams)
+	if len(newParams) < minLen {
+		minLen = len(newParams)
+	}
+
+	var result []spec.ParamSpec
+
+	// Walk positions present in both versions.
+	for i := 0; i < minLen; i++ {
+		if oldParams[i].Type.Equal(newParams[i].Type) {
+			result = append(result, newParams[i])
+			continue
+		}
+
+		// Type changed at this position: emit both variants with version bounds.
+		old := oldParams[i]
+		old.MaxAPILevel = oldAPI
+		result = append(result, old)
+
+		nw := newParams[i]
+		nw.MinAPILevel = newAPI
+		result = append(result, nw)
+	}
+
+	// Trailing params only in the new version.
+	for i := minLen; i < len(newParams); i++ {
+		p := newParams[i]
+		p.MinAPILevel = newAPI
+		result = append(result, p)
+	}
+
+	// Trailing params only in the old version (removed).
+	for i := minLen; i < len(oldParams); i++ {
+		p := oldParams[i]
+		p.MaxAPILevel = oldAPI
+		result = append(result, p)
+	}
+
+	return result
+}
+
+// paramsChanged reports whether old and new param lists differ in length
+// or in the type at any shared position.
+func paramsChanged(
+	old []spec.ParamSpec,
+	new []spec.ParamSpec,
+) bool {
+	if len(old) != len(new) {
+		return true
+	}
+	for i := range old {
+		if !old[i].Type.Equal(new[i].Type) {
+			return true
 		}
 	}
-	return result
+	return false
 }
 
 // diffBaselineParams parses AIDL files from the baseline 3rdparty directory,
@@ -121,7 +175,7 @@ func diffBaselineParams(
 					// is new (handled by ResolveCode returning an error).
 					continue
 				}
-				if len(m.Params) > len(baselineMethod.Params) {
+				if paramsChanged(baselineMethod.Params, m.Params) {
 					m.Params = diffMethodParams(baselineMethod, *m, baselineAPI, newAPI)
 					diffCount++
 				}

@@ -29,3 +29,22 @@ type TypeRef struct {
 	// TypeArgs holds generic type arguments (e.g., List<T> → TypeArgs=[T]).
 	TypeArgs []TypeRef `yaml:"type_args,omitempty"`
 }
+
+// Equal reports whether t and other represent the same type
+// (same Name and recursively equal TypeArgs). Array-ness, nullability,
+// and annotations are intentionally excluded: the comparison is used
+// for cross-version param matching where the core type identity matters.
+func (t TypeRef) Equal(other TypeRef) bool {
+	if t.Name != other.Name {
+		return false
+	}
+	if len(t.TypeArgs) != len(other.TypeArgs) {
+		return false
+	}
+	for i := range t.TypeArgs {
+		if !t.TypeArgs[i].Equal(other.TypeArgs[i]) {
+			return false
+		}
+	}
+	return true
+}
