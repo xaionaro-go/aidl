@@ -2295,7 +2295,7 @@ and run commands programmatically:
 dr, _ := runner.NewDeviceRunner("SERIAL")
 dr.PushBinary(ctx, "build/mybinary", "/data/local/tmp/mybinary")
 result, _ := dr.Run(ctx, "/data/local/tmp/mybinary", 30*time.Second)
-fmt.Println(result.Output)
+fmt.Println(result.Stdout)
 ```
 
 For remote binder access from a host machine, `interop/gadb/proxy/`
@@ -2304,8 +2304,8 @@ sets up a forwarded session:
 ```go
 sess, _ := proxy.NewSession(ctx, "SERIAL")
 defer sess.Close(ctx)
-transport := sess.Transport() // *RemoteTransport
-reply, _ := transport.Transact(ctx, descriptor, code, 0, data)
+// Session manages the daemon lifecycle and port forwarding;
+// binder calls are routed through the remote transport.
 ```
 
 </details>

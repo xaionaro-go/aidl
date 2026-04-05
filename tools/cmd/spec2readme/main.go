@@ -669,18 +669,19 @@ The examples above cover specific subsystems, but the library supports **all** A
 
 ` + "```bash" + `
 # Find the proxy for a known AIDL interface
-grep -r 'DescriptorI.*= "android.os.IVibratorService"' android/
+grep -r 'DescriptorI.*= "android.hardware.vibrator.IVibrator"' android/
 ` + "```" + `
 
 3. **Connect and call methods:**
 
 ` + "```go" + `
-    svc, err := sm.GetService(ctx, servicemanager.VibratorService)
+    svc, err := sm.GetService(ctx, servicemanager.ServiceName(
+        vibrator.DescriptorIVibrator+"/default"))
     if err != nil {
         log.Fatal(err)
     }
-    proxy := genOs.NewVibratorServiceProxy(svc)
-    result, err := proxy.SomeMethod(ctx, args...)
+    proxy := vibrator.NewVibratorProxy(svc)
+    caps, err := proxy.GetCapabilities(ctx)
 ` + "```" + `
 
 4. **For HAL services** (hardware abstraction layers), the service name is the AIDL descriptor plus ` + "`/default`" + `:
@@ -939,7 +940,8 @@ and run commands programmatically:
 ` + "```go" + `
 dr, _ := runner.NewDeviceRunner("SERIAL")
 dr.PushBinary(ctx, "build/mybinary", "/data/local/tmp/mybinary")
-output, _ := dr.Run(ctx, "/data/local/tmp/mybinary", "--flag")
+result, _ := dr.Run(ctx, "/data/local/tmp/mybinary", 30*time.Second)
+fmt.Println(result.Stdout)
 ` + "```" + `
 
 For remote binder access from a host machine, ` + "`interop/gadb/proxy/`" + `
@@ -948,8 +950,8 @@ sets up a forwarded session:
 ` + "```go" + `
 sess, _ := proxy.NewSession(ctx, "SERIAL")
 defer sess.Close(ctx)
-sm := servicemanager.New(sess.Transport())
-// Use sm as if running on-device
+// Session manages the daemon lifecycle and port forwarding;
+// binder calls are routed through the remote transport.
 ` + "```" + `
 
 </details>
