@@ -51,22 +51,22 @@ const (
 
 type IBluetoothGattCallback interface {
 	AsBinder() binder.IBinder
-	OnClientRegistered(ctx context.Context, status int32) error
-	OnClientConnectionState(ctx context.Context, status int32, connected bool, device BluetoothDevice) error
-	OnPhyUpdate(ctx context.Context, device BluetoothDevice, txPhy int32, rxPhy int32, status int32) error
-	OnPhyRead(ctx context.Context, device BluetoothDevice, txPhy int32, rxPhy int32, status int32) error
-	OnSearchComplete(ctx context.Context, device BluetoothDevice, services []BluetoothGattService, status int32) error
-	OnCharacteristicRead(ctx context.Context, device BluetoothDevice, status int32, handle int32, value []byte) error
-	OnCharacteristicWrite(ctx context.Context, device BluetoothDevice, status int32, handle int32, value []byte) error
-	OnExecuteWrite(ctx context.Context, device BluetoothDevice, status int32) error
-	OnDescriptorRead(ctx context.Context, device BluetoothDevice, status int32, handle int32, value []byte) error
-	OnDescriptorWrite(ctx context.Context, device BluetoothDevice, status int32, handle int32, value []byte) error
-	OnNotify(ctx context.Context, device BluetoothDevice, handle int32, value []byte) error
-	OnReadRemoteRssi(ctx context.Context, device BluetoothDevice, rssi int32, status int32) error
-	OnConfigureMTU(ctx context.Context, device BluetoothDevice, mtu int32, status int32) error
-	OnConnectionUpdated(ctx context.Context, device BluetoothDevice, interval int32, latency int32, timeout int32, status int32) error
-	OnServiceChanged(ctx context.Context, device BluetoothDevice) error
-	OnSubrateChange(ctx context.Context, device BluetoothDevice, subrateMode int32, status int32) error
+	OnClientRegistered(ctx context.Context, status int32, clientIf int32) error
+	OnClientConnectionState(ctx context.Context, status int32, clientIf int32, connected_sinceAPI36 bool, connected_untilAPI35 bool, device BluetoothDevice, address string) error
+	OnPhyUpdate(ctx context.Context, address string, device BluetoothDevice, txPhy int32, rxPhy int32, status int32) error
+	OnPhyRead(ctx context.Context, address string, device BluetoothDevice, txPhy int32, rxPhy int32, status int32) error
+	OnSearchComplete(ctx context.Context, address string, device BluetoothDevice, services []BluetoothGattService, status int32) error
+	OnCharacteristicRead(ctx context.Context, address string, device BluetoothDevice, status int32, handle int32, value []byte) error
+	OnCharacteristicWrite(ctx context.Context, address string, device BluetoothDevice, status int32, handle int32, value []byte) error
+	OnExecuteWrite(ctx context.Context, address string, device BluetoothDevice, status int32) error
+	OnDescriptorRead(ctx context.Context, address string, device BluetoothDevice, status int32, handle int32, value []byte) error
+	OnDescriptorWrite(ctx context.Context, address string, device BluetoothDevice, status int32, handle int32, value []byte) error
+	OnNotify(ctx context.Context, address string, device BluetoothDevice, handle int32, value []byte) error
+	OnReadRemoteRssi(ctx context.Context, address string, device BluetoothDevice, rssi int32, status int32) error
+	OnConfigureMTU(ctx context.Context, address string, device BluetoothDevice, mtu int32, status int32) error
+	OnConnectionUpdated(ctx context.Context, address string, device BluetoothDevice, interval int32, latency int32, timeout int32, status int32) error
+	OnServiceChanged(ctx context.Context, address string, device BluetoothDevice) error
+	OnSubrateChange(ctx context.Context, address string, device BluetoothDevice, subrateMode int32, status_param3 int32, contNum int32, timeout int32, status_untilAPI35 int32) error
 }
 
 type BluetoothGattCallbackProxy struct {
@@ -88,6 +88,7 @@ var _ IBluetoothGattCallback = (*BluetoothGattCallbackProxy)(nil)
 func (p *BluetoothGattCallbackProxy) OnClientRegistered(
 	ctx context.Context,
 	status int32,
+	clientIf int32,
 ) error {
 	_data := parcel.New()
 	defer _data.Recycle()
@@ -95,15 +96,19 @@ func (p *BluetoothGattCallbackProxy) OnClientRegistered(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnClientRegistered)
 	_compiledDescs := []string{
 		"I",
+		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(status)
+		_data.WriteInt32(clientIf)
 	} else {
 		_paramMap := binder.MatchParamsToSignature(_compiledDescs, _sig)
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
 				_data.WriteInt32(status)
+			case 1:
+				_data.WriteInt32(clientIf)
 			}
 		}
 	}
@@ -120,8 +125,11 @@ func (p *BluetoothGattCallbackProxy) OnClientRegistered(
 func (p *BluetoothGattCallbackProxy) OnClientConnectionState(
 	ctx context.Context,
 	status int32,
-	connected bool,
+	clientIf int32,
+	connected_sinceAPI36 bool,
+	connected_untilAPI35 bool,
 	device BluetoothDevice,
+	address string,
 ) error {
 	_data := parcel.New()
 	defer _data.Recycle()
@@ -129,16 +137,22 @@ func (p *BluetoothGattCallbackProxy) OnClientConnectionState(
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnClientConnectionState)
 	_compiledDescs := []string{
 		"I",
+		"I",
+		"Z",
 		"Z",
 		"Landroid/bluetooth/BluetoothDevice;",
+		"Ljava/lang/String;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
 		_data.WriteInt32(status)
-		_data.WriteBool(connected)
+		_data.WriteInt32(clientIf)
+		_data.WriteBool(connected_sinceAPI36)
+		_data.WriteBool(connected_untilAPI35)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
 		}
+		_data.WriteString16(address)
 	} else {
 		_paramMap := binder.MatchParamsToSignature(_compiledDescs, _sig)
 		for _, _pi := range _paramMap {
@@ -146,12 +160,18 @@ func (p *BluetoothGattCallbackProxy) OnClientConnectionState(
 			case 0:
 				_data.WriteInt32(status)
 			case 1:
-				_data.WriteBool(connected)
+				_data.WriteInt32(clientIf)
 			case 2:
+				_data.WriteBool(connected_sinceAPI36)
+			case 3:
+				_data.WriteBool(connected_untilAPI35)
+			case 4:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
+			case 5:
+				_data.WriteString16(address)
 			}
 		}
 	}
@@ -167,6 +187,7 @@ func (p *BluetoothGattCallbackProxy) OnClientConnectionState(
 
 func (p *BluetoothGattCallbackProxy) OnPhyUpdate(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	txPhy int32,
 	rxPhy int32,
@@ -177,12 +198,14 @@ func (p *BluetoothGattCallbackProxy) OnPhyUpdate(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnPhyUpdate)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -195,15 +218,17 @@ func (p *BluetoothGattCallbackProxy) OnPhyUpdate(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(txPhy)
 			case 2:
-				_data.WriteInt32(rxPhy)
+				_data.WriteInt32(txPhy)
 			case 3:
+				_data.WriteInt32(rxPhy)
+			case 4:
 				_data.WriteInt32(status)
 			}
 		}
@@ -220,6 +245,7 @@ func (p *BluetoothGattCallbackProxy) OnPhyUpdate(
 
 func (p *BluetoothGattCallbackProxy) OnPhyRead(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	txPhy int32,
 	rxPhy int32,
@@ -230,12 +256,14 @@ func (p *BluetoothGattCallbackProxy) OnPhyRead(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnPhyRead)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -248,15 +276,17 @@ func (p *BluetoothGattCallbackProxy) OnPhyRead(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(txPhy)
 			case 2:
-				_data.WriteInt32(rxPhy)
+				_data.WriteInt32(txPhy)
 			case 3:
+				_data.WriteInt32(rxPhy)
+			case 4:
 				_data.WriteInt32(status)
 			}
 		}
@@ -273,6 +303,7 @@ func (p *BluetoothGattCallbackProxy) OnPhyRead(
 
 func (p *BluetoothGattCallbackProxy) OnSearchComplete(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	services []BluetoothGattService,
 	status int32,
@@ -282,11 +313,13 @@ func (p *BluetoothGattCallbackProxy) OnSearchComplete(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnSearchComplete)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"Ljava/util/List;",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -308,11 +341,13 @@ func (p *BluetoothGattCallbackProxy) OnSearchComplete(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
+			case 2:
 				if services == nil {
 					_data.WriteInt32(-1)
 				} else {
@@ -324,7 +359,7 @@ func (p *BluetoothGattCallbackProxy) OnSearchComplete(
 						}
 					}
 				}
-			case 2:
+			case 3:
 				_data.WriteInt32(status)
 			}
 		}
@@ -341,6 +376,7 @@ func (p *BluetoothGattCallbackProxy) OnSearchComplete(
 
 func (p *BluetoothGattCallbackProxy) OnCharacteristicRead(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 	handle int32,
@@ -351,12 +387,14 @@ func (p *BluetoothGattCallbackProxy) OnCharacteristicRead(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnCharacteristicRead)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -369,15 +407,17 @@ func (p *BluetoothGattCallbackProxy) OnCharacteristicRead(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(status)
 			case 2:
-				_data.WriteInt32(handle)
+				_data.WriteInt32(status)
 			case 3:
+				_data.WriteInt32(handle)
+			case 4:
 				_data.WriteByteArray(value)
 			}
 		}
@@ -394,6 +434,7 @@ func (p *BluetoothGattCallbackProxy) OnCharacteristicRead(
 
 func (p *BluetoothGattCallbackProxy) OnCharacteristicWrite(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 	handle int32,
@@ -404,12 +445,14 @@ func (p *BluetoothGattCallbackProxy) OnCharacteristicWrite(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnCharacteristicWrite)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -422,15 +465,17 @@ func (p *BluetoothGattCallbackProxy) OnCharacteristicWrite(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(status)
 			case 2:
-				_data.WriteInt32(handle)
+				_data.WriteInt32(status)
 			case 3:
+				_data.WriteInt32(handle)
+			case 4:
 				_data.WriteByteArray(value)
 			}
 		}
@@ -447,6 +492,7 @@ func (p *BluetoothGattCallbackProxy) OnCharacteristicWrite(
 
 func (p *BluetoothGattCallbackProxy) OnExecuteWrite(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 ) error {
@@ -455,10 +501,12 @@ func (p *BluetoothGattCallbackProxy) OnExecuteWrite(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnExecuteWrite)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -469,11 +517,13 @@ func (p *BluetoothGattCallbackProxy) OnExecuteWrite(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
+			case 2:
 				_data.WriteInt32(status)
 			}
 		}
@@ -490,6 +540,7 @@ func (p *BluetoothGattCallbackProxy) OnExecuteWrite(
 
 func (p *BluetoothGattCallbackProxy) OnDescriptorRead(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 	handle int32,
@@ -500,12 +551,14 @@ func (p *BluetoothGattCallbackProxy) OnDescriptorRead(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnDescriptorRead)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -518,15 +571,17 @@ func (p *BluetoothGattCallbackProxy) OnDescriptorRead(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(status)
 			case 2:
-				_data.WriteInt32(handle)
+				_data.WriteInt32(status)
 			case 3:
+				_data.WriteInt32(handle)
+			case 4:
 				_data.WriteByteArray(value)
 			}
 		}
@@ -543,6 +598,7 @@ func (p *BluetoothGattCallbackProxy) OnDescriptorRead(
 
 func (p *BluetoothGattCallbackProxy) OnDescriptorWrite(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 	handle int32,
@@ -553,12 +609,14 @@ func (p *BluetoothGattCallbackProxy) OnDescriptorWrite(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnDescriptorWrite)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -571,15 +629,17 @@ func (p *BluetoothGattCallbackProxy) OnDescriptorWrite(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(status)
 			case 2:
-				_data.WriteInt32(handle)
+				_data.WriteInt32(status)
 			case 3:
+				_data.WriteInt32(handle)
+			case 4:
 				_data.WriteByteArray(value)
 			}
 		}
@@ -596,6 +656,7 @@ func (p *BluetoothGattCallbackProxy) OnDescriptorWrite(
 
 func (p *BluetoothGattCallbackProxy) OnNotify(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	handle int32,
 	value []byte,
@@ -605,11 +666,13 @@ func (p *BluetoothGattCallbackProxy) OnNotify(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnNotify)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"[B",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -621,13 +684,15 @@ func (p *BluetoothGattCallbackProxy) OnNotify(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(handle)
 			case 2:
+				_data.WriteInt32(handle)
+			case 3:
 				_data.WriteByteArray(value)
 			}
 		}
@@ -644,6 +709,7 @@ func (p *BluetoothGattCallbackProxy) OnNotify(
 
 func (p *BluetoothGattCallbackProxy) OnReadRemoteRssi(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	rssi int32,
 	status int32,
@@ -653,11 +719,13 @@ func (p *BluetoothGattCallbackProxy) OnReadRemoteRssi(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnReadRemoteRssi)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -669,13 +737,15 @@ func (p *BluetoothGattCallbackProxy) OnReadRemoteRssi(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(rssi)
 			case 2:
+				_data.WriteInt32(rssi)
+			case 3:
 				_data.WriteInt32(status)
 			}
 		}
@@ -692,6 +762,7 @@ func (p *BluetoothGattCallbackProxy) OnReadRemoteRssi(
 
 func (p *BluetoothGattCallbackProxy) OnConfigureMTU(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	mtu int32,
 	status int32,
@@ -701,11 +772,13 @@ func (p *BluetoothGattCallbackProxy) OnConfigureMTU(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnConfigureMTU)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -717,13 +790,15 @@ func (p *BluetoothGattCallbackProxy) OnConfigureMTU(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(mtu)
 			case 2:
+				_data.WriteInt32(mtu)
+			case 3:
 				_data.WriteInt32(status)
 			}
 		}
@@ -740,6 +815,7 @@ func (p *BluetoothGattCallbackProxy) OnConfigureMTU(
 
 func (p *BluetoothGattCallbackProxy) OnConnectionUpdated(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	interval int32,
 	latency int32,
@@ -751,6 +827,7 @@ func (p *BluetoothGattCallbackProxy) OnConnectionUpdated(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnConnectionUpdated)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
 		"I",
@@ -758,6 +835,7 @@ func (p *BluetoothGattCallbackProxy) OnConnectionUpdated(
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -771,17 +849,19 @@ func (p *BluetoothGattCallbackProxy) OnConnectionUpdated(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(interval)
 			case 2:
-				_data.WriteInt32(latency)
+				_data.WriteInt32(interval)
 			case 3:
-				_data.WriteInt32(timeout)
+				_data.WriteInt32(latency)
 			case 4:
+				_data.WriteInt32(timeout)
+			case 5:
 				_data.WriteInt32(status)
 			}
 		}
@@ -798,6 +878,7 @@ func (p *BluetoothGattCallbackProxy) OnConnectionUpdated(
 
 func (p *BluetoothGattCallbackProxy) OnServiceChanged(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 ) error {
 	_data := parcel.New()
@@ -805,9 +886,11 @@ func (p *BluetoothGattCallbackProxy) OnServiceChanged(
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnServiceChanged)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
@@ -817,6 +900,8 @@ func (p *BluetoothGattCallbackProxy) OnServiceChanged(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
@@ -836,39 +921,59 @@ func (p *BluetoothGattCallbackProxy) OnServiceChanged(
 
 func (p *BluetoothGattCallbackProxy) OnSubrateChange(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	subrateMode int32,
-	status int32,
+	status_param3 int32,
+	contNum int32,
+	timeout int32,
+	status_untilAPI35 int32,
 ) error {
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBluetoothGattCallback)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothGattCallback, MethodIBluetoothGattCallbackOnSubrateChange)
 	_compiledDescs := []string{
+		"Ljava/lang/String;",
 		"Landroid/bluetooth/BluetoothDevice;",
+		"I",
+		"I",
+		"I",
 		"I",
 		"I",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteString16(address)
 		_data.WriteInt32(1)
 		if _err := device.MarshalParcel(_data); _err != nil {
 			return _err
 		}
 		_data.WriteInt32(subrateMode)
-		_data.WriteInt32(status)
+		_data.WriteInt32(status_param3)
+		_data.WriteInt32(contNum)
+		_data.WriteInt32(timeout)
+		_data.WriteInt32(status_untilAPI35)
 	} else {
 		_paramMap := binder.MatchParamsToSignature(_compiledDescs, _sig)
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
+				_data.WriteString16(address)
+			case 1:
 				_data.WriteInt32(1)
 				if _err := device.MarshalParcel(_data); _err != nil {
 					return _err
 				}
-			case 1:
-				_data.WriteInt32(subrateMode)
 			case 2:
-				_data.WriteInt32(status)
+				_data.WriteInt32(subrateMode)
+			case 3:
+				_data.WriteInt32(status_param3)
+			case 4:
+				_data.WriteInt32(contNum)
+			case 5:
+				_data.WriteInt32(timeout)
+			case 6:
+				_data.WriteInt32(status_untilAPI35)
 			}
 		}
 	}
@@ -910,14 +1015,26 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_err = s.Impl.OnClientRegistered(ctx, _arg_status)
+		_arg_clientIf, _err := _data.ReadInt32()
+		if _err != nil {
+			return nil, _err
+		}
+		_err = s.Impl.OnClientRegistered(ctx, _arg_status, _arg_clientIf)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnClientConnectionState:
 		_arg_status, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_connected, _err := _data.ReadBool()
+		_arg_clientIf, _err := _data.ReadInt32()
+		if _err != nil {
+			return nil, _err
+		}
+		_arg_connected_sinceAPI36, _err := _data.ReadBool()
+		if _err != nil {
+			return nil, _err
+		}
+		_arg_connected_untilAPI35, _err := _data.ReadBool()
 		if _err != nil {
 			return nil, _err
 		}
@@ -933,9 +1050,17 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 				}
 			}
 		}
-		_err = s.Impl.OnClientConnectionState(ctx, _arg_status, _arg_connected, _arg_device)
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
+		_err = s.Impl.OnClientConnectionState(ctx, _arg_status, _arg_clientIf, _arg_connected_sinceAPI36, _arg_connected_untilAPI35, _arg_device, _arg_address)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnPhyUpdate:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -960,9 +1085,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_err = s.Impl.OnPhyUpdate(ctx, _arg_device, _arg_txPhy, _arg_rxPhy, _arg_status)
+		_err = s.Impl.OnPhyUpdate(ctx, _arg_address, _arg_device, _arg_txPhy, _arg_rxPhy, _arg_status)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnPhyRead:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -987,9 +1116,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_err = s.Impl.OnPhyRead(ctx, _arg_device, _arg_txPhy, _arg_rxPhy, _arg_status)
+		_err = s.Impl.OnPhyRead(ctx, _arg_address, _arg_device, _arg_txPhy, _arg_rxPhy, _arg_status)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnSearchComplete:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1027,9 +1160,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_err = s.Impl.OnSearchComplete(ctx, _arg_device, _arg_services, _arg_status)
+		_err = s.Impl.OnSearchComplete(ctx, _arg_address, _arg_device, _arg_services, _arg_status)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnCharacteristicRead:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1058,9 +1195,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 			}
 			_arg_value = _bytes
 		}
-		_err = s.Impl.OnCharacteristicRead(ctx, _arg_device, _arg_status, _arg_handle, _arg_value)
+		_err = s.Impl.OnCharacteristicRead(ctx, _arg_address, _arg_device, _arg_status, _arg_handle, _arg_value)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnCharacteristicWrite:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1089,9 +1230,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 			}
 			_arg_value = _bytes
 		}
-		_err = s.Impl.OnCharacteristicWrite(ctx, _arg_device, _arg_status, _arg_handle, _arg_value)
+		_err = s.Impl.OnCharacteristicWrite(ctx, _arg_address, _arg_device, _arg_status, _arg_handle, _arg_value)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnExecuteWrite:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1108,9 +1253,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_err = s.Impl.OnExecuteWrite(ctx, _arg_device, _arg_status)
+		_err = s.Impl.OnExecuteWrite(ctx, _arg_address, _arg_device, _arg_status)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnDescriptorRead:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1139,9 +1288,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 			}
 			_arg_value = _bytes
 		}
-		_err = s.Impl.OnDescriptorRead(ctx, _arg_device, _arg_status, _arg_handle, _arg_value)
+		_err = s.Impl.OnDescriptorRead(ctx, _arg_address, _arg_device, _arg_status, _arg_handle, _arg_value)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnDescriptorWrite:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1170,9 +1323,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 			}
 			_arg_value = _bytes
 		}
-		_err = s.Impl.OnDescriptorWrite(ctx, _arg_device, _arg_status, _arg_handle, _arg_value)
+		_err = s.Impl.OnDescriptorWrite(ctx, _arg_address, _arg_device, _arg_status, _arg_handle, _arg_value)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnNotify:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1197,9 +1354,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 			}
 			_arg_value = _bytes
 		}
-		_err = s.Impl.OnNotify(ctx, _arg_device, _arg_handle, _arg_value)
+		_err = s.Impl.OnNotify(ctx, _arg_address, _arg_device, _arg_handle, _arg_value)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnReadRemoteRssi:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1220,9 +1381,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_err = s.Impl.OnReadRemoteRssi(ctx, _arg_device, _arg_rssi, _arg_status)
+		_err = s.Impl.OnReadRemoteRssi(ctx, _arg_address, _arg_device, _arg_rssi, _arg_status)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnConfigureMTU:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1243,9 +1408,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_err = s.Impl.OnConfigureMTU(ctx, _arg_device, _arg_mtu, _arg_status)
+		_err = s.Impl.OnConfigureMTU(ctx, _arg_address, _arg_device, _arg_mtu, _arg_status)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnConnectionUpdated:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1274,9 +1443,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_err = s.Impl.OnConnectionUpdated(ctx, _arg_device, _arg_interval, _arg_latency, _arg_timeout, _arg_status)
+		_err = s.Impl.OnConnectionUpdated(ctx, _arg_address, _arg_device, _arg_interval, _arg_latency, _arg_timeout, _arg_status)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnServiceChanged:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1289,9 +1462,13 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 				}
 			}
 		}
-		_err := s.Impl.OnServiceChanged(ctx, _arg_device)
+		_err = s.Impl.OnServiceChanged(ctx, _arg_address, _arg_device)
 		return nil, _err
 	case TransactionIBluetoothGattCallbackOnSubrateChange:
+		_arg_address, _err := _data.ReadString16()
+		if _err != nil {
+			return nil, _err
+		}
 		var _arg_device BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
@@ -1308,11 +1485,23 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		_arg_status, _err := _data.ReadInt32()
+		_arg_status_param3, _err := _data.ReadInt32()
 		if _err != nil {
 			return nil, _err
 		}
-		_err = s.Impl.OnSubrateChange(ctx, _arg_device, _arg_subrateMode, _arg_status)
+		_arg_contNum, _err := _data.ReadInt32()
+		if _err != nil {
+			return nil, _err
+		}
+		_arg_timeout, _err := _data.ReadInt32()
+		if _err != nil {
+			return nil, _err
+		}
+		_arg_status_untilAPI35, _err := _data.ReadInt32()
+		if _err != nil {
+			return nil, _err
+		}
+		_err = s.Impl.OnSubrateChange(ctx, _arg_address, _arg_device, _arg_subrateMode, _arg_status_param3, _arg_contNum, _arg_timeout, _arg_status_untilAPI35)
 		return nil, _err
 	default:
 		return nil, fmt.Errorf("unknown transaction code %d", code)
@@ -1323,22 +1512,22 @@ func (s *BluetoothGattCallbackStub) OnTransaction(
 // provide to NewBluetoothGattCallbackStub. It contains only the business methods,
 // without AsBinder (which is provided by the stub itself).
 type IBluetoothGattCallbackServer interface {
-	OnClientRegistered(ctx context.Context, status int32) error
-	OnClientConnectionState(ctx context.Context, status int32, connected bool, device BluetoothDevice) error
-	OnPhyUpdate(ctx context.Context, device BluetoothDevice, txPhy int32, rxPhy int32, status int32) error
-	OnPhyRead(ctx context.Context, device BluetoothDevice, txPhy int32, rxPhy int32, status int32) error
-	OnSearchComplete(ctx context.Context, device BluetoothDevice, services []BluetoothGattService, status int32) error
-	OnCharacteristicRead(ctx context.Context, device BluetoothDevice, status int32, handle int32, value []byte) error
-	OnCharacteristicWrite(ctx context.Context, device BluetoothDevice, status int32, handle int32, value []byte) error
-	OnExecuteWrite(ctx context.Context, device BluetoothDevice, status int32) error
-	OnDescriptorRead(ctx context.Context, device BluetoothDevice, status int32, handle int32, value []byte) error
-	OnDescriptorWrite(ctx context.Context, device BluetoothDevice, status int32, handle int32, value []byte) error
-	OnNotify(ctx context.Context, device BluetoothDevice, handle int32, value []byte) error
-	OnReadRemoteRssi(ctx context.Context, device BluetoothDevice, rssi int32, status int32) error
-	OnConfigureMTU(ctx context.Context, device BluetoothDevice, mtu int32, status int32) error
-	OnConnectionUpdated(ctx context.Context, device BluetoothDevice, interval int32, latency int32, timeout int32, status int32) error
-	OnServiceChanged(ctx context.Context, device BluetoothDevice) error
-	OnSubrateChange(ctx context.Context, device BluetoothDevice, subrateMode int32, status int32) error
+	OnClientRegistered(ctx context.Context, status int32, clientIf int32) error
+	OnClientConnectionState(ctx context.Context, status int32, clientIf int32, connected_sinceAPI36 bool, connected_untilAPI35 bool, device BluetoothDevice, address string) error
+	OnPhyUpdate(ctx context.Context, address string, device BluetoothDevice, txPhy int32, rxPhy int32, status int32) error
+	OnPhyRead(ctx context.Context, address string, device BluetoothDevice, txPhy int32, rxPhy int32, status int32) error
+	OnSearchComplete(ctx context.Context, address string, device BluetoothDevice, services []BluetoothGattService, status int32) error
+	OnCharacteristicRead(ctx context.Context, address string, device BluetoothDevice, status int32, handle int32, value []byte) error
+	OnCharacteristicWrite(ctx context.Context, address string, device BluetoothDevice, status int32, handle int32, value []byte) error
+	OnExecuteWrite(ctx context.Context, address string, device BluetoothDevice, status int32) error
+	OnDescriptorRead(ctx context.Context, address string, device BluetoothDevice, status int32, handle int32, value []byte) error
+	OnDescriptorWrite(ctx context.Context, address string, device BluetoothDevice, status int32, handle int32, value []byte) error
+	OnNotify(ctx context.Context, address string, device BluetoothDevice, handle int32, value []byte) error
+	OnReadRemoteRssi(ctx context.Context, address string, device BluetoothDevice, rssi int32, status int32) error
+	OnConfigureMTU(ctx context.Context, address string, device BluetoothDevice, mtu int32, status int32) error
+	OnConnectionUpdated(ctx context.Context, address string, device BluetoothDevice, interval int32, latency int32, timeout int32, status int32) error
+	OnServiceChanged(ctx context.Context, address string, device BluetoothDevice) error
+	OnSubrateChange(ctx context.Context, address string, device BluetoothDevice, subrateMode int32, status_param3 int32, contNum int32, timeout int32, status_untilAPI35 int32) error
 }
 
 type bluetoothGattCallbackStubWrapper struct {
@@ -1353,148 +1542,169 @@ func (w *bluetoothGattCallbackStubWrapper) AsBinder() binder.IBinder {
 func (w *bluetoothGattCallbackStubWrapper) OnClientRegistered(
 	ctx context.Context,
 	status int32,
+	clientIf int32,
 ) error {
-	return w.impl.OnClientRegistered(ctx, status)
+	return w.impl.OnClientRegistered(ctx, status, clientIf)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnClientConnectionState(
 	ctx context.Context,
 	status int32,
-	connected bool,
+	clientIf int32,
+	connected_sinceAPI36 bool,
+	connected_untilAPI35 bool,
 	device BluetoothDevice,
+	address string,
 ) error {
-	return w.impl.OnClientConnectionState(ctx, status, connected, device)
+	return w.impl.OnClientConnectionState(ctx, status, clientIf, connected_sinceAPI36, connected_untilAPI35, device, address)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnPhyUpdate(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	txPhy int32,
 	rxPhy int32,
 	status int32,
 ) error {
-	return w.impl.OnPhyUpdate(ctx, device, txPhy, rxPhy, status)
+	return w.impl.OnPhyUpdate(ctx, address, device, txPhy, rxPhy, status)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnPhyRead(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	txPhy int32,
 	rxPhy int32,
 	status int32,
 ) error {
-	return w.impl.OnPhyRead(ctx, device, txPhy, rxPhy, status)
+	return w.impl.OnPhyRead(ctx, address, device, txPhy, rxPhy, status)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnSearchComplete(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	services []BluetoothGattService,
 	status int32,
 ) error {
-	return w.impl.OnSearchComplete(ctx, device, services, status)
+	return w.impl.OnSearchComplete(ctx, address, device, services, status)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnCharacteristicRead(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 	handle int32,
 	value []byte,
 ) error {
-	return w.impl.OnCharacteristicRead(ctx, device, status, handle, value)
+	return w.impl.OnCharacteristicRead(ctx, address, device, status, handle, value)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnCharacteristicWrite(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 	handle int32,
 	value []byte,
 ) error {
-	return w.impl.OnCharacteristicWrite(ctx, device, status, handle, value)
+	return w.impl.OnCharacteristicWrite(ctx, address, device, status, handle, value)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnExecuteWrite(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 ) error {
-	return w.impl.OnExecuteWrite(ctx, device, status)
+	return w.impl.OnExecuteWrite(ctx, address, device, status)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnDescriptorRead(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 	handle int32,
 	value []byte,
 ) error {
-	return w.impl.OnDescriptorRead(ctx, device, status, handle, value)
+	return w.impl.OnDescriptorRead(ctx, address, device, status, handle, value)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnDescriptorWrite(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	status int32,
 	handle int32,
 	value []byte,
 ) error {
-	return w.impl.OnDescriptorWrite(ctx, device, status, handle, value)
+	return w.impl.OnDescriptorWrite(ctx, address, device, status, handle, value)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnNotify(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	handle int32,
 	value []byte,
 ) error {
-	return w.impl.OnNotify(ctx, device, handle, value)
+	return w.impl.OnNotify(ctx, address, device, handle, value)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnReadRemoteRssi(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	rssi int32,
 	status int32,
 ) error {
-	return w.impl.OnReadRemoteRssi(ctx, device, rssi, status)
+	return w.impl.OnReadRemoteRssi(ctx, address, device, rssi, status)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnConfigureMTU(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	mtu int32,
 	status int32,
 ) error {
-	return w.impl.OnConfigureMTU(ctx, device, mtu, status)
+	return w.impl.OnConfigureMTU(ctx, address, device, mtu, status)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnConnectionUpdated(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	interval int32,
 	latency int32,
 	timeout int32,
 	status int32,
 ) error {
-	return w.impl.OnConnectionUpdated(ctx, device, interval, latency, timeout, status)
+	return w.impl.OnConnectionUpdated(ctx, address, device, interval, latency, timeout, status)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnServiceChanged(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 ) error {
-	return w.impl.OnServiceChanged(ctx, device)
+	return w.impl.OnServiceChanged(ctx, address, device)
 }
 
 func (w *bluetoothGattCallbackStubWrapper) OnSubrateChange(
 	ctx context.Context,
+	address string,
 	device BluetoothDevice,
 	subrateMode int32,
-	status int32,
+	status_param3 int32,
+	contNum int32,
+	timeout int32,
+	status_untilAPI35 int32,
 ) error {
-	return w.impl.OnSubrateChange(ctx, device, subrateMode, status)
+	return w.impl.OnSubrateChange(ctx, address, device, subrateMode, status_param3, contNum, timeout, status_untilAPI35)
 }
 
 var _ IBluetoothGattCallback = (*bluetoothGattCallbackStubWrapper)(nil)

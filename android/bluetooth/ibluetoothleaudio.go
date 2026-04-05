@@ -125,9 +125,9 @@ type IBluetoothLeAudio interface {
 	UpdateBroadcast(ctx context.Context, broadcastId int32, broadcastSettings BluetoothLeBroadcastSettings, attributionSource content.AttributionSource) error
 	IsPlaying(ctx context.Context, broadcastId int32, attributionSource content.AttributionSource) (bool, error)
 	GetAllBroadcastMetadata(ctx context.Context, attributionSource content.AttributionSource) ([]BluetoothLeBroadcastMetadata, error)
-	GetMaximumNumberOfBroadcasts(ctx context.Context) (int32, error)
-	GetMaximumStreamsPerBroadcast(ctx context.Context) (int32, error)
-	GetMaximumSubgroupsPerBroadcast(ctx context.Context) (int32, error)
+	GetMaximumNumberOfBroadcasts(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
+	GetMaximumStreamsPerBroadcast(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
+	GetMaximumSubgroupsPerBroadcast(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
 	IsBroadcastActive(ctx context.Context, attributionSource content.AttributionSource) (bool, error)
 }
 
@@ -2161,11 +2161,33 @@ func (p *BluetoothLeAudioProxy) GetAllBroadcastMetadata(
 
 func (p *BluetoothLeAudioProxy) GetMaximumNumberOfBroadcasts(
 	ctx context.Context,
+	attributionSource content.AttributionSource,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBluetoothLeAudio)
+	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothLeAudio, MethodIBluetoothLeAudioGetMaximumNumberOfBroadcasts)
+	_compiledDescs := []string{
+		"Landroid/content/AttributionSource;",
+	}
+	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteInt32(1)
+		if _err := attributionSource.MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
+	} else {
+		_paramMap := binder.MatchParamsToSignature(_compiledDescs, _sig)
+		for _, _pi := range _paramMap {
+			switch _pi {
+			case 0:
+				_data.WriteInt32(1)
+				if _err := attributionSource.MarshalParcel(_data); _err != nil {
+					return _result, _err
+				}
+			}
+		}
+	}
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIBluetoothLeAudio, MethodIBluetoothLeAudioGetMaximumNumberOfBroadcasts)
 	if _err != nil {
@@ -2191,11 +2213,33 @@ func (p *BluetoothLeAudioProxy) GetMaximumNumberOfBroadcasts(
 
 func (p *BluetoothLeAudioProxy) GetMaximumStreamsPerBroadcast(
 	ctx context.Context,
+	attributionSource content.AttributionSource,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBluetoothLeAudio)
+	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothLeAudio, MethodIBluetoothLeAudioGetMaximumStreamsPerBroadcast)
+	_compiledDescs := []string{
+		"Landroid/content/AttributionSource;",
+	}
+	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteInt32(1)
+		if _err := attributionSource.MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
+	} else {
+		_paramMap := binder.MatchParamsToSignature(_compiledDescs, _sig)
+		for _, _pi := range _paramMap {
+			switch _pi {
+			case 0:
+				_data.WriteInt32(1)
+				if _err := attributionSource.MarshalParcel(_data); _err != nil {
+					return _result, _err
+				}
+			}
+		}
+	}
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIBluetoothLeAudio, MethodIBluetoothLeAudioGetMaximumStreamsPerBroadcast)
 	if _err != nil {
@@ -2221,11 +2265,33 @@ func (p *BluetoothLeAudioProxy) GetMaximumStreamsPerBroadcast(
 
 func (p *BluetoothLeAudioProxy) GetMaximumSubgroupsPerBroadcast(
 	ctx context.Context,
+	attributionSource content.AttributionSource,
 ) (int32, error) {
 	var _result int32
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBluetoothLeAudio)
+	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothLeAudio, MethodIBluetoothLeAudioGetMaximumSubgroupsPerBroadcast)
+	_compiledDescs := []string{
+		"Landroid/content/AttributionSource;",
+	}
+	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteInt32(1)
+		if _err := attributionSource.MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
+	} else {
+		_paramMap := binder.MatchParamsToSignature(_compiledDescs, _sig)
+		for _, _pi := range _paramMap {
+			switch _pi {
+			case 0:
+				_data.WriteInt32(1)
+				if _err := attributionSource.MarshalParcel(_data); _err != nil {
+					return _result, _err
+				}
+			}
+		}
+	}
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIBluetoothLeAudio, MethodIBluetoothLeAudioGetMaximumSubgroupsPerBroadcast)
 	if _err != nil {
@@ -3347,7 +3413,19 @@ func (s *BluetoothLeAudioStub) OnTransaction(
 		}
 		return _reply, nil
 	case TransactionIBluetoothLeAudioGetMaximumNumberOfBroadcasts:
-		_result, _err := s.Impl.GetMaximumNumberOfBroadcasts(ctx)
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		_result, _err := s.Impl.GetMaximumNumberOfBroadcasts(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
 			binder.WriteStatus(_reply, _err)
@@ -3357,7 +3435,19 @@ func (s *BluetoothLeAudioStub) OnTransaction(
 		_reply.WriteInt32(_result)
 		return _reply, nil
 	case TransactionIBluetoothLeAudioGetMaximumStreamsPerBroadcast:
-		_result, _err := s.Impl.GetMaximumStreamsPerBroadcast(ctx)
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		_result, _err := s.Impl.GetMaximumStreamsPerBroadcast(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
 			binder.WriteStatus(_reply, _err)
@@ -3367,7 +3457,19 @@ func (s *BluetoothLeAudioStub) OnTransaction(
 		_reply.WriteInt32(_result)
 		return _reply, nil
 	case TransactionIBluetoothLeAudioGetMaximumSubgroupsPerBroadcast:
-		_result, _err := s.Impl.GetMaximumSubgroupsPerBroadcast(ctx)
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		_result, _err := s.Impl.GetMaximumSubgroupsPerBroadcast(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
 			binder.WriteStatus(_reply, _err)
@@ -3439,9 +3541,9 @@ type IBluetoothLeAudioServer interface {
 	UpdateBroadcast(ctx context.Context, broadcastId int32, broadcastSettings BluetoothLeBroadcastSettings, attributionSource content.AttributionSource) error
 	IsPlaying(ctx context.Context, broadcastId int32, attributionSource content.AttributionSource) (bool, error)
 	GetAllBroadcastMetadata(ctx context.Context, attributionSource content.AttributionSource) ([]BluetoothLeBroadcastMetadata, error)
-	GetMaximumNumberOfBroadcasts(ctx context.Context) (int32, error)
-	GetMaximumStreamsPerBroadcast(ctx context.Context) (int32, error)
-	GetMaximumSubgroupsPerBroadcast(ctx context.Context) (int32, error)
+	GetMaximumNumberOfBroadcasts(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
+	GetMaximumStreamsPerBroadcast(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
+	GetMaximumSubgroupsPerBroadcast(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
 	IsBroadcastActive(ctx context.Context, attributionSource content.AttributionSource) (bool, error)
 }
 
@@ -3716,20 +3818,23 @@ func (w *bluetoothLeAudioStubWrapper) GetAllBroadcastMetadata(
 
 func (w *bluetoothLeAudioStubWrapper) GetMaximumNumberOfBroadcasts(
 	ctx context.Context,
+	attributionSource content.AttributionSource,
 ) (int32, error) {
-	return w.impl.GetMaximumNumberOfBroadcasts(ctx)
+	return w.impl.GetMaximumNumberOfBroadcasts(ctx, attributionSource)
 }
 
 func (w *bluetoothLeAudioStubWrapper) GetMaximumStreamsPerBroadcast(
 	ctx context.Context,
+	attributionSource content.AttributionSource,
 ) (int32, error) {
-	return w.impl.GetMaximumStreamsPerBroadcast(ctx)
+	return w.impl.GetMaximumStreamsPerBroadcast(ctx, attributionSource)
 }
 
 func (w *bluetoothLeAudioStubWrapper) GetMaximumSubgroupsPerBroadcast(
 	ctx context.Context,
+	attributionSource content.AttributionSource,
 ) (int32, error) {
-	return w.impl.GetMaximumSubgroupsPerBroadcast(ctx)
+	return w.impl.GetMaximumSubgroupsPerBroadcast(ctx, attributionSource)
 }
 
 func (w *bluetoothLeAudioStubWrapper) IsBroadcastActive(

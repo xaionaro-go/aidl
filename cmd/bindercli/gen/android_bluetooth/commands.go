@@ -811,7 +811,6 @@ func newCmdAndroidBluetoothIBluetooth() *cobra.Command {
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_GetAdapterConnectionState())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_GetProfileConnectionState())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_GetBondedDevices())
-	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_CreateBond())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_CreateBondOutOfBand())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_CancelBondProcess())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_RemoveBond())
@@ -858,7 +857,6 @@ func newCmdAndroidBluetoothIBluetooth() *cobra.Command {
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_IsDistanceMeasurementSupported())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_GetLeMaximumAdvertisingDataLength())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_RegisterMetadataListener())
-	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_UnregisterMetadataListener())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_SetMetadata())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_GetMetadata())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetooth_RequestActivityInfo())
@@ -1709,60 +1707,6 @@ func newCmdAndroidBluetoothIBluetooth_GetBondedDevices() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-
-	return cmd
-}
-
-func newCmdAndroidBluetoothIBluetooth_CreateBond() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "create-bond",
-		Short: "Call CreateBond(device BluetoothDevice, transport int32, attributionSource AttributionSource) -> bool",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := context.Background()
-
-			conn, err := conn.Open(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			serviceName, _ := cmd.Flags().GetString("service-name")
-			var svc binder.IBinder
-			if serviceName != "" {
-				svc, err = conn.GetService(ctx, serviceName)
-			} else {
-				svc, err = discovery.FindServiceByDescriptor(ctx, conn, "android.bluetooth.IBluetooth")
-			}
-			if err != nil {
-				return err
-			}
-
-			svcProxy := bluetooth.NewBluetoothProxy(svc)
-
-			var flagDevice bluetooth.BluetoothDevice
-
-			flagTransport, err := cmd.Flags().GetInt32("transport")
-			if err != nil {
-				return fmt.Errorf("reading flag transport: %w", err)
-			}
-
-			var flagAttributionSource content.AttributionSource
-
-			result, err := svcProxy.CreateBond(ctx, flagDevice, flagTransport, flagAttributionSource)
-			if err != nil {
-				return err
-			}
-
-			mode, _ := cmd.Root().PersistentFlags().GetString("format")
-			f := output.NewFormatter(mode, os.Stdout)
-			f.Value("result", result)
-			return nil
-		},
-	}
-
-	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-	cmd.Flags().Int32("transport", 0, "transport (int32)")
-	_ = cmd.MarkFlagRequired("transport")
 
 	return cmd
 }
@@ -4071,65 +4015,6 @@ func newCmdAndroidBluetoothIBluetooth_RegisterMetadataListener() *cobra.Command 
 			var flagAttributionSource content.AttributionSource
 
 			result, err := svcProxy.RegisterMetadataListener(ctx, flagListener, flagDevice, flagAttributionSource)
-			if err != nil {
-				return err
-			}
-
-			mode, _ := cmd.Root().PersistentFlags().GetString("format")
-			f := output.NewFormatter(mode, os.Stdout)
-			f.Value("result", result)
-			return nil
-		},
-	}
-
-	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-	cmd.Flags().String("listener", "", "listener (service name for IBluetoothMetadataListener)")
-	_ = cmd.MarkFlagRequired("listener")
-
-	return cmd
-}
-
-func newCmdAndroidBluetoothIBluetooth_UnregisterMetadataListener() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "unregister-metadata-listener",
-		Short: "Call UnregisterMetadataListener(listener IBluetoothMetadataListener, device BluetoothDevice, attributionSource AttributionSource) -> bool",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := context.Background()
-
-			conn, err := conn.Open(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			serviceName, _ := cmd.Flags().GetString("service-name")
-			var svc binder.IBinder
-			if serviceName != "" {
-				svc, err = conn.GetService(ctx, serviceName)
-			} else {
-				svc, err = discovery.FindServiceByDescriptor(ctx, conn, "android.bluetooth.IBluetooth")
-			}
-			if err != nil {
-				return err
-			}
-
-			svcProxy := bluetooth.NewBluetoothProxy(svc)
-
-			flagListenerName, err := cmd.Flags().GetString("listener")
-			if err != nil {
-				return fmt.Errorf("reading flag listener: %w", err)
-			}
-			flagListenerBinder, err := conn.GetService(ctx, flagListenerName)
-			if err != nil {
-				return fmt.Errorf("resolving service %q for listener: %w", flagListenerName, err)
-			}
-			var flagListener bluetooth.IBluetoothMetadataListener = bluetooth.NewBluetoothMetadataListenerProxy(flagListenerBinder)
-
-			var flagDevice bluetooth.BluetoothDevice
-
-			var flagAttributionSource content.AttributionSource
-
-			result, err := svcProxy.UnregisterMetadataListener(ctx, flagListener, flagDevice, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -7257,7 +7142,7 @@ func newCmdAndroidBluetoothIBluetoothA2dp_IsA2dpPlaying() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothA2dp_GetSupportedCodecTypes() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-supported-codec-types",
-		Short: "Call GetSupportedCodecTypes() -> []BluetoothCodecType",
+		Short: "Call GetSupportedCodecTypes(attributionSource AttributionSource) -> []BluetoothCodecType",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -7280,7 +7165,9 @@ func newCmdAndroidBluetoothIBluetoothA2dp_GetSupportedCodecTypes() *cobra.Comman
 
 			svcProxy := bluetooth.NewBluetoothA2dpProxy(svc)
 
-			result, err := svcProxy.GetSupportedCodecTypes(ctx)
+			var flagAttributionSource content.AttributionSource
+
+			result, err := svcProxy.GetSupportedCodecTypes(ctx, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -10206,7 +10093,6 @@ func newCmdAndroidBluetoothIBluetoothGatt() *cobra.Command {
 	}
 
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_GetDevicesMatchingConnectionStates())
-	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_RegisterClient())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_UnregisterClient())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_ClientConnect())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_ClientDisconnect())
@@ -10221,13 +10107,11 @@ func newCmdAndroidBluetoothIBluetoothGatt() *cobra.Command {
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_ReadDescriptor())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_WriteDescriptor())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_RegisterForNotification())
-	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_BeginReliableWrite())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_EndReliableWrite())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_ReadRemoteRssi())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_ConfigureMTU())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_ConnectionParameterUpdate())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_LeConnectionUpdate())
-	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_RegisterServer())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_UnregisterServer())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_ServerConnect())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGatt_ServerDisconnect())
@@ -10306,83 +10190,10 @@ func newCmdAndroidBluetoothIBluetoothGatt_GetDevicesMatchingConnectionStates() *
 	return cmd
 }
 
-func newCmdAndroidBluetoothIBluetoothGatt_RegisterClient() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "register-client",
-		Short: "Call RegisterClient(appId ParcelUuid, callback IBluetoothGattCallback, eatt_support bool, transport int32, attributionSource AttributionSource)",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := context.Background()
-
-			conn, err := conn.Open(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			serviceName, _ := cmd.Flags().GetString("service-name")
-			var svc binder.IBinder
-			if serviceName != "" {
-				svc, err = conn.GetService(ctx, serviceName)
-			} else {
-				svc, err = discovery.FindServiceByDescriptor(ctx, conn, "android.bluetooth.IBluetoothGatt")
-			}
-			if err != nil {
-				return err
-			}
-
-			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
-
-			var flagAppId os2.ParcelUuid
-
-			flagCallbackName, err := cmd.Flags().GetString("callback")
-			if err != nil {
-				return fmt.Errorf("reading flag callback: %w", err)
-			}
-			flagCallbackBinder, err := conn.GetService(ctx, flagCallbackName)
-			if err != nil {
-				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
-			}
-			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
-
-			flagEatt_support, err := cmd.Flags().GetBool("eatt_support")
-			if err != nil {
-				return fmt.Errorf("reading flag eatt_support: %w", err)
-			}
-
-			flagTransport, err := cmd.Flags().GetInt32("transport")
-			if err != nil {
-				return fmt.Errorf("reading flag transport: %w", err)
-			}
-
-			var flagAttributionSource content.AttributionSource
-
-			err = svcProxy.RegisterClient(ctx, flagAppId, flagCallback, flagEatt_support, flagTransport, flagAttributionSource)
-			if err != nil {
-				return err
-			}
-
-			mode, _ := cmd.Root().PersistentFlags().GetString("format")
-			f := output.NewFormatter(mode, os.Stdout)
-			f.Value("status", "ok")
-			return nil
-		},
-	}
-
-	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
-	_ = cmd.MarkFlagRequired("callback")
-	cmd.Flags().Bool("eatt_support", false, "eatt_support (bool)")
-	_ = cmd.MarkFlagRequired("eatt_support")
-	cmd.Flags().Int32("transport", 0, "transport (int32)")
-	_ = cmd.MarkFlagRequired("transport")
-
-	return cmd
-}
-
 func newCmdAndroidBluetoothIBluetoothGatt_UnregisterClient() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "unregister-client",
-		Short: "Call UnregisterClient(callback IBluetoothGattCallback, attributionSource AttributionSource)",
+		Short: "Call UnregisterClient(clientIf int32, callback IBluetoothGattCallback, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -10405,6 +10216,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_UnregisterClient() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -10417,7 +10233,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_UnregisterClient() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.UnregisterClient(ctx, flagCallback, flagAttributionSource)
+			err = svcProxy.UnregisterClient(ctx, flagClientIf, flagCallback, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -10430,6 +10246,8 @@ func newCmdAndroidBluetoothIBluetoothGatt_UnregisterClient() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
 
@@ -10439,7 +10257,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_UnregisterClient() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ClientConnect() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "client-connect",
-		Short: "Call ClientConnect(callback IBluetoothGattCallback, device BluetoothDevice, addressType int32, isDirect bool, transport int32, opportunistic bool, phy int32, attributionSource AttributionSource)",
+		Short: "Call ClientConnect(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, addressType int32, isDirect bool, transport int32, opportunistic bool, phy int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -10462,6 +10280,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientConnect() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -10471,6 +10294,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientConnect() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -10501,7 +10329,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientConnect() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ClientConnect(ctx, flagCallback, flagDevice, flagAddressType, flagIsDirect, flagTransport, flagOpportunistic, flagPhy, flagAttributionSource)
+			err = svcProxy.ClientConnect(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagAddressType, flagIsDirect, flagTransport, flagOpportunistic, flagPhy, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -10514,8 +10342,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientConnect() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("addressType", 0, "addressType (int32)")
 	_ = cmd.MarkFlagRequired("addressType")
 	cmd.Flags().Bool("isDirect", false, "isDirect (bool)")
@@ -10533,7 +10365,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientConnect() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ClientDisconnect() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "client-disconnect",
-		Short: "Call ClientDisconnect(callback IBluetoothGattCallback, device BluetoothDevice, attributionSource AttributionSource)",
+		Short: "Call ClientDisconnect(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -10556,6 +10388,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientDisconnect() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -10566,11 +10403,16 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientDisconnect() *cobra.Command {
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ClientDisconnect(ctx, flagCallback, flagDevice, flagAttributionSource)
+			err = svcProxy.ClientDisconnect(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -10583,8 +10425,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientDisconnect() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 
 	return cmd
 }
@@ -10592,7 +10438,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientDisconnect() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ClientSetPreferredPhy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "client-set-preferred-phy",
-		Short: "Call ClientSetPreferredPhy(callback IBluetoothGattCallback, device BluetoothDevice, txPhy int32, rxPhy int32, phyOptions int32, attributionSource AttributionSource)",
+		Short: "Call ClientSetPreferredPhy(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, txPhy int32, rxPhy int32, phyOptions int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -10615,6 +10461,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientSetPreferredPhy() *cobra.Command
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -10624,6 +10475,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientSetPreferredPhy() *cobra.Command
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -10644,7 +10500,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientSetPreferredPhy() *cobra.Command
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ClientSetPreferredPhy(ctx, flagCallback, flagDevice, flagTxPhy, flagRxPhy, flagPhyOptions, flagAttributionSource)
+			err = svcProxy.ClientSetPreferredPhy(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagTxPhy, flagRxPhy, flagPhyOptions, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -10657,8 +10513,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientSetPreferredPhy() *cobra.Command
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("txPhy", 0, "txPhy (int32)")
 	_ = cmd.MarkFlagRequired("txPhy")
 	cmd.Flags().Int32("rxPhy", 0, "rxPhy (int32)")
@@ -10672,7 +10532,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientSetPreferredPhy() *cobra.Command
 func newCmdAndroidBluetoothIBluetoothGatt_ClientReadPhy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "client-read-phy",
-		Short: "Call ClientReadPhy(callback IBluetoothGattCallback, device BluetoothDevice, attributionSources AttributionSource)",
+		Short: "Call ClientReadPhy(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, attributionSources AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -10695,6 +10555,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientReadPhy() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -10705,11 +10570,16 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientReadPhy() *cobra.Command {
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			var flagAttributionSources content.AttributionSource
 
-			err = svcProxy.ClientReadPhy(ctx, flagCallback, flagDevice, flagAttributionSources)
+			err = svcProxy.ClientReadPhy(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagAttributionSources)
 			if err != nil {
 				return err
 			}
@@ -10722,8 +10592,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientReadPhy() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 
 	return cmd
 }
@@ -10731,7 +10605,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClientReadPhy() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_RefreshDevice() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "refresh-device",
-		Short: "Call RefreshDevice(callback IBluetoothGattCallback, device BluetoothDevice, attributionSource AttributionSource)",
+		Short: "Call RefreshDevice(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -10754,6 +10628,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_RefreshDevice() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -10764,11 +10643,16 @@ func newCmdAndroidBluetoothIBluetoothGatt_RefreshDevice() *cobra.Command {
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.RefreshDevice(ctx, flagCallback, flagDevice, flagAttributionSource)
+			err = svcProxy.RefreshDevice(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -10781,8 +10665,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_RefreshDevice() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 
 	return cmd
 }
@@ -10790,7 +10678,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_RefreshDevice() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServices() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "discover-services",
-		Short: "Call DiscoverServices(callback IBluetoothGattCallback, device BluetoothDevice, attributionSource AttributionSource)",
+		Short: "Call DiscoverServices(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -10813,6 +10701,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServices() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -10823,11 +10716,16 @@ func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServices() *cobra.Command {
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.DiscoverServices(ctx, flagCallback, flagDevice, flagAttributionSource)
+			err = svcProxy.DiscoverServices(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -10840,8 +10738,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServices() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 
 	return cmd
 }
@@ -10849,7 +10751,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServices() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServiceByUuid() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "discover-service-by-uuid",
-		Short: "Call DiscoverServiceByUuid(callback IBluetoothGattCallback, device BluetoothDevice, uuid ParcelUuid, attributionSource AttributionSource)",
+		Short: "Call DiscoverServiceByUuid(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, uuid ParcelUuid, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -10872,6 +10774,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServiceByUuid() *cobra.Command
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -10882,13 +10789,18 @@ func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServiceByUuid() *cobra.Command
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			var flagUuid os2.ParcelUuid
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.DiscoverServiceByUuid(ctx, flagCallback, flagDevice, flagUuid, flagAttributionSource)
+			err = svcProxy.DiscoverServiceByUuid(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagUuid, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -10901,8 +10813,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServiceByUuid() *cobra.Command
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 
 	return cmd
 }
@@ -10910,7 +10826,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_DiscoverServiceByUuid() *cobra.Command
 func newCmdAndroidBluetoothIBluetoothGatt_ReadCharacteristic() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "read-characteristic",
-		Short: "Call ReadCharacteristic(callback IBluetoothGattCallback, device BluetoothDevice, handle int32, authReq int32, attributionSource AttributionSource)",
+		Short: "Call ReadCharacteristic(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, handle int32, authReq int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -10933,6 +10849,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadCharacteristic() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -10942,6 +10863,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadCharacteristic() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -10957,7 +10883,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadCharacteristic() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ReadCharacteristic(ctx, flagCallback, flagDevice, flagHandle, flagAuthReq, flagAttributionSource)
+			err = svcProxy.ReadCharacteristic(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagHandle, flagAuthReq, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -10970,8 +10896,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadCharacteristic() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
 	_ = cmd.MarkFlagRequired("handle")
 	cmd.Flags().Int32("authReq", 0, "authReq (int32)")
@@ -10983,7 +10913,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadCharacteristic() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ReadUsingCharacteristicUuid() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "read-using-characteristic-uuid",
-		Short: "Call ReadUsingCharacteristicUuid(callback IBluetoothGattCallback, device BluetoothDevice, uuid ParcelUuid, startHandle int32, endHandle int32, authReq int32, attributionSource AttributionSource)",
+		Short: "Call ReadUsingCharacteristicUuid(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, uuid ParcelUuid, startHandle int32, endHandle int32, authReq int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11006,6 +10936,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadUsingCharacteristicUuid() *cobra.C
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11015,6 +10950,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadUsingCharacteristicUuid() *cobra.C
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11037,7 +10977,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadUsingCharacteristicUuid() *cobra.C
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ReadUsingCharacteristicUuid(ctx, flagCallback, flagDevice, flagUuid, flagStartHandle, flagEndHandle, flagAuthReq, flagAttributionSource)
+			err = svcProxy.ReadUsingCharacteristicUuid(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagUuid, flagStartHandle, flagEndHandle, flagAuthReq, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11050,8 +10990,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadUsingCharacteristicUuid() *cobra.C
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("startHandle", 0, "startHandle (int32)")
 	_ = cmd.MarkFlagRequired("startHandle")
 	cmd.Flags().Int32("endHandle", 0, "endHandle (int32)")
@@ -11065,7 +11009,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadUsingCharacteristicUuid() *cobra.C
 func newCmdAndroidBluetoothIBluetoothGatt_WriteCharacteristic() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "write-characteristic",
-		Short: "Call WriteCharacteristic(callback IBluetoothGattCallback, device BluetoothDevice, handle int32, writeType int32, authReq int32, value []byte, attributionSource AttributionSource) -> int32",
+		Short: "Call WriteCharacteristic(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, handle int32, writeType int32, authReq int32, value []byte, attributionSource AttributionSource) -> int32",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11088,6 +11032,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteCharacteristic() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11097,6 +11046,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteCharacteristic() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11126,7 +11080,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteCharacteristic() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			result, err := svcProxy.WriteCharacteristic(ctx, flagCallback, flagDevice, flagHandle, flagWriteType, flagAuthReq, flagValue, flagAttributionSource)
+			result, err := svcProxy.WriteCharacteristic(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagHandle, flagWriteType, flagAuthReq, flagValue, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11139,8 +11093,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteCharacteristic() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
 	_ = cmd.MarkFlagRequired("handle")
 	cmd.Flags().Int32("writeType", 0, "writeType (int32)")
@@ -11156,7 +11114,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteCharacteristic() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ReadDescriptor() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "read-descriptor",
-		Short: "Call ReadDescriptor(callback IBluetoothGattCallback, device BluetoothDevice, handle int32, authReq int32, attributionSource AttributionSource)",
+		Short: "Call ReadDescriptor(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, handle int32, authReq int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11179,6 +11137,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadDescriptor() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11188,6 +11151,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadDescriptor() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11203,7 +11171,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadDescriptor() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ReadDescriptor(ctx, flagCallback, flagDevice, flagHandle, flagAuthReq, flagAttributionSource)
+			err = svcProxy.ReadDescriptor(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagHandle, flagAuthReq, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11216,8 +11184,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadDescriptor() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
 	_ = cmd.MarkFlagRequired("handle")
 	cmd.Flags().Int32("authReq", 0, "authReq (int32)")
@@ -11229,7 +11201,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadDescriptor() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_WriteDescriptor() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "write-descriptor",
-		Short: "Call WriteDescriptor(callback IBluetoothGattCallback, device BluetoothDevice, handle int32, authReq int32, value []byte, attributionSource AttributionSource) -> int32",
+		Short: "Call WriteDescriptor(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, handle int32, authReq int32, value []byte, attributionSource AttributionSource) -> int32",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11252,6 +11224,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteDescriptor() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11261,6 +11238,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteDescriptor() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11285,7 +11267,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteDescriptor() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			result, err := svcProxy.WriteDescriptor(ctx, flagCallback, flagDevice, flagHandle, flagAuthReq, flagValue, flagAttributionSource)
+			result, err := svcProxy.WriteDescriptor(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagHandle, flagAuthReq, flagValue, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11298,8 +11280,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteDescriptor() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
 	_ = cmd.MarkFlagRequired("handle")
 	cmd.Flags().Int32("authReq", 0, "authReq (int32)")
@@ -11313,7 +11299,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_WriteDescriptor() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_RegisterForNotification() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-for-notification",
-		Short: "Call RegisterForNotification(callback IBluetoothGattCallback, device BluetoothDevice, handle int32, enable bool, attributionSource AttributionSource)",
+		Short: "Call RegisterForNotification(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, handle int32, enable bool, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11336,6 +11322,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_RegisterForNotification() *cobra.Comma
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11345,6 +11336,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_RegisterForNotification() *cobra.Comma
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11360,7 +11356,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_RegisterForNotification() *cobra.Comma
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.RegisterForNotification(ctx, flagCallback, flagDevice, flagHandle, flagEnable, flagAttributionSource)
+			err = svcProxy.RegisterForNotification(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagHandle, flagEnable, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11373,8 +11369,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_RegisterForNotification() *cobra.Comma
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
 	_ = cmd.MarkFlagRequired("handle")
 	cmd.Flags().Bool("enable", false, "enable (bool)")
@@ -11383,57 +11383,10 @@ func newCmdAndroidBluetoothIBluetoothGatt_RegisterForNotification() *cobra.Comma
 	return cmd
 }
 
-func newCmdAndroidBluetoothIBluetoothGatt_BeginReliableWrite() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "begin-reliable-write",
-		Short: "Call BeginReliableWrite(device BluetoothDevice, attributionSource AttributionSource)",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := context.Background()
-
-			conn, err := conn.Open(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			serviceName, _ := cmd.Flags().GetString("service-name")
-			var svc binder.IBinder
-			if serviceName != "" {
-				svc, err = conn.GetService(ctx, serviceName)
-			} else {
-				svc, err = discovery.FindServiceByDescriptor(ctx, conn, "android.bluetooth.IBluetoothGatt")
-			}
-			if err != nil {
-				return err
-			}
-
-			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
-
-			var flagDevice bluetooth.BluetoothDevice
-
-			var flagAttributionSource content.AttributionSource
-
-			err = svcProxy.BeginReliableWrite(ctx, flagDevice, flagAttributionSource)
-			if err != nil {
-				return err
-			}
-
-			mode, _ := cmd.Root().PersistentFlags().GetString("format")
-			f := output.NewFormatter(mode, os.Stdout)
-			f.Value("status", "ok")
-			return nil
-		},
-	}
-
-	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-
-	return cmd
-}
-
 func newCmdAndroidBluetoothIBluetoothGatt_EndReliableWrite() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "end-reliable-write",
-		Short: "Call EndReliableWrite(callback IBluetoothGattCallback, device BluetoothDevice, execute bool, attributionSource AttributionSource)",
+		Short: "Call EndReliableWrite(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, execute bool, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11455,6 +11408,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_EndReliableWrite() *cobra.Command {
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
+
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
 
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
@@ -11465,6 +11423,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_EndReliableWrite() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11475,7 +11438,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_EndReliableWrite() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.EndReliableWrite(ctx, flagCallback, flagDevice, flagExecute, flagAttributionSource)
+			err = svcProxy.EndReliableWrite(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagExecute, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11488,8 +11451,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_EndReliableWrite() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Bool("execute", false, "execute (bool)")
 	_ = cmd.MarkFlagRequired("execute")
 
@@ -11499,7 +11466,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_EndReliableWrite() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ReadRemoteRssi() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "read-remote-rssi",
-		Short: "Call ReadRemoteRssi(callback IBluetoothGattCallback, device BluetoothDevice, attributionSource AttributionSource)",
+		Short: "Call ReadRemoteRssi(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11522,6 +11489,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadRemoteRssi() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11532,11 +11504,16 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadRemoteRssi() *cobra.Command {
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ReadRemoteRssi(ctx, flagCallback, flagDevice, flagAttributionSource)
+			err = svcProxy.ReadRemoteRssi(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11549,8 +11526,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadRemoteRssi() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 
 	return cmd
 }
@@ -11558,7 +11539,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ReadRemoteRssi() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ConfigureMTU() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "configure-m-t-u",
-		Short: "Call ConfigureMTU(callback IBluetoothGattCallback, device BluetoothDevice, mtu int32, attributionSource AttributionSource)",
+		Short: "Call ConfigureMTU(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, mtu int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11581,6 +11562,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConfigureMTU() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11590,6 +11576,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConfigureMTU() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11600,7 +11591,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConfigureMTU() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ConfigureMTU(ctx, flagCallback, flagDevice, flagMtu, flagAttributionSource)
+			err = svcProxy.ConfigureMTU(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagMtu, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11613,8 +11604,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConfigureMTU() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("mtu", 0, "mtu (int32)")
 	_ = cmd.MarkFlagRequired("mtu")
 
@@ -11624,7 +11619,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConfigureMTU() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ConnectionParameterUpdate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "connection-parameter-update",
-		Short: "Call ConnectionParameterUpdate(callback IBluetoothGattCallback, device BluetoothDevice, connectionPriority int32, attributionSource AttributionSource)",
+		Short: "Call ConnectionParameterUpdate(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, connectionPriority int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11647,6 +11642,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConnectionParameterUpdate() *cobra.Com
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11656,6 +11656,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConnectionParameterUpdate() *cobra.Com
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11666,7 +11671,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConnectionParameterUpdate() *cobra.Com
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ConnectionParameterUpdate(ctx, flagCallback, flagDevice, flagConnectionPriority, flagAttributionSource)
+			err = svcProxy.ConnectionParameterUpdate(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagConnectionPriority, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11679,8 +11684,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConnectionParameterUpdate() *cobra.Com
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("connectionPriority", 0, "connectionPriority (int32)")
 	_ = cmd.MarkFlagRequired("connectionPriority")
 
@@ -11690,7 +11699,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ConnectionParameterUpdate() *cobra.Com
 func newCmdAndroidBluetoothIBluetoothGatt_LeConnectionUpdate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "le-connection-update",
-		Short: "Call LeConnectionUpdate(callback IBluetoothGattCallback, device BluetoothDevice, minInterval int32, maxInterval int32, peripheralLatency int32, supervisionTimeout int32, minConnectionEventLen int32, maxConnectionEventLen int32, attributionSource AttributionSource)",
+		Short: "Call LeConnectionUpdate(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, minInterval int32, maxInterval int32, peripheralLatency int32, supervisionTimeout int32, minConnectionEventLen int32, maxConnectionEventLen int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11713,6 +11722,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_LeConnectionUpdate() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11722,6 +11736,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_LeConnectionUpdate() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11757,7 +11776,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_LeConnectionUpdate() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.LeConnectionUpdate(ctx, flagCallback, flagDevice, flagMinInterval, flagMaxInterval, flagPeripheralLatency, flagSupervisionTimeout, flagMinConnectionEventLen, flagMaxConnectionEventLen, flagAttributionSource)
+			err = svcProxy.LeConnectionUpdate(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagMinInterval, flagMaxInterval, flagPeripheralLatency, flagSupervisionTimeout, flagMinConnectionEventLen, flagMaxConnectionEventLen, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11770,8 +11789,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_LeConnectionUpdate() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("minInterval", 0, "minInterval (int32)")
 	_ = cmd.MarkFlagRequired("minInterval")
 	cmd.Flags().Int32("maxInterval", 0, "maxInterval (int32)")
@@ -11788,83 +11811,10 @@ func newCmdAndroidBluetoothIBluetoothGatt_LeConnectionUpdate() *cobra.Command {
 	return cmd
 }
 
-func newCmdAndroidBluetoothIBluetoothGatt_RegisterServer() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "register-server",
-		Short: "Call RegisterServer(appId ParcelUuid, callback IBluetoothGattServerCallback, eatt_support bool, transport int32, attributionSource AttributionSource)",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := context.Background()
-
-			conn, err := conn.Open(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			serviceName, _ := cmd.Flags().GetString("service-name")
-			var svc binder.IBinder
-			if serviceName != "" {
-				svc, err = conn.GetService(ctx, serviceName)
-			} else {
-				svc, err = discovery.FindServiceByDescriptor(ctx, conn, "android.bluetooth.IBluetoothGatt")
-			}
-			if err != nil {
-				return err
-			}
-
-			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
-
-			var flagAppId os2.ParcelUuid
-
-			flagCallbackName, err := cmd.Flags().GetString("callback")
-			if err != nil {
-				return fmt.Errorf("reading flag callback: %w", err)
-			}
-			flagCallbackBinder, err := conn.GetService(ctx, flagCallbackName)
-			if err != nil {
-				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
-			}
-			var flagCallback bluetooth.IBluetoothGattServerCallback = bluetooth.NewBluetoothGattServerCallbackProxy(flagCallbackBinder)
-
-			flagEatt_support, err := cmd.Flags().GetBool("eatt_support")
-			if err != nil {
-				return fmt.Errorf("reading flag eatt_support: %w", err)
-			}
-
-			flagTransport, err := cmd.Flags().GetInt32("transport")
-			if err != nil {
-				return fmt.Errorf("reading flag transport: %w", err)
-			}
-
-			var flagAttributionSource content.AttributionSource
-
-			err = svcProxy.RegisterServer(ctx, flagAppId, flagCallback, flagEatt_support, flagTransport, flagAttributionSource)
-			if err != nil {
-				return err
-			}
-
-			mode, _ := cmd.Root().PersistentFlags().GetString("format")
-			f := output.NewFormatter(mode, os.Stdout)
-			f.Value("status", "ok")
-			return nil
-		},
-	}
-
-	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
-	_ = cmd.MarkFlagRequired("callback")
-	cmd.Flags().Bool("eatt_support", false, "eatt_support (bool)")
-	_ = cmd.MarkFlagRequired("eatt_support")
-	cmd.Flags().Int32("transport", 0, "transport (int32)")
-	_ = cmd.MarkFlagRequired("transport")
-
-	return cmd
-}
-
 func newCmdAndroidBluetoothIBluetoothGatt_UnregisterServer() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "unregister-server",
-		Short: "Call UnregisterServer(callback IBluetoothGattServerCallback, attributionSource AttributionSource)",
+		Short: "Call UnregisterServer(serverIf int32, callback IBluetoothGattServerCallback, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11887,6 +11837,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_UnregisterServer() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagServerIf, err := cmd.Flags().GetInt32("serverIf")
+			if err != nil {
+				return fmt.Errorf("reading flag serverIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11899,7 +11854,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_UnregisterServer() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.UnregisterServer(ctx, flagCallback, flagAttributionSource)
+			err = svcProxy.UnregisterServer(ctx, flagServerIf, flagCallback, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11912,6 +11867,8 @@ func newCmdAndroidBluetoothIBluetoothGatt_UnregisterServer() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("serverIf", 0, "serverIf (int32)")
+	_ = cmd.MarkFlagRequired("serverIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
 
@@ -11921,7 +11878,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_UnregisterServer() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ServerConnect() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "server-connect",
-		Short: "Call ServerConnect(callback IBluetoothGattServerCallback, device BluetoothDevice, addressType int32, isDirect bool, transport int32, attributionSource AttributionSource)",
+		Short: "Call ServerConnect(serverIf int32, callback IBluetoothGattServerCallback, address string, device BluetoothDevice, addressType int32, isDirect bool, transport int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -11944,6 +11901,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerConnect() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagServerIf, err := cmd.Flags().GetInt32("serverIf")
+			if err != nil {
+				return fmt.Errorf("reading flag serverIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -11953,6 +11915,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerConnect() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattServerCallback = bluetooth.NewBluetoothGattServerCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -11973,7 +11940,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerConnect() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ServerConnect(ctx, flagCallback, flagDevice, flagAddressType, flagIsDirect, flagTransport, flagAttributionSource)
+			err = svcProxy.ServerConnect(ctx, flagServerIf, flagCallback, flagAddress, flagDevice, flagAddressType, flagIsDirect, flagTransport, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -11986,8 +11953,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerConnect() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("serverIf", 0, "serverIf (int32)")
+	_ = cmd.MarkFlagRequired("serverIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("addressType", 0, "addressType (int32)")
 	_ = cmd.MarkFlagRequired("addressType")
 	cmd.Flags().Bool("isDirect", false, "isDirect (bool)")
@@ -12001,7 +11972,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerConnect() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ServerDisconnect() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "server-disconnect",
-		Short: "Call ServerDisconnect(callback IBluetoothGattServerCallback, device BluetoothDevice, attributionSource AttributionSource)",
+		Short: "Call ServerDisconnect(serverIf int32, callback IBluetoothGattServerCallback, address string, device BluetoothDevice, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12024,6 +11995,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerDisconnect() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagServerIf, err := cmd.Flags().GetInt32("serverIf")
+			if err != nil {
+				return fmt.Errorf("reading flag serverIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -12034,11 +12010,16 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerDisconnect() *cobra.Command {
 			}
 			var flagCallback bluetooth.IBluetoothGattServerCallback = bluetooth.NewBluetoothGattServerCallbackProxy(flagCallbackBinder)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ServerDisconnect(ctx, flagCallback, flagDevice, flagAttributionSource)
+			err = svcProxy.ServerDisconnect(ctx, flagServerIf, flagCallback, flagAddress, flagDevice, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -12051,8 +12032,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerDisconnect() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("serverIf", 0, "serverIf (int32)")
+	_ = cmd.MarkFlagRequired("serverIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 
 	return cmd
 }
@@ -12060,7 +12045,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerDisconnect() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ServerSetPreferredPhy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "server-set-preferred-phy",
-		Short: "Call ServerSetPreferredPhy(callback IBluetoothGattServerCallback, device BluetoothDevice, txPhy int32, rxPhy int32, phyOptions int32, attributionSource AttributionSource)",
+		Short: "Call ServerSetPreferredPhy(clientIf int32, callback IBluetoothGattServerCallback, address string, device BluetoothDevice, txPhy int32, rxPhy int32, phyOptions int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12083,6 +12068,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerSetPreferredPhy() *cobra.Command
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -12092,6 +12082,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerSetPreferredPhy() *cobra.Command
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattServerCallback = bluetooth.NewBluetoothGattServerCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -12112,7 +12107,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerSetPreferredPhy() *cobra.Command
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ServerSetPreferredPhy(ctx, flagCallback, flagDevice, flagTxPhy, flagRxPhy, flagPhyOptions, flagAttributionSource)
+			err = svcProxy.ServerSetPreferredPhy(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagTxPhy, flagRxPhy, flagPhyOptions, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -12125,8 +12120,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerSetPreferredPhy() *cobra.Command
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("txPhy", 0, "txPhy (int32)")
 	_ = cmd.MarkFlagRequired("txPhy")
 	cmd.Flags().Int32("rxPhy", 0, "rxPhy (int32)")
@@ -12140,7 +12139,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerSetPreferredPhy() *cobra.Command
 func newCmdAndroidBluetoothIBluetoothGatt_ServerReadPhy() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "server-read-phy",
-		Short: "Call ServerReadPhy(callback IBluetoothGattServerCallback, device BluetoothDevice, attributionSource AttributionSource)",
+		Short: "Call ServerReadPhy(clientIf int32, callback IBluetoothGattServerCallback, address string, device BluetoothDevice, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12163,6 +12162,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerReadPhy() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -12173,11 +12177,16 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerReadPhy() *cobra.Command {
 			}
 			var flagCallback bluetooth.IBluetoothGattServerCallback = bluetooth.NewBluetoothGattServerCallbackProxy(flagCallbackBinder)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ServerReadPhy(ctx, flagCallback, flagDevice, flagAttributionSource)
+			err = svcProxy.ServerReadPhy(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -12190,8 +12199,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerReadPhy() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 
 	return cmd
 }
@@ -12199,7 +12212,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ServerReadPhy() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_AddService() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add-service",
-		Short: "Call AddService(callback IBluetoothGattServerCallback, service BluetoothGattService, attributionSource AttributionSource)",
+		Short: "Call AddService(serverIf int32, callback IBluetoothGattServerCallback, service BluetoothGattService, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12221,6 +12234,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_AddService() *cobra.Command {
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
+
+			flagServerIf, err := cmd.Flags().GetInt32("serverIf")
+			if err != nil {
+				return fmt.Errorf("reading flag serverIf: %w", err)
+			}
 
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
@@ -12236,7 +12254,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_AddService() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.AddService(ctx, flagCallback, flagService, flagAttributionSource)
+			err = svcProxy.AddService(ctx, flagServerIf, flagCallback, flagService, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -12249,6 +12267,8 @@ func newCmdAndroidBluetoothIBluetoothGatt_AddService() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("serverIf", 0, "serverIf (int32)")
+	_ = cmd.MarkFlagRequired("serverIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
 
@@ -12258,7 +12278,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_AddService() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_RemoveService() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remove-service",
-		Short: "Call RemoveService(callback IBluetoothGattServerCallback, handle int32, attributionSource AttributionSource)",
+		Short: "Call RemoveService(serverIf int32, callback IBluetoothGattServerCallback, handle int32, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12280,6 +12300,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_RemoveService() *cobra.Command {
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
+
+			flagServerIf, err := cmd.Flags().GetInt32("serverIf")
+			if err != nil {
+				return fmt.Errorf("reading flag serverIf: %w", err)
+			}
 
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
@@ -12298,7 +12323,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_RemoveService() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.RemoveService(ctx, flagCallback, flagHandle, flagAttributionSource)
+			err = svcProxy.RemoveService(ctx, flagServerIf, flagCallback, flagHandle, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -12311,6 +12336,8 @@ func newCmdAndroidBluetoothIBluetoothGatt_RemoveService() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("serverIf", 0, "serverIf (int32)")
+	_ = cmd.MarkFlagRequired("serverIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
@@ -12322,7 +12349,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_RemoveService() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_ClearServices() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "clear-services",
-		Short: "Call ClearServices(callback IBluetoothGattServerCallback, attributionSource AttributionSource)",
+		Short: "Call ClearServices(serverIf int32, callback IBluetoothGattServerCallback, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12344,6 +12371,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClearServices() *cobra.Command {
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
+
+			flagServerIf, err := cmd.Flags().GetInt32("serverIf")
+			if err != nil {
+				return fmt.Errorf("reading flag serverIf: %w", err)
+			}
 
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
@@ -12357,7 +12389,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClearServices() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.ClearServices(ctx, flagCallback, flagAttributionSource)
+			err = svcProxy.ClearServices(ctx, flagServerIf, flagCallback, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -12370,6 +12402,8 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClearServices() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("serverIf", 0, "serverIf (int32)")
+	_ = cmd.MarkFlagRequired("serverIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
 
@@ -12379,7 +12413,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_ClearServices() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_SendResponse() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "send-response",
-		Short: "Call SendResponse(callback IBluetoothGattServerCallback, device BluetoothDevice, requestId int32, status int32, offset int32, value []byte, attributionSource AttributionSource)",
+		Short: "Call SendResponse(serverIf int32, callback IBluetoothGattServerCallback, address string, device BluetoothDevice, requestId int32, status int32, offset int32, value []byte, attributionSource AttributionSource)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12402,6 +12436,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_SendResponse() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagServerIf, err := cmd.Flags().GetInt32("serverIf")
+			if err != nil {
+				return fmt.Errorf("reading flag serverIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -12411,6 +12450,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_SendResponse() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattServerCallback = bluetooth.NewBluetoothGattServerCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -12440,7 +12484,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_SendResponse() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			err = svcProxy.SendResponse(ctx, flagCallback, flagDevice, flagRequestId, flagStatus, flagOffset, flagValue, flagAttributionSource)
+			err = svcProxy.SendResponse(ctx, flagServerIf, flagCallback, flagAddress, flagDevice, flagRequestId, flagStatus, flagOffset, flagValue, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -12453,8 +12497,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_SendResponse() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("serverIf", 0, "serverIf (int32)")
+	_ = cmd.MarkFlagRequired("serverIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("requestId", 0, "requestId (int32)")
 	_ = cmd.MarkFlagRequired("requestId")
 	cmd.Flags().Int32("status", 0, "status (int32)")
@@ -12470,7 +12518,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_SendResponse() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_SendNotification() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "send-notification",
-		Short: "Call SendNotification(callback IBluetoothGattServerCallback, device BluetoothDevice, handle int32, confirm bool, value []byte, attributionSource AttributionSource) -> int32",
+		Short: "Call SendNotification(serverIf int32, callback IBluetoothGattServerCallback, address string, device BluetoothDevice, handle int32, confirm bool, value []byte, attributionSource AttributionSource) -> int32",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12493,6 +12541,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_SendNotification() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagServerIf, err := cmd.Flags().GetInt32("serverIf")
+			if err != nil {
+				return fmt.Errorf("reading flag serverIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -12502,6 +12555,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_SendNotification() *cobra.Command {
 				return fmt.Errorf("resolving service %q for callback: %w", flagCallbackName, err)
 			}
 			var flagCallback bluetooth.IBluetoothGattServerCallback = bluetooth.NewBluetoothGattServerCallbackProxy(flagCallbackBinder)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -12526,7 +12584,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_SendNotification() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			result, err := svcProxy.SendNotification(ctx, flagCallback, flagDevice, flagHandle, flagConfirm, flagValue, flagAttributionSource)
+			result, err := svcProxy.SendNotification(ctx, flagServerIf, flagCallback, flagAddress, flagDevice, flagHandle, flagConfirm, flagValue, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -12539,8 +12597,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_SendNotification() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("serverIf", 0, "serverIf (int32)")
+	_ = cmd.MarkFlagRequired("serverIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattServerCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
 	_ = cmd.MarkFlagRequired("handle")
 	cmd.Flags().Bool("confirm", false, "confirm (bool)")
@@ -12599,7 +12661,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_DisconnectAll() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGatt_SubrateModeRequest() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "subrate-mode-request",
-		Short: "Call SubrateModeRequest(callback IBluetoothGattCallback, device BluetoothDevice, subrateMode int32, attributionSource AttributionSource) -> int32",
+		Short: "Call SubrateModeRequest(clientIf int32, callback IBluetoothGattCallback, address string, device BluetoothDevice, subrateMode int32, attributionSource AttributionSource) -> int32",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12622,6 +12684,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_SubrateModeRequest() *cobra.Command {
 
 			svcProxy := bluetooth.NewBluetoothGattProxy(svc)
 
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
 			flagCallbackName, err := cmd.Flags().GetString("callback")
 			if err != nil {
 				return fmt.Errorf("reading flag callback: %w", err)
@@ -12632,6 +12699,11 @@ func newCmdAndroidBluetoothIBluetoothGatt_SubrateModeRequest() *cobra.Command {
 			}
 			var flagCallback bluetooth.IBluetoothGattCallback = bluetooth.NewBluetoothGattCallbackProxy(flagCallbackBinder)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			flagSubrateMode, err := cmd.Flags().GetInt32("subrateMode")
@@ -12641,7 +12713,7 @@ func newCmdAndroidBluetoothIBluetoothGatt_SubrateModeRequest() *cobra.Command {
 
 			var flagAttributionSource content.AttributionSource
 
-			result, err := svcProxy.SubrateModeRequest(ctx, flagCallback, flagDevice, flagSubrateMode, flagAttributionSource)
+			result, err := svcProxy.SubrateModeRequest(ctx, flagClientIf, flagCallback, flagAddress, flagDevice, flagSubrateMode, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -12654,8 +12726,12 @@ func newCmdAndroidBluetoothIBluetoothGatt_SubrateModeRequest() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 	cmd.Flags().String("callback", "", "callback (service name for IBluetoothGattCallback)")
 	_ = cmd.MarkFlagRequired("callback")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("subrateMode", 0, "subrateMode (int32)")
 	_ = cmd.MarkFlagRequired("subrateMode")
 
@@ -12669,7 +12745,6 @@ func newCmdAndroidBluetoothIBluetoothGattCallback() *cobra.Command {
 	}
 
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattCallback_OnClientRegistered())
-	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattCallback_OnClientConnectionState())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyUpdate())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyRead())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattCallback_OnSearchComplete())
@@ -12683,7 +12758,6 @@ func newCmdAndroidBluetoothIBluetoothGattCallback() *cobra.Command {
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattCallback_OnConfigureMTU())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattCallback_OnConnectionUpdated())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattCallback_OnServiceChanged())
-	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattCallback_OnSubrateChange())
 
 	return cmd
 }
@@ -12691,7 +12765,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnClientRegistered() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-client-registered",
-		Short: "Call OnClientRegistered(status int32)",
+		Short: "Call OnClientRegistered(status int32, clientIf int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12719,7 +12793,12 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnClientRegistered() *cobra.Co
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnClientRegistered(ctx, flagStatus)
+			flagClientIf, err := cmd.Flags().GetInt32("clientIf")
+			if err != nil {
+				return fmt.Errorf("reading flag clientIf: %w", err)
+			}
+
+			err = svcProxy.OnClientRegistered(ctx, flagStatus, flagClientIf)
 			if err != nil {
 				return err
 			}
@@ -12734,65 +12813,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnClientRegistered() *cobra.Co
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
 	cmd.Flags().Int32("status", 0, "status (int32)")
 	_ = cmd.MarkFlagRequired("status")
-
-	return cmd
-}
-
-func newCmdAndroidBluetoothIBluetoothGattCallback_OnClientConnectionState() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "on-client-connection-state",
-		Short: "Call OnClientConnectionState(status int32, connected bool, device BluetoothDevice)",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := context.Background()
-
-			conn, err := conn.Open(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			serviceName, _ := cmd.Flags().GetString("service-name")
-			var svc binder.IBinder
-			if serviceName != "" {
-				svc, err = conn.GetService(ctx, serviceName)
-			} else {
-				svc, err = discovery.FindServiceByDescriptor(ctx, conn, "android.bluetooth.IBluetoothGattCallback")
-			}
-			if err != nil {
-				return err
-			}
-
-			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
-
-			flagStatus, err := cmd.Flags().GetInt32("status")
-			if err != nil {
-				return fmt.Errorf("reading flag status: %w", err)
-			}
-
-			flagConnected, err := cmd.Flags().GetBool("connected")
-			if err != nil {
-				return fmt.Errorf("reading flag connected: %w", err)
-			}
-
-			var flagDevice bluetooth.BluetoothDevice
-
-			err = svcProxy.OnClientConnectionState(ctx, flagStatus, flagConnected, flagDevice)
-			if err != nil {
-				return err
-			}
-
-			mode, _ := cmd.Root().PersistentFlags().GetString("format")
-			f := output.NewFormatter(mode, os.Stdout)
-			f.Value("status", "ok")
-			return nil
-		},
-	}
-
-	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-	cmd.Flags().Int32("status", 0, "status (int32)")
-	_ = cmd.MarkFlagRequired("status")
-	cmd.Flags().Bool("connected", false, "connected (bool)")
-	_ = cmd.MarkFlagRequired("connected")
+	cmd.Flags().Int32("clientIf", 0, "clientIf (int32)")
+	_ = cmd.MarkFlagRequired("clientIf")
 
 	return cmd
 }
@@ -12800,7 +12822,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnClientConnectionState() *cob
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyUpdate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-phy-update",
-		Short: "Call OnPhyUpdate(device BluetoothDevice, txPhy int32, rxPhy int32, status int32)",
+		Short: "Call OnPhyUpdate(address string, device BluetoothDevice, txPhy int32, rxPhy int32, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12822,6 +12844,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyUpdate() *cobra.Command {
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -12840,7 +12867,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyUpdate() *cobra.Command {
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnPhyUpdate(ctx, flagDevice, flagTxPhy, flagRxPhy, flagStatus)
+			err = svcProxy.OnPhyUpdate(ctx, flagAddress, flagDevice, flagTxPhy, flagRxPhy, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -12853,6 +12880,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyUpdate() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("txPhy", 0, "txPhy (int32)")
 	_ = cmd.MarkFlagRequired("txPhy")
 	cmd.Flags().Int32("rxPhy", 0, "rxPhy (int32)")
@@ -12866,7 +12895,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyUpdate() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyRead() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-phy-read",
-		Short: "Call OnPhyRead(device BluetoothDevice, txPhy int32, rxPhy int32, status int32)",
+		Short: "Call OnPhyRead(address string, device BluetoothDevice, txPhy int32, rxPhy int32, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12888,6 +12917,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyRead() *cobra.Command {
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -12906,7 +12940,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyRead() *cobra.Command {
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnPhyRead(ctx, flagDevice, flagTxPhy, flagRxPhy, flagStatus)
+			err = svcProxy.OnPhyRead(ctx, flagAddress, flagDevice, flagTxPhy, flagRxPhy, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -12919,6 +12953,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyRead() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("txPhy", 0, "txPhy (int32)")
 	_ = cmd.MarkFlagRequired("txPhy")
 	cmd.Flags().Int32("rxPhy", 0, "rxPhy (int32)")
@@ -12932,7 +12968,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnPhyRead() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnSearchComplete() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-search-complete",
-		Short: "Call OnSearchComplete(device BluetoothDevice, services []BluetoothGattService, status int32)",
+		Short: "Call OnSearchComplete(address string, device BluetoothDevice, services []BluetoothGattService, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -12954,6 +12990,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnSearchComplete() *cobra.Comm
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -12973,7 +13014,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnSearchComplete() *cobra.Comm
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnSearchComplete(ctx, flagDevice, flagServices, flagStatus)
+			err = svcProxy.OnSearchComplete(ctx, flagAddress, flagDevice, flagServices, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -12986,6 +13027,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnSearchComplete() *cobra.Comm
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().String("services", "", "services (JSON []BluetoothGattService)")
 	_ = cmd.MarkFlagRequired("services")
 	cmd.Flags().Int32("status", 0, "status (int32)")
@@ -12997,7 +13040,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnSearchComplete() *cobra.Comm
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicRead() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-characteristic-read",
-		Short: "Call OnCharacteristicRead(device BluetoothDevice, status int32, handle int32, value []byte)",
+		Short: "Call OnCharacteristicRead(address string, device BluetoothDevice, status int32, handle int32, value []byte)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13020,6 +13063,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicRead() *cobra.
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			flagStatus, err := cmd.Flags().GetInt32("status")
@@ -13041,7 +13089,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicRead() *cobra.
 				return fmt.Errorf("invalid hex for value: %w", err)
 			}
 
-			err = svcProxy.OnCharacteristicRead(ctx, flagDevice, flagStatus, flagHandle, flagValue)
+			err = svcProxy.OnCharacteristicRead(ctx, flagAddress, flagDevice, flagStatus, flagHandle, flagValue)
 			if err != nil {
 				return err
 			}
@@ -13054,6 +13102,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicRead() *cobra.
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("status", 0, "status (int32)")
 	_ = cmd.MarkFlagRequired("status")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
@@ -13067,7 +13117,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicRead() *cobra.
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicWrite() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-characteristic-write",
-		Short: "Call OnCharacteristicWrite(device BluetoothDevice, status int32, handle int32, value []byte)",
+		Short: "Call OnCharacteristicWrite(address string, device BluetoothDevice, status int32, handle int32, value []byte)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13090,6 +13140,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicWrite() *cobra
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			flagStatus, err := cmd.Flags().GetInt32("status")
@@ -13111,7 +13166,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicWrite() *cobra
 				return fmt.Errorf("invalid hex for value: %w", err)
 			}
 
-			err = svcProxy.OnCharacteristicWrite(ctx, flagDevice, flagStatus, flagHandle, flagValue)
+			err = svcProxy.OnCharacteristicWrite(ctx, flagAddress, flagDevice, flagStatus, flagHandle, flagValue)
 			if err != nil {
 				return err
 			}
@@ -13124,6 +13179,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicWrite() *cobra
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("status", 0, "status (int32)")
 	_ = cmd.MarkFlagRequired("status")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
@@ -13137,7 +13194,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnCharacteristicWrite() *cobra
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnExecuteWrite() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-execute-write",
-		Short: "Call OnExecuteWrite(device BluetoothDevice, status int32)",
+		Short: "Call OnExecuteWrite(address string, device BluetoothDevice, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13160,6 +13217,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnExecuteWrite() *cobra.Comman
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			flagStatus, err := cmd.Flags().GetInt32("status")
@@ -13167,7 +13229,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnExecuteWrite() *cobra.Comman
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnExecuteWrite(ctx, flagDevice, flagStatus)
+			err = svcProxy.OnExecuteWrite(ctx, flagAddress, flagDevice, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -13180,6 +13242,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnExecuteWrite() *cobra.Comman
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("status", 0, "status (int32)")
 	_ = cmd.MarkFlagRequired("status")
 
@@ -13189,7 +13253,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnExecuteWrite() *cobra.Comman
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorRead() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-descriptor-read",
-		Short: "Call OnDescriptorRead(device BluetoothDevice, status int32, handle int32, value []byte)",
+		Short: "Call OnDescriptorRead(address string, device BluetoothDevice, status int32, handle int32, value []byte)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13211,6 +13275,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorRead() *cobra.Comm
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -13233,7 +13302,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorRead() *cobra.Comm
 				return fmt.Errorf("invalid hex for value: %w", err)
 			}
 
-			err = svcProxy.OnDescriptorRead(ctx, flagDevice, flagStatus, flagHandle, flagValue)
+			err = svcProxy.OnDescriptorRead(ctx, flagAddress, flagDevice, flagStatus, flagHandle, flagValue)
 			if err != nil {
 				return err
 			}
@@ -13246,6 +13315,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorRead() *cobra.Comm
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("status", 0, "status (int32)")
 	_ = cmd.MarkFlagRequired("status")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
@@ -13259,7 +13330,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorRead() *cobra.Comm
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorWrite() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-descriptor-write",
-		Short: "Call OnDescriptorWrite(device BluetoothDevice, status int32, handle int32, value []byte)",
+		Short: "Call OnDescriptorWrite(address string, device BluetoothDevice, status int32, handle int32, value []byte)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13282,6 +13353,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorWrite() *cobra.Com
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			flagStatus, err := cmd.Flags().GetInt32("status")
@@ -13303,7 +13379,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorWrite() *cobra.Com
 				return fmt.Errorf("invalid hex for value: %w", err)
 			}
 
-			err = svcProxy.OnDescriptorWrite(ctx, flagDevice, flagStatus, flagHandle, flagValue)
+			err = svcProxy.OnDescriptorWrite(ctx, flagAddress, flagDevice, flagStatus, flagHandle, flagValue)
 			if err != nil {
 				return err
 			}
@@ -13316,6 +13392,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorWrite() *cobra.Com
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("status", 0, "status (int32)")
 	_ = cmd.MarkFlagRequired("status")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
@@ -13329,7 +13407,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnDescriptorWrite() *cobra.Com
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnNotify() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-notify",
-		Short: "Call OnNotify(device BluetoothDevice, handle int32, value []byte)",
+		Short: "Call OnNotify(address string, device BluetoothDevice, handle int32, value []byte)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13351,6 +13429,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnNotify() *cobra.Command {
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -13368,7 +13451,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnNotify() *cobra.Command {
 				return fmt.Errorf("invalid hex for value: %w", err)
 			}
 
-			err = svcProxy.OnNotify(ctx, flagDevice, flagHandle, flagValue)
+			err = svcProxy.OnNotify(ctx, flagAddress, flagDevice, flagHandle, flagValue)
 			if err != nil {
 				return err
 			}
@@ -13381,6 +13464,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnNotify() *cobra.Command {
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("handle", 0, "handle (int32)")
 	_ = cmd.MarkFlagRequired("handle")
 	cmd.Flags().String("value", "", "value (hex bytes)")
@@ -13392,7 +13477,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnNotify() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnReadRemoteRssi() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-read-remote-rssi",
-		Short: "Call OnReadRemoteRssi(device BluetoothDevice, rssi int32, status int32)",
+		Short: "Call OnReadRemoteRssi(address string, device BluetoothDevice, rssi int32, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13414,6 +13499,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnReadRemoteRssi() *cobra.Comm
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -13427,7 +13517,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnReadRemoteRssi() *cobra.Comm
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnReadRemoteRssi(ctx, flagDevice, flagRssi, flagStatus)
+			err = svcProxy.OnReadRemoteRssi(ctx, flagAddress, flagDevice, flagRssi, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -13440,6 +13530,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnReadRemoteRssi() *cobra.Comm
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("rssi", 0, "rssi (int32)")
 	_ = cmd.MarkFlagRequired("rssi")
 	cmd.Flags().Int32("status", 0, "status (int32)")
@@ -13451,7 +13543,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnReadRemoteRssi() *cobra.Comm
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnConfigureMTU() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-configure-m-t-u",
-		Short: "Call OnConfigureMTU(device BluetoothDevice, mtu int32, status int32)",
+		Short: "Call OnConfigureMTU(address string, device BluetoothDevice, mtu int32, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13473,6 +13565,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnConfigureMTU() *cobra.Comman
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -13486,7 +13583,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnConfigureMTU() *cobra.Comman
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnConfigureMTU(ctx, flagDevice, flagMtu, flagStatus)
+			err = svcProxy.OnConfigureMTU(ctx, flagAddress, flagDevice, flagMtu, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -13499,6 +13596,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnConfigureMTU() *cobra.Comman
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("mtu", 0, "mtu (int32)")
 	_ = cmd.MarkFlagRequired("mtu")
 	cmd.Flags().Int32("status", 0, "status (int32)")
@@ -13510,7 +13609,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnConfigureMTU() *cobra.Comman
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnConnectionUpdated() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-connection-updated",
-		Short: "Call OnConnectionUpdated(device BluetoothDevice, interval int32, latency int32, timeout int32, status int32)",
+		Short: "Call OnConnectionUpdated(address string, device BluetoothDevice, interval int32, latency int32, timeout int32, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13532,6 +13631,11 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnConnectionUpdated() *cobra.C
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -13555,7 +13659,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnConnectionUpdated() *cobra.C
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnConnectionUpdated(ctx, flagDevice, flagInterval, flagLatency, flagTimeout, flagStatus)
+			err = svcProxy.OnConnectionUpdated(ctx, flagAddress, flagDevice, flagInterval, flagLatency, flagTimeout, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -13568,6 +13672,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnConnectionUpdated() *cobra.C
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("interval", 0, "interval (int32)")
 	_ = cmd.MarkFlagRequired("interval")
 	cmd.Flags().Int32("latency", 0, "latency (int32)")
@@ -13583,7 +13689,7 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnConnectionUpdated() *cobra.C
 func newCmdAndroidBluetoothIBluetoothGattCallback_OnServiceChanged() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-service-changed",
-		Short: "Call OnServiceChanged(device BluetoothDevice)",
+		Short: "Call OnServiceChanged(address string, device BluetoothDevice)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13606,9 +13712,14 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnServiceChanged() *cobra.Comm
 
 			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
-			err = svcProxy.OnServiceChanged(ctx, flagDevice)
+			err = svcProxy.OnServiceChanged(ctx, flagAddress, flagDevice)
 			if err != nil {
 				return err
 			}
@@ -13621,65 +13732,8 @@ func newCmdAndroidBluetoothIBluetoothGattCallback_OnServiceChanged() *cobra.Comm
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-
-	return cmd
-}
-
-func newCmdAndroidBluetoothIBluetoothGattCallback_OnSubrateChange() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "on-subrate-change",
-		Short: "Call OnSubrateChange(device BluetoothDevice, subrateMode int32, status int32)",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := context.Background()
-
-			conn, err := conn.Open(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			serviceName, _ := cmd.Flags().GetString("service-name")
-			var svc binder.IBinder
-			if serviceName != "" {
-				svc, err = conn.GetService(ctx, serviceName)
-			} else {
-				svc, err = discovery.FindServiceByDescriptor(ctx, conn, "android.bluetooth.IBluetoothGattCallback")
-			}
-			if err != nil {
-				return err
-			}
-
-			svcProxy := bluetooth.NewBluetoothGattCallbackProxy(svc)
-
-			var flagDevice bluetooth.BluetoothDevice
-
-			flagSubrateMode, err := cmd.Flags().GetInt32("subrateMode")
-			if err != nil {
-				return fmt.Errorf("reading flag subrateMode: %w", err)
-			}
-
-			flagStatus, err := cmd.Flags().GetInt32("status")
-			if err != nil {
-				return fmt.Errorf("reading flag status: %w", err)
-			}
-
-			err = svcProxy.OnSubrateChange(ctx, flagDevice, flagSubrateMode, flagStatus)
-			if err != nil {
-				return err
-			}
-
-			mode, _ := cmd.Root().PersistentFlags().GetString("format")
-			f := output.NewFormatter(mode, os.Stdout)
-			f.Value("status", "ok")
-			return nil
-		},
-	}
-
-	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-	cmd.Flags().Int32("subrateMode", 0, "subrateMode (int32)")
-	_ = cmd.MarkFlagRequired("subrateMode")
-	cmd.Flags().Int32("status", 0, "status (int32)")
-	_ = cmd.MarkFlagRequired("status")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 
 	return cmd
 }
@@ -13691,7 +13745,6 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback() *cobra.Command {
 	}
 
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattServerCallback_OnServerRegistered())
-	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattServerCallback_OnServerConnectionState())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattServerCallback_OnServiceAdded())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicReadRequest())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorReadRequest())
@@ -13703,7 +13756,6 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback() *cobra.Command {
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyUpdate())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyRead())
 	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattServerCallback_OnConnectionUpdated())
-	cmd.AddCommand(newCmdAndroidBluetoothIBluetoothGattServerCallback_OnSubrateChange())
 
 	return cmd
 }
@@ -13711,7 +13763,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback() *cobra.Command {
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnServerRegistered() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-server-registered",
-		Short: "Call OnServerRegistered(status int32)",
+		Short: "Call OnServerRegistered(status int32, serverIf int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13739,7 +13791,12 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnServerRegistered() *co
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnServerRegistered(ctx, flagStatus)
+			flagServerIf, err := cmd.Flags().GetInt32("serverIf")
+			if err != nil {
+				return fmt.Errorf("reading flag serverIf: %w", err)
+			}
+
+			err = svcProxy.OnServerRegistered(ctx, flagStatus, flagServerIf)
 			if err != nil {
 				return err
 			}
@@ -13754,65 +13811,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnServerRegistered() *co
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
 	cmd.Flags().Int32("status", 0, "status (int32)")
 	_ = cmd.MarkFlagRequired("status")
-
-	return cmd
-}
-
-func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnServerConnectionState() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "on-server-connection-state",
-		Short: "Call OnServerConnectionState(status int32, connected bool, device BluetoothDevice)",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := context.Background()
-
-			conn, err := conn.Open(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			serviceName, _ := cmd.Flags().GetString("service-name")
-			var svc binder.IBinder
-			if serviceName != "" {
-				svc, err = conn.GetService(ctx, serviceName)
-			} else {
-				svc, err = discovery.FindServiceByDescriptor(ctx, conn, "android.bluetooth.IBluetoothGattServerCallback")
-			}
-			if err != nil {
-				return err
-			}
-
-			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
-
-			flagStatus, err := cmd.Flags().GetInt32("status")
-			if err != nil {
-				return fmt.Errorf("reading flag status: %w", err)
-			}
-
-			flagConnected, err := cmd.Flags().GetBool("connected")
-			if err != nil {
-				return fmt.Errorf("reading flag connected: %w", err)
-			}
-
-			var flagDevice bluetooth.BluetoothDevice
-
-			err = svcProxy.OnServerConnectionState(ctx, flagStatus, flagConnected, flagDevice)
-			if err != nil {
-				return err
-			}
-
-			mode, _ := cmd.Root().PersistentFlags().GetString("format")
-			f := output.NewFormatter(mode, os.Stdout)
-			f.Value("status", "ok")
-			return nil
-		},
-	}
-
-	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-	cmd.Flags().Int32("status", 0, "status (int32)")
-	_ = cmd.MarkFlagRequired("status")
-	cmd.Flags().Bool("connected", false, "connected (bool)")
-	_ = cmd.MarkFlagRequired("connected")
+	cmd.Flags().Int32("serverIf", 0, "serverIf (int32)")
+	_ = cmd.MarkFlagRequired("serverIf")
 
 	return cmd
 }
@@ -13872,7 +13872,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnServiceAdded() *cobra.
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicReadRequest() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-characteristic-read-request",
-		Short: "Call OnCharacteristicReadRequest(device BluetoothDevice, transId int32, offset int32, isLong bool, handle int32)",
+		Short: "Call OnCharacteristicReadRequest(address string, device BluetoothDevice, transId int32, offset int32, isLong bool, handle int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13894,6 +13894,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicReadRequ
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -13917,7 +13922,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicReadRequ
 				return fmt.Errorf("reading flag handle: %w", err)
 			}
 
-			err = svcProxy.OnCharacteristicReadRequest(ctx, flagDevice, flagTransId, flagOffset, flagIsLong, flagHandle)
+			err = svcProxy.OnCharacteristicReadRequest(ctx, flagAddress, flagDevice, flagTransId, flagOffset, flagIsLong, flagHandle)
 			if err != nil {
 				return err
 			}
@@ -13930,6 +13935,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicReadRequ
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("transId", 0, "transId (int32)")
 	_ = cmd.MarkFlagRequired("transId")
 	cmd.Flags().Int32("offset", 0, "offset (int32)")
@@ -13945,7 +13952,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicReadRequ
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorReadRequest() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-descriptor-read-request",
-		Short: "Call OnDescriptorReadRequest(device BluetoothDevice, transId int32, offset int32, isLong bool, handle int32)",
+		Short: "Call OnDescriptorReadRequest(address string, device BluetoothDevice, transId int32, offset int32, isLong bool, handle int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -13967,6 +13974,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorReadRequest(
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -13990,7 +14002,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorReadRequest(
 				return fmt.Errorf("reading flag handle: %w", err)
 			}
 
-			err = svcProxy.OnDescriptorReadRequest(ctx, flagDevice, flagTransId, flagOffset, flagIsLong, flagHandle)
+			err = svcProxy.OnDescriptorReadRequest(ctx, flagAddress, flagDevice, flagTransId, flagOffset, flagIsLong, flagHandle)
 			if err != nil {
 				return err
 			}
@@ -14003,6 +14015,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorReadRequest(
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("transId", 0, "transId (int32)")
 	_ = cmd.MarkFlagRequired("transId")
 	cmd.Flags().Int32("offset", 0, "offset (int32)")
@@ -14018,7 +14032,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorReadRequest(
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicWriteRequest() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-characteristic-write-request",
-		Short: "Call OnCharacteristicWriteRequest(device BluetoothDevice, transId int32, offset int32, length int32, isPrep bool, needRsp bool, handle int32, value []byte)",
+		Short: "Call OnCharacteristicWriteRequest(address string, device BluetoothDevice, transId int32, offset int32, length int32, isPrep bool, needRsp bool, handle int32, value []byte)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -14040,6 +14054,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicWriteReq
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -14082,7 +14101,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicWriteReq
 				return fmt.Errorf("invalid hex for value: %w", err)
 			}
 
-			err = svcProxy.OnCharacteristicWriteRequest(ctx, flagDevice, flagTransId, flagOffset, flagLength, flagIsPrep, flagNeedRsp, flagHandle, flagValue)
+			err = svcProxy.OnCharacteristicWriteRequest(ctx, flagAddress, flagDevice, flagTransId, flagOffset, flagLength, flagIsPrep, flagNeedRsp, flagHandle, flagValue)
 			if err != nil {
 				return err
 			}
@@ -14095,6 +14114,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicWriteReq
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("transId", 0, "transId (int32)")
 	_ = cmd.MarkFlagRequired("transId")
 	cmd.Flags().Int32("offset", 0, "offset (int32)")
@@ -14116,7 +14137,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnCharacteristicWriteReq
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorWriteRequest() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-descriptor-write-request",
-		Short: "Call OnDescriptorWriteRequest(device BluetoothDevice, transId int32, offset int32, length int32, isPrep bool, needRsp bool, handle int32, value []byte)",
+		Short: "Call OnDescriptorWriteRequest(address string, device BluetoothDevice, transId int32, offset int32, length int32, isPrep bool, needRsp bool, handle int32, value []byte)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -14138,6 +14159,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorWriteRequest
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -14180,7 +14206,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorWriteRequest
 				return fmt.Errorf("invalid hex for value: %w", err)
 			}
 
-			err = svcProxy.OnDescriptorWriteRequest(ctx, flagDevice, flagTransId, flagOffset, flagLength, flagIsPrep, flagNeedRsp, flagHandle, flagValue)
+			err = svcProxy.OnDescriptorWriteRequest(ctx, flagAddress, flagDevice, flagTransId, flagOffset, flagLength, flagIsPrep, flagNeedRsp, flagHandle, flagValue)
 			if err != nil {
 				return err
 			}
@@ -14193,6 +14219,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorWriteRequest
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("transId", 0, "transId (int32)")
 	_ = cmd.MarkFlagRequired("transId")
 	cmd.Flags().Int32("offset", 0, "offset (int32)")
@@ -14214,7 +14242,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnDescriptorWriteRequest
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnExecuteWrite() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-execute-write",
-		Short: "Call OnExecuteWrite(device BluetoothDevice, transId int32, execWrite bool)",
+		Short: "Call OnExecuteWrite(address string, device BluetoothDevice, transId int32, execWrite bool)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -14236,6 +14264,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnExecuteWrite() *cobra.
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -14249,7 +14282,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnExecuteWrite() *cobra.
 				return fmt.Errorf("reading flag execWrite: %w", err)
 			}
 
-			err = svcProxy.OnExecuteWrite(ctx, flagDevice, flagTransId, flagExecWrite)
+			err = svcProxy.OnExecuteWrite(ctx, flagAddress, flagDevice, flagTransId, flagExecWrite)
 			if err != nil {
 				return err
 			}
@@ -14262,6 +14295,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnExecuteWrite() *cobra.
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("transId", 0, "transId (int32)")
 	_ = cmd.MarkFlagRequired("transId")
 	cmd.Flags().Bool("execWrite", false, "execWrite (bool)")
@@ -14273,7 +14308,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnExecuteWrite() *cobra.
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnNotificationSent() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-notification-sent",
-		Short: "Call OnNotificationSent(device BluetoothDevice, status int32)",
+		Short: "Call OnNotificationSent(address string, device BluetoothDevice, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -14296,6 +14331,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnNotificationSent() *co
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			flagStatus, err := cmd.Flags().GetInt32("status")
@@ -14303,7 +14343,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnNotificationSent() *co
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnNotificationSent(ctx, flagDevice, flagStatus)
+			err = svcProxy.OnNotificationSent(ctx, flagAddress, flagDevice, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -14316,6 +14356,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnNotificationSent() *co
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("status", 0, "status (int32)")
 	_ = cmd.MarkFlagRequired("status")
 
@@ -14325,7 +14367,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnNotificationSent() *co
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnMtuChanged() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-mtu-changed",
-		Short: "Call OnMtuChanged(device BluetoothDevice, mtu int32)",
+		Short: "Call OnMtuChanged(address string, device BluetoothDevice, mtu int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -14348,6 +14390,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnMtuChanged() *cobra.Co
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
 
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
+
 			var flagDevice bluetooth.BluetoothDevice
 
 			flagMtu, err := cmd.Flags().GetInt32("mtu")
@@ -14355,7 +14402,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnMtuChanged() *cobra.Co
 				return fmt.Errorf("reading flag mtu: %w", err)
 			}
 
-			err = svcProxy.OnMtuChanged(ctx, flagDevice, flagMtu)
+			err = svcProxy.OnMtuChanged(ctx, flagAddress, flagDevice, flagMtu)
 			if err != nil {
 				return err
 			}
@@ -14368,6 +14415,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnMtuChanged() *cobra.Co
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("mtu", 0, "mtu (int32)")
 	_ = cmd.MarkFlagRequired("mtu")
 
@@ -14377,7 +14426,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnMtuChanged() *cobra.Co
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyUpdate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-phy-update",
-		Short: "Call OnPhyUpdate(device BluetoothDevice, txPhy int32, rxPhy int32, status int32)",
+		Short: "Call OnPhyUpdate(address string, device BluetoothDevice, txPhy int32, rxPhy int32, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -14399,6 +14448,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyUpdate() *cobra.Com
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -14417,7 +14471,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyUpdate() *cobra.Com
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnPhyUpdate(ctx, flagDevice, flagTxPhy, flagRxPhy, flagStatus)
+			err = svcProxy.OnPhyUpdate(ctx, flagAddress, flagDevice, flagTxPhy, flagRxPhy, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -14430,6 +14484,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyUpdate() *cobra.Com
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("txPhy", 0, "txPhy (int32)")
 	_ = cmd.MarkFlagRequired("txPhy")
 	cmd.Flags().Int32("rxPhy", 0, "rxPhy (int32)")
@@ -14443,7 +14499,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyUpdate() *cobra.Com
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyRead() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-phy-read",
-		Short: "Call OnPhyRead(device BluetoothDevice, txPhy int32, rxPhy int32, status int32)",
+		Short: "Call OnPhyRead(address string, device BluetoothDevice, txPhy int32, rxPhy int32, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -14465,6 +14521,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyRead() *cobra.Comma
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -14483,7 +14544,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyRead() *cobra.Comma
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnPhyRead(ctx, flagDevice, flagTxPhy, flagRxPhy, flagStatus)
+			err = svcProxy.OnPhyRead(ctx, flagAddress, flagDevice, flagTxPhy, flagRxPhy, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -14496,6 +14557,8 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyRead() *cobra.Comma
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("txPhy", 0, "txPhy (int32)")
 	_ = cmd.MarkFlagRequired("txPhy")
 	cmd.Flags().Int32("rxPhy", 0, "rxPhy (int32)")
@@ -14509,7 +14572,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnPhyRead() *cobra.Comma
 func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnConnectionUpdated() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "on-connection-updated",
-		Short: "Call OnConnectionUpdated(device BluetoothDevice, interval int32, latency int32, timeout int32, status int32)",
+		Short: "Call OnConnectionUpdated(address string, device BluetoothDevice, interval int32, latency int32, timeout int32, status int32)",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -14531,6 +14594,11 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnConnectionUpdated() *c
 			}
 
 			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
+
+			flagAddress, err := cmd.Flags().GetString("address")
+			if err != nil {
+				return fmt.Errorf("reading flag address: %w", err)
+			}
 
 			var flagDevice bluetooth.BluetoothDevice
 
@@ -14554,7 +14622,7 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnConnectionUpdated() *c
 				return fmt.Errorf("reading flag status: %w", err)
 			}
 
-			err = svcProxy.OnConnectionUpdated(ctx, flagDevice, flagInterval, flagLatency, flagTimeout, flagStatus)
+			err = svcProxy.OnConnectionUpdated(ctx, flagAddress, flagDevice, flagInterval, flagLatency, flagTimeout, flagStatus)
 			if err != nil {
 				return err
 			}
@@ -14567,71 +14635,14 @@ func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnConnectionUpdated() *c
 	}
 
 	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
+	cmd.Flags().String("address", "", "address (string)")
+	_ = cmd.MarkFlagRequired("address")
 	cmd.Flags().Int32("interval", 0, "interval (int32)")
 	_ = cmd.MarkFlagRequired("interval")
 	cmd.Flags().Int32("latency", 0, "latency (int32)")
 	_ = cmd.MarkFlagRequired("latency")
 	cmd.Flags().Int32("timeout", 0, "timeout (int32)")
 	_ = cmd.MarkFlagRequired("timeout")
-	cmd.Flags().Int32("status", 0, "status (int32)")
-	_ = cmd.MarkFlagRequired("status")
-
-	return cmd
-}
-
-func newCmdAndroidBluetoothIBluetoothGattServerCallback_OnSubrateChange() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "on-subrate-change",
-		Short: "Call OnSubrateChange(device BluetoothDevice, subrateMode int32, status int32)",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			ctx := context.Background()
-
-			conn, err := conn.Open(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			serviceName, _ := cmd.Flags().GetString("service-name")
-			var svc binder.IBinder
-			if serviceName != "" {
-				svc, err = conn.GetService(ctx, serviceName)
-			} else {
-				svc, err = discovery.FindServiceByDescriptor(ctx, conn, "android.bluetooth.IBluetoothGattServerCallback")
-			}
-			if err != nil {
-				return err
-			}
-
-			svcProxy := bluetooth.NewBluetoothGattServerCallbackProxy(svc)
-
-			var flagDevice bluetooth.BluetoothDevice
-
-			flagSubrateMode, err := cmd.Flags().GetInt32("subrateMode")
-			if err != nil {
-				return fmt.Errorf("reading flag subrateMode: %w", err)
-			}
-
-			flagStatus, err := cmd.Flags().GetInt32("status")
-			if err != nil {
-				return fmt.Errorf("reading flag status: %w", err)
-			}
-
-			err = svcProxy.OnSubrateChange(ctx, flagDevice, flagSubrateMode, flagStatus)
-			if err != nil {
-				return err
-			}
-
-			mode, _ := cmd.Root().PersistentFlags().GetString("format")
-			f := output.NewFormatter(mode, os.Stdout)
-			f.Value("status", "ok")
-			return nil
-		},
-	}
-
-	cmd.Flags().String("service-name", "", "ServiceManager name to use instead of descriptor discovery")
-	cmd.Flags().Int32("subrateMode", 0, "subrateMode (int32)")
-	_ = cmd.MarkFlagRequired("subrateMode")
 	cmd.Flags().Int32("status", 0, "status (int32)")
 	_ = cmd.MarkFlagRequired("status")
 
@@ -23090,7 +23101,7 @@ func newCmdAndroidBluetoothIBluetoothLeAudio_GetAllBroadcastMetadata() *cobra.Co
 func newCmdAndroidBluetoothIBluetoothLeAudio_GetMaximumNumberOfBroadcasts() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-maximum-number-of-broadcasts",
-		Short: "Call GetMaximumNumberOfBroadcasts() -> int32",
+		Short: "Call GetMaximumNumberOfBroadcasts(attributionSource AttributionSource) -> int32",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -23113,7 +23124,9 @@ func newCmdAndroidBluetoothIBluetoothLeAudio_GetMaximumNumberOfBroadcasts() *cob
 
 			svcProxy := bluetooth.NewBluetoothLeAudioProxy(svc)
 
-			result, err := svcProxy.GetMaximumNumberOfBroadcasts(ctx)
+			var flagAttributionSource content.AttributionSource
+
+			result, err := svcProxy.GetMaximumNumberOfBroadcasts(ctx, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -23133,7 +23146,7 @@ func newCmdAndroidBluetoothIBluetoothLeAudio_GetMaximumNumberOfBroadcasts() *cob
 func newCmdAndroidBluetoothIBluetoothLeAudio_GetMaximumStreamsPerBroadcast() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-maximum-streams-per-broadcast",
-		Short: "Call GetMaximumStreamsPerBroadcast() -> int32",
+		Short: "Call GetMaximumStreamsPerBroadcast(attributionSource AttributionSource) -> int32",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -23156,7 +23169,9 @@ func newCmdAndroidBluetoothIBluetoothLeAudio_GetMaximumStreamsPerBroadcast() *co
 
 			svcProxy := bluetooth.NewBluetoothLeAudioProxy(svc)
 
-			result, err := svcProxy.GetMaximumStreamsPerBroadcast(ctx)
+			var flagAttributionSource content.AttributionSource
+
+			result, err := svcProxy.GetMaximumStreamsPerBroadcast(ctx, flagAttributionSource)
 			if err != nil {
 				return err
 			}
@@ -23176,7 +23191,7 @@ func newCmdAndroidBluetoothIBluetoothLeAudio_GetMaximumStreamsPerBroadcast() *co
 func newCmdAndroidBluetoothIBluetoothLeAudio_GetMaximumSubgroupsPerBroadcast() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-maximum-subgroups-per-broadcast",
-		Short: "Call GetMaximumSubgroupsPerBroadcast() -> int32",
+		Short: "Call GetMaximumSubgroupsPerBroadcast(attributionSource AttributionSource) -> int32",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := context.Background()
 
@@ -23199,7 +23214,9 @@ func newCmdAndroidBluetoothIBluetoothLeAudio_GetMaximumSubgroupsPerBroadcast() *
 
 			svcProxy := bluetooth.NewBluetoothLeAudioProxy(svc)
 
-			result, err := svcProxy.GetMaximumSubgroupsPerBroadcast(ctx)
+			var flagAttributionSource content.AttributionSource
+
+			result, err := svcProxy.GetMaximumSubgroupsPerBroadcast(ctx, flagAttributionSource)
 			if err != nil {
 				return err
 			}

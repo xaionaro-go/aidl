@@ -333,10 +333,26 @@ interfaces:
               type:
                 name: int
               direction: in
+            - name: p192Data
+              type:
+                name: OobData
+              direction: in
+              max_api_level: 35
             - name: attributionSource
               type:
                 name: AttributionSource
               direction: in
+              min_api_level: 36
+            - name: p256Data
+              type:
+                name: OobData
+              direction: in
+              max_api_level: 35
+            - name: attributionSource
+              type:
+                name: AttributionSource
+              direction: in
+              max_api_level: 35
           return_type:
             name: boolean
           annotations:
@@ -1007,14 +1023,26 @@ interfaces:
         - name: unregisterMetadataListener
           transaction_code_offset: 64
           params:
-            - name: listener
-              type:
-                name: IBluetoothMetadataListener
-              direction: in
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              max_api_level: 35
+            - name: listener
+              type:
+                name: IBluetoothMetadataListener
+              direction: in
+              min_api_level: 36
+            - name: attributionSource
+              type:
+                name: AttributionSource
+              direction: in
+              max_api_level: 35
+            - name: device
+              type:
+                name: BluetoothDevice
+              direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -1950,6 +1978,12 @@ interfaces:
             - JavaPassthrough
         - name: getSupportedCodecTypes
           transaction_code_offset: 11
+          params:
+            - name: attributionSource
+              type:
+                name: AttributionSource
+              direction: in
+              max_api_level: 35
           return_type:
             name: List
             type_args:
@@ -2878,10 +2912,16 @@ interfaces:
             - name: eatt_support
               type:
                 name: boolean
+            - name: attributionSource
+              type:
+                name: AttributionSource
+              direction: in
+              max_api_level: 35
             - name: transport
               type:
                 name: int
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -2894,10 +2934,16 @@ interfaces:
         - name: unregisterClient
           transaction_code_offset: 2
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -2909,14 +2955,26 @@ interfaces:
         - name: clientConnect
           transaction_code_offset: 3
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: addressType
               type:
                 name: int
@@ -2948,14 +3006,26 @@ interfaces:
         - name: clientDisconnect
           transaction_code_offset: 4
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -2967,14 +3037,26 @@ interfaces:
         - name: clientSetPreferredPhy
           transaction_code_offset: 5
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: txPhy
               type:
                 name: int
@@ -2998,14 +3080,26 @@ interfaces:
         - name: clientReadPhy
           transaction_code_offset: 6
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: attributionSources
               type:
                 name: AttributionSource
@@ -3017,14 +3111,26 @@ interfaces:
         - name: refreshDevice
           transaction_code_offset: 7
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -3036,14 +3142,26 @@ interfaces:
         - name: discoverServices
           transaction_code_offset: 8
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -3055,14 +3173,26 @@ interfaces:
         - name: discoverServiceByUuid
           transaction_code_offset: 9
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: uuid
               type:
                 name: ParcelUuid
@@ -3078,14 +3208,26 @@ interfaces:
         - name: readCharacteristic
           transaction_code_offset: 10
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: handle
               type:
                 name: int
@@ -3105,14 +3247,26 @@ interfaces:
         - name: readUsingCharacteristicUuid
           transaction_code_offset: 11
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: uuid
               type:
                 name: ParcelUuid
@@ -3140,14 +3294,26 @@ interfaces:
         - name: writeCharacteristic
           transaction_code_offset: 12
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: handle
               type:
                 name: int
@@ -3176,14 +3342,26 @@ interfaces:
         - name: readDescriptor
           transaction_code_offset: 13
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: handle
               type:
                 name: int
@@ -3203,14 +3381,26 @@ interfaces:
         - name: writeDescriptor
           transaction_code_offset: 14
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: handle
               type:
                 name: int
@@ -3235,14 +3425,26 @@ interfaces:
         - name: registerForNotification
           transaction_code_offset: 15
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: handle
               type:
                 name: int
@@ -3262,14 +3464,31 @@ interfaces:
         - name: beginReliableWrite
           transaction_code_offset: 16
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: attributionSource
               type:
                 name: AttributionSource
               direction: in
+              min_api_level: 36
+            - name: attributionSource
+              type:
+                name: AttributionSource
+              direction: in
+              max_api_level: 35
           return_type:
             name: void
           annotations:
@@ -3277,14 +3496,26 @@ interfaces:
         - name: endReliableWrite
           transaction_code_offset: 17
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: execute
               type:
                 name: boolean
@@ -3300,14 +3531,26 @@ interfaces:
         - name: readRemoteRssi
           transaction_code_offset: 18
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -3319,14 +3562,26 @@ interfaces:
         - name: configureMTU
           transaction_code_offset: 19
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: mtu
               type:
                 name: int
@@ -3342,14 +3597,26 @@ interfaces:
         - name: connectionParameterUpdate
           transaction_code_offset: 20
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: connectionPriority
               type:
                 name: int
@@ -3365,14 +3632,24 @@ interfaces:
         - name: leConnectionUpdate
           transaction_code_offset: 21
           params:
+            - name: clientIf
+              type:
+                name: int
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: minInterval
               type:
                 name: int
@@ -3413,10 +3690,16 @@ interfaces:
             - name: eatt_support
               type:
                 name: boolean
+            - name: attributionSource
+              type:
+                name: AttributionSource
+              direction: in
+              max_api_level: 35
             - name: transport
               type:
                 name: int
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -3429,10 +3712,16 @@ interfaces:
         - name: unregisterServer
           transaction_code_offset: 23
           params:
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -3444,14 +3733,26 @@ interfaces:
         - name: serverConnect
           transaction_code_offset: 24
           params:
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: addressType
               type:
                 name: int
@@ -3475,14 +3776,26 @@ interfaces:
         - name: serverDisconnect
           transaction_code_offset: 25
           params:
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -3494,14 +3807,26 @@ interfaces:
         - name: serverSetPreferredPhy
           transaction_code_offset: 26
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: txPhy
               type:
                 name: int
@@ -3525,14 +3850,26 @@ interfaces:
         - name: serverReadPhy
           transaction_code_offset: 27
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -3544,10 +3881,16 @@ interfaces:
         - name: addService
           transaction_code_offset: 28
           params:
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
             - name: service
               type:
                 name: BluetoothGattService
@@ -3563,10 +3906,16 @@ interfaces:
         - name: removeService
           transaction_code_offset: 29
           params:
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
             - name: handle
               type:
                 name: int
@@ -3582,10 +3931,16 @@ interfaces:
         - name: clearServices
           transaction_code_offset: 30
           params:
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
             - name: attributionSource
               type:
                 name: AttributionSource
@@ -3597,14 +3952,26 @@ interfaces:
         - name: sendResponse
           transaction_code_offset: 31
           params:
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: requestId
               type:
                 name: int
@@ -3633,14 +4000,26 @@ interfaces:
         - name: sendNotification
           transaction_code_offset: 32
           params:
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattServerCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: handle
               type:
                 name: int
@@ -3676,14 +4055,26 @@ interfaces:
         - name: subrateModeRequest
           transaction_code_offset: 34
           params:
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: callback
               type:
                 name: IBluetoothGattCallback
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: subrateMode
               type:
                 name: int
@@ -3707,6 +4098,11 @@ interfaces:
               type:
                 name: int
               direction: in
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
           return_type:
             name: void
         - name: onClientConnectionState
@@ -3716,23 +4112,46 @@ interfaces:
               type:
                 name: int
               direction: in
+            - name: clientIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: connected
               type:
                 name: boolean
               direction: in
+              min_api_level: 36
+            - name: connected
+              type:
+                name: boolean
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
           return_type:
             name: void
         - name: onPhyUpdate
           transaction_code_offset: 2
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: txPhy
               type:
                 name: int
@@ -3750,10 +4169,16 @@ interfaces:
         - name: onPhyRead
           transaction_code_offset: 3
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: txPhy
               type:
                 name: int
@@ -3771,10 +4196,16 @@ interfaces:
         - name: onSearchComplete
           transaction_code_offset: 4
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: services
               type:
                 name: List
@@ -3790,10 +4221,16 @@ interfaces:
         - name: onCharacteristicRead
           transaction_code_offset: 5
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: status
               type:
                 name: int
@@ -3812,10 +4249,16 @@ interfaces:
         - name: onCharacteristicWrite
           transaction_code_offset: 6
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: status
               type:
                 name: int
@@ -3834,10 +4277,16 @@ interfaces:
         - name: onExecuteWrite
           transaction_code_offset: 7
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: status
               type:
                 name: int
@@ -3847,10 +4296,16 @@ interfaces:
         - name: onDescriptorRead
           transaction_code_offset: 8
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: status
               type:
                 name: int
@@ -3869,10 +4324,16 @@ interfaces:
         - name: onDescriptorWrite
           transaction_code_offset: 9
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: status
               type:
                 name: int
@@ -3891,10 +4352,16 @@ interfaces:
         - name: onNotify
           transaction_code_offset: 10
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: handle
               type:
                 name: int
@@ -3909,10 +4376,16 @@ interfaces:
         - name: onReadRemoteRssi
           transaction_code_offset: 11
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: rssi
               type:
                 name: int
@@ -3926,10 +4399,16 @@ interfaces:
         - name: onConfigureMTU
           transaction_code_offset: 12
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: mtu
               type:
                 name: int
@@ -3943,10 +4422,16 @@ interfaces:
         - name: onConnectionUpdated
           transaction_code_offset: 13
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: interval
               type:
                 name: int
@@ -3968,19 +4453,31 @@ interfaces:
         - name: onServiceChanged
           transaction_code_offset: 14
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
           return_type:
             name: void
         - name: onSubrateChange
           transaction_code_offset: 15
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: subrateMode
               type:
                 name: int
@@ -3989,6 +4486,21 @@ interfaces:
               type:
                 name: int
               direction: in
+            - name: contNum
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
+            - name: timeout
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
+            - name: status
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
           return_type:
             name: void
     - name: IBluetoothGattServerCallback
@@ -4002,6 +4514,11 @@ interfaces:
               type:
                 name: int
               direction: in
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
           return_type:
             name: void
         - name: onServerConnectionState
@@ -4011,14 +4528,31 @@ interfaces:
               type:
                 name: int
               direction: in
+            - name: serverIf
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
             - name: connected
               type:
                 name: boolean
               direction: in
+              min_api_level: 36
+            - name: connected
+              type:
+                name: boolean
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
           return_type:
             name: void
         - name: onServiceAdded
@@ -4037,10 +4571,16 @@ interfaces:
         - name: onCharacteristicReadRequest
           transaction_code_offset: 3
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: transId
               type:
                 name: int
@@ -4062,10 +4602,16 @@ interfaces:
         - name: onDescriptorReadRequest
           transaction_code_offset: 4
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: transId
               type:
                 name: int
@@ -4087,10 +4633,16 @@ interfaces:
         - name: onCharacteristicWriteRequest
           transaction_code_offset: 5
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: transId
               type:
                 name: int
@@ -4125,10 +4677,16 @@ interfaces:
         - name: onDescriptorWriteRequest
           transaction_code_offset: 6
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: transId
               type:
                 name: int
@@ -4163,10 +4721,16 @@ interfaces:
         - name: onExecuteWrite
           transaction_code_offset: 7
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: transId
               type:
                 name: int
@@ -4180,10 +4744,16 @@ interfaces:
         - name: onNotificationSent
           transaction_code_offset: 8
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: status
               type:
                 name: int
@@ -4193,10 +4763,16 @@ interfaces:
         - name: onMtuChanged
           transaction_code_offset: 9
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: mtu
               type:
                 name: int
@@ -4206,10 +4782,16 @@ interfaces:
         - name: onPhyUpdate
           transaction_code_offset: 10
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: txPhy
               type:
                 name: int
@@ -4227,10 +4809,16 @@ interfaces:
         - name: onPhyRead
           transaction_code_offset: 11
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: txPhy
               type:
                 name: int
@@ -4248,10 +4836,16 @@ interfaces:
         - name: onConnectionUpdated
           transaction_code_offset: 12
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: interval
               type:
                 name: int
@@ -4273,10 +4867,16 @@ interfaces:
         - name: onSubrateChange
           transaction_code_offset: 13
           params:
+            - name: address
+              type:
+                name: String
+              direction: in
+              max_api_level: 35
             - name: device
               type:
                 name: BluetoothDevice
               direction: in
+              min_api_level: 36
             - name: subrateMode
               type:
                 name: int
@@ -4285,6 +4885,21 @@ interfaces:
               type:
                 name: int
               direction: in
+            - name: contNum
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
+            - name: timeout
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
+            - name: status
+              type:
+                name: int
+              direction: in
+              max_api_level: 35
           return_type:
             name: void
     - name: IBluetoothHapClient
@@ -6943,18 +7558,36 @@ interfaces:
             - JavaPassthrough
         - name: getMaximumNumberOfBroadcasts
           transaction_code_offset: 32
+          params:
+            - name: attributionSource
+              type:
+                name: AttributionSource
+              direction: in
+              max_api_level: 35
           return_type:
             name: int
           annotations:
             - JavaPassthrough
         - name: getMaximumStreamsPerBroadcast
           transaction_code_offset: 33
+          params:
+            - name: attributionSource
+              type:
+                name: AttributionSource
+              direction: in
+              max_api_level: 35
           return_type:
             name: int
           annotations:
             - JavaPassthrough
         - name: getMaximumSubgroupsPerBroadcast
           transaction_code_offset: 34
+          params:
+            - name: attributionSource
+              type:
+                name: AttributionSource
+              direction: in
+              max_api_level: 35
           return_type:
             name: int
           annotations:

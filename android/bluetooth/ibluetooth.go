@@ -269,7 +269,7 @@ type IBluetooth interface {
 	GetAdapterConnectionState(ctx context.Context) (int32, error)
 	GetProfileConnectionState(ctx context.Context, profile int32, source content.AttributionSource) (int32, error)
 	GetBondedDevices(ctx context.Context, attributionSource content.AttributionSource) ([]BluetoothDevice, error)
-	CreateBond(ctx context.Context, device BluetoothDevice, transport int32, attributionSource content.AttributionSource) (bool, error)
+	CreateBond(ctx context.Context, device BluetoothDevice, transport int32, p192Data OobData, attributionSource_sinceAPI36 content.AttributionSource, p256Data OobData, attributionSource_untilAPI35 content.AttributionSource) (bool, error)
 	CreateBondOutOfBand(ctx context.Context, device BluetoothDevice, transport int32, p192Data OobData, p256Data OobData, attributionSource content.AttributionSource) (bool, error)
 	CancelBondProcess(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
 	RemoveBond(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
@@ -316,7 +316,7 @@ type IBluetooth interface {
 	IsDistanceMeasurementSupported(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
 	GetLeMaximumAdvertisingDataLength(ctx context.Context) (int32, error)
 	RegisterMetadataListener(ctx context.Context, listener IBluetoothMetadataListener, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
-	UnregisterMetadataListener(ctx context.Context, listener IBluetoothMetadataListener, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
+	UnregisterMetadataListener(ctx context.Context, device_untilAPI35 BluetoothDevice, listener IBluetoothMetadataListener, attributionSource_untilAPI35 content.AttributionSource, device_sinceAPI36 BluetoothDevice, attributionSource_sinceAPI36 content.AttributionSource) (bool, error)
 	SetMetadata(ctx context.Context, device BluetoothDevice, key int32, value []byte, attributionSource content.AttributionSource) (bool, error)
 	GetMetadata(ctx context.Context, device BluetoothDevice, key int32, attributionSource content.AttributionSource) ([]byte, error)
 	RequestActivityInfo(ctx context.Context, listener IBluetoothActivityEnergyInfoListener, attributionSource content.AttributionSource) error
@@ -1328,7 +1328,10 @@ func (p *BluetoothProxy) CreateBond(
 	ctx context.Context,
 	device BluetoothDevice,
 	transport int32,
-	attributionSource content.AttributionSource,
+	p192Data OobData,
+	attributionSource_sinceAPI36 content.AttributionSource,
+	p256Data OobData,
+	attributionSource_untilAPI35 content.AttributionSource,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
@@ -1338,6 +1341,9 @@ func (p *BluetoothProxy) CreateBond(
 	_compiledDescs := []string{
 		"Landroid/bluetooth/BluetoothDevice;",
 		"I",
+		"Landroid/bluetooth/OobData;",
+		"Landroid/content/AttributionSource;",
+		"Landroid/bluetooth/OobData;",
 		"Landroid/content/AttributionSource;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
@@ -1347,7 +1353,19 @@ func (p *BluetoothProxy) CreateBond(
 		}
 		_data.WriteInt32(transport)
 		_data.WriteInt32(1)
-		if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		if _err := p192Data.MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
+		_data.WriteInt32(1)
+		if _err := attributionSource_sinceAPI36.MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
+		_data.WriteInt32(1)
+		if _err := p256Data.MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
+		_data.WriteInt32(1)
+		if _err := attributionSource_untilAPI35.MarshalParcel(_data); _err != nil {
 			return _result, _err
 		}
 	} else {
@@ -1363,7 +1381,22 @@ func (p *BluetoothProxy) CreateBond(
 				_data.WriteInt32(transport)
 			case 2:
 				_data.WriteInt32(1)
-				if _err := attributionSource.MarshalParcel(_data); _err != nil {
+				if _err := p192Data.MarshalParcel(_data); _err != nil {
+					return _result, _err
+				}
+			case 3:
+				_data.WriteInt32(1)
+				if _err := attributionSource_sinceAPI36.MarshalParcel(_data); _err != nil {
+					return _result, _err
+				}
+			case 4:
+				_data.WriteInt32(1)
+				if _err := p256Data.MarshalParcel(_data); _err != nil {
+					return _result, _err
+				}
+			case 5:
+				_data.WriteInt32(1)
+				if _err := attributionSource_untilAPI35.MarshalParcel(_data); _err != nil {
 					return _result, _err
 				}
 			}
@@ -4022,9 +4055,11 @@ func (p *BluetoothProxy) RegisterMetadataListener(
 
 func (p *BluetoothProxy) UnregisterMetadataListener(
 	ctx context.Context,
+	device_untilAPI35 BluetoothDevice,
 	listener IBluetoothMetadataListener,
-	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource_untilAPI35 content.AttributionSource,
+	device_sinceAPI36 BluetoothDevice,
+	attributionSource_sinceAPI36 content.AttributionSource,
 ) (bool, error) {
 	var _result bool
 	_data := parcel.New()
@@ -4032,18 +4067,28 @@ func (p *BluetoothProxy) UnregisterMetadataListener(
 	_data.WriteInterfaceToken(DescriptorIBluetooth)
 	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetooth, MethodIBluetoothUnregisterMetadataListener)
 	_compiledDescs := []string{
+		"Landroid/bluetooth/BluetoothDevice;",
 		"Landroid/bluetooth/IBluetoothMetadataListener;",
+		"Landroid/content/AttributionSource;",
 		"Landroid/bluetooth/BluetoothDevice;",
 		"Landroid/content/AttributionSource;",
 	}
 	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteInt32(1)
+		if _err := device_untilAPI35.MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
 		binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.Remote.Transport())
 		_data.WriteInt32(1)
-		if _err := device.MarshalParcel(_data); _err != nil {
+		if _err := attributionSource_untilAPI35.MarshalParcel(_data); _err != nil {
 			return _result, _err
 		}
 		_data.WriteInt32(1)
-		if _err := attributionSource.MarshalParcel(_data); _err != nil {
+		if _err := device_sinceAPI36.MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
+		_data.WriteInt32(1)
+		if _err := attributionSource_sinceAPI36.MarshalParcel(_data); _err != nil {
 			return _result, _err
 		}
 	} else {
@@ -4051,15 +4096,25 @@ func (p *BluetoothProxy) UnregisterMetadataListener(
 		for _, _pi := range _paramMap {
 			switch _pi {
 			case 0:
-				binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.Remote.Transport())
-			case 1:
 				_data.WriteInt32(1)
-				if _err := device.MarshalParcel(_data); _err != nil {
+				if _err := device_untilAPI35.MarshalParcel(_data); _err != nil {
 					return _result, _err
 				}
+			case 1:
+				binder.WriteBinderToParcel(ctx, _data, listener.AsBinder(), p.Remote.Transport())
 			case 2:
 				_data.WriteInt32(1)
-				if _err := attributionSource.MarshalParcel(_data); _err != nil {
+				if _err := attributionSource_untilAPI35.MarshalParcel(_data); _err != nil {
+					return _result, _err
+				}
+			case 3:
+				_data.WriteInt32(1)
+				if _err := device_sinceAPI36.MarshalParcel(_data); _err != nil {
+					return _result, _err
+				}
+			case 4:
+				_data.WriteInt32(1)
+				if _err := attributionSource_sinceAPI36.MarshalParcel(_data); _err != nil {
 					return _result, _err
 				}
 			}
@@ -7465,19 +7520,55 @@ func (s *BluetoothStub) OnTransaction(
 		if _err != nil {
 			return nil, _err
 		}
-		var _arg_attributionSource content.AttributionSource
+		var _arg_p192Data OobData
 		{
 			_nullInd, _err := _data.ReadInt32()
 			if _err != nil {
 				return nil, _err
 			}
 			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+				if _err = _arg_p192Data.UnmarshalParcel(_data); _err != nil {
 					return nil, _err
 				}
 			}
 		}
-		_result, _err := s.Impl.CreateBond(ctx, _arg_device, _arg_transport, _arg_attributionSource)
+		var _arg_attributionSource_sinceAPI36 content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource_sinceAPI36.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		var _arg_p256Data OobData
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_p256Data.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		var _arg_attributionSource_untilAPI35 content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource_untilAPI35.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		_result, _err := s.Impl.CreateBond(ctx, _arg_device, _arg_transport, _arg_p192Data, _arg_attributionSource_sinceAPI36, _arg_p256Data, _arg_attributionSource_untilAPI35)
 		_reply := parcel.New()
 		if _err != nil {
 			binder.WriteStatus(_reply, _err)
@@ -8858,6 +8949,18 @@ func (s *BluetoothStub) OnTransaction(
 		_reply.WriteBool(_result)
 		return _reply, nil
 	case TransactionIBluetoothUnregisterMetadataListener:
+		var _arg_device_untilAPI35 BluetoothDevice
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_device_untilAPI35.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
 		var _arg_listener IBluetoothMetadataListener
 		{
 			_listenerHandle, _err := _data.ReadStrongBinder()
@@ -8866,31 +8969,43 @@ func (s *BluetoothStub) OnTransaction(
 			}
 			_arg_listener = NewBluetoothMetadataListenerProxy(binder.NewProxyBinder(s.Transport, binder.CallerIdentity{}, _listenerHandle))
 		}
-		var _arg_device BluetoothDevice
+		var _arg_attributionSource_untilAPI35 content.AttributionSource
 		{
 			_nullInd, _err := _data.ReadInt32()
 			if _err != nil {
 				return nil, _err
 			}
 			if _nullInd != 0 {
-				if _err = _arg_device.UnmarshalParcel(_data); _err != nil {
+				if _err = _arg_attributionSource_untilAPI35.UnmarshalParcel(_data); _err != nil {
 					return nil, _err
 				}
 			}
 		}
-		var _arg_attributionSource content.AttributionSource
+		var _arg_device_sinceAPI36 BluetoothDevice
 		{
 			_nullInd, _err := _data.ReadInt32()
 			if _err != nil {
 				return nil, _err
 			}
 			if _nullInd != 0 {
-				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+				if _err = _arg_device_sinceAPI36.UnmarshalParcel(_data); _err != nil {
 					return nil, _err
 				}
 			}
 		}
-		_result, _err := s.Impl.UnregisterMetadataListener(ctx, _arg_listener, _arg_device, _arg_attributionSource)
+		var _arg_attributionSource_sinceAPI36 content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource_sinceAPI36.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		_result, _err := s.Impl.UnregisterMetadataListener(ctx, _arg_device_untilAPI35, _arg_listener, _arg_attributionSource_untilAPI35, _arg_device_sinceAPI36, _arg_attributionSource_sinceAPI36)
 		_reply := parcel.New()
 		if _err != nil {
 			binder.WriteStatus(_reply, _err)
@@ -10452,7 +10567,7 @@ type IBluetoothServer interface {
 	GetAdapterConnectionState(ctx context.Context) (int32, error)
 	GetProfileConnectionState(ctx context.Context, profile int32, source content.AttributionSource) (int32, error)
 	GetBondedDevices(ctx context.Context, attributionSource content.AttributionSource) ([]BluetoothDevice, error)
-	CreateBond(ctx context.Context, device BluetoothDevice, transport int32, attributionSource content.AttributionSource) (bool, error)
+	CreateBond(ctx context.Context, device BluetoothDevice, transport int32, p192Data OobData, attributionSource_sinceAPI36 content.AttributionSource, p256Data OobData, attributionSource_untilAPI35 content.AttributionSource) (bool, error)
 	CreateBondOutOfBand(ctx context.Context, device BluetoothDevice, transport int32, p192Data OobData, p256Data OobData, attributionSource content.AttributionSource) (bool, error)
 	CancelBondProcess(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
 	RemoveBond(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
@@ -10499,7 +10614,7 @@ type IBluetoothServer interface {
 	IsDistanceMeasurementSupported(ctx context.Context, attributionSource content.AttributionSource) (int32, error)
 	GetLeMaximumAdvertisingDataLength(ctx context.Context) (int32, error)
 	RegisterMetadataListener(ctx context.Context, listener IBluetoothMetadataListener, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
-	UnregisterMetadataListener(ctx context.Context, listener IBluetoothMetadataListener, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
+	UnregisterMetadataListener(ctx context.Context, device_untilAPI35 BluetoothDevice, listener IBluetoothMetadataListener, attributionSource_untilAPI35 content.AttributionSource, device_sinceAPI36 BluetoothDevice, attributionSource_sinceAPI36 content.AttributionSource) (bool, error)
 	SetMetadata(ctx context.Context, device BluetoothDevice, key int32, value []byte, attributionSource content.AttributionSource) (bool, error)
 	GetMetadata(ctx context.Context, device BluetoothDevice, key int32, attributionSource content.AttributionSource) ([]byte, error)
 	RequestActivityInfo(ctx context.Context, listener IBluetoothActivityEnergyInfoListener, attributionSource content.AttributionSource) error
@@ -10687,9 +10802,12 @@ func (w *bluetoothStubWrapper) CreateBond(
 	ctx context.Context,
 	device BluetoothDevice,
 	transport int32,
-	attributionSource content.AttributionSource,
+	p192Data OobData,
+	attributionSource_sinceAPI36 content.AttributionSource,
+	p256Data OobData,
+	attributionSource_untilAPI35 content.AttributionSource,
 ) (bool, error) {
-	return w.impl.CreateBond(ctx, device, transport, attributionSource)
+	return w.impl.CreateBond(ctx, device, transport, p192Data, attributionSource_sinceAPI36, p256Data, attributionSource_untilAPI35)
 }
 
 func (w *bluetoothStubWrapper) CreateBondOutOfBand(
@@ -11063,11 +11181,13 @@ func (w *bluetoothStubWrapper) RegisterMetadataListener(
 
 func (w *bluetoothStubWrapper) UnregisterMetadataListener(
 	ctx context.Context,
+	device_untilAPI35 BluetoothDevice,
 	listener IBluetoothMetadataListener,
-	device BluetoothDevice,
-	attributionSource content.AttributionSource,
+	attributionSource_untilAPI35 content.AttributionSource,
+	device_sinceAPI36 BluetoothDevice,
+	attributionSource_sinceAPI36 content.AttributionSource,
 ) (bool, error) {
-	return w.impl.UnregisterMetadataListener(ctx, listener, device, attributionSource)
+	return w.impl.UnregisterMetadataListener(ctx, device_untilAPI35, listener, attributionSource_untilAPI35, device_sinceAPI36, attributionSource_sinceAPI36)
 }
 
 func (w *bluetoothStubWrapper) SetMetadata(

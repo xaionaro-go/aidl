@@ -40,56 +40,56 @@ type gattSpy struct {
 	registeredCh chan int32
 }
 
-func (g *gattSpy) OnClientRegistered(_ context.Context, status int32) error {
+func (g *gattSpy) OnClientRegistered(_ context.Context, _, status int32) error {
 	select {
 	case g.registeredCh <- status:
 	default:
 	}
 	return nil
 }
-func (g *gattSpy) OnClientConnectionState(context.Context, int32, bool, genBluetooth.BluetoothDevice) error {
+func (g *gattSpy) OnClientConnectionState(context.Context, int32, int32, bool, bool, genBluetooth.BluetoothDevice, string) error {
 	return nil
 }
-func (g *gattSpy) OnPhyUpdate(context.Context, genBluetooth.BluetoothDevice, int32, int32, int32) error {
+func (g *gattSpy) OnPhyUpdate(context.Context, string, genBluetooth.BluetoothDevice, int32, int32, int32) error {
 	return nil
 }
-func (g *gattSpy) OnPhyRead(context.Context, genBluetooth.BluetoothDevice, int32, int32, int32) error {
+func (g *gattSpy) OnPhyRead(context.Context, string, genBluetooth.BluetoothDevice, int32, int32, int32) error {
 	return nil
 }
-func (g *gattSpy) OnSearchComplete(context.Context, genBluetooth.BluetoothDevice, []genBluetooth.BluetoothGattService, int32) error {
+func (g *gattSpy) OnSearchComplete(context.Context, string, genBluetooth.BluetoothDevice, []genBluetooth.BluetoothGattService, int32) error {
 	return nil
 }
-func (g *gattSpy) OnCharacteristicRead(context.Context, genBluetooth.BluetoothDevice, int32, int32, []byte) error {
+func (g *gattSpy) OnCharacteristicRead(context.Context, string, genBluetooth.BluetoothDevice, int32, int32, []byte) error {
 	return nil
 }
-func (g *gattSpy) OnCharacteristicWrite(context.Context, genBluetooth.BluetoothDevice, int32, int32, []byte) error {
+func (g *gattSpy) OnCharacteristicWrite(context.Context, string, genBluetooth.BluetoothDevice, int32, int32, []byte) error {
 	return nil
 }
-func (g *gattSpy) OnExecuteWrite(context.Context, genBluetooth.BluetoothDevice, int32) error {
+func (g *gattSpy) OnExecuteWrite(context.Context, string, genBluetooth.BluetoothDevice, int32) error {
 	return nil
 }
-func (g *gattSpy) OnDescriptorRead(context.Context, genBluetooth.BluetoothDevice, int32, int32, []byte) error {
+func (g *gattSpy) OnDescriptorRead(context.Context, string, genBluetooth.BluetoothDevice, int32, int32, []byte) error {
 	return nil
 }
-func (g *gattSpy) OnDescriptorWrite(context.Context, genBluetooth.BluetoothDevice, int32, int32, []byte) error {
+func (g *gattSpy) OnDescriptorWrite(context.Context, string, genBluetooth.BluetoothDevice, int32, int32, []byte) error {
 	return nil
 }
-func (g *gattSpy) OnNotify(context.Context, genBluetooth.BluetoothDevice, int32, []byte) error {
+func (g *gattSpy) OnNotify(context.Context, string, genBluetooth.BluetoothDevice, int32, []byte) error {
 	return nil
 }
-func (g *gattSpy) OnReadRemoteRssi(context.Context, genBluetooth.BluetoothDevice, int32, int32) error {
+func (g *gattSpy) OnReadRemoteRssi(context.Context, string, genBluetooth.BluetoothDevice, int32, int32) error {
 	return nil
 }
-func (g *gattSpy) OnConfigureMTU(context.Context, genBluetooth.BluetoothDevice, int32, int32) error {
+func (g *gattSpy) OnConfigureMTU(context.Context, string, genBluetooth.BluetoothDevice, int32, int32) error {
 	return nil
 }
-func (g *gattSpy) OnConnectionUpdated(context.Context, genBluetooth.BluetoothDevice, int32, int32, int32, int32) error {
+func (g *gattSpy) OnConnectionUpdated(context.Context, string, genBluetooth.BluetoothDevice, int32, int32, int32, int32) error {
 	return nil
 }
-func (g *gattSpy) OnServiceChanged(context.Context, genBluetooth.BluetoothDevice) error {
+func (g *gattSpy) OnServiceChanged(context.Context, string, genBluetooth.BluetoothDevice) error {
 	return nil
 }
-func (g *gattSpy) OnSubrateChange(context.Context, genBluetooth.BluetoothDevice, int32, int32) error {
+func (g *gattSpy) OnSubrateChange(context.Context, string, genBluetooth.BluetoothDevice, int32, int32, int32, int32, int32) error {
 	return nil
 }
 
@@ -183,7 +183,7 @@ func main() {
 	// value is not significant for GATT client registration).
 	appID := genOs.ParcelUuid{}
 
-	if err := gattProxy.RegisterClient(ctx, appID, gattCallback, false, 0, shellAttribution()); err != nil {
+	if err := gattProxy.RegisterClient(ctx, appID, gattCallback, false, shellAttribution(), 0, shellAttribution()); err != nil {
 		fmt.Fprintf(os.Stderr, "registerClient: %v\n", err)
 		os.Exit(1)
 	}

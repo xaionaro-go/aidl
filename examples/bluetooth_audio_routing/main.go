@@ -104,7 +104,7 @@ func main() {
 	fmt.Printf("IBluetoothA2dp: handle %d\n", a2dpBinder.Handle())
 
 	// Query supported codec types.
-	codecs, err := a2dp.GetSupportedCodecTypes(ctx)
+	codecs, err := a2dp.GetSupportedCodecTypes(ctx, attr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "GetSupportedCodecTypes: %v\n", err)
 	} else {

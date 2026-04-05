@@ -89,9 +89,9 @@ func collectParamNames(methods []*parser.MethodDecl) []string {
 	seen := make(map[string]bool)
 	for _, m := range methods {
 		regularParams, _ := classifyParams(m.Params)
+		nameMap := disambiguateParams(regularParams)
 		for _, p := range regularParams {
-			name := sanitizeGoIdent(p.ParamName)
-			seen[name] = true
+			seen[nameMap[p]] = true
 		}
 	}
 
@@ -248,13 +248,14 @@ func writeStubConstructor(
 		goName := AIDLToGoName(m.MethodName)
 		hasReturn := m.ReturnType != nil && m.ReturnType.Name != "void"
 		regular, _ := classifyParams(m.Params)
+		wrapNameMap := disambiguateParams(regular)
 
 		// Method signature.
 		f.P("func (w *%s) %s(", wrapperName, goName)
 		f.P("\tctx context.Context,")
 		for _, param := range regular {
 			goType := resolveTypeRef(typeRef, param.Type)
-			f.P("\t%s %s,", sanitizeGoIdent(param.ParamName), goType)
+			f.P("\t%s %s,", wrapNameMap[param], goType)
 		}
 		if hasReturn {
 			goRetType := resolveTypeRef(typeRef, m.ReturnType)
@@ -267,7 +268,7 @@ func writeStubConstructor(
 		var args []string
 		args = append(args, "ctx")
 		for _, param := range regular {
-			args = append(args, sanitizeGoIdent(param.ParamName))
+			args = append(args, wrapNameMap[param])
 		}
 
 		f.P("\treturn w.impl.%s(%s)", goName, strings.Join(args, ", "))
@@ -324,6 +325,7 @@ func writeStubCase(
 	// Read parameters from data parcel. Track whether _err has been
 	// declared in this case scope so we can use = vs := correctly.
 	regularParams, _ := classifyParams(m.Params)
+	allNameMap := disambiguateParams(m.Params)
 	paramVarNames := make([]string, 0, len(regularParams))
 	errDeclared := false
 
@@ -331,7 +333,7 @@ func writeStubCase(
 		if param.Direction == parser.DirectionOut {
 			// Out-only params are not read from data; declare a zero
 			// value to pass to the implementation.
-			varName := "_arg_" + sanitizeGoIdent(param.ParamName)
+			varName := "_arg_" + allNameMap[param]
 			goType := resolveTypeRef(typeRef, param.Type)
 			f.P("\t\tvar %s %s", varName, goType)
 			paramVarNames = append(paramVarNames, varName)
@@ -345,7 +347,7 @@ func writeStubCase(
 			continue
 		}
 
-		varName := "_arg_" + sanitizeGoIdent(param.ParamName)
+		varName := "_arg_" + allNameMap[param]
 		paramVarNames = append(paramVarNames, varName)
 		declared := writeStubReadParam(f, param, varName, opts, typeRef, errDeclared)
 		errDeclared = errDeclared || declared
@@ -402,7 +404,7 @@ func writeStubCase(
 		// proxy can read the modified values.
 		for _, param := range m.Params {
 			if param.Direction == parser.DirectionOut || param.Direction == parser.DirectionInOut {
-				outVarName := "_arg_" + sanitizeGoIdent(param.ParamName)
+				outVarName := "_arg_" + allNameMap[param]
 				writeStubOutParam(f, param, outVarName, opts, typeRef)
 			}
 		}
@@ -1131,13 +1133,14 @@ func writeProxyMethod(
 	// and omitted from the proxy method signature.
 	regularParams, identityParams := classifyParams(m.Params)
 	hasIdentity := len(identityParams) > 0
+	nameMap := disambiguateParams(regularParams)
 
 	// Method signature — identity params are omitted.
 	f.P("func (p *%s) %s(", proxyName, goName)
 	f.P("\tctx context.Context,")
 	for _, param := range regularParams {
 		goType := resolveTypeRef(typeRef, param.Type)
-		f.P("\t%s %s,", sanitizeGoIdent(param.ParamName), goType)
+		f.P("\t%s %s,", nameMap[param], goType)
 	}
 	if hasReturn {
 		goRetType := resolveTypeRef(typeRef, m.ReturnType)
@@ -1187,10 +1190,10 @@ func writeProxyMethod(
 	}
 
 	if allResolvable {
-		writeSignatureAwareParams(f, m, wireParams, identityParams, hasReturn, opts, typeRef, descriptorConst, interfaceName)
+		writeSignatureAwareParams(f, m, wireParams, identityParams, nameMap, hasReturn, opts, typeRef, descriptorConst, interfaceName)
 	} else {
 		// Fallback: write all params unconditionally (no signature adaptation).
-		writeAllParamsNormally(f, m, wireParams, identityParams, hasReturn, opts, typeRef)
+		writeAllParamsNormally(f, m, wireParams, identityParams, nameMap, hasReturn, opts, typeRef)
 	}
 
 	// Determine flags.
@@ -1250,7 +1253,7 @@ func writeProxyMethod(
 		outArrayCounter := 0
 		for _, param := range m.Params {
 			if param.Direction == parser.DirectionOut || param.Direction == parser.DirectionInOut {
-				readOutParam(f, param, hasReturn, opts, typeRef, &outArrayCounter)
+				readOutParam(f, param, nameMap, hasReturn, opts, typeRef, &outArrayCounter)
 			}
 		}
 
@@ -1277,6 +1280,7 @@ func writeAllParamsNormally(
 	m *parser.MethodDecl,
 	wireParams []wireParam,
 	identityParams map[int]string,
+	nameMap map[*parser.ParamDecl]string,
 	hasReturn bool,
 	opts GenOptions,
 	typeRef *TypeRefResolver,
@@ -1288,7 +1292,7 @@ func writeAllParamsNormally(
 			f.P("\t%s", expr)
 			continue
 		}
-		writeParamToParcel(f, param, hasReturn, opts, typeRef)
+		writeParamToParcel(f, param, nameMap, hasReturn, opts, typeRef)
 	}
 }
 
@@ -1302,6 +1306,7 @@ func writeSignatureAwareParams(
 	m *parser.MethodDecl,
 	wireParams []wireParam,
 	identityParams map[int]string,
+	nameMap map[*parser.ParamDecl]string,
 	hasReturn bool,
 	opts GenOptions,
 	typeRef *TypeRefResolver,
@@ -1331,7 +1336,7 @@ func writeSignatureAwareParams(
 			f.P("\t\t%s", expr)
 			continue
 		}
-		writeParamToParcelIndented(f, param, hasReturn, opts, typeRef, "\t\t")
+		writeParamToParcelIndented(f, param, nameMap, hasReturn, opts, typeRef, "\t\t")
 	}
 
 	f.P("\t} else {")
@@ -1349,7 +1354,7 @@ func writeSignatureAwareParams(
 			expr := fmt.Sprintf(identityWriteExpr[param.Type.Name], "_identity."+wp.identityField)
 			f.P("\t\t\t\t%s", expr)
 		} else {
-			writeParamToParcelIndented(f, param, hasReturn, opts, typeRef, "\t\t\t\t")
+			writeParamToParcelIndented(f, param, nameMap, hasReturn, opts, typeRef, "\t\t\t\t")
 		}
 	}
 	f.P("\t\t\t}")
@@ -1365,12 +1370,13 @@ func writeSignatureAwareParams(
 func writeParamToParcelIndented(
 	f *GoFile,
 	param *parser.ParamDecl,
+	nameMap map[*parser.ParamDecl]string,
 	hasReturn bool,
 	opts GenOptions,
 	typeRef *TypeRefResolver,
 	indent string,
 ) {
-	varName := sanitizeGoIdent(param.ParamName)
+	varName := paramGoName(param, nameMap)
 
 	if param.Type.IsArray || param.Type.Name == "List" {
 		writeArrayToParcelWithIndent(f, param.Type, varName, hasReturn, opts, typeRef, indent)
@@ -1498,11 +1504,12 @@ func writeArrayToParcelWithIndent(
 func writeParamToParcel(
 	f *GoFile,
 	param *parser.ParamDecl,
+	nameMap map[*parser.ParamDecl]string,
 	hasReturn bool,
 	opts GenOptions,
 	typeRef *TypeRefResolver,
 ) {
-	varName := sanitizeGoIdent(param.ParamName)
+	varName := paramGoName(param, nameMap)
 
 	if param.Type.IsArray || param.Type.Name == "List" {
 		writeArrayToParcel(f, param.Type, varName, hasReturn, opts, typeRef)
@@ -1892,12 +1899,13 @@ func readArrayFromReply(
 func readOutParam(
 	f *GoFile,
 	param *parser.ParamDecl,
+	nameMap map[*parser.ParamDecl]string,
 	hasReturn bool,
 	opts GenOptions,
 	typeRef *TypeRefResolver,
 	outArrayIdx *int,
 ) {
-	varName := sanitizeGoIdent(param.ParamName)
+	varName := paramGoName(param, nameMap)
 
 	// Handle array/List out-params by reading element-by-element.
 	if param.Type.IsArray || param.Type.Name == "List" {
@@ -2443,12 +2451,13 @@ func methodSignature(
 	hasReturn := m.ReturnType != nil && m.ReturnType.Name != "void"
 
 	regularParams, _ := classifyParams(m.Params)
+	nameMap := disambiguateParams(regularParams)
 
 	var params []string
 	params = append(params, "ctx context.Context")
 	for _, p := range regularParams {
 		goType := resolveTypeRef(typeRef, p.Type)
-		params = append(params, sanitizeGoIdent(p.ParamName)+" "+goType)
+		params = append(params, nameMap[p]+" "+goType)
 	}
 
 	paramStr := strings.Join(params, ", ")
@@ -2528,6 +2537,61 @@ func sanitizeGoIdent(name string) string {
 		return name + "_"
 	}
 	return name
+}
+
+// disambiguateParams detects duplicate param names among the given
+// parameters and appends an API-level suffix to disambiguate them.
+// The returned map is keyed by the pointer identity of each ParamDecl.
+// Parameters without conflicts keep their original (sanitized) name.
+//
+// Suffix rules for conflicting names:
+//   - MaxAPILevel > 0  → _untilAPINN
+//   - MinAPILevel > 0  → _sinceAPINN
+//   - both are 0       → _paramI  (fallback using positional index)
+func disambiguateParams(params []*parser.ParamDecl) map[*parser.ParamDecl]string {
+	result := make(map[*parser.ParamDecl]string, len(params))
+
+	// Group params by their sanitized base name.
+	type entry struct {
+		param *parser.ParamDecl
+		idx   int // positional index within params
+	}
+	groups := make(map[string][]entry)
+	for i, p := range params {
+		base := sanitizeGoIdent(p.ParamName)
+		groups[base] = append(groups[base], entry{param: p, idx: i})
+	}
+
+	for base, entries := range groups {
+		if len(entries) == 1 {
+			result[entries[0].param] = base
+			continue
+		}
+		// Multiple params share the same base name — disambiguate.
+		for _, e := range entries {
+			switch {
+			case e.param.MaxAPILevel > 0:
+				result[e.param] = fmt.Sprintf("%s_untilAPI%d", base, e.param.MaxAPILevel)
+			case e.param.MinAPILevel > 0:
+				result[e.param] = fmt.Sprintf("%s_sinceAPI%d", base, e.param.MinAPILevel)
+			default:
+				result[e.param] = fmt.Sprintf("%s_param%d", base, e.idx)
+			}
+		}
+	}
+
+	return result
+}
+
+// paramGoName returns the Go identifier for a parameter, using the
+// disambiguated name from nameMap when available, falling back to
+// sanitizeGoIdent for params not in the map (e.g., identity params
+// that are not part of the public signature).
+func paramGoName(param *parser.ParamDecl, nameMap map[*parser.ParamDecl]string) string {
+	if name, ok := nameMap[param]; ok {
+		return name
+	}
+	return sanitizeGoIdent(param.ParamName)
 }
 
 // isLikelyParcelable returns true if the type specifier looks like a

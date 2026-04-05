@@ -75,7 +75,7 @@ type IBluetoothA2dp interface {
 	GetConnectionPolicy(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (int32, error)
 	SetAvrcpAbsoluteVolume(ctx context.Context, volume int32, attributionSource content.AttributionSource) error
 	IsA2dpPlaying(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
-	GetSupportedCodecTypes(ctx context.Context) ([]BluetoothCodecType, error)
+	GetSupportedCodecTypes(ctx context.Context, attributionSource content.AttributionSource) ([]BluetoothCodecType, error)
 	GetCodecStatus(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (BluetoothCodecStatus, error)
 	SetCodecConfigPreference(ctx context.Context, device BluetoothDevice, codecConfig BluetoothCodecConfig, attributionSource content.AttributionSource) error
 	EnableOptionalCodecs(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) error
@@ -839,11 +839,33 @@ func (p *BluetoothA2dpProxy) IsA2dpPlaying(
 
 func (p *BluetoothA2dpProxy) GetSupportedCodecTypes(
 	ctx context.Context,
+	attributionSource content.AttributionSource,
 ) ([]BluetoothCodecType, error) {
 	var _result []BluetoothCodecType
 	_data := parcel.New()
 	defer _data.Recycle()
 	_data.WriteInterfaceToken(DescriptorIBluetoothA2dp)
+	_sig := binder.ResolveMethodSignature(p.Remote, ctx, DescriptorIBluetoothA2dp, MethodIBluetoothA2dpGetSupportedCodecTypes)
+	_compiledDescs := []string{
+		"Landroid/content/AttributionSource;",
+	}
+	if _sig == nil || binder.SignatureMatches(_compiledDescs, _sig) {
+		_data.WriteInt32(1)
+		if _err := attributionSource.MarshalParcel(_data); _err != nil {
+			return _result, _err
+		}
+	} else {
+		_paramMap := binder.MatchParamsToSignature(_compiledDescs, _sig)
+		for _, _pi := range _paramMap {
+			switch _pi {
+			case 0:
+				_data.WriteInt32(1)
+				if _err := attributionSource.MarshalParcel(_data); _err != nil {
+					return _result, _err
+				}
+			}
+		}
+	}
 
 	_code, _err := p.Remote.ResolveCode(ctx, DescriptorIBluetoothA2dp, MethodIBluetoothA2dpGetSupportedCodecTypes)
 	if _err != nil {
@@ -1869,7 +1891,19 @@ func (s *BluetoothA2dpStub) OnTransaction(
 		_reply.WriteBool(_result)
 		return _reply, nil
 	case TransactionIBluetoothA2dpGetSupportedCodecTypes:
-		_result, _err := s.Impl.GetSupportedCodecTypes(ctx)
+		var _arg_attributionSource content.AttributionSource
+		{
+			_nullInd, _err := _data.ReadInt32()
+			if _err != nil {
+				return nil, _err
+			}
+			if _nullInd != 0 {
+				if _err = _arg_attributionSource.UnmarshalParcel(_data); _err != nil {
+					return nil, _err
+				}
+			}
+		}
+		_result, _err := s.Impl.GetSupportedCodecTypes(ctx, _arg_attributionSource)
 		_reply := parcel.New()
 		if _err != nil {
 			binder.WriteStatus(_reply, _err)
@@ -2214,7 +2248,7 @@ type IBluetoothA2dpServer interface {
 	GetConnectionPolicy(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (int32, error)
 	SetAvrcpAbsoluteVolume(ctx context.Context, volume int32, attributionSource content.AttributionSource) error
 	IsA2dpPlaying(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (bool, error)
-	GetSupportedCodecTypes(ctx context.Context) ([]BluetoothCodecType, error)
+	GetSupportedCodecTypes(ctx context.Context, attributionSource content.AttributionSource) ([]BluetoothCodecType, error)
 	GetCodecStatus(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) (BluetoothCodecStatus, error)
 	SetCodecConfigPreference(ctx context.Context, device BluetoothDevice, codecConfig BluetoothCodecConfig, attributionSource content.AttributionSource) error
 	EnableOptionalCodecs(ctx context.Context, device BluetoothDevice, attributionSource content.AttributionSource) error
@@ -2325,8 +2359,9 @@ func (w *bluetoothA2dpStubWrapper) IsA2dpPlaying(
 
 func (w *bluetoothA2dpStubWrapper) GetSupportedCodecTypes(
 	ctx context.Context,
+	attributionSource content.AttributionSource,
 ) ([]BluetoothCodecType, error) {
-	return w.impl.GetSupportedCodecTypes(ctx)
+	return w.impl.GetSupportedCodecTypes(ctx, attributionSource)
 }
 
 func (w *bluetoothA2dpStubWrapper) GetCodecStatus(
