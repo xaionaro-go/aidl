@@ -46,6 +46,9 @@
 /sensor_gateway
 /sensor_reader
 
+# Worktrees
+/.worktrees/
+
 # Lean 4
 /.lake
 proofs/.lake
