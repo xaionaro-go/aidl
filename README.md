@@ -511,18 +511,19 @@ The examples above cover specific subsystems, but the library supports **all** A
 
 ```bash
 # Find the proxy for a known AIDL interface
-grep -r 'DescriptorI.*= "android.os.IVibratorService"' android/
+grep -r 'DescriptorI.*= "android.hardware.vibrator.IVibrator"' android/
 ```
 
 3. **Connect and call methods:**
 
 ```go
-    svc, err := sm.GetService(ctx, servicemanager.VibratorService)
+    svc, err := sm.GetService(ctx, servicemanager.ServiceName(
+        vibrator.DescriptorIVibrator+"/default"))
     if err != nil {
         log.Fatal(err)
     }
-    proxy := genOs.NewVibratorServiceProxy(svc)
-    result, err := proxy.SomeMethod(ctx, args...)
+    proxy := vibrator.NewVibratorProxy(svc)
+    caps, err := proxy.GetCapabilities(ctx)
 ```
 
 4. **For HAL services** (hardware abstraction layers), the service name is the AIDL descriptor plus `/default`:
@@ -1497,10 +1498,11 @@ See the full [bindercli reference](#bindercli) for all subcommands and more exam
 
 |                                                       | Description                                                                       |
 | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [`tools/cmd/aidlgen`](tools/cmd/aidlgen/)             | AIDL-to-Go compiler: reads search paths + AIDL files, generates Go code           |
-| [`tools/cmd/aospgen`](tools/cmd/aospgen/)             | Bulk generator: discovers all AIDL files in AOSP submodules, generates everything |
-| [`tools/cmd/gen_e2e_smoke`](tools/cmd/gen_e2e_smoke/) | Generates smoke tests exercising every proxy type in generated packages           |
-| [`tools/cmd/genreadme`](tools/cmd/genreadme/)         | Regenerates the package table in this README from generated packages              |
+| [`tools/cmd/aidl2spec`](tools/cmd/aidl2spec/)         | AIDL-to-YAML spec compiler: parses AOSP AIDL files and emits spec files           |
+| [`tools/cmd/java2spec`](tools/cmd/java2spec/)         | Extracts service maps and parcelable info from Java sources into specs            |
+| [`tools/cmd/spec2go`](tools/cmd/spec2go/)             | Generates Go proxy code (and smoke tests) from YAML spec files                    |
+| [`tools/cmd/spec2cli`](tools/cmd/spec2cli/)           | Generates bindercli command registry from YAML spec files                         |
+| [`tools/cmd/spec2readme`](tools/cmd/spec2readme/)     | Regenerates the package table in this README from spec files                      |
 
 ## bindercli
 
@@ -2057,7 +2059,8 @@ func (p *ActivityManagerProxy) GetProcessLimit(ctx context.Context) (int32, erro
 ### From Individual AIDL Files
 
 ```bash
-go run ./tools/cmd/aidlgen -I path/to/search/root -output . file1.aidl file2.aidl
+# Compile AIDL files to Go via bindercli:
+bindercli aidl compile -I path/to/search/root --output gen file1.aidl file2.aidl
 ```
 
 ### From AOSP (Bulk Generation)
@@ -2066,7 +2069,8 @@ With the AOSP submodules in `tools/pkg/3rdparty/`:
 
 ```bash
 git submodule update --init --depth 1
-go run ./tools/cmd/aospgen -3rdparty tools/pkg/3rdparty -output . -smoke-tests
+go run ./tools/cmd/aidl2spec -3rdparty tools/pkg/3rdparty -output specs/
+go run ./tools/cmd/spec2go -specs specs/ -output . -smoke-tests
 ```
 
 This discovers all AIDL files across `frameworks-base`, `frameworks-native`, `hardware-interfaces`, and `system-hardware-interfaces`, infers search roots from package declarations, and generates Go proxies for all AOSP services. The current AOSP snapshot produces **5,151 Go files** across **407 packages**.
@@ -2097,7 +2101,7 @@ go test ./tools/pkg/... ./binder/ ./parcel/
 
 These test:
 
-- **Parser correctness**: Lexing/parsing of all AIDL constructs against [testdata](testdata/) fixtures (interfaces, parcelables, enums, unions, generics, constants, annotations)
+- **Parser correctness**: Lexing/parsing of all AIDL constructs against [testdata](tools/pkg/parser/testdata/) fixtures (interfaces, parcelables, enums, unions, generics, constants, annotations)
 - **Code generation**: Each generator (`GenerateInterface`, `GenerateParcelable`, `GenerateEnum`, `GenerateUnion`) is tested by parsing AIDL input, generating Go, and verifying the output is valid `gofmt`-compliant Go source that contains expected identifiers (descriptors, transaction codes, type names, method signatures)
 - **Import cycle detection**: Verifies the SCC algorithm correctly identifies and breaks cross-package import cycles
 - **Marshal/unmarshal naming**: Maps from AIDL types to parcel read/write expressions
@@ -2119,8 +2123,8 @@ Walks all ~11,000 AIDL files, parses each, generates Go code, and verifies the o
 Auto-generated tests that instantiate every proxy type with a mock binder and call every method with zero-value arguments:
 
 ```bash
-go run ./tools/gen_e2e_smoke
-go test -tags e2e ./tests/e2e/...  # requires /dev/binder OR mock mode
+go run ./tools/cmd/spec2go -specs specs/ -output . -smoke-tests
+go test ./tests/e2e/...  # requires /dev/binder OR mock mode
 ```
 
 ### 4. End-to-End Tests on Android
@@ -2290,7 +2294,8 @@ and run commands programmatically:
 ```go
 dr, _ := runner.NewDeviceRunner("SERIAL")
 dr.PushBinary(ctx, "build/mybinary", "/data/local/tmp/mybinary")
-output, _ := dr.Run(ctx, "/data/local/tmp/mybinary", "--flag")
+result, _ := dr.Run(ctx, "/data/local/tmp/mybinary", 30*time.Second)
+fmt.Println(result.Output)
 ```
 
 For remote binder access from a host machine, `interop/gadb/proxy/`
@@ -2299,8 +2304,8 @@ sets up a forwarded session:
 ```go
 sess, _ := proxy.NewSession(ctx, "SERIAL")
 defer sess.Close(ctx)
-sm := servicemanager.New(sess.Transport())
-// Use sm as if running on-device
+transport := sess.Transport() // *RemoteTransport
+reply, _ := transport.Transact(ctx, descriptor, code, 0, data)
 ```
 
 </details>
@@ -2330,27 +2335,28 @@ See the example app at [`examples/gomobile/`](examples/gomobile/).
 .
 ├── tools/
 │   ├── cmd/
-│   │   ├── aidlgen/          AIDL-to-Go compiler CLI
-│   │   ├── aospgen/          Bulk AOSP code generator
-│   │   ├── gen_e2e_smoke/    Smoke test generator
-│   │   ├── genbindercli/       bindercli command dispatcher generator
-│   │   ├── genreadme/        README package table generator
-│   │   └── genversions/      Compiled transaction code table generator (fallback tables)
+│   │   ├── aidl2spec/        AIDL-to-YAML spec compiler
+│   │   ├── java2spec/        Java source info extractor (service maps, parcelables)
+│   │   ├── spec2go/          Go proxy code generator from specs
+│   │   ├── spec2cli/         bindercli command registry generator from specs
+│   │   └── spec2readme/      README package table generator from specs
 │   └── pkg/
-│       └── aidlc/            AIDL processing pipeline
-│           ├── parser/       Lexer + recursive-descent AIDL parser
-│           ├── resolver/     Import resolution and type registry
-│           ├── codegen/      Go code generator
-│           │   ├── codegen.go        GenerateAll orchestration, validation, import graph
-│           │   ├── interface_gen.go  Interface → proxy struct + methods
-│           │   ├── parcelable_gen.go Parcelable → struct + Marshal/Unmarshal
-│           │   ├── enum_gen.go       Enum → typed constants
-│           │   ├── marshal.go        AIDL type → parcel read/write expressions
-│           │   └── import_graph.go   SCC-based import cycle detection
-│           ├── validate/     Semantic validation (types, directions, oneway)
-│           ├── testutil/     Mock binder, reflection-based smoke testing
-│           ├── e2e/          End-to-end tests (requires /dev/binder)
-│           └── 3rdparty/     AOSP submodules (frameworks-base, frameworks-native, ...)
+│       ├── parser/           Lexer + recursive-descent AIDL parser
+│       ├── resolver/         Import resolution and type registry
+│       ├── codegen/          Go code generator
+│       │   ├── codegen.go        GenerateAll orchestration, validation, import graph
+│       │   ├── interface_gen.go  Interface → proxy struct + methods
+│       │   ├── parcelable_gen.go Parcelable → struct + Marshal/Unmarshal
+│       │   ├── enum_gen.go       Enum → typed constants
+│       │   ├── marshal.go        AIDL type → parcel read/write expressions
+│       │   └── import_graph.go   SCC-based import cycle detection
+│       ├── spec/             YAML spec read/write
+│       ├── javaparser/       Java source parser
+│       ├── parcelspec/       Parcelable spec extraction
+│       ├── servicemap/       Service name mapping
+│       ├── validate/         Semantic validation (types, directions, oneway)
+│       ├── testutil/         Mock binder, reflection-based smoke testing
+│       └── 3rdparty/         AOSP submodules (frameworks-base, frameworks-native, ...)
 ├── binder/                   Binder IPC abstractions
 │   ├── ibinder.go            IBinder interface
 │   ├── proxy_binder.go       Client-side proxy: Transact, IsAlive, LinkToDeath
@@ -2367,6 +2373,9 @@ See the example app at [`examples/gomobile/`](examples/gomobile/).
 │   ├── hardware/             HAL interfaces
 │   └── ...                   407 packages total
 ├── com/                      AOSP com.android.* service proxies
+├── interop/                  Interoperability helpers
+│   ├── gadb/                 Pure-Go ADB integration
+│   └── gomobile/             Android AAR via gomobile
 ├── examples/                 106 runnable examples
 └── .github/workflows/        CI configuration
 ```
