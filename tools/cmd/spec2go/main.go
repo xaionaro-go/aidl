@@ -1502,7 +1502,7 @@ func generateSource(
 
 	for _, vid := range versionIDs {
 		table := allTables[vid]
-		fmt.Fprintf(&buf, "\t\t%q: VersionTable{\n", vid)
+		fmt.Fprintf(&buf, "\t\t%q: CompiledTable{\n", vid)
 
 		descriptors := sortedKeys(table)
 		for _, desc := range descriptors {
@@ -1511,16 +1511,16 @@ func generateSource(
 				continue
 			}
 
-			fmt.Fprintf(&buf, "\t\t\t%q: {\n", desc)
+			fmt.Fprintf(&buf, "\t\t\t{Descriptor: %q, Methods: []MethodEntry{\n", desc)
 
 			methodNames := sortedKeys(methods)
 			for _, name := range methodNames {
 				code := methods[name]
 				offset := code - binder.FirstCallTransaction
-				fmt.Fprintf(&buf, "\t\t\t\t%q: binder.FirstCallTransaction + %d,\n", name, offset)
+				fmt.Fprintf(&buf, "\t\t\t\t{Method: %q, Code: binder.FirstCallTransaction + %d},\n", name, offset)
 			}
 
-			buf.WriteString("\t\t\t},\n")
+			buf.WriteString("\t\t\t}},\n")
 		}
 
 		buf.WriteString("\t\t},\n")
