@@ -168,7 +168,7 @@ func probeRemoteVersionTable(
 	// share the same code, probing once suffices.
 	type candidate struct {
 		revision versionaware.Revision
-		table    versionaware.VersionTable
+		compiled versionaware.CompiledTable
 		code     binder.TransactionCode
 	}
 
@@ -177,23 +177,23 @@ func probeRemoteVersionTable(
 
 	for _, level := range []int{apiLevel, versionaware.DefaultAPILevel} {
 		for _, rev := range versionaware.Revisions[level] {
-			table, ok := versionaware.Tables[rev]
+			compiled, ok := versionaware.Tables[rev]
 			if !ok {
 				continue
 			}
-			code := table.Resolve(serviceManagerDescriptor, "listServices")
+			code := compiled.Resolve(serviceManagerDescriptor, "listServices")
 			if code == 0 || seenCodes[code] {
 				continue
 			}
 			seenCodes[code] = true
-			candidates = append(candidates, candidate{rev, table, code})
+			candidates = append(candidates, candidate{rev, compiled, code})
 		}
 	}
 
 	for _, c := range candidates {
 		if probeListServices(ctx, rt, c.code) {
 			logger.Debugf(ctx, "matched revision %s (listServices code %d)", c.revision, c.code)
-			return c.table, nil
+			return c.compiled.ToVersionTable(), nil
 		}
 		logger.Debugf(ctx, "revision %s (listServices code %d) did not match", c.revision, c.code)
 	}

@@ -233,11 +233,12 @@ func resolveTable(
 		}
 	}
 
-	table, ok := Tables[version]
+	compiled, ok := Tables[version]
 	if !ok {
 		return nil, "", fmt.Errorf("versionaware: no transaction code table for version %q", version)
 	}
 
+	table := compiled.ToVersionTable()
 	logger.Debugf(ctx, "versionaware: using compiled version table %s (%d interfaces)", version, len(table))
 	return table, string(version), nil
 }
@@ -548,13 +549,13 @@ func (t *Transport) lookupCompiledDescriptor(
 		if !ok {
 			return nil
 		}
-		methods := compiled[descriptor]
+		methods := compiled.MethodsForDescriptor(descriptor)
 		if methods == nil {
 			return nil
 		}
 		codes := make(dex.TransactionCodes, len(methods))
-		for m, c := range methods {
-			codes[m] = uint32(c)
+		for _, m := range methods {
+			codes[m.Method] = uint32(m.Code)
 		}
 		return codes
 	}
@@ -569,13 +570,13 @@ func (t *Transport) lookupCompiledDescriptor(
 			if !ok {
 				continue
 			}
-			methods := compiled[descriptor]
+			methods := compiled.MethodsForDescriptor(descriptor)
 			if methods == nil {
 				continue
 			}
 			codes := make(dex.TransactionCodes, len(methods))
-			for m, c := range methods {
-				codes[m] = uint32(c)
+			for _, m := range methods {
+				codes[m.Method] = uint32(m.Code)
 			}
 			return codes
 		}
@@ -759,15 +760,15 @@ func filterRevisionsBySOMethodSet(revisions []Revision) []Revision {
 
 	var filtered []Revision
 	for _, rev := range revisions {
-		table, ok := Tables[rev]
+		compiled, ok := Tables[rev]
 		if !ok {
 			continue
 		}
-		smMethods := table[serviceManagerDescriptor]
+		smMethods := compiled.MethodsForDescriptor(serviceManagerDescriptor)
 		if smMethods == nil {
 			continue
 		}
-		if methodSetMatches(smMethods, deviceMethods) {
+		if methodEntriesMatchDeviceMethods(smMethods, deviceMethods) {
 			filtered = append(filtered, rev)
 		}
 	}
@@ -778,23 +779,28 @@ func filterRevisionsBySOMethodSet(revisions []Revision) []Revision {
 	return filtered
 }
 
-// methodSetMatches returns true if the version table's method set for
-// an interface matches the methods found in the device's .so.
+// methodEntriesMatchDeviceMethods returns true if the compiled table's
+// method entries match the methods found in the device's .so.
 // A match means: every method in the table exists in the device methods,
 // and no device methods are missing from the table.
-func methodSetMatches(
-	tableMethods map[string]binder.TransactionCode,
+func methodEntriesMatchDeviceMethods(
+	entries []MethodEntry,
 	deviceMethods map[string]bool,
 ) bool {
 	// Check that every method in the table exists on the device.
-	for method := range tableMethods {
-		if !deviceMethods[method] {
+	for _, e := range entries {
+		if !deviceMethods[e.Method] {
 			return false
 		}
 	}
 	// Check that every device method exists in the table.
+	// Build a set from entries for reverse check.
+	tableSet := make(map[string]bool, len(entries))
+	for _, e := range entries {
+		tableSet[e.Method] = true
+	}
 	for method := range deviceMethods {
-		if _, ok := tableMethods[method]; !ok {
+		if !tableSet[method] {
 			return false
 		}
 	}
@@ -1047,7 +1053,7 @@ var DefaultAPILevel int
 
 // Tables holds multi-version transaction code tables.
 // Populated by generated code (codes_gen.go).
-var Tables = MultiVersionTable{}
+var Tables MultiVersionTable
 
 // Revisions maps API level -> list of version IDs (latest first).
 // Populated by generated code (codes_gen.go).

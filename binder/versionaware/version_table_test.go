@@ -35,15 +35,15 @@ func TestVersionTableResolve(t *testing.T) {
 
 func TestMultiVersionTableStringKeys(t *testing.T) {
 	tables := MultiVersionTable{
-		"36.r1": {
-			"android.app.IActivityManager": {
-				"isUserAMonkey": binder.FirstCallTransaction + 105,
-			},
+		"36.r1": CompiledTable{
+			{Descriptor: "android.app.IActivityManager", Methods: []MethodEntry{
+				{Method: "isUserAMonkey", Code: binder.FirstCallTransaction + 105},
+			}},
 		},
-		"36.r3": {
-			"android.app.IActivityManager": {
-				"isUserAMonkey": binder.FirstCallTransaction + 110,
-			},
+		"36.r3": CompiledTable{
+			{Descriptor: "android.app.IActivityManager", Methods: []MethodEntry{
+				{Method: "isUserAMonkey", Code: binder.FirstCallTransaction + 110},
+			}},
 		},
 	}
 
@@ -73,15 +73,15 @@ func TestAPIRevisions(t *testing.T) {
 
 func TestTablesLookup(t *testing.T) {
 	tables := MultiVersionTable{
-		"36.r1": {
-			"android.app.IActivityManager": {
-				"isUserAMonkey": binder.FirstCallTransaction + 105,
-			},
+		"36.r1": CompiledTable{
+			{Descriptor: "android.app.IActivityManager", Methods: []MethodEntry{
+				{Method: "isUserAMonkey", Code: binder.FirstCallTransaction + 105},
+			}},
 		},
-		"36.r4": {
-			"android.app.IActivityManager": {
-				"isUserAMonkey": binder.FirstCallTransaction + 110,
-			},
+		"36.r4": CompiledTable{
+			{Descriptor: "android.app.IActivityManager", Methods: []MethodEntry{
+				{Method: "isUserAMonkey", Code: binder.FirstCallTransaction + 110},
+			}},
 		},
 	}
 
