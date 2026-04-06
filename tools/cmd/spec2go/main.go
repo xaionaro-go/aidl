@@ -1321,8 +1321,14 @@ func generateAccessorFiles(
 		// derive the name from the service constant instead to avoid collision.
 		funcKey := info.GoPackage + ":" + funcName
 		if emittedFuncs[funcKey] {
-			funcName = "Get" + constName
-			funcKey = info.GoPackage + ":" + funcName
+			altName := "Get" + constName
+			altKey := info.GoPackage + ":" + altName
+			if emittedFuncs[altKey] || altName == funcName {
+				// Both names collide — skip this accessor entirely.
+				continue
+			}
+			funcName = altName
+			funcKey = altKey
 		}
 		emittedFuncs[funcKey] = true
 

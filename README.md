@@ -2073,7 +2073,7 @@ go run ./tools/cmd/aidl2spec -3rdparty tools/pkg/3rdparty -output specs/
 go run ./tools/cmd/spec2go -specs specs/ -output . -smoke-tests
 ```
 
-This discovers all AIDL files across `frameworks-base`, `frameworks-native`, `hardware-interfaces`, and `system-hardware-interfaces`, infers search roots from package declarations, and generates Go proxies for all AOSP services. The current AOSP snapshot produces **5,151 Go files** across **407 packages**.
+This discovers all AIDL files across `frameworks-base`, `frameworks-native`, `hardware-interfaces`, and `system-hardware-interfaces`, infers search roots from package declarations, and generates Go proxies for all AOSP services. The current AOSP snapshot produces **5,174 Go files** across **407 packages**.
 
 ### Transaction Code Resolution
 
@@ -2367,7 +2367,7 @@ See the example app at [`examples/gomobile/`](examples/gomobile/).
 │   └── driver.go             Open, mmap, ioctl BINDER_WRITE_READ
 ├── servicemanager/           ServiceManager client
 ├── errors/                   AIDL exception types (ExceptionCode, StatusError)
-├── android/                  Pre-generated AOSP service proxies (5,151 files)
+├── android/                  Pre-generated AOSP service proxies (5,174 files)
 │   ├── app/                  ActivityManager, AlarmManager, ...
 │   ├── os/                   ServiceManager, PowerManager, ...
 │   ├── hardware/             HAL interfaces

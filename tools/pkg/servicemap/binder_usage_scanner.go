@@ -217,6 +217,7 @@ func selectBestInterfaceForClass(
 		score int
 	}
 	var best scored
+	tieCount := 0
 	for name := range unique {
 		ifaceCore := strings.TrimPrefix(name, "I")
 		ifaceCoreLower := strings.ToLower(ifaceCore)
@@ -244,7 +245,19 @@ func selectBestInterfaceForClass(
 
 		if s > best.score {
 			best = scored{name: name, score: s}
+			tieCount = 1
+		} else if s == best.score {
+			tieCount++
 		}
+	}
+
+	// When multiple candidates tie at the same score below the strong-match
+	// threshold (score >= 3 means exact or suffix match), the result is
+	// ambiguous. For example, TimeManager uses both ITimeDetectorService and
+	// ITimeZoneDetectorService — neither is *the* binder interface for this
+	// @SystemService class. Return empty to avoid a false mapping.
+	if tieCount > 1 && best.score < 3 {
+		return ""
 	}
 
 	return best.name

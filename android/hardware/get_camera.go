@@ -9,14 +9,14 @@ import (
 	"github.com/AndroidGoLab/binder/servicemanager"
 )
 
-// GetMediaCameraService retrieves the MediaCameraService service and returns a typed proxy.
-func GetMediaCameraService(
+// GetCameraService retrieves the CameraService service and returns a typed proxy.
+func GetCameraService(
 	ctx context.Context,
 	sm *servicemanager.ServiceManager,
 ) (*CameraServiceProxy, error) {
-	svc, err := sm.GetService(ctx, servicemanager.MediaCameraService)
+	svc, err := sm.GetService(ctx, servicemanager.CameraService)
 	if err != nil {
-		return nil, fmt.Errorf("GetMediaCameraService: %w", err)
+		return nil, fmt.Errorf("GetCameraService: %w", err)
 	}
 	return NewCameraServiceProxy(svc), nil
 }

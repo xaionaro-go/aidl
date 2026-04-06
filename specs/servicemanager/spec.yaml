@@ -548,7 +548,7 @@ services:
       descriptor: android.app.timedetector.ITimeDetectorService
     - service_name: time_manager
       constant_name: TIME_MANAGER_SERVICE
-      descriptor: android.app.timezonedetector.ITimeZoneDetectorService
+      descriptor: ""
     - service_name: time_zone_detector
       constant_name: TIME_ZONE_DETECTOR_SERVICE
       descriptor: android.app.timezonedetector.ITimeZoneDetectorService
