@@ -5,16 +5,16 @@ go_package: servicemanager
 services:
     - service_name: accessibility
       constant_name: ACCESSIBILITY_SERVICE
-      descriptor: ""
+      descriptor: android.view.accessibility.IAccessibilityManager
     - service_name: account
       constant_name: ACCOUNT_SERVICE
       descriptor: android.accounts.IAccountManager
     - service_name: activity
       constant_name: ACTIVITY_SERVICE
-      descriptor: ""
+      descriptor: IActivityManager
     - service_name: activity_task
       constant_name: ACTIVITY_TASK_SERVICE
-      descriptor: ""
+      descriptor: IActivityTaskManager
     - service_name: adb
       constant_name: ADB_SERVICE
       descriptor: android.debug.IAdbManager
@@ -26,13 +26,13 @@ services:
       descriptor: android.app.ambientcontext.IAmbientContextManager
     - service_name: android.service.gatekeeper.IGateKeeperService
       constant_name: GATEKEEPER_SERVICE
-      descriptor: ""
+      descriptor: android.service.gatekeeper.IGateKeeperService
     - service_name: app_binding
       constant_name: APP_BINDING_SERVICE
       descriptor: ""
     - service_name: app_hibernation
       constant_name: APP_HIBERNATION_SERVICE
-      descriptor: ""
+      descriptor: IAppHibernationService
     - service_name: app_integrity
       constant_name: APP_INTEGRITY_SERVICE
       descriptor: android.content.integrity.IAppIntegrityManager
@@ -56,22 +56,22 @@ services:
       descriptor: android.security.attestationverification.IAttestationVerificationManagerService
     - service_name: audio
       constant_name: AUDIO_SERVICE
-      descriptor: ""
+      descriptor: IAudioService
     - service_name: audio_device_volume
       constant_name: AUDIO_DEVICE_VOLUME_SERVICE
       descriptor: ""
     - service_name: auth
       constant_name: AUTH_SERVICE
-      descriptor: ""
+      descriptor: IAuthService
     - service_name: autofill
       constant_name: AUTOFILL_MANAGER_SERVICE
       descriptor: android.view.autofill.IAutoFillManager
     - service_name: background_install_control
       constant_name: BACKGROUND_INSTALL_CONTROL_SERVICE
-      descriptor: ""
+      descriptor: android.content.pm.IBackgroundInstallControlService
     - service_name: backup
       constant_name: BACKUP_SERVICE
-      descriptor: ""
+      descriptor: android.app.backup.IBackupManager
     - service_name: batterymanager
       constant_name: BATTERY_SERVICE
       descriptor: com.android.internal.app.IBatteryStats
@@ -89,28 +89,28 @@ services:
       descriptor: ""
     - service_name: broadcastradio
       constant_name: RADIO_SERVICE
-      descriptor: ""
+      descriptor: IRadioService
     - service_name: bugreport
       constant_name: BUGREPORT_SERVICE
       descriptor: android.os.IDumpstate
     - service_name: camera
       constant_name: CAMERA_SERVICE
-      descriptor: ""
+      descriptor: android.hardware.ICameraService
     - service_name: captioning
       constant_name: CAPTIONING_SERVICE
       descriptor: ""
     - service_name: carrier_config
       constant_name: CARRIER_CONFIG_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.telephony.ICarrierConfigLoader
     - service_name: clipboard
       constant_name: CLIPBOARD_SERVICE
-      descriptor: ""
+      descriptor: IClipboard
     - service_name: cloudsearch
       constant_name: CLOUDSEARCH_SERVICE
       descriptor: ""
     - service_name: color_display
       constant_name: COLOR_DISPLAY_SERVICE
-      descriptor: ""
+      descriptor: IColorDisplayManager
     - service_name: companiondevice
       constant_name: COMPANION_DEVICE_SERVICE
       descriptor: android.companion.ICompanionDeviceManager
@@ -122,7 +122,7 @@ services:
       descriptor: ""
     - service_name: consumer_ir
       constant_name: CONSUMER_IR_SERVICE
-      descriptor: ""
+      descriptor: IConsumerIrService
     - service_name: contact_keys
       constant_name: CONTACT_KEYS_SERVICE
       descriptor: ""
@@ -146,7 +146,7 @@ services:
       descriptor: android.content.pm.IDataLoaderManager
     - service_name: device_identifiers
       constant_name: DEVICE_IDENTIFIERS_SERVICE
-      descriptor: ""
+      descriptor: android.os.IDeviceIdentifiersPolicyService
     - service_name: device_lock
       constant_name: DEVICE_LOCK_SERVICE
       descriptor: ""
@@ -158,7 +158,7 @@ services:
       descriptor: ""
     - service_name: display
       constant_name: DISPLAY_SERVICE
-      descriptor: ""
+      descriptor: IDisplayManager
     - service_name: display_hash
       constant_name: DISPLAY_HASH_SERVICE
       descriptor: ""
@@ -170,7 +170,7 @@ services:
       descriptor: ""
     - service_name: dream
       constant_name: DREAM_SERVICE
-      descriptor: ""
+      descriptor: android.service.dreams.IDreamManager
     - service_name: dropbox
       constant_name: DROPBOX_SERVICE
       descriptor: com.android.internal.os.IDropBoxManagerService
@@ -194,7 +194,7 @@ services:
       descriptor: android.hardware.face.IFaceService
     - service_name: feature_flags
       constant_name: FEATURE_FLAGS_SERVICE
-      descriptor: ""
+      descriptor: IFeatureFlags
     - service_name: file_integrity
       constant_name: FILE_INTEGRITY_SERVICE
       descriptor: android.security.IFileIntegrityService
@@ -206,7 +206,7 @@ services:
       descriptor: com.android.internal.graphics.fonts.IFontManager
     - service_name: game
       constant_name: GAME_SERVICE
-      descriptor: ""
+      descriptor: IGameManagerService
     - service_name: grammatical_inflection
       constant_name: GRAMMATICAL_INFLECTION_SERVICE
       descriptor: IGrammaticalInflectionManager
@@ -224,10 +224,10 @@ services:
       descriptor: ""
     - service_name: incident
       constant_name: INCIDENT_SERVICE
-      descriptor: ""
+      descriptor: IIncidentManager
     - service_name: incidentcompanion
       constant_name: INCIDENT_COMPANION_SERVICE
-      descriptor: ""
+      descriptor: IIncidentCompanion
     - service_name: incremental
       constant_name: INCREMENTAL_SERVICE
       descriptor: android.os.incremental.IIncrementalService
@@ -236,7 +236,7 @@ services:
       descriptor: ""
     - service_name: input_method
       constant_name: INPUT_METHOD_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.view.IInputMethodManager
     - service_name: ipsec
       constant_name: IPSEC_SERVICE
       descriptor: ""
@@ -254,16 +254,16 @@ services:
       descriptor: ""
     - service_name: launcherapps
       constant_name: LAUNCHER_APPS_SERVICE
-      descriptor: ""
+      descriptor: ILauncherApps
     - service_name: layout_inflater
       constant_name: LAYOUT_INFLATER_SERVICE
       descriptor: ""
     - service_name: legacy_permission
       constant_name: LEGACY_PERMISSION_SERVICE
-      descriptor: ""
+      descriptor: ILegacyPermissionManager
     - service_name: lights
       constant_name: LIGHTS_SERVICE
-      descriptor: ""
+      descriptor: ILightsManager
     - service_name: locale
       constant_name: LOCALE_SERVICE
       descriptor: ILocaleManager
@@ -281,13 +281,13 @@ services:
       descriptor: android.media.metrics.IMediaMetricsManager
     - service_name: media_projection
       constant_name: MEDIA_PROJECTION_SERVICE
-      descriptor: ""
+      descriptor: IMediaProjection
     - service_name: media_router
       constant_name: MEDIA_ROUTER_SERVICE
-      descriptor: ""
+      descriptor: IMediaRouterService
     - service_name: media_session
       constant_name: MEDIA_SESSION_SERVICE
-      descriptor: ""
+      descriptor: ISessionManager
     - service_name: media_transcoding
       constant_name: MEDIA_TRANSCODING_SERVICE
       descriptor: ""
@@ -296,7 +296,7 @@ services:
       descriptor: android.media.midi.IMidiManager
     - service_name: mms
       constant_name: MMS_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.telephony.IMms
     - service_name: music_recognition
       constant_name: MUSIC_RECOGNITION_SERVICE
       descriptor: android.media.musicrecognition.IMusicRecognitionManager
@@ -305,7 +305,7 @@ services:
       descriptor: ""
     - service_name: netd
       constant_name: NETD_SERVICE
-      descriptor: ""
+      descriptor: android.net.INetd
     - service_name: netpolicy
       constant_name: NETWORK_POLICY_SERVICE
       descriptor: android.net.INetworkPolicyManager
@@ -314,7 +314,7 @@ services:
       descriptor: ""
     - service_name: network_management
       constant_name: NETWORKMANAGEMENT_SERVICE
-      descriptor: ""
+      descriptor: INetworkManagementService
     - service_name: network_score
       constant_name: NETWORK_SCORE_SERVICE
       descriptor: ""
@@ -329,7 +329,7 @@ services:
       descriptor: ""
     - service_name: notification
       constant_name: NOTIFICATION_SERVICE
-      descriptor: ""
+      descriptor: INotificationManager
     - service_name: oem_lock
       constant_name: OEM_LOCK_SERVICE
       descriptor: android.service.oemlock.IOemLockService
@@ -344,16 +344,16 @@ services:
       descriptor: android.net.IPacProxyManager
     - service_name: people
       constant_name: PEOPLE_SERVICE
-      descriptor: ""
+      descriptor: IPeopleManager
     - service_name: performance_hint
       constant_name: PERFORMANCE_HINT_SERVICE
       descriptor: ""
     - service_name: permission
       constant_name: PERMISSION_SERVICE
-      descriptor: ""
+      descriptor: IPermissionManager
     - service_name: permission_checker
       constant_name: PERMISSION_CHECKER_SERVICE
-      descriptor: ""
+      descriptor: IPermissionChecker
     - service_name: permission_controller
       constant_name: PERMISSION_CONTROLLER_SERVICE
       descriptor: ""
@@ -365,10 +365,10 @@ services:
       descriptor: android.service.persistentdata.IPersistentDataBlockService
     - service_name: phone
       constant_name: TELEPHONY_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.telephony.ITelephony
     - service_name: platform_compat
       constant_name: PLATFORM_COMPAT_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.compat.IPlatformCompat
     - service_name: platform_compat_native
       constant_name: PLATFORM_COMPAT_NATIVE_SERVICE
       descriptor: ""
@@ -380,7 +380,7 @@ services:
       descriptor: ""
     - service_name: powerstats
       constant_name: POWER_STATS_SERVICE
-      descriptor: ""
+      descriptor: android.os.IPowerStatsService
     - service_name: print
       constant_name: PRINT_SERVICE
       descriptor: android.print.IPrintManager
@@ -425,7 +425,7 @@ services:
       descriptor: ""
     - service_name: search
       constant_name: SEARCH_SERVICE
-      descriptor: ""
+      descriptor: ISearchManager
     - service_name: search_ui
       constant_name: SEARCH_UI_SERVICE
       descriptor: ""
@@ -440,13 +440,13 @@ services:
       descriptor: ""
     - service_name: sensitive_content_protection_service
       constant_name: SENSITIVE_CONTENT_PROTECTION_SERVICE
-      descriptor: ""
+      descriptor: ISensitiveContentProtectionManager
     - service_name: sensor
       constant_name: SENSOR_SERVICE
       descriptor: ""
     - service_name: sensor_privacy
       constant_name: SENSOR_PRIVACY_SERVICE
-      descriptor: ""
+      descriptor: ISensorPrivacyManager
     - service_name: serial
       constant_name: SERIAL_SERVICE
       descriptor: android.hardware.ISerialManager
@@ -464,7 +464,7 @@ services:
       descriptor: ""
     - service_name: slice
       constant_name: SLICE_SERVICE
-      descriptor: ""
+      descriptor: ISliceManager
     - service_name: smartspace
       constant_name: SMARTSPACE_SERVICE
       descriptor: ""
@@ -491,16 +491,16 @@ services:
       descriptor: ""
     - service_name: statusbar
       constant_name: STATUS_BAR_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.statusbar.IStatusBarService
     - service_name: storage
       constant_name: STORAGE_SERVICE
-      descriptor: ""
+      descriptor: IStorageManager
     - service_name: storagestats
       constant_name: STORAGE_STATS_SERVICE
       descriptor: android.app.usage.IStorageStatsManager
     - service_name: system_config
       constant_name: SYSTEM_CONFIG_SERVICE
-      descriptor: ""
+      descriptor: ISystemConfig
     - service_name: system_update
       constant_name: SYSTEM_UPDATE_SERVICE
       descriptor: android.os.ISystemUpdateManager
@@ -512,13 +512,13 @@ services:
       descriptor: ""
     - service_name: telecom
       constant_name: TELECOM_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.telecom.ITelecomService
     - service_name: telephony_ims
       constant_name: TELEPHONY_IMS_SERVICE
-      descriptor: ""
+      descriptor: android.telephony.ims.aidl.IImsRcsController
     - service_name: telephony_registry
       constant_name: TELEPHONY_REGISTRY_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.telephony.ITelephonyRegistry
     - service_name: telephony_subscription_service
       constant_name: TELEPHONY_SUBSCRIPTION_SERVICE
       descriptor: ""
@@ -530,28 +530,28 @@ services:
       descriptor: ""
     - service_name: textclassification
       constant_name: TEXT_CLASSIFICATION_SERVICE
-      descriptor: ""
+      descriptor: android.service.textclassifier.ITextClassifierService
     - service_name: textservices
       constant_name: TEXT_SERVICES_MANAGER_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.textservice.ITextServicesManager
     - service_name: texttospeech
       constant_name: TEXT_TO_SPEECH_MANAGER_SERVICE
       descriptor: ""
     - service_name: thermalservice
       constant_name: THERMAL_SERVICE
-      descriptor: ""
+      descriptor: android.os.IThermalService
     - service_name: thread_network
       constant_name: THREAD_NETWORK_SERVICE
       descriptor: ""
     - service_name: time_detector
       constant_name: TIME_DETECTOR_SERVICE
-      descriptor: ""
+      descriptor: android.app.timedetector.ITimeDetectorService
     - service_name: time_manager
       constant_name: TIME_MANAGER_SERVICE
-      descriptor: ""
+      descriptor: android.app.timezonedetector.ITimeZoneDetectorService
     - service_name: time_zone_detector
       constant_name: TIME_ZONE_DETECTOR_SERVICE
-      descriptor: ""
+      descriptor: android.app.timezonedetector.ITimeZoneDetectorService
     - service_name: translation
       constant_name: TRANSLATION_MANAGER_SERVICE
       descriptor: android.view.translation.ITranslationManager
@@ -560,7 +560,7 @@ services:
       descriptor: com.android.internal.os.IBinaryTransparencyService
     - service_name: trust
       constant_name: TRUST_SERVICE
-      descriptor: ""
+      descriptor: android.app.trust.ITrustManager
     - service_name: tv_ad
       constant_name: TV_AD_SERVICE
       descriptor: android.media.tv.ad.ITvAdManager
@@ -578,13 +578,13 @@ services:
       descriptor: android.view.translation.ITranslationManager
     - service_name: uimode
       constant_name: UI_MODE_SERVICE
-      descriptor: ""
+      descriptor: IUiModeManager
     - service_name: updatelock
       constant_name: UPDATE_LOCK_SERVICE
-      descriptor: ""
+      descriptor: IUpdateLock
     - service_name: uri_grants
       constant_name: URI_GRANTS_SERVICE
-      descriptor: ""
+      descriptor: IUriGrantsManager
     - service_name: usagestats
       constant_name: USAGE_STATS_SERVICE
       descriptor: android.app.usage.IUsageStatsManager
@@ -605,7 +605,7 @@ services:
       descriptor: ""
     - service_name: vibrator_manager
       constant_name: VIBRATOR_MANAGER_SERVICE
-      descriptor: ""
+      descriptor: IVibratorManagerService
     - service_name: virtualdevice
       constant_name: VIRTUAL_DEVICE_SERVICE
       descriptor: android.companion.virtual.IVirtualDeviceManager
@@ -614,7 +614,7 @@ services:
       descriptor: ""
     - service_name: voiceinteraction
       constant_name: VOICE_INTERACTION_MANAGER_SERVICE
-      descriptor: ""
+      descriptor: com.android.internal.app.IVoiceInteractionManagerService
     - service_name: vpn_management
       constant_name: VPN_MANAGEMENT_SERVICE
       descriptor: android.net.IVpnManager
@@ -653,4 +653,4 @@ services:
       descriptor: ""
     - service_name: window
       constant_name: WINDOW_SERVICE
-      descriptor: ""
+      descriptor: android.view.IWindowManager
