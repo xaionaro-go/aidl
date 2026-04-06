@@ -217,27 +217,34 @@ func newServiceMethodsCmd() *cobra.Command {
 			ctx := cmd.Context()
 			name := args[0]
 
-			conn, err := OpenConn(ctx, cmd)
-			if err != nil {
-				return err
-			}
-			defer conn.Close(ctx)
-
-			svc, err := conn.GetService(ctx, name)
-			if err != nil {
-				return err
+			if generatedRegistry == nil {
+				return fmt.Errorf("no method registry available")
 			}
 
-			descriptor := discovery.QueryDescriptor(ctx, svc)
+			// Try static lookup first (no binder connection needed).
+			descriptor, info := lookupServiceStatic(name)
 
-			// InterfaceTransaction may return empty on some services.
-			// Fall back to the static knownServiceNames map (reverse lookup).
-			if descriptor == "" || descriptor == "(unknown)" {
-				for desc, svcName := range discovery.KnownServiceNames {
-					if svcName == name {
-						descriptor = desc
-						break
-					}
+			// Fall back to binder connection for unknown services.
+			if info == nil {
+				conn, err := OpenConn(ctx, cmd)
+				if err != nil {
+					return err
+				}
+				defer conn.Close(ctx)
+
+				svc, err := conn.GetService(ctx, name)
+				if err != nil {
+					return err
+				}
+
+				descriptor = discovery.QueryDescriptor(ctx, svc)
+				if descriptor == "" || descriptor == "(unknown)" {
+					return fmt.Errorf("cannot determine interface descriptor for service %q", name)
+				}
+
+				info = generatedRegistry.ByDescriptor(descriptor)
+				if info == nil {
+					return fmt.Errorf("unknown interface %q for service %q — not in registry", descriptor, name)
 				}
 			}
 
@@ -246,38 +253,18 @@ func newServiceMethodsCmd() *cobra.Command {
 				return fmt.Errorf("reading --format flag: %w", err)
 			}
 
-			if generatedRegistry == nil {
-				return fmt.Errorf("no method registry available")
-			}
-
-			info := generatedRegistry.ByDescriptor(descriptor)
-			if info == nil {
-				// Also try looking up by alias (the service name itself).
-				info = generatedRegistry.ByAlias(name)
-			}
-			if info == nil {
-				return fmt.Errorf("unknown interface %q for service %q — not in registry", descriptor, name)
-			}
-
-			table, tableErr := getActiveTable(conn)
-
 			f := NewFormatter(mode, os.Stdout)
 			switch f.Mode {
 			case "json":
 				f.WriteJSON(map[string]any{
 					"descriptor": descriptor,
-					"methods":    methodsToJSONWithCodes(info.Methods, table, descriptor),
+					"methods":    methodsToJSONWithCodes(info.Methods, nil, descriptor),
 				})
 			default:
 				fmt.Fprintf(f.W, "Interface: %s (%d methods)\n\n", descriptor, len(info.Methods))
-				for _, m := range info.Methods {
-					codeStr := "  ????  "
-					if tableErr == nil {
-						if code, ok := resolveMethodToCode(table, descriptor, m.Name); ok {
-							codeStr = fmt.Sprintf("  0x%04x", code)
-						}
-					}
-					fmt.Fprintf(f.W, "%s  %s\n", codeStr, formatMethodSignature(m))
+				for i, m := range info.Methods {
+					code := binder.FirstCallTransaction + binder.TransactionCode(i)
+					fmt.Fprintf(f.W, "  0x%04x  %s\n", code, formatMethodSignature(m))
 				}
 			}
 

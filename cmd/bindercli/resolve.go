@@ -57,6 +57,31 @@ func getActiveTable(c *Conn) (versionaware.VersionTable, error) {
 	return vat.ActiveTable(), nil
 }
 
+// lookupServiceStatic tries to resolve a service name to its descriptor
+// and registry info using only static data (KnownServiceNames + registry).
+// Returns ("", nil) if the service is not in static tables.
+func lookupServiceStatic(name string) (string, *ServiceInfo) {
+	if generatedRegistry == nil {
+		return "", nil
+	}
+
+	// Try alias lookup first (service name → registry entry).
+	if info := generatedRegistry.ByAlias(name); info != nil {
+		return info.Descriptor, info
+	}
+
+	// Try reverse lookup from KnownServiceNames (descriptor → service name).
+	for desc, svcName := range discovery.KnownServiceNames {
+		if svcName == name {
+			if info := generatedRegistry.ByDescriptor(desc); info != nil {
+				return desc, info
+			}
+		}
+	}
+
+	return "", nil
+}
+
 // resolveDescriptor determines the AIDL interface descriptor for a named
 // service, fetching it from the binder connection.
 func resolveDescriptor(
